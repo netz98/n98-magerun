@@ -17,6 +17,20 @@ Installation
 
 There are two ways to install the tools:
 
+~~~~~~~~~~~~~~~~~~
+Download phar file
+~~~~~~~~~~~~~~~~~~
+
+    `wget https://github.com/netz98/n98-magerun/raw/master/n98-magerun.phar`
+
+You can make the .phar file executable.
+
+    `chmod +x ./n98-magerun.phar`
+
+If you wan't to use command system wide you can copy it to `/usr/local/bin`.
+
+    `sudo cp ./n98-magerun.phar /usr/local/bin/`
+
 ~~~~~~~~~~~~~~~~~~~~
 Composer from source
 ~~~~~~~~~~~~~~~~~~~~
@@ -33,15 +47,6 @@ Composer from source
 
     `php ./composer.phar install`
 
-~~~~~~~~~~~~~~~~~~
-Download phar file
-~~~~~~~~~~~~~~~~~~
-
-    `wget https://github.com/netz98/n98-magerun/raw/master/n98-magerun.phar`
-
-You can make the .phar file executable.
-
-    `chmod +x ./n98-magerun.phar`
 
 ----------------
 Usage / Commands
