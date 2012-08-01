@@ -17,36 +17,41 @@ Installation
 
 There are two ways to install the tools:
 
-~~~~~~~~~~~~~~~~~~
+""""""""""""""""""
 Download phar file
-~~~~~~~~~~~~~~~~~~
+""""""""""""""""""
 
-    `wget https://github.com/netz98/n98-magerun/raw/master/n98-magerun.phar`
+::
+
+    wget https://github.com/netz98/n98-magerun/raw/master/n98-magerun.phar
 
 You can make the .phar file executable.
 
-    `chmod +x ./n98-magerun.phar`
+::
+
+    chmod +x ./n98-magerun.phar
 
 If you wan't to use command system wide you can copy it to `/usr/local/bin`.
 
-    `sudo cp ./n98-magerun.phar /usr/local/bin/`
+::
 
-~~~~~~~~~~~~~~~~~~~~
+    sudo cp ./n98-magerun.phar /usr/local/bin/`
+
+""""""""""""""""""""
 Composer from source
-~~~~~~~~~~~~~~~~~~~~
+""""""""""""""""""""
 
-1. Clone git repository
+#. Clone git repository::
 
-    `git clone https://github.com/netz98/n98-magerun`
+    git clone https://github.com/netz98/n98-magerun
 
-2. Download composer.
+#. Download composer::
 
-    `curl -s https://getcomposer.org/installer | php`
+    curl -s https://getcomposer.org/installer | php
 
-3. Let's do composer all the work.
+#. Let composer do all the work for you::
 
-    `php ./composer.phar install`
-
+    php ./composer.phar install
 
 ----------------
 Usage / Commands
@@ -56,51 +61,77 @@ All commands try to detect the current Magento root directory.
 If you have multiple magento installation you must change your working directory to
 the preferred installation.
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^
+Database
+^^^^^^^^
+
+"""""""""""""""""""""""""""
 Print database informations
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"""""""""""""""""""""""""""
+::
 
-    `n98-magerun.phar database:info`
+    n98-magerun.phar database:info
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"""""""""""""""""""""""""""
 Dump database
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"""""""""""""""""""""""""""
 
-Direct dump with mysqldump:
+Direct dump with mysqldump::
 
-    `n98-magerun.phar database:dump`
+    n98-magerun.phar database:dump
 
-Only the mysqldump command:
+Only the mysqldump command::
 
-    `n98-magerun.phar database:dump --only-command`
+    n98-magerun.phar database:dump --only-command
 
-~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^
+Local config
+^^^^^^^^^^^^
+
+"""""""""""""""""""""""
 Generate local.xml file
-~~~~~~~~~~~~~~~~~~~~~~~
+"""""""""""""""""""""""
 
-    `n98-magerun.phar local-config:generate`
+::
 
-~~~~~~~~~~~~~~~~~~~~~~~
+    n98-magerun.phar local-config:generate
+
+"""""""""""""""""""""""
 Dump global xml config
-~~~~~~~~~~~~~~~~~~~~~~~
+"""""""""""""""""""""""
 
-    `n98-magerun.phar config:dump > extern_file.xml`
+::
 
+    n98-magerun.phar config:dump > extern_file.xml
 
-~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^
+Cache
+^^^^^^^^^^^^
+
+"""""""""""""""""""""""
 Clear magento cache
-~~~~~~~~~~~~~~~~~~~~~~~
+"""""""""""""""""""""""
 
-    `n98-magerun.phar cache:clear`
+::
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+    n98-magerun.phar cache:clear
+
+^^^^^^^^^^^^
+Admin User
+^^^^^^^^^^^^
+
+""""""""""""""""""""""""""
 List admin users
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+""""""""""""""""""""""""""
 
-    `n98-magerun.phar admin:user:list`
+::
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+    n98-magerun.phar admin:user:list
+
+""""""""""""""""""""""""""
 Change admin user password
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+""""""""""""""""""""""""""
 
-    `n98-magerun.phar admin:user:change-password`
+::
+
+    n98-magerun.phar admin:user:change-password
