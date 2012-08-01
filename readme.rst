@@ -106,13 +106,16 @@ Or only one cache type like i.e. full_page cache::
    n98-magerun.phar cache:clear full_page
 
 List magento caches
-"""""""""""""""""""""
+"""""""""""""""""""
 
 ::
+
     n98-magerun.phar cache:list
 
 Disable magento cache
 """""""""""""""""""""
+
+::
 
     n98-magerun.phar cache:disable
 
