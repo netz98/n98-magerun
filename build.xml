@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<project name="n98-magerun" default="dist">
+
+    <target name="dist">
+        <pharpackage basedir="./" stub="_cli_stub.php" signature="sha512" compression="gzip" destfile="./n98-magerun.phar">
+            <fileset dir="src">
+                <include name="**/**" />
+            </fileset>
+            <fileset dir="vendor">
+                <include name="**/**" />
+            </fileset>
+            <metadata>
+                <element name="version" value="1.0.0" />
+                <element name="authors">
+                    <element name="Christian Münch">
+                        <element name="e-mail" value="c.muench@netz98.de" />
+                    </element>
+                </element>
+            </metadata>
+        </pharpackage>
+    </target>
+
+</project>

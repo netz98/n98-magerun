@@ -1,0 +1,17 @@
+{
+    "name": "n98/magerun",
+    "description": "Tools for managing magento projects and intallations",
+    "require": {
+        "symfony/console": "dev-master",
+        "symfony/finder": "dev-master"
+    },
+    "autoload": {
+        "psr-0": { "N98": "src" }
+    },
+    "authors": [
+        {
+            "name": "Christian Münch",
+            "email": "c.muench@netz98.de"
+        }
+    ]
+}
