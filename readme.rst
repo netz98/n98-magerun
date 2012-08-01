@@ -56,9 +56,6 @@ All commands try to detect the current Magento root directory.
 If you have multiple magento installation you must change your working directory to
 the preferred installation.
 
-Database
-^^^^^^^^
-
 Print database informations
 """""""""""""""""""""""""""
 
@@ -77,8 +74,6 @@ Only the mysqldump command::
 
     n98-magerun.phar database:dump --only-command
 
-Local config
-^^^^^^^^^^^^
 
 Generate local.xml file
 """""""""""""""""""""""
@@ -94,8 +89,6 @@ Dump global xml config
 
     n98-magerun.phar config:dump > extern_file.xml
 
-Cache
-^^^^^
 
 Clear magento cache
 """""""""""""""""""
@@ -103,9 +96,6 @@ Clear magento cache
 ::
 
     n98-magerun.phar cache:clear
-
-Admin User
-^^^^^^^^^^
 
 List admin users
 """"""""""""""""
