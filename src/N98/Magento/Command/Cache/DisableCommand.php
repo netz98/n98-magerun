@@ -8,14 +8,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ClearCommand extends AbstractMagentoCommand
+class DisableCommand extends AbstractMagentoCommand
 {
     protected function configure()
     {
         $this
-            ->setName('cache:clear')
-            ->addArgument('type', InputArgument::OPTIONAL, 'Cache type code like "config"')
-            ->setDescription('Clear magento cache')
+            ->setName('cache:disable')
+            ->setDescription('Disables magento caches')
         ;
     }
 
@@ -28,15 +27,19 @@ class ClearCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            if ($input->getArgument('type') != '') {
-                if (\Mage::getModel('core/cache')->cleanType($input->getArgument('type'))) {
-                    $output->writeln('<info>' . $input->getArgument('type') . ' cache cleared</info>');
-                }
-            } else {
-                if (\Mage::getModel('core/cache')->flush()) {
-                    $output->writeln('<info>Cache cleared</info>');
+            $allTypes = \Mage::app()->useCache();
+            $cacheTypes = array_keys(\Mage::helper('core')->getCacheTypes());
+            $enable = array();
+            foreach ($cacheTypes as $type) {
+                if (!empty($allTypes[$type])) {
+                    $enable[$type] = 0;
                 }
             }
+
+            \Mage::app()->saveUseCache($enable);
+            \Mage::getModel('core/cache')->flush();
+
+            $output->writeln('<info>Caches disabled</info>');
         }
     }
 }

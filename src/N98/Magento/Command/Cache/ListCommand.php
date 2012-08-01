@@ -8,14 +8,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ClearCommand extends AbstractMagentoCommand
+class ListCommand extends AbstractMagentoCommand
 {
     protected function configure()
     {
         $this
-            ->setName('cache:clear')
-            ->addArgument('type', InputArgument::OPTIONAL, 'Cache type code like "config"')
-            ->setDescription('Clear magento cache')
+            ->setName('cache:list')
+            ->setDescription('Lists all magento caches')
         ;
     }
 
@@ -28,14 +27,9 @@ class ClearCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            if ($input->getArgument('type') != '') {
-                if (\Mage::getModel('core/cache')->cleanType($input->getArgument('type'))) {
-                    $output->writeln('<info>' . $input->getArgument('type') . ' cache cleared</info>');
-                }
-            } else {
-                if (\Mage::getModel('core/cache')->flush()) {
-                    $output->writeln('<info>Cache cleared</info>');
-                }
+            $cacheTypes = \Mage::getModel('core/cache')->getTypes();
+            foreach ($cacheTypes as $cacheCode => $cacheInfo) {
+                $output->writeln(str_pad($cacheCode, 40, ' ') . ($cacheInfo['status'] ? 'enabled' : 'disabled'));
             }
         }
     }

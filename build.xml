@@ -21,7 +21,7 @@
     </target>
 
     <target name="install">
-        <exec command="sudo cp ./n98-magerun.phar /usr/local/bin/;" />
+        <exec command="sudo cp ${project.basedir}/n98-magerun.phar /usr/local/bin/n98-magerun.phar;" />
         <exec command="sudo chmod a+x /usr/local/bin/n98-magerun.phar;" />
     </target>
 

@@ -6,8 +6,7 @@ The n98 magerun cli tools provides some handy tools to work with magento from co
 
 Compatibility
 -------------
-The tools are currently only tested with PHP 5.3.10 within
-Ubuntu 12.04 Linux.
+The tools are currently only tested with PHP 5.3.10 within Ubuntu 12.04 Linux.
 If you are a windows user you can help us with a quick test.
 
 Installation
@@ -34,8 +33,8 @@ If you wan't to use command system wide you can copy it to `/usr/local/bin`.
 
     sudo cp ./n98-magerun.phar /usr/local/bin/`
 
-Composer from source
-""""""""""""""""""""
+From source with composer
+"""""""""""""""""""""""""
 
 #. Clone git repository::
 
@@ -74,7 +73,6 @@ Only the mysqldump command::
 
     n98-magerun.phar database:dump --only-command
 
-
 Generate local.xml file
 """""""""""""""""""""""
 
@@ -89,6 +87,12 @@ Dump global xml config
 
     n98-magerun.phar config:dump > extern_file.xml
 
+List magento cache status
+"""""""""""""""""""""""""
+
+::
+
+    n98-magerun.phar cache:list
 
 Clear magento cache
 """""""""""""""""""
@@ -96,6 +100,28 @@ Clear magento cache
 ::
 
     n98-magerun.phar cache:clear
+
+Or only one cache type like i.e. full_page cache::
+
+   n98-magerun.phar cache:clear full_page
+
+List magento caches
+"""""""""""""""""""""
+
+::
+    n98-magerun.phar cache:list
+
+Disable magento cache
+"""""""""""""""""""""
+
+    n98-magerun.phar cache:disable
+
+Enable magento cache
+""""""""""""""""""""
+
+::
+
+    n98-magerun.phar cache:enable
 
 List admin users
 """"""""""""""""
@@ -110,3 +136,4 @@ Change admin user password
 ::
 
     n98-magerun.phar admin:user:change-password
+

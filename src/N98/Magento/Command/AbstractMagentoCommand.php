@@ -22,7 +22,7 @@ abstract class AbstractMagentoCommand extends Command
     {
         if ($this->_magentoRootFolder !== null) {
             require_once $this->_magentoRootFolder . '/app/Mage.php';
-            \Mage::app();
+            \Mage::app('admin');
             return true;
         }
 
