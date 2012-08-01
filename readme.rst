@@ -21,25 +21,50 @@ There are two ways to install the tools:
 Composer from source
 ~~~~~~~~~~~~~~~~~~~~
 
-Clone git repository
+1. Clone git repository
 
-::
+`git clone https://github.com/netz98/n98-magerun`
 
-git clone https://github.com/netz98/n98-magerun
+2. Download composer.
 
-Download composer.
+`curl -s https://getcomposer.org/installer | php`
 
-::
-    curl -s https://getcomposer.org/installer | php
+3. Let's do composer all the work.
 
-Let's do composer all the work.
-
-::
-    php ./composer.phar install
+`php ./composer.phar install`
 
 ~~~~~~~~~~~~~~~~~~
 Download phar file
 ~~~~~~~~~~~~~~~~~~
 
-::
-    curl -s https://github.com/netz98/n98-magerun/n98-magerun.phar
+`curl -s https://github.com/netz98/n98-magerun/blob/master/n98-magerun.phar`
+
+You can make the .phar file executable.
+
+`chmod +x ./n98-magerun.phar`
+
+----------------
+Usage / Commands
+----------------
+
+All commands try to detect the current Magento root directory.
+If you have multiple magento installation you must change your working directory to
+the preferred installation.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Print database informations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+`n98-magerun.phar database:info`
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Dump database
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+`n98-magerun.phar database:dump`
+
+~~~~~~~~~~~~~~~~~~~~~~~
+Generate local.xml file
+~~~~~~~~~~~~~~~~~~~~~~~
+
+`n98-magerun.phar local-config:generate`
