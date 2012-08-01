@@ -1,6 +1,6 @@
 <?php
 
-namespace N98\Magento\Command\Config;
+namespace N98\Magento\Command\Admin\User;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -8,13 +8,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DumpCommand extends AbstractMagentoCommand
+class ListCommand extends AbstractMagentoCommand
 {
     protected function configure()
     {
         $this
-            ->setName('config:dump')
-            ->setDescription('Dump merged xml config')
+            ->setName('admin:user:list')
+            ->setDescription('List admin users.')
         ;
     }
 
@@ -27,9 +27,11 @@ class DumpCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            $dom = dom_import_simplexml(\Mage::app()->getConfig()->getNode())->ownerDocument;
-            $dom->formatOutput = true;
-            $output->writeln($dom->saveXML());
+            $userList = \Mage::getModel('admin/user')
+                            ->getCollection();
+            foreach ($userList as $user) {
+                $output->writeln(\str_pad($user->getId(), 3, ' ') . ': ' . $user->getUsername());
+            }
         }
     }
 }

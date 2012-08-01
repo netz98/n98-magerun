@@ -26,9 +26,10 @@ class ClearCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        $this->initMagento();
-        if (\Mage::app()->getCache()->clean()) {
-            $output->writeln('<info>Cache cleared</info>');
+        if ($this->initMagento()) {
+            if (\Mage::app()->getCache()->clean()) {
+                $output->writeln('<info>Cache cleared</info>');
+            }
         }
     }
 }

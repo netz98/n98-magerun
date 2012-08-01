@@ -8,6 +8,8 @@ use N98\Magento\Command\Database\DumpCommand as DumpDatabaseCommand;
 use N98\Magento\Command\Database\InfoCommand as DatabaseInfoCommand;
 use N98\Magento\Command\Config\DumpCommand as ConfigPrintCommand;
 use N98\Magento\Command\Cache\ClearCommand as CacheClearCommand;
+use N98\Magento\Command\Admin\User\ChangePasswordCommand as ChangeAdminUserPasswordCommand;
+use N98\Magento\Command\Admin\User\ListCommand as AdminUserListCommand;
 
 class Application extends BaseApplication
 {
@@ -29,6 +31,8 @@ class Application extends BaseApplication
         $this->add(new DatabaseInfoCommand());
         $this->add(new ConfigPrintCommand());
         $this->add(new CacheClearCommand());
+        $this->add(new ChangeAdminUserPasswordCommand());
+        $this->add(new AdminUserListCommand());
     }
 
 }

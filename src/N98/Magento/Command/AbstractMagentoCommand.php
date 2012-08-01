@@ -15,11 +15,18 @@ abstract class AbstractMagentoCommand extends Command
 
     /**
      * Bootstrap magento shop
+     *
+     * @return bool
      */
     protected function initMagento()
     {
-        require_once $this->_magentoRootFolder . '/app/Mage.php';
-        \Mage::app();
+        if ($this->_magentoRootFolder !== null) {
+            require_once $this->_magentoRootFolder . '/app/Mage.php';
+            \Mage::app();
+            return true;
+        }
+
+        return false;
     }
 
     /**

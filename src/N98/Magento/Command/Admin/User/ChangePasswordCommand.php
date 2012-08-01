@@ -1,0 +1,54 @@
+<?php
+
+namespace N98\Magento\Command\Admin\User;
+
+use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class ChangePasswordCommand extends AbstractMagentoCommand
+{
+    protected function configure()
+    {
+        $this
+            ->setName('admin:user:change-password')
+            ->setDescription('Changes the password of a adminhtml user.')
+        ;
+    }
+
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return int|void
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->detectMagento($output, true);
+        if ($this->initMagento()) {
+            $dialog = $this->getHelperSet()->get('dialog');
+            $username = $dialog->ask($output, '<question>Username:</question>');
+
+            $user = \Mage::getModel('admin/user')->loadByUsername($username);
+            if ($user->getId() <= 0) {
+                $output->writeln('<error>User was not found</error>');
+                return;
+            }
+
+            $password = $dialog->ask($output, '<question>Password:</question>');
+
+            try {
+                $result = $user->validate();
+                if (is_array($result)) {
+                    throw new \Exception(implode(PHP_EOL, $result));
+                }
+                $user->setPassword($password);
+                $user->save();
+                $output->writeln('<info>Password successfully changed</info>');
+            } catch (Exception $e) {
+                $output->writeln('<error>' . $e->getMessage() . '</error>');
+            }
+        }
+    }
+}

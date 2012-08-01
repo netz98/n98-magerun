@@ -86,3 +86,14 @@ Clear magento cache
 
     `n98-magerun.phar cache:clear`
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+List admin users
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    `n98-magerun.phar admin:user:list`
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Change admin user password
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    `n98-magerun.phar admin:user:change-password`
