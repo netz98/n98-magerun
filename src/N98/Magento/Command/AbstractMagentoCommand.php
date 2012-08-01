@@ -11,23 +11,24 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * @var string
      */
-    protected $_magentoRootFolder;
+    protected $_magentoRootFolder = null;
 
     /**
-     * @return string
+     * Bootstrap magento shop
      */
-    public function getMagentoRootFolder()
+    protected function initMagento()
     {
-
+        require_once $this->_magentoRootFolder . '/app/Mage.php';
+        \Mage::app();
     }
 
     /**
      * Search for magento root folder
      *
-     * @param OutputInterface $output
-     * @param int $recursionLevel
+     * @param OutputInterface $ou
+     * @param bool $silen print debug messages
      */
-    public function detectMagento(OutputInterface $output)
+    public function detectMagento(OutputInterface $output, $silent = false)
     {
         if (stristr(PHP_OS, 'win')) {
             $folder = exec('@echo %cd%'); // @TODO not currently tested!!!
@@ -57,7 +58,9 @@ abstract class AbstractMagentoCommand extends Command
             if ($finder->count() > 0) {
                 $files = iterator_to_array($finder, false); /* @var $file \SplFileInfo */
                 $this->_magentoRootFolder = dirname($files[0]->getRealPath());
-                $output->writeln('<info>Found magento in folder "' . $this->_magentoRootFolder . '"</info>');
+                if (!$silent) {
+                    $output->writeln('<info>Found magento in folder "' . $this->_magentoRootFolder . '"</info>');
+                }
                 return;
             }
         }

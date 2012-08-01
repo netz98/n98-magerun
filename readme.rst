@@ -73,3 +73,9 @@ Generate local.xml file
 ~~~~~~~~~~~~~~~~~~~~~~~
 
     `n98-magerun.phar local-config:generate`
+
+~~~~~~~~~~~~~~~~~~~~~~~
+Dump global xml config
+~~~~~~~~~~~~~~~~~~~~~~~
+
+    `n98-magerun.phar config:dump > extern_file.xml`

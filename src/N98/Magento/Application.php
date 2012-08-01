@@ -6,6 +6,7 @@ use Symfony\Component\Console\Application as BaseApplication;
 use N98\Magento\Command\LocalConfig\GenerateCommand as GenerateLocalXmlConfigCommand;
 use N98\Magento\Command\Database\DumpCommand as DumpDatabaseCommand;
 use N98\Magento\Command\Database\InfoCommand as DatabaseInfoCommand;
+use N98\Magento\Command\Config\DumpCommand as ConfigPrintCommand;
 
 class Application extends BaseApplication
 {
@@ -25,6 +26,7 @@ class Application extends BaseApplication
         $this->add(new GenerateLocalXmlConfigCommand());
         $this->add(new DumpDatabaseCommand());
         $this->add(new DatabaseInfoCommand());
+        $this->add(new ConfigPrintCommand());
     }
 
 }

@@ -20,4 +20,9 @@
         </pharpackage>
     </target>
 
+    <target name="install">
+        <exec command="sudo cp ./n98-magerun.phar /usr/local/bin/;" />
+        <exec command="sudo chmod a+x /usr/local/bin/n98-magerun.phar;" />
+    </target>
+
 </project>
