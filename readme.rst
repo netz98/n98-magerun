@@ -4,20 +4,17 @@ netz98 magerun CLI tools
 
 The n98 magerun cli tools provides some handy tools to work with magento from command line.
 
--------------
 Compatibility
 -------------
 The tools are currently only tested with PHP 5.3.10 within
 Ubuntu 12.04 Linux.
 If you are a windows user you can help us with a quick test.
 
-------------
 Installation
 ------------
 
 There are two ways to install the tools:
 
-""""""""""""""""""
 Download phar file
 """"""""""""""""""
 
@@ -37,7 +34,6 @@ If you wan't to use command system wide you can copy it to `/usr/local/bin`.
 
     sudo cp ./n98-magerun.phar /usr/local/bin/`
 
-""""""""""""""""""""
 Composer from source
 """"""""""""""""""""
 
@@ -53,7 +49,6 @@ Composer from source
 
     php ./composer.phar install
 
-----------------
 Usage / Commands
 ----------------
 
@@ -61,18 +56,16 @@ All commands try to detect the current Magento root directory.
 If you have multiple magento installation you must change your working directory to
 the preferred installation.
 
-^^^^^^^^
 Database
 ^^^^^^^^
 
-"""""""""""""""""""""""""""
 Print database informations
 """""""""""""""""""""""""""
+
 ::
 
     n98-magerun.phar database:info
 
-"""""""""""""""""""""""""""
 Dump database
 """""""""""""""""""""""""""
 
@@ -84,11 +77,9 @@ Only the mysqldump command::
 
     n98-magerun.phar database:dump --only-command
 
-^^^^^^^^^^^^
 Local config
 ^^^^^^^^^^^^
 
-"""""""""""""""""""""""
 Generate local.xml file
 """""""""""""""""""""""
 
@@ -96,39 +87,33 @@ Generate local.xml file
 
     n98-magerun.phar local-config:generate
 
-"""""""""""""""""""""""
 Dump global xml config
-"""""""""""""""""""""""
+""""""""""""""""""""""
 
 ::
 
     n98-magerun.phar config:dump > extern_file.xml
 
-^^^^^^^^^^^^
 Cache
-^^^^^^^^^^^^
+^^^^^
 
-"""""""""""""""""""""""
 Clear magento cache
-"""""""""""""""""""""""
+"""""""""""""""""""
 
 ::
 
     n98-magerun.phar cache:clear
 
-^^^^^^^^^^^^
 Admin User
-^^^^^^^^^^^^
+^^^^^^^^^^
 
-""""""""""""""""""""""""""
 List admin users
-""""""""""""""""""""""""""
+""""""""""""""""
 
 ::
 
     n98-magerun.phar admin:user:list
 
-""""""""""""""""""""""""""
 Change admin user password
 """"""""""""""""""""""""""
 
