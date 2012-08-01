@@ -37,7 +37,7 @@ Composer from source
 Download phar file
 ~~~~~~~~~~~~~~~~~~
 
-    `curl -s https://github.com/netz98/n98-magerun/blob/master/n98-magerun.phar`
+    `curl -s https://github.com/netz98/n98-magerun/raw/master/n98-magerun.phar`
 
 You can make the .phar file executable.
 
