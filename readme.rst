@@ -79,3 +79,10 @@ Dump global xml config
 ~~~~~~~~~~~~~~~~~~~~~~~
 
     `n98-magerun.phar config:dump > extern_file.xml`
+
+~~~~~~~~~~~~~~~~~~~~~~~
+Clear magento cache
+~~~~~~~~~~~~~~~~~~~~~~~
+
+    `n98-magerun.phar cache:clear`
+

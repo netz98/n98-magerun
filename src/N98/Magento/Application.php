@@ -7,6 +7,7 @@ use N98\Magento\Command\LocalConfig\GenerateCommand as GenerateLocalXmlConfigCom
 use N98\Magento\Command\Database\DumpCommand as DumpDatabaseCommand;
 use N98\Magento\Command\Database\InfoCommand as DatabaseInfoCommand;
 use N98\Magento\Command\Config\DumpCommand as ConfigPrintCommand;
+use N98\Magento\Command\Cache\ClearCommand as CacheClearCommand;
 
 class Application extends BaseApplication
 {
@@ -27,6 +28,7 @@ class Application extends BaseApplication
         $this->add(new DumpDatabaseCommand());
         $this->add(new DatabaseInfoCommand());
         $this->add(new ConfigPrintCommand());
+        $this->add(new CacheClearCommand());
     }
 
 }
