@@ -142,6 +142,13 @@ Change admin user password
 
     n98-magerun.phar admin:user:change-password
 
+Maintenance mode
+""""""""""""""""
+
+Toogles maintenance mode::
+
+    n98-magerun.phar maintenance
+
 Bash autocompletion
 ===================
 

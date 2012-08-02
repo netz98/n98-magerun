@@ -13,6 +13,7 @@ use N98\Magento\Command\Cache\EnableCommand as CacheEnableCommand;
 use N98\Magento\Command\Cache\DisableCommand as CacheDisableCommand;
 use N98\Magento\Command\Admin\User\ChangePasswordCommand as ChangeAdminUserPasswordCommand;
 use N98\Magento\Command\Admin\User\ListCommand as AdminUserListCommand;
+use N98\Magento\Command\System\MaintenanceCommand;
 
 class Application extends BaseApplication
 {
@@ -39,6 +40,7 @@ class Application extends BaseApplication
         $this->add(new CacheDisableCommand());
         $this->add(new ChangeAdminUserPasswordCommand());
         $this->add(new AdminUserListCommand());
+        $this->add(new MaintenanceCommand());
     }
 
 }
