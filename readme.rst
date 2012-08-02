@@ -140,3 +140,10 @@ Change admin user password
 
     n98-magerun.phar admin:user:change-password
 
+Bash autocompletion
+===================
+
+Copy the file **bash_complete** as **n98-magerun.phar** in your bash autocomplete folder.
+In my ubuntu system this can be done with the following command::
+
+    cp bash_complete /etc/bash_completion.d/n98-magerun.phar
