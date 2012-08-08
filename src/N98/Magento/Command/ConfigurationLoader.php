@@ -14,11 +14,13 @@ class ConfigurationLoader
     public function __construct()
     {
         $globalConfig = Yaml::parse(__DIR__ . '/../../../../config.yaml');
-        $personalConfigFile = $_SERVER['HOME'] . '/.n98-magerun.yaml';
+        /*$personalConfigFile = $_SERVER['HOME'] . '/.n98-magerun.yaml';
         if (file_exists($personalConfigFile)) {
             $personalConfig = Yaml::parse($personalConfigFile);
         }
         $this->_configArray = $this->mergeArrays($globalConfig, $personalConfig);
+        */
+        $this->_configArray = $globalConfig;
     }
 
     /**
