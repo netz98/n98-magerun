@@ -50,7 +50,7 @@ From source with composer
 
     php ./composer.phar install
 
-# Run cli.php
+#. Run cli.php::
 
     php cli.php
 
