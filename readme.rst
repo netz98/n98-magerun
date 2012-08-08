@@ -148,7 +148,7 @@ Change admin user password
     n98-magerun.phar admin:user:change-password
 
 Magento Installer (Experimental)
-===============================
+""""""""""""""""""""""""""""""""
 
 Since version 1.1.0 we deliver a magento installert which does the following:
 
@@ -171,12 +171,12 @@ In my ubuntu system this can be done with the following command::
     cp bash_complete /etc/bash_completion.d/n98-magerun.phar
 
 Thanks to
-=========
+---------
 
 * Symfony2 Team for the great console component.
 * Composer Team for the downloader backend and the self-update command.
 
 Roadmap
-=======
+-------
 
 * Add your own installer sources
