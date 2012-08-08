@@ -50,6 +50,12 @@ From source with composer
 
     php ./composer.phar install
 
+# Run cli.php
+
+    php cli.php
+
+It's recommendet to install the .phar file system wide.
+
 Update
 ------
 
