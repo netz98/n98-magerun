@@ -53,7 +53,11 @@ From source with composer
 Update
 ------
 
-Since version 1.1.0 we deliver a self-update script within the phar file.
+Since version 1.1.0 we deliver a self-update script within the phar file::
+
+    n98-magerun.phar self-update
+
+If file was installed system wide do not forget "sudo".
 
 Usage / Commands
 ----------------
