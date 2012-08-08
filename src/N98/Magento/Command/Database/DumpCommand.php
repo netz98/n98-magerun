@@ -27,6 +27,8 @@ class DumpCommand extends AbstractDatabaseCommand
     {
         $this->detectDbSettings($output);
 
+        $this->writeSection($output, 'Dump MySQL Database');
+
         $dialog = $this->getHelperSet()->get('dialog');
         $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question>', $this->dbSettings['dbname']);
 

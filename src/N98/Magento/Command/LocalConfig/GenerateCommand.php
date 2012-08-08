@@ -35,6 +35,7 @@ class GenerateCommand extends AbstractMagentoCommand
         $configFile = $this->_magentoRootFolder . '/app/etc/local.xml';
         $configFileTemplate = $this->_magentoRootFolder . '/app/etc/local.xml.template';
         if (!file_exists($configFile)) {
+            $this->writeSection($output, 'Generate Magento local.xml');
             $this->askForArguments($input, $output);
             if (!file_exists($configFileTemplate)) {
                 $output->writeln('<error>File ' . $this->_magentoRootFolder . '/app/etc/local.xml.template does not exist.</error>');

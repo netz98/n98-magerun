@@ -26,6 +26,7 @@ class ListCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
+        $this->writeSection($output, 'Cache list');
         if ($this->initMagento()) {
             $cacheTypes = \Mage::getModel('core/cache')->getTypes();
             foreach ($cacheTypes as $cacheCode => $cacheInfo) {

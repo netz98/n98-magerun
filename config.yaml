@@ -1,0 +1,62 @@
+commands:
+  N98\Magento\Command\Installer\InstallCommand:
+    packages:
+      - name: mageplus-master
+        version: dev-master
+        source:
+          url: https://github.com/mageplus/mageplus.git
+          type: git
+          reference: master
+
+      - name: magelts-master
+        version: dev-master
+        source:
+          url: https://github.com/mageLTS/mageLTS.git
+          type: git
+          reference: master
+
+      - name: magelts-1.6.2.0
+        version: 1.6.2.0
+        source:
+          url: https://github.com/mageLTS/mageLTS.git
+          type: git
+          reference: 1.6.2.0
+
+      - name: magelts-1.5.1.0
+        version: 1.5.1.0
+        source:
+          url: https://github.com/mageLTS/mageLTS.git
+          type: git
+          reference: 1.5.1.0
+
+      - name: magelts-1.4.2.0
+        version: 1.4.2.0
+        source:
+          url: https://github.com/mageLTS/mageLTS.git
+          type: git
+          reference: 1.4.2.0
+
+      - name: magento-ce-1.6.2.0:
+        version: 1.6.2.0
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.7.0.0/magento-1.6.2.0.tar.gz
+          type: tar
+
+      - name: magento-ce-1.7.0.0:
+        version: 1.7.0.0
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.7.0.0/magento-1.7.0.0.tar.gz
+          type: tar
+
+    installation:
+      defaults:
+        currency: EUR
+        locale: de_DE
+        timezone: Europe/Berlin
+        use_secure: no
+        use_rewrites: yes
+        admin_username: admin
+        admin_firstname: John
+        admin_lastname: Doe
+        admin_password: password123
+        admin_frontname: admin

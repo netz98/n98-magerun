@@ -2,8 +2,14 @@
 <project name="n98-magerun" default="dist">
 
     <target name="dist">
-        <pharpackage basedir="./" stub="_cli_stub.php" signature="sha512" compression="gzip" destfile="./n98-magerun.phar">
+        <pharpackage basedir="./" stub="_cli_stub.php" signature="sha512" compression="bzip2" destfile="./n98-magerun.phar">
+            <fileset dir=".">
+                <include name="config.yaml" />
+            </fileset>
             <fileset dir="src">
+                <include name="**/**" />
+            </fileset>
+            <fileset dir="res">
                 <include name="**/**" />
             </fileset>
             <fileset dir="vendor">

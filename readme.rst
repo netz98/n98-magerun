@@ -50,6 +50,11 @@ From source with composer
 
     php ./composer.phar install
 
+Update
+------
+
+Since version 1.1.0 we deliver a self-update script within the phar file.
+
 Usage / Commands
 ----------------
 
@@ -142,6 +147,21 @@ Change admin user password
 
     n98-magerun.phar admin:user:change-password
 
+Magento Installer (Experimental)
+===============================
+
+Since version 1.1.0 we deliver a magento installert which does the following:
+
+* Download magento by a list of git repos and zip files.
+* Try to create database if it does not exist.
+* Starts magento installer
+* Set rewrite base in .htaccess file
+
+::
+
+    n98-magerun.phar install
+
+
 Bash autocompletion
 ===================
 
@@ -149,3 +169,14 @@ Copy the file **bash_complete** as **n98-magerun.phar** in your bash autocomplet
 In my ubuntu system this can be done with the following command::
 
     cp bash_complete /etc/bash_completion.d/n98-magerun.phar
+
+Thanks to
+=========
+
+* Symfony2 Team for the great console component.
+* Composer Team for the downloader backend and the self-update command.
+
+Roadmap
+=======
+
+* Add your own installer sources

@@ -14,6 +14,34 @@ abstract class AbstractMagentoCommand extends Command
     protected $_magentoRootFolder = null;
 
     /**
+     * @return array
+     */
+    protected function getCommandConfig()
+    {
+        $config = new ConfigurationLoader();
+        $configArray = $config->toArray();
+        if (isset($configArray['commands'][get_class($this)])) {
+            return $configArray['commands'][get_class($this)];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param string $text
+     * @param string $style
+     */
+    protected function writeSection(OutputInterface $output, $text, $style = 'bg=blue;fg=white')
+    {
+        $output->writeln(array(
+            '',
+            $this->getHelperSet()->get('formatter')->formatBlock($text, $style, true),
+            '',
+        ));
+    }
+
+    /**
      * Bootstrap magento shop
      *
      * @return bool
