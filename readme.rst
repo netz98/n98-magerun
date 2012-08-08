@@ -163,7 +163,7 @@ Since version 1.1.0 we deliver a magento installert which does the following:
 
 
 Bash autocompletion
-===================
+-------------------
 
 Copy the file **bash_complete** as **n98-magerun.phar** in your bash autocomplete folder.
 In my ubuntu system this can be done with the following command::
