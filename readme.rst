@@ -33,7 +33,7 @@ If you wan't to use command system wide you can copy it to `/usr/local/bin`.
 
 ::
 
-    sudo cp ./n98-magerun.phar /usr/local/bin/`
+    sudo cp ./n98-magerun.phar /usr/local/bin/
 
 From source with composer
 """""""""""""""""""""""""
