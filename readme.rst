@@ -152,7 +152,7 @@ Magento Installer (Experimental)
 
 Since version 1.1.0 we deliver a magento installert which does the following:
 
-* Download magento by a list of git repos and zip files.
+* Download magento by a list of git repos and zip files (mageplus, magelte, official community packages).
 * Try to create database if it does not exist.
 * Starts magento installer
 * Set rewrite base in .htaccess file
