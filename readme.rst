@@ -181,6 +181,59 @@ In my ubuntu system this can be done with the following command::
 
     cp bash_complete /etc/bash_completion.d/n98-magerun.phar
 
+Advanced usage
+--------------
+
+Overwrite default settings
+""""""""""""""""""""""""""
+
+Create the yaml config file **~/.n98-magerun.yaml**.
+Now you can define overwrites. The original config file is **config.yaml** in the source root folder.
+
+Change of i.e. default currency and admin users::
+
+    commands:
+      N98\Magento\Command\Installer\InstallCommand:
+        installation:
+          defaults:
+            currency: USD
+            admin_username: myadmin
+            admin_firstname: Firstname
+            admin_lastname: Lastname
+            admin_password: mydefaultSecret
+            admin_email: defaultemail@example.com
+
+
+Add own magento repositories
+""""""""""""""""""""""""""""
+
+Create the yaml config file **~/.n98-magerun.yaml**.
+Now you can define overwrites. The original config file is **config.yaml** in the source root folder.
+
+Add you repo. The keys in the config file following the composer package structure.
+
+Example::
+
+    commands:
+      N98\Magento\Command\Installer\InstallCommand:
+        magento-packages:
+          - name: my-magento-git-repository
+            version: 1.x.x.x
+            source:
+              url: git://myserver/myrepo.git
+              type: git
+              reference: 1.x.x.x
+            extra:
+              sample-data: sample-data-1.6.1.0
+
+          - name: my-zipped-magento
+            version: 1.7.0.0
+            dist:
+              url: http://www.myserver.example.com/magento-1.7.0.0.tar.gz
+              type: tar
+            extra:
+              sample-data: sample-data-1.6.1.0
+
 Thanks to
 ---------
 

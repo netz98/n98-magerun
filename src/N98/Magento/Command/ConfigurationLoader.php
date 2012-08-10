@@ -14,31 +14,48 @@ class ConfigurationLoader
     public function __construct()
     {
         $globalConfig = Yaml::parse(__DIR__ . '/../../../../config.yaml');
-        /*$personalConfigFile = $_SERVER['HOME'] . '/.n98-magerun.yaml';
-        if (file_exists($personalConfigFile)) {
+
+        // Check if there is a user config file.
+        $homeDirectory = getenv('HOME');
+        $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . '.n98-magerun.yaml';
+        if ($homeDirectory && file_exists($personalConfigFile)) {
             $personalConfig = Yaml::parse($personalConfigFile);
+            $this->_configArray = $this->mergeArrays($globalConfig, $personalConfig);
+        } else {
+            $this->_configArray = $globalConfig;
         }
-        $this->_configArray = $this->mergeArrays($globalConfig, $personalConfig);
-        */
-        $this->_configArray = $globalConfig;
     }
 
     /**
-     * @param array $a1
-     * @param array $a2
+     * Merge two arrays together.
+     *
+     * If an integer key exists in both arrays, the value from the second array
+     * will be appended the the first array. If both values are arrays, they
+     * are merged together, else the value of the second array overwrites the
+     * one of the first array.
+     *
+     * @see http://packages.zendframework.com/docs/latest/manual/en/index.html#zend-stdlib
+     * @param  array $a
+     * @param  array $b
      * @return array
      */
-    protected function mergeArrays(array $a1, array $a2)
+    public function mergeArrays(array $a, array $b)
     {
-        foreach($a2 as $key => $Value) {
-            if (array_key_exists($key, $a1) && is_array($Value)) {
-                $a1[$key] = $this->mergeArrays($a1[$key], $a2[$key]);
+        foreach ($b as $key => $value) {
+            if (array_key_exists($key, $a)) {
+                if (is_int($key)) {
+                    $a[] = $value;
+                } elseif (is_array($value) && is_array($a[$key])) {
+                    $a[$key] = $this->mergeArrays($a[$key], $value);
+                } else {
+                    $a[$key] = $value;
+                }
             } else {
-                $a1[$key] = $Value;
+                $a[$key] = $value;
             }
         }
 
-        return $a1;
+        return $a;
     }
 
     /**
