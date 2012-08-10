@@ -1,12 +1,14 @@
 commands:
   N98\Magento\Command\Installer\InstallCommand:
-    packages:
+    magento-packages:
       - name: mageplus-master
         version: dev-master
         source:
           url: https://github.com/mageplus/mageplus.git
           type: git
           reference: master
+        extra:
+          sample-data: sample-data-1.6.1.0
 
       - name: magelts-master
         version: dev-master
@@ -14,6 +16,8 @@ commands:
           url: https://github.com/mageLTS/mageLTS.git
           type: git
           reference: master
+        extra:
+          sample-data: sample-data-1.6.1.0
 
       - name: magelts-1.6.2.0
         version: 1.6.2.0
@@ -21,6 +25,8 @@ commands:
           url: https://github.com/mageLTS/mageLTS.git
           type: git
           reference: 1.6.2.0
+        extra:
+          sample-data: sample-data-1.6.1.0
 
       - name: magelts-1.5.1.0
         version: 1.5.1.0
@@ -41,11 +47,22 @@ commands:
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.7.0.0/magento-1.6.2.0.tar.gz
           type: tar
+        extra:
+          sample-data: sample-data-1.6.1.0
 
       - name: magento-ce-1.7.0.0:
         version: 1.7.0.0
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.7.0.0/magento-1.7.0.0.tar.gz
+          type: tar
+        extra:
+          sample-data: sample-data-1.6.1.0
+
+    demo-data-packages:
+      - name: sample-data-1.6.1.0
+        version: 1.6.1.0
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.6.1.0/magento-sample-data-1.6.1.0.tar.gz
           type: tar
 
     installation:
@@ -60,3 +77,4 @@ commands:
         admin_lastname: Doe
         admin_password: password123
         admin_frontname: admin
+        admin_email: john.doe@example.com
