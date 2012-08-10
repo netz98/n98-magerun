@@ -164,6 +164,7 @@ Since version 1.1.0 we deliver a magento installer which does the following:
 
 * Download magento by a list of git repos and zip files (mageplus, magelte, official community packages).
 * Try to create database if it does not exist.
+* Installs magento sample data if available (since version 1.2.0).
 * Starts magento installer
 * Set rewrite base in .htaccess file
 
