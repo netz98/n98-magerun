@@ -13,7 +13,7 @@ class MaintenanceCommand extends AbstractMagentoCommand
     protected function configure()
     {
         $this
-            ->setName('maintenance')
+            ->setName('system:maintenance')
             ->setDescription('Toggles maintenance mode.')
         ;
     }

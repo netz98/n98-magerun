@@ -157,6 +157,32 @@ Change admin user password
 
     n98-magerun.phar admin:user:change-password
 
+Toggle maintenance mode
+"""""""""""""""""""""""
+
+::
+
+    n98-magerun.phar system:maintenance
+
+Magento system infos
+""""""""""""""""""""
+
+Provides infos like the edition and version or the configured cache backends.
+
+::
+
+    n98-magerun.phar system:info
+
+Magento modules
+"""""""""""""""
+
+Lists all installed modules with codepool and version
+
+::
+
+    n98-magerun.phar system:modules:list
+
+
 Magento Installer (Experimental)
 """"""""""""""""""""""""""""""""
 
@@ -179,7 +205,7 @@ Bash autocompletion
 Copy the file **bash_complete** as **n98-magerun.phar** in your bash autocomplete folder.
 In my ubuntu system this can be done with the following command::
 
-    cp bash_complete /etc/bash_completion.d/n98-magerun.phar
+    sudo cp bash_complete /etc/bash_completion.d/n98-magerun.phar
 
 Advanced usage
 --------------

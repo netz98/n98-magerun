@@ -60,8 +60,8 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * Search for magento root folder
      *
-     * @param OutputInterface $ou
-     * @param bool $silen print debug messages
+     * @param OutputInterface $output
+     * @param bool $silent print debug messages
      */
     public function detectMagento(OutputInterface $output, $silent = false)
     {

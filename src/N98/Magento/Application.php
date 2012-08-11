@@ -14,6 +14,9 @@ use N98\Magento\Command\Cache\DisableCommand as CacheDisableCommand;
 use N98\Magento\Command\Admin\User\ChangePasswordCommand as ChangeAdminUserPasswordCommand;
 use N98\Magento\Command\Admin\User\ListCommand as AdminUserListCommand;
 use N98\Magento\Command\Installer\InstallCommand as InstallCommand;
+use N98\Magento\Command\System\MaintenanceCommand as SystemMaintenanceCommand;
+use N98\Magento\Command\System\InfoCommand as SystemInfoCommand;
+use N98\Magento\Command\System\ModulesCommand as SystemModulesCommand;
 use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
 
 class Application extends BaseApplication
@@ -26,7 +29,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.3.0';
+    const APP_VERSION = '1.4.0';
 
     public function __construct()
     {
@@ -42,6 +45,9 @@ class Application extends BaseApplication
         $this->add(new ChangeAdminUserPasswordCommand());
         $this->add(new AdminUserListCommand());
         $this->add(new InstallCommand());
+        $this->add(new SystemMaintenanceCommand());
+        $this->add(new SystemInfoCommand());
+        $this->add(new SystemModulesCommand());
         $this->add(new SelfUpdateCommand());
     }
 
