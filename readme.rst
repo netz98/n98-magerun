@@ -182,6 +182,24 @@ Lists all installed modules with codepool and version
 
     n98-magerun.phar system:modules:list
 
+Toogle Template Hints
+"""""""""""""""""""""
+
+Toggle debug template hints settings of a store
+
+::
+
+    n98-magerun.phar dev:template-hints <store_code>
+
+Toogle Template Hints Blocks
+""""""""""""""""""""""""""""
+
+Toggle debug template hints blocks settings of a store
+
+::
+
+    n98-magerun.phar dev:template-hints-blocks <store_code>
+
 
 Magento Installer (Experimental)
 """"""""""""""""""""""""""""""""

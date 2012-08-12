@@ -15,6 +15,7 @@ class ClearCommand extends AbstractMagentoCommand
         $this
             ->setName('cache:clear')
             ->addArgument('type', InputArgument::OPTIONAL, 'Cache type code like "config"')
+            ->setAliases(array('cache:flush'))
             ->setDescription('Clear magento cache')
         ;
     }
@@ -34,7 +35,12 @@ class ClearCommand extends AbstractMagentoCommand
                 }
             } else {
                 if (\Mage::getModel('core/cache')->flush()) {
-                    $output->writeln('<info>Cache cleared</info>');
+                    $output->writeln('<info>Core Cache cleared</info>');
+                }
+                if (is_callable(array('\Enterprise_PageCache_Model_Cache', 'getCacheInstance'))) {
+                    $cacheInstance = \Enterprise_PageCache_Model_Cache::getCacheInstance();
+                    $cacheInstance->flush();
+                    $output->writeln('<info>Fullpage Cache cleared</info>');
                 }
             }
         }
