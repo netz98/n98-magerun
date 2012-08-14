@@ -19,6 +19,8 @@ use N98\Magento\Command\System\InfoCommand as SystemInfoCommand;
 use N98\Magento\Command\System\ModulesCommand as SystemModulesCommand;
 use N98\Magento\Command\Developer\TemplateHintsCommand;
 use N98\Magento\Command\Developer\TemplateHintsBlocksCommand;
+use N98\Magento\Command\Developer\TranslateInlineShopCommand;
+use N98\Magento\Command\Developer\TranslateInlineAdminCommand;
 use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
 
 class Application extends BaseApplication
@@ -31,7 +33,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.4.3';
+    const APP_VERSION = '1.5.0';
 
     public function __construct()
     {
@@ -52,6 +54,8 @@ class Application extends BaseApplication
         $this->add(new SystemModulesCommand());
         $this->add(new TemplateHintsCommand());
         $this->add(new TemplateHintsBlocksCommand());
+        $this->add(new TranslateInlineShopCommand());
+        $this->add(new TranslateInlineAdminCommand());
         $this->add(new SelfUpdateCommand());
     }
 

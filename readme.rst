@@ -200,6 +200,16 @@ Toggle debug template hints blocks settings of a store
 
     n98-magerun.phar dev:template-hints-blocks <store_code>
 
+Toggle Inline Translation
+"""""""""""""""""""""""""
+
+Toggle settings for shop frontend::
+
+    n98-magerun.phar dev:translate:shop <store_code>
+
+Toggle for admin area::
+
+    n98-magerun.phar dev:translate:admin
 
 Magento Installer (Experimental)
 """"""""""""""""""""""""""""""""
