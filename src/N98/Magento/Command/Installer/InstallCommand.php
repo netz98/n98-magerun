@@ -275,7 +275,7 @@ class InstallCommand extends AbstractMagentoCommand
 
         $locale = $dialog->askAndValidate(
             $output,
-            '<question>Please enter the lcoale code </question> <comment>[' . $defaults['locale'] . ']</comment>: ',
+            '<question>Please enter the locale code </question> <comment>[' . $defaults['locale'] . ']</comment>: ',
             $this->notEmptyCallback,
             false,
             $defaults['locale']
