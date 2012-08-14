@@ -210,7 +210,7 @@ class InstallCommand extends AbstractMagentoCommand
 
                     $expandedFolder = $this->config['installationFolder']
                                     . DIRECTORY_SEPARATOR
-                                    . str_replace('.tar.gz', '', basename($package->getDistUrl()));
+                                    . str_replace(array('.tar.gz', '.tar.bz2', '.zip'), '', basename($package->getDistUrl()));
                     if (is_dir($expandedFolder)) {
                         $filesystem = new Filesystem();
                         $filesystem->recursiveCopy(
@@ -224,7 +224,7 @@ class InstallCommand extends AbstractMagentoCommand
                     $sampleDataSqlFile = glob($this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'magento_sample_data*.sql');
                     $db = $this->config['db']; /* @var $db \PDO */
                     if (isset($sampleDataSqlFile[0])) {
-                        $output->writeln('<comment>Importing ' . $sampleDataSqlFile[0] . '</comment>');
+                        $output->writeln('<info>Importing ' . $sampleDataSqlFile[0] . '</info>');
                         $db->exec(file_get_contents($sampleDataSqlFile[0]));
                     }
                 }
