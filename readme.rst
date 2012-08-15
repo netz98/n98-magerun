@@ -72,6 +72,8 @@ All commands try to detect the current Magento root directory.
 If you have multiple magento installation you must change your working directory to
 the preferred installation.
 
+@Commands@
+
 Print database informations
 """""""""""""""""""""""""""
 
