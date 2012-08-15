@@ -211,6 +211,24 @@ Toggle for admin area::
 
     n98-magerun.phar dev:translate:admin
 
+Toggle Profiler
+"""""""""""""""
+
+Toggle profiler for debugging a store::
+
+    n98-magerun.phar dev:profiler <store_code>
+
+Toggle Symlinks
+"""""""""""""""
+
+Allow usage of symlinks for a store-view::
+
+    n98-magerun.phar dev:symlinks <store_code>
+
+Global scope can be set by not permitting store_code parameter::
+
+    n98-magerun.phar dev:symlinks
+
 Magento Installer (Experimental)
 """"""""""""""""""""""""""""""""
 

@@ -21,6 +21,8 @@ use N98\Magento\Command\Developer\TemplateHintsCommand;
 use N98\Magento\Command\Developer\TemplateHintsBlocksCommand;
 use N98\Magento\Command\Developer\TranslateInlineShopCommand;
 use N98\Magento\Command\Developer\TranslateInlineAdminCommand;
+use N98\Magento\Command\Developer\ProfilerCommand;
+use N98\Magento\Command\Developer\SymlinksCommand;
 use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
 
 class Application extends BaseApplication
@@ -33,7 +35,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.5.0';
+    const APP_VERSION = '1.6.0';
 
     public function __construct()
     {
@@ -56,6 +58,8 @@ class Application extends BaseApplication
         $this->add(new TemplateHintsBlocksCommand());
         $this->add(new TranslateInlineShopCommand());
         $this->add(new TranslateInlineAdminCommand());
+        $this->add(new ProfilerCommand());
+        $this->add(new SymlinksCommand());
         $this->add(new SelfUpdateCommand());
     }
 
