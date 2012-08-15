@@ -306,6 +306,12 @@ Example::
             extra:
               sample-data: sample-data-1.6.1.0
 
+How can you help?
+-----------------
+
+* Test the tool on Windows or MacOS.
+* Create issues if you find a bug or missing a feature.
+
 Thanks to
 ---------
 
