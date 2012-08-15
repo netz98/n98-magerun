@@ -72,7 +72,7 @@ All commands try to detect the current Magento root directory.
 If you have multiple magento installation you must change your working directory to
 the preferred installation.
 
-@Commands@
+https://github.com/netz98/n98-magerun/wiki/Commands
 
 Print database informations
 """""""""""""""""""""""""""
