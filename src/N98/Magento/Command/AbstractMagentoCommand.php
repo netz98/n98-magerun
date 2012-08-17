@@ -5,6 +5,9 @@ namespace N98\Magento\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
+use Composer\Package\Loader\ArrayLoader as PackageLoader;
+use Composer\Factory as ComposerFactory;
+use Composer\IO\ConsoleIO;
 
 abstract class AbstractMagentoCommand extends Command
 {
@@ -138,5 +141,42 @@ abstract class AbstractMagentoCommand extends Command
             return \Mage::helper('Mage_Core_Helper_Data');
         }
         return \Mage::helper('core');
+    }
+
+    /**
+     * @param Input Interface $input
+     * @param OutputInterface $output
+     * @return \Composer\Downloader\DownloadManager
+     */
+    protected function getComposerDownloadManager($input, $output)
+    {
+        $io = new ConsoleIO($input, $output, $this->getHelperSet());
+        $composer = ComposerFactory::create($io, array());
+        return $composer->getDownloadManager();
+    }
+
+    /**
+     * @return \Composer\Package\MemoryPackage
+     */
+    protected function createComposerPackageByConfig($config)
+    {
+        $packageLoader = new PackageLoader();
+        return $package = $packageLoader->load($config);
+    }
+
+    /**
+     * @param Input Interface $input
+     * @param OutputInterface $output
+     * @param array $config
+     * @param string $targetFolder
+     * @param bool $preferSource
+     * @return \Composer\Package\MemoryPackage
+     */
+    protected function downloadByComposerConfig($input, $output, $config, $targetFolder, $preferSource = true)
+    {
+        $dm = $this->getComposerDownloadManager($input, $output);
+        $package = $this->createComposerPackageByConfig($config);
+        $dm->download($package, $targetFolder, $preferSource);
+        return $package;
     }
 }

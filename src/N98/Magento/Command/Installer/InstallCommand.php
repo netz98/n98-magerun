@@ -9,8 +9,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Package\Loader\ArrayLoader as PackageLoader;
-use Composer\Factory as ComposerFactory;
-use Composer\IO\ConsoleIO;
 
 class InstallCommand extends AbstractMagentoCommand
 {
@@ -115,19 +113,18 @@ class InstallCommand extends AbstractMagentoCommand
      */
     public function downloadMagento(InputInterface $input, OutputInterface $output) {
         try {
-            $packageLoader = new PackageLoader();
-            $package = $packageLoader->load($this->config['magentoVersionData']);
-            $this->config['magentoPackage'] = $package;
-
             if (file_exists($this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php')) {
                 $output->writeln('<error>A magento installation already exists in this folder </error>');
                 return false;
             }
 
-            $io = new ConsoleIO($input, $output, $this->getHelperSet());
-            $composer = ComposerFactory::create($io, array());
-            $dm = $composer->getDownloadManager();
-            $dm->download($package, $this->config['installationFolder'], true);
+            $this->config['magentoPackage'] = $this->downloadByComposerConfig(
+                $input,
+                $output,
+                $this->config['magentoVersionData'],
+                $this->config['installationFolder'],
+                true
+            );
         } catch (\Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
             return false;
@@ -200,13 +197,12 @@ class InstallCommand extends AbstractMagentoCommand
         if ($installSampleData) {
             foreach ($this->commandConfig['demo-data-packages'] as $demoPackageData) {
                 if ($demoPackageData['name'] == $extra['sample-data']) {
-                    $packageLoader = new PackageLoader();
-                    $package = $packageLoader->load($demoPackageData);
-
-                    $io = new ConsoleIO($input, $output, $this->getHelperSet());
-                    $composer = ComposerFactory::create($io, array());
-                    $dm = $composer->getDownloadManager();
-                    $dm->download($package, $this->config['installationFolder'], true);
+                    $package = $this->downloadByComposerConfig(
+                        $input,
+                        $output,
+                        $this->config['installationFolder'],
+                        false
+                    );
 
                     $expandedFolder = $this->config['installationFolder']
                                     . DIRECTORY_SEPARATOR
