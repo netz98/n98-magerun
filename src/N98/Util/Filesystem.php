@@ -30,11 +30,12 @@ class Filesystem
      */
     public function recursiveRemoveDirectory($dir)
     {
-        foreach(glob($dir . '/*') as $file) {
-            if (is_dir($file))
+        foreach (glob($dir . '/*') as $file) {
+            if (is_dir($file)) {
                 $this->recursiveRemoveDirectory($file);
-            else
+            } else {
                 unlink($file);
+            }
         }
         rmdir($dir);
     }

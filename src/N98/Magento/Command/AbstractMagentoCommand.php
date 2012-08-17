@@ -177,6 +177,8 @@ abstract class AbstractMagentoCommand extends Command
         $dm = $this->getComposerDownloadManager($input, $output);
         if (! $config instanceof \Composer\Package\PackageInterface) {
             $package = $this->createComposerPackageByConfig($config);
+        } else {
+            $package = $config;
         }
         $dm->download($package, $targetFolder, $preferSource);
         return $package;
