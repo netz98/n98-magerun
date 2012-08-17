@@ -264,7 +264,9 @@ Overwrite default settings
 Create the yaml config file **~/.n98-magerun.yaml**.
 Now you can define overwrites. The original config file is **config.yaml** in the source root folder.
 
-Change of i.e. default currency and admin users::
+Change of i.e. default currency and admin users:
+
+.. code:: yaml
 
     commands:
       N98\Magento\Command\Installer\InstallCommand:
