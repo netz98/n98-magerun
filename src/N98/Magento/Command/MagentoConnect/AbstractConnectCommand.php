@@ -30,6 +30,10 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
                     throw new \Exception('Cannot make "mage" shell script executable. Please chmod the file manually.');
                 }
             }
+            if (!strstr(shell_exec($this->mageScript . ' list-channels'), 'community')) {
+                // no channels availble -> try to setup
+                shell_exec($this->mageScript . ' mage-setup');
+            }
         }
     }
 
