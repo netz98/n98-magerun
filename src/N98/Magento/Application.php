@@ -23,7 +23,10 @@ use N98\Magento\Command\Developer\TranslateInlineShopCommand;
 use N98\Magento\Command\Developer\TranslateInlineAdminCommand;
 use N98\Magento\Command\Developer\ProfilerCommand;
 use N98\Magento\Command\Developer\SymlinksCommand;
+use N98\Magento\Command\MagentoConnect\ListExtensionsCommand as MagentoConnectionListExtensionsCommand;
+use N98\Magento\Command\MagentoConnect\InstallExtensionCommand as MagentoConnectionInstallExtensionCommand;
 use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
+use N98\Util\OperatingSystem;
 
 class Application extends BaseApplication
 {
@@ -35,7 +38,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.6.0';
+    const APP_VERSION = '1.7.0';
 
     public function __construct()
     {
@@ -60,6 +63,12 @@ class Application extends BaseApplication
         $this->add(new TranslateInlineAdminCommand());
         $this->add(new ProfilerCommand());
         $this->add(new SymlinksCommand());
+
+        if (!OperatingSystem::isWindows()) {
+            $this->add(new MagentoConnectionListExtensionsCommand());
+            $this->add(new MagentoConnectionInstallExtensionCommand());
+        }
+
         $this->add(new SelfUpdateCommand());
     }
 

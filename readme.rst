@@ -231,6 +231,29 @@ Global scope can be set by not permitting store_code parameter::
 
     n98-magerun.phar dev:symlinks
 
+List Extensions
+"""""""""""""""
+
+List and find connect extensions by a optional search string::
+
+    n98-magerun.phar extension:list <search>
+
+* Requires magento's `mage` shell script.
+* Does not work with windows as operating system.
+
+Install Extensions
+""""""""""""""""""
+
+Installs a connect extension by package key::
+
+        n98-magerun.phar extension:install <package_key>
+
+If the package could not be found a search for alternatives will be done.
+If alternatives could be found you can select the package to install.
+
+* Requires magento's `mage` shell script.
+* Does not work with windows as operating system.
+
 Magento Installer (Experimental)
 """"""""""""""""""""""""""""""""
 

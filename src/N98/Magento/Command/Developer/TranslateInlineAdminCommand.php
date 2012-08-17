@@ -3,7 +3,6 @@
 namespace N98\Magento\Command\Developer;
 
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Magento\Command\Cache\ClearCommand as ClearCacheCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
