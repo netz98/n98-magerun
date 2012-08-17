@@ -200,6 +200,7 @@ class InstallCommand extends AbstractMagentoCommand
                     $package = $this->downloadByComposerConfig(
                         $input,
                         $output,
+                        $demoPackageData,
                         $this->config['installationFolder'],
                         false
                     );
