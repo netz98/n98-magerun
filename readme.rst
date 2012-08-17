@@ -19,7 +19,7 @@ There are two ways to install the tools:
 Download phar file
 """"""""""""""""""
 
-::
+.. code:: bash
 
     wget https://github.com/netz98/n98-magerun/raw/master/n98-magerun.phar
 
