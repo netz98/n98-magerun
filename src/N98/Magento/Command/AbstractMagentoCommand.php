@@ -18,8 +18,7 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function getCommandConfig()
     {
-        $config = new ConfigurationLoader();
-        $configArray = $config->toArray();
+        $configArray = $this->getApplication()->getConfig();
         if (isset($configArray['commands'][get_class($this)])) {
             return $configArray['commands'][get_class($this)];
         }

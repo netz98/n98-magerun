@@ -281,6 +281,11 @@ In my ubuntu system this can be done with the following command::
 Advanced usage
 --------------
 
+Add your own commands
+"""""""""""""""""""""
+
+https://github.com/netz98/n98-magerun/wiki/Add-custom-commands
+
 Overwrite default settings
 """"""""""""""""""""""""""
 

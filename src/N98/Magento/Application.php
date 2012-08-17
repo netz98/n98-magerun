@@ -3,6 +3,7 @@
 namespace N98\Magento;
 
 use Symfony\Component\Console\Application as BaseApplication;
+use N98\Magento\Command\ConfigurationLoader;
 use N98\Magento\Command\LocalConfig\GenerateCommand as GenerateLocalXmlConfigCommand;
 use N98\Magento\Command\Database\DumpCommand as DumpDatabaseCommand;
 use N98\Magento\Command\Database\InfoCommand as DatabaseInfoCommand;
@@ -36,13 +37,31 @@ class Application extends BaseApplication
     const APP_NAME = 'n98-magerun';
 
     /**
+     * @var \Composer\Autoload\ClassLoader
+     */
+    protected $autoloader;
+
+    /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      * @var string
      */
-    const APP_VERSION = '1.7.0';
+    const APP_VERSION = '1.8.0';
 
-    public function __construct()
+    public function __construct($autoloader)
     {
+        $this->autoloader = $autoloader;
         parent::__construct(self::APP_NAME, self::APP_VERSION);
+
+        $configLoader = new ConfigurationLoader();
+        $this->config = $configLoader->toArray();
+
+        $this->registerCustomAutoloaders();
+        $this->registerCustomCommands();
+
         $this->add(new GenerateLocalXmlConfigCommand());
         $this->add(new DumpDatabaseCommand());
         $this->add(new DatabaseInfoCommand());
@@ -72,4 +91,53 @@ class Application extends BaseApplication
         $this->add(new SelfUpdateCommand());
     }
 
+    protected function registerCustomAutoloaders()
+    {
+        if (isset($this->config['autoloaders']) && is_array($this->config['autoloaders'])) {
+            foreach ($this->config['autoloaders'] as $prefix => $path) {
+                $this->autoloader->add($prefix, $path);
+            }
+        }
+    }
+
+    protected function registerCustomCommands()
+    {
+        if (isset($this->config['commands']['customCommands']) && is_array($this->config['commands']['customCommands'])) {
+            foreach ($this->config['commands']['customCommands'] as $commandClass) {
+                $this->add(new $commandClass);
+            }
+        }
+    }
+
+    /**
+     * @param \Composer\Autoload\ClassLoader $autoloader
+     */
+    public function setAutoloader($autoloader)
+    {
+        $this->autoloader = $autoloader;
+    }
+
+    /**
+     * @return \Composer\Autoload\ClassLoader
+     */
+    public function getAutoloader()
+    {
+        return $this->autoloader;
+    }
+
+    /**
+     * @param array $config
+     */
+    public function setConfig($config)
+    {
+        $this->config = $config;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
 }
