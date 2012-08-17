@@ -74,6 +74,15 @@ the preferred installation.
 
 https://github.com/netz98/n98-magerun/wiki/Commands
 
+You can list all available commands by::
+
+   n98-magerun.phar list
+
+
+If you dont' have installed the .phar file systemwide you can call it with the php cli interpreter::
+
+   php n98-magerun.phar list
+
 Print database informations
 """""""""""""""""""""""""""
 
