@@ -113,6 +113,9 @@ class InstallCommand extends AbstractMagentoCommand
      */
     public function downloadMagento(InputInterface $input, OutputInterface $output) {
         try {
+            $package = $this->createComposerPackageByConfig($this->config['magentoVersionData']);
+            $this->config['magentoPackage'] = $package;
+
             if (file_exists($this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php')) {
                 $output->writeln('<error>A magento installation already exists in this folder </error>');
                 return false;
@@ -121,7 +124,7 @@ class InstallCommand extends AbstractMagentoCommand
             $this->config['magentoPackage'] = $this->downloadByComposerConfig(
                 $input,
                 $output,
-                $this->config['magentoVersionData'],
+                $package,
                 $this->config['installationFolder'],
                 true
             );

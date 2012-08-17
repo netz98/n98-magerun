@@ -167,7 +167,7 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * @param Input Interface $input
      * @param OutputInterface $output
-     * @param array $config
+     * @param array|\Composer\Package\PackageInterface $config
      * @param string $targetFolder
      * @param bool $preferSource
      * @return \Composer\Package\MemoryPackage
@@ -175,7 +175,9 @@ abstract class AbstractMagentoCommand extends Command
     protected function downloadByComposerConfig($input, $output, $config, $targetFolder, $preferSource = true)
     {
         $dm = $this->getComposerDownloadManager($input, $output);
-        $package = $this->createComposerPackageByConfig($config);
+        if (! $config instanceof \Composer\Package\PackageInterface) {
+            $package = $this->createComposerPackageByConfig($config);
+        }
         $dm->download($package, $targetFolder, $preferSource);
         return $package;
     }
