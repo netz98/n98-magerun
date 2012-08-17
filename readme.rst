@@ -266,7 +266,7 @@ Now you can define overwrites. The original config file is **config.yaml** in th
 
 Change of i.e. default currency and admin users:
 
-.. code:: yaml
+.. code-block:: yaml
 
     commands:
       N98\Magento\Command\Installer\InstallCommand:
