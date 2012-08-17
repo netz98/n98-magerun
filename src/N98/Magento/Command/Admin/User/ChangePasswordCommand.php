@@ -2,13 +2,12 @@
 
 namespace N98\Magento\Command\Admin\User;
 
-use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ChangePasswordCommand extends AbstractMagentoCommand
+class ChangePasswordCommand extends AbstractAdminUserCommand
 {
     protected function configure()
     {
@@ -30,7 +29,7 @@ class ChangePasswordCommand extends AbstractMagentoCommand
             $dialog = $this->getHelperSet()->get('dialog');
             $username = $dialog->ask($output, '<question>Username:</question>');
 
-            $user = \Mage::getModel('admin/user')->loadByUsername($username);
+            $user = $this->getUserModel()->loadByUsername($username);
             if ($user->getId() <= 0) {
                 $output->writeln('<error>User was not found</error>');
                 return;

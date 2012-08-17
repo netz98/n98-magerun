@@ -2,13 +2,12 @@
 
 namespace N98\Magento\Command\Cache;
 
-use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ClearCommand extends AbstractMagentoCommand
+class ClearCommand extends AbstractCacheCommand
 {
     protected function configure()
     {
@@ -30,14 +29,16 @@ class ClearCommand extends AbstractMagentoCommand
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
             if ($input->getArgument('type') != '') {
-                if (\Mage::getModel('core/cache')->cleanType($input->getArgument('type'))) {
+                if ($this->_getCacheModel()->cleanType($input->getArgument('type'))) {
                     $output->writeln('<info>' . $input->getArgument('type') . ' cache cleared</info>');
                 }
             } else {
-                if (\Mage::getModel('core/cache')->flush()) {
+                if ($this->_getCacheModel()->flush()) {
                     $output->writeln('<info>Core Cache cleared</info>');
                 }
-                if (is_callable(array('\Enterprise_PageCache_Model_Cache', 'getCacheInstance'))) {
+                if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_1
+                    && is_callable(array('\Enterprise_PageCache_Model_Cache', 'getCacheInstance'))
+                ) {
                     $cacheInstance = \Enterprise_PageCache_Model_Cache::getCacheInstance();
                     $cacheInstance->flush();
                     $output->writeln('<info>Fullpage Cache cleared</info>');

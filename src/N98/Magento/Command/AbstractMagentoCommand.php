@@ -9,9 +9,24 @@ use Symfony\Component\Finder\Finder;
 abstract class AbstractMagentoCommand extends Command
 {
     /**
+     * @var int
+     */
+    const MAGENTO_MAJOR_VERSION_1 = 1;
+
+    /**
+     * @var int
+     */
+    const MAGENTO_MAJOR_VERSION_2 = 2;
+
+    /**
      * @var string
      */
     protected $_magentoRootFolder = null;
+
+    /**
+     * @var int
+     */
+    protected $_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_1;
 
     /**
      * @return array
@@ -48,7 +63,11 @@ abstract class AbstractMagentoCommand extends Command
     protected function initMagento()
     {
         if ($this->_magentoRootFolder !== null) {
-            require_once $this->_magentoRootFolder . '/app/Mage.php';
+            if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
+                require_once $this->_magentoRootFolder . '/app/bootstrap.php';
+            } else {
+                require_once $this->_magentoRootFolder . '/app/Mage.php';
+            }
             \Mage::app('admin');
             return true;
         }
@@ -87,10 +106,18 @@ abstract class AbstractMagentoCommand extends Command
                 ->followLinks()
                 ->name('app')
                 ->name('skin')
+                ->name('lib')
                 ->in($searchFolder);
 
             if ($finder->count() > 0) {
                 $files = iterator_to_array($finder, false); /* @var $file \SplFileInfo */
+
+                if (count($files) == 2) {
+                    // Magento 2 has no skin folder.
+                    // @TODO find a better magento 2.x check
+                    $this->_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_2;
+                }
+
                 $this->_magentoRootFolder = dirname($files[0]->getRealPath());
                 if (!$silent) {
                     $output->writeln('<info>Found magento in folder "' . $this->_magentoRootFolder . '"</info>');
@@ -100,5 +127,16 @@ abstract class AbstractMagentoCommand extends Command
         }
 
         $output->writeln('<error>Magento folder could not be detected</error>');
+    }
+
+    /**
+     * @return Mage_Core_Helper_Data
+     */
+    protected function getCoreHelper()
+    {
+        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
+            return \Mage::helper('Mage_Core_Helper_Data');
+        }
+        return \Mage::helper('core');
     }
 }

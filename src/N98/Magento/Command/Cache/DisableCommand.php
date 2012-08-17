@@ -2,13 +2,12 @@
 
 namespace N98\Magento\Command\Cache;
 
-use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DisableCommand extends AbstractMagentoCommand
+class DisableCommand extends AbstractCacheCommand
 {
     protected function configure()
     {
@@ -28,7 +27,7 @@ class DisableCommand extends AbstractMagentoCommand
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
             $allTypes = \Mage::app()->useCache();
-            $cacheTypes = array_keys(\Mage::helper('core')->getCacheTypes());
+            $cacheTypes = array_keys($this->getCoreHelper()->getCacheTypes());
             $enable = array();
             foreach ($cacheTypes as $type) {
                 if (!empty($allTypes[$type])) {
@@ -37,7 +36,7 @@ class DisableCommand extends AbstractMagentoCommand
             }
 
             \Mage::app()->saveUseCache($enable);
-            \Mage::getModel('core/cache')->flush();
+            $this->_getCacheModel()->flush();
 
             $output->writeln('<info>Caches disabled</info>');
         }

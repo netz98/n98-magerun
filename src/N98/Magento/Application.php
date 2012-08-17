@@ -49,7 +49,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.8.0';
+    const APP_VERSION = '1.9.0';
 
     public function __construct($autoloader)
     {
