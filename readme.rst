@@ -9,7 +9,7 @@ Compatibility
 The tools are currently only tested with PHP 5.3.10 within Ubuntu 12.04 Linux.
 If you are a windows user you can help us with a quick test.
 
-The tool does currently not work with Magento 2.x branch.
+The tools should work with magento 2 development branch.
 
 Installation
 ------------
