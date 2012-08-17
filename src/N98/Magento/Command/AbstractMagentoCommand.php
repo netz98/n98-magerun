@@ -109,7 +109,7 @@ abstract class AbstractMagentoCommand extends Command
                 ->name('lib')
                 ->in($searchFolder);
 
-            if ($finder->count() > 0) {
+            if ($finder->count() >= 2) {
                 $files = iterator_to_array($finder, false); /* @var $file \SplFileInfo */
 
                 if (count($files) == 2) {
@@ -126,7 +126,7 @@ abstract class AbstractMagentoCommand extends Command
             }
         }
 
-        $output->writeln('<error>Magento folder could not be detected</error>');
+        throw new \RuntimeException('Magento folder could not be detected');
     }
 
     /**
