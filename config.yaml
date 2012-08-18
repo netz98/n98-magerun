@@ -55,7 +55,7 @@ commands:
       - name: magento-ce-1.7.0.2:
         version: 1.7.0.2
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.7.0.0/magento-1.7.0.2.tar.gz
+          url: http://www.magentocommerce.com/downloads/assets/1.7.0.2/magento-1.7.0.2.tar.gz
           type: tar
         extra:
           sample-data: sample-data-1.6.1.0

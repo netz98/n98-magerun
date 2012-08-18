@@ -21,7 +21,7 @@ Download phar file
 
 .. code:: bash
 
-    wget https://github.com/netz98/n98-magerun/raw/master/n98-magerun.phar
+    wget https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar
 
 You can make the .phar file executable.
 
