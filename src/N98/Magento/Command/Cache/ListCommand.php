@@ -28,9 +28,15 @@ class ListCommand extends AbstractCacheCommand
         $this->writeSection($output, 'Cache list');
         if ($this->initMagento()) {
             $cacheTypes = $this->_getCacheModel()->getTypes();
+            $table = array();
             foreach ($cacheTypes as $cacheCode => $cacheInfo) {
-                $output->writeln(str_pad($cacheCode, 40, ' ') . ($cacheInfo['status'] ? 'enabled' : 'disabled'));
+                $table[] = array(
+                    'code'   => $cacheCode,
+                    'status' => $cacheInfo['status'] ? 'enabled' : 'disabled'
+                );
             }
+
+            $this->getHelper('table')->write($output, $table);
         }
     }
 }

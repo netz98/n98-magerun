@@ -26,6 +26,7 @@ class ListExtensionsCommand extends AbstractConnectCommand
     {
         $extensions = $this->callMageScript($input, $output, 'list-available');
         $searchString = $input->getArgument('search');
+        $table = array();
         foreach (preg_split('/' . PHP_EOL . '/', $extensions) as $line) {
             if (strpos($line, ':') > 0) {
                 $matches = null;
@@ -33,14 +34,15 @@ class ListExtensionsCommand extends AbstractConnectCommand
                     if (!empty($searchString) && !stristr($line, $searchString)) {
                         continue;
                     }
-                    $lineOut = str_pad('<comment>' . $matches[1] . '</comment>', 60, ' ')
-                        . ' '
-                        . str_pad($matches[2], 12, ' ')
-                        . ' '
-                        . '<info>' . $matches[3] . '</info>';
-                    $output->writeln($lineOut);
+                    $table[] = array(
+                        'Package'   => $matches[1],
+                        'Version'   => $matches[2],
+                        'Stability' => $matches[3],
+                    );
                 }
             }
         }
+
+        $this->getHelper('table')->write($output, $table);
     }
 }

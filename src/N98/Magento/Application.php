@@ -3,6 +3,7 @@
 namespace N98\Magento;
 
 use Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Component\Console\Helper\HelperSet;
 use N98\Magento\Command\ConfigurationLoader;
 use N98\Magento\Command\LocalConfig\GenerateCommand as GenerateLocalXmlConfigCommand;
 use N98\Magento\Command\Database\DumpCommand as DumpDatabaseCommand;
@@ -19,6 +20,7 @@ use N98\Magento\Command\Installer\InstallCommand;
 use N98\Magento\Command\System\MaintenanceCommand as SystemMaintenanceCommand;
 use N98\Magento\Command\System\InfoCommand as SystemInfoCommand;
 use N98\Magento\Command\System\ModulesCommand as SystemModulesCommand;
+use N98\Magento\Command\System\Store\ListCommand as SystemStoreListCommand;
 use N98\Magento\Command\Developer\TemplateHintsCommand;
 use N98\Magento\Command\Developer\TemplateHintsBlocksCommand;
 use N98\Magento\Command\Developer\TranslateInlineShopCommand;
@@ -29,6 +31,7 @@ use N98\Magento\Command\MagentoConnect\ListExtensionsCommand as MagentoConnectio
 use N98\Magento\Command\MagentoConnect\InstallExtensionCommand as MagentoConnectionInstallExtensionCommand;
 use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
 use N98\Util\OperatingSystem;
+use Xanido\Console\Helper\TableHelper;
 
 class Application extends BaseApplication
 {
@@ -50,16 +53,18 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.10.0';
+    const APP_VERSION = '1.10.1';
 
     public function __construct($autoloader)
     {
         $this->autoloader = $autoloader;
         parent::__construct(self::APP_NAME, self::APP_VERSION);
 
+
         $configLoader = new ConfigurationLoader();
         $this->config = $configLoader->toArray();
 
+        $this->registerHelpers();
         $this->registerCustomAutoloaders();
         $this->registerCustomCommands();
 
@@ -78,6 +83,7 @@ class Application extends BaseApplication
         $this->add(new SystemMaintenanceCommand());
         $this->add(new SystemInfoCommand());
         $this->add(new SystemModulesCommand());
+        $this->add(new SystemStoreListCommand());
         $this->add(new TemplateHintsCommand());
         $this->add(new TemplateHintsBlocksCommand());
         $this->add(new TranslateInlineShopCommand());
@@ -93,6 +99,18 @@ class Application extends BaseApplication
         $this->add(new SelfUpdateCommand());
     }
 
+    /**
+     * Add own helpers to helperset.
+     */
+    protected function registerHelpers()
+    {
+        $helperSet = $this->getHelperSet();
+        $helperSet->set(new TableHelper(), 'table');
+    }
+
+    /**
+     * Adds autoloader prefixes from user's config
+     */
     protected function registerCustomAutoloaders()
     {
         if (isset($this->config['autoloaders']) && is_array($this->config['autoloaders'])) {
