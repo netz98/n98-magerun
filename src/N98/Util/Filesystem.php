@@ -7,17 +7,17 @@ class Filesystem
     /**
      * @param string $src
      * @param string $dst
+     * @param array $blacklist
      */
-    public function recursiveCopy($src, $dst)
+    public function recursiveCopy($src, $dst, $blacklist = array())
     {
         $dir = opendir($src);
         @mkdir($dst);
-        while(false !== ( $file = readdir($dir)) ) {
-            if (( $file != '.' ) && ( $file != '..' )) {
-                if ( is_dir($src . '/' . $file) ) {
-                    $this->recursiveCopy($src . '/' . $file, $dst . '/' . $file);
-                }
-                else {
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..') && !in_array($file, $blacklist)) {
+                if (is_dir($src . '/' . $file)) {
+                    $this->recursiveCopy($src . '/' . $file, $dst . '/' . $file, $blacklist);
+                } else {
                     copy($src . '/' . $file, $dst . '/' . $file);
                 }
             }
