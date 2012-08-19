@@ -27,6 +27,7 @@ class TableHelper extends AbstractHelper
 
         // Work out max lengths of each cell
         $longest_key = 0;
+        $cell_lengths = array();
         foreach ($table AS $row_key => $row) {
             $cell_count = 0;
             foreach ($row AS $key => $cell) {

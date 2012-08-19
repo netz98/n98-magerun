@@ -21,7 +21,8 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
     {
         if ($this->mageScript === null) {
             $this->detectMagento($output);
-            $this->mageScript = $this->_magentoRootFolder . DIRECTORY_SEPARATOR . 'mage';
+            @chdir($this->_magentoRootFolder);
+            $this->mageScript = './mage';
             if (!is_file($this->mageScript)) {
                 throw new \Exception('Could not find "mage" shell script in current installation');
             }

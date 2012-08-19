@@ -25,24 +25,30 @@ class ListExtensionsCommand extends AbstractConnectCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $extensions = $this->callMageScript($input, $output, 'list-available');
-        $searchString = $input->getArgument('search');
-        $table = array();
-        foreach (preg_split('/' . PHP_EOL . '/', $extensions) as $line) {
-            if (strpos($line, ':') > 0) {
-                $matches = null;
-                if ($matches = $this->matchConnectLine($line)) {
-                    if (!empty($searchString) && !stristr($line, $searchString)) {
-                        continue;
+        if (!strstr($extensions, 'Please initialize Magento Connect installer')) {
+            $searchString = $input->getArgument('search');
+            $table = array();
+            foreach (preg_split('/' . PHP_EOL . '/', $extensions) as $line) {
+                if (strpos($line, ':') > 0) {
+                    $matches = null;
+                    if ($matches = $this->matchConnectLine($line)) {
+                        if (!empty($searchString) && !stristr($line, $searchString)) {
+                            continue;
+                        }
+                        $table[] = array(
+                            'Package'   => $matches[1],
+                            'Version'   => $matches[2],
+                            'Stability' => $matches[3],
+                        );
                     }
-                    $table[] = array(
-                        'Package'   => $matches[1],
-                        'Version'   => $matches[2],
-                        'Stability' => $matches[3],
-                    );
                 }
             }
-        }
 
-        $this->getHelper('table')->write($output, $table);
+            if (count($table) > 0) {
+                $this->getHelper('table')->write($output, $table);
+            }
+        } else {
+            $output->writeln('<error>' . $extensions . '</error>');
+        }
     }
 }

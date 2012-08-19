@@ -36,17 +36,19 @@ class ModulesCommand extends AbstractMagentoCommand
         $this->findInstalledModules();
 
         ksort($this->infos);
-        foreach ($this->infos as $key => $value) {
-            $output->writeln(str_pad($key, 40, ' ') . ': ' . $value);
-        }
+        $this->getHelper('table')->write($output, $this->infos);
     }
 
     protected function findInstalledModules()
     {
         $modules = \Mage::app()->getConfig()->getNode('modules')->asArray();
         foreach ($modules as $moduleName => $moduleInfo) {
-            $this->infos[$moduleInfo['codePool'] . ': ' . $moduleName] = str_pad($moduleInfo['version'], 12, ' ')
-                                                                       . $this->formatActive($moduleInfo['active']);
+            $this->infos[] = array(
+                'codePool' => $moduleInfo['codePool'],
+                'Name'     => $moduleName,
+                'Version'  => $moduleInfo['version'],
+                'Status'   => $this->formatActive($moduleInfo['active']),
+            );
         }
     }
 
