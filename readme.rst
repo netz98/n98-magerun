@@ -212,6 +212,16 @@ Lists all installed modules with codepool and version
 
     n98-magerun.phar system:modules:list
 
+Run Setup Scripts
+"""""""""""""""""
+
+Runs all setup scripts (no need to call frontend).
+This command is useful if you update your system with enabled maintenance mode.
+
+::
+
+    n98-magerun.phar system:run-setup-scripts
+
 Toogle Template Hints
 """""""""""""""""""""
 

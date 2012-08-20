@@ -20,6 +20,7 @@ use N98\Magento\Command\Installer\InstallCommand;
 use N98\Magento\Command\System\MaintenanceCommand as SystemMaintenanceCommand;
 use N98\Magento\Command\System\InfoCommand as SystemInfoCommand;
 use N98\Magento\Command\System\ModulesCommand as SystemModulesCommand;
+use N98\Magento\Command\System\RunSetupScriptsCommand;
 use N98\Magento\Command\System\Store\ListCommand as SystemStoreListCommand;
 use N98\Magento\Command\Developer\TemplateHintsCommand;
 use N98\Magento\Command\Developer\TemplateHintsBlocksCommand;
@@ -53,7 +54,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.10.3';
+    const APP_VERSION = '1.11.0';
 
     public function __construct($autoloader)
     {
@@ -84,6 +85,7 @@ class Application extends BaseApplication
         $this->add(new SystemInfoCommand());
         $this->add(new SystemModulesCommand());
         $this->add(new SystemStoreListCommand());
+        $this->add(new RunSetupScriptsCommand());
         $this->add(new TemplateHintsCommand());
         $this->add(new TemplateHintsBlocksCommand());
         $this->add(new TranslateInlineShopCommand());
