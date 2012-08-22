@@ -6,7 +6,7 @@ use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Helper\HelperSet;
 use N98\Magento\Command\ConfigurationLoader;
 use N98\Magento\Command\LocalConfig\GenerateCommand as GenerateLocalXmlConfigCommand;
-use N98\Magento\Command\Database\DumpCommand as DumpDatabaseCommand;
+use N98\Magento\Command\Database\DumpCommand as DatabaseDumpCommand;
 use N98\Magento\Command\Database\InfoCommand as DatabaseInfoCommand;
 use N98\Magento\Command\Config\DumpCommand as ConfigPrintCommand;
 use N98\Magento\Command\Cache\ClearCommand as CacheClearCommand;
@@ -54,7 +54,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.11.0';
+    const APP_VERSION = '1.11.1';
 
     public function __construct($autoloader)
     {
@@ -70,7 +70,7 @@ class Application extends BaseApplication
         $this->registerCustomCommands();
 
         $this->add(new GenerateLocalXmlConfigCommand());
-        $this->add(new DumpDatabaseCommand());
+        $this->add(new DatabaseDumpCommand());
         $this->add(new DatabaseInfoCommand());
         $this->add(new ConfigPrintCommand());
         $this->add(new CacheClearCommand());

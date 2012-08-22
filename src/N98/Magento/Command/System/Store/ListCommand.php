@@ -35,34 +35,13 @@ class ListCommand extends AbstractMagentoCommand
         $this->initMagento();
 
         foreach (\Mage::app()->getStores() as $store) {
-            $table[] = array(
+            $table[$store->getId()] = array(
                 'id'   => '  ' . $store->getId(),
                 'code' => $store->getCode(),
             );
         }
 
+        ksort($table);
         $this->getHelper('table')->write($output, $table);
-    }
-
-    protected function findInstalledModules()
-    {
-        $modules = \Mage::app()->getConfig()->getNode('modules')->asArray();
-        foreach ($modules as $moduleName => $moduleInfo) {
-            $this->infos[$moduleInfo['codePool'] . ': ' . $moduleName] = str_pad($moduleInfo['version'], 12, ' ')
-                                                                       . $this->formatActive($moduleInfo['active']);
-        }
-    }
-
-    /**
-     * @param string $value
-     * @return string
-     */
-    private function formatActive($value)
-    {
-        if (in_array($value, array(1, 'true'))) {
-            return 'active';
-        }
-
-        return 'inactive';
     }
 }
