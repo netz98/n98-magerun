@@ -22,6 +22,7 @@ use N98\Magento\Command\System\InfoCommand as SystemInfoCommand;
 use N98\Magento\Command\System\ModulesCommand as SystemModulesCommand;
 use N98\Magento\Command\System\RunSetupScriptsCommand;
 use N98\Magento\Command\System\Store\ListCommand as SystemStoreListCommand;
+use N98\Magento\Command\System\Website\ListCommand as SystemWebsiteListCommand;
 use N98\Magento\Command\Developer\TemplateHintsCommand;
 use N98\Magento\Command\Developer\TemplateHintsBlocksCommand;
 use N98\Magento\Command\Developer\TranslateInlineShopCommand;
@@ -85,6 +86,7 @@ class Application extends BaseApplication
         $this->add(new SystemInfoCommand());
         $this->add(new SystemModulesCommand());
         $this->add(new SystemStoreListCommand());
+        $this->add(new SystemWebsiteListCommand());
         $this->add(new RunSetupScriptsCommand());
         $this->add(new TemplateHintsCommand());
         $this->add(new TemplateHintsBlocksCommand());

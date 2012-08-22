@@ -193,7 +193,7 @@ Provides infos like the edition and version or the configured cache backends.
 
     n98-magerun.phar system:info
 
-Magento stores
+Magento Stores
 """"""""""""""
 
 Lists all store views.
@@ -202,6 +202,15 @@ Lists all store views.
 
     n98-magerun.phar system:store:list
 
+
+Magento Websites
+""""""""""""""
+
+Lists all websites.
+
+::
+
+    n98-magerun.phar system:website:list
 
 Magento modules
 """""""""""""""
