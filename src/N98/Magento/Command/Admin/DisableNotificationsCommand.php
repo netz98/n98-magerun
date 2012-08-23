@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\NullOutput;
 
 class DisableNotificationsCommand extends AbstractMagentoCommand
 {
@@ -30,6 +31,8 @@ class DisableNotificationsCommand extends AbstractMagentoCommand
             $enabled = \Mage::getStoreConfigFlag('advanced/modules_disable_output/Mage_AdminNotification');
             \Mage::app()->getConfig()->saveConfig('advanced/modules_disable_output/Mage_AdminNotification', $enabled ? 0 : 1, 'default');
             $output->writeln('<info>Admin nofitifactions <comment>' . (!$enabled ? 'enabled' : 'disabled') . '</comment></info>');
+
+            $this->getApplication()->get('cache:clear')->run($input, new NullOutput());
         }
     }
 }
