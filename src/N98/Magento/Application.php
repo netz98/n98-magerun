@@ -9,6 +9,7 @@ use N98\Magento\Command\Database\DumpCommand as DatabaseDumpCommand;
 use N98\Magento\Command\Database\InfoCommand as DatabaseInfoCommand;
 use N98\Magento\Command\Database\ConsoleCommand as DatabaseConsoleCommand;
 use N98\Magento\Command\Config\DumpCommand as ConfigPrintCommand;
+use N98\Magento\Command\Design\DemoNoticeCommand as DesignDemoNoticeCommand;
 use N98\Magento\Command\Cache\ClearCommand as CacheClearCommand;
 use N98\Magento\Command\Cache\ListCommand as CacheListCommand;
 use N98\Magento\Command\Cache\EnableCommand as CacheEnableCommand;
@@ -55,7 +56,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.12.0';
+    const APP_VERSION = '1.13.0';
 
     public function __construct($autoloader)
     {
@@ -82,6 +83,7 @@ class Application extends BaseApplication
         $this->add(new ChangeAdminUserPasswordCommand());
         $this->add(new AdminUserListCommand());
         $this->add(new DisableNotificationsCommand());
+        $this->add(new DesignDemoNoticeCommand());
         $this->add(new InstallCommand());
         $this->add(new SystemMaintenanceCommand());
         $this->add(new SystemInfoCommand());

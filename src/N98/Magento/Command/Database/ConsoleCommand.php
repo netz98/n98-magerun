@@ -27,12 +27,6 @@ class ConsoleCommand extends AbstractDatabaseCommand
     {
         $this->detectDbSettings($output);
 
-        $pdoConnectionString = sprintf(
-            'mysql:host=%s;dbname=%s',
-            $this->dbSettings['host'],
-            $this->dbSettings['dbname']
-        );
-
         $descriptorSpec = array(
            0 => STDIN,
            1 => STDOUT,
