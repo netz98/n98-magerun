@@ -165,6 +165,16 @@ Enable magento cache
 
     n98-magerun.phar cache:enable
 
+
+Demo Notice
+"""""""""""
+
+Toggle demo store notice
+
+::
+
+   n98-magerun.phar design:demo-notice <store_code>
+
 List admin users
 """"""""""""""""
 
