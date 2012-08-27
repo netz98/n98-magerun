@@ -101,6 +101,17 @@ Only the mysqldump command::
 
     n98-magerun.phar database:dump --only-command
 
+Database Console / MySQL Client
+"""""""""""""""""""""""""""""""
+
+Opens the MySQL console client with your database settings from local.xml
+
+* Requires MySQL CLI tools
+
+.. code-block:: bash
+
+   n98-magerun.phar database:console
+
 Generate local.xml file
 """""""""""""""""""""""
 
