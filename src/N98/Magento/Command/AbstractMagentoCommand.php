@@ -86,7 +86,7 @@ abstract class AbstractMagentoCommand extends Command
      */
     public function detectMagento(OutputInterface $output, $silent = true)
     {
-        if (stristr(PHP_OS, 'win')) {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $folder = exec('@echo %cd%'); // @TODO not currently tested!!!
         } else {
             $folder = exec('pwd');

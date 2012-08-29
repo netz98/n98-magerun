@@ -56,7 +56,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.13.0';
+    const APP_VERSION = '1.13.1';
 
     public function __construct($autoloader)
     {
