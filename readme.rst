@@ -2,14 +2,14 @@
 netz98 magerun CLI tools
 ========================
 
-The n98 magerun cli tools provides some handy tools to work with magento from command line.
+The n98 magerun cli tools provides some handy tools to work with Magento from command line.
 
 Compatibility
 -------------
 The tools are currently only tested with PHP 5.3.10 within Ubuntu 12.04 Linux.
-If you are a windows user you can help us with a quick test.
+If you are a Windows user you can help us with a quick test.
 
-The tools should work with magento 2 development branch.
+The tools should work with Magento 2 development branch.
 
 Installation
 ------------
@@ -29,7 +29,7 @@ You can make the .phar file executable.
 
     chmod +x ./n98-magerun.phar
 
-If you wan't to use command system wide you can copy it to `/usr/local/bin`.
+If you want to use command system wide you can copy it to `/usr/local/bin`.
 
 ::
 
@@ -54,7 +54,7 @@ From source with composer
 
     php cli.php
 
-It's recommendet to install the .phar file system wide.
+It's recommended to install the .phar file system wide.
 
 Update
 ------
@@ -69,7 +69,7 @@ Usage / Commands
 ----------------
 
 All commands try to detect the current Magento root directory.
-If you have multiple magento installation you must change your working directory to
+If you have multiple Magento installation you must change your working directory to
 the preferred installation.
 
 https://github.com/netz98/n98-magerun/wiki/Commands
@@ -79,11 +79,11 @@ You can list all available commands by::
    n98-magerun.phar list
 
 
-If you dont' have installed the .phar file systemwide you can call it with the php cli interpreter::
+If you don't have installed the .phar file system wide you can call it with the php cli interpreter::
 
    php n98-magerun.phar list
 
-Print database informations
+Print database information
 """""""""""""""""""""""""""
 
 ::
@@ -126,14 +126,14 @@ Dump global xml config
 
     n98-magerun.phar config:dump > extern_file.xml
 
-List magento cache status
+List Magento cache status
 """""""""""""""""""""""""
 
 ::
 
     n98-magerun.phar cache:list
 
-Clear magento cache
+Clear Magento cache
 """""""""""""""""""
 
 ::
@@ -144,21 +144,21 @@ Or only one cache type like i.e. full_page cache::
 
    n98-magerun.phar cache:clear full_page
 
-List magento caches
+List Magento caches
 """""""""""""""""""
 
 ::
 
     n98-magerun.phar cache:list
 
-Disable magento cache
+Disable Magento cache
 """""""""""""""""""""
 
 ::
 
     n98-magerun.phar cache:disable
 
-Enable magento cache
+Enable Magento cache
 """"""""""""""""""""
 
 ::
@@ -205,10 +205,10 @@ Toggle maintenance mode
 
     n98-magerun.phar system:maintenance
 
-Magento system infos
+Magento system info
 """"""""""""""""""""
 
-Provides infos like the edition and version or the configured cache backends.
+Provides info like the edition and version or the configured cache backends.
 
 ::
 
@@ -252,7 +252,7 @@ This command is useful if you update your system with enabled maintenance mode.
 
     n98-magerun.phar system:run-setup-scripts
 
-Toogle Template Hints
+Toggle Template Hints
 """""""""""""""""""""
 
 Toggle debug template hints settings of a store
@@ -261,7 +261,7 @@ Toggle debug template hints settings of a store
 
     n98-magerun.phar dev:template-hints <store_code>
 
-Toogle Template Hints Blocks
+Toggle Template Hints Blocks
 """"""""""""""""""""""""""""
 
 Toggle debug template hints blocks settings of a store
@@ -306,8 +306,8 @@ List and find connect extensions by a optional search string::
 
     n98-magerun.phar extension:list <search>
 
-* Requires magento's `mage` shell script.
-* Does not work with windows as operating system.
+* Requires Magento's `mage` shell script.
+* Does not work with Windows as operating system.
 
 Install Extensions
 """"""""""""""""""
@@ -319,19 +319,19 @@ Installs a connect extension by package key::
 If the package could not be found a search for alternatives will be done.
 If alternatives could be found you can select the package to install.
 
-* Requires magento's `mage` shell script.
-* Does not work with windows as operating system.
+* Requires Magento's `mage` shell script.
+* Does not work with Windows as operating system.
 
 Magento Installer (Experimental)
 """"""""""""""""""""""""""""""""
 
-Since version 1.1.0 we deliver a magento installer which does the following:
+Since version 1.1.0 we deliver a Magento installer which does the following:
 
-* Download magento by a list of git repos and zip files (mageplus, magelte, official community packages).
+* Download Magento by a list of git repos and zip files (mageplus, magelte, official community packages).
 * Try to create database if it does not exist.
-* Installs magento sample data if available (since version 1.2.0).
-* Starts magento installer
-* Set rewrite base in .htaccess file
+* Installs Magento sample data if available (since version 1.2.0).
+* Starts Magento installer
+* Sets rewrite base in .htaccess file
 
 ::
 
@@ -342,7 +342,7 @@ Bash autocompletion
 -------------------
 
 Copy the file **bash_complete** as **n98-magerun.phar** in your bash autocomplete folder.
-In my ubuntu system this can be done with the following command::
+In my Ubuntu system this can be done with the following command::
 
     sudo cp bash_complete /etc/bash_completion.d/n98-magerun.phar
 
@@ -376,7 +376,7 @@ Change of i.e. default currency and admin users:
             admin_email: defaultemail@example.com
 
 
-Add own magento repositories
+Add own Magento repositories
 """"""""""""""""""""""""""""
 
 Create the yaml config file **~/.n98-magerun.yaml**.
@@ -409,7 +409,7 @@ Example::
 How can you help?
 -----------------
 
-* Test the tool on Windows or MacOS.
+* Test the tool on Windows or OS X.
 * Create issues if you find a bug or missing a feature.
 
 Thanks to
