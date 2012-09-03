@@ -23,7 +23,7 @@ class RunSetupScriptsCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output);
         if ($this->initMagento()) {
-            \Mage_Core_Model_Resource_Setup::applyUpdates();
+            \Mage_Core_Model_Resource_Setup::applyAllUpdates();
             if (is_callable(array('\Mage_Core_Model_Resource_Setup', 'applyAllDataUpdates'))) {
                 \Mage_Core_Model_Resource_Setup::applyAllDataUpdates();
             }
