@@ -13,6 +13,8 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
     {
         $this
             ->setName('admin:user:change-password')
+            ->addArgument('username', InputArgument::OPTIONAL, 'Username')
+            ->addArgument('password', InputArgument::OPTIONAL, 'Password')
             ->setDescription('Changes the password of a adminhtml user.')
         ;
     }
@@ -26,8 +28,12 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
     {
         $this->detectMagento($output);
         if ($this->initMagento()) {
-            $dialog = $this->getHelperSet()->get('dialog');
-            $username = $dialog->ask($output, '<question>Username:</question>');
+
+            // Username
+            if (($username = $input->getArgument('username')) == null) {
+                $dialog = $this->getHelperSet()->get('dialog');
+                $username = $dialog->ask($output, '<question>Username:</question>');
+            }
 
             $user = $this->getUserModel()->loadByUsername($username);
             if ($user->getId() <= 0) {
@@ -35,7 +41,10 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
                 return;
             }
 
-            $password = $dialog->ask($output, '<question>Password:</question>');
+            // Password
+            if (($password = $input->getArgument('password')) == null) {
+                $password = $dialog->ask($output, '<question>Password:</question>');
+            }
 
             try {
                 $result = $user->validate();
