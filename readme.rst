@@ -187,7 +187,7 @@ Change admin user password
 
 ::
 
-    n98-magerun.phar admin:user:change-password
+    n98-magerun.phar admin:user:change-password [username] [password]
 
 Disable admin notifications
 """""""""""""""""""""""""""
