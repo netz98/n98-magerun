@@ -41,7 +41,6 @@ class ConsoleCommand extends AbstractDatabaseCommand
               . (!strval($this->dbSettings['password'] == '') ? '-p' . $this->dbSettings['password'] . ' ' : '')
               . strval($this->dbSettings['dbname']);
 
-        echo $exec;
         $pipes = array();
         proc_open($exec, $descriptorSpec, $pipes);
     }
