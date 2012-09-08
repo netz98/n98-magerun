@@ -30,6 +30,8 @@ class ClearCommand extends AbstractCacheCommand
         if ($this->initMagento()) {
             if ($input->getArgument('type') != '') {
                 if ($this->_getCacheModel()->cleanType($input->getArgument('type'))) {
+                    \Mage::getConfig()->loadEventObservers('adminhtml');
+                    \Mage::app()->addEventArea('adminhtml');
                     \Mage::dispatchEvent('adminhtml_cache_refresh_type', array('type' => $input->getArgument('type')));
                     $output->writeln('<info>' . $input->getArgument('type') . ' cache cleared</info>');
                 }
