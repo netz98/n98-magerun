@@ -28,23 +28,11 @@ class ClearCommand extends AbstractCacheCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            if ($input->getArgument('type') != '') {
-                if ($this->_getCacheModel()->cleanType($input->getArgument('type'))) {
-                    \Mage::getConfig()->loadEventObservers('adminhtml');
-                    \Mage::app()->addEventArea('adminhtml');
-                    \Mage::dispatchEvent('adminhtml_cache_refresh_type', array('type' => $input->getArgument('type')));
-                    $output->writeln('<info>' . $input->getArgument('type') . ' cache cleared</info>');
-                }
-            } else {
-                if ($this->_getCacheModel()->flush()) {
-                    $output->writeln('<info>Core Cache cleared</info>');
-                }
-                if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_1
-                    && is_callable(array('\Enterprise_PageCache_Model_Cache', 'getCacheInstance'))
-                ) {
-                    $cacheInstance = \Enterprise_PageCache_Model_Cache::getCacheInstance();
-                    $cacheInstance->flush();
-                    $output->writeln('<info>Fullpage Cache cleared</info>');
+            $allTypes = \Mage::app()->useCache();
+            foreach(array_keys($allTypes) as $type) {
+                if ($input->getArgument('type') == '' || $input->getArgument('type') == $type) {
+                    \Mage::app()->getCacheInstance()->cleanType($type);
+                    $output->writeln('<info>' . $type . ' cache cleared</info>');
                 }
             }
         }

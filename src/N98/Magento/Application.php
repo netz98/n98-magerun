@@ -14,6 +14,9 @@ use N98\Magento\Command\Cache\ClearCommand as CacheClearCommand;
 use N98\Magento\Command\Cache\ListCommand as CacheListCommand;
 use N98\Magento\Command\Cache\EnableCommand as CacheEnableCommand;
 use N98\Magento\Command\Cache\DisableCommand as CacheDisableCommand;
+use N98\Magento\Command\Indexer\ListCommand as IndexerListCommand;
+use N98\Magento\Command\Indexer\ReindexCommand as IndexerReindexCommand;
+use N98\Magento\Command\Indexer\ReindexAllCommand as IndexerReindexAllCommand;
 use N98\Magento\Command\Admin\User\ChangePasswordCommand as ChangeAdminUserPasswordCommand;
 use N98\Magento\Command\Admin\User\ListCommand as AdminUserListCommand;
 use N98\Magento\Command\Admin\DisableNotificationsCommand;
@@ -56,7 +59,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.13.7';
+    const APP_VERSION = '1.14.0';
 
     public function __construct($autoloader)
     {
@@ -80,6 +83,9 @@ class Application extends BaseApplication
         $this->add(new CacheListCommand());
         $this->add(new CacheEnableCommand());
         $this->add(new CacheDisableCommand());
+        $this->add(new IndexerListCommand());
+        $this->add(new IndexerReindexCommand());
+        $this->add(new IndexerReindexAllCommand());
         $this->add(new ChangeAdminUserPasswordCommand());
         $this->add(new AdminUserListCommand());
         $this->add(new DisableNotificationsCommand());

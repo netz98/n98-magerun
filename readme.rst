@@ -112,6 +112,29 @@ Opens the MySQL console client with your database settings from local.xml
 
    n98-magerun.phar database:console
 
+List Indexes
+""""""""""""
+
+.. code-block:: bash
+
+   n98-magerun.phar index:list
+
+Reindex a Index
+"""""""""""""""
+
+.. code-block:: bash
+
+   n98-magerun.phar index:reindex <code>
+
+Reindex All
+"""""""""""
+
+Loops all magento indexes and triggers reindex.
+
+.. code-block:: bash
+
+   n98-magerun.phar index:reindex:all
+
 Generate local.xml file
 """""""""""""""""""""""
 
