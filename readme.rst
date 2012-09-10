@@ -122,9 +122,11 @@ List Indexes
 Reindex a Index
 """""""""""""""
 
+Index by indexer code. Code is optional. If you don't specify a code you can pick a indexer from a list.
+
 .. code-block:: bash
 
-   n98-magerun.phar index:reindex <code>
+   n98-magerun.phar index:reindex [code]
 
 Reindex All
 """""""""""
