@@ -7,15 +7,14 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ClearCommand extends AbstractCacheCommand
+class CleanCommand extends AbstractCacheCommand
 {
     protected function configure()
     {
         $this
-            ->setName('cache:clear')
+            ->setName('cache:clean')
             ->addArgument('type', InputArgument::OPTIONAL, 'Cache type code like "config"')
-            ->setAliases(array('cache:flush'))
-            ->setDescription('Clear magento cache')
+            ->setDescription('Clean magento cache')
         ;
     }
 

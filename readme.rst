@@ -158,16 +158,27 @@ List Magento cache status
 
     n98-magerun.phar cache:list
 
-Clear Magento cache
+Clean Magento cache
 """""""""""""""""""
+
+Cleans expired cache entries.
+If you like to remove all entries use `cache:flush`
 
 ::
 
-    n98-magerun.phar cache:clear
+    n98-magerun.phar cache:clean
 
 Or only one cache type like i.e. full_page cache::
 
-   n98-magerun.phar cache:clear full_page
+   n98-magerun.phar cache:clean full_page
+
+
+Remove all cache entries
+""""""""""""""""""""""""
+
+::
+
+   n98-magerun.phar cache:flush
 
 List Magento caches
 """""""""""""""""""

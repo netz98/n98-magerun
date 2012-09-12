@@ -10,7 +10,8 @@ use N98\Magento\Command\Database\InfoCommand as DatabaseInfoCommand;
 use N98\Magento\Command\Database\ConsoleCommand as DatabaseConsoleCommand;
 use N98\Magento\Command\Config\DumpCommand as ConfigPrintCommand;
 use N98\Magento\Command\Design\DemoNoticeCommand as DesignDemoNoticeCommand;
-use N98\Magento\Command\Cache\ClearCommand as CacheClearCommand;
+use N98\Magento\Command\Cache\CleanCommand as CacheCleanCommand;
+use N98\Magento\Command\Cache\FlushCommand as CacheFlushCommand;
 use N98\Magento\Command\Cache\ListCommand as CacheListCommand;
 use N98\Magento\Command\Cache\EnableCommand as CacheEnableCommand;
 use N98\Magento\Command\Cache\DisableCommand as CacheDisableCommand;
@@ -59,7 +60,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.14.0';
+    const APP_VERSION = '1.15.0';
 
     public function __construct($autoloader)
     {
@@ -79,7 +80,8 @@ class Application extends BaseApplication
         $this->add(new DatabaseInfoCommand());
         $this->add(new DatabaseConsoleCommand());
         $this->add(new ConfigPrintCommand());
-        $this->add(new CacheClearCommand());
+        $this->add(new CacheCleanCommand());
+        $this->add(new CacheFlushCommand());
         $this->add(new CacheListCommand());
         $this->add(new CacheEnableCommand());
         $this->add(new CacheDisableCommand());
