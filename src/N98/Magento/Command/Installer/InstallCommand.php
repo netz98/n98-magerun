@@ -8,7 +8,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Composer\Package\Loader\ArrayLoader as PackageLoader;
 
 class InstallCommand extends AbstractMagentoCommand
 {
@@ -66,7 +65,7 @@ class InstallCommand extends AbstractMagentoCommand
     {
         $question = array();
         foreach ($this->commandConfig['magento-packages'] as $key => $package) {
-            $question[] = '<comment>[' . ($key+1) . ']</comment> ' . $package['name'] . "\n";
+            $question[] = '<comment>' . str_pad('[' . ($key + 1) . ']', 4, ' ') . '</comment> ' . $package['name'] . "\n";
         }
         $question[] = "<question>Choose a magento version:</question> ";
 
@@ -245,25 +244,17 @@ class InstallCommand extends AbstractMagentoCommand
 
         $sessionSave = $dialog->ask(
             $output,
-            '<question>Please enter the session save</question> <comment>[files]</comment>: ',
-            'files'
+            '<question>Please enter the session save</question> <comment>[ ' . $defaults['session_save'] . ']</comment>: ',
+            $defaults['session_save']
         );
 
         $adminFrontname = $dialog->askAndValidate(
             $output,
-            '<question>Please enter the admin frontname</question> <comment>[admin]</comment> ',
+            '<question>Please enter the admin frontname</question> <comment>[' . $defaults['admin_frontname'] . ']</comment> ',
             $this->notEmptyCallback,
             false,
-            'admin'
+            $defaults['admin_frontname']
         );
-
-        $baseUrl = $dialog->askAndValidate(
-            $output,
-            '<question>Please enter the base url:</question> ',
-            $this->notEmptyCallback,
-            false
-        );
-        $baseUrl = rtrim($baseUrl, '/') . '/'; // normalize baseUrl
 
         $currency = $dialog->askAndValidate(
             $output,
@@ -328,6 +319,14 @@ class InstallCommand extends AbstractMagentoCommand
             false,
             $defaults['admin_email']
         );
+
+        $baseUrl = $dialog->askAndValidate(
+            $output,
+            '<question>Please enter the base url:</question> ',
+            $this->notEmptyCallback,
+            false
+        );
+        $baseUrl = rtrim($baseUrl, '/') . '/'; // normalize baseUrl
 
         $_SERVER['argv']['license_agreement_accepted'] = 'yes';
         $_SERVER['argv']['locale'] = $locale;
