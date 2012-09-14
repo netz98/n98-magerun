@@ -6,7 +6,7 @@ The n98 magerun cli tools provides some handy tools to work with Magento from co
 
 Compatibility
 -------------
-The tools are currently only tested with PHP 5.3.10 within Ubuntu 12.04 Linux.
+The tools are currently only tested with PHP 5.3.10 within Ubuntu 12.04 Linux and on Mac OS X.
 If you are a Windows user you can help us with a quick test.
 
 The tools should work with Magento 2 development branch.
@@ -461,7 +461,8 @@ Example::
 How can you help?
 -----------------
 
-* Test the tool on Windows or OS X.
+* Add new commands
+* Send me some proposals if you miss anything
 * Create issues if you find a bug or missing a feature.
 
 Thanks to
@@ -473,4 +474,9 @@ Thanks to
 Roadmap
 -------
 
-* Add your own installer sources
+* dev:conflicts - List all rewrite conflicts
+* sys:log:system - Toggle system log
+* sys:log:exception - Toggle system log
+* dev:observer:list - List all observers
+* dev:event:list - List all magento events
+* sys:check
