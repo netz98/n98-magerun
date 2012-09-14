@@ -13,7 +13,7 @@ class ConsoleCommand extends AbstractDatabaseCommand
     {
         $this
             ->setName('database:console')
-            ->setAliases(array('mysql-client'))
+            ->setAliases(array('mysql-client', 'db:console'))
             ->setDescription('Opens mysql client by database config from local.xml')
         ;
     }

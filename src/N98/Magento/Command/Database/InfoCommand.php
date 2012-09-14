@@ -13,6 +13,7 @@ class InfoCommand extends AbstractDatabaseCommand
     {
         $this
             ->setName('database:info')
+            ->setAliases(array('db:info'))
             ->setDescription('Dumps database informations')
         ;
     }

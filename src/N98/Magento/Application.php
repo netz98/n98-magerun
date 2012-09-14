@@ -34,6 +34,7 @@ use N98\Magento\Command\Developer\TranslateInlineShopCommand;
 use N98\Magento\Command\Developer\TranslateInlineAdminCommand;
 use N98\Magento\Command\Developer\ProfilerCommand;
 use N98\Magento\Command\Developer\SymlinksCommand;
+use N98\Magento\Command\Developer\Module\CreateCommand as ModuleCreateCommand;
 use N98\Magento\Command\MagentoConnect\ListExtensionsCommand as MagentoConnectionListExtensionsCommand;
 use N98\Magento\Command\MagentoConnect\InstallExtensionCommand as MagentoConnectionInstallExtensionCommand;
 use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
@@ -48,6 +49,11 @@ class Application extends BaseApplication
     const APP_NAME = 'n98-magerun';
 
     /**
+     * @var string
+     */
+    const APP_VERSION = '1.16.0';
+
+    /**
      * @var \Composer\Autoload\ClassLoader
      */
     protected $autoloader;
@@ -56,11 +62,6 @@ class Application extends BaseApplication
      * @var array
      */
     protected $config;
-
-    /**
-     * @var string
-     */
-    const APP_VERSION = '1.15.1';
 
     public function __construct($autoloader)
     {
@@ -105,6 +106,7 @@ class Application extends BaseApplication
         $this->add(new TranslateInlineAdminCommand());
         $this->add(new ProfilerCommand());
         $this->add(new SymlinksCommand());
+        $this->add(new ModuleCreateCommand());
 
         if (!OperatingSystem::isWindows()) {
             $this->add(new MagentoConnectionListExtensionsCommand());

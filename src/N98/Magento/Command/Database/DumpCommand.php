@@ -13,6 +13,7 @@ class DumpCommand extends AbstractDatabaseCommand
     {
         $this
             ->setName('database:dump')
+            ->setAliases(array('db:dump'))
             ->addOption('only-command', 'Print only mysqldump command. Do not execute')
             ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml')
         ;

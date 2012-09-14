@@ -335,6 +335,21 @@ Global scope can be set by not permitting store_code parameter::
 
     n98-magerun.phar dev:symlinks
 
+Create Module Skel
+""""""""""""""""""
+
+Creates an empty module and registers it in current magento shop::
+
+    n98-magerun.phar dev:module:create vendorNamespace moduleName [codePool]
+
+Code-Pool defaults to `local`.
+
+
+Example::
+
+    n98-magerun.phar dev:module:create MyVendor MyModule
+
+
 List Extensions
 """""""""""""""
 
