@@ -62,7 +62,7 @@ class CreateCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        $this->baseFolder = N98_MAGERUN_ROOT . '/res/module/create';
+        $this->baseFolder = '../../../../../../res/module/create';
         $this->vendorNamespace = $input->getArgument('vendorNamespace');
         $this->moduleName = $input->getArgument('moduleName');
         $this->codePool = $input->getArgument('codePool');
