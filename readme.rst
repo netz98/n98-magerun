@@ -11,6 +11,7 @@ If you are a Windows user you can help us with a quick test.
 
 The tools should work with Magento 2 development branch.
 
+
 Installation
 ------------
 
@@ -19,19 +20,19 @@ There are two ways to install the tools:
 Download phar file
 """"""""""""""""""
 
-.. code:: bash
+.. code-block:: bash
 
     wget https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar
 
 You can make the .phar file executable.
 
-::
+.. code-block:: bash
 
     chmod +x ./n98-magerun.phar
 
 If you want to use command system wide you can copy it to `/usr/local/bin`.
 
-::
+.. code-block:: bash
 
     sudo cp ./n98-magerun.phar /usr/local/bin/
 
@@ -86,7 +87,7 @@ If you don't have installed the .phar file system wide you can call it with the 
 Print database information
 """""""""""""""""""""""""""
 
-::
+.. code-block:: bash
 
     n98-magerun.phar database:info
 
@@ -140,21 +141,21 @@ Loops all magento indexes and triggers reindex.
 Generate local.xml file
 """""""""""""""""""""""
 
-::
+.. code-block:: bash
 
     n98-magerun.phar local-config:generate
 
 Dump global xml config
 """"""""""""""""""""""
 
-::
+.. code-block:: bash
 
     n98-magerun.phar config:dump > extern_file.xml
 
 List Magento cache status
 """""""""""""""""""""""""
 
-::
+.. code-block:: bash
 
     n98-magerun.phar cache:list
 
@@ -164,7 +165,7 @@ Clean Magento cache
 Cleans expired cache entries.
 If you like to remove all entries use `cache:flush`
 
-::
+.. code-block:: bash
 
     n98-magerun.phar cache:clean
 
@@ -176,28 +177,28 @@ Or only one cache type like i.e. full_page cache::
 Remove all cache entries
 """"""""""""""""""""""""
 
-::
+.. code-block:: bash
 
    n98-magerun.phar cache:flush
 
 List Magento caches
 """""""""""""""""""
 
-::
+.. code-block:: bash
 
     n98-magerun.phar cache:list
 
 Disable Magento cache
 """""""""""""""""""""
 
-::
+.. code-block:: bash
 
     n98-magerun.phar cache:disable
 
 Enable Magento cache
 """"""""""""""""""""
 
-::
+.. code-block:: bash
 
     n98-magerun.phar cache:enable
 
@@ -207,21 +208,21 @@ Demo Notice
 
 Toggle demo store notice
 
-::
+.. code-block:: bash
 
    n98-magerun.phar design:demo-notice <store_code>
 
 List admin users
 """"""""""""""""
 
-::
+.. code-block:: bash
 
     n98-magerun.phar admin:user:list
 
 Change admin user password
 """"""""""""""""""""""""""
 
-::
+.. code-block:: bash
 
     n98-magerun.phar admin:user:change-password [username] [password]
 
@@ -230,14 +231,14 @@ Disable admin notifications
 
 Toggle admin notifications.
 
-::
+.. code-block:: bash
 
     n98-magerun.phar admin:notifications
 
 Toggle maintenance mode
 """""""""""""""""""""""
 
-::
+.. code-block:: bash
 
     n98-magerun.phar system:maintenance
 
@@ -246,7 +247,7 @@ Magento system info
 
 Provides info like the edition and version or the configured cache backends.
 
-::
+.. code-block:: bash
 
     n98-magerun.phar system:info
 
@@ -255,7 +256,7 @@ Magento Stores
 
 Lists all store views.
 
-::
+.. code-block:: bash
 
     n98-magerun.phar system:store:list
 
@@ -265,7 +266,7 @@ Magento Websites
 
 Lists all websites.
 
-::
+.. code-block:: bash
 
     n98-magerun.phar system:website:list
 
@@ -274,7 +275,7 @@ Magento modules
 
 Lists all installed modules with codepool and version
 
-::
+.. code-block:: bash
 
     n98-magerun.phar system:modules:list
 
@@ -284,7 +285,7 @@ Run Setup Scripts
 Runs all setup scripts (no need to call frontend).
 This command is useful if you update your system with enabled maintenance mode.
 
-::
+.. code-block:: bash
 
     n98-magerun.phar system:run-setup-scripts
 
@@ -293,7 +294,7 @@ Toggle Template Hints
 
 Toggle debug template hints settings of a store
 
-::
+.. code-block:: bash
 
     n98-magerun.phar dev:template-hints <store_code>
 
@@ -302,7 +303,7 @@ Toggle Template Hints Blocks
 
 Toggle debug template hints blocks settings of a store
 
-::
+.. code-block:: bash
 
     n98-magerun.phar dev:template-hints-blocks <store_code>
 
@@ -384,7 +385,7 @@ Since version 1.1.0 we deliver a Magento installer which does the following:
 * Starts Magento installer
 * Sets rewrite base in .htaccess file
 
-::
+.. code-block:: bash
 
     n98-magerun.phar install
 
