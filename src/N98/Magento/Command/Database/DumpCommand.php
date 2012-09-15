@@ -14,7 +14,7 @@ class DumpCommand extends AbstractDatabaseCommand
         $this
             ->setName('database:dump')
             ->setAliases(array('db:dump'))
-            ->addOption('only-command', 'Print only mysqldump command. Do not execute')
+            ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysqldump command. Do not execute')
             ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml')
         ;
     }
@@ -37,14 +37,15 @@ class DumpCommand extends AbstractDatabaseCommand
             $fileName .= '.sql';
         }
 
-        $exec = sprintf(
-            'mysqldump -h%s -u%s -p%s %s > %s',
-            $this->dbSettings['host'],
-            $this->dbSettings['username'],
-            $this->dbSettings['password'],
-            $this->dbSettings['dbname'],
-            $fileName
-        );
+        $exec = 'mysql '
+            . '-h' . strval($this->dbSettings['host'])
+            . ' '
+            . '-u' . strval($this->dbSettings['username'])
+            . ' '
+            . (!strval($this->dbSettings['password'] == '') ? '-p' . $this->dbSettings['password'] . ' ' : '')
+            . strval($this->dbSettings['dbname'])
+            . ' > '
+            . $fileName;
 
         if ($input->getOption('only-command')) {
             $output->writeln($exec);

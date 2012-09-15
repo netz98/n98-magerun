@@ -341,7 +341,7 @@ Create Module Skel
 
 Creates an empty module and registers it in current magento shop::
 
-    n98-magerun.phar dev:module:create vendorNamespace moduleName [codePool]
+    dev:module:create [--add-blocks] [--add-helpers] [--add-models] vendorNamespace moduleName [codePool]
 
 Code-Pool defaults to `local`.
 
