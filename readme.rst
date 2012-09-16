@@ -351,7 +351,7 @@ Example::
     n98-magerun.phar dev:module:create MyVendor MyModule
 
 
-* Please not that the `--modman` option creates a new folder based on `vendorNamespace` and `moduleName` argument.
+* `--modman` option creates a new folder based on `vendorNamespace` and `moduleName` argument.
 Run this command inside your `.modman` folder.
 
 * --add-all option add blocks, helpers and models.
