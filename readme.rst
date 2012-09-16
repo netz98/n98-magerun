@@ -341,7 +341,7 @@ Create Module Skel
 
 Creates an empty module and registers it in current magento shop::
 
-    dev:module:create [--add-blocks] [--add-helpers] [--add-models] vendorNamespace moduleName [codePool]
+    dev:module:create [--add-blocks] [--add-helpers] [--add-models] [--modman] vendorNamespace moduleName [codePool]
 
 Code-Pool defaults to `local`.
 
@@ -350,6 +350,9 @@ Example::
 
     n98-magerun.phar dev:module:create MyVendor MyModule
 
+
+Please not that the `--modman` option creates a new folder based on `vendorNamespace` and `moduleName` argument.
+Run this command inside your `.modman` folder.
 
 List Extensions
 """""""""""""""

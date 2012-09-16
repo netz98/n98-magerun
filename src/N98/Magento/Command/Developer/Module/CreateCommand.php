@@ -44,6 +44,11 @@ class CreateCommand extends AbstractMagentoCommand
      */
     protected $codePool;
 
+    /**
+     * @var bool
+     */
+    protected $modmanMode = false;
+
     protected function configure()
     {
         $this
@@ -54,6 +59,7 @@ class CreateCommand extends AbstractMagentoCommand
             ->addOption('add-blocks', null, InputOption::VALUE_NONE, 'Adds blocks')
             ->addOption('add-helpers', null, InputOption::VALUE_NONE, 'Adds helpers')
             ->addOption('add-models', null, InputOption::VALUE_NONE, 'Adds models')
+            ->addOption('modman', null, InputOption::VALUE_NONE, 'Create all files in folder with a modman file.')
             ->setDescription('Creates an registers new magento module.');
     }
 
@@ -64,7 +70,10 @@ class CreateCommand extends AbstractMagentoCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->detectMagento($output);
+        $this->modmanMode = $input->getOption('modman');
+        if (!$this->modmanMode) {
+            $this->detectMagento($output);
+        }
         $this->baseFolder = __DIR__ . '/../../../../../../res/module/create';
         $this->vendorNamespace = ucfirst($input->getArgument('vendorNamespace'));
         $this->moduleName = ucfirst($input->getArgument('moduleName'));
@@ -76,6 +85,9 @@ class CreateCommand extends AbstractMagentoCommand
         $this->createModuleDirectories($input, $output);
         $this->writeEtcModules($input, $output);
         $this->writeModuleConfig($input, $output);
+        if ($this->modmanMode) {
+            $this->writeModmanFile($input, $output);
+        }
     }
 
     protected function initView($input)
@@ -91,7 +103,12 @@ class CreateCommand extends AbstractMagentoCommand
     }
 
     protected function createModuleDirectories($input, $output)
-    {
+    {	
+	if ($this->modmanMode) {
+            mkdir($this->vendorNamespace . '_' . $this->moduleName. '/src', 0777, true);
+            $this->_magentoRootFolder = './' . $this->vendorNamespace . '_' . $this->moduleName . '/src';
+            mkdir($this->_magentoRootFolder . '/app/etc/modules', 0777, true);
+        }
         $moduleDir = $this->_magentoRootFolder
                    . '/app/code/'
                    . $this->codePool
@@ -144,6 +161,14 @@ class CreateCommand extends AbstractMagentoCommand
     {
         $this->view->setTemplate($this->baseFolder . '/app/etc/modules/config.phtml');
         $outFile = $this->moduleDirectory . '/etc/config.xml';
+        file_put_contents($outFile, $this->view->render());
+        $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
+    }
+
+    protected function writeModmanFile($input, $output)
+    {
+        $this->view->setTemplate($this->baseFolder . '/modman.phtml');
+        $outFile = $this->_magentoRootFolder . '/../modman';
         file_put_contents($outFile, $this->view->render());
         $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
     }
