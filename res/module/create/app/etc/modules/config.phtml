@@ -8,17 +8,23 @@
     <global>
 <?php if ($createBlocks): ?>
         <blocks>
-            <class><?php echo $vendorNamespace ?>_<?php echo $moduleName ?>_Block</class>
+            <<?php echo strtolower($vendorNamespace) ?>_<?php echo strtolower($moduleName) ?>>
+                <class><?php echo $vendorNamespace ?>_<?php echo $moduleName ?>_Block</class>
+            </<?php echo strtolower($vendorNamespace) ?>_<?php echo strtolower($moduleName) ?>>
         </blocks>
 <?php endif; ?>
 <?php if ($createHelpers): ?>
         <helpers>
-            <class><?php echo $vendorNamespace ?>_<?php echo $moduleName ?>_Helper</class>
+            <<?php echo strtolower($vendorNamespace) ?>_<?php echo strtolower($moduleName) ?>>
+                <class><?php echo $vendorNamespace ?>_<?php echo $moduleName ?>_Helper</class>
+            </<?php echo strtolower($vendorNamespace) ?>_<?php echo strtolower($moduleName) ?>>
         </helpers>
 <?php endif; ?>
 <?php if ($createModels): ?>
         <models>
-            <class><?php echo $vendorNamespace ?>_<?php echo $moduleName ?>_Model</class>
+            <<?php echo strtolower($vendorNamespace) ?>_<?php echo strtolower($moduleName) ?>>
+                <class><?php echo $vendorNamespace ?>_<?php echo $moduleName ?>_Model</class>
+            </<?php echo strtolower($vendorNamespace) ?>_<?php echo strtolower($moduleName) ?>>
         </models>
 <?php endif; ?>
     </global>
