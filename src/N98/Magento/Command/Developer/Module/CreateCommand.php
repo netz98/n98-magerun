@@ -59,6 +59,7 @@ class CreateCommand extends AbstractMagentoCommand
             ->addOption('add-blocks', null, InputOption::VALUE_NONE, 'Adds blocks')
             ->addOption('add-helpers', null, InputOption::VALUE_NONE, 'Adds helpers')
             ->addOption('add-models', null, InputOption::VALUE_NONE, 'Adds models')
+            ->addOption('add-all', null, InputOption::VALUE_NONE, 'Adds blocks, helpers and models')
             ->addOption('modman', null, InputOption::VALUE_NONE, 'Create all files in folder with a modman file.')
             ->setDescription('Creates an registers new magento module.');
     }
@@ -71,6 +72,11 @@ class CreateCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->modmanMode = $input->getOption('modman');
+        if ($input->getOption('add-all')) {
+            $input->setOption('add-blocks', true);
+            $input->setOption('add-helpers', true);
+            $input->setOption('add-models', true);
+        }
         if (!$this->modmanMode) {
             $this->detectMagento($output);
         }
