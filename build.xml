@@ -5,6 +5,7 @@
         <pharpackage basedir="./" stub="_cli_stub.php" signature="sha512" compression="bzip2" destfile="./n98-magerun.phar">
             <fileset dir=".">
                 <include name="config.yaml" />
+                <include name="MIT-LICENSE.txt" />
             </fileset>
             <fileset dir="src">
                 <include name="**/**" />
