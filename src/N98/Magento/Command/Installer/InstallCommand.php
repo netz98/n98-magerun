@@ -4,6 +4,7 @@ namespace N98\Magento\Command\Installer;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -49,10 +50,11 @@ class InstallCommand extends AbstractMagentoCommand
         $this->commandConfig = $this->getCommandConfig();
         $this->writeSection($output, 'Magento Installation');
         $this->selectMagentoVersion($input, $output);
-        $this->chooseInstalltionFolder($input, $output);
+        $this->chooseInstallationFolder($input, $output);
         $this->downloadMagento($input, $output);
         $this->createDatabase($output);
         $this->installSampleData($input, $output);
+        $this->setDirectoryPermissions();
         $this->installMagento($input, $output, $this->config['installationFolder']);
     }
 
@@ -85,7 +87,7 @@ class InstallCommand extends AbstractMagentoCommand
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      */
-    protected function chooseInstalltionFolder(InputInterface $input, OutputInterface $output)
+    protected function chooseInstallationFolder(InputInterface $input, OutputInterface $output)
     {
         $defaultFolder = './magento';
         $question[] = "<question>Enter installation folder:</question> [<comment>" . $defaultFolder . "</comment>]";
@@ -365,5 +367,17 @@ class InstallCommand extends AbstractMagentoCommand
         copy($this->config['installationFolder'] . DIRECTORY_SEPARATOR . '.htaccess', $this->config['installationFolder'] . DIRECTORY_SEPARATOR . '.htaccess.dist');
         $content = str_replace('#RewriteBase /magento/', 'RewriteBase ' . parse_url($baseUrl, PHP_URL_PATH), $content);
         file_put_contents($this->config['installationFolder'] . DIRECTORY_SEPARATOR . '.htaccess', $content);
+    }
+
+    protected function setDirectoryPermissions()
+    {
+        $mediaFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'media';
+        @chmod($mediaFolder, 0777);
+        $finder = new Finder();
+        $finder->directories()
+            ->in($mediaFolder);
+        foreach ($finder as $dir) {
+            @chmod($dir->getRealpath(), 0777);
+        }
     }
 }
