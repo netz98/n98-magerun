@@ -220,7 +220,7 @@ class InstallCommand extends AbstractMagentoCommand
                     }
 
                     // Install sample data
-                    $sampleDataSqlFile = glob($this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'magento_sample_data*.sql');
+                    $sampleDataSqlFile = glob($this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'magento_*sample_data*.sql');
                     $db = $this->config['db']; /* @var $db \PDO */
                     if (isset($sampleDataSqlFile[0])) {
                         $output->writeln('<info>Importing ' . $sampleDataSqlFile[0] . '</info>');
