@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 
 $autoloader = require_once 'phar://' . __FILE__ . '/vendor/autoload.php';

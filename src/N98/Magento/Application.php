@@ -37,6 +37,7 @@ use N98\Magento\Command\Developer\SymlinksCommand;
 use N98\Magento\Command\Developer\Module\CreateCommand as ModuleCreateCommand;
 use N98\Magento\Command\MagentoConnect\ListExtensionsCommand as MagentoConnectionListExtensionsCommand;
 use N98\Magento\Command\MagentoConnect\InstallExtensionCommand as MagentoConnectionInstallExtensionCommand;
+use N98\Magento\Command\MagentoConnect\DownloadExtensionCommand as MagentoConnectionDownloadExtensionCommand;
 use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
 use N98\Util\OperatingSystem;
 use Xanido\Console\Helper\TableHelper;
@@ -51,7 +52,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.18.5';
+    const APP_VERSION = '1.19.0';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -111,6 +112,7 @@ class Application extends BaseApplication
         if (!OperatingSystem::isWindows()) {
             $this->add(new MagentoConnectionListExtensionsCommand());
             $this->add(new MagentoConnectionInstallExtensionCommand());
+            $this->add(new MagentoConnectionDownloadExtensionCommand());
         }
 
         $this->add(new SelfUpdateCommand());

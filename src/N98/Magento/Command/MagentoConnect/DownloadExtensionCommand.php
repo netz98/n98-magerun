@@ -5,14 +5,14 @@ namespace N98\Magento\Command\MagentoConnect;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class InstallExtensionCommand extends AbstractConnectCommand
+class DownloadExtensionCommand extends AbstractConnectCommand
 {
     protected function configure()
     {
         $this
-            ->setName('extension:install')
-            ->addArgument('package', \Symfony\Component\Console\Input\InputArgument::REQUIRED, 'Packge to install')
-            ->setDescription('Install magento-connect package')
+            ->setName('extension:download')
+            ->addArgument('package', \Symfony\Component\Console\Input\InputArgument::REQUIRED, 'Packge to download')
+            ->setDescription('Download magento-connect package')
         ;
     }
 
@@ -23,6 +23,6 @@ class InstallExtensionCommand extends AbstractConnectCommand
      */
     protected function doAction($input, $output, $package)
     {
-        $output->writeln($this->callMageScript($input, $output, 'install community ' . $package));
+        $output->writeln($this->callMageScript($input, $output, 'download community ' . $package));
     }
 }
