@@ -379,6 +379,16 @@ If alternatives could be found you can select the package to install.
 * Requires Magento's `mage` shell script.
 * Does not work with Windows as operating system.
 
+Download Extensions
+"""""""""""""""
+
+Downloads connect extensions by package key::
+
+    n98-magerun.phar extension:download <search>
+
+* Requires Magento's `mage` shell script.
+* Does not work with Windows as operating system.
+
 Magento Installer (Experimental)
 """"""""""""""""""""""""""""""""
 
