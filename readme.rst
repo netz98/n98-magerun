@@ -100,7 +100,7 @@ Direct dump with mysqldump::
 
 Only the mysqldump command::
 
-    n98-magerun.phar database:dump --only-command
+    n98-magerun.phar database:dump --only-command [filename]
 
 Database Console / MySQL Client
 """""""""""""""""""""""""""""""

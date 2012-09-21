@@ -14,6 +14,7 @@ class DumpCommand extends AbstractDatabaseCommand
         $this
             ->setName('database:dump')
             ->setAliases(array('db:dump'))
+            ->addArgument('filename', InputArgument::OPTIONAL, 'Dump filename')
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysqldump command. Do not execute')
             ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml')
         ;
@@ -30,8 +31,10 @@ class DumpCommand extends AbstractDatabaseCommand
 
         $this->writeSection($output, 'Dump MySQL Database');
 
-        $dialog = $this->getHelperSet()->get('dialog');
-        $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question>', $this->dbSettings['dbname']);
+        if (($fileName = $input->getArgument('filename')) === null)  {
+            $dialog = $this->getHelperSet()->get('dialog');
+            $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question>', $this->dbSettings['dbname']);
+        }
 
         if (substr($fileName, -4, 4) !== '.sql') {
             $fileName .= '.sql';
@@ -50,7 +53,7 @@ class DumpCommand extends AbstractDatabaseCommand
         if ($input->getOption('only-command')) {
             $output->writeln($exec);
         } else {
-            $output->writeln('<info>Start dumping database: ' . $this->dbSettings['dbname'] . '</info>');
+            $output->writeln('<comment>Start dumping database: <info>' . $this->dbSettings['dbname'] . '</info> to file <info>' . $fileName . '</info>');
             exec($exec, $commandOutput, $returnValue);
             if ($returnValue > 0) {
                 $output->writeln('<error>' . implode(PHP_EOL, $commandOutput) . '</error>');
