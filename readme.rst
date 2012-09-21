@@ -380,7 +380,7 @@ If alternatives could be found you can select the package to install.
 * Does not work with Windows as operating system.
 
 Download Extensions
-"""""""""""""""
+"""""""""""""""""""
 
 Downloads connect extensions by package key::
 
