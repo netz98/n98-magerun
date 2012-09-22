@@ -366,7 +366,7 @@ Lists all registered class rewrites::
 Rewrite Conflicts
 """""""""""""""""
 
-Lists all duplicated rewrites and tells you which class should be loaded by Magento.
+Lists all duplicated rewrites and tells you which class is loaded by Magento.
 
 .. code-block:: bash
 
