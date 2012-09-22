@@ -19,6 +19,7 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('system:website:list')
+            ->setAliases(array('sys:website:list'))
             ->setDescription('Lists all websites');
     }
 

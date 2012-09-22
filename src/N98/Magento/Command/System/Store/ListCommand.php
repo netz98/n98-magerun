@@ -19,6 +19,7 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('system:store:list')
+            ->setAliases(array('sys:store:list'))
             ->setDescription('Lists all installed store-views');
     }
 
