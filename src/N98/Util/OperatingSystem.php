@@ -47,4 +47,17 @@ class OperatingSystem
     {
         return stristr(PHP_OS, 'darwin') || stristr(PHP_OS, 'mac');
     }
+
+    /**
+     * @param string $program
+     * @return bool
+     */
+    public function isProgramInstalled($program)
+    {
+        $out = null;
+        $return = null;
+        @exec('which ' . $program, $out, $return);
+
+        return $return === 0;
+    }
 }

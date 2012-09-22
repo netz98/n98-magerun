@@ -4,6 +4,8 @@ namespace N98\Magento\Command\Installer;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Filesystem;
+use N98\Util\OperatingSystem;
+use N98\Util\Database as DatabaseUtils;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -98,6 +100,8 @@ class InstallCommand extends AbstractMagentoCommand
                     throw new \InvalidArgumentException('Cannot create folder.');
                 }
             } else {
+                $folderName = trim($folderName, '. /');
+                $folderName = realpath($folderName);
                 return $folderName;
             }
 
@@ -148,7 +152,7 @@ class InstallCommand extends AbstractMagentoCommand
          * Database
          */
         do {
-            $this->config['db_host'] = $dialog->askAndValidate($output, '<question>Please enter the database host</question> <comment>[localhost]</comment>: ', $this->notEmptyCallback, false, 'localhost');
+            $this->config['db_host'] = $dialog->askAndValidate($output, '<question>Please enter the database host:</question> <comment>[localhost]</comment>: ', $this->notEmptyCallback, false, 'localhost');
             $this->config['db_user'] = $dialog->askAndValidate($output, '<question>Please enter the database username:</question> ', $this->notEmptyCallback);
             $this->config['db_pass'] = $dialog->ask($output, '<question>Please enter the database password:</question> ');
             $this->config['db_name'] = $dialog->askAndValidate($output, '<question>Please enter the database name:</question> ', $this->notEmptyCallback);
@@ -225,8 +229,25 @@ class InstallCommand extends AbstractMagentoCommand
                     $sampleDataSqlFile = glob($this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'magento_*sample_data*.sql');
                     $db = $this->config['db']; /* @var $db \PDO */
                     if (isset($sampleDataSqlFile[0])) {
-                        $output->writeln('<info>Importing ' . $sampleDataSqlFile[0] . '</info>');
-                        $db->exec(file_get_contents($sampleDataSqlFile[0]));
+                        $os = new OperatingSystem();
+                        if ($os->isProgramInstalled('mysql')) {
+                            $exec = 'mysql '
+                                  . '-h' . strval($this->config['db_host'])
+                                  . ' '
+                                  . '-u' . strval($this->config['db_user'])
+                                  . ' '
+                                  . (!strval($this->config['db_pass'] == '') ? '-p' . $this->config['db_pass'] . ' ' : '')
+                                  . strval($this->config['db_name'])
+                                  . ' < '
+                                  . $sampleDataSqlFile[0];
+                            $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with mysql cli client</info>');
+                            exec($exec);
+                        } else {
+                            $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with PDO driver</info>');
+                            // Fallback -> Try to install dump file by PDO driver
+                            $dbUtils = new DatabaseUtils();
+                            $dbUtils->importSqlDump($db, $sampleDataSqlFile[0]);
+                        }
                     }
                 }
             }
@@ -246,13 +267,13 @@ class InstallCommand extends AbstractMagentoCommand
 
         $sessionSave = $dialog->ask(
             $output,
-            '<question>Please enter the session save</question> <comment>[ ' . $defaults['session_save'] . ']</comment>: ',
+            '<question>Please enter the session save:</question> <comment>[ ' . $defaults['session_save'] . ']</comment>: ',
             $defaults['session_save']
         );
 
         $adminFrontname = $dialog->askAndValidate(
             $output,
-            '<question>Please enter the admin frontname</question> <comment>[' . $defaults['admin_frontname'] . ']</comment> ',
+            '<question>Please enter the admin frontname:</question> <comment>[' . $defaults['admin_frontname'] . ']</comment> ',
             $this->notEmptyCallback,
             false,
             $defaults['admin_frontname']
@@ -260,7 +281,7 @@ class InstallCommand extends AbstractMagentoCommand
 
         $currency = $dialog->askAndValidate(
             $output,
-            '<question>Please enter the default currency code </question> <comment>[' . $defaults['currency'] . ']</comment>: ',
+            '<question>Please enter the default currency code:</question> <comment>[' . $defaults['currency'] . ']</comment>: ',
             $this->notEmptyCallback,
             false,
             $defaults['currency']
@@ -268,7 +289,7 @@ class InstallCommand extends AbstractMagentoCommand
 
         $locale = $dialog->askAndValidate(
             $output,
-            '<question>Please enter the locale code </question> <comment>[' . $defaults['locale'] . ']</comment>: ',
+            '<question>Please enter the locale code:</question> <comment>[' . $defaults['locale'] . ']</comment>: ',
             $this->notEmptyCallback,
             false,
             $defaults['locale']
@@ -276,7 +297,7 @@ class InstallCommand extends AbstractMagentoCommand
 
         $timezone = $dialog->askAndValidate(
             $output,
-            '<question>Please enter the timezone </question> <comment>[' . $defaults['timezone'] . ']</comment>: ',
+            '<question>Please enter the timezone:</question> <comment>[' . $defaults['timezone'] . ']</comment>: ',
             $this->notEmptyCallback,
             false,
             $defaults['timezone']
@@ -284,7 +305,7 @@ class InstallCommand extends AbstractMagentoCommand
 
         $adminUsername = $dialog->askAndValidate(
             $output,
-            '<question>Please enter the admin username </question> <comment>[' . $defaults['admin_username'] . ']</comment>: ',
+            '<question>Please enter the admin username:</question> <comment>[' . $defaults['admin_username'] . ']</comment>: ',
             $this->notEmptyCallback,
             false,
             $defaults['admin_username']
@@ -292,7 +313,7 @@ class InstallCommand extends AbstractMagentoCommand
 
         $adminPassword = $dialog->askAndValidate(
             $output,
-            '<question>Please enter the admin password </question> <comment>[' . $defaults['admin_password'] . ']</comment>: ',
+            '<question>Please enter the admin password:</question> <comment>[' . $defaults['admin_password'] . ']</comment>: ',
             $this->notEmptyCallback,
             false,
             $defaults['admin_password']
@@ -300,7 +321,7 @@ class InstallCommand extends AbstractMagentoCommand
 
         $adminFirstname = $dialog->askAndValidate(
             $output,
-            '<question>Please enter the admin\'s firstname </question> <comment>[' . $defaults['admin_firstname'] . ']</comment>: ',
+            '<question>Please enter the admin\'s firstname:</question> <comment>[' . $defaults['admin_firstname'] . ']</comment>: ',
             $this->notEmptyCallback,
             false,
             $defaults['admin_firstname']
@@ -308,7 +329,7 @@ class InstallCommand extends AbstractMagentoCommand
 
         $adminLastname = $dialog->askAndValidate(
             $output,
-            '<question>Please enter the admin\'s lastname </question> <comment>[' . $defaults['admin_lastname'] . ']</comment>: ',
+            '<question>Please enter the admin\'s lastname:</question> <comment>[' . $defaults['admin_lastname'] . ']</comment>: ',
             $this->notEmptyCallback,
             false,
             $defaults['admin_lastname']
@@ -316,16 +337,23 @@ class InstallCommand extends AbstractMagentoCommand
 
         $adminEmail = $dialog->askAndValidate(
             $output,
-            '<question>Please enter the admin\'s email </question> <comment>[' . $defaults['admin_email'] . ']</comment>: ',
+            '<question>Please enter the admin\'s email:</question> <comment>[' . $defaults['admin_email'] . ']</comment>: ',
             $this->notEmptyCallback,
             false,
             $defaults['admin_email']
         );
 
+        $validateBaseUrl = function($input) {
+            if (!preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $input)) {
+                throw new \InvalidArgumentException('Please enter a valid URL');
+            }
+            return $input;
+        };
+
         $baseUrl = $dialog->askAndValidate(
             $output,
             '<question>Please enter the base url:</question> ',
-            $this->notEmptyCallback,
+            $validateBaseUrl,
             false
         );
         $baseUrl = rtrim($baseUrl, '/') . '/'; // normalize baseUrl
@@ -353,9 +381,24 @@ class InstallCommand extends AbstractMagentoCommand
         $_SERVER['argv']['skip_url_validation'] = 'yes';
         $this->replaceHtaccessFile($baseUrl);
         $output->writeln('<info>Start installation process.</info>');
+
+        $dialog = $this->getHelperSet()->get('dialog');
+        if ($dialog->askConfirmation($output, '<question>Write BaseURL to .htaccess file?</question> <comment>[n]</comment>: ', false)) {
+            $this->replaceHtaccessFile($baseUrl);
+        }
+
+        $output->writeln('<info>Installing magento</info>');
         include($this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'install.php');
-        $this->replaceHtaccessFile($baseUrl);
+
         $output->writeln('<info>Successfully installed magento</info>');
+    }
+
+    /**
+     * @return false|string
+     */
+    protected function validateBaseUrlCallback()
+    {
+
     }
 
     /**
