@@ -48,7 +48,7 @@ class DumpCommand extends AbstractDatabaseCommand
             . (!strval($this->dbSettings['password'] == '') ? '-p' . escapeshellarg($this->dbSettings['password']) . ' ' : '')
             . escapeshellarg(strval($this->dbSettings['dbname']))
             . ' > '
-            . $fileName;
+            . escapeshellarg($fileName);
 
         if ($input->getOption('only-command')) {
             $output->writeln($exec);
