@@ -341,7 +341,7 @@ Create Module Skel
 
 Creates an empty module and registers it in current magento shop::
 
-    dev:module:create [--add-blocks] [--add-helpers] [--add-models] [--add-all] [--modman] vendorNamespace moduleName [codePool]
+    n98-magerun.phar dev:module:create [--add-blocks] [--add-helpers] [--add-models] [--add-all] [--modman] vendorNamespace moduleName [codePool]
 
 Code-Pool defaults to `local`.
 
@@ -355,6 +355,22 @@ Example::
 Run this command inside your `.modman` folder.
 
 * --add-all option add blocks, helpers and models.
+
+Rewrite List
+""""""""""""
+
+Lists all registered class rewrites::
+
+    n98-magerun.phar dev:module:rewrite:list
+
+Rewrite Conflicts
+"""""""""""""""""
+
+Lists all duplicated rewrites and tells you which class should be loaded by Magento.
+
+.. code-block:: bash
+
+    n98-magerun.phar dev:module:rewrite:conflicts
 
 List Extensions
 """""""""""""""
@@ -489,7 +505,6 @@ Thanks to
 Roadmap
 -------
 
-* dev:conflicts - List all rewrite conflicts
 * sys:log:system - Toggle system log
 * sys:log:exception - Toggle system log
 * dev:observer:list - List all observers
