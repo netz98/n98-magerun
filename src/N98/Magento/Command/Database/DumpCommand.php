@@ -40,7 +40,7 @@ class DumpCommand extends AbstractDatabaseCommand
             $fileName .= '.sql';
         }
 
-        $exec = 'mysql '
+        $exec = 'mysqldump '
             . '-h' . strval($this->dbSettings['host'])
             . ' '
             . '-u' . strval($this->dbSettings['username'])
