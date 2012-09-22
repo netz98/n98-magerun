@@ -289,6 +289,19 @@ This command is useful if you update your system with enabled maintenance mode.
 
     n98-magerun.phar system:run-setup-scripts
 
+System Check
+""""""""""""
+
+- Checks missing files and folders
+- Security
+- PHP Extensions (Required and Bytecode Cache)
+- MySQL InnoDB Engine
+
+.. code-block:: bash
+
+    n98-magerun.phar system:check
+
+
 Toggle Template Hints
 """""""""""""""""""""
 
@@ -509,4 +522,3 @@ Roadmap
 * sys:log:exception - Toggle system log
 * dev:observer:list - List all observers
 * dev:event:list - List all magento events
-* sys:check

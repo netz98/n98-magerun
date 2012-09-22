@@ -19,6 +19,7 @@ class InfoCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('system:info')
+            ->setAliases(array('sys:info'))
             ->setDescription('Prints infos about the current magento system.');
     }
 

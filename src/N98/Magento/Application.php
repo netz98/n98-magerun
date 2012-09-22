@@ -24,6 +24,7 @@ use N98\Magento\Command\Admin\DisableNotificationsCommand;
 use N98\Magento\Command\Installer\InstallCommand;
 use N98\Magento\Command\System\MaintenanceCommand as SystemMaintenanceCommand;
 use N98\Magento\Command\System\InfoCommand as SystemInfoCommand;
+use N98\Magento\Command\System\CheckCommand as SystemCheckCommand;
 use N98\Magento\Command\System\ModulesCommand as SystemModulesCommand;
 use N98\Magento\Command\System\RunSetupScriptsCommand;
 use N98\Magento\Command\System\Store\ListCommand as SystemStoreListCommand;
@@ -54,7 +55,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.21.4';
+    const APP_VERSION = '1.22.0';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -99,6 +100,7 @@ class Application extends BaseApplication
         $this->add(new InstallCommand());
         $this->add(new SystemMaintenanceCommand());
         $this->add(new SystemInfoCommand());
+        $this->add(new SystemCheckCommand());
         $this->add(new SystemModulesCommand());
         $this->add(new SystemStoreListCommand());
         $this->add(new SystemWebsiteListCommand());

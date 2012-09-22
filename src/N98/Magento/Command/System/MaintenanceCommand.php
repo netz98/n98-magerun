@@ -14,6 +14,7 @@ class MaintenanceCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('system:maintenance')
+            ->setAliases(array('sys:maintenance'))
             ->setDescription('Toggles maintenance mode.')
         ;
     }

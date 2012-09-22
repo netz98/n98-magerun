@@ -19,6 +19,7 @@ class ModulesCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('system:modules:list')
+            ->setAliases(array('sys:modules:list'))
             ->setDescription('List all installed modules');
     }
 

@@ -12,6 +12,7 @@ class RunSetupScriptsCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('system:run-setup-scripts')
+            ->setAliases(array('sys:run-setup-scripts'))
             ->setDescription('Runs all new setup scripts.');
     }
 
