@@ -34,7 +34,7 @@ class ConflictsCommand extends AbstractRewriteCommand
             foreach ($rewrites as $type => $data) {
                 if (count($data) > 0) {
                     foreach ($data as $class => $rewriteClass) {
-                        if (count($rewriteClass) > 0) {
+                        if (count($rewriteClass) > 1) {
                             $table[] = array(
                                 'Type'         => $type,
                                 'Class'        => $class,
