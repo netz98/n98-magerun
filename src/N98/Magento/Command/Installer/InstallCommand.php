@@ -232,14 +232,14 @@ class InstallCommand extends AbstractMagentoCommand
                         $os = new OperatingSystem();
                         if ($os->isProgramInstalled('mysql')) {
                             $exec = 'mysql '
-                                  . '-h' . strval($this->config['db_host'])
+                                  . '-h' . escapeshellarg(strval($this->config['db_host']))
                                   . ' '
-                                  . '-u' . strval($this->config['db_user'])
+                                  . '-u' . escapeshellarg(strval($this->config['db_user']))
                                   . ' '
-                                  . (!strval($this->config['db_pass'] == '') ? '-p' . $this->config['db_pass'] . ' ' : '')
+                                  . (!strval($this->config['db_pass'] == '') ? '-p' . escapeshellarg($this->config['db_pass']) . ' ' : '')
                                   . strval($this->config['db_name'])
                                   . ' < '
-                                  . $sampleDataSqlFile[0];
+                                  . escapeshellarg($sampleDataSqlFile[0]);
                             $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with mysql cli client</info>');
                             exec($exec);
                         } else {

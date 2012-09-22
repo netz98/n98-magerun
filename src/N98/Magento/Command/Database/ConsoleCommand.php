@@ -34,12 +34,12 @@ class ConsoleCommand extends AbstractDatabaseCommand
         );
 
         $exec = 'mysql '
-              . '-h' . strval($this->dbSettings['host'])
+              . '-h' . escapeshellarg(strval($this->dbSettings['host']))
               . ' '
-              . '-u' . strval($this->dbSettings['username'])
+              . '-u' . escapeshellarg(strval($this->dbSettings['username']))
               . ' '
-              . (!strval($this->dbSettings['password'] == '') ? '-p' . $this->dbSettings['password'] . ' ' : '')
-              . strval($this->dbSettings['dbname']);
+              . (!strval($this->dbSettings['password'] == '') ? '-p' . escapeshellarg($this->dbSettings['password']) . ' ' : '')
+              . escapeshellarg(strval($this->dbSettings['dbname']));
 
         $pipes = array();
         proc_open($exec, $descriptorSpec, $pipes);
