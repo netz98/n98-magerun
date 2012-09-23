@@ -267,7 +267,7 @@ class InstallCommand extends AbstractMagentoCommand
 
         $sessionSave = $dialog->ask(
             $output,
-            '<question>Please enter the session save:</question> <comment>[ ' . $defaults['session_save'] . ']</comment>: ',
+            '<question>Please enter the session save:</question> <comment>[' . $defaults['session_save'] . ']</comment>: ',
             $defaults['session_save']
         );
 
