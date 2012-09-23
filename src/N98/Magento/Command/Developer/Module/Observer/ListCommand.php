@@ -50,7 +50,7 @@ class ListCommand extends AbstractMagentoCommand
             }
 
             if (!in_array($type, $areas)) {
-                throw new \InvalidArgumentException('Invalid type! Use one of: ' . implode($areas));
+                throw new \InvalidArgumentException('Invalid type! Use one of: ' . implode(', ', $areas));
             }
 
             $this->writeSection($output, 'Observers: ' . $type);
