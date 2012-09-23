@@ -385,6 +385,18 @@ Lists all duplicated rewrites and tells you which class is loaded by Magento.
 
     n98-magerun.phar dev:module:rewrite:conflicts
 
+Observer List
+"""""""""""""
+
+Lists all registered observer by type.
+
+.. code-block:: bash
+
+    n98-magerun.phar dev:module:observer:list [type]
+
+Type is one of "adminhtml", "global", "frontend".
+
+
 List Extensions
 """""""""""""""
 
@@ -520,5 +532,4 @@ Roadmap
 
 * sys:log:system - Toggle system log
 * sys:log:exception - Toggle system log
-* dev:observer:list - List all observers
 * dev:event:list - List all magento events

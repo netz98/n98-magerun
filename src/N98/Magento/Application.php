@@ -38,6 +38,7 @@ use N98\Magento\Command\Developer\SymlinksCommand;
 use N98\Magento\Command\Developer\Module\Rewrite\ListCommand as ModuleRewriteListCommand;
 use N98\Magento\Command\Developer\Module\Rewrite\ConflictsCommand as ModuleRewriteConflictsCommand;
 use N98\Magento\Command\Developer\Module\CreateCommand as ModuleCreateCommand;
+use N98\Magento\Command\Developer\Module\Observer\ListCommand as ModuleObserverListCommand;
 use N98\Magento\Command\MagentoConnect\ListExtensionsCommand as MagentoConnectionListExtensionsCommand;
 use N98\Magento\Command\MagentoConnect\InstallExtensionCommand as MagentoConnectionInstallExtensionCommand;
 use N98\Magento\Command\MagentoConnect\DownloadExtensionCommand as MagentoConnectionDownloadExtensionCommand;
@@ -55,7 +56,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.22.0';
+    const APP_VERSION = '1.23.0';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -114,6 +115,7 @@ class Application extends BaseApplication
         $this->add(new ModuleRewriteListCommand());
         $this->add(new ModuleRewriteConflictsCommand());
         $this->add(new ModuleCreateCommand());
+        $this->add(new ModuleObserverListCommand());
 
         if (!OperatingSystem::isWindows()) {
             $this->add(new MagentoConnectionListExtensionsCommand());

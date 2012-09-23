@@ -1,13 +1,11 @@
 #!bash
 #
-# bash completion support for n98-magerun.phar console
+# bash completion support for symfony2 console
 #
-# Thanks to atthieu Bontemps <matthieu@knplabs.com> for
-# the original script.
-#
-# https://github.com/knplabs/symfony2-autocomplete/blob/master/symfony2-autocomplete.bash
+# Copyright (C) 2011 Matthieu Bontemps <matthieu@knplabs.com>
+# Distributed under the GNU General Public License, version 2.0.
 
-_console()
+_n98-magerun()
 {
     local cur prev opts cmd
     COMPREPLY=()
@@ -33,5 +31,5 @@ echo implode("\n", $comps);
     return 0
 }
 
-complete -F _console n98-magerun.phar
+complete -F _n98-magerun n98-magerun.phar
 COMP_WORDBREAKS=${COMP_WORDBREAKS//:}
