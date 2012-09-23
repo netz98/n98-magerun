@@ -30,12 +30,13 @@ class ListCommand extends AbstractMagentoCommand
         if ($this->initMagento()) {
             $type = $input->getArgument('type');
 
+            $areas = array(
+                'global',
+                'adminhtml',
+                'frontend',
+            );
+
             if ($type === null) {
-                $areas = array(
-                    'global',
-                    'adminhtml',
-                    'frontend',
-                );
                 foreach ($areas as $key => $area) {
                     $question[] = '<comment>[' . ($key + 1) . ']</comment> ' . $area . "\n";
                 }
