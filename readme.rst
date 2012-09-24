@@ -532,4 +532,5 @@ Roadmap
 
 * sys:log:system - Toggle system log
 * sys:log:exception - Toggle system log
+* sys:cron:list - List of cronjobs
 * dev:event:list - List all magento events
