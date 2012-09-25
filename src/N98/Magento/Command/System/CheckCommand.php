@@ -120,19 +120,19 @@ class CheckCommand extends AbstractMagentoCommand
             'xcache',
             'Zend Optimizer'
         );
-        $bytecopdeCacheExtensionLoaded = false;
-        $bytecopdeCacheExtension = null;
+        $bytecodeCacheExtensionLoaded = false;
+        $bytecodeCacheExtension = null;
         foreach ($bytecopdeCacheExtensions as $ext) {
             if (extension_loaded($ext)) {
-                $bytecopdeCacheExtension = $ext;
-                $bytecopdeCacheExtensionLoaded = true;
+                $bytecodeCacheExtension = $ext;
+                $bytecodeCacheExtensionLoaded = true;
                 break;
             }
         }
-        if ($bytecopdeCacheExtensionLoaded) {
-            $output->writeln("<info>Bytecode Cache <comment>$bytecopdeCacheExtension</comment> found.</info>");
+        if ($bytecodeCacheExtensionLoaded) {
+            $output->writeln("<info>Bytecode Cache <comment>$bytecodeCacheExtension</comment> found.</info>");
         } else {
-            $output->writeln("<error>Required PHP Module $ext not found!</error>");
+            $output->writeln("<error>No Bytecode-Cache found!</error> <comment>It's recommended to install anyone of " . implode(', ', $bytecopdeCacheExtensions) . ".</comment>");
         }
     }
 
@@ -198,7 +198,7 @@ class CheckCommand extends AbstractMagentoCommand
         if ($innodbFound) {
             $output->writeln("<info>Required MySQL Storage Engine <comment>InnoDB</comment> found.</info>");
         } else {
-            $output->writeln("<error>Required MySQL Storage Engine $ext not found!</error>");
+            $output->writeln("<error>Required MySQL Storage Engine \"InnoDB\" not found!</error>");
         }
     }
 }
