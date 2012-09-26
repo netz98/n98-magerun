@@ -42,6 +42,7 @@ use N98\Magento\Command\Developer\Module\Observer\ListCommand as ModuleObserverL
 use N98\Magento\Command\MagentoConnect\ListExtensionsCommand as MagentoConnectionListExtensionsCommand;
 use N98\Magento\Command\MagentoConnect\InstallExtensionCommand as MagentoConnectionInstallExtensionCommand;
 use N98\Magento\Command\MagentoConnect\DownloadExtensionCommand as MagentoConnectionDownloadExtensionCommand;
+use N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand as MagentoConnectionUpgradeExtensionCommand;
 use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
 use N98\Util\OperatingSystem;
 use Xanido\Console\Helper\TableHelper;
@@ -56,7 +57,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.23.4';
+    const APP_VERSION = '1.24.0';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -121,6 +122,7 @@ class Application extends BaseApplication
             $this->add(new MagentoConnectionListExtensionsCommand());
             $this->add(new MagentoConnectionInstallExtensionCommand());
             $this->add(new MagentoConnectionDownloadExtensionCommand());
+            $this->add(new MagentoConnectionUpgradeExtensionCommand());
         }
 
         $this->add(new SelfUpdateCommand());

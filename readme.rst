@@ -430,6 +430,16 @@ Downloads connect extensions by package key::
 * Requires Magento's `mage` shell script.
 * Does not work with Windows as operating system.
 
+Upgrade Extensions
+""""""""""""""""""
+
+Upgrade connect extensions by package key::
+
+    n98-magerun.phar extension:upgrade <search>
+
+* Requires Magento's `mage` shell script.
+* Does not work with Windows as operating system.
+
 Magento Installer (Experimental)
 """"""""""""""""""""""""""""""""
 
