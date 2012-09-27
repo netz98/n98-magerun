@@ -3,6 +3,7 @@
 namespace N98\Magento\Command;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\OperatingSystem;
 use Composer\Util\RemoteFilesystem;
 use Composer\IO\ConsoleIO;
 use Symfony\Component\Console\Input\InputInterface;
@@ -39,7 +40,13 @@ EOT
         if ($this->getApplication()->getVersion() !== $latest) {
             $output->writeln(sprintf("Updating to version <info>%s</info>.", $latest));
 
-            $remoteFilename = 'https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar';
+            $os = new OperatingSystem();
+            if ($os->isWindows()) {
+                $remoteFilename = 'https://raw.github.com/netz98/n98-magerun/master/n98-magerun-windows.phar';
+            } else {
+                $remoteFilename = 'https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar';
+            }
+
             $localFilename = $_SERVER['argv'][0];
             $tempFilename = basename($localFilename, '.phar').'-temp.phar';
 
