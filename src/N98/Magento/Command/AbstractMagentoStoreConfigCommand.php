@@ -92,15 +92,15 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             }
         }
 
-        $enabled = \Mage::getStoreConfigFlag($this->configPath, $store->getId());
+        $disabled = !\Mage::getStoreConfigFlag($this->configPath, $store->getId());
         \Mage::app()->getConfig()->saveConfig(
             $this->configPath,
-            $enabled ? 0 : 1,
+            $disabled ? 1 : 0,
             $store->getId() == \Mage_Core_Model_App::ADMIN_STORE_ID ? 'default' : 'stores',
             $store->getId()
         );
 
-        $output->writeln('<comment>' . $this->toggleComment . '</comment> <info>' . (!$enabled ? 'enabled' : 'disabled') . '</info>');
+        $output->writeln('<comment>' . $this->toggleComment . '</comment> <info>' . ($disabled ? 'disabled' : 'enabled') . '</info>');
 
         $input = new StringInput('cache:clear');
         $this->getApplication()->run($input, new NullOutput());
