@@ -23,7 +23,7 @@ class OperatingSystem
      */
     public static function isWindows()
     {
-        return stristr(PHP_OS, 'win');
+        return strtolower(substr(PHP_OS, 0, 3)) === 'win';
     }
 
     /**
