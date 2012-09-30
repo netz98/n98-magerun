@@ -69,6 +69,7 @@ class CheckCommand extends AbstractMagentoCommand
          * Check files
          */
         $files = array(
+            array('app/etc/local.xml', 'Magento local configuration.'),
             array('index.php.sample', 'Used to generate staging websites in Magento enterprise edition'),
         );
 
