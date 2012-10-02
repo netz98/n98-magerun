@@ -1,18 +1,18 @@
 <?php
 
-namespace N98\Magento\Command\System;
+namespace N98\Magento\Command\System\Setup;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class RunSetupScriptsCommand extends AbstractMagentoCommand
+class RunCommand extends AbstractMagentoCommand
 {
     protected function configure()
     {
         $this
-            ->setName('system:run-setup-scripts')
-            ->setAliases(array('sys:run-setup-scripts'))
+            ->setName('sys:setup:run')
+            ->setAliases(array('sys:run-setup-scripts', 'system:run-setup-scripts'))
             ->setDescription('Runs all new setup scripts.');
     }
 

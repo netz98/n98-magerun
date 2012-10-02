@@ -287,7 +287,16 @@ This command is useful if you update your system with enabled maintenance mode.
 
 .. code-block:: bash
 
-    n98-magerun.phar system:run-setup-scripts
+    n98-magerun.phar sys:setup:run
+
+Compare Setup Versions
+""""""""""""""""""""""
+
+Compares module version with saved setup version in `core_resource` table and displays version mismatch.
+
+.. code-block:: bash
+
+    n98-magerun.phar sys:setup:compare-versions
 
 System Check
 """"""""""""

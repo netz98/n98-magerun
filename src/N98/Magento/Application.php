@@ -26,7 +26,8 @@ use N98\Magento\Command\System\MaintenanceCommand as SystemMaintenanceCommand;
 use N98\Magento\Command\System\InfoCommand as SystemInfoCommand;
 use N98\Magento\Command\System\CheckCommand as SystemCheckCommand;
 use N98\Magento\Command\System\ModulesCommand as SystemModulesCommand;
-use N98\Magento\Command\System\RunSetupScriptsCommand;
+use N98\Magento\Command\System\Setup\RunCommand as SetupRunScriptsCommand;
+use N98\Magento\Command\System\Setup\CompareVersionsCommand as SetupCompareVersionsCommand;
 use N98\Magento\Command\System\Store\ListCommand as SystemStoreListCommand;
 use N98\Magento\Command\System\Website\ListCommand as SystemWebsiteListCommand;
 use N98\Magento\Command\Developer\TemplateHintsCommand;
@@ -57,7 +58,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.24.4';
+    const APP_VERSION = '1.25.0';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -106,7 +107,8 @@ class Application extends BaseApplication
         $this->add(new SystemModulesCommand());
         $this->add(new SystemStoreListCommand());
         $this->add(new SystemWebsiteListCommand());
-        $this->add(new RunSetupScriptsCommand());
+        $this->add(new SetupRunScriptsCommand());
+        $this->add(new SetupCompareVersionsCommand());
         $this->add(new TemplateHintsCommand());
         $this->add(new TemplateHintsBlocksCommand());
         $this->add(new TranslateInlineShopCommand());
