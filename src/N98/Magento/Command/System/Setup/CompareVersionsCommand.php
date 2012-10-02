@@ -4,6 +4,7 @@ namespace N98\Magento\Command\System\Setup;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CompareVersionsCommand extends AbstractMagentoCommand
@@ -12,6 +13,7 @@ class CompareVersionsCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:setup:compare-versions')
+            ->addOption('ignore-data', null, InputOption::VALUE_NONE, 'Ignore data updates')
             ->setAliases(array('system:setup:compare-versions'))
             ->setDescription('Compare module version with core_resource table.');
     }
@@ -27,26 +29,57 @@ class CompareVersionsCommand extends AbstractMagentoCommand
             $modules = \Mage::getConfig()->getNode('modules');
             $resourceModel = \Mage::getResourceSingleton('core/resource');
             $setups = \Mage::getConfig()->getNode('global/resources')->children();
-            $table = new \Zend_Text_Table(array('columnWidths' => array(40, 10, 10, 10, 6)));
+            $ignoreDataUpdate = $input->getOption('ignore-data');
+            if (!$ignoreDataUpdate) {
+                $columnWidths = array('columnWidths' => array(40, 10, 10, 10, 6));
+                $table = new \Zend_Text_Table($columnWidths);
+                $table->appendRow(
+                    array(
+                         'Setup',
+                         'Module',
+                         'DB',
+                         'Data',
+                         'Status'
+                    )
+                );
+            } else {
+                $columnWidths = array('columnWidths' => array(40, 10, 10, 6));
+                $table = new \Zend_Text_Table($columnWidths);
+                $table->appendRow(
+                    array(
+                         'Setup',
+                         'Module',
+                         'DB',
+                         'Status'
+                    )
+                );
+            }
             $errorCounter = 0;
             foreach ($setups as $setupName => $setup) {
                 $moduleName = (string) $setup->setup->module;
                 $moduleVersion = (string) $modules->{$moduleName}->version;
                 $dbVersion = (string) $resourceModel->getDbVersion($setupName);
-                $dataVersion = (string) $resourceModel->getDataVersion($setupName);
-                $ok = $dbVersion == $moduleVersion && $dataVersion == $moduleVersion;
+                if (!$ignoreDataUpdate) {
+                    $dataVersion = (string) $resourceModel->getDataVersion($setupName);
+                }
+                $ok = $dbVersion == $moduleVersion;
+                if ($ok && !$ignoreDataUpdate) {
+                    $ok = $dataVersion == $moduleVersion;
+                }
                 if (!$ok) {
                     $errorCounter++;
                 }
-                $table->appendRow(
-                    array(
-                        'Setup'        => $setupName,
-                        'Version'      => $moduleVersion,
-                        'DB-Version'   => $dbVersion,
-                        'Data-Version' => $dataVersion,
-                        'Status'       => $ok ? 'OK' : 'Error'
-                    )
-                );
+
+                $row = array();
+                $row['Setup'] = $setupName;
+                $row['Version'] = $moduleVersion;
+                $row['DB-Version'] = $dbVersion;
+                if (!$ignoreDataUpdate) {
+                    $row['Data-Version'] = $dataVersion;
+                }
+                $row['Status'] = $ok ? 'OK' : 'Error';
+
+                $table->appendRow($row);
             }
 
             if (count($table) > 0) {

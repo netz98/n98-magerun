@@ -296,7 +296,7 @@ Compares module version with saved setup version in `core_resource` table and di
 
 .. code-block:: bash
 
-    n98-magerun.phar sys:setup:compare-versions
+    n98-magerun.phar sys:setup:compare-versions [--ignore-data]
 
 System Check
 """"""""""""
