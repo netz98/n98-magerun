@@ -389,6 +389,7 @@ Rewrite Conflicts
 """""""""""""""""
 
 Lists all duplicated rewrites and tells you which class is loaded by Magento.
+The command checks class inheritance in order of your module dependencies.
 
 .. code-block:: bash
 
@@ -553,4 +554,3 @@ Roadmap
 * sys:log:exception - Toggle system log
 * sys:cron:list - List of cronjobs
 * dev:event:list - List all magento events
-* Enhanced rewrite conflict detection: Check if last rewritten class extends previous one.

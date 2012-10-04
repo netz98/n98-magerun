@@ -36,19 +36,21 @@ class ConflictsCommand extends AbstractRewriteCommand
                     if (count($data) > 0) {
                         foreach ($data as $class => $rewriteClass) {
                             if (count($rewriteClass) > 1) {
-                                $table->appendRow(array(
-                                    'Type'         => $type,
-                                    'Class'        => $class,
-                                    'Rewrites'     => implode(', ', $rewriteClass),
-                                    'Loaded Class' => \Mage::getConfig()->getModelClassName($class),
-                                ));
-                                $conflictCounter++;
+                                if ($this->_isInheritanceConflict($rewriteClass)) {
+                                    $table->appendRow(array(
+                                        'Type'         => $type,
+                                        'Class'        => $class,
+                                        'Rewrites'     => implode(', ', $rewriteClass),
+                                        'Loaded Class' => \Mage::getConfig()->getModelClassName($class),
+                                    ));
+                                    $conflictCounter++;
+                                }
                             }
                         }
                     }
                 }
 
-                if (count($table) > 0) {
+                if ($conflictCounter > 0) {
                     $output->writeln('<error>' . $conflictCounter . ' conflict' . ($conflictCounter > 1 ? 's' : '') . ' was found!</error>');
                     $output->write($table->render());
                 } else {
@@ -57,5 +59,30 @@ class ConflictsCommand extends AbstractRewriteCommand
 
             }
         }
+    }
+
+    /**
+     * Check if rewritten class has inherited the parent class.
+     * If yes we have no conflict. The top class can extend every core class.
+     * So we cannot check this.
+     *
+     * @var array $classes
+     * @return bool
+     */
+    protected function _isInheritanceConflict($classes)
+    {
+        rsort($classes);
+        for ($i = 0; $i < count($classes) - 1; $i++) {
+            try {
+                $reflectionClass = new \ReflectionClass($classes[$i]);
+                if ($reflectionClass->getParentClass()->getName() !== $classes[$i + 1]) {
+                    return true;
+                }
+            } catch (\Exception $e) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
