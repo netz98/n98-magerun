@@ -71,7 +71,7 @@ class ConflictsCommand extends AbstractRewriteCommand
      */
     protected function _isInheritanceConflict($classes)
     {
-        rsort($classes);
+        $classes = array_reverse($classes);
         for ($i = 0; $i < count($classes) - 1; $i++) {
             try {
                 $reflectionClass = new \ReflectionClass($classes[$i]);
