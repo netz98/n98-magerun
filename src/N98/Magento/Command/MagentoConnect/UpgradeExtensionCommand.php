@@ -11,7 +11,7 @@ class UpgradeExtensionCommand extends AbstractConnectCommand
     {
         $this
             ->setName('extension:upgrade')
-            ->addArgument('package', \Symfony\Component\Console\Input\InputArgument::REQUIRED, 'Packge to upgrade')
+            ->addArgument('package', \Symfony\Component\Console\Input\InputArgument::REQUIRED, 'Package to upgrade')
             ->setDescription('Upgrade magento-connect package')
         ;
     }
