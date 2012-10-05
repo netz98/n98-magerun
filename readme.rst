@@ -38,7 +38,7 @@ If you want to use command system wide you can copy it to `/usr/local/bin`.
 
 **Debian / suhosin:**
 
-On some debian systems with suhosi the phar extension must be added to a whitelist.
+On some debian systems with compiled in suhosin the phar extension must be added to a whitelist.
 
 Add this to your php.ini file:
 
