@@ -36,6 +36,17 @@ If you want to use command system wide you can copy it to `/usr/local/bin`.
 
     sudo cp ./n98-magerun.phar /usr/local/bin/
 
+Please note:
+
+On some debian systems with suhosi the phar extension must be added to a whitelist.
+
+Add this to your php.ini file:
+
+.. code-block:: ini
+
+   suhosin.executor.include.whitelist="phar"
+
+
 From source with composer
 """""""""""""""""""""""""
 
