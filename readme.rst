@@ -221,7 +221,7 @@ Toggle demo store notice
 
 .. code-block:: bash
 
-   n98-magerun.phar design:demo-notice <store_code>
+   n98-magerun.phar design:demo-notice [store_code]
 
 List admin users
 """"""""""""""""
@@ -329,7 +329,7 @@ Toggle debug template hints settings of a store
 
 .. code-block:: bash
 
-    n98-magerun.phar dev:template-hints <store_code>
+    n98-magerun.phar dev:template-hints [store_code]
 
 Toggle Template Hints Blocks
 """"""""""""""""""""""""""""
@@ -338,14 +338,14 @@ Toggle debug template hints blocks settings of a store
 
 .. code-block:: bash
 
-    n98-magerun.phar dev:template-hints-blocks <store_code>
+    n98-magerun.phar dev:template-hints-blocks [store_code]
 
 Toggle Inline Translation
 """""""""""""""""""""""""
 
 Toggle settings for shop frontend::
 
-    n98-magerun.phar dev:translate:shop <store_code>
+    n98-magerun.phar dev:translate:shop [store_code]
 
 Toggle for admin area::
 
@@ -356,7 +356,14 @@ Toggle Profiler
 
 Toggle profiler for debugging a store::
 
-    n98-magerun.phar dev:profiler <store_code>
+    n98-magerun.phar dev:profiler [store_code]
+
+Toggle Development Logs
+"""""""""""""""""""""""
+
+Activate/Deactivate system.log and exception.log for a store::
+
+    n98-magerun.phar dev:log [store_code]
 
 Toggle Symlinks
 """""""""""""""
@@ -561,7 +568,5 @@ Thanks to
 Roadmap
 -------
 
-* sys:log:system - Toggle system log
-* sys:log:exception - Toggle system log
 * sys:cron:list - List of cronjobs
 * dev:event:list - List all magento events
