@@ -414,11 +414,15 @@ class InstallCommand extends AbstractMagentoCommand
 
     protected function setDirectoryPermissions()
     {
+        $varFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'var';
+        @chmod($varFolder, 0777);
+
         $mediaFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'media';
         @chmod($mediaFolder, 0777);
+
         $finder = new Finder();
         $finder->directories()
-            ->in($mediaFolder);
+            ->in(array($varFolder, $mediaFolder));
         foreach ($finder as $dir) {
             @chmod($dir->getRealpath(), 0777);
         }

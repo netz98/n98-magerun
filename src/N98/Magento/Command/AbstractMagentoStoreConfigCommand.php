@@ -82,6 +82,9 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
         }
 
         $disabled = !\Mage::getStoreConfigFlag($this->configPath, $store->getId());
+
+        $this->_beforeSave($store, $disabled);
+
         \Mage::app()->getConfig()->saveConfig(
             $this->configPath,
             $disabled ? 1 : 0,
@@ -93,6 +96,8 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
                  . '<info>' . (!$disabled ? 'disabled' : 'enabled') . '</info>'
                  . ($this->scope == self::SCOPE_STORE_VIEW ? ' <comment>for store</comment> <info>' . $store->getCode() . '</info>' : '');
         $output->writeln($comment);
+
+        $this->_afterSave($store, $disabled);
 
         $input = new StringInput('cache:clear');
         $this->getApplication()->run($input, new NullOutput());
@@ -131,5 +136,23 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
         }
 
         return $store;
+    }
+
+    /**
+     * @param \Mage_Core_Model_Store $store
+     * @param bool $disabled
+     */
+    protected function _beforeSave(\Mage_Core_Model_Store $store, $disabled)
+    {
+
+    }
+
+    /**
+     * @param \Mage_Core_Model_Store $store
+     * @param bool $disabled
+     */
+    protected function _afterSave(\Mage_Core_Model_Store $store, $disabled)
+    {
+
     }
 }
