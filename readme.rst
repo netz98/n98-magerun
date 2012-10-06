@@ -251,7 +251,7 @@ Toggle maintenance mode
 
 .. code-block:: bash
 
-    n98-magerun.phar system:maintenance
+    n98-magerun.phar sys:maintenance
 
 Magento system info
 """"""""""""""""""""
@@ -260,7 +260,7 @@ Provides info like the edition and version or the configured cache backends.
 
 .. code-block:: bash
 
-    n98-magerun.phar system:info
+    n98-magerun.phar sys:info
 
 Magento Stores
 """"""""""""""
@@ -269,7 +269,7 @@ Lists all store views.
 
 .. code-block:: bash
 
-    n98-magerun.phar system:store:list
+    n98-magerun.phar sys:store:list
 
 
 Magento Websites
@@ -279,7 +279,7 @@ Lists all websites.
 
 .. code-block:: bash
 
-    n98-magerun.phar system:website:list
+    n98-magerun.phar sys:website:list
 
 Magento modules
 """""""""""""""
@@ -288,7 +288,16 @@ Lists all installed modules with codepool and version
 
 .. code-block:: bash
 
-    n98-magerun.phar system:modules:list
+    n98-magerun.phar sys:modules:list
+
+Magento Cronjobs
+""""""""""""""""
+
+Lists all cronjobs defined in config.xml files.
+
+.. code-block:: bash
+
+    n98-magerun.phar sys:cron:list
 
 Run Setup Scripts
 """""""""""""""""
@@ -319,7 +328,7 @@ System Check
 
 .. code-block:: bash
 
-    n98-magerun.phar system:check
+    n98-magerun.phar sys:check
 
 
 Toggle Template Hints
