@@ -25,4 +25,9 @@ class ProfilerCommand extends AbstractMagentoStoreConfigCommand
      * @var string
      */
     protected $toggleComment = 'Profiler';
+
+    /**
+     * @var string
+     */
+    protected $scope = self::SCOPE_STORE_VIEW;
 }

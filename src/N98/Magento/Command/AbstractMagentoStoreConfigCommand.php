@@ -60,7 +60,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
         ;
 
         if ($this->scope == self::SCOPE_STORE_VIEW) {
-            $this->addArgument('store', InputArgument::REQUIRED, 'Store code or ID');
+            $this->addArgument('store', InputArgument::OPTIONAL, 'Store code or ID');
         }
 
     }
@@ -75,18 +75,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
         $this->detectMagento($output);
         if ($this->initMagento()) {
             if ($this->scope == self::SCOPE_STORE_VIEW) {
-                try {
-                    $store = \Mage::app()->getStore($input->getArgument('store'));
-                } catch (\Mage_Core_Exception $e) {
-                    $output->writeln(array(
-                        '<error>Invalid store</error>',
-                        '<info>Try one of this:</info>'
-                    ));
-                    foreach (\Mage::app()->getStores() as $store) {
-                        $output->writeln('- <comment>' . $store->getCode() . '</comment>');
-                    }
-                    return;
-                }
+                $store = $this->_initStore($input, $output);
             } else {
                 $store = \Mage::app()->getStore(\Mage_Core_Model_App::ADMIN_STORE_ID);
             }
@@ -100,9 +89,47 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             $store->getId()
         );
 
-        $output->writeln('<comment>' . $this->toggleComment . '</comment> <info>' . ($disabled ? 'disabled' : 'enabled') . '</info>');
+        $comment = '<comment>' . $this->toggleComment . '</comment> '
+                 . '<info>' . (!$disabled ? 'disabled' : 'enabled') . '</info>'
+                 . ($this->scope == self::SCOPE_STORE_VIEW ? ' <comment>for store</comment> <info>' . $store->getCode() . '</info>' : '');
+        $output->writeln($comment);
 
         $input = new StringInput('cache:clear');
         $this->getApplication()->run($input, new NullOutput());
+    }
+
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function _initStore($input, $output)
+    {
+        try {
+            if ($input->getArgument('store') === null) {
+                throw new \Exception('No store given');
+            }
+            $store = \Mage::app()->getStore($input->getArgument('store'));
+        } catch (\Exception $e) {
+            $i = 0;
+            foreach (\Mage::app()->getStores() as $store) {
+                $stores[$i ] = $store->getId();
+                $question[] = '<comment>[' . ($i + 1) . ']</comment> ' . $store->getCode() . ' - ' . $store->getName() . PHP_EOL;
+                $i++;
+            }
+            $question[] = '<question>Please select a store: </question>';
+
+            $storeId = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($stores) {
+                if (!isset($stores[$typeInput - 1])) {
+                    throw new \InvalidArgumentException('Invalid store');
+                }
+                return $stores[$typeInput - 1];
+            });
+
+            $store = \Mage::app()->getStore($storeId);
+        }
+
+        return $store;
     }
 }

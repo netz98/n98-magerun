@@ -25,4 +25,9 @@ class TemplateHintsBlocksCommand extends AbstractMagentoStoreConfigCommand
      * @var string
      */
     protected $toggleComment = 'Template Hints Blocks';
+
+    /**
+     * @var string
+     */
+    protected $scope = self::SCOPE_STORE_VIEW;
 }
