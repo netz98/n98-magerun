@@ -30,12 +30,14 @@ use N98\Magento\Command\System\Setup\RunCommand as SetupRunScriptsCommand;
 use N98\Magento\Command\System\Setup\CompareVersionsCommand as SetupCompareVersionsCommand;
 use N98\Magento\Command\System\Store\ListCommand as SystemStoreListCommand;
 use N98\Magento\Command\System\Website\ListCommand as SystemWebsiteListCommand;
+use N98\Magento\Command\System\Cron\ListCommand as SystemCronListCommand;
 use N98\Magento\Command\Developer\TemplateHintsCommand;
 use N98\Magento\Command\Developer\TemplateHintsBlocksCommand;
 use N98\Magento\Command\Developer\TranslateInlineShopCommand;
 use N98\Magento\Command\Developer\TranslateInlineAdminCommand;
 use N98\Magento\Command\Developer\ProfilerCommand;
 use N98\Magento\Command\Developer\SymlinksCommand;
+use N98\Magento\Command\Developer\LogCommand as DevelopmentLogCommand;
 use N98\Magento\Command\Developer\Module\Rewrite\ListCommand as ModuleRewriteListCommand;
 use N98\Magento\Command\Developer\Module\Rewrite\ConflictsCommand as ModuleRewriteConflictsCommand;
 use N98\Magento\Command\Developer\Module\CreateCommand as ModuleCreateCommand;
@@ -58,7 +60,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.26.1';
+    const APP_VERSION = '1.28.0';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -107,6 +109,7 @@ class Application extends BaseApplication
         $this->add(new SystemModulesCommand());
         $this->add(new SystemStoreListCommand());
         $this->add(new SystemWebsiteListCommand());
+        $this->add(new SystemCronListCommand());
         $this->add(new SetupRunScriptsCommand());
         $this->add(new SetupCompareVersionsCommand());
         $this->add(new TemplateHintsCommand());
@@ -115,6 +118,7 @@ class Application extends BaseApplication
         $this->add(new TranslateInlineAdminCommand());
         $this->add(new ProfilerCommand());
         $this->add(new SymlinksCommand());
+        $this->add(new DevelopmentLogCommand());
         $this->add(new ModuleRewriteListCommand());
         $this->add(new ModuleRewriteConflictsCommand());
         $this->add(new ModuleCreateCommand());

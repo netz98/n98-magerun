@@ -4,27 +4,27 @@ namespace N98\Magento\Command\Developer;
 
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
 
-class TemplateHintsBlocksCommand extends AbstractMagentoStoreConfigCommand
+class LogCommand extends AbstractMagentoStoreConfigCommand
 {
     /**
      * @var string
      */
-    protected $commandName = 'dev:template-hints-blocks';
+    protected $commandName = 'dev:log';
 
     /**
      * @var string
      */
-    protected $commandDescription = 'Toggles template hints block names';
+    protected $commandDescription = 'Toggle development log (system.log, exception.log)';
 
     /**
      * @var string
      */
-    protected $configPath = 'dev/debug/template_hints_blocks';
+    protected $toggleComment = 'Development Log';
 
     /**
      * @var string
      */
-    protected $toggleComment = 'Template Hints Blocks';
+    protected $configPath = 'dev/log/active';
 
     /**
      * @var string

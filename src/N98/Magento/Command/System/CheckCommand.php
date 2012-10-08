@@ -55,11 +55,16 @@ class CheckCommand extends AbstractMagentoCommand
             array('media', 'Used for images and other media files.'),
             array('media/xmlconnect', 'Used for magento mobile tools.'),
             array('var', 'Used for caching, reports, etc.'),
+            array('var/cache', 'Used for caching'),
+            array('var/session', 'Used as file based sesssion save'),
         );
 
         foreach ($folders as $folder) {
             if (file_exists($this->_magentoRootFolder . DIRECTORY_SEPARATOR . $folder[0])) {
                 $output->writeln("<info>Folder <comment>" . $folder[0] . "</comment> found.</info>");
+                if (!is_writeable($this->_magentoRootFolder . DIRECTORY_SEPARATOR . $folder[0])) {
+                    $output->writeln("<error>Folder " . $folder[0] . " is not writeable!</error><comment> Usage: " . $folder[1] . "</comment>");
+                }
             } else {
                 $output->writeln("<error>Folder " . $folder[0] . " not found!</error><comment> Usage: " . $folder[1] . "</comment>");
             }

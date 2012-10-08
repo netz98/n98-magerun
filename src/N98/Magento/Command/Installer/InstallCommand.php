@@ -226,7 +226,7 @@ class InstallCommand extends AbstractMagentoCommand
                     }
 
                     // Install sample data
-                    $sampleDataSqlFile = glob($this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'magento_*sample_data*.sql');
+                    $sampleDataSqlFile = glob($this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'magento_*sample_data*sql');
                     $db = $this->config['db']; /* @var $db \PDO */
                     if (isset($sampleDataSqlFile[0])) {
                         $os = new OperatingSystem();
@@ -242,6 +242,7 @@ class InstallCommand extends AbstractMagentoCommand
                                   . escapeshellarg($sampleDataSqlFile[0]);
                             $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with mysql cli client</info>');
                             exec($exec);
+                            @unlink($sampleDataSqlFile);
                         } else {
                             $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with PDO driver</info>');
                             // Fallback -> Try to install dump file by PDO driver
@@ -414,11 +415,15 @@ class InstallCommand extends AbstractMagentoCommand
 
     protected function setDirectoryPermissions()
     {
+        $varFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'var';
+        @chmod($varFolder, 0777);
+
         $mediaFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'media';
         @chmod($mediaFolder, 0777);
+
         $finder = new Finder();
         $finder->directories()
-            ->in($mediaFolder);
+            ->in(array($varFolder, $mediaFolder));
         foreach ($finder as $dir) {
             @chmod($dir->getRealpath(), 0777);
         }

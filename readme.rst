@@ -221,7 +221,7 @@ Toggle demo store notice
 
 .. code-block:: bash
 
-   n98-magerun.phar design:demo-notice <store_code>
+   n98-magerun.phar design:demo-notice [store_code]
 
 List admin users
 """"""""""""""""
@@ -251,7 +251,7 @@ Toggle maintenance mode
 
 .. code-block:: bash
 
-    n98-magerun.phar system:maintenance
+    n98-magerun.phar sys:maintenance
 
 Magento system info
 """"""""""""""""""""
@@ -260,7 +260,7 @@ Provides info like the edition and version or the configured cache backends.
 
 .. code-block:: bash
 
-    n98-magerun.phar system:info
+    n98-magerun.phar sys:info
 
 Magento Stores
 """"""""""""""
@@ -269,7 +269,7 @@ Lists all store views.
 
 .. code-block:: bash
 
-    n98-magerun.phar system:store:list
+    n98-magerun.phar sys:store:list
 
 
 Magento Websites
@@ -279,7 +279,7 @@ Lists all websites.
 
 .. code-block:: bash
 
-    n98-magerun.phar system:website:list
+    n98-magerun.phar sys:website:list
 
 Magento modules
 """""""""""""""
@@ -288,7 +288,16 @@ Lists all installed modules with codepool and version
 
 .. code-block:: bash
 
-    n98-magerun.phar system:modules:list
+    n98-magerun.phar sys:modules:list
+
+Magento Cronjobs
+""""""""""""""""
+
+Lists all cronjobs defined in config.xml files.
+
+.. code-block:: bash
+
+    n98-magerun.phar sys:cron:list
 
 Run Setup Scripts
 """""""""""""""""
@@ -319,7 +328,7 @@ System Check
 
 .. code-block:: bash
 
-    n98-magerun.phar system:check
+    n98-magerun.phar sys:check
 
 
 Toggle Template Hints
@@ -329,7 +338,7 @@ Toggle debug template hints settings of a store
 
 .. code-block:: bash
 
-    n98-magerun.phar dev:template-hints <store_code>
+    n98-magerun.phar dev:template-hints [store_code]
 
 Toggle Template Hints Blocks
 """"""""""""""""""""""""""""
@@ -338,14 +347,14 @@ Toggle debug template hints blocks settings of a store
 
 .. code-block:: bash
 
-    n98-magerun.phar dev:template-hints-blocks <store_code>
+    n98-magerun.phar dev:template-hints-blocks [store_code]
 
 Toggle Inline Translation
 """""""""""""""""""""""""
 
 Toggle settings for shop frontend::
 
-    n98-magerun.phar dev:translate:shop <store_code>
+    n98-magerun.phar dev:translate:shop [store_code]
 
 Toggle for admin area::
 
@@ -356,7 +365,14 @@ Toggle Profiler
 
 Toggle profiler for debugging a store::
 
-    n98-magerun.phar dev:profiler <store_code>
+    n98-magerun.phar dev:profiler [store_code]
+
+Toggle Development Logs
+"""""""""""""""""""""""
+
+Activate/Deactivate system.log and exception.log for a store::
+
+    n98-magerun.phar dev:log [store_code]
 
 Toggle Symlinks
 """""""""""""""
@@ -561,7 +577,5 @@ Thanks to
 Roadmap
 -------
 
-* sys:log:system - Toggle system log
-* sys:log:exception - Toggle system log
 * sys:cron:list - List of cronjobs
 * dev:event:list - List all magento events
