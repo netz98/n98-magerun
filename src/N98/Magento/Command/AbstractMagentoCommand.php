@@ -146,6 +146,17 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
+     * Die if not Enterprise
+     */
+    protected function requireEnterprise(OutputInterface $output)
+    {
+        if (!$this->_magentoEnterprise) {
+            $output->writeln('<error>Enterprise Edition is required but was not detected</error>');
+            exit;
+        }
+    }
+
+    /**
      * @return Mage_Core_Helper_Data
      */
     protected function getCoreHelper()
