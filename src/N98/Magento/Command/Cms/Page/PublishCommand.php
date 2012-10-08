@@ -21,7 +21,7 @@ class PublishCommand extends \N98\Magento\Command\AbstractMagentoCommand
             ->setName('cms:page:publish')
             ->addArgument('page_id', InputArgument::REQUIRED, 'Even if the Revision ID is unique, we require the page id for security reasons')
             ->addArgument('revision_id', InputArgument::REQUIRED, 'Revision ID (the ID, not the sequential number)')
-            ->setDescription('Reindex a magento index by code')
+            ->setDescription('Publish a CMS page revision (Enterprise only)')
         ;
     }
 
