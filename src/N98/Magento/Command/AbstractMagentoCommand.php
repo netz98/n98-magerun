@@ -32,6 +32,11 @@ abstract class AbstractMagentoCommand extends Command
     protected $_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_1;
 
     /**
+     * @var bool
+     */
+    protected $_magentoEnterprise = false;
+
+    /**
      * @return array
      */
     protected function getCommandConfig()
@@ -84,7 +89,7 @@ abstract class AbstractMagentoCommand extends Command
      * @param OutputInterface $output
      * @param bool $silent print debug messages
      */
-    public function detectMagento(OutputInterface $output, $silent = true)
+    public function detectMagento(OutputInterface $output, $silent = false)
     {
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $folder = exec('@echo %cd%'); // @TODO not currently tested!!!
@@ -122,8 +127,16 @@ abstract class AbstractMagentoCommand extends Command
                 }
 
                 $this->_magentoRootFolder = dirname($files[0]->getRealPath());
+
+                if (is_callable(array('\Mage', 'getEdition'))) {
+                    $this->_magentoEnterprise = (\Mage::getEdition() == 'Enterprise');
+                } else {
+                    $this->_magentoEnterprise = is_dir($this->_magentoRootFolder . '/app/code/core/Enterprise');
+                }
+
                 if (!$silent) {
-                    $output->writeln('<info>Found magento in folder "' . $this->_magentoRootFolder . '"</info>');
+                    $editionString = ($this->_magentoEnterprise ? ' (Enterprise Edition) ' : '');
+                    $output->writeln('<info>Found Magento '. $editionString . 'in folder "' . $this->_magentoRootFolder . '"</info>');
                 }
                 return;
             }

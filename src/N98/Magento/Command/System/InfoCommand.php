@@ -36,9 +36,7 @@ class InfoCommand extends AbstractMagentoCommand
 
         $this->initMagento();
         $this->infos['Version'] = \Mage::getVersion();
-        if (is_callable(array('\Mage', 'getEdition'))) {
-            $this->infos['Edition'] = \Mage::getEdition();
-        }
+        $this->infos['Edition'] = ($this->_magentoEnterprise ? 'Enterprise' : 'Community');
 
         $config = \Mage::app()->getConfig();
         $this->infos['Cache Backend'] = get_class(\Mage::app()->getCache()->getBackend());
