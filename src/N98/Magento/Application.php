@@ -46,6 +46,7 @@ use N98\Magento\Command\MagentoConnect\ListExtensionsCommand as MagentoConnectio
 use N98\Magento\Command\MagentoConnect\InstallExtensionCommand as MagentoConnectionInstallExtensionCommand;
 use N98\Magento\Command\MagentoConnect\DownloadExtensionCommand as MagentoConnectionDownloadExtensionCommand;
 use N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand as MagentoConnectionUpgradeExtensionCommand;
+use N98\Magento\Command\Cms\Page\PublishCommand as MagentoCmsPagePublishCommand;
 use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
 use N98\Util\OperatingSystem;
 use Xanido\Console\Helper\TableHelper;
@@ -131,6 +132,7 @@ class Application extends BaseApplication
             $this->add(new MagentoConnectionUpgradeExtensionCommand());
         }
 
+        $this->add(new MagentoCmsPagePublishCommand());
         $this->add(new SelfUpdateCommand());
     }
 
