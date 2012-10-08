@@ -1,6 +1,6 @@
 {
     "name": "n98/magerun",
-    "description": "Tools for managing magento projects and intallations",
+    "description": "Tools for managing Magento projects and installations",
     "require": {
         "php": ">=5.3.3",
         "symfony/console": "dev-master",
