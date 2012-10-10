@@ -4,10 +4,10 @@
     "license": "MIT",
     "require": {
         "php": ">=5.3.3",
-        "symfony/console": "dev-master",
-        "symfony/finder": "dev-master",
-        "symfony/yaml": "dev-master",
-        "symfony/process": "dev-master",
+        "symfony/console": "2.1.*",
+        "symfony/finder": "2.1.*",
+        "symfony/yaml": "2.1.*",
+        "symfony/process": "2.1.*",
         "justinrainbow/json-schema": "1.1.*",
         "seld/jsonlint": "1.*"
     },
@@ -22,6 +22,10 @@
         {
             "name": "Christian Münch",
             "email": "c.muench@netz98.de"
+        },
+        {
+            "name": "Alexander Menk",
+            "email": "a.menk@netz98.de"
         }
     ]
 }
