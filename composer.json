@@ -27,5 +27,6 @@
             "name": "Alexander Menk",
             "email": "a.menk@netz98.de"
         }
-    ]
+    ],
+    "bin": ["bin/n98-magerun"]
 }

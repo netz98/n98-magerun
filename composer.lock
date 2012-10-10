@@ -1,0 +1,325 @@
+{
+    "hash": "f3441959d90d19720ae2641175cd2203",
+    "packages": [
+        {
+            "name": "justinrainbow/json-schema",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "git://github.com/justinrainbow/json-schema.git",
+                "reference": "v1.1.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/justinrainbow/json-schema/zipball/v1.1.0",
+                "reference": "v1.1.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "time": "2012-01-02 23:33:17",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-0": {
+                    "JsonSchema": "src/"
+                }
+            },
+            "license": [
+                "NewBSD"
+            ],
+            "authors": [
+                {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch",
+                    "homepage": "http://wiedler.ch/igor/",
+                    "role": null
+                },
+                {
+                    "name": "Bruno Prieto Reis",
+                    "email": "bruno.p.reis@gmail.com",
+                    "homepage": null,
+                    "role": null
+                },
+                {
+                    "name": "Justin Rainbow",
+                    "email": "justin.rainbow@gmail.com",
+                    "homepage": null,
+                    "role": null
+                },
+                {
+                    "name": "Robert Schönthal",
+                    "email": "seroscho@googlemail.com",
+                    "homepage": "http://digitalkaoz.net",
+                    "role": null
+                }
+            ],
+            "description": "A library to validate a json schema.",
+            "homepage": "https://github.com/justinrainbow/json-schema",
+            "keywords": [
+                "json",
+                "schema"
+            ]
+        },
+        {
+            "name": "seld/jsonlint",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "http://github.com/Seldaek/jsonlint",
+                "reference": "1.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/Seldaek/jsonlint/zipball/1.0.0",
+                "reference": "1.0.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "time": "2012-03-12 06:52:32",
+            "bin": [
+                "bin/jsonlint"
+            ],
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-0": {
+                    "Seld\\JsonLint": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "JSON Linter",
+            "keywords": [
+                "json",
+                "parser",
+                "linter",
+                "validator"
+            ]
+        },
+        {
+            "name": "symfony/console",
+            "version": "dev-master",
+            "target-dir": "Symfony/Component/Console",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Console",
+                "reference": "3b66f1056f5ac37146d3b755964e8a43a205f2f5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/symfony/Console/zipball/3b66f1056f5ac37146d3b755964e8a43a205f2f5",
+                "reference": "3b66f1056f5ac37146d3b755964e8a43a205f2f5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "time": "1344349441",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.1-dev"
+                }
+            },
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Console": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": null,
+                    "role": null
+                },
+                {
+                    "name": "Symfony Community",
+                    "email": null,
+                    "homepage": "http://symfony.com/contributors",
+                    "role": null
+                }
+            ],
+            "description": "Symfony Console Component",
+            "homepage": "http://symfony.com"
+        },
+        {
+            "name": "symfony/finder",
+            "version": "dev-master",
+            "target-dir": "Symfony/Component/Finder",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Finder",
+                "reference": "1af11ab3a686f9c45f2a8d9d721d5717cdd5f1d6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/symfony/Finder/zipball/1af11ab3a686f9c45f2a8d9d721d5717cdd5f1d6",
+                "reference": "1af11ab3a686f9c45f2a8d9d721d5717cdd5f1d6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "time": "1345026762",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.1-dev"
+                }
+            },
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Finder": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": null,
+                    "role": null
+                },
+                {
+                    "name": "Symfony Community",
+                    "email": null,
+                    "homepage": "http://symfony.com/contributors",
+                    "role": null
+                }
+            ],
+            "description": "Symfony Finder Component",
+            "homepage": "http://symfony.com"
+        },
+        {
+            "name": "symfony/process",
+            "version": "dev-master",
+            "target-dir": "Symfony/Component/Process",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Process",
+                "reference": "v2.1.0-RC1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/symfony/Process/zipball/v2.1.0-RC1",
+                "reference": "v2.1.0-RC1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "time": "1343512949",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.1-dev"
+                }
+            },
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Process": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": null,
+                    "role": null
+                },
+                {
+                    "name": "Symfony Community",
+                    "email": null,
+                    "homepage": "http://symfony.com/contributors",
+                    "role": null
+                }
+            ],
+            "description": "Symfony Process Component",
+            "homepage": "http://symfony.com"
+        },
+        {
+            "name": "symfony/yaml",
+            "version": "dev-master",
+            "target-dir": "Symfony/Component/Yaml",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Yaml",
+                "reference": "6b3eb66a7c4495dcaa35a64dd93c8ba8c29f35d8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/symfony/Yaml/zipball/6b3eb66a7c4495dcaa35a64dd93c8ba8c29f35d8",
+                "reference": "6b3eb66a7c4495dcaa35a64dd93c8ba8c29f35d8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "time": "1344325256",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.1-dev"
+                }
+            },
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Yaml": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": null,
+                    "role": null
+                },
+                {
+                    "name": "Symfony Community",
+                    "email": null,
+                    "homepage": "http://symfony.com/contributors",
+                    "role": null
+                }
+            ],
+            "description": "Symfony Yaml Component",
+            "homepage": "http://symfony.com"
+        }
+    ],
+    "packages-dev": null,
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": [
+
+    ]
+}
