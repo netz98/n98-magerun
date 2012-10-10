@@ -64,7 +64,7 @@ From source with composer
 
 #. Run cli.php::
 
-    php cli.php
+    php vendor/bin/n98-magerun
 
 It's recommended to install the .phar file system wide.
 
