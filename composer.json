@@ -1,6 +1,7 @@
 {
     "name": "n98/magerun",
     "description": "Tools for managing Magento projects and installations",
+    "license": "MIT",
     "require": {
         "php": ">=5.3.3",
         "symfony/console": "dev-master",
