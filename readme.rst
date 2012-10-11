@@ -582,3 +582,5 @@ Roadmap
 
 * sys:cron:list - List of cronjobs
 * dev:event:list - List all magento events
+* List more infos like Base URLs.
+* Change BaseURL from CLI.
