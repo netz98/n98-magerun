@@ -62,6 +62,9 @@ From source with composer
 
     php ./composer.phar install
 
+or
+    php ./composer.phar create-project n98/magerun <folder>
+
 #. Run cli.php::
 
     php vendor/bin/n98-magerun
