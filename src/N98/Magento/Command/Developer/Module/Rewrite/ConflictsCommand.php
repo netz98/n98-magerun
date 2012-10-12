@@ -14,6 +14,7 @@ class ConflictsCommand extends AbstractRewriteCommand
     {
         $this
             ->setName('dev:module:rewrite:conflicts')
+            ->addOption('log-junit', null, InputOption::VALUE_REQUIRED, 'Log conflicts in JUnit XML format to defined file.')
             ->setDescription('Lists all magento rewrite conflicts')
         ;
     }
@@ -51,12 +52,15 @@ class ConflictsCommand extends AbstractRewriteCommand
                 }
 
                 if ($conflictCounter > 0) {
-                    $output->writeln('<error>' . $conflictCounter . ' conflict' . ($conflictCounter > 1 ? 's' : '') . ' was found!</error>');
-                    $output->write($table->render());
+                    if ($input->getOption('log-junit')) {
+
+                    } else {
+                        $output->writeln('<error>' . $conflictCounter . ' conflict' . ($conflictCounter > 1 ? 's' : '') . ' was found!</error>');
+                        $output->write($table->render());
+                    }
                 } else {
                     $output->writeln('<info>No rewrite conflicts was found.</info>');
                 }
-
             }
         }
     }
