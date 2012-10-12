@@ -333,6 +333,26 @@ System Check
 
     n98-magerun.phar sys:check
 
+CMS: Toggle Banner
+""""""""""""""""""
+
+Hide/Show CMS Banners
+
+.. code-block:: bash
+
+    n98-magerun.phar cms:banner:toggle <banner_id>
+
+CMS: Publish a page
+"""""""""""""""""""
+
+Publishes a page by page id and revision.
+
+.. code-block:: bash
+
+    n98-magerun.phar cms:page:publish <page_id> <revision_id>
+
+Useful to automatically publish a page by a cron job.
+
 
 Toggle Template Hints
 """""""""""""""""""""
