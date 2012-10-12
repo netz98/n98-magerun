@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
-class ToggleCommand extends \N98\Magento\Command\AbstractMagentoCommand
+class ToggleCommand extends AbstractMagentoCommand
 {
     protected function configure()
     {

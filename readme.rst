@@ -62,9 +62,12 @@ From source with composer
 
     php ./composer.phar install
 
+or
+    php ./composer.phar create-project n98/magerun <folder>
+
 #. Run cli.php::
 
-    php cli.php
+    php vendor/bin/n98-magerun
 
 It's recommended to install the .phar file system wide.
 
@@ -579,3 +582,5 @@ Roadmap
 
 * sys:cron:list - List of cronjobs
 * dev:event:list - List all magento events
+* List more infos like Base URLs.
+* Change BaseURL from CLI.

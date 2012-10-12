@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
-class PublishCommand extends \N98\Magento\Command\AbstractMagentoCommand
+class PublishCommand extends AbstractMagentoCommand
 {
     protected function configure()
     {
