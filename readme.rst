@@ -443,7 +443,9 @@ The command checks class inheritance in order of your module dependencies.
 
 .. code-block:: bash
 
-    n98-magerun.phar dev:module:rewrite:conflicts
+    n98-magerun.phar dev:module:rewrite:conflicts [--log-junit="..."]
+
+* If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
 
 Observer List
 """""""""""""

@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\JUnitXml\Document as JUnitXmlDocument;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -28,8 +29,8 @@ class ConflictsCommand extends AbstractRewriteCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            $this->writeSection($output, 'Conflicts');
             $table = new \Zend_Text_Table(array('columnWidths' => array(8, 30, 60, 60)));
+            $tableData = array();
             if ($this->initMagento()) {
                 $rewrites = $this->loadRewrites();
                 $conflictCounter = 0;
@@ -38,12 +39,12 @@ class ConflictsCommand extends AbstractRewriteCommand
                         foreach ($data as $class => $rewriteClass) {
                             if (count($rewriteClass) > 1) {
                                 if ($this->_isInheritanceConflict($rewriteClass)) {
-                                    $table->appendRow(array(
+                                    $tableData[] = array(
                                         'Type'         => $type,
                                         'Class'        => $class,
                                         'Rewrites'     => implode(', ', $rewriteClass),
                                         'Loaded Class' => \Mage::getConfig()->getModelClassName($class),
-                                    ));
+                                    );
                                     $conflictCounter++;
                                 }
                             }
@@ -53,8 +54,10 @@ class ConflictsCommand extends AbstractRewriteCommand
 
                 if ($conflictCounter > 0) {
                     if ($input->getOption('log-junit')) {
-
+                        $this->logJUnit($tableData, $input->getOption('log-junit'));
                     } else {
+                        $this->writeSection($output, 'Conflicts');
+                        array_map(array($table, 'appendRow'), $tableData);
                         $output->writeln('<error>' . $conflictCounter . ' conflict' . ($conflictCounter > 1 ? 's' : '') . ' was found!</error>');
                         $output->write($table->render());
                     }
@@ -63,6 +66,34 @@ class ConflictsCommand extends AbstractRewriteCommand
                 }
             }
         }
+    }
+
+    /**
+     * @param array $conflicts
+     * @param string $filename
+     */
+    protected function logJUnit(array $conflicts, $filename)
+    {
+        $document = new JUnitXmlDocument();
+        $suite = $document->addTestSuite();
+        $suite->setName('Magento Rewrite Conflicts');
+        $suite->setTimestamp(new \DateTime());
+
+        $testCase = $suite->addTestCase();
+        foreach ($conflicts as $conflictRow) {
+            $testCase->addError(
+                sprintf(
+                    'Rewrite conflict: Type %s | Class: %s, Rewrites: %s | Loaded class: %s',
+                    $conflictRow['Type'],
+                    $conflictRow['Class'],
+                    $conflictRow['Rewrites'],
+                    $conflictRow['Loaded Class']
+                ),
+                'MagentoRewriteConflictException'
+            );
+        }
+
+        $document->save($filename);
     }
 
     /**
