@@ -32,6 +32,7 @@ class ConflictsCommand extends AbstractRewriteCommand
             $table = new \Zend_Text_Table(array('columnWidths' => array(8, 30, 60, 60)));
             $tableData = array();
             if ($this->initMagento()) {
+                $time = microtime(true);
                 $rewrites = $this->loadRewrites();
                 $conflictCounter = 0;
                 foreach ($rewrites as $type => $data) {
@@ -52,17 +53,17 @@ class ConflictsCommand extends AbstractRewriteCommand
                     }
                 }
 
-                if ($conflictCounter > 0) {
-                    if ($input->getOption('log-junit')) {
-                        $this->logJUnit($tableData, $input->getOption('log-junit'));
-                    } else {
+                if ($input->getOption('log-junit')) {
+                    $this->logJUnit($tableData, $input->getOption('log-junit'), microtime($time) - $time);
+                } else {
+                    if ($conflictCounter > 0) {
                         $this->writeSection($output, 'Conflicts');
                         array_map(array($table, 'appendRow'), $tableData);
                         $output->writeln('<error>' . $conflictCounter . ' conflict' . ($conflictCounter > 1 ? 's' : '') . ' was found!</error>');
                         $output->write($table->render());
+                    } else {
+                        $output->writeln('<info>No rewrite conflicts was found.</info>');
                     }
-                } else {
-                    $output->writeln('<info>No rewrite conflicts was found.</info>');
                 }
             }
         }
@@ -71,17 +72,21 @@ class ConflictsCommand extends AbstractRewriteCommand
     /**
      * @param array $conflicts
      * @param string $filename
+     * @param float $duration
      */
-    protected function logJUnit(array $conflicts, $filename)
+    protected function logJUnit(array $conflicts, $filename, $duration)
     {
         $document = new JUnitXmlDocument();
         $suite = $document->addTestSuite();
-        $suite->setName('Magento Rewrite Conflicts');
+        $suite->setName('n98-magerun: ' . $this->getName());
         $suite->setTimestamp(new \DateTime());
+        $suite->setTime($duration);
 
         $testCase = $suite->addTestCase();
+        $testCase->setName('Magento Rewrite Conflict Test');
+        $testCase->setClassname('ConflictsCommand');
         foreach ($conflicts as $conflictRow) {
-            $testCase->addError(
+            $testCase->addFailure(
                 sprintf(
                     'Rewrite conflict: Type %s | Class: %s, Rewrites: %s | Loaded class: %s',
                     $conflictRow['Type'],
