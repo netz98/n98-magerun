@@ -62,7 +62,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.30.3';
+    const APP_VERSION = '1.30.4';
 
     /**
      * @var \Composer\Autoload\ClassLoader
