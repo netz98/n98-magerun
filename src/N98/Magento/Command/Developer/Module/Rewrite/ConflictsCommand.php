@@ -82,10 +82,12 @@ class ConflictsCommand extends AbstractRewriteCommand
             case 'blocks':
                 return \Mage::getConfig()->getBlockClassName($class);
 
-            default:
             case 'helpers':
+                return \Mage::getConfig()->getHelperClassName($type, $class);
+
+            default:
             case 'models':
-                return \Mage::getConfig()->getGroupedClassName($type, $class);
+                return \Mage::getConfig()->getModelClassName($type, $class);
                 break;
         }
     }
