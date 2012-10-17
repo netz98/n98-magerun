@@ -44,7 +44,7 @@ class ConflictsCommand extends AbstractRewriteCommand
                                         'Type'         => $type,
                                         'Class'        => $class,
                                         'Rewrites'     => implode(', ', $rewriteClass),
-                                        'Loaded Class' => \Mage::getConfig()->getModelClassName($class),
+                                        'Loaded Class' => $this->_getLoadedClass($type, $class),
                                     );
                                     $conflictCounter++;
                                 }
@@ -66,6 +66,27 @@ class ConflictsCommand extends AbstractRewriteCommand
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Returns loaded class by type like models or blocks
+     *
+     * @param string $type
+     * @param string $class
+     * @return string
+     */
+    protected function _getLoadedClass($type, $class)
+    {
+        switch ($type) {
+            case 'blocks':
+                return \Mage::getConfig()->getBlockClassName($class);
+
+            default:
+            case 'helpers':
+            case 'models':
+                return \Mage::getConfig()->getGroupedClassName($type, $class);
+                break;
         }
     }
 
