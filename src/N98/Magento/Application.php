@@ -20,6 +20,7 @@ use N98\Magento\Command\Indexer\ReindexCommand as IndexerReindexCommand;
 use N98\Magento\Command\Indexer\ReindexAllCommand as IndexerReindexAllCommand;
 use N98\Magento\Command\Admin\User\ChangePasswordCommand as ChangeAdminUserPasswordCommand;
 use N98\Magento\Command\Admin\User\ListCommand as AdminUserListCommand;
+use N98\Magento\Command\Admin\User\CreateUserCommand as AdminUserCreateCommand;
 use N98\Magento\Command\Admin\DisableNotificationsCommand;
 use N98\Magento\Command\Installer\InstallCommand;
 use N98\Magento\Command\System\MaintenanceCommand as SystemMaintenanceCommand;
@@ -102,6 +103,7 @@ class Application extends BaseApplication
         $this->add(new IndexerReindexAllCommand());
         $this->add(new ChangeAdminUserPasswordCommand());
         $this->add(new AdminUserListCommand());
+        $this->add(new AdminUserCreateCommand());
         $this->add(new DisableNotificationsCommand());
         $this->add(new DesignDemoNoticeCommand());
         $this->add(new InstallCommand());
