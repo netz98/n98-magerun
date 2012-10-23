@@ -40,15 +40,7 @@ class DumpCommand extends AbstractDatabaseCommand
             $fileName .= '.sql';
         }
 
-        $exec = 'mysqldump '
-            . '-h' . escapeshellarg(strval($this->dbSettings['host']))
-            . ' '
-            . '-u' . escapeshellarg(strval($this->dbSettings['username']))
-            . ' '
-            . (!strval($this->dbSettings['password'] == '') ? '-p' . escapeshellarg($this->dbSettings['password']) . ' ' : '')
-            . escapeshellarg(strval($this->dbSettings['dbname']))
-            . ' > '
-            . escapeshellarg($fileName);
+        $exec = 'mysqldump ' . $this->getMysqlClientToolConnectionString() . ' > ' . escapeshellarg($fileName);
 
         if ($input->getOption('only-command')) {
             $output->writeln($exec);

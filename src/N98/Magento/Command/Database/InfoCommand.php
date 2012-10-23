@@ -46,13 +46,7 @@ class InfoCommand extends AbstractDatabaseCommand
         );
         $output->writeln(str_pad('JDBC-Connection-String', 25, ' ') . ': ' . $jdbcConnectionString);
 
-        $mysqlCliString = 'mysql '
-            . '-h' . escapeshellarg(strval($this->dbSettings['host']))
-            . ' '
-            . '-u' . escapeshellarg(strval($this->dbSettings['username']))
-            . ' '
-            . (!strval($this->dbSettings['password'] == '') ? '-p' . escapeshellarg($this->dbSettings['password']) . ' ' : '')
-            . escapeshellarg(strval($this->dbSettings['dbname']));
+        $mysqlCliString = 'mysql ' . $this->getMysqlClientToolConnectionString();
 
         $output->writeln(str_pad('MySQL-Cli-String', 25, ' ') . ': ' . $mysqlCliString);
     }

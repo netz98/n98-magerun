@@ -33,13 +33,7 @@ class ConsoleCommand extends AbstractDatabaseCommand
            2 => STDERR
         );
 
-        $exec = 'mysql '
-              . '-h' . escapeshellarg(strval($this->dbSettings['host']))
-              . ' '
-              . '-u' . escapeshellarg(strval($this->dbSettings['username']))
-              . ' '
-              . (!strval($this->dbSettings['password'] == '') ? '-p' . escapeshellarg($this->dbSettings['password']) . ' ' : '')
-              . escapeshellarg(strval($this->dbSettings['dbname']));
+        $exec = 'mysql ' . $this->getMysqlClientToolConnectionString();
 
         $pipes = array();
         proc_open($exec, $descriptorSpec, $pipes);
