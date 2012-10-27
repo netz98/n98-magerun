@@ -39,12 +39,29 @@ class InfoCommand extends AbstractMagentoCommand
         $this->infos['Edition'] = ($this->_magentoEnterprise ? 'Enterprise' : 'Community');
 
         $config = \Mage::app()->getConfig();
-        $this->infos['Cache Backend'] = get_class(\Mage::app()->getCache()->getBackend());
+        $this->_addCacheInfos();
+
+        $this->infos['Session'] = $config->getNode('global/session_save');
+
         $this->infos['Crypt Key'] = $config->getNode('global/crypt/key');
         $this->infos['Install Date'] = $config->getNode('global/install/date');
 
         foreach ($this->infos as $key => $value) {
             $output->writeln(str_pad($key, 25, ' ') . ': ' . $value);
+        }
+    }
+
+    protected function _addCacheInfos()
+    {
+        $this->infos['Cache Backend'] = get_class(\Mage::app()->getCache()->getBackend());
+
+        switch (get_class(\Mage::app()->getCache()->getBackend())) {
+            case 'Zend_Cache_Backend_File':
+                $cacheDir = \Mage::app()->getConfig()->getOptions()->getCacheDir();
+                $this->infos['Cache Directory'] = $cacheDir;
+                break;
+
+            default:
         }
     }
 }
