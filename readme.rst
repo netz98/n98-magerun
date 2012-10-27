@@ -544,8 +544,8 @@ In my Ubuntu system this can be done with the following command::
 PHPStorm
 """"""""
 
-An commandline tool autocompletion XML file for PHPStorm exists in subfolder "autocompletion/phpstorm".
-Copy `n98_magerun.xml` in your phpstorm config folder.
+An commandline tool autocompletion XML file for PHPStorm exists in subfolder **autocompletion/phpstorm**.
+Copy **n98_magerun.xml** in your phpstorm config folder.
 
 Linux: ~/.WebIde50/config/commandlinetools
 
