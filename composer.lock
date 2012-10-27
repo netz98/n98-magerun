@@ -33,26 +33,20 @@
                 {
                     "name": "Igor Wiedler",
                     "email": "igor@wiedler.ch",
-                    "homepage": "http://wiedler.ch/igor/",
-                    "role": null
+                    "homepage": "http://wiedler.ch/igor/"
                 },
                 {
                     "name": "Bruno Prieto Reis",
-                    "email": "bruno.p.reis@gmail.com",
-                    "homepage": null,
-                    "role": null
+                    "email": "bruno.p.reis@gmail.com"
                 },
                 {
                     "name": "Justin Rainbow",
-                    "email": "justin.rainbow@gmail.com",
-                    "homepage": null,
-                    "role": null
+                    "email": "justin.rainbow@gmail.com"
                 },
                 {
                     "name": "Robert Schönthal",
                     "email": "seroscho@googlemail.com",
-                    "homepage": "http://digitalkaoz.net",
-                    "role": null
+                    "homepage": "http://digitalkaoz.net"
                 }
             ],
             "description": "A library to validate a json schema.",
@@ -68,18 +62,18 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:cmuench/junit-xml.git",
-                "reference": "ff997b79439e2da7946e090c9f21c0711ddd3d9c"
+                "reference": "b3c8ccac8a2998b7f17dc6829c9204f6e48346ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/cmuench/junit-xml/zipball/ff997b79439e2da7946e090c9f21c0711ddd3d9c",
-                "reference": "ff997b79439e2da7946e090c9f21c0711ddd3d9c",
+                "url": "https://github.com/cmuench/junit-xml/zipball/b3c8ccac8a2998b7f17dc6829c9204f6e48346ad",
+                "reference": "b3c8ccac8a2998b7f17dc6829c9204f6e48346ad",
                 "shasum": ""
             },
             "require-dev": {
                 "phpunit/phpunit": "3.7.7"
             },
-            "time": "1350385346",
+            "time": "1351358535",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -170,7 +164,7 @@
                     "dev-master": "2.1-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\Console": ""
@@ -217,7 +211,7 @@
                     "dev-master": "2.1-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\Finder": ""
@@ -264,7 +258,7 @@
                     "dev-master": "2.1-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\Process": ""
@@ -311,7 +305,7 @@
                     "dev-master": "2.1-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\Yaml": ""
