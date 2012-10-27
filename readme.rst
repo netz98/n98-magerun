@@ -2,6 +2,10 @@
 netz98 magerun CLI tools
 ========================
 
+Current Version: 
+
+.. include:: version.txt
+
 The n98 magerun cli tools provides some handy tools to work with Magento from command line.
 
 Compatibility
