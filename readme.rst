@@ -529,14 +529,28 @@ Since version 1.1.0 we deliver a Magento installer which does the following:
 
     n98-magerun.phar install
 
+Autocompletion
+--------------
 
-Bash autocompletion
--------------------
+Bash
+""""
 
 Copy the file **bash_complete** as **n98-magerun.phar** in your bash autocomplete folder.
 In my Ubuntu system this can be done with the following command::
 
-    sudo cp bash_complete /etc/bash_completion.d/n98-magerun.phar
+    sudo cp autocompletion/bash/bash_complete /etc/bash_completion.d/n98-magerun.phar
+
+
+PHPStorm
+""""""""
+
+An commandline tool autocompletion XML file for PHPStorm exists in subfolder "autocompletion/phpstorm".
+Copy `n98_magerun.xml` in your phpstorm config folder.
+
+Linux: ~/.WebIde50/config/commandlinetools
+
+You can also add the XML content over settings menu.
+For further instructions read this blog post: http://blog.jetbrains.com/webide/2012/10/integrating-composer-command-line-tool-with-phpstorm/
 
 Advanced usage
 --------------
