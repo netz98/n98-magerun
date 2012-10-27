@@ -16,6 +16,7 @@ class DumpCommand extends AbstractDatabaseCommand
             ->setAliases(array('db:dump'))
             ->addArgument('filename', InputArgument::OPTIONAL, 'Dump filename')
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysqldump command. Do not execute')
+            ->addOption('stdout', null, InputOption::VALUE_NONE, 'Dump to stdout')
             ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml')
         ;
     }
@@ -29,9 +30,11 @@ class DumpCommand extends AbstractDatabaseCommand
     {
         $this->detectDbSettings($output);
 
-        $this->writeSection($output, 'Dump MySQL Database');
+        if (!$input->getOption('stdout')) {
+            $this->writeSection($output, 'Dump MySQL Database');
+        }
 
-        if (($fileName = $input->getArgument('filename')) === null)  {
+        if (($fileName = $input->getArgument('filename')) === null && !$input->getOption('stdout')) {
             $dialog = $this->getHelperSet()->get('dialog');
             $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question>', $this->dbSettings['dbname']);
         }
@@ -40,17 +43,28 @@ class DumpCommand extends AbstractDatabaseCommand
             $fileName .= '.sql';
         }
 
-        $exec = 'mysqldump ' . $this->getMysqlClientToolConnectionString() . ' > ' . escapeshellarg($fileName);
+        $exec = 'mysqldump ' . $this->getMysqlClientToolConnectionString();
+        if (!$input->getOption('stdout')) {
+            $exec .= ' > ' . escapeshellarg($fileName);
+        }
 
         if ($input->getOption('only-command')) {
             $output->writeln($exec);
         } else {
-            $output->writeln('<comment>Start dumping database: <info>' . $this->dbSettings['dbname'] . '</info> to file <info>' . $fileName . '</info>');
-            exec($exec, $commandOutput, $returnValue);
+            if (!$input->getOption('stdout')) {
+                $output->writeln('<comment>Start dumping database: <info>' . $this->dbSettings['dbname'] . '</info> to file <info>' . $fileName . '</info>');
+            }
+            if ($input->getOption('stdout')) {
+                passthru($exec, $returnValue);
+            } else {
+                exec($exec, $commandOutput, $returnValue);
+            }
             if ($returnValue > 0) {
                 $output->writeln('<error>' . implode(PHP_EOL, $commandOutput) . '</error>');
             } else {
-                $output->writeln('<info>Finished</info>');
+                if (!$input->getOption('stdout')) {
+                    $output->writeln('<info>Finished</info>');
+                }
             }
         }
     }

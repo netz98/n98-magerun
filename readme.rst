@@ -106,7 +106,7 @@ Print database information
     n98-magerun.phar database:info
 
 Dump database
-"""""""""""""""""""""""""""
+"""""""""""""
 
 Direct dump with mysqldump::
 
@@ -115,6 +115,10 @@ Direct dump with mysqldump::
 Only the mysqldump command::
 
     n98-magerun.phar database:dump --only-command [filename]
+
+Or directly to stdout:
+
+    n98-magerun.phar database:dump --stdout
 
 Database Console / MySQL Client
 """""""""""""""""""""""""""""""
