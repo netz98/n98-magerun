@@ -89,6 +89,8 @@ class CreateUserCommand extends AbstractAdminUserCommand
                 ->setRoleUserId($user->getUserId())
                 ->saveRelations();
 
+            $output->writeln('<info>User <comment>' . $username . '</comment> successfully created</info>');
+
         }
     }
 }

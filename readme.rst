@@ -233,6 +233,14 @@ List admin users
 
     n98-magerun.phar admin:user:list
 
+Create admin user
+"""""""""""""""""
+
+.. code-block:: bash
+
+    n98-magerun.phar admin:user:create [username] [email] [password] [firstname] [lastname]
+
+
 Change admin user password
 """"""""""""""""""""""""""
 
@@ -283,15 +291,6 @@ Lists all websites.
 .. code-block:: bash
 
     n98-magerun.phar sys:website:list
-
-Magento modules
-"""""""""""""""
-
-Lists all installed modules with codepool and version
-
-.. code-block:: bash
-
-    n98-magerun.phar sys:modules:list
 
 Magento Cronjobs
 """"""""""""""""
@@ -427,6 +426,15 @@ Example::
 Run this command inside your `.modman` folder.
 
 * --add-all option add blocks, helpers and models.
+
+List Modules
+""""""""""""
+
+Lists all installed modules with codepool and version
+
+.. code-block:: bash
+
+    n98-magerun.phar dev:module:list
 
 Rewrite List
 """"""""""""

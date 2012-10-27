@@ -26,7 +26,6 @@ use N98\Magento\Command\Installer\InstallCommand;
 use N98\Magento\Command\System\MaintenanceCommand as SystemMaintenanceCommand;
 use N98\Magento\Command\System\InfoCommand as SystemInfoCommand;
 use N98\Magento\Command\System\CheckCommand as SystemCheckCommand;
-use N98\Magento\Command\System\ModulesCommand as SystemModulesCommand;
 use N98\Magento\Command\System\Setup\RunCommand as SetupRunScriptsCommand;
 use N98\Magento\Command\System\Setup\CompareVersionsCommand as SetupCompareVersionsCommand;
 use N98\Magento\Command\System\Store\ListCommand as SystemStoreListCommand;
@@ -39,6 +38,7 @@ use N98\Magento\Command\Developer\TranslateInlineAdminCommand;
 use N98\Magento\Command\Developer\ProfilerCommand;
 use N98\Magento\Command\Developer\SymlinksCommand;
 use N98\Magento\Command\Developer\LogCommand as DevelopmentLogCommand;
+use N98\Magento\Command\Developer\Module\ListCommand as ModuleListCommand;
 use N98\Magento\Command\Developer\Module\Rewrite\ListCommand as ModuleRewriteListCommand;
 use N98\Magento\Command\Developer\Module\Rewrite\ConflictsCommand as ModuleRewriteConflictsCommand;
 use N98\Magento\Command\Developer\Module\CreateCommand as ModuleCreateCommand;
@@ -63,7 +63,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.31.0';
+    const APP_VERSION = '1.32.0';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -110,7 +110,6 @@ class Application extends BaseApplication
         $this->add(new SystemMaintenanceCommand());
         $this->add(new SystemInfoCommand());
         $this->add(new SystemCheckCommand());
-        $this->add(new SystemModulesCommand());
         $this->add(new SystemStoreListCommand());
         $this->add(new SystemWebsiteListCommand());
         $this->add(new SystemCronListCommand());
@@ -123,6 +122,7 @@ class Application extends BaseApplication
         $this->add(new ProfilerCommand());
         $this->add(new SymlinksCommand());
         $this->add(new DevelopmentLogCommand());
+        $this->add(new ModuleListCommand());
         $this->add(new ModuleRewriteListCommand());
         $this->add(new ModuleRewriteConflictsCommand());
         $this->add(new ModuleCreateCommand());

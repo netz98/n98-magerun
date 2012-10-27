@@ -1,6 +1,6 @@
 <?php
 
-namespace N98\Magento\Command\System;
+namespace N98\Magento\Command\Developer\Module;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ModulesCommand extends AbstractMagentoCommand
+class ListCommand extends AbstractMagentoCommand
 {
     /**
      * @var array
@@ -18,8 +18,8 @@ class ModulesCommand extends AbstractMagentoCommand
     protected function configure()
     {
         $this
-            ->setName('system:modules:list')
-            ->setAliases(array('sys:modules:list'))
+            ->setName('dev:module:list')
+            ->setAliases(array('sys:modules:list', 'system:modules:list')) // deprecated
             ->setDescription('List all installed modules');
     }
 
