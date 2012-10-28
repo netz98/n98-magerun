@@ -286,6 +286,23 @@ Lists all store views.
 
     n98-magerun.phar sys:store:list
 
+Magento Store Config - Get
+""""""""""""""""""""""""""
+
+Get a single config entry by path:
+
+.. code-block:: bash
+
+    n98-magerun.phar sys:store:config
+
+Magento Store Config - BaseURLs
+"""""""""""""""""""""""""""""""
+
+Lists base urls for each store.
+
+.. code-block:: bash
+
+    n98-magerun.phar sys:store:config:base-url:list
 
 Magento Websites
 """"""""""""""

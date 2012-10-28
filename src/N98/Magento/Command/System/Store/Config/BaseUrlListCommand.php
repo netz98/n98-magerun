@@ -1,6 +1,6 @@
 <?php
 
-namespace N98\Magento\Command\System\Store;
+namespace N98\Magento\Command\System\Store\Config;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -8,19 +8,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListCommand extends AbstractMagentoCommand
+class BaseUrlListCommand extends AbstractMagentoCommand
 {
-    /**
-     * @var array
-     */
-    protected $infos;
-
     protected function configure()
     {
         $this
-            ->setName('sys:store:list')
-            ->setAliases(array('system:store:list'))
-            ->setDescription('Lists all installed store-views');
+            ->setName('sys:store:config:base-url:list')
+            ->setDescription('Lists all base urls');
     }
 
     /**
@@ -32,13 +26,15 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
 
-        $this->writeSection($output, 'Magento Stores');
+        $this->writeSection($output, 'Magento Stores - Base URLs');
         $this->initMagento();
 
         foreach (\Mage::app()->getStores() as $store) {
             $table[$store->getId()] = array(
                 'id'   => '  ' . $store->getId(),
                 'code' => $store->getCode(),
+                'unsecure_baseurl' => \Mage::getStoreConfig('web/unsecure/base_url', $store),
+                'secure_baseurl' => \Mage::getStoreConfig('web/secure/base_url', $store),
             );
         }
 
