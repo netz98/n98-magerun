@@ -20,19 +20,19 @@ There are two ways to install the tools:
 Download phar file
 """"""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
     wget https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar
 
 You can make the .phar file executable.
 
-.. code-block:: bash
+.. code-block:: sh
 
     chmod +x ./n98-magerun.phar
 
 If you want to use command system wide you can copy it to `/usr/local/bin`.
 
-.. code-block:: bash
+.. code-block:: sh
 
     sudo cp ./n98-magerun.phar /usr/local/bin/
 
@@ -101,7 +101,7 @@ If you don't have installed the .phar file system wide you can call it with the 
 Print database information
 """""""""""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar database:info
 
@@ -127,14 +127,14 @@ Opens the MySQL console client with your database settings from local.xml
 
 * Requires MySQL CLI tools
 
-.. code-block:: bash
+.. code-block:: sh
 
    n98-magerun.phar database:console
 
 List Indexes
 """"""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
    n98-magerun.phar index:list
 
@@ -143,7 +143,7 @@ Reindex a Index
 
 Index by indexer code. Code is optional. If you don't specify a code you can pick a indexer from a list.
 
-.. code-block:: bash
+.. code-block:: sh
 
    n98-magerun.phar index:reindex [code]
 
@@ -152,28 +152,28 @@ Reindex All
 
 Loops all magento indexes and triggers reindex.
 
-.. code-block:: bash
+.. code-block:: sh
 
    n98-magerun.phar index:reindex:all
 
 Generate local.xml file
 """""""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar local-config:generate
 
 Dump global xml config
 """"""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar config:dump > extern_file.xml
 
 List Magento cache status
 """""""""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar cache:list
 
@@ -183,7 +183,7 @@ Clean Magento cache
 Cleans expired cache entries.
 If you like to remove all entries use `cache:flush`
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar cache:clean
 
@@ -195,28 +195,28 @@ Or only one cache type like i.e. full_page cache::
 Remove all cache entries
 """"""""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
    n98-magerun.phar cache:flush
 
 List Magento caches
 """""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar cache:list
 
 Disable Magento cache
 """""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar cache:disable
 
 Enable Magento cache
 """"""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar cache:enable
 
@@ -226,21 +226,21 @@ Demo Notice
 
 Toggle demo store notice
 
-.. code-block:: bash
+.. code-block:: sh
 
    n98-magerun.phar design:demo-notice [store_code]
 
 List admin users
 """"""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar admin:user:list
 
 Create admin user
 """""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar admin:user:create [username] [email] [password] [firstname] [lastname]
 
@@ -248,7 +248,7 @@ Create admin user
 Change admin user password
 """"""""""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar admin:user:change-password [username] [password]
 
@@ -257,14 +257,14 @@ Disable admin notifications
 
 Toggle admin notifications.
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar admin:notifications
 
 Toggle maintenance mode
 """""""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar sys:maintenance
 
@@ -273,7 +273,7 @@ Magento system info
 
 Provides info like the edition and version or the configured cache backends.
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar sys:info
 
@@ -282,7 +282,7 @@ Magento Stores
 
 Lists all store views.
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar sys:store:list
 
@@ -291,7 +291,7 @@ Magento Store Config - Get
 
 Get a single config entry by path:
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar sys:store:config
 
@@ -300,7 +300,7 @@ Magento Store Config - BaseURLs
 
 Lists base urls for each store.
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar sys:store:config:base-url:list
 
@@ -309,7 +309,7 @@ Magento Websites
 
 Lists all websites.
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar sys:website:list
 
@@ -318,7 +318,7 @@ Magento Cronjobs
 
 Lists all cronjobs defined in config.xml files.
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar sys:cron:list
 
@@ -328,7 +328,7 @@ Run Setup Scripts
 Runs all setup scripts (no need to call frontend).
 This command is useful if you update your system with enabled maintenance mode.
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar sys:setup:run
 
@@ -337,7 +337,7 @@ Compare Setup Versions
 
 Compares module version with saved setup version in `core_resource` table and displays version mismatch.
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar sys:setup:compare-versions [--ignore-data]
 
@@ -349,7 +349,7 @@ System Check
 - PHP Extensions (Required and Bytecode Cache)
 - MySQL InnoDB Engine
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar sys:check
 
@@ -358,7 +358,7 @@ CMS: Toggle Banner
 
 Hide/Show CMS Banners
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar cms:banner:toggle <banner_id>
 
@@ -367,7 +367,7 @@ CMS: Publish a page
 
 Publishes a page by page id and revision.
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar cms:page:publish <page_id> <revision_id>
 
@@ -379,7 +379,7 @@ Toggle Template Hints
 
 Toggle debug template hints settings of a store
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar dev:template-hints [store_code]
 
@@ -388,7 +388,7 @@ Toggle Template Hints Blocks
 
 Toggle debug template hints blocks settings of a store
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar dev:template-hints-blocks [store_code]
 
@@ -453,7 +453,7 @@ List Modules
 
 Lists all installed modules with codepool and version
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar dev:module:list
 
@@ -470,7 +470,7 @@ Rewrite Conflicts
 Lists all duplicated rewrites and tells you which class is loaded by Magento.
 The command checks class inheritance in order of your module dependencies.
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar dev:module:rewrite:conflicts [--log-junit="..."]
 
@@ -481,7 +481,7 @@ Observer List
 
 Lists all registered observer by type.
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar dev:module:observer:list [type]
 
@@ -542,7 +542,7 @@ Since version 1.1.0 we deliver a Magento installer which does the following:
 * Starts Magento installer
 * Sets rewrite base in .htaccess file
 
-.. code-block:: bash
+.. code-block:: sh
 
     n98-magerun.phar install
 
