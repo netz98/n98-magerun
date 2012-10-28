@@ -561,7 +561,9 @@ Bash
 """"
 
 Copy the file **bash_complete** as **n98-magerun.phar** in your bash autocomplete folder.
-In my Ubuntu system this can be done with the following command::
+In my Ubuntu system this can be done with the following command:
+
+.. code-block:: sh
 
     sudo cp autocompletion/bash/bash_complete /etc/bash_completion.d/n98-magerun.phar
 
