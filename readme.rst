@@ -491,7 +491,9 @@ Type is one of "adminhtml", "global", "frontend".
 List Extensions
 """""""""""""""
 
-List and find connect extensions by a optional search string::
+List and find connect extensions by a optional search string:
+
+.. code-block:: sh
 
    $ n98-magerun.phar extension:list <search>
 
@@ -501,9 +503,11 @@ List and find connect extensions by a optional search string::
 Install Extensions
 """"""""""""""""""
 
-Installs a connect extension by package key::
+Installs a connect extension by package key:
 
-       $ n98-magerun.phar extension:install <package_key>
+.. code-block:: sh
+
+   $ n98-magerun.phar extension:install <package_key>
 
 If the package could not be found a search for alternatives will be done.
 If alternatives could be found you can select the package to install.
@@ -514,7 +518,9 @@ If alternatives could be found you can select the package to install.
 Download Extensions
 """""""""""""""""""
 
-Downloads connect extensions by package key::
+Downloads connect extensions by package key:
+
+.. code-block:: sh
 
    $ n98-magerun.phar extension:download <search>
 
@@ -524,7 +530,9 @@ Downloads connect extensions by package key::
 Upgrade Extensions
 """"""""""""""""""
 
-Upgrade connect extensions by package key::
+Upgrade connect extensions by package key:
+
+.. code-block:: sh
 
    $ n98-magerun.phar extension:upgrade <search>
 
