@@ -50,23 +50,24 @@ Add this to your php.ini file:
 From source with composer
 """""""""""""""""""""""""
 
-#. Clone git repository::
+.. code-block:: sh
 
+    #. Clone git repository
     git clone https://github.com/netz98/n98-magerun
 
-#. Download composer::
-
+    #. Download composer
     curl -s https://getcomposer.org/installer | php
 
-#. Let composer do all the work for you::
-
+    #. Let composer do all the work for you
     php ./composer.phar install
 
 or
+
+.. code-block:: sh
+
     php ./composer.phar create-project n98/magerun <folder>
 
-#. Run cli.php::
-
+    #. Run cli.php
     php vendor/bin/n98-magerun
 
 It's recommended to install the .phar file system wide.
@@ -108,15 +109,21 @@ Print database information
 Dump database
 """""""""""""
 
-Direct dump with mysqldump::
+Direct dump with mysqldump:
+
+.. code-block:: sh
 
    $ n98-magerun.phar database:dump
 
-Only the mysqldump command::
+Only the mysqldump command:
+
+.. code-block:: sh
 
    $ n98-magerun.phar database:dump --only-command [filename]
 
 Or directly to stdout:
+
+.. code-block:: sh
 
    $ n98-magerun.phar database:dump --stdout
 
@@ -187,7 +194,9 @@ If you like to remove all entries use `cache:flush`
 
    $ n98-magerun.phar cache:clean
 
-Or only one cache type like i.e. full_page cache::
+Or only one cache type like i.e. full_page cache:
+
+.. code-block:: sh
 
    $ n98-magerun.phar cache:clean full_page
 
@@ -395,50 +404,66 @@ Toggle debug template hints blocks settings of a store
 Toggle Inline Translation
 """""""""""""""""""""""""
 
-Toggle settings for shop frontend::
+Toggle settings for shop frontend:
+
+.. code-block:: sh
 
    $ n98-magerun.phar dev:translate:shop [store_code]
 
-Toggle for admin area::
+Toggle for admin area:
+
+.. code-block:: sh
 
    $ n98-magerun.phar dev:translate:admin
 
 Toggle Profiler
 """""""""""""""
 
-Toggle profiler for debugging a store::
+Toggle profiler for debugging a store:
+
+.. code-block:: sh
 
    $ n98-magerun.phar dev:profiler [store_code]
 
 Toggle Development Logs
 """""""""""""""""""""""
 
-Activate/Deactivate system.log and exception.log for a store::
+Activate/Deactivate system.log and exception.log for a store:
+
+.. code-block:: sh
 
    $ n98-magerun.phar dev:log [store_code]
 
 Toggle Symlinks
 """""""""""""""
 
-Allow usage of symlinks for a store-view::
+Allow usage of symlinks for a store-view:
+
+.. code-block:: sh
 
    $ n98-magerun.phar dev:symlinks <store_code>
 
-Global scope can be set by not permitting store_code parameter::
+Global scope can be set by not permitting store_code parameter:
+
+.. code-block:: sh
 
    $ n98-magerun.phar dev:symlinks
 
 Create Module Skel
 """"""""""""""""""
 
-Creates an empty module and registers it in current magento shop::
+Creates an empty module and registers it in current magento shop:
+
+.. code-block:: sh
 
    $ n98-magerun.phar dev:module:create [--add-blocks] [--add-helpers] [--add-models] [--add-all] [--modman] vendorNamespace moduleName [codePool]
 
 Code-Pool defaults to `local`.
 
 
-Example::
+Example:
+
+.. code-block:: sh
 
    $ n98-magerun.phar dev:module:create MyVendor MyModule
 
