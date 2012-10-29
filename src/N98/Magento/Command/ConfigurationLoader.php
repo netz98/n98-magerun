@@ -28,6 +28,9 @@ class ConfigurationLoader
         }
         if($cwd && file_exists($projectConfigFile)) {
             $projectConfig = Yaml::parse($projectConfigFile);
+            foreach($projectConfig['autoloaders'] as $key => &$value) {
+                $value = str_replace('%path%', $cwd, $value);
+            }
             $config = $this->mergeArrays($config, $projectConfig);
         }
 
