@@ -17,6 +17,8 @@ class SetCommand extends AbstractMagentoCommand
             ->setDescription('Set a core config item')
             ->addArgument('path', InputArgument::REQUIRED, 'The config path')
             ->addArgument('value', InputArgument::REQUIRED, 'The config value')
+            ->addOption('scope', null, InputOption::VALUE_OPTIONAL, 'The config value\'s scope', 'default')
+            ->addOption('scope-id', null, InputOption::VALUE_OPTIONAL, 'The config value\'s scope ID', '0')
         ;
     }
 
@@ -30,7 +32,7 @@ class SetCommand extends AbstractMagentoCommand
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
             $config = \Mage::getModel('core/config');
-            $config->saveConfig($input->getArgument('path'), $input->getArgument('value'));
+            $config->saveConfig($input->getArgument('path'), $input->getArgument('value'), $input->getOption('scope'), $input->getOption('scope-id'));
             $output->writeln($input->getArgument('path') . " => " . $input->getArgument('value'));
         }
     }

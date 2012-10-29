@@ -15,7 +15,9 @@ class GetCommand extends AbstractMagentoCommand
         $this
             ->setName('config:get')
             ->setDescription('Get a core config item')
+            ->setHelp('If <info>path</info> is not set, all available config items will be listed. <info>path</info> may contain wildcards (*)')
             ->addArgument('path', InputArgument::OPTIONAL, 'The config path')
+            ->addOption('scope-id', null, InputOption::VALUE_REQUIRED, 'The config value\'s scope ID')
         ;
     }
 
@@ -35,6 +37,11 @@ class GetCommand extends AbstractMagentoCommand
                         'like' => str_replace('*', '%', $input->getArgument('path'))
                     ));
                 }
+                if($scopeId = $input->getOption('scope-id')) {
+                    $collection->addFieldToFilter('scope_id', array(
+                        'eq' => $scopeId
+                    ));
+                }
                 foreach ($collection as $item){
                     $table[$item->getPath()] = array(
                         'path' => $item->getPath(),
@@ -44,8 +51,7 @@ class GetCommand extends AbstractMagentoCommand
                 ksort($table);
                 $this->getHelper('table')->write($output, $table);
             } else {
-                
-                $value = \Mage::getStoreConfig($input->getArgument('path'));
+                $value = \Mage::getStoreConfig($input->getArgument('path'), $input->getOption('scope-id'));
                 $output->writeln($input->getArgument('path') . " => " . $value);
             }
         }
