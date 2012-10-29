@@ -9,6 +9,8 @@ use N98\Magento\Command\Database\DumpCommand as DatabaseDumpCommand;
 use N98\Magento\Command\Database\InfoCommand as DatabaseInfoCommand;
 use N98\Magento\Command\Database\ConsoleCommand as DatabaseConsoleCommand;
 use N98\Magento\Command\Config\DumpCommand as ConfigPrintCommand;
+use N98\Magento\Command\Config\GetCommand as ConfigGetCommand;
+use N98\Magento\Command\Config\SetCommand as ConfigSetCommand;
 use N98\Magento\Command\Design\DemoNoticeCommand as DesignDemoNoticeCommand;
 use N98\Magento\Command\Cache\CleanCommand as CacheCleanCommand;
 use N98\Magento\Command\Cache\FlushCommand as CacheFlushCommand;
@@ -93,6 +95,8 @@ class Application extends BaseApplication
         $this->add(new DatabaseInfoCommand());
         $this->add(new DatabaseConsoleCommand());
         $this->add(new ConfigPrintCommand());
+        $this->add(new ConfigGetCommand());
+        $this->add(new ConfigSetCommand());
         $this->add(new CacheCleanCommand());
         $this->add(new CacheFlushCommand());
         $this->add(new CacheListCommand());
