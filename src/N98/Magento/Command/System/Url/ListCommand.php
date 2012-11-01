@@ -27,8 +27,8 @@ class ListCommand extends AbstractMagentoCommand
     protected function configure()
     {
         $this
-            ->setName('sys:urls:list')
-            ->setAliases(array('system:urls:list'))
+            ->setName('sys:url:list')
+            ->setAliases(array('system:url:list'))
             ->addOption('add-categories', null, InputOption::VALUE_NONE, 'Adds categories')
             ->addOption('add-products', null, InputOption::VALUE_NONE, 'Adds products')
             ->addOption('add-cmspages', null, InputOption::VALUE_NONE, 'Adds cms pages')
