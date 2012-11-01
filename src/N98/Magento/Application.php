@@ -31,8 +31,6 @@ use N98\Magento\Command\System\CheckCommand as SystemCheckCommand;
 use N98\Magento\Command\System\Setup\RunCommand as SetupRunScriptsCommand;
 use N98\Magento\Command\System\Setup\CompareVersionsCommand as SetupCompareVersionsCommand;
 use N98\Magento\Command\System\Store\ListCommand as SystemStoreListCommand;
-use N98\Magento\Command\System\Store\Config\GetCommand as SystemStoreConfigGetCommand;
-use N98\Magento\Command\System\Store\Config\SearchCommand as SystemStoreConfigSearchCommand;
 use N98\Magento\Command\System\Store\Config\BaseUrlListCommand as SystemStoreConfigBaseUrlListCommand;
 use N98\Magento\Command\System\Website\ListCommand as SystemWebsiteListCommand;
 use N98\Magento\Command\System\Cron\ListCommand as SystemCronListCommand;
@@ -119,8 +117,6 @@ class Application extends BaseApplication
         $this->add(new SystemInfoCommand());
         $this->add(new SystemCheckCommand());
         $this->add(new SystemStoreListCommand());
-        $this->add(new SystemStoreConfigGetCommand());
-        $this->add(new SystemStoreConfigSearchCommand());
         $this->add(new SystemStoreConfigBaseUrlListCommand());
         $this->add(new SystemWebsiteListCommand());
         $this->add(new SystemCronListCommand());

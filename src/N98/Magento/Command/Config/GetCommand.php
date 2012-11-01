@@ -30,22 +30,24 @@ class GetCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            if(!$input->getArgument('path') || ($wildcard = strpos($input->getArgument('path'), '*')) !== false) {
+            if (!$input->getArgument('path') || ($wildcard = strpos($input->getArgument('path'), '*')) !== false) {
                 $collection = \Mage::getModel('core/config_data')->getCollection();
-                if($wildcard) {
+                if ($wildcard) {
                     $collection->addFieldToFilter('path', array(
                         'like' => str_replace('*', '%', $input->getArgument('path'))
                     ));
                 }
-                if($scopeId = $input->getOption('scope-id')) {
+                if ($scopeId = $input->getOption('scope-id')) {
                     $collection->addFieldToFilter('scope_id', array(
                         'eq' => $scopeId
                     ));
                 }
                 foreach ($collection as $item){
                     $table[$item->getPath()] = array(
-                        'path' => $item->getPath(),
-                        'value' => substr($item->getValue(), 0, 50)
+                        'Path'     => $item->getPath(),
+                        'Scope'    => str_pad($item->getScope(), 8, ' ', STR_PAD_BOTH),
+                        'Scope-ID' => str_pad($item->getScopeId(), 8, ' ', STR_PAD_BOTH),
+                        'Value'    => substr($item->getValue(), 0, 50)
                     );
                 }
                 ksort($table);

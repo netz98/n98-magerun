@@ -177,6 +177,37 @@ Dump global xml config
 
    $ n98-magerun.phar config:dump > extern_file.xml
 
+Set Config
+""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar config:set [--scope[="..."]] [--scope-id[="..."]] path value
+
+Arguments:
+    path        The config path
+    value       The config value
+
+Options:
+    --scope     The config value's scope (default: "default")
+    --scope-id  The config value's scope ID (default: "0")
+
+Get Config
+""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar config:get [--scope-id="..."] [path]
+
+Arguments:
+    path        The config path
+
+Options:
+    --scope-id  The config value's scope ID
+
+Help:
+    If path is not set, all available config items will be listed. path may contain wildcards (*)
+
 List Magento cache status
 """""""""""""""""""""""""
 
@@ -294,15 +325,6 @@ Lists all store views.
 .. code-block:: sh
 
    $ n98-magerun.phar sys:store:list
-
-Magento Store Config - Get
-""""""""""""""""""""""""""
-
-Get a single config entry by path:
-
-.. code-block:: sh
-
-   $ n98-magerun.phar sys:store:config
 
 Magento Store Config - BaseURLs
 """""""""""""""""""""""""""""""
