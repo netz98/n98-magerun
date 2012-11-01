@@ -34,7 +34,7 @@ use N98\Magento\Command\System\Store\Config\SearchCommand as SystemStoreConfigSe
 use N98\Magento\Command\System\Store\Config\BaseUrlListCommand as SystemStoreConfigBaseUrlListCommand;
 use N98\Magento\Command\System\Website\ListCommand as SystemWebsiteListCommand;
 use N98\Magento\Command\System\Cron\ListCommand as SystemCronListCommand;
-use N98\Magento\Command\System\Urls\ListCommand as SystemUrlsListCommand;
+use N98\Magento\Command\System\Url\ListCommand as SystemUrlListCommand;
 use N98\Magento\Command\Developer\TemplateHintsCommand;
 use N98\Magento\Command\Developer\TemplateHintsBlocksCommand;
 use N98\Magento\Command\Developer\TranslateInlineShopCommand;
@@ -120,7 +120,7 @@ class Application extends BaseApplication
         $this->add(new SystemStoreConfigBaseUrlListCommand());
         $this->add(new SystemWebsiteListCommand());
         $this->add(new SystemCronListCommand());
-        $this->add(new SystemUrlsListCommand());
+        $this->add(new SystemUrlListCommand());
         $this->add(new SetupRunScriptsCommand());
         $this->add(new SetupCompareVersionsCommand());
         $this->add(new TemplateHintsCommand());

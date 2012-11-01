@@ -1,6 +1,6 @@
 <?php
 
-namespace N98\Magento\Command\System\Urls;
+namespace N98\Magento\Command\System\Url;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
