@@ -15,7 +15,16 @@ class GetCommand extends AbstractMagentoCommand
         $this
             ->setName('config:get')
             ->setDescription('Get a core config item')
-            ->setHelp('If <info>path</info> is not set, all available config items will be listed. <info>path</info> may contain wildcards (*)')
+            ->setHelp(<<<EOT
+If <info>path</info> is not set, all available config items will be listed.
+The <info>path</info> may contain wildcards (*).
+If <info>path</info> ends with a trailing slash, all child items will be listed. E.g.
+
+    config:get web/ 
+is the same as
+    config:get web/*
+EOT
+                )
             ->addArgument('path', InputArgument::OPTIONAL, 'The config path')
             ->addOption('scope-id', null, InputOption::VALUE_REQUIRED, 'The config value\'s scope ID')
         ;
@@ -30,32 +39,39 @@ class GetCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            if (!$input->getArgument('path') || ($wildcard = strpos($input->getArgument('path'), '*')) !== false) {
-                $collection = \Mage::getModel('core/config_data')->getCollection();
-                if ($wildcard) {
-                    $collection->addFieldToFilter('path', array(
-                        'like' => str_replace('*', '%', $input->getArgument('path'))
-                    ));
-                }
-                if ($scopeId = $input->getOption('scope-id')) {
-                    $collection->addFieldToFilter('scope_id', array(
-                        'eq' => $scopeId
-                    ));
-                }
-                foreach ($collection as $item){
-                    $table[$item->getPath()] = array(
-                        'Path'     => $item->getPath(),
-                        'Scope'    => str_pad($item->getScope(), 8, ' ', STR_PAD_BOTH),
-                        'Scope-ID' => str_pad($item->getScopeId(), 8, ' ', STR_PAD_BOTH),
-                        'Value'    => substr($item->getValue(), 0, 50)
-                    );
-                }
-                ksort($table);
-                $this->getHelper('table')->write($output, $table);
-            } else {
-                $value = \Mage::getStoreConfig($input->getArgument('path'), $input->getOption('scope-id'));
-                $output->writeln($input->getArgument('path') . " => " . $value);
+            $collection = \Mage::getModel('core/config_data')->getCollection();
+            $searchPath = $input->getArgument('path');
+
+            if(substr($input->getArgument('path'), -1, 1) === '/') {
+                $searchPath .= '*';
             }
+
+            $collection->addFieldToFilter('path', array(
+                'like' => str_replace('*', '%', $searchPath)
+            ));
+            
+            if ($scopeId = $input->getOption('scope-id')) {
+                $collection->addFieldToFilter('scope_id', array(
+                    'eq' => $scopeId
+                ));
+            }
+
+            if($collection->count() == 0) {
+                $output->writeln(sprintf("Couldn't find a config value for \"%s\"", $input->getArgument('path')));
+                return;
+            }
+
+            foreach ($collection as $item){
+                $table[$item->getPath()] = array(
+                    'Path'     => $item->getPath(),
+                    'Scope'    => str_pad($item->getScope(), 8, ' ', STR_PAD_BOTH),
+                    'Scope-ID' => str_pad($item->getScopeId(), 8, ' ', STR_PAD_BOTH),
+                    'Value'    => substr($item->getValue(), 0, 50)
+                );
+            }
+
+            ksort($table);
+            $this->getHelper('table')->write($output, $table);
         }
     }
 }
