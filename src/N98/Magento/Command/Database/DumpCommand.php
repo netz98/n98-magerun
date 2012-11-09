@@ -36,7 +36,7 @@ class DumpCommand extends AbstractDatabaseCommand
 
         if (($fileName = $input->getArgument('filename')) === null && !$input->getOption('stdout')) {
             $dialog = $this->getHelperSet()->get('dialog');
-            $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question>', $this->dbSettings['dbname']);
+            $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question> [<comment>' . $this->dbSettings['dbname'] . '</comment>]', $this->dbSettings['dbname']);
         }
 
         if (substr($fileName, -4, 4) !== '.sql') {
