@@ -13,6 +13,8 @@ class RunCommand extends AbstractMagentoCommand
         $this
             ->setName('sys:setup:run')
             ->setAliases(array('sys:run-setup-scripts', 'system:run-setup-scripts'))
+            ->addDeprecatedAlias('sys:run-setup-scripts', 'Please use sys:setup:run')
+            ->addDeprecatedAlias('system:run-setup-scripts', 'Please use sys:setup:run')
             ->setDescription('Runs all new setup scripts.');
     }
 

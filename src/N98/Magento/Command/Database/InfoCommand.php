@@ -12,8 +12,9 @@ class InfoCommand extends AbstractDatabaseCommand
     protected function configure()
     {
         $this
-            ->setName('database:info')
-            ->setAliases(array('db:info'))
+            ->setName('db:info')
+            ->setAliases(array('database:info'))
+            ->addDeprecatedAlias('database:info', 'Please use db:info')
             ->setDescription('Dumps database informations')
         ;
     }

@@ -18,8 +18,9 @@ class InfoCommand extends AbstractMagentoCommand
     protected function configure()
     {
         $this
-            ->setName('system:info')
-            ->setAliases(array('sys:info'))
+            ->setName('sys:info')
+            ->setAliases(array('system:info'))
+            ->addDeprecatedAlias('system:info', 'Please use sys:info')
             ->setDescription('Prints infos about the current magento system.');
     }
 

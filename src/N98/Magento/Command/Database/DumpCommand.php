@@ -12,11 +12,13 @@ class DumpCommand extends AbstractDatabaseCommand
     protected function configure()
     {
         $this
-            ->setName('database:dump')
-            ->setAliases(array('db:dump'))
+            ->setName('db:dump')
+            ->setAliases(array('database:dump'))
             ->addArgument('filename', InputArgument::OPTIONAL, 'Dump filename')
+            ->addOption('add-time', null, InputOption::VALUE_NONE, 'Adds time to filename')
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysqldump command. Do not execute')
             ->addOption('stdout', null, InputOption::VALUE_NONE, 'Dump to stdout')
+            ->addDeprecatedAlias('database:dump', 'Please use db:dump')
             ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml')
         ;
     }
@@ -36,7 +38,10 @@ class DumpCommand extends AbstractDatabaseCommand
 
         if (($fileName = $input->getArgument('filename')) === null && !$input->getOption('stdout')) {
             $dialog = $this->getHelperSet()->get('dialog');
-            $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question> [<comment>' . $this->dbSettings['dbname'] . '</comment>]', $this->dbSettings['dbname']);
+            $defaultName = $this->dbSettings['dbname']
+                         . ($input->getOption('add-time') ? '_' . date('Ymdhis') : '')
+                         . '.sql';
+            $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question> [<comment>' . $defaultName . '</comment>]', $defaultName);
         }
 
         if (substr($fileName, -4, 4) !== '.sql') {

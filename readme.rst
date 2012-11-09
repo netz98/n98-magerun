@@ -109,7 +109,15 @@ Print database information
 Dump database
 """""""""""""
 
-Direct dump with mysqldump:
+Dumps configured magento database with `mysqldump`.
+
+Arguments:
+    filename        Dump filename
+
+Options:
+    --add-time      Adds time to filename
+    --only-command  Print only mysqldump command. Do not execute
+    --stdout        Dump to stdout
 
 .. code-block:: sh
 

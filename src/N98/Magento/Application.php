@@ -3,6 +3,7 @@
 namespace N98\Magento;
 
 use Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use N98\Magento\Command\ConfigurationLoader;
 use N98\Magento\Command\LocalConfig\GenerateCommand as GenerateLocalXmlConfigCommand;
 use N98\Magento\Command\Database\DumpCommand as DatabaseDumpCommand;
@@ -67,7 +68,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.34.1';
+    const APP_VERSION = '1.35.0';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -84,6 +85,8 @@ class Application extends BaseApplication
         $this->autoloader = $autoloader;
         parent::__construct(self::APP_NAME, self::APP_VERSION);
 
+        // Suppress DateTime warnings
+        date_default_timezone_set(@date_default_timezone_get());
 
         $configLoader = new ConfigurationLoader();
         $this->config = $configLoader->toArray();

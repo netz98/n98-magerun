@@ -18,8 +18,9 @@ class ListCommand extends AbstractMagentoCommand
     protected function configure()
     {
         $this
-            ->setName('system:website:list')
-            ->setAliases(array('sys:website:list'))
+            ->setName('sys:website:list')
+            ->setAliases(array('system:website:list'))
+            ->addDeprecatedAlias('system:website:list', 'Please use sys:website:list')
             ->setDescription('Lists all websites');
     }
 
