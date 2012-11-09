@@ -29,6 +29,7 @@ class ListCommand extends AbstractMagentoCommand
         $this
             ->setName('sys:url:list')
             ->setAliases(array('system:url:list'))
+            ->addDeprecatedAlias('system:url:list', 'Please use sys:url:list')
             ->addOption('add-categories', null, InputOption::VALUE_NONE, 'Adds categories')
             ->addOption('add-products', null, InputOption::VALUE_NONE, 'Adds products')
             ->addOption('add-cmspages', null, InputOption::VALUE_NONE, 'Adds cms pages')
