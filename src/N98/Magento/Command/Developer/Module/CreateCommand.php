@@ -91,6 +91,7 @@ class CreateCommand extends AbstractMagentoCommand
         $this->createModuleDirectories($input, $output);
         $this->writeEtcModules($input, $output);
         $this->writeModuleConfig($input, $output);
+        $this->writeReadme($input, $output);
         if ($this->modmanMode) {
             $this->writeModmanFile($input, $output);
         }
@@ -175,6 +176,23 @@ class CreateCommand extends AbstractMagentoCommand
     {
         $this->view->setTemplate($this->baseFolder . '/modman.phtml');
         $outFile = $this->_magentoRootFolder . '/../modman';
+        file_put_contents($outFile, $this->view->render());
+        $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
+    }
+
+    /**
+     * Write standard readme
+     *
+     * TODO: Make author name / company URL and more configurable
+     *
+     * @see https://raw.github.com/sprankhub/Magento-Extension-Sample-Readme/master/readme.markdown
+     *
+     * @param $input
+     * @param $output
+     */
+    protected function writeReadme($input, $output) {
+        $this->view->setTemplate($this->baseFolder . '/app/etc/modules/readme.phtml');
+        $outFile = $this->moduleDirectory . '/etc/readme.md';
         file_put_contents($outFile, $this->view->render());
         $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
     }
