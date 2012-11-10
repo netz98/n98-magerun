@@ -27,11 +27,7 @@ class SetCommand extends AbstractMagentoCommand
      */
     protected function _getConfigModel()
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return \Mage::getModel('Mage_Core_Model_Config');
-        } else {
-            return \Mage::getModel('core/config');
-        }
+        return $this->_getModel('core/config','Mage_Core_Model_Config');
     }
 
     /**

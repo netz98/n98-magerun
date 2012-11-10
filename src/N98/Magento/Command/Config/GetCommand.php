@@ -35,11 +35,7 @@ EOT
      */
     protected function _getConfigDataModel()
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return \Mage::getModel('Mage_Core_Model_Config_Data');
-        } else {
-            return \Mage::getModel('core/config_data');
-        }
+        return $this->_getModel('core/config_data', 'Mage_Core_Model_Config_Data');
     }
 
     /**
