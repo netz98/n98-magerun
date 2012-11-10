@@ -24,7 +24,7 @@ class DisableNotificationsCommand extends AbstractMagentoStoreConfigCommand
     /**
      * @var string
      */
-    protected $toggleComment = 'Admin Notifications';
+    protected $toggleComment = 'Hiding Admin Notifications';
 
     /**
      * @var string
