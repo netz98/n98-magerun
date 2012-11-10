@@ -63,7 +63,7 @@ class CreateUserCommand extends AbstractAdminUserCommand
             }
 
             // create new user
-            $user = \Mage::getModel('admin/user')
+            $user = $this->getUserModel()
                 ->setData(array(
                     'username' => $username,
                     'firstname' => $firstname,
@@ -73,21 +73,31 @@ class CreateUserCommand extends AbstractAdminUserCommand
                     'is_active' => 1
                 ))->save();
 
-            // create new role
-            $role = \Mage::getModel("admin/roles")
-                ->setName('Development')
-                ->setRoleType('G')
-                ->save();
+            // create new role if not yet existing
+            $role = $this->getRoleModel()->load('Development', 'role_name');
+            if(!$role->getId()) {
+                $role->setName('Development')
+                    ->setRoleType('G')
+                    ->save();
 
-            // give "all" privileges to role
-            \Mage::getModel("admin/rules")
-                ->setRoleId($role->getId())
-                ->setResources(array("all"))
-                ->saveRel();
+                $resourceAll = ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) ?
+                    \Mage_Backend_Model_Acl_Config::ACL_RESOURCE_ALL : 'all';
 
-            $user->setRoleIds(array($role->getId()))
-                ->setRoleUserId($user->getUserId())
-                ->saveRelations();
+                // give "all" privileges to role
+                $this->getRulesModel()
+                    ->setRoleId($role->getId())
+                    ->setResources(array($resourceAll))
+                    ->saveRel();
+            }
+
+            if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
+                $user->setRoleId($role->getId())
+                    ->save();
+            } else {
+                $user->setRoleIds(array($role->getId()))
+                    ->setRoleUserId($user->getUserId())
+                    ->saveRelations();
+            }
 
             $output->writeln('<info>User <comment>' . $username . '</comment> successfully created</info>');
 

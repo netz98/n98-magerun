@@ -52,7 +52,7 @@ class ListCommand extends AbstractMagentoCommand
     {
         $expr = (string) $job->schedule->cron_expr;
         if ($expr) {
-            $schedule = \Mage::getModel('cron/schedule');
+            $schedule = $this->_getModel('cron/schedule', 'Mage_Cron_Model_Schedule');
             $schedule->setCronExpr($expr);
             $array = $schedule->getCronExprArr();
             return array(

@@ -28,7 +28,7 @@ class CompareVersionsCommand extends AbstractMagentoCommand
         $this->detectMagento($output);
         if ($this->initMagento()) {
             $modules = \Mage::getConfig()->getNode('modules');
-            $resourceModel = \Mage::getResourceSingleton('core/resource');
+            $resourceModel = $this->_getResourceSingleton('core/resource', 'Mage_Core_Model_Resource_Resource');
             $setups = \Mage::getConfig()->getNode('global/resources')->children();
             $ignoreDataUpdate = $input->getOption('ignore-data');
             if (!$ignoreDataUpdate) {

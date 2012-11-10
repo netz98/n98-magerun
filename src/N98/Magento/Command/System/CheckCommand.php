@@ -33,6 +33,11 @@ class CheckCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output);
         if ($this->initMagento($output, true)) {
+
+            if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
+                $output->writeln("<error>WARNING: Magento 2 requirements are not yet defined. Until then Magento 1 requirements are checked.</error>");
+            }
+
             $this->checkFilesystem($input, $output);
             $this->checkPhp($input, $output);
             $this->checkSecurity($input, $output);
@@ -178,7 +183,7 @@ class CheckCommand extends AbstractMagentoCommand
     {
         $this->writeSection($output, 'Check: MySQL');
 
-        $dbAdapter = \Mage::getModel('core/resource')->getConnection('core_write');
+        $dbAdapter = $this->_getModel('core/resource', 'Mage_Core_Model_Resource')->getConnection('core_write');
 
         /**
          * Check Version

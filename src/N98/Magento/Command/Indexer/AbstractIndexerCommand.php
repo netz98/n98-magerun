@@ -11,11 +11,7 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
      */
     protected function _getIndexerModel()
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return \Mage::getModel('Mage_Index_Model_Indexer');
-        } else {
-            return \Mage::getModel('index/indexer');
-        }
+        return $this->_getModel('index/indexer', 'Mage_Index_Model_Indexer');
     }
 
     /**

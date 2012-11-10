@@ -11,10 +11,6 @@ class AbstractCacheCommand extends AbstractMagentoCommand
      */
     protected function _getCacheModel()
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return \Mage::getModel('Mage_Core_Model_Cache');
-        } else {
-            return \Mage::getModel('core/cache');
-        }
+        return $this->_getModel('core/cache', 'Mage_Core_Model_Cache');
     }
 }
