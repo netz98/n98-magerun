@@ -31,6 +31,18 @@ EOT
     }
 
     /**
+     * @return \Mage_Core_Model_Abstract
+     */
+    protected function _getConfigDataModel()
+    {
+        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
+            return \Mage::getModel('Mage_Core_Model_Config_Data');
+        } else {
+            return \Mage::getModel('core/config_data');
+        }
+    }
+
+    /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return int|void
@@ -39,7 +51,7 @@ EOT
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            $collection = \Mage::getModel('core/config_data')->getCollection();
+            $collection = $this->_getConfigDataModel()->getCollection();
             $searchPath = $input->getArgument('path');
 
             if(substr($input->getArgument('path'), -1, 1) === '/') {
