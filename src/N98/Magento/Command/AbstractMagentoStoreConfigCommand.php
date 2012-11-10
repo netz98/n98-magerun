@@ -50,6 +50,16 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
     /**
      * @var string
      */
+    protected $falseName = 'disabled';
+
+    /**
+     * @var string
+     */
+    protected $trueName = 'enabled';
+
+    /**
+     * @var string
+     */
     protected $scope = self::SCOPE_STORE_VIEW;
 
     protected function configure()
@@ -81,23 +91,23 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             }
         }
 
-        $disabled = !\Mage::getStoreConfigFlag($this->configPath, $store->getId());
+        $isFalse = !\Mage::getStoreConfigFlag($this->configPath, $store->getId());
 
-        $this->_beforeSave($store, $disabled);
+        $this->_beforeSave($store, $isFalse);
 
         \Mage::app()->getConfig()->saveConfig(
             $this->configPath,
-            $disabled ? 1 : 0,
+            $isFalse ? 1 : 0,
             $store->getId() == \Mage_Core_Model_App::ADMIN_STORE_ID ? 'default' : 'stores',
             $store->getId()
         );
 
         $comment = '<comment>' . $this->toggleComment . '</comment> '
-                 . '<info>' . (!$disabled ? 'disabled' : 'enabled') . '</info>'
+                 . '<info>' . (!$isFalse ? $this->falseName : $this->trueName) . '</info>'
                  . ($this->scope == self::SCOPE_STORE_VIEW ? ' <comment>for store</comment> <info>' . $store->getCode() . '</info>' : '');
         $output->writeln($comment);
 
-        $this->_afterSave($store, $disabled);
+        $this->_afterSave($store, $isFalse);
 
         $input = new StringInput('cache:clear');
         $this->getApplication()->run($input, new NullOutput());
