@@ -31,10 +31,10 @@ class FlushCommand extends AbstractCacheCommand
             \Mage::app()->getCacheInstance()->flush();
             $output->writeln('<info>Cache cleared</info>');
 
-            if (is_callable(array('\Enterprise_PageCache_Model_Cache', 'getCacheInstance'))) {
+            if ($this->_magentoEnterprise) {
                 \Enterprise_PageCache_Model_Cache::getCacheInstance()->flush();
                 $output->writeln('<info>FPC cleared</info>');
-            }
+             }
 
         }
     }
