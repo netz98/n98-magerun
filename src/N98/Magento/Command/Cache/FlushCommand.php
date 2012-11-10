@@ -34,7 +34,7 @@ class FlushCommand extends AbstractCacheCommand
             if ($this->_magentoEnterprise) {
                 \Enterprise_PageCache_Model_Cache::getCacheInstance()->flush();
                 $output->writeln('<info>FPC cleared</info>');
-             }
+            }
 
         }
     }
