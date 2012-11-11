@@ -11,7 +11,7 @@ abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
      */
     protected function getUserModel()
     {
-        $this->_getModel('admin/user', 'Mage_User_Model_User');
+        return $this->_getModel('admin/user', 'Mage_User_Model_User');
     }
 
     /**
@@ -27,6 +27,6 @@ abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
      */
     protected function getRulesModel()
     {
-        $this->_getModel('admin/rules', 'Mage_User_Model_Rules');
+        return $this->_getModel('admin/rules', 'Mage_User_Model_Rules');
     }
 }
