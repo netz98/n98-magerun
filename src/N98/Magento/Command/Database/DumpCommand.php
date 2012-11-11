@@ -150,12 +150,22 @@ class DumpCommand extends AbstractDatabaseCommand
             $this->writeSection($output, 'Dump MySQL Database');
         }
 
+        $timeStamp = '_' . date('Y-m-d_His');
         if (($fileName = $input->getArgument('filename')) === null && !$input->getOption('stdout')) {
             $dialog = $this->getHelperSet()->get('dialog');
             $defaultName = $this->dbSettings['dbname']
-                         . ($input->getOption('add-time') ? '_' . date('Ymdhis') : '')
+                         . ($input->getOption('add-time') ? $timeStamp : '')
                          . '.sql';
             $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question> [<comment>' . $defaultName . '</comment>]', $defaultName);
+        } else {
+            if (($input->getOption('add-time'))) {
+                $extension_pos = strrpos($fileName, '.'); // find position of the last dot, so where the extension starts
+                if ($extension_pos !== false) {
+                    $fileName = substr($fileName, 0, $extension_pos) . $timeStamp . substr($fileName, $extension_pos);
+                } else {
+                    $fileName .= $timeStamp;
+                }
+            }
         }
 
         if (substr($fileName, -4, 4) !== '.sql') {
