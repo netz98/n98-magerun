@@ -10,20 +10,31 @@ class ConfigurationLoader
      * @var array
      */
     protected $_configArray;
+    protected $_customConfigFilename = '.n98-magerun.yaml';
 
     public function __construct()
     {
-        $globalConfig = Yaml::parse(__DIR__ . '/../../../../config.yaml');
+        $config = Yaml::parse(__DIR__ . '/../../../../config.yaml');
 
         // Check if there is a user config file.
         $homeDirectory = getenv('HOME');
-        $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . '.n98-magerun.yaml';
+        $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . $this->_customConfigFilename;
+        $cwd = getcwd();
+        $projectConfigFile = $cwd . DIRECTORY_SEPARATOR . $this->_customConfigFilename;
+
         if ($homeDirectory && file_exists($personalConfigFile)) {
             $personalConfig = Yaml::parse($personalConfigFile);
-            $this->_configArray = $this->mergeArrays($globalConfig, $personalConfig);
-        } else {
-            $this->_configArray = $globalConfig;
+            $config = $this->mergeArrays($config, $personalConfig);
         }
+        if($cwd && file_exists($projectConfigFile)) {
+            $projectConfig = Yaml::parse($projectConfigFile);
+            foreach($projectConfig['autoloaders'] as $key => &$value) {
+                $value = str_replace('%path%', $cwd, $value);
+            }
+            $config = $this->mergeArrays($config, $projectConfig);
+        }
+
+        $this->_configArray = $config;
     }
 
     /**
