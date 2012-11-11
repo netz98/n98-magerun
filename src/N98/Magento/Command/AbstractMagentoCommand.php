@@ -5,7 +5,6 @@ namespace N98\Magento\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Finder\Finder;
 use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Factory as ComposerFactory;
 use Composer\IO\ConsoleIO;
@@ -108,58 +107,22 @@ abstract class AbstractMagentoCommand extends Command
      *
      * @param OutputInterface $output
      * @param bool $silent print debug messages
+     * @throws \RuntimeException
      */
     public function detectMagento(OutputInterface $output, $silent = true)
     {
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            $folder = exec('@echo %cd%'); // @TODO not currently tested!!!
-        } else {
-            $folder = exec('pwd');
+        $this->getApplication()->detectMagento();
+
+        $this->_magentoEnterprise = $this->getApplication()->isMagentoEnterprise();
+        $this->_magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
+
+        if (!$silent) {
+            $editionString = ($this->_magentoEnterprise ? ' (Enterprise Edition) ' : '');
+            $output->writeln('<info>Found Magento '. $editionString . 'in folder "' . $this->_magentoRootFolder . '"</info>');
         }
 
-        $folders = array();
-        $folderParts = explode(DIRECTORY_SEPARATOR, $folder);
-        foreach ($folderParts as $key => $part) {
-            $explodedFolder = implode(DIRECTORY_SEPARATOR, array_slice($folderParts, 0, $key + 1));
-            if ($explodedFolder !== '') {
-                $folders[] = $explodedFolder;
-            }
-        }
-
-        foreach (array_reverse($folders) as $searchFolder) {
-            $finder = new Finder();
-            $finder
-                ->directories()
-                ->depth(0)
-                ->followLinks()
-                ->name('app')
-                ->name('skin')
-                ->name('lib')
-                ->in($searchFolder);
-
-            if ($finder->count() >= 2) {
-                $files = iterator_to_array($finder, false); /* @var $file \SplFileInfo */
-
-                if (count($files) == 2) {
-                    // Magento 2 has no skin folder.
-                    // @TODO find a better magento 2.x check
-                    $this->_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_2;
-                }
-
-                $this->_magentoRootFolder = dirname($files[0]->getRealPath());
-
-                if (is_callable(array('\Mage', 'getEdition'))) {
-                    $this->_magentoEnterprise = (\Mage::getEdition() == 'Enterprise');
-                } else {
-                    $this->_magentoEnterprise = is_dir($this->_magentoRootFolder . '/app/code/core/Enterprise');
-                }
-
-                if (!$silent) {
-                    $editionString = ($this->_magentoEnterprise ? ' (Enterprise Edition) ' : '');
-                    $output->writeln('<info>Found Magento '. $editionString . 'in folder "' . $this->_magentoRootFolder . '"</info>');
-                }
-                return;
-            }
+        if (!empty($this->_magentoRootFolder)) {
+            return;
         }
 
         throw new \RuntimeException('Magento folder could not be detected');
@@ -250,4 +213,39 @@ abstract class AbstractMagentoCommand extends Command
             $output->writeln('<error>Deprecated:</error> <comment>' . $this->_deprecatedAlias[$input->getArgument('command')] . '</comment>');
         }
     }
+
+    /**
+     * Magento 1 / 2 switches
+     *
+     * @param $mage1code string Magento 1 class code
+     * @param $mage2class string Magento 2 class name
+     * @return \Mage_Core_Model_Abstract
+     */
+    protected function _getModel($mage1code, $mage2class)
+    {
+        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
+            return \Mage::getModel($mage2class);
+        } else {
+            return \Mage::getModel($mage1code);
+        }
+    }
+
+    /**
+     * Magento 1 / 2 switches
+     *
+     * @param $mage1code string Magento 1 class code
+     * @param $mage2class string Magento 2 class name
+     * @return \Mage_Core_Model_Abstract
+     */
+    protected function _getResourceSingleton($mage1code, $mage2class)
+    {
+        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
+            return \Mage::getResourceSingleton($mage2class);
+        } else {
+            return \Mage::getResourceSingleton($mage1code);
+        }
+    }
+
+
+
 }

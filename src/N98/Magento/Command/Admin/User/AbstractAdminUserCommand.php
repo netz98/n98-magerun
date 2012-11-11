@@ -11,10 +11,22 @@ abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
      */
     protected function getUserModel()
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return \Mage::getModel('Mage_Admin_Model_User');
-        } else {
-            return \Mage::getModel('admin/user');
-        }
+        return $this->_getModel('admin/user', 'Mage_User_Model_User');
+    }
+
+    /**
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function getRoleModel()
+    {
+        return $this->_getModel('admin/roles', 'Mage_User_Model_Role');
+    }
+
+    /**
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function getRulesModel()
+    {
+        return $this->_getModel('admin/rules', 'Mage_User_Model_Rules');
     }
 }

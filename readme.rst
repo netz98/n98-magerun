@@ -730,10 +730,3 @@ Thanks to
 
 * Symfony2 Team for the great console component.
 * Composer Team for the downloader backend and the self-update command.
-
-Roadmap
--------
-
-* dev:event:list - List all magento events
-* List more infos like Base URLs.
-* Change BaseURL from CLI.

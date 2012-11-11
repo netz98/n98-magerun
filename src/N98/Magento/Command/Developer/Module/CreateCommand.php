@@ -91,6 +91,7 @@ class CreateCommand extends AbstractMagentoCommand
         $this->createModuleDirectories($input, $output);
         $this->writeEtcModules($input, $output);
         $this->writeModuleConfig($input, $output);
+        $this->writeReadme($input, $output);
         if ($this->modmanMode) {
             $this->writeModmanFile($input, $output);
         }
@@ -109,10 +110,14 @@ class CreateCommand extends AbstractMagentoCommand
     }
 
     protected function createModuleDirectories($input, $output)
-    {	
-	if ($this->modmanMode) {
-            mkdir($this->vendorNamespace . '_' . $this->moduleName. '/src', 0777, true);
-            $this->_magentoRootFolder = './' . $this->vendorNamespace . '_' . $this->moduleName . '/src';
+    {
+        if ($this->modmanMode) {
+            $modManDir = $this->vendorNamespace . '_' . $this->moduleName. '/src';
+            if (file_exists($modManDir)) {
+                throw new \RuntimeException('Module already exists. Stop.');
+            }
+            mkdir($modManDir, 0777, true);
+            $this->_magentoRootFolder = './' . $modManDir;
             mkdir($this->_magentoRootFolder . '/app/etc/modules', 0777, true);
         }
         $moduleDir = $this->_magentoRootFolder
@@ -175,6 +180,27 @@ class CreateCommand extends AbstractMagentoCommand
     {
         $this->view->setTemplate($this->baseFolder . '/modman.phtml');
         $outFile = $this->_magentoRootFolder . '/../modman';
+        file_put_contents($outFile, $this->view->render());
+        $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
+    }
+
+    /**
+     * Write standard readme
+     *
+     * TODO: Make author name / company URL and more configurable
+     *
+     * @see https://raw.github.com/sprankhub/Magento-Extension-Sample-Readme/master/readme.markdown
+     *
+     * @param $input
+     * @param $output
+     */
+    protected function writeReadme($input, $output) {
+        $this->view->setTemplate($this->baseFolder . '/app/etc/modules/readme.phtml');
+        if ($this->modmanMode) {
+            $outFile = $this->_magentoRootFolder . '/../readme.md';
+        } else {
+            $outFile = $this->moduleDirectory . '/etc/readme.md';
+        }
         file_put_contents($outFile, $this->view->render());
         $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
     }

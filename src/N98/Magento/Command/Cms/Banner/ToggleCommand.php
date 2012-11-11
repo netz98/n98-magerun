@@ -28,11 +28,7 @@ class ToggleCommand extends AbstractMagentoCommand
      */
     protected function _getBannerModel()
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return \Mage::getModel('Enterprise_Banner_Model_Banner');
-        } else {
-            return \Mage::getModel('enterprise_banner/banner');
-        }
+        $this->_getModel('enterprise_banner/banner', 'Enterprise_Banner_Model_Banner');
     }
 
     /**

@@ -30,11 +30,7 @@ class PublishCommand extends AbstractMagentoCommand
      */
     protected function _getPageModel()
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return \Mage::getModel('Mage_Cms_Model_Page');
-        } else {
-            return \Mage::getModel('cms/page');
-        }
+        return $this->_getModel('cms/page', 'Mage_Cms_Model_Page');
     }
 
     /**
@@ -42,11 +38,7 @@ class PublishCommand extends AbstractMagentoCommand
      */
     protected function _getPageRevisionModel()
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return \Mage::getModel('Enterprise_Cms_Model_Page_Revision');
-        } else {
-            return \Mage::getModel('enterprise_cms/page_revision');
-        }
+        return $this->_getModel('enterprise_cms/page_revision', 'Enterprise_Cms_Model_Page_Revision');
     }
 
     /**
