@@ -29,5 +29,15 @@ class DisableNotificationsCommand extends AbstractMagentoStoreConfigCommand
     /**
      * @var string
      */
+    protected $trueName = 'hidden';
+
+    /**
+     * @var string
+     */
+    protected $falseName = 'visible';
+
+    /**
+     * @var string
+     */
     protected $scope = self::SCOPE_GLOBAL;
 }
