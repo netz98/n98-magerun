@@ -4,6 +4,7 @@ namespace N98\Magento;
 
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Finder\Finder;
 use N98\Magento\Command\ConfigurationLoader;
 use N98\Magento\Command\LocalConfig\GenerateCommand as GenerateLocalXmlConfigCommand;
 use N98\Magento\Command\Database\DumpCommand as DatabaseDumpCommand;
@@ -68,7 +69,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.35.0';
+    const APP_VERSION = '1.36.0';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -80,6 +81,16 @@ class Application extends BaseApplication
      */
     protected $config;
 
+    /**
+     * @var string
+     */
+    protected $_magentoRootFolder = null;
+
+    /**
+     * @var bool
+     */
+    protected $_magentoEnterprise = false;
+
     public function __construct($autoloader)
     {
         $this->autoloader = $autoloader;
@@ -88,7 +99,9 @@ class Application extends BaseApplication
         // Suppress DateTime warnings
         date_default_timezone_set(@date_default_timezone_get());
 
-        $configLoader = new ConfigurationLoader();
+        $this->detectMagento();
+
+        $configLoader = new ConfigurationLoader($this->_magentoRootFolder);
         $this->config = $configLoader->toArray();
 
         $this->registerHelpers();
@@ -150,6 +163,79 @@ class Application extends BaseApplication
         $this->add(new MagentoCmsBannerToggleCommand());
         $this->add(new SelfUpdateCommand());
     }
+
+    /**
+     * Search for magento root folder
+     *
+     * @param OutputInterface $output
+     * @param bool $silent print debug messages
+     */
+    public function detectMagento()
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $folder = exec('@echo %cd%'); // @TODO not currently tested!!!
+        } else {
+            $folder = exec('pwd');
+        }
+
+        $folders = array();
+        $folderParts = explode(DIRECTORY_SEPARATOR, $folder);
+        foreach ($folderParts as $key => $part) {
+            $explodedFolder = implode(DIRECTORY_SEPARATOR, array_slice($folderParts, 0, $key + 1));
+            if ($explodedFolder !== '') {
+                $folders[] = $explodedFolder;
+            }
+        }
+
+        foreach (array_reverse($folders) as $searchFolder) {
+            $finder = new Finder();
+            $finder
+                ->directories()
+                ->depth(0)
+                ->followLinks()
+                ->name('app')
+                ->name('skin')
+                ->name('lib')
+                ->in($searchFolder);
+
+            if ($finder->count() >= 2) {
+                $files = iterator_to_array($finder, false); /* @var $file \SplFileInfo */
+
+                if (count($files) == 2) {
+                    // Magento 2 has no skin folder.
+                    // @TODO find a better magento 2.x check
+                    $this->_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_2;
+                }
+
+                $this->_magentoRootFolder = dirname($files[0]->getRealPath());
+
+                if (is_callable(array('\Mage', 'getEdition'))) {
+                    $this->_magentoEnterprise = (\Mage::getEdition() == 'Enterprise');
+                } else {
+                    $this->_magentoEnterprise = is_dir($this->_magentoRootFolder . '/app/code/core/Enterprise');
+                }
+
+                return;
+            }
+        }
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMagentoEnterprise()
+    {
+        return $this->_magentoEnterprise;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMagentoRootFolder()
+    {
+        return $this->_magentoRootFolder;
+    }
+
 
     /**
      * Add own helpers to helperset.

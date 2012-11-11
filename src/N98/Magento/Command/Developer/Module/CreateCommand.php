@@ -110,8 +110,8 @@ class CreateCommand extends AbstractMagentoCommand
     }
 
     protected function createModuleDirectories($input, $output)
-    {	
-	if ($this->modmanMode) {
+    {
+        if ($this->modmanMode) {
             $modManDir = $this->vendorNamespace . '_' . $this->moduleName. '/src';
             if (file_exists($modManDir)) {
                 throw new \RuntimeException('Module already exists. Stop.');
