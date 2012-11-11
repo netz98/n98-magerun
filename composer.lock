@@ -62,18 +62,18 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:cmuench/junit-xml.git",
-                "reference": "b3c8ccac8a2998b7f17dc6829c9204f6e48346ad"
+                "reference": "3ba5887b124034c423d48d7deea2e665c4da83ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/cmuench/junit-xml/zipball/b3c8ccac8a2998b7f17dc6829c9204f6e48346ad",
-                "reference": "b3c8ccac8a2998b7f17dc6829c9204f6e48346ad",
+                "url": "https://github.com/cmuench/junit-xml/archive/3ba5887b124034c423d48d7deea2e665c4da83ec.zip",
+                "reference": "3ba5887b124034c423d48d7deea2e665c4da83ec",
                 "shasum": ""
             },
             "require-dev": {
                 "phpunit/phpunit": "3.7.7"
             },
-            "time": "1351358535",
+            "time": "1351436979",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -94,22 +94,22 @@
         },
         {
             "name": "seld/jsonlint",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "http://github.com/Seldaek/jsonlint",
-                "reference": "1.0.0"
+                "reference": "1.0.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/Seldaek/jsonlint/zipball/1.0.0",
-                "reference": "1.0.0",
+                "url": "https://github.com/Seldaek/jsonlint/zipball/1.0.1",
+                "reference": "1.0.1",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2012-03-12 07:52:32",
+            "time": "2012-08-13 07:00:11",
             "bin": [
                 "bin/jsonlint"
             ],

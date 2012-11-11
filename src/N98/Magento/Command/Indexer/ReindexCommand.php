@@ -29,12 +29,11 @@ class ReindexCommand extends AbstractIndexerCommand
         if ($this->initMagento()) {
             $this->writeSection($output, 'Reindex');
             $indexCode = $input->getArgument('index_code');
+            $indexerList = $this->getIndexerList();
             if ($indexCode === null) {
                 $question = array();
-                $indexerList = $this->getIndexerList();
-
                 foreach ($indexerList as $key => $indexer) {
-                    $question[] = '<comment>[' . ($key+1) . ']</comment> ' . $indexer['code'] . "\n";
+                    $question[] = '<comment>' . str_pad('[' . ($key+1) . ']', 4, ' ', STR_PAD_RIGHT) . '</comment> ' . str_pad($indexer['code'], 40, ' ', STR_PAD_RIGHT) . ' <info>(last runtime: ' . $indexer['last_runtime'] . ')</info>' . "\n";
                 }
                 $question[] = '<question>Please select a indexer:</question>';
 
@@ -49,8 +48,23 @@ class ReindexCommand extends AbstractIndexerCommand
             if (!$process) {
                 throw new \InvalidArgumentException('Indexer was not found!');
             }
+            $output->writeln('<info>Started reindex of: ' . $indexCode . '</info>');
+
+            /**
+             * Try to estimate runtime. If index was aborted or never created we have a timestamp < 0
+             */
+            $runtimeInSeconds = $this->getRuntimeInSeconds($process);
+            if ($runtimeInSeconds > 0) {
+                $estimatedEnd = new \DateTime('now', new \DateTimeZone('UTC'));
+                $estimatedEnd->add(new \DateInterval('PT' . $runtimeInSeconds . 'S'));
+                $output->writeln('<info>Estimated end: ' . $estimatedEnd->format('Y-m-d H:i:s T') . '</info>');
+            }
+
+            $startTime = new \DateTime('now');
+            $dateTimeUtils = new \N98\Util\DateTime();
             $process->reindexEverything();
-            $output->writeln('<info>Successfully reindexed ' . $indexCode . '</info>');
+            $endTime = new \DateTime('now');
+            $output->writeln('<info>Successfully reindexed ' . $indexCode . ' (Runtime: ' . $dateTimeUtils->getDifferenceAsString($startTime, $endTime) .')</info>');
         }
     }
 }
