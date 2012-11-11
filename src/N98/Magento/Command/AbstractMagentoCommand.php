@@ -250,4 +250,39 @@ abstract class AbstractMagentoCommand extends Command
             $output->writeln('<error>Deprecated:</error> <comment>' . $this->_deprecatedAlias[$input->getArgument('command')] . '</comment>');
         }
     }
+
+    /**
+     * Magento 1 / 2 switches
+     *
+     * @param $mage1code string Magento 1 class code
+     * @param $mage2class string Magento 2 class name
+     * @return \Mage_Core_Model_Abstract
+     */
+    protected function _getModel($mage1code, $mage2class)
+    {
+        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
+            return \Mage::getModel($mage2class);
+        } else {
+            return \Mage::getModel($mage1code);
+        }
+    }
+
+    /**
+     * Magento 1 / 2 switches
+     *
+     * @param $mage1code string Magento 1 class code
+     * @param $mage2class string Magento 2 class name
+     * @return \Mage_Core_Model_Abstract
+     */
+    protected function _getResourceSingleton($mage1code, $mage2class)
+    {
+        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
+            return \Mage::getResourceSingleton($mage2class);
+        } else {
+            return \Mage::getResourceSingleton($mage1code);
+        }
+    }
+
+
+
 }
