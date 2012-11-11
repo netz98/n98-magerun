@@ -20,6 +20,7 @@
     </fileset>
 
     <target name="dist">
+	<exec command="composer.phar install" dir="${project.basedir}" passthru="true" />
         <phingcall target="dist_unix" />
         <phingcall target="dist_win" />
     </target>
