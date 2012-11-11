@@ -15,6 +15,11 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
     protected $dbSettings;
 
     /**
+     * @var bool
+     */
+    protected $isSocketConnect = false;
+
+    /**
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      */
     protected function detectDbSettings(OutputInterface $output)
@@ -28,5 +33,29 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
             return;
         }
         $this->dbSettings = (array)$config->global->resources->default_setup->connection;
+
+        if (isset($this->dbSettings['unix_socket'])) {
+            $this->isSocketConnect = true;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getMysqlClientToolConnectionString()
+    {
+        if ($this->isSocketConnect) {
+            $string = '--socket=' . escapeshellarg(strval($this->dbSettings['unix_socket']));
+        } else {
+            $string = '-h' . escapeshellarg(strval($this->dbSettings['host']));
+        }
+
+        $string .= ' '
+                . '-u' . escapeshellarg(strval($this->dbSettings['username']))
+                . ' '
+                . (!strval($this->dbSettings['password'] == '') ? '-p' . escapeshellarg($this->dbSettings['password']) . ' ' : '')
+                . escapeshellarg(strval($this->dbSettings['dbname']));
+
+        return $string;
     }
 }

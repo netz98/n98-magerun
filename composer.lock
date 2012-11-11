@@ -1,5 +1,5 @@
 {
-    "hash": "054933468f8a6c2d58e3f7cf36d9a492",
+    "hash": "74251cd686e294d8b4bd03813feed355",
     "packages": [
         {
             "name": "justinrainbow/json-schema",
@@ -55,6 +55,42 @@
                 "json",
                 "schema"
             ]
+        },
+        {
+            "name": "n98/junit-xml",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:cmuench/junit-xml.git",
+                "reference": "b3c8ccac8a2998b7f17dc6829c9204f6e48346ad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/cmuench/junit-xml/zipball/b3c8ccac8a2998b7f17dc6829c9204f6e48346ad",
+                "reference": "b3c8ccac8a2998b7f17dc6829c9204f6e48346ad",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.7"
+            },
+            "time": "1351358535",
+            "type": "library",
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "N98\\JUnitXml": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Münch",
+                    "email": "c.muench@netz98.de"
+                }
+            ],
+            "description": "JUnit XML Document generation library"
         },
         {
             "name": "seld/jsonlint",
@@ -297,7 +333,7 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ]
+    "stability-flags": {
+        "n98/junit-xml": 20
+    }
 }

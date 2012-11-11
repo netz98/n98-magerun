@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\JUnitXml\Document as JUnitXmlDocument;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,6 +15,7 @@ class ConflictsCommand extends AbstractRewriteCommand
     {
         $this
             ->setName('dev:module:rewrite:conflicts')
+            ->addOption('log-junit', null, InputOption::VALUE_REQUIRED, 'Log conflicts in JUnit XML format to defined file.')
             ->setDescription('Lists all magento rewrite conflicts')
         ;
     }
@@ -27,9 +29,10 @@ class ConflictsCommand extends AbstractRewriteCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            $this->writeSection($output, 'Conflicts');
             $table = new \Zend_Text_Table(array('columnWidths' => array(8, 30, 60, 60)));
+            $tableData = array();
             if ($this->initMagento()) {
+                $time = microtime(true);
                 $rewrites = $this->loadRewrites();
                 $conflictCounter = 0;
                 foreach ($rewrites as $type => $data) {
@@ -37,12 +40,12 @@ class ConflictsCommand extends AbstractRewriteCommand
                         foreach ($data as $class => $rewriteClass) {
                             if (count($rewriteClass) > 1) {
                                 if ($this->_isInheritanceConflict($rewriteClass)) {
-                                    $table->appendRow(array(
+                                    $tableData[] = array(
                                         'Type'         => $type,
                                         'Class'        => $class,
                                         'Rewrites'     => implode(', ', $rewriteClass),
-                                        'Loaded Class' => \Mage::getConfig()->getModelClassName($class),
-                                    ));
+                                        'Loaded Class' => $this->_getLoadedClass($type, $class),
+                                    );
                                     $conflictCounter++;
                                 }
                             }
@@ -50,15 +53,75 @@ class ConflictsCommand extends AbstractRewriteCommand
                     }
                 }
 
-                if ($conflictCounter > 0) {
-                    $output->writeln('<error>' . $conflictCounter . ' conflict' . ($conflictCounter > 1 ? 's' : '') . ' was found!</error>');
-                    $output->write($table->render());
+                if ($input->getOption('log-junit')) {
+                    $this->logJUnit($tableData, $input->getOption('log-junit'), microtime($time) - $time);
                 } else {
-                    $output->writeln('<info>No rewrite conflicts was found.</info>');
+                    if ($conflictCounter > 0) {
+                        $this->writeSection($output, 'Conflicts');
+                        array_map(array($table, 'appendRow'), $tableData);
+                        $output->writeln('<error>' . $conflictCounter . ' conflict' . ($conflictCounter > 1 ? 's' : '') . ' was found!</error>');
+                        $output->write($table->render());
+                    } else {
+                        $output->writeln('<info>No rewrite conflicts was found.</info>');
+                    }
                 }
-
             }
         }
+    }
+
+    /**
+     * Returns loaded class by type like models or blocks
+     *
+     * @param string $type
+     * @param string $class
+     * @return string
+     */
+    protected function _getLoadedClass($type, $class)
+    {
+        switch ($type) {
+            case 'blocks':
+                return \Mage::getConfig()->getBlockClassName($class);
+
+            case 'helpers':
+                return \Mage::getConfig()->getHelperClassName($class);
+
+            default:
+            case 'models':
+                return \Mage::getConfig()->getModelClassName($class);
+                break;
+        }
+    }
+
+    /**
+     * @param array $conflicts
+     * @param string $filename
+     * @param float $duration
+     */
+    protected function logJUnit(array $conflicts, $filename, $duration)
+    {
+        $document = new JUnitXmlDocument();
+        $suite = $document->addTestSuite();
+        $suite->setName('n98-magerun: ' . $this->getName());
+        $suite->setTimestamp(new \DateTime());
+        $suite->setTime($duration);
+
+        $testCase = $suite->addTestCase();
+        $testCase->setName('Magento Rewrite Conflict Test');
+        $testCase->setClassname('ConflictsCommand');
+        foreach ($conflicts as $conflictRow) {
+            $testCase->addFailure(
+                sprintf(
+                    'Rewrite conflict: Type %s | Class: %s, Rewrites: %s | Loaded class: %s',
+                    $conflictRow['Type'],
+                    $conflictRow['Class'],
+                    $conflictRow['Rewrites'],
+                    $conflictRow['Loaded Class']
+                ),
+                'MagentoRewriteConflictException'
+            );
+        }
+
+        $document->save($filename);
     }
 
     /**

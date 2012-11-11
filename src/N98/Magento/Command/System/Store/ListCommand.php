@@ -18,8 +18,9 @@ class ListCommand extends AbstractMagentoCommand
     protected function configure()
     {
         $this
-            ->setName('system:store:list')
-            ->setAliases(array('sys:store:list'))
+            ->setName('sys:store:list')
+            ->setAliases(array('system:store:list'))
+            ->addDeprecatedAlias('system:store:list', 'Please use sys:store:list')
             ->setDescription('Lists all installed store-views');
     }
 

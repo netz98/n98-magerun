@@ -13,8 +13,9 @@ class MaintenanceCommand extends AbstractMagentoCommand
     protected function configure()
     {
         $this
-            ->setName('system:maintenance')
-            ->setAliases(array('sys:maintenance'))
+            ->setName('sys:maintenance')
+            ->setAliases(array('system:maintenance'))
+            ->addDeprecatedAlias('system:maintenance', 'Please use sys:maintenance')
             ->setDescription('Toggles maintenance mode.')
         ;
     }

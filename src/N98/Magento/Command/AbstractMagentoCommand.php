@@ -3,6 +3,7 @@
 namespace N98\Magento\Command;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Composer\Package\Loader\ArrayLoader as PackageLoader;
@@ -30,6 +31,30 @@ abstract class AbstractMagentoCommand extends Command
      * @var int
      */
     protected $_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_1;
+
+    /**
+     * @var bool
+     */
+    protected $_magentoEnterprise = false;
+
+    /**
+     * @var array
+     */
+    protected $_deprecatedAlias = array();
+
+    /**
+     * Initializes the command just after the input has been validated.
+     *
+     * This is mainly useful when a lot of commands extends one main command
+     * where some things need to be initialized based on the input arguments and options.
+     *
+     * @param InputInterface  $input  An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
+     */
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        $this->checkDeprecatedAliases($input, $output);
+    }
 
     /**
      * @return array
@@ -122,14 +147,33 @@ abstract class AbstractMagentoCommand extends Command
                 }
 
                 $this->_magentoRootFolder = dirname($files[0]->getRealPath());
+
+                if (is_callable(array('\Mage', 'getEdition'))) {
+                    $this->_magentoEnterprise = (\Mage::getEdition() == 'Enterprise');
+                } else {
+                    $this->_magentoEnterprise = is_dir($this->_magentoRootFolder . '/app/code/core/Enterprise');
+                }
+
                 if (!$silent) {
-                    $output->writeln('<info>Found magento in folder "' . $this->_magentoRootFolder . '"</info>');
+                    $editionString = ($this->_magentoEnterprise ? ' (Enterprise Edition) ' : '');
+                    $output->writeln('<info>Found Magento '. $editionString . 'in folder "' . $this->_magentoRootFolder . '"</info>');
                 }
                 return;
             }
         }
 
         throw new \RuntimeException('Magento folder could not be detected');
+    }
+
+    /**
+     * Die if not Enterprise
+     */
+    protected function requireEnterprise(OutputInterface $output)
+    {
+        if (!$this->_magentoEnterprise) {
+            $output->writeln('<error>Enterprise Edition is required but was not detected</error>');
+            exit;
+        }
     }
 
     /**
@@ -182,5 +226,28 @@ abstract class AbstractMagentoCommand extends Command
         }
         $dm->download($package, $targetFolder, $preferSource);
         return $package;
+    }
+
+    /**
+     * @param string $alias
+     * @param string $message
+     * @return AbstractMagentoCommand
+     */
+    protected function addDeprecatedAlias($alias, $message)
+    {
+        $this->_deprecatedAlias[$alias] = $message;
+
+        return $this;
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    protected function checkDeprecatedAliases(InputInterface $input, OutputInterface $output)
+    {
+        if (isset($this->_deprecatedAlias[$input->getArgument('command')])) {
+            $output->writeln('<error>Deprecated:</error> <comment>' . $this->_deprecatedAlias[$input->getArgument('command')] . '</comment>');
+        }
     }
 }

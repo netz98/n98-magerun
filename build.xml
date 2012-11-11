@@ -16,6 +16,7 @@
         <exclude name=".git/**" />
         <exclude name=".svn/**" />
         <exclude name="**/Tests/**" />
+        <exclude name="**/tests/**" />
     </fileset>
 
     <target name="dist">

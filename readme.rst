@@ -20,19 +20,19 @@ There are two ways to install the tools:
 Download phar file
 """"""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
     wget https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar
 
 You can make the .phar file executable.
 
-.. code-block:: bash
+.. code-block:: sh
 
     chmod +x ./n98-magerun.phar
 
 If you want to use command system wide you can copy it to `/usr/local/bin`.
 
-.. code-block:: bash
+.. code-block:: sh
 
     sudo cp ./n98-magerun.phar /usr/local/bin/
 
@@ -50,23 +50,24 @@ Add this to your php.ini file:
 From source with composer
 """""""""""""""""""""""""
 
-#. Clone git repository::
+.. code-block:: sh
 
+    #. Clone git repository
     git clone https://github.com/netz98/n98-magerun
 
-#. Download composer::
-
+    #. Download composer
     curl -s https://getcomposer.org/installer | php
 
-#. Let composer do all the work for you::
-
+    #. Let composer do all the work for you
     php ./composer.phar install
 
 or
+
+.. code-block:: sh
+
     php ./composer.phar create-project n98/magerun <folder>
 
-#. Run cli.php::
-
+    #. Run cli.php
     php vendor/bin/n98-magerun
 
 It's recommended to install the .phar file system wide.
@@ -76,7 +77,7 @@ Update
 
 Since version 1.1.0 we deliver a self-update script within the phar file::
 
-    n98-magerun.phar self-update
+   $ n98-magerun.phar self-update
 
 If file was installed system wide do not forget "sudo".
 
@@ -91,7 +92,7 @@ https://github.com/netz98/n98-magerun/wiki/Commands
 
 You can list all available commands by::
 
-   n98-magerun.phar list
+   $ n98-magerun.phar list
 
 
 If you don't have installed the .phar file system wide you can call it with the php cli interpreter::
@@ -101,20 +102,38 @@ If you don't have installed the .phar file system wide you can call it with the 
 Print database information
 """""""""""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar database:info
+   $ n98-magerun.phar database:info
 
 Dump database
-"""""""""""""""""""""""""""
+"""""""""""""
 
-Direct dump with mysqldump::
+Dumps configured magento database with `mysqldump`.
 
-    n98-magerun.phar database:dump
+Arguments:
+    filename        Dump filename
 
-Only the mysqldump command::
+Options:
+    --add-time      Adds time to filename
+    --only-command  Print only mysqldump command. Do not execute
+    --stdout        Dump to stdout
 
-    n98-magerun.phar database:dump --only-command [filename]
+.. code-block:: sh
+
+   $ n98-magerun.phar database:dump
+
+Only the mysqldump command:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar database:dump --only-command [filename]
+
+Or directly to stdout:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar database:dump --stdout
 
 Database Console / MySQL Client
 """""""""""""""""""""""""""""""
@@ -123,55 +142,86 @@ Opens the MySQL console client with your database settings from local.xml
 
 * Requires MySQL CLI tools
 
-.. code-block:: bash
+.. code-block:: sh
 
-   n98-magerun.phar database:console
+   $ n98-magerun.phar database:console
 
 List Indexes
 """"""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
-   n98-magerun.phar index:list
+   $ n98-magerun.phar index:list
 
 Reindex a Index
 """""""""""""""
 
 Index by indexer code. Code is optional. If you don't specify a code you can pick a indexer from a list.
 
-.. code-block:: bash
+.. code-block:: sh
 
-   n98-magerun.phar index:reindex [code]
+   $ n98-magerun.phar index:reindex [code]
 
 Reindex All
 """""""""""
 
 Loops all magento indexes and triggers reindex.
 
-.. code-block:: bash
+.. code-block:: sh
 
-   n98-magerun.phar index:reindex:all
+   $ n98-magerun.phar index:reindex:all
 
 Generate local.xml file
 """""""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar local-config:generate
+   $ n98-magerun.phar local-config:generate
 
 Dump global xml config
 """"""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar config:dump > extern_file.xml
+   $ n98-magerun.phar config:dump > extern_file.xml
+
+Set Config
+""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar config:set [--scope[="..."]] [--scope-id[="..."]] path value
+
+Arguments:
+    path        The config path
+    value       The config value
+
+Options:
+    --scope     The config value's scope (default: "default")
+    --scope-id  The config value's scope ID (default: "0")
+
+Get Config
+""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar config:get [--scope-id="..."] [path]
+
+Arguments:
+    path        The config path
+
+Options:
+    --scope-id  The config value's scope ID
+
+Help:
+    If path is not set, all available config items will be listed. path may contain wildcards (*)
 
 List Magento cache status
 """""""""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar cache:list
+   $ n98-magerun.phar cache:list
 
 Clean Magento cache
 """""""""""""""""""
@@ -179,42 +229,44 @@ Clean Magento cache
 Cleans expired cache entries.
 If you like to remove all entries use `cache:flush`
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar cache:clean
+   $ n98-magerun.phar cache:clean
 
-Or only one cache type like i.e. full_page cache::
+Or only one cache type like i.e. full_page cache:
 
-   n98-magerun.phar cache:clean full_page
+.. code-block:: sh
+
+   $ n98-magerun.phar cache:clean full_page
 
 
 Remove all cache entries
 """"""""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
-   n98-magerun.phar cache:flush
+   $ n98-magerun.phar cache:flush
 
 List Magento caches
 """""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar cache:list
+   $ n98-magerun.phar cache:list
 
 Disable Magento cache
 """""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar cache:disable
+   $ n98-magerun.phar cache:disable
 
 Enable Magento cache
 """"""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar cache:enable
+   $ n98-magerun.phar cache:enable
 
 
 Demo Notice
@@ -222,85 +274,116 @@ Demo Notice
 
 Toggle demo store notice
 
-.. code-block:: bash
+.. code-block:: sh
 
-   n98-magerun.phar design:demo-notice [store_code]
+   $ n98-magerun.phar design:demo-notice [store_code]
 
 List admin users
 """"""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar admin:user:list
+   $ n98-magerun.phar admin:user:list
+
+Create admin user
+"""""""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar admin:user:create [username] [email] [password] [firstname] [lastname]
+
 
 Change admin user password
 """"""""""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar admin:user:change-password [username] [password]
+   $ n98-magerun.phar admin:user:change-password [username] [password]
 
 Disable admin notifications
 """""""""""""""""""""""""""
 
 Toggle admin notifications.
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar admin:notifications
+   $ n98-magerun.phar admin:notifications
 
 Toggle maintenance mode
 """""""""""""""""""""""
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar sys:maintenance
+   $ n98-magerun.phar sys:maintenance
 
 Magento system info
 """"""""""""""""""""
 
 Provides info like the edition and version or the configured cache backends.
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar sys:info
+   $ n98-magerun.phar sys:info
 
 Magento Stores
 """"""""""""""
 
 Lists all store views.
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar sys:store:list
+   $ n98-magerun.phar sys:store:list
 
+Magento Store Config - BaseURLs
+"""""""""""""""""""""""""""""""
+
+Lists base urls for each store.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:store:config:base-url:list
 
 Magento Websites
 """"""""""""""
 
 Lists all websites.
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar sys:website:list
-
-Magento modules
-"""""""""""""""
-
-Lists all installed modules with codepool and version
-
-.. code-block:: bash
-
-    n98-magerun.phar sys:modules:list
+   $ n98-magerun.phar sys:website:list
 
 Magento Cronjobs
 """"""""""""""""
 
 Lists all cronjobs defined in config.xml files.
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar sys:cron:list
+   $ n98-magerun.phar sys:cron:list
+
+List URLs
+"""""""""
+
+.. code-block:: sh
+
+   $ sys:url:list [--add-categories] [--add-products] [--add-cmspages] [--add-all] [stores] [linetemplate]
+
+Examples:
+
+- Create a list of product urls only:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:url:list --add-products 4
+
+- Create a list of all products, categories and cms pages of store 4 and 5 separating host and path (e.g. to feed a jmeter csv sampler):
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:url:list --add-all 4,5 '{host},{path}' > urls.csv
+
+- The "linetemplate" can contain all parts "parse_url" return wrapped in '{}'. '{url}' always maps the complete url and is set by default
+
 
 Run Setup Scripts
 """""""""""""""""
@@ -308,18 +391,18 @@ Run Setup Scripts
 Runs all setup scripts (no need to call frontend).
 This command is useful if you update your system with enabled maintenance mode.
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar sys:setup:run
+   $ n98-magerun.phar sys:setup:run
 
 Compare Setup Versions
 """"""""""""""""""""""
 
 Compares module version with saved setup version in `core_resource` table and displays version mismatch.
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar sys:setup:compare-versions [--ignore-data]
+   $ n98-magerun.phar sys:setup:compare-versions [--ignore-data]
 
 System Check
 """"""""""""
@@ -329,9 +412,29 @@ System Check
 - PHP Extensions (Required and Bytecode Cache)
 - MySQL InnoDB Engine
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar sys:check
+   $ n98-magerun.phar sys:check
+
+CMS: Toggle Banner
+""""""""""""""""""
+
+Hide/Show CMS Banners
+
+.. code-block:: sh
+
+   $ n98-magerun.phar cms:banner:toggle <banner_id>
+
+CMS: Publish a page
+"""""""""""""""""""
+
+Publishes a page by page id and revision.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar cms:page:publish <page_id> <revision_id>
+
+Useful to automatically publish a page by a cron job.
 
 
 Toggle Template Hints
@@ -339,68 +442,84 @@ Toggle Template Hints
 
 Toggle debug template hints settings of a store
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar dev:template-hints [store_code]
+   $ n98-magerun.phar dev:template-hints [store_code]
 
 Toggle Template Hints Blocks
 """"""""""""""""""""""""""""
 
 Toggle debug template hints blocks settings of a store
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar dev:template-hints-blocks [store_code]
+   $ n98-magerun.phar dev:template-hints-blocks [store_code]
 
 Toggle Inline Translation
 """""""""""""""""""""""""
 
-Toggle settings for shop frontend::
+Toggle settings for shop frontend:
 
-    n98-magerun.phar dev:translate:shop [store_code]
+.. code-block:: sh
 
-Toggle for admin area::
+   $ n98-magerun.phar dev:translate:shop [store_code]
 
-    n98-magerun.phar dev:translate:admin
+Toggle for admin area:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:translate:admin
 
 Toggle Profiler
 """""""""""""""
 
-Toggle profiler for debugging a store::
+Toggle profiler for debugging a store:
 
-    n98-magerun.phar dev:profiler [store_code]
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:profiler [store_code]
 
 Toggle Development Logs
 """""""""""""""""""""""
 
-Activate/Deactivate system.log and exception.log for a store::
+Activate/Deactivate system.log and exception.log for a store:
 
-    n98-magerun.phar dev:log [store_code]
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:log [store_code]
 
 Toggle Symlinks
 """""""""""""""
 
-Allow usage of symlinks for a store-view::
+Allow usage of symlinks for a store-view:
 
-    n98-magerun.phar dev:symlinks <store_code>
+.. code-block:: sh
 
-Global scope can be set by not permitting store_code parameter::
+   $ n98-magerun.phar dev:symlinks <store_code>
 
-    n98-magerun.phar dev:symlinks
+Global scope can be set by not permitting store_code parameter:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:symlinks
 
 Create Module Skel
 """"""""""""""""""
 
-Creates an empty module and registers it in current magento shop::
+Creates an empty module and registers it in current magento shop:
 
-    n98-magerun.phar dev:module:create [--add-blocks] [--add-helpers] [--add-models] [--add-all] [--modman] vendorNamespace moduleName [codePool]
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:module:create [--add-blocks] [--add-helpers] [--add-models] [--add-all] [--modman] vendorNamespace moduleName [codePool]
 
 Code-Pool defaults to `local`.
 
 
-Example::
+Example:
 
-    n98-magerun.phar dev:module:create MyVendor MyModule
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:module:create MyVendor MyModule
 
 
 * `--modman` option creates a new folder based on `vendorNamespace` and `moduleName` argument.
@@ -408,12 +527,21 @@ Run this command inside your `.modman` folder.
 
 * --add-all option add blocks, helpers and models.
 
+List Modules
+""""""""""""
+
+Lists all installed modules with codepool and version
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:module:list
+
 Rewrite List
 """"""""""""
 
 Lists all registered class rewrites::
 
-    n98-magerun.phar dev:module:rewrite:list
+   $ n98-magerun.phar dev:module:rewrite:list
 
 Rewrite Conflicts
 """""""""""""""""
@@ -421,18 +549,20 @@ Rewrite Conflicts
 Lists all duplicated rewrites and tells you which class is loaded by Magento.
 The command checks class inheritance in order of your module dependencies.
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar dev:module:rewrite:conflicts
+   $ n98-magerun.phar dev:module:rewrite:conflicts [--log-junit="..."]
+
+* If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
 
 Observer List
 """""""""""""
 
 Lists all registered observer by type.
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar dev:module:observer:list [type]
+   $ n98-magerun.phar dev:module:observer:list [type]
 
 Type is one of "adminhtml", "global", "frontend".
 
@@ -440,9 +570,11 @@ Type is one of "adminhtml", "global", "frontend".
 List Extensions
 """""""""""""""
 
-List and find connect extensions by a optional search string::
+List and find connect extensions by a optional search string:
 
-    n98-magerun.phar extension:list <search>
+.. code-block:: sh
+
+   $ n98-magerun.phar extension:list <search>
 
 * Requires Magento's `mage` shell script.
 * Does not work with Windows as operating system.
@@ -450,9 +582,11 @@ List and find connect extensions by a optional search string::
 Install Extensions
 """"""""""""""""""
 
-Installs a connect extension by package key::
+Installs a connect extension by package key:
 
-        n98-magerun.phar extension:install <package_key>
+.. code-block:: sh
+
+   $ n98-magerun.phar extension:install <package_key>
 
 If the package could not be found a search for alternatives will be done.
 If alternatives could be found you can select the package to install.
@@ -463,9 +597,11 @@ If alternatives could be found you can select the package to install.
 Download Extensions
 """""""""""""""""""
 
-Downloads connect extensions by package key::
+Downloads connect extensions by package key:
 
-    n98-magerun.phar extension:download <search>
+.. code-block:: sh
+
+   $ n98-magerun.phar extension:download <search>
 
 * Requires Magento's `mage` shell script.
 * Does not work with Windows as operating system.
@@ -473,9 +609,11 @@ Downloads connect extensions by package key::
 Upgrade Extensions
 """"""""""""""""""
 
-Upgrade connect extensions by package key::
+Upgrade connect extensions by package key:
 
-    n98-magerun.phar extension:upgrade <search>
+.. code-block:: sh
+
+   $ n98-magerun.phar extension:upgrade <search>
 
 * Requires Magento's `mage` shell script.
 * Does not work with Windows as operating system.
@@ -491,18 +629,34 @@ Since version 1.1.0 we deliver a Magento installer which does the following:
 * Starts Magento installer
 * Sets rewrite base in .htaccess file
 
-.. code-block:: bash
+.. code-block:: sh
 
-    n98-magerun.phar install
+   $ n98-magerun.phar install
 
+Autocompletion
+--------------
 
-Bash autocompletion
--------------------
+Bash
+""""
 
 Copy the file **bash_complete** as **n98-magerun.phar** in your bash autocomplete folder.
-In my Ubuntu system this can be done with the following command::
+In my Ubuntu system this can be done with the following command:
 
-    sudo cp bash_complete /etc/bash_completion.d/n98-magerun.phar
+.. code-block:: sh
+
+   $ sudo cp autocompletion/bash/bash_complete /etc/bash_completion.d/n98-magerun.phar
+
+
+PHPStorm
+""""""""
+
+An commandline tool autocompletion XML file for PHPStorm exists in subfolder **autocompletion/phpstorm**.
+Copy **n98_magerun.xml** in your phpstorm config folder.
+
+Linux: ~/.WebIde50/config/commandlinetools
+
+You can also add the XML content over settings menu.
+For further instructions read this blog post: http://blog.jetbrains.com/webide/2012/10/integrating-composer-command-line-tool-with-phpstorm/
 
 Advanced usage
 --------------
@@ -580,7 +734,6 @@ Thanks to
 Roadmap
 -------
 
-* sys:cron:list - List of cronjobs
 * dev:event:list - List all magento events
 * List more infos like Base URLs.
 * Change BaseURL from CLI.

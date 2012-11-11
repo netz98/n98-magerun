@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<framework xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schemas/frameworkDescriptionVersion1.1.2.xsd" name="n98-magerun" invoke="$PhpExecutable$ /usr/local/bin/n98-magerun.phar" alias="magerun" enabled="true" version="2">
+    <command>
+        <name>admin:user:create</name>
+        <params>[username] [email] [password] [firstname] [lastname]</params>
+    </command>
+    <command>
+        <name>admin:user:list</name>
+    </command>
+    <command>
+        <name>admin:notifications</name>
+    </command>
+    <command>
+        <name>admin:user:change-password</name>
+        <params>[username] [password]</params>
+    </command>
+    <command>
+        <name>cache:flush</name>
+    </command>
+    <command>
+        <name>cache:clean</name>
+    </command>
+    <command>
+        <name>cache:disable</name>
+    </command>
+    <command>
+        <name>cache:enable</name>
+    </command>
+    <command>
+        <name>cache:list</name>
+    </command>
+    <command>
+        <name>cms:banner:toggle</name>
+        <params>[banner_id]</params>
+    </command>
+    <command>
+        <name>cms:page:publish</name>
+        <params>[page_id] [revision_id]</params>
+    </command>
+    <command>
+        <name>config:dump</name>
+    </command>
+    <command>
+        <name>db:dump</name>
+        <params>[filename]</params>
+    </command>
+    <command>
+        <name>db:info</name>
+    </command>
+    <command>
+        <name>design:demo-notice</name>
+    </command>
+    <command>
+        <name>dev:log</name>
+    </command>
+    <command>
+        <name>dev:module:create</name>
+        <params>vendorNamespace moduleName</params>
+        <help><![CDATA[
+<pre>
+Usage:
+ dev:module:create [--add-blocks] [--add-helpers] [--add-models] [--add-all] [--modman] vendorNamespace moduleName [codePool]
+
+Arguments:
+ vendorNamespace  Namespace (your company prefix)
+ moduleName       Name of your module.
+ codePool         Codepool (local,community) (default: "local")
+
+Options:
+ --add-blocks     Adds blocks
+ --add-helpers    Adds helpers
+ --add-models     Adds models
+ --add-all        Adds blocks, helpers and models
+ --modman         Create all files in folder with a modman file.
+</pre>
+     ]]></help>
+    </command>
+    <command>
+        <name>dev:module:list</name>
+    </command>
+    <command>
+        <name>dev:module:observer:list</name>
+    </command>
+    <command>
+        <name>dev:module:rewrite:conflicts</name>
+    </command>
+    <command>
+        <name>dev:module:rewrite:list</name>
+    </command>
+    <command>
+        <name>dev:profiler</name>
+    </command>
+    <command>
+        <name>dev:symlinks</name>
+    </command>
+    <command>
+        <name>dev:template-hints</name>
+    </command>
+    <command>
+        <name>dev:template-hints-blocks</name>
+    </command>
+    <command>
+        <name>dev:template:admin</name>
+    </command>
+    <command>
+        <name>dev:template:shop</name>
+    </command>
+    <command>
+        <name>extension:download</name>
+    </command>
+    <command>
+        <name>extension:install</name>
+    </command>
+    <command>
+        <name>extension:search</name>
+    </command>
+    <command>
+        <name>extension:list</name>
+    </command>
+    <command>
+        <name>extension:upgrade</name>
+    </command>
+    <command>
+        <name>index:list</name>
+    </command>
+    <command>
+        <name>index:reindex</name>
+    </command>
+    <command>
+        <name>index:reindex:all</name>
+    </command>
+    <command>
+        <name>sys:check</name>
+    </command>
+    <command>
+        <name>sys:cron:list</name>
+    </command>
+    <command>
+        <name>sys:info</name>
+    </command>
+    <command>
+        <name>sys:maintenance</name>
+    </command>
+    <command>
+        <name>sys:setup:run</name>
+    </command>
+    <command>
+        <name>sys:setup:compare-versions</name>
+    </command>
+    <command>
+        <name>sys:store:list</name>
+    </command>
+    <command>
+        <name>sys:website:list</name>
+    </command>
+</framework>

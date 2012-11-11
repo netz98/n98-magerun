@@ -18,8 +18,9 @@ class CheckCommand extends AbstractMagentoCommand
     protected function configure()
     {
         $this
-            ->setName('system:check')
-            ->setAliases(array('sys:check'))
+            ->setName('sys:check')
+            ->setAliases(array('system:check'))
+            ->addDeprecatedAlias('system:check', 'Please use sys:check')
             ->setDescription('Checks Magento System');
     }
 

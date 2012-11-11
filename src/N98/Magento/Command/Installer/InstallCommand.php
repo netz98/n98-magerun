@@ -56,7 +56,7 @@ class InstallCommand extends AbstractMagentoCommand
         $this->downloadMagento($input, $output);
         $this->createDatabase($output);
         $this->installSampleData($input, $output);
-        $this->setDirectoryPermissions();
+        $this->setDirectoryPermissions($output);
         $this->installMagento($input, $output, $this->config['installationFolder']);
     }
 
@@ -413,19 +413,32 @@ class InstallCommand extends AbstractMagentoCommand
         file_put_contents($this->config['installationFolder'] . DIRECTORY_SEPARATOR . '.htaccess', $content);
     }
 
-    protected function setDirectoryPermissions()
+    /**
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     */
+    protected function setDirectoryPermissions($output)
     {
-        $varFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'var';
-        @chmod($varFolder, 0777);
+        try {
+            $varFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'var';
+            if (!is_dir($varFolder)) {
+                @mkdir($varFolder);
+            }
+            @chmod($varFolder, 0777);
 
-        $mediaFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'media';
-        @chmod($mediaFolder, 0777);
+            $mediaFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'media';
+            if (!is_dir($mediaFolder)) {
+                @mkdir($mediaFolder);
+            }
+            @chmod($mediaFolder, 0777);
 
-        $finder = new Finder();
-        $finder->directories()
-            ->in(array($varFolder, $mediaFolder));
-        foreach ($finder as $dir) {
-            @chmod($dir->getRealpath(), 0777);
+            $finder = new Finder();
+            $finder->directories()
+                ->in(array($varFolder, $mediaFolder));
+            foreach ($finder as $dir) {
+                @chmod($dir->getRealpath(), 0777);
+            }
+        } catch (\Exception $e) {
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
     }
 }

@@ -12,8 +12,9 @@ class InfoCommand extends AbstractDatabaseCommand
     protected function configure()
     {
         $this
-            ->setName('database:info')
-            ->setAliases(array('db:info'))
+            ->setName('db:info')
+            ->setAliases(array('database:info'))
+            ->addDeprecatedAlias('database:info', 'Please use db:info')
             ->setDescription('Dumps database informations')
         ;
     }
@@ -45,6 +46,10 @@ class InfoCommand extends AbstractDatabaseCommand
             $this->dbSettings['password']
         );
         $output->writeln(str_pad('JDBC-Connection-String', 25, ' ') . ': ' . $jdbcConnectionString);
+
+        $mysqlCliString = 'mysql ' . $this->getMysqlClientToolConnectionString();
+
+        $output->writeln(str_pad('MySQL-Cli-String', 25, ' ') . ': ' . $mysqlCliString);
     }
 
 }
