@@ -118,7 +118,7 @@ Options:
     --add-time      Adds time to filename
     --only-command  Print only mysqldump command. Do not execute
     --stdout        Dump to stdout
-    --stripped      Tables to strip (dump only structure of those tables)
+    --strip         Tables to strip (dump only structure of those tables)
 
 .. code-block:: sh
 
@@ -136,7 +136,7 @@ Or directly to stdout:
 
    $ n98-magerun.phar database:dump --stdout
 
-Stripped database dump
+Stripped Database Dump
 ^^^^^^^^^^^^^^^^^^^^^^
 
 Dumps your database and excludes some tables. This is useful i.e. for development.
@@ -148,7 +148,7 @@ Example: "dataflow_batch_export unimportant_module_* @log
 
 .. code-block:: sh
 
-   $ n98-magerun.phar database:dump --sripped="@stripped"
+   $ n98-magerun.phar database:dump --strip="@stripped"
 
 Available Table Groups:
     @log Log tables
@@ -642,8 +642,8 @@ Upgrade connect extensions by package key:
 * Requires Magento's `mage` shell script.
 * Does not work with Windows as operating system.
 
-Magento Installer (Experimental)
-""""""""""""""""""""""""""""""""
+Magento Installer
+"""""""""""""""""
 
 Since version 1.1.0 we deliver a Magento installer which does the following:
 
