@@ -1,4 +1,15 @@
 <?xml version="1.0"?>
+<!--
+
+Phing build file to create a executable phar file by defined src.
+
+@see http://www.phing.info/
+
+Build phar with:
+
+    phing dist
+
+-->
 <project name="n98-magerun" default="dist">
 
     <fileset dir="." id="root_folder">
@@ -20,7 +31,7 @@
     </fileset>
 
     <target name="dist">
-	<exec command="composer.phar install" dir="${project.basedir}" passthru="true" />
+    <exec command="composer.phar install" dir="${project.basedir}" passthru="true" />
         <phingcall target="dist_unix" />
         <phingcall target="dist_win" />
     </target>
