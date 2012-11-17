@@ -62,7 +62,6 @@ commands:
         extra:
           sample-data: sample-data-1.6.1.0
 
-
     demo-data-packages:
       - name: sample-data-1.6.1.0
         version: 1.6.1.0
@@ -89,3 +88,27 @@ commands:
         admin_password: password123
         admin_frontname: admin
         admin_email: john.doe@example.com
+
+  N98\Magento\Command\Database\DumpCommand:
+    table-groups:
+      - id: log
+        description: Log tables
+        tables: log_url log_url_info log_visitor log_visitor_info log_visitor_online report_event
+      - id: dataflowtemp
+        description: Temporary tables of the dataflow import/export tool
+        tables: dataflow_batch_import dataflow_batch_export
+      - id: stripped
+        description: Standard definition for a stripped dump (logs and dataflow)
+        tables: @stripped @log @dataflowtemp
+      - id: sales
+        description: Sales data (orders, invoices, creditmemos etc)
+        tables: sales_order_* sales_flat_order_* sales_flat_creditmemo_* sales_flat_invoice_* sales_flat_quote sales_recurring_* sales_refunded_* sales_payment_*
+      - id: customers
+        description: Customer data
+        tables: customer_address_* customer_entity_*
+      - id: trade
+        description: Current trade data (customers and orders). You usally do not want those in developer systems.
+        tables: @customers @sales
+      - id: development
+        description: Removes logs and trade data so developers do not have to work with real customer data
+        tables: @trade @stripped
