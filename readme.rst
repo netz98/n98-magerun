@@ -151,13 +151,14 @@ Example: "dataflow_batch_export unimportant_module_* @log
    $ n98-magerun.phar database:dump --strip="@stripped"
 
 Available Table Groups:
-    @log Log tables
-    @dataflowtemp Temporary tables of the dataflow import/export tool
-    @stripped Standard definition for a stripped dump (logs and dataflow)
-    @sales Sales data (orders, invoices, creditmemos etc)
-    @customers Customer data
-    @trade Current trade data (customers and orders). You usally do not want those in developer systems.
-    @development Removes logs and trade data so developers do not have to work with real customer data
+
+* @log Log tables
+* @dataflowtemp Temporary tables of the dataflow import/export tool
+* @stripped Standard definition for a stripped dump (logs and dataflow)
+* @sales Sales data (orders, invoices, creditmemos etc)
+* @customers Customer data
+* @trade Current trade data (customers and orders). You usally do not want those in developer systems.
+* @development Removes logs and trade data so developers do not have to work with real customer data
 
 Database Console / MySQL Client
 """""""""""""""""""""""""""""""
