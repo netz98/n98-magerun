@@ -46,31 +46,10 @@ Add this to your php.ini file:
 
    suhosin.executor.include.whitelist="phar"
 
+Install with Composer
+"""""""""""""""""""""
 
-From source with composer
-"""""""""""""""""""""""""
-
-.. code-block:: sh
-
-    #. Clone git repository
-    git clone https://github.com/netz98/n98-magerun
-
-    #. Download composer
-    curl -s https://getcomposer.org/installer | php
-
-    #. Let composer do all the work for you
-    php ./composer.phar install
-
-or
-
-.. code-block:: sh
-
-    php ./composer.phar create-project n98/magerun <folder>
-
-    #. Run cli.php
-    php vendor/bin/n98-magerun
-
-It's recommended to install the .phar file system wide.
+https://github.com/netz98/n98-magerun/wiki/Install-from-source-with-Composer
 
 Update
 ------
