@@ -19,15 +19,14 @@ class DumpCommand extends AbstractDatabaseCommand
             ->setName('db:dump')
             ->setAliases(array('database:dump'))
             ->addArgument('filename', InputArgument::OPTIONAL, 'Dump filename')
-            ->addArgument('strip', InputArgument::OPTIONAL, 'Tables to strip (dump only structure of those tables)')
             ->addOption('add-time', null, InputOption::VALUE_NONE, 'Adds time to filename (only if filename was not provided)')
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysqldump command. Do not execute')
             ->addOption('no-single-transaction', null, InputOption::VALUE_NONE, 'Do not use single-transaction (not recommended, this is blocking)')
-            ->addOption('stdout', null, InputArgument::OPTIONAL, 'Dump to stdout')
+            ->addOption('stdout', null, InputOption::VALUE_NONE, 'Dump to stdout')
+            ->addOption('strip', null, InputOption::VALUE_OPTIONAL, 'Tables to strip (dump only structure of those tables)')
             ->addDeprecatedAlias('database:dump', 'Please use db:dump')
             ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml');
     }
-
 
     public function getTableDefinitions()
     {
@@ -68,7 +67,7 @@ class DumpCommand extends AbstractDatabaseCommand
         $messages = array();
         $this->commandConfig = $this->getCommandConfig();
         $messages[] = '';
-        $messages[] = '<comment>Strip parameter</comment>';
+        $messages[] = '<comment>Strip option</comment>';
         $messages[] = ' Separate each table to strip by a space.';
         $messages[] = ' You can use wildcards like * and ? in the table names to strip multiple tables.';
         $messages[] = ' In addition you can specify pre-defined table groups, that start with an @';
@@ -172,8 +171,8 @@ class DumpCommand extends AbstractDatabaseCommand
             $fileName .= '.sql';
         }
 
-        if ($input->getArgument('strip')) {
-            $stripTables = $this->resolveTables(explode(' ', $input->getArgument('strip')));
+        if ($input->getOption('strip')) {
+            $stripTables = $this->resolveTables(explode(' ', $input->getOption('strip')));
             if (!$input->getOption('stdout')) {
                 $output->writeln('<comment>No-data export for: <info>' . implode(' ',$stripTables) . '</info></comment>');
             }
@@ -210,6 +209,7 @@ class DumpCommand extends AbstractDatabaseCommand
             foreach($stripTables as $stripTable) {
                 $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $stripTable . ' ';
             }
+
             // dump data for all other tables
             $exec = 'mysqldump ' . $dumpOptions . $ignore . $this->getMysqlClientToolConnectionString();
             if (!$input->getOption('stdout')) {

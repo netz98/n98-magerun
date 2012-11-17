@@ -105,7 +105,7 @@ commands:
         tables: sales_order_* sales_flat_order_* sales_flat_creditmemo_* sales_flat_invoice_* sales_flat_quote sales_recurring_* sales_refunded_* sales_payment_*
       - id: customers
         description: Customer data
-        tables: customer_address_* customer_entity_*
+        tables: customer_address* customer_entity*
       - id: trade
         description: Current trade data (customers and orders). You usally do not want those in developer systems.
         tables: @customers @sales

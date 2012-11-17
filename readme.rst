@@ -118,6 +118,7 @@ Options:
     --add-time      Adds time to filename
     --only-command  Print only mysqldump command. Do not execute
     --stdout        Dump to stdout
+    --stripped      Tables to strip (dump only structure of those tables)
 
 .. code-block:: sh
 
@@ -134,6 +135,29 @@ Or directly to stdout:
 .. code-block:: sh
 
    $ n98-magerun.phar database:dump --stdout
+
+Stripped database dump
+^^^^^^^^^^^^^^^^^^^^^^
+
+Dumps your database and excludes some tables. This is useful i.e. for development.
+
+Separate each table to strip by a space.
+You can use wildcards like * and ? in the table names to strip multiple tables.
+In addition you can specify pre-defined table groups, that start with an @
+Example: "dataflow_batch_export unimportant_module_* @log
+
+.. code-block:: sh
+
+   $ n98-magerun.phar database:dump --sripped="@stripped"
+
+Available Table Groups:
+    @log Log tables
+    @dataflowtemp Temporary tables of the dataflow import/export tool
+    @stripped Standard definition for a stripped dump (logs and dataflow)
+    @sales Sales data (orders, invoices, creditmemos etc)
+    @customers Customer data
+    @trade Current trade data (customers and orders). You usally do not want those in developer systems.
+    @development Removes logs and trade data so developers do not have to work with real customer data
 
 Database Console / MySQL Client
 """""""""""""""""""""""""""""""
