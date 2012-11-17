@@ -14,6 +14,7 @@ class DumpCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('config:dump')
+            ->addArgument('xpath', InputArgument::OPTIONAL, 'XPath to filter XML output', null)
             ->setDescription('Dump merged xml config')
         ;
     }
@@ -27,7 +28,12 @@ class DumpCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            $dom = dom_import_simplexml(\Mage::app()->getConfig()->getNode())->ownerDocument;
+            $config = \Mage::app()->getConfig()->getNode($input->getArgument('xpath'));
+            if (!$config) {
+                throw new \InvalidArgumentException('xpath was not found');
+            }
+            $dom = \DOMDocument::loadXML($config->asXml());
+            $dom->preserveWhiteSpace = false;
             $dom->formatOutput = true;
             $output->writeln($dom->saveXML());
         }

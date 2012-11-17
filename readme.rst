@@ -184,12 +184,38 @@ Generate local.xml file
 
    $ n98-magerun.phar local-config:generate
 
-Dump global xml config
-""""""""""""""""""""""
+Config Dump
+"""""""""""
+
+Dumps merged XML configuration to stdout. Useful to see all the XML.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar [xpath]
+
+Examples
+^^^^^^^^
+
+Config of catalog module:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar config:dump global/catalog
+
+
+See module order in XML:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar config:dump modules
+
+
+Write output to file:
 
 .. code-block:: sh
 
    $ n98-magerun.phar config:dump > extern_file.xml
+
 
 Set Config
 """"""""""
