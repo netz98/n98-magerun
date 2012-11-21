@@ -62,6 +62,16 @@ use Xanido\Console\Helper\TableHelper;
 class Application extends BaseApplication
 {
     /**
+     * @var int
+     */
+    const MAGENTO_MAJOR_VERSION_1 = 1;
+
+    /**
+     * @var int
+     */
+    const MAGENTO_MAJOR_VERSION_2 = 2;
+
+    /**
      * @var string
      */
     const APP_NAME = 'n98-magerun';
@@ -69,7 +79,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.39.0';
+    const APP_VERSION = '1.39.1';
 
     /**
      * @var \Composer\Autoload\ClassLoader
