@@ -79,7 +79,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.39.1';
+    const APP_VERSION = '1.39.2';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -244,6 +244,14 @@ class Application extends BaseApplication
     public function getMagentoRootFolder()
     {
         return $this->_magentoRootFolder;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMagentoMajorVersion()
+    {
+        return $this->_magentoMajorVersion;
     }
 
 
