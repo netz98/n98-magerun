@@ -79,7 +79,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.39.2';
+    const APP_VERSION = '1.39.3';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -100,6 +100,11 @@ class Application extends BaseApplication
      * @var bool
      */
     protected $_magentoEnterprise = false;
+
+    /**
+     * @var int
+     */
+    protected $_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_1;
 
     public function __construct($autoloader)
     {
