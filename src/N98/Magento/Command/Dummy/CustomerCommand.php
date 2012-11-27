@@ -22,6 +22,7 @@ class CustomerCommand extends AbstractMagentoCommand
             ->addOption('first', null, InputOption::VALUE_OPTIONAL, "First name")
             ->addOption('last', null, InputOption::VALUE_OPTIONAL, "Last name")
             ->addOption('email', null, InputOption::VALUE_OPTIONAL, "E-mail")
+            ->setHelp("By default will create random first name, last name, and email.  You can specify them though if you'd like with the above command-line parameters.")
             ->setDescription('Create a dummy customer')
         ;
     }
