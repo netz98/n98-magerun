@@ -141,6 +141,8 @@ Available Table Groups:
 
 Extended: https://github.com/netz98/n98-magerun/wiki/Stripped-Database-Dumps
 
+See it in action: http://www.youtube.com/embed/ttjZHY6vThs
+
 Database Console / MySQL Client
 """""""""""""""""""""""""""""""
 
