@@ -60,6 +60,8 @@ Since version 1.1.0 we deliver a self-update script within the phar file::
 
 If file was installed system wide do not forget "sudo".
 
+See it in action: http://youtu.be/wMHpfKD9vjM
+
 Usage / Commands
 ----------------
 
