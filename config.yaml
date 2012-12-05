@@ -112,3 +112,5 @@ commands:
       - id: development
         description: Removes logs and trade data so developers do not have to work with real customer data
         tables: @trade @stripped
+environment:
+  home: /st/sweettoothio
