@@ -133,12 +133,31 @@ class InstallCommand extends AbstractMagentoCommand
                 $this->config['installationFolder'],
                 true
             );
+
+            if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
+                // Patch installer
+                $this->patchMagentoInstallerForPHP54($this->config['installationFolder']);
+            }
         } catch (\Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * @param string $magentoFolder
+     */
+    protected function patchMagentoInstallerForPHP54($magentoFolder)
+    {
+        $installerConfig = $magentoFolder
+                         . DIRECTORY_SEPARATOR
+                         . 'app/code/core/Mage/Install/etc/config.xml';
+        if (file_exists($installerConfig)) {
+            $xml = file_get_contents($installerConfig);
+            file_put_contents($installerConfig, str_replace('<pdo_mysql/>', '<pdo_mysql>1</pdo_mysql>', $xml));
+        }
     }
 
     /**
