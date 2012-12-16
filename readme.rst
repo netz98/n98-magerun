@@ -687,7 +687,10 @@ Uninstalls Magento: Drops your database and recursive deletes installation folde
 
 .. code-block:: sh
 
-   $ n98-magerun.phar uninstall
+   $ n98-magerun.phar uninstall [-f|--force]
+
+**Please be careful: This removes all data from your installation.**
+
 
 Autocompletion
 --------------
