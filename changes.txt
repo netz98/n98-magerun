@@ -1,0 +1,9 @@
+- Added new commands "db:drop" and "uninstall"
+- Changed coloring of some command outputs
+- Replaced deleted mageLTS repos with magento-mirror
+- Added Magento 2 installer (experimental)
+
+Please not that there are some deprecated command prefixes:
+
+- system -> use sys
+- database -> use db
