@@ -48,7 +48,7 @@ class ReindexCommand extends AbstractIndexerCommand
             if (!$process) {
                 throw new \InvalidArgumentException('Indexer was not found!');
             }
-            $output->writeln('<info>Started reindex of: ' . $indexCode . '</info>');
+            $output->writeln('<info>Started reindex of: <comment>' . $indexCode . '</comment></info>');
 
             /**
              * Try to estimate runtime. If index was aborted or never created we have a timestamp < 0
@@ -57,14 +57,14 @@ class ReindexCommand extends AbstractIndexerCommand
             if ($runtimeInSeconds > 0) {
                 $estimatedEnd = new \DateTime('now', new \DateTimeZone('UTC'));
                 $estimatedEnd->add(new \DateInterval('PT' . $runtimeInSeconds . 'S'));
-                $output->writeln('<info>Estimated end: ' . $estimatedEnd->format('Y-m-d H:i:s T') . '</info>');
+                $output->writeln('<info>Estimated end: <comment>' . $estimatedEnd->format('Y-m-d H:i:s T') . '</comment></info>');
             }
 
             $startTime = new \DateTime('now');
             $dateTimeUtils = new \N98\Util\DateTime();
             $process->reindexEverything();
             $endTime = new \DateTime('now');
-            $output->writeln('<info>Successfully reindexed ' . $indexCode . ' (Runtime: ' . $dateTimeUtils->getDifferenceAsString($startTime, $endTime) .')</info>');
+            $output->writeln('<info>Successfully reindexed <comment>' . $indexCode . '</comment> (Runtime: <comment>' . $dateTimeUtils->getDifferenceAsString($startTime, $endTime) .'</comment>)</info>');
         }
     }
 }

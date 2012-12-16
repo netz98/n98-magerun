@@ -46,7 +46,7 @@ class SetCommand extends AbstractMagentoCommand
                 $input->getOption('scope'),
                 $input->getOption('scope-id')
             );
-            $output->writeln($input->getArgument('path') . " => " . $input->getArgument('value'));
+            $output->writeln('<comment>' . $input->getArgument('path') . "</comment> => <comment>" . $input->getArgument('value') . '</comment>');
         }
     }
 }

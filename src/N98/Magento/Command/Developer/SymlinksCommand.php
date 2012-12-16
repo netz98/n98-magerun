@@ -59,6 +59,6 @@ class SymlinksCommand extends AbstractMagentoCommand
         }
 
 
-        $this->getApplication()->get('cache:clear')->run($input, new NullOutput());
+        $this->getApplication()->get('cache:flush')->run($input, new NullOutput());
     }
 }

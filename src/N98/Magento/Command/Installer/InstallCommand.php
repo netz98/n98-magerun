@@ -7,6 +7,7 @@ use N98\Util\Filesystem;
 use N98\Util\OperatingSystem;
 use N98\Util\Database as DatabaseUtils;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -30,7 +31,7 @@ class InstallCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('install')
-            ->setDescription('Install magento <comment>(experimental)</comment>')
+            ->setDescription('Install magento')
         ;
 
         $this->notEmptyCallback = function($input)
@@ -281,6 +282,7 @@ class InstallCommand extends AbstractMagentoCommand
      */
     protected function installMagento(InputInterface $input, OutputInterface $output)
     {
+        $this->getApplication()->setAutoExit(false);
         $dialog = $this->getHelperSet()->get('dialog');
 
         $defaults = $this->commandConfig['installation']['defaults'];
@@ -367,6 +369,9 @@ class InstallCommand extends AbstractMagentoCommand
             if (!preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $input)) {
                 throw new \InvalidArgumentException('Please enter a valid URL');
             }
+            if (strstr($input, 'localhost')) {
+                throw new \InvalidArgumentException('localhost cause problems! Please use 127.0.0.1 or another hostname');
+            }
             return $input;
         };
 
@@ -378,47 +383,65 @@ class InstallCommand extends AbstractMagentoCommand
         );
         $baseUrl = rtrim($baseUrl, '/') . '/'; // normalize baseUrl
 
-        $_SERVER['argv']['license_agreement_accepted'] = 'yes';
-        $_SERVER['argv']['locale'] = $locale;
-        $_SERVER['argv']['timezone'] = $timezone;
-        $_SERVER['argv']['db_host'] = $this->config['db_host'];
-        $_SERVER['argv']['db_name'] = $this->config['db_name'];
-        $_SERVER['argv']['db_user'] = $this->config['db_user'];
-        $_SERVER['argv']['db_pass'] = $this->config['db_pass'];
-        $_SERVER['argv']['url'] = $baseUrl;
-        $_SERVER['argv']['use_rewrites'] = 'yes';
-        $_SERVER['argv']['use_secure'] = 'no';
-        $_SERVER['argv']['secure_base_url'] = '';
-        $_SERVER['argv']['use_secure_admin'] = 'no';
-        $_SERVER['argv']['admin_username'] = $adminUsername;
-        $_SERVER['argv']['admin_lastname'] = $adminLastname;
-        $_SERVER['argv']['admin_firstname'] = $adminFirstname;
-        $_SERVER['argv']['admin_email'] = $adminEmail;
-        $_SERVER['argv']['admin_password'] = $adminPassword;
-        $_SERVER['argv']['session_save'] = $sessionSave;
-        $_SERVER['argv']['admin_frontname'] = $adminFrontname;
-        $_SERVER['argv']['default_currency'] = $currency;
-        $_SERVER['argv']['skip_url_validation'] = 'yes';
-        $this->replaceHtaccessFile($baseUrl);
-        $output->writeln('<info>Start installation process.</info>');
+        $argv = array(
+            'license_agreement_accepted' => 'yes',
+            'locale'                     => $locale,
+            'timezone'                   => $timezone,
+            'db_host'                    => $this->config['db_host'],
+            'db_name'                    => $this->config['db_name'],
+            'db_user'                    => $this->config['db_user'],
+            'db_pass'                    => $this->config['db_pass'],
+            'url'                        => $baseUrl,
+            'use_rewrites'               => 'yes',
+            'use_secure'                 => 'no',
+            'secure_base_url'            => '',
+            'use_secure_admin'           => 'no',
+            'admin_username'             => $adminUsername,
+            'admin_lastname'             => $adminLastname,
+            'admin_firstname'            => $adminFirstname,
+            'admin_email'                => $adminEmail,
+            'admin_password'             => $adminPassword,
+            'session_save'               => $sessionSave,
+            'admin_frontname'            => $adminFrontname, /* magento 1 */
+            'backend_frontname'          => $adminFrontname, /* magento 2 */
+            'default_currency'           => $currency,
+            'skip_url_validation'        => 'yes',
+        );
+        $installArgs = '';
+        foreach ($argv as $argName => $argValue) {
+            $installArgs .= '--' . $argName . ' ' . escapeshellarg($argValue) . ' ';
+        }
 
+        $output->writeln('<info>Start installation process.</info>');
+        $output->writeln('<comment>/usr/bin/env php ' . $this->getInstallScriptPath() . ' ' . $installArgs . '</comment>');
+        exec('/usr/bin/env php ' . $this->getInstallScriptPath() . ' ' . $installArgs);
+        
         $dialog = $this->getHelperSet()->get('dialog');
         if ($dialog->askConfirmation($output, '<question>Write BaseURL to .htaccess file?</question> <comment>[n]</comment>: ', false)) {
             $this->replaceHtaccessFile($baseUrl);
         }
 
-        $output->writeln('<info>Installing magento</info>');
-        include($this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'install.php');
+        chdir($this->config['installationFolder']);
+        $output->writeln('<info>Reindex all after installation</info>');
+        $this->getApplication()->run(new StringInput('index:reindex:all'), $output);
 
         $output->writeln('<info>Successfully installed magento</info>');
     }
 
     /**
-     * @return false|string
+     * Check if we have a magento 2 or 1 installation and return path to install.php
+     *
+     * @return string
      */
-    protected function validateBaseUrlCallback()
+    protected function getInstallScriptPath()
     {
+        $magento1InstallScriptPath  = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'install.php';
+        $magento2InstallScriptPath  = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'dev/shell/install.php';
+        if (file_exists($magento2InstallScriptPath)) {
+            return $magento2InstallScriptPath;
+        }
 
+        return $magento1InstallScriptPath;
     }
 
     /**
@@ -443,6 +466,12 @@ class InstallCommand extends AbstractMagentoCommand
                 @mkdir($varFolder);
             }
             @chmod($varFolder, 0777);
+
+            $varCacheFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'var/cache';
+            if (!is_dir($varCacheFolder)) {
+                @mkdir($varCacheFolder);
+            }
+            @chmod($varCacheFolder, 0777);
 
             $mediaFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'media';
             if (!is_dir($mediaFolder)) {

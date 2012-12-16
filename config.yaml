@@ -1,7 +1,7 @@
 commands:
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
-      - name: magento-ce-1.6.2.0:
+      - name: magento-ce-1.6.2.0
         version: 1.6.2.0
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.6.2.0/magento-1.6.2.0.tar.gz
@@ -9,7 +9,7 @@ commands:
         extra:
           sample-data: sample-data-1.6.1.0
 
-      - name: magento-ce-1.7.0.2:
+      - name: magento-ce-1.7.0.2
         version: 1.7.0.2
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.7.0.2/magento-1.7.0.2.tar.gz
@@ -26,41 +26,36 @@ commands:
         extra:
           sample-data: sample-data-1.6.1.0
 
-      - name: magelts-master
-        version: dev-master
+      - name: magento-mirror-1.4.2.0
+        version: 1.4.2.0
+        dist:
+          url: https://github.com/LokeyCoding/magento-mirror/archive/1.4.2.0.zip
+          type: zip
+        extra:
+          sample-data: sample-data-1.1.2
+
+      - name: magento-mirror-1.5.1.0
+        version: 1.5.1.0
+        dist:
+          url: https://github.com/LokeyCoding/magento-mirror/archive/1.5.1.0.zip
+          type: zip
+        extra:
+          sample-data: sample-data-1.1.2
+
+      - name: magento-mirror-1.6.2.0
+        version: 1.6.2.0
+        dist:
+          url: https://github.com/LokeyCoding/magento-mirror/archive/1.6.2.0.zip
+          type: zip
+        extra:
+          sample-data: sample-data-1.6.1.0
+
+      - name: magento-ce-2.0.0.0-dev (experimental)
+        version: 2.0.0.0-dev
         source:
-          url: https://github.com/mageLTS/mageLTS.git
+          url: https://github.com/magento/magento2.git
           type: git
           reference: master
-        extra:
-          sample-data: sample-data-1.6.1.0
-
-      - name: magelts-1.4.2.0
-        version: 1.4.2.0
-        source:
-          url: https://github.com/mageLTS/mageLTS.git
-          type: git
-          reference: 1.4.2.0
-        extra:
-          sample-data: sample-data-1.1.2
-
-      - name: magelts-1.5.1.0
-        version: 1.5.1.0
-        source:
-          url: https://github.com/mageLTS/mageLTS.git
-          type: git
-          reference: 1.5.1.0
-        extra:
-          sample-data: sample-data-1.1.2
-
-      - name: magelts-1.6.2.0
-        version: 1.6.2.0
-        source:
-          url: https://github.com/mageLTS/mageLTS.git
-          type: git
-          reference: 1.6.2.0
-        extra:
-          sample-data: sample-data-1.6.1.0
 
     demo-data-packages:
       - name: sample-data-1.6.1.0

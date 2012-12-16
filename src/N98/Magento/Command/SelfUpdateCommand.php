@@ -48,6 +48,10 @@ EOT
             }
 
             $localFilename = $_SERVER['argv'][0];
+            if (!is_writable($localFilename)) {
+                throw new \RuntimeException('phar is not writeable. Please change permissions or run as root or with sudo.');
+            }
+
             $tempFilename = basename($localFilename, '.phar').'-temp.phar';
 
             $rfs->copy('raw.github.com', $remoteFilename, $tempFilename);
@@ -59,6 +63,14 @@ EOT
                 // free the variable to unlock the file
                 unset($phar);
                 rename($tempFilename, $localFilename);
+                $output->writeln('<info>Successfully updated n98-magerun</info>');
+
+                $changeLogContent = $rfs->getContents('https://raw.github.com/netz98/n98-magerun/master' , 'changes.txt');
+                $output->writeln($changeLogContent);
+
+                $changeLogContent = $rfs->getContents('raw.github.com', 'https://raw.github.com/netz98/n98-magerun/master/changes.txt', false);
+                $output->writeln($changeLogContent);
+
             } catch (\Exception $e) {
                 if (!$e instanceof \UnexpectedValueException && !$e instanceof \PharException) {
                     throw $e;

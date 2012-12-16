@@ -85,7 +85,7 @@ Print database information
 
 .. code-block:: sh
 
-   $ n98-magerun.phar database:info
+   $ n98-magerun.phar db:info
 
 Dump database
 """""""""""""
@@ -103,19 +103,19 @@ Options:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar database:dump
+   $ n98-magerun.phar db:dump
 
 Only the mysqldump command:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar database:dump --only-command [filename]
+   $ n98-magerun.phar db:dump --only-command [filename]
 
 Or directly to stdout:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar database:dump --stdout
+   $ n98-magerun.phar db:dump --stdout
 
 Stripped Database Dump
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -129,7 +129,7 @@ Example: "dataflow_batch_export unimportant_module_* @log
 
 .. code-block:: sh
 
-   $ n98-magerun.phar database:dump --strip="@stripped"
+   $ n98-magerun.phar db:dump --strip="@stripped"
 
 Available Table Groups:
 
@@ -154,7 +154,18 @@ Opens the MySQL console client with your database settings from local.xml
 
 .. code-block:: sh
 
-   $ n98-magerun.phar database:console
+   $ n98-magerun.phar db:console
+
+Database Drop
+"""""""""""""
+
+Opens the MySQL console client with your database settings from local.xml
+
+* Requires MySQL CLI tools
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:drop  [-f|--force]
 
 List Indexes
 """"""""""""
@@ -668,6 +679,15 @@ Since version 1.1.0 we deliver a Magento installer which does the following:
 .. code-block:: sh
 
    $ n98-magerun.phar install
+
+Magento Uninstaller
+"""""""""""""""""""
+
+Uninstalls Magento: Drops your database and recursive deletes installation folder.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar uninstall
 
 Autocompletion
 --------------

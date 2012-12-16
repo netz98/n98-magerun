@@ -29,7 +29,7 @@ class ReindexAllCommand extends AbstractIndexerCommand
             $indexCollection = $this->_getIndexerModel()->getProcessesCollection();
             foreach ($indexCollection as $indexer) {
                 $indexer->reindexEverything();
-                $output->writeln('<info>Successfully reindexed ' . $indexer->getIndexerCode() . '</info>');
+                $output->writeln('<info>Successfully reindexed</info> <comment>' . $indexer->getIndexerCode() . '</comment>');
             }
         }
     }

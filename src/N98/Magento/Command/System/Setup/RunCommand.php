@@ -3,6 +3,8 @@
 namespace N98\Magento\Command\System\Setup;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -24,8 +26,12 @@ class RunCommand extends AbstractMagentoCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->getApplication()->setAutoExit(false);
         $this->detectMagento($output);
         if ($this->initMagento()) {
+
+            $this->getApplication()->run(new StringInput('cache:flush'), new NullOutput());
+
             \Mage_Core_Model_Resource_Setup::applyAllUpdates();
             if (is_callable(array('\Mage_Core_Model_Resource_Setup', 'applyAllDataUpdates'))) {
                 \Mage_Core_Model_Resource_Setup::applyAllDataUpdates();

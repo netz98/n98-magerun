@@ -38,7 +38,10 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
             $output->writeln('<error>DB settings was not found in local.xml file</error>');
             return;
         }
-        $this->dbSettings = (array)$config->global->resources->default_setup->connection;
+        $this->dbSettings = (array) $config->global->resources->default_setup->connection;
+        if (isset($this->dbSettings['comment'])) {
+            unset($this->dbSettings['comment']);
+        }
 
         if (isset($this->dbSettings['unix_socket'])) {
             $this->isSocketConnect = true;
@@ -86,11 +89,15 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
         unset($dsn['driver_options']);
 
         // use all remaining parts in the DSN
+        $buildDsn = array();
         foreach ($dsn as $key => $val) {
-            $dsn[$key] = "$key=$val";
+            if (is_array($val)) {
+                continue;
+            }
+            $buildDsn[$key] = "$key=$val";
         }
 
-        return 'mysql:' . implode(';', $dsn);
+        return 'mysql:' . implode(';', $buildDsn);
     }
 
     /**

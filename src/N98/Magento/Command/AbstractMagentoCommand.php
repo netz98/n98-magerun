@@ -247,6 +247,4 @@ abstract class AbstractMagentoCommand extends Command
         }
     }
 
-
-
 }

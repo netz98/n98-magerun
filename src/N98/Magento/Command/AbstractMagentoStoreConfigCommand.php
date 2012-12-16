@@ -109,7 +109,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 
         $this->_afterSave($store, $isFalse);
 
-        $input = new StringInput('cache:clear');
+        $input = new StringInput('cache:flush');
         $this->getApplication()->run($input, new NullOutput());
     }
 
