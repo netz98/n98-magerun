@@ -51,6 +51,12 @@ Build phar with:
             <fileset refid="res_folder" />
             <fileset refid="vendor_folder" />
         </pharpackage>
+
+        <!-- make phar executable -->
+        <exec command="git config core.filemode true" />
+        <exec command="git update-index --chmod=+x n98-magerun.phar" />
+        <chmod file="./n98-magerun.phar" mode="775" />
+        <exec command="git add ./n98-magerun.phar" />
     </target>
 
     <target name="dist_win">
