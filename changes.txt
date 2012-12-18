@@ -1,7 +1,7 @@
 1.40.2
 ======
 
-- Little fix for self-update command.
+- Little fix for self-update command by @therouv.
 
 1.40.1
 ======
