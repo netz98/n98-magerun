@@ -1,3 +1,11 @@
+1.40.1
+======
+
+- Issue #66 Undefined property in CheckCommand.php
+
+1.40.0
+======
+
 - Added new commands "db:drop" and "uninstall"
 - Changed coloring of some command outputs
 - Replaced deleted mageLTS repos with magento-mirror
