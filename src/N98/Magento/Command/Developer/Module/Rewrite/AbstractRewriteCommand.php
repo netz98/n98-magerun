@@ -13,11 +13,7 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
      */
     protected function loadRewrites()
     {
-        $return = array(
-            'blocks',
-            'models',
-            'helpers',
-        );
+        $return = array();
 
         // Load config of each module because modules can overwrite config each other. Globl config is already merged
         $modules = \Mage::getConfig()->getNode('modules')->children();
@@ -28,7 +24,12 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
             }
 
             // Load config of module
-            $xml = \simplexml_load_file(\Mage::getConfig()->getModuleDir('etc', $moduleName) . DIRECTORY_SEPARATOR . 'config.xml');
+            $configXmlFile = \Mage::getConfig()->getModuleDir('etc', $moduleName) . DIRECTORY_SEPARATOR . 'config.xml';
+            if (! file_exists($configXmlFile)) {
+                continue;
+            }
+
+            $xml = \simplexml_load_file($configXmlFile);
             if ($xml) {
                 $rewriteElements = $xml->xpath('//rewrite');
                 foreach ($rewriteElements as $element) {

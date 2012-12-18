@@ -24,7 +24,8 @@ class ConfigurationLoader
         $config = Yaml::parse(__DIR__ . '/../../../../config.yaml');
 
         // Check if there is a user config file. ~/.n98-magerun.yaml
-        $homeDirectory = getenv('HOME');
+        $helper = new \N98\Util\Environment();
+        $homeDirectory = $helper->getHomeDirectory();
         $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
 
         // MAGENTO_ROOT/app/etc/n98-magerun.yaml
