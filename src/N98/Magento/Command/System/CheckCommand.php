@@ -15,6 +15,11 @@ class CheckCommand extends AbstractMagentoCommand
      */
     protected $infos;
 
+    /**
+     * @var int
+     */
+    protected $_verificationTimeOut = 30;
+
     protected function configure()
     {
         $this
