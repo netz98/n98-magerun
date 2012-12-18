@@ -65,7 +65,7 @@ EOT
                 @rename($tempFilename, $localFilename);
                 $output->writeln('<info>Successfully updated n98-magerun</info>');
 
-                $changeLogContent = @file_get_contents('https://raw.github.com/netz98/n98-magerun/master/changes.txt');
+                $changeLogContent = $rfs->getContents('raw.github.com', 'https://raw.github.com/netz98/n98-magerun/master/changes.txt', false);
                 if ($changeLogContent) {
                     $output->writeln($changeLogContent);
                 }
