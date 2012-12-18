@@ -65,8 +65,10 @@ EOT
                 rename($tempFilename, $localFilename);
                 $output->writeln('<info>Successfully updated n98-magerun</info>');
 
-                $changeLogContent = $rfs->getContents('raw.github.com', 'https://raw.github.com/netz98/n98-magerun/master/changes.txt', false);
-                $output->writeln($changeLogContent);
+                $changeLogContent = @file_get_contents('https://raw.github.com/netz98/n98-magerun/master/changes.txt');
+                if ($changeLogContent) {
+                    $output->writeln($changeLogContent);
+                }
 
             } catch (\Exception $e) {
                 if (!$e instanceof \UnexpectedValueException && !$e instanceof \PharException) {
