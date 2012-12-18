@@ -57,12 +57,12 @@ EOT
             $rfs->copy('raw.github.com', $remoteFilename, $tempFilename);
 
             try {
-                chmod($tempFilename, 0777 & ~umask());
+                @chmod($tempFilename, 0777 & ~umask());
                 // test the phar validity
                 $phar = new \Phar($tempFilename);
                 // free the variable to unlock the file
                 unset($phar);
-                rename($tempFilename, $localFilename);
+                @rename($tempFilename, $localFilename);
                 $output->writeln('<info>Successfully updated n98-magerun</info>');
 
                 $changeLogContent = @file_get_contents('https://raw.github.com/netz98/n98-magerun/master/changes.txt');
