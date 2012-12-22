@@ -1,3 +1,8 @@
+1.41.2
+======
+
+- Little password validator bugfix and internal validation refactoring
+
 1.41.1
 ======
 

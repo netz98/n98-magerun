@@ -119,9 +119,6 @@ class ParameterHelper extends AbstractHelper
      */
     public function askEmail(InputInterface $input, OutputInterface $output, $argumentName = 'email')
     {
-        $this->initValidator();
-        $email = $input->getArgument($argumentName);
-        $validator = $this->validator;
         $constraints = new Constraints\Collection(
             array(
                 'email' => array(
@@ -130,25 +127,8 @@ class ParameterHelper extends AbstractHelper
                 )
             )
         );
-        $errors = $validator->validateValue(array('email' => $email), $constraints);
-        if (count($errors) > 0) {
-            $output->writeln('<error>' . $errors[0]->getMessage() . '</error>');
-            $question = '<question>Email: </question>';
-            $email = $this->getHelperSet()->get('dialog')->askAndValidate(
-                $output,
-                $question,
-                function($typeInput) use ($validator, $constraints) {
-                    $errors = $validator->validateValue(array('email' => $typeInput), $constraints);
-                    if (count($errors) > 0) {
-                        throw new \InvalidArgumentException($errors[0]->getMessage());
-                    }
 
-                    return $typeInput;
-                }
-            );
-        }
-
-        return $email;
+        return $this->_validateArgument($output, $argumentName, $input->getArgument($argumentName), $constraints);
     }
 
     /**
@@ -159,9 +139,6 @@ class ParameterHelper extends AbstractHelper
      */
     public function askPassword(InputInterface $input, OutputInterface $output, $argumentName = 'password')
     {
-        $this->initValidator();
-        $password = $input->getArgument($argumentName);
-        $validator = $this->validator;
         $constraints = new Constraints\Collection(
             array(
                 'password' => array(
@@ -170,15 +147,37 @@ class ParameterHelper extends AbstractHelper
                 )
             )
         );
-        $errors = $validator->validateValue(array('password' => $password), $constraints);
-        if (count($errors) > 0) {
-            $output->writeln('<error>' . $errors[0]->getMessage() . '</error>');
-            $question = '<question>Password: </question>';
-            $password = $this->getHelperSet()->get('dialog')->askAndValidate(
+
+        return $this->_validateArgument($output, $argumentName, $input->getArgument($argumentName), $constraints);
+    }
+
+    /**
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param string $argumentName
+     * @param string $value
+     * @param $constraints
+     * @return mixed
+     * @throws \InvalidArgumentException
+     */
+    protected function _validateArgument(OutputInterface $output, $name, $value, $constraints)
+    {
+        $this->initValidator();
+        $validator = $this->validator;
+
+        if (!empty($value)) {
+            $errors = $validator->validateValue(array($name => $value), $constraints);
+            if (count($errors) > 0) {
+                $output->writeln('<error>' . $errors[0]->getMessage() . '</error>');
+            }
+        }
+
+        if (count($errors) > 0 || empty($value)) {
+            $question = '<question>' . ucfirst($name) . ': </question>';
+            $value = $this->getHelperSet()->get('dialog')->askAndValidate(
                 $output,
                 $question,
-                function($typeInput) use ($validator, $constraints) {
-                    $errors = $validator->validateValue(array('password' => $typeInput), $constraints);
+                function ($typeInput) use ($validator, $constraints, $name) {
+                    $errors = $validator->validateValue(array($name => $typeInput), $constraints);
                     if (count($errors) > 0) {
                         throw new \InvalidArgumentException($errors[0]->getMessage());
                     }
@@ -186,9 +185,9 @@ class ParameterHelper extends AbstractHelper
                     return $typeInput;
                 }
             );
+            return $value;
         }
-
-        return $password;
+        return $value;
     }
 
     protected function initValidator()
