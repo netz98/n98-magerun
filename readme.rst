@@ -89,6 +89,12 @@ Creates a new customer/user for shop frontend.
 
    $ n98-magerun.phar  customer:create [email] [password] [firstname] [lastname] [website]
 
+Example:
+
+.. code-block:: sh
+
+  $ n98-magerun.phar customer:create foo@example.com password123 John Doe base
+
 Print database information
 """""""""""""""""""""""""""
 
