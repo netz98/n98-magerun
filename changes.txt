@@ -1,3 +1,8 @@
+1.41.1
+======
+
+- Little email validator bugfix
+
 1.41.0
 ======
 

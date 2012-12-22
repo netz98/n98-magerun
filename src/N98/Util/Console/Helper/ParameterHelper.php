@@ -122,15 +122,23 @@ class ParameterHelper extends AbstractHelper
         $this->initValidator();
         $email = $input->getArgument($argumentName);
         $validator = $this->validator;
-        $errors = $validator->validateValue($email, new Constraints\Email());
+        $constraints = new Constraints\Collection(
+            array(
+                'email' => array(
+                    new Constraints\NotBlank(),
+                    new Constraints\Email()
+                )
+            )
+        );
+        $errors = $validator->validateValue(array('email' => $email), $constraints);
         if (count($errors) > 0) {
             $output->writeln('<error>' . $errors[0]->getMessage() . '</error>');
             $question = '<question>Email: </question>';
             $email = $this->getHelperSet()->get('dialog')->askAndValidate(
                 $output,
                 $question,
-                function($typeInput) use ($validator) {
-                    $errors = $validator->validateValue($typeInput, new Constraints\Email());
+                function($typeInput) use ($validator, $constraints) {
+                    $errors = $validator->validateValue(array('email' => $typeInput), $constraints);
                     if (count($errors) > 0) {
                         throw new \InvalidArgumentException($errors[0]->getMessage());
                     }

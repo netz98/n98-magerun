@@ -54,7 +54,11 @@ class CreateCommand extends AbstractMagentoCommand
             $website = $this->getHelperSet()->get('parameter')->askWebsite($input, $output);
 
             // create new customer
-            $customer = \Mage::getModel('customer/customer');
+            if ($this->_magentoMajorVersion == 2) {
+                $customer = \Mage::getModel('Mage_Customer_Model_Customer');
+            } else {
+                $customer = \Mage::getModel('customer/customer');
+            }
             $customer->setWebsiteId($website->getId());
             $customer->loadByEmail($email);
 
