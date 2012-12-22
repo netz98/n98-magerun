@@ -80,6 +80,15 @@ If you don't have installed the .phar file system wide you can call it with the 
 
    php n98-magerun.phar list
 
+Create customer
+"""""""""""""""
+
+Creates a new customer/user for shop frontend.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar  customer:create [email] [password] [firstname] [lastname] [website]
+
 Print database information
 """""""""""""""""""""""""""
 

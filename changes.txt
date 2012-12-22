@@ -1,22 +1,9 @@
-1.40.2
+1.41.0
 ======
 
-- Little fix for self-update command by @therouv.
+- Added new customer:create command
 
-1.40.1
-======
 
-- Issue #66 Undefined property in CheckCommand.php
-
-1.40.0
-======
-
-- Added new commands "db:drop" and "uninstall"
-- Changed coloring of some command outputs
-- Replaced deleted mageLTS repos with magento-mirror
-- Added Magento 2 installer (experimental)
-- sys:setup:run command now clear cache automatically
-- Removed media/xmlconnect check in sys:check command
 
 Please not that there are some deprecated command prefixes:
 

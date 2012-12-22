@@ -27,6 +27,7 @@ use N98\Magento\Command\Admin\User\ChangePasswordCommand as ChangeAdminUserPassw
 use N98\Magento\Command\Admin\User\ListCommand as AdminUserListCommand;
 use N98\Magento\Command\Admin\User\CreateUserCommand as AdminUserCreateCommand;
 use N98\Magento\Command\Admin\DisableNotificationsCommand;
+use N98\Magento\Command\Customer\CreateCommand as CustomerCreateCommand;
 use N98\Magento\Command\Installer\InstallCommand;
 use N98\Magento\Command\Installer\UninstallCommand;
 use N98\Magento\Command\System\MaintenanceCommand as SystemMaintenanceCommand;
@@ -59,6 +60,7 @@ use N98\Magento\Command\Cms\Page\PublishCommand as MagentoCmsPagePublishCommand;
 use N98\Magento\Command\Cms\Banner\ToggleCommand as MagentoCmsBannerToggleCommand;
 use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
 use N98\Util\OperatingSystem;
+use N98\Util\Console\Helper\ParameterHelper;
 use Xanido\Console\Helper\TableHelper;
 
 class Application extends BaseApplication
@@ -81,7 +83,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.40.2';
+    const APP_VERSION = '1.41.0';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -144,6 +146,7 @@ class Application extends BaseApplication
         $this->add(new ChangeAdminUserPasswordCommand());
         $this->add(new AdminUserListCommand());
         $this->add(new AdminUserCreateCommand());
+        $this->add(new CustomerCreateCommand());
         $this->add(new DisableNotificationsCommand());
         $this->add(new DesignDemoNoticeCommand());
         $this->add(new InstallCommand());
@@ -271,6 +274,7 @@ class Application extends BaseApplication
     {
         $helperSet = $this->getHelperSet();
         $helperSet->set(new TableHelper(), 'table');
+        $helperSet->set(new ParameterHelper(), 'parameter');
     }
 
     /**

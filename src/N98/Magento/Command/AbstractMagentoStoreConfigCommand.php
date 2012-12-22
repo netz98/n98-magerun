@@ -121,31 +121,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      */
     protected function _initStore($input, $output)
     {
-        try {
-            if ($input->getArgument('store') === null) {
-                throw new \Exception('No store given');
-            }
-            $store = \Mage::app()->getStore($input->getArgument('store'));
-        } catch (\Exception $e) {
-            $i = 0;
-            foreach (\Mage::app()->getStores() as $store) {
-                $stores[$i ] = $store->getId();
-                $question[] = '<comment>[' . ($i + 1) . ']</comment> ' . $store->getCode() . ' - ' . $store->getName() . PHP_EOL;
-                $i++;
-            }
-            $question[] = '<question>Please select a store: </question>';
-
-            $storeId = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($stores) {
-                if (!isset($stores[$typeInput - 1])) {
-                    throw new \InvalidArgumentException('Invalid store');
-                }
-                return $stores[$typeInput - 1];
-            });
-
-            $store = \Mage::app()->getStore($storeId);
-        }
-
-        return $store;
+        return $this->getHelperSet()->get('parameter')->askStore($input, $output);
     }
 
     /**

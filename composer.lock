@@ -1,5 +1,5 @@
 {
-    "hash": "74251cd686e294d8b4bd03813feed355",
+    "hash": "d0614cb247fd029f6ecd4128366a97f2",
     "packages": [
         {
             "name": "justinrainbow/json-schema",
@@ -73,7 +73,7 @@
             "require-dev": {
                 "phpunit/phpunit": "3.7.7"
             },
-            "time": "1351436979",
+            "time": "2012-10-28 15:09:39",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -94,22 +94,22 @@
         },
         {
             "name": "seld/jsonlint",
-            "version": "1.0.1",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "http://github.com/Seldaek/jsonlint",
-                "reference": "1.0.1"
+                "reference": "1.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/Seldaek/jsonlint/zipball/1.0.1",
-                "reference": "1.0.1",
+                "url": "https://github.com/Seldaek/jsonlint/archive/1.1.0.zip",
+                "reference": "1.1.0",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2012-08-13 07:00:11",
+            "time": "2012-12-13 18:26:19",
             "bin": [
                 "bin/jsonlint"
             ],
@@ -278,6 +278,63 @@
                 }
             ],
             "description": "Symfony Process Component",
+            "homepage": "http://symfony.com"
+        },
+        {
+            "name": "symfony/validator",
+            "version": "v2.1.2",
+            "target-dir": "Symfony/Component/Validator",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Validator",
+                "reference": "v2.1.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/symfony/Validator/zipball/v2.1.2",
+                "reference": "v2.1.2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "symfony/http-foundation": "2.1.*",
+                "symfony/locale": "2.1.*",
+                "symfony/yaml": "2.1.*"
+            },
+            "suggest": {
+                "doctrine/common": ">=2.1,<2.4-dev",
+                "symfony/http-foundation": "2.1.*",
+                "symfony/yaml": "2.1.*"
+            },
+            "time": "2012-09-17 10:45:59",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.1-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Validator": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Validator Component",
             "homepage": "http://symfony.com"
         },
         {
