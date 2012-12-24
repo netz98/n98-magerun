@@ -59,8 +59,8 @@ class ConflictsCommand extends AbstractRewriteCommand
                     if ($conflictCounter > 0) {
                         $this->writeSection($output, 'Conflicts');
                         array_map(array($table, 'appendRow'), $tableData);
-                        $output->writeln('<error>' . $conflictCounter . ' conflict' . ($conflictCounter > 1 ? 's' : '') . ' was found!</error>');
                         $output->write($table->render());
+                        $output->writeln('<error>' . $conflictCounter . ' conflict' . ($conflictCounter > 1 ? 's' : '') . ' was found!</error>');
                     } else {
                         $output->writeln('<info>No rewrite conflicts was found.</info>');
                     }

@@ -42,6 +42,11 @@ abstract class AbstractMagentoCommand extends Command
     protected $_deprecatedAlias = array();
 
     /**
+     * @var array
+     */
+    protected $_websiteCodeMap = array();
+
+    /**
      * Initializes the command just after the input has been validated.
      *
      * This is mainly useful when a lot of commands extends one main command
@@ -53,6 +58,42 @@ abstract class AbstractMagentoCommand extends Command
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->checkDeprecatedAliases($input, $output);
+    }
+
+    private function _initWebsites()
+    {
+        $this->_websiteCodeMap = array();
+        $websites = \Mage::app()->getWebsites(false);
+        foreach ($websites as $website) {
+            $this->_websiteCodeMap[$website->getId()] = $website->getCode();
+        }
+    }
+
+    /**
+     * @param int $websiteId
+     * @return string
+     */
+    protected function _getWebsiteCodeById($websiteId)
+    {
+        if (empty($this->_websiteCodeMap)) {
+            $this->_initWebsites();
+        }
+
+        return $this->_websiteCodeMap[$websiteId];
+    }
+
+    /**
+     * @param string $websiteCode
+     * @return int
+     */
+    protected function _getWebsiteIdByCode($websiteCode)
+    {
+        if (empty($this->_websiteCodeMap)) {
+            $this->_initWebsites();
+        }
+        $websiteMap = array_flip($this->_websiteCodeMap);
+
+        return $websiteMap[$websiteCode];
     }
 
     /**
@@ -228,6 +269,22 @@ abstract class AbstractMagentoCommand extends Command
             return \Mage::getModel($mage2class);
         } else {
             return \Mage::getModel($mage1code);
+        }
+    }
+
+    /**
+     * Magento 1 / 2 switches
+     *
+     * @param $mage1code string Magento 1 class code
+     * @param $mage2class string Magento 2 class name
+     * @return \Mage_Core_Model_Abstract
+     */
+    protected function _getResourceModel($mage1code, $mage2class)
+    {
+        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
+            return \Mage::getResourceModel($mage2class);
+        } else {
+            return \Mage::getResourceModel($mage1code);
         }
     }
 

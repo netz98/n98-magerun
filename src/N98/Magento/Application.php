@@ -28,6 +28,8 @@ use N98\Magento\Command\Admin\User\ListCommand as AdminUserListCommand;
 use N98\Magento\Command\Admin\User\CreateUserCommand as AdminUserCreateCommand;
 use N98\Magento\Command\Admin\DisableNotificationsCommand;
 use N98\Magento\Command\Customer\CreateCommand as CustomerCreateCommand;
+use N98\Magento\Command\Customer\ListCommand as CustomerListCommand;
+use N98\Magento\Command\Customer\ChangePasswordCommand as CustomerChangePasswordCommand;
 use N98\Magento\Command\Installer\InstallCommand;
 use N98\Magento\Command\Installer\UninstallCommand;
 use N98\Magento\Command\System\MaintenanceCommand as SystemMaintenanceCommand;
@@ -83,7 +85,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.41.2';
+    const APP_VERSION = '1.42.0';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -147,6 +149,8 @@ class Application extends BaseApplication
         $this->add(new AdminUserListCommand());
         $this->add(new AdminUserCreateCommand());
         $this->add(new CustomerCreateCommand());
+        $this->add(new CustomerListCommand());
+        $this->add(new CustomerChangePasswordCommand());
         $this->add(new DisableNotificationsCommand());
         $this->add(new DesignDemoNoticeCommand());
         $this->add(new InstallCommand());

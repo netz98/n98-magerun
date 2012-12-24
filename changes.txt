@@ -1,20 +1,10 @@
-1.41.2
+1.42.0
 ======
 
-- Little password validator bugfix and internal validation refactoring
-
-1.41.1
-======
-
-- Little email validator bugfix
-
-1.41.0
-======
-
-- Added new customer:create command
+- Added new command "customer:list" and "customer:change-password"
 
 
-
+-----------------------------------------------------------
 Please not that there are some deprecated command prefixes:
 
 - system -> use sys

@@ -95,6 +95,9 @@ class ParameterHelper extends AbstractHelper
                 $question[] = '<comment>[' . ($i + 1) . ']</comment> ' . $website->getCode() . ' - ' . $website->getName() . PHP_EOL;
                 $i++;
             }
+            if (count($websites) == 1) {
+                return \Mage::app()->getWebsite($websites[0]);
+            }
             $question[] = '<question>Please select a website: </question>';
 
             $websiteId = $this->getHelperSet()->get('dialog')->askAndValidate($output, $question, function($typeInput) use ($websites) {

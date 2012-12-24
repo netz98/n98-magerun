@@ -6,9 +6,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Magento\Command\AbstractMagentoCommand;
 
-class CreateCommand extends AbstractMagentoCommand
+class CreateCommand extends AbstractCustomerCommand
 {
     protected function configure()
     {
@@ -54,11 +53,7 @@ class CreateCommand extends AbstractMagentoCommand
             $website = $this->getHelperSet()->get('parameter')->askWebsite($input, $output);
 
             // create new customer
-            if ($this->_magentoMajorVersion == 2) {
-                $customer = \Mage::getModel('Mage_Customer_Model_Customer');
-            } else {
-                $customer = \Mage::getModel('customer/customer');
-            }
+            $customer = $this->getCustomerModel();
             $customer->setWebsiteId($website->getId());
             $customer->loadByEmail($email);
 

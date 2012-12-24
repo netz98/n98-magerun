@@ -83,13 +83,13 @@ class CompareVersionsCommand extends AbstractMagentoCommand
                 $table->appendRow($row);
             }
 
-            if (count($table) > 0) {
+            $output->write($table->render());
+
+            if ($errorCounter > 0) {
                 $output->writeln('<error>' . $errorCounter . ' error' . ($errorCounter > 1 ? 's' : '') . ' was found!</error>');
             } else {
-                $output->writeln('<info>No setup problems was found.</info>');
+                $this->writeSection($output, 'No setup problems was found.', 'info');
             }
-
-            $output->write($table->render());
         }
     }
 }
