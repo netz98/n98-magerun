@@ -95,6 +95,25 @@ Example:
 
   $ n98-magerun.phar customer:create foo@example.com password123 John Doe base
 
+List Customers
+""""""""""""""
+
+List customers. The output is limited to 1000 (can be changed by overriding config).
+If search parameter is given the customers are filtered (searchs in firstname, lastname and email).
+
+.. code-block:: sh
+
+   $ n98-magerun.phar  customer:list [search]
+
+Change customer password
+""""""""""""""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar customer:change-password [email] [password] [website]
+
+- Website parameter must only be given if more than one websites are available.
+
 Print database information
 """""""""""""""""""""""""""
 
