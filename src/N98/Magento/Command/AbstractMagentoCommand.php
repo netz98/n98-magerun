@@ -304,4 +304,12 @@ abstract class AbstractMagentoCommand extends Command
         }
     }
 
+    /**
+     * @param string $value
+     * @return bool
+     */
+    protected function _parseBoolOption($value)
+    {
+        return in_array(strtolower($value), array('y', 'yes', 1, 'true'));
+    }
 }

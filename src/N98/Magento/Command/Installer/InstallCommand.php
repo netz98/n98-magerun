@@ -41,6 +41,7 @@ class InstallCommand extends AbstractMagentoCommand
             ->addOption('installSampleData', null, InputOption::VALUE_OPTIONAL, 'Install sample data')
             ->addOption('useDefaultConfigParams', null, InputOption::VALUE_OPTIONAL, 'Use default installation parameters defined in the yaml file')
             ->addOption('baseUrl', null, InputOption::VALUE_OPTIONAL, 'Installation base url')
+            ->addOption('replaceHtaccessFile', null, InputOption::VALUE_OPTIONAL, 'Generate htaccess file (for non vhost environment)')
             ->setDescription('Install magento')
         ;
 
@@ -78,7 +79,7 @@ class InstallCommand extends AbstractMagentoCommand
      */
     protected function selectMagentoVersion(InputInterface $input, OutputInterface $output)
     {
-        if (($type = $input->getOption('magentoVersion')) == null && ($type = $input->getOption('magentoVersionByName')) == null ) {
+        if ($input->getOption('magentoVersion') == null && $input->getOption('magentoVersionByName') == null) {
             $question = array();
             foreach ($this->commandConfig['magento-packages'] as $key => $package) {
                 $question[] = '<comment>' . str_pad('[' . ($key + 1) . ']', 4, ' ') . '</comment> ' . $package['name'] . "\n";
@@ -98,19 +99,18 @@ class InstallCommand extends AbstractMagentoCommand
         } else {
             $type = null;
 
-            if($input->getOption('magentoVersion')) {
+            if ($input->getOption('magentoVersion')) {
                 $type = $input->getOption('magentoVersion');
-
-            } elseif($input->getOption('magentoVersionByName')) {
-                foreach($this->commandConfig['magento-packages'] as $key => $package) {
-                    if($package['name'] == $input->getOption('magentoVersionByName')) {
+            } elseif ($input->getOption('magentoVersionByName')) {
+                foreach ($this->commandConfig['magento-packages'] as $key => $package) {
+                    if ($package['name'] == $input->getOption('magentoVersionByName')) {
                         $type = $key+1;
                         break;
                     }
                 }
             }
 
-            if($type == null) {
+            if ($type == null) {
                 throw new \InvalidArgumentException('Unable to locate Magento version');
             }
         }
@@ -267,7 +267,7 @@ class InstallCommand extends AbstractMagentoCommand
 
         $dialog = $this->getHelperSet()->get('dialog');
 
-        $installSampleData = ($input->getOption('installSampleData') !== null) ? (bool)$input->getOption('installSampleData') : $dialog->askConfirmation($output, '<question>Install sample data?</question> <comment>[y]</comment>: ');
+        $installSampleData = ($input->getOption('installSampleData') !== null) ? $this->_parseBoolOption($input->getOption('installSampleData')) : $dialog->askConfirmation($output, '<question>Install sample data?</question> <comment>[y]</comment>: ');
 
         if ($installSampleData) {
             foreach ($this->commandConfig['demo-data-packages'] as $demoPackageData) {
@@ -334,13 +334,15 @@ class InstallCommand extends AbstractMagentoCommand
 
         $defaults = $this->commandConfig['installation']['defaults'];
 
-        $sessionSave = ($input->getOption('useDefaultConfigParams') !== null) ? $defaults['session_save'] : $dialog->ask(
+        $useDefaultConfigParams = $this->_parseBoolOption($input->getOption('useDefaultConfigParams'));
+        
+        $sessionSave = $useDefaultConfigParams ? $defaults['session_save'] : $dialog->ask(
             $output,
             '<question>Please enter the session save:</question> <comment>[' . $defaults['session_save'] . ']</comment>: ',
             $defaults['session_save']
         );
 
-        $adminFrontname = ($input->getOption('useDefaultConfigParams') !== null) ? $defaults['admin_frontname'] : $dialog->askAndValidate(
+        $adminFrontname = $useDefaultConfigParams ? $defaults['admin_frontname'] : $dialog->askAndValidate(
             $output,
             '<question>Please enter the admin frontname:</question> <comment>[' . $defaults['admin_frontname'] . ']</comment> ',
             $this->notEmptyCallback,
@@ -348,7 +350,7 @@ class InstallCommand extends AbstractMagentoCommand
             $defaults['admin_frontname']
         );
 
-        $currency = ($input->getOption('useDefaultConfigParams') !== null) ? $defaults['currency'] : $dialog->askAndValidate(
+        $currency = $useDefaultConfigParams ? $defaults['currency'] : $dialog->askAndValidate(
             $output,
             '<question>Please enter the default currency code:</question> <comment>[' . $defaults['currency'] . ']</comment>: ',
             $this->notEmptyCallback,
@@ -356,7 +358,7 @@ class InstallCommand extends AbstractMagentoCommand
             $defaults['currency']
         );
 
-        $locale = ($input->getOption('useDefaultConfigParams') !== null) ? $defaults['locale'] : $dialog->askAndValidate(
+        $locale = $useDefaultConfigParams ? $defaults['locale'] : $dialog->askAndValidate(
             $output,
             '<question>Please enter the locale code:</question> <comment>[' . $defaults['locale'] . ']</comment>: ',
             $this->notEmptyCallback,
@@ -364,7 +366,7 @@ class InstallCommand extends AbstractMagentoCommand
             $defaults['locale']
         );
 
-        $timezone = ($input->getOption('useDefaultConfigParams') !== null) ? $defaults['timezone'] : $dialog->askAndValidate(
+        $timezone = $useDefaultConfigParams ? $defaults['timezone'] : $dialog->askAndValidate(
             $output,
             '<question>Please enter the timezone:</question> <comment>[' . $defaults['timezone'] . ']</comment>: ',
             $this->notEmptyCallback,
@@ -372,7 +374,7 @@ class InstallCommand extends AbstractMagentoCommand
             $defaults['timezone']
         );
 
-        $adminUsername = ($input->getOption('useDefaultConfigParams') !== null) ? $defaults['admin_username'] : $dialog->askAndValidate(
+        $adminUsername = $useDefaultConfigParams ? $defaults['admin_username'] : $dialog->askAndValidate(
             $output,
             '<question>Please enter the admin username:</question> <comment>[' . $defaults['admin_username'] . ']</comment>: ',
             $this->notEmptyCallback,
@@ -380,7 +382,7 @@ class InstallCommand extends AbstractMagentoCommand
             $defaults['admin_username']
         );
 
-        $adminPassword = ($input->getOption('useDefaultConfigParams') !== null) ? $defaults['admin_password'] : $dialog->askAndValidate(
+        $adminPassword = $useDefaultConfigParams ? $defaults['admin_password'] : $dialog->askAndValidate(
             $output,
             '<question>Please enter the admin password:</question> <comment>[' . $defaults['admin_password'] . ']</comment>: ',
             $this->notEmptyCallback,
@@ -388,7 +390,7 @@ class InstallCommand extends AbstractMagentoCommand
             $defaults['admin_password']
         );
 
-        $adminFirstname = ($input->getOption('useDefaultConfigParams') !== null) ? $defaults['admin_firstname'] : $dialog->askAndValidate(
+        $adminFirstname = $useDefaultConfigParams ? $defaults['admin_firstname'] : $dialog->askAndValidate(
             $output,
             '<question>Please enter the admin\'s firstname:</question> <comment>[' . $defaults['admin_firstname'] . ']</comment>: ',
             $this->notEmptyCallback,
@@ -396,7 +398,7 @@ class InstallCommand extends AbstractMagentoCommand
             $defaults['admin_firstname']
         );
 
-        $adminLastname = ($input->getOption('useDefaultConfigParams') !== null) ? $defaults['admin_lastname'] : $dialog->askAndValidate(
+        $adminLastname = $useDefaultConfigParams ? $defaults['admin_lastname'] : $dialog->askAndValidate(
             $output,
             '<question>Please enter the admin\'s lastname:</question> <comment>[' . $defaults['admin_lastname'] . ']</comment>: ',
             $this->notEmptyCallback,
@@ -404,7 +406,7 @@ class InstallCommand extends AbstractMagentoCommand
             $defaults['admin_lastname']
         );
 
-        $adminEmail = ($input->getOption('useDefaultConfigParams') !== null) ? $defaults['admin_email'] : $dialog->askAndValidate(
+        $adminEmail = $useDefaultConfigParams ? $defaults['admin_email'] : $dialog->askAndValidate(
             $output,
             '<question>Please enter the admin\'s email:</question> <comment>[' . $defaults['admin_email'] . ']</comment>: ',
             $this->notEmptyCallback,
@@ -465,8 +467,23 @@ class InstallCommand extends AbstractMagentoCommand
 
         $dialog = $this->getHelperSet()->get('dialog');
 
-        if($input->getOption('useDefaultConfigParams') == null) {
-            if ($dialog->askConfirmation($output, '<question>Write BaseURL to .htaccess file?</question> <comment>[n]</comment>: ', false)) {
+        /**
+         * Htaccess file
+         */
+        if ($input->getOption('useDefaultConfigParams') == null || $input->getOption('replaceHtaccessFile') != null) {
+            $replaceHtaccessFile = false;
+
+            if ($this->_parseBoolOption($input->getOption('replaceHtaccessFile'))) {
+                $replaceHtaccessFile = true;
+            } elseif ($dialog->askConfirmation(
+                $output,
+                '<question>Write BaseURL to .htaccess file?</question> <comment>[n]</comment>: ',
+                false)
+            ) {
+                $replaceHtaccessFile = true;
+            }
+
+            if ($replaceHtaccessFile) {
                 $this->replaceHtaccessFile($baseUrl);
             }
         }

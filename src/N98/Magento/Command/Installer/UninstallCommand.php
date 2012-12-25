@@ -34,9 +34,9 @@ class UninstallCommand extends AbstractMagentoCommand
         $dialog = $this->getHelperSet()->get('dialog');
         /* @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
 
-        $shouldUninstall = true;
+        $shouldUninstall = false;
         if (!$input->getOption('force')) {
-            $shouldUninstall = $dialog->askConfirmation($output, '<question>Really uninstall ?</question> <comment>[y]</comment>: ');
+            $shouldUninstall = $dialog->askConfirmation($output, '<question>Really uninstall ?</question> <comment>[n]</comment>: ', false);
         }
 
         if ($shouldUninstall) {

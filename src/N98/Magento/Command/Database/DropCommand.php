@@ -28,9 +28,10 @@ class DropCommand extends AbstractDatabaseCommand
         $this->detectDbSettings($output);
         $dialog = $this->getHelperSet()->get('dialog');
 
-        $shouldDrop = true;
-        if (!$input->getOption('force')) {
-            $shouldDrop = $dialog->askConfirmation($output, '<question>Really drop database ' . $this->dbSettings['dbname'] . ' ?</question> <comment>[y]</comment>: ');
+        if ($input->getOption('force')) {
+            $shouldDrop = true;
+        } else {
+            $shouldDrop = $dialog->askConfirmation($output, '<question>Really drop database ' . $this->dbSettings['dbname'] . ' ?</question> <comment>[n]</comment>: ', false);
         }
 
         if ($shouldDrop) {

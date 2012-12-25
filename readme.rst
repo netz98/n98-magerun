@@ -710,9 +710,24 @@ Since version 1.1.0 we deliver a Magento installer which does the following:
 * Starts Magento installer
 * Sets rewrite base in .htaccess file
 
+Interactive installer:
+
 .. code-block:: sh
 
    $ n98-magerun.phar install
+
+Unattended installation:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar install [--magentoVersion[="..."]] [--magentoVersionByName[="..."]] [--installationFolder[="..."]] [--dbHost[="..."]] [--dbUser[="..."]] [--dbPass[="..."]] [--dbName[="..."]] [--installSampleData[="..."]] [--useDefaultConfigParams[="..."]] [--baseUrl[="..."]] [--replaceHtaccessFile[="..."]]
+
+Example of an unattended Magento CE 1.7.0.2 installation:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar install --dbHost="localhost" --dbUser="mydbuser" --dbPass="mysecret" --dbName="magentodb" --installSampleData=yes --useDefaultConfigParams=yes --magentoVersionByName="magento-ce-1.7.0.2" --installationFolder="magento" --baseUrl="http://magento.localdomain/"
+
 
 Magento Uninstaller
 """""""""""""""""""
