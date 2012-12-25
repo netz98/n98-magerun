@@ -1,7 +1,7 @@
 1.43.0
 ======
 
-- New unattended installation (by @jasperdcbe)
+- New unattended installation (by Jasper de Craecker - @jasperdcbe)
 
 1.42.0
 ======
