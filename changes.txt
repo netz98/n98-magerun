@@ -1,3 +1,8 @@
+1.43.0
+======
+
+- New unattended installation (by @jasperdcbe)
+
 1.42.0
 ======
 
