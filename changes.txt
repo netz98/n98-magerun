@@ -1,3 +1,9 @@
+1.44.2
+======
+
+- Added --on and --off options to "sys:maintenance" command.
+
+
 1.44.1
 ======
 

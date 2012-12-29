@@ -402,12 +402,14 @@ Toggle admin notifications.
 
    $ n98-magerun.phar admin:notifications
 
-Toggle maintenance mode
+Maintenance mode
 """""""""""""""""""""""
+
+If no option is provided it toggles the mode on every call.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar sys:maintenance
+   $ n98-magerun.phar sys:maintenance [--on] [--off]
 
 Magento system info
 """"""""""""""""""""

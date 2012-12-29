@@ -15,6 +15,8 @@ class MaintenanceCommand extends AbstractMagentoCommand
         $this
             ->setName('sys:maintenance')
             ->setAliases(array('system:maintenance'))
+            ->addOption('on', null, InputOption::VALUE_NONE, 'Force maintenance mode')
+            ->addOption('off', null, InputOption::VALUE_NONE, 'Disable maintenance mode')
             ->addDeprecatedAlias('system:maintenance', 'Please use sys:maintenance')
             ->setDescription('Toggles maintenance mode.')
         ;
@@ -29,12 +31,39 @@ class MaintenanceCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output);
         $flagFile = $this->_magentoRootFolder . '/maintenance.flag';
+
+        if ($input->getOption('off')) {
+            $this->_switchOff($output, $flagFile);
+        } elseif ($input->getOption('on')) {
+            $this->_switchOn($output, $flagFile);
+        } else {
+            if (file_exists($flagFile)) {
+                $this->_switchOff($output, $flagFile);
+            } else {
+                $this->_switchOn($output, $flagFile);
+            }
+        }
+    }
+
+    /**
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param $flagFile
+     */
+    protected function _switchOn(OutputInterface $output, $flagFile)
+    {
+        touch($flagFile);
+        $output->writeln('Maintenance mode <info>on</info>');
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param string $flagFile
+     */
+    protected function _switchOff($output, $flagFile)
+    {
         if (file_exists($flagFile)) {
             unlink($flagFile);
-            $output->writeln('Maintenance mode <info>off</info>');
-        } else {
-            touch($flagFile);
-            $output->writeln('Maintenance mode <info>on</info>');
         }
+        $output->writeln('Maintenance mode <info>off</info>');
     }
 }
