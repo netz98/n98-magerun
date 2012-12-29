@@ -181,7 +181,7 @@ Extended: https://github.com/netz98/n98-magerun/wiki/Stripped-Database-Dumps
 See it in action: http://youtu.be/ttjZHY6vThs
 
 Database Import
-===============
+"""""""""""""""
 
 Imports an SQL file with mysql cli client into current configured database.
 
