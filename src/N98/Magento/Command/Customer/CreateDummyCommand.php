@@ -11,12 +11,33 @@ class CreateDummyCommand extends AbstractCustomerCommand
 {
     protected function configure()
     {
+        $help = <<<HELP
+Supported Locales:
+
+- cs_CZ
+- ru_RU
+- bg_BG
+- en_US
+- it_IT
+- sr_RS
+- sr_Cyrl_RS
+- sr_Latn_RS
+- pl_PL
+- en_GB
+- de_DE
+- sk_SK
+- fr_FR
+- es_AR
+- de_AT
+HELP;
+
         $this
             ->setName('customer:create:dummy')
             ->addArgument('count', InputArgument::REQUIRED, 'Count')
             ->addArgument('locale', InputArgument::REQUIRED, 'Locale')
             ->addArgument('website', InputArgument::OPTIONAL, 'Website')
             ->setDescription('Creates a dummy customers.')
+            ->setHelp($help)
         ;
     }
 
