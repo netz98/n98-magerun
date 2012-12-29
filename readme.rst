@@ -105,23 +105,24 @@ Generate dummy customers. You can specify a count and a locale.
 
   $ n98-magerun.phar customer:create:dummy count locale [website]
 
+
 Supported Locales:
 
-* cs_CZ
-* ru_RU
-* bg_BG
-* en_US
-* it_IT
-* sr_RS
-* sr_Cyrl_RS
-* sr_Latn_RS
-* pl_PL
-* en_GB
-* de_DE
-* sk_SK
-* fr_FR
-* es_AR
-* de_AT
+    * cs_CZ
+    * ru_RU
+    * bg_BG
+    * en_US
+    * it_IT
+    * sr_RS
+    * sr_Cyrl_RS
+    * sr_Latn_RS
+    * pl_PL
+    * en_GB
+    * de_DE
+    * sk_SK
+    * fr_FR
+    * es_AR
+    * de_AT
 
 List Customers
 """"""""""""""
