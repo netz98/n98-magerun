@@ -96,8 +96,8 @@ Example:
 
   $ n98-magerun.phar customer:create foo@example.com password123 John Doe base
 
-Create Dummy Customers
-======================
+Generate Dummy Customers
+""""""""""""""""""""""""
 
 Generate dummy customers. You can specify a count and a locale.
 
