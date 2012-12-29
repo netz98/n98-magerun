@@ -1,4 +1,5 @@
 ========================
+========================
 netz98 magerun CLI tools
 ========================
 
@@ -178,6 +179,17 @@ Available Table Groups:
 Extended: https://github.com/netz98/n98-magerun/wiki/Stripped-Database-Dumps
 
 See it in action: http://youtu.be/ttjZHY6vThs
+
+Database Import
+===============
+
+Imports an SQL file with mysql cli client into current configured database.
+
+* Requires MySQL CLI tools
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:import [--only-command] [filename]
 
 Database Console / MySQL Client
 """""""""""""""""""""""""""""""

@@ -10,6 +10,7 @@ use N98\Magento\Command\LocalConfig\GenerateCommand as GenerateLocalXmlConfigCom
 use N98\Magento\Command\Database\DumpCommand as DatabaseDumpCommand;
 use N98\Magento\Command\Database\DropCommand as DatabaseDropCommand;
 use N98\Magento\Command\Database\InfoCommand as DatabaseInfoCommand;
+use N98\Magento\Command\Database\ImportCommand as DatabaseImportCommand;
 use N98\Magento\Command\Database\ConsoleCommand as DatabaseConsoleCommand;
 use N98\Magento\Command\Config\DumpCommand as ConfigPrintCommand;
 use N98\Magento\Command\Config\GetCommand as ConfigGetCommand;
@@ -85,7 +86,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.43.0';
+    const APP_VERSION = '1.44.0';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -133,6 +134,7 @@ class Application extends BaseApplication
         $this->add(new DatabaseDumpCommand());
         $this->add(new DatabaseDropCommand());
         $this->add(new DatabaseInfoCommand());
+        $this->add(new DatabaseImportCommand());
         $this->add(new DatabaseConsoleCommand());
         $this->add(new ConfigPrintCommand());
         $this->add(new ConfigGetCommand());

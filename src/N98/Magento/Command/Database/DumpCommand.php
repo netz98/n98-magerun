@@ -224,7 +224,7 @@ class DumpCommand extends AbstractDatabaseCommand
             }
         } else {
             if (!$input->getOption('stdout')) {
-                $output->writeln('<comment>Start dumping database: <info>' . $this->dbSettings['dbname'] . '</info> to file <info>' . $fileName . '</info>');
+                $output->writeln('<comment>Start dumping database <info>' . $this->dbSettings['dbname'] . '</info> to file <info>' . $fileName . '</info>');
             }
 
             foreach($execs as $exec) {

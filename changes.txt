@@ -1,13 +1,13 @@
+1.44.0
+======
+
+- New command "db:import"
+
+
 1.43.0
 ======
 
 - New unattended installation (by Jasper de Craecker - @jasperdcbe)
-
-1.42.0
-======
-
-- Added new command "customer:list" and "customer:change-password"
-
 
 -----------------------------------------------------------
 Please not that there are some deprecated command prefixes:
