@@ -1,3 +1,8 @@
+1.45.0
+======
+
+- Added new command "cutomer:create:dummy"
+
 1.44.2
 ======
 

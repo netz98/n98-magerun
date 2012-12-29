@@ -11,7 +11,8 @@
         "symfony/validator": "2.1.2",
         "justinrainbow/json-schema": "1.1.*",
         "seld/jsonlint": "1.*",
-        "n98/junit-xml": "dev-master"
+        "n98/junit-xml": "dev-master",
+        "fzaninotto/faker": "1.1.0"
     },
     "autoload": {
         "psr-0": {
