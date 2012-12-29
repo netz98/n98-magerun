@@ -1,3 +1,8 @@
+1.44.1
+======
+
+- Fire the adminhtml_cache_flush_all event before flushing the cache (by @aligent)
+
 1.44.0
 ======
 
