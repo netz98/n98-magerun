@@ -63,6 +63,9 @@ class InstallCommand extends AbstractMagentoCommand
     {
         $this->commandConfig = $this->getCommandConfig();
         $this->writeSection($output, 'Magento Installation');
+        if (!extension_loaded('pdo_mysql')) {
+            throw new \RuntimeException('PHP extension pdo_mysql is required to start installation');
+        }
         $this->selectMagentoVersion($input, $output);
         $this->chooseInstallationFolder($input, $output);
         $this->downloadMagento($input, $output);
@@ -491,7 +494,7 @@ class InstallCommand extends AbstractMagentoCommand
         chdir($this->config['installationFolder']);
         $output->writeln('<info>Reindex all after installation</info>');
         $this->getApplication()->run(new StringInput('index:reindex:all'), $output);
-
+        $this->getApplication()->run(new StringInput('sys:check'), $output);
         $output->writeln('<info>Successfully installed magento</info>');
     }
 
