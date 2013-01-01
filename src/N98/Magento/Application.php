@@ -2,7 +2,12 @@
 
 namespace N98\Magento;
 
+use N98\Util\String;
 use Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Finder\Finder;
 use N98\Magento\Command\ConfigurationLoader;
@@ -336,5 +341,85 @@ class Application extends BaseApplication
     public function getConfig()
     {
         return $this->config;
+    }
+
+    /**
+     * @return bool
+     */
+    private function hasConfigCommandAliases()
+    {
+        return isset($this->config['commands']['aliases']) && is_array($this->config['commands']['aliases']);
+    }
+
+    /**
+     * Override standard command registration. We want alias support.
+     *
+     * @param \Symfony\Component\Console\Command\Command $command
+     * @return \Symfony\Component\Console\Command\Command
+     */
+    public function add(Command $command)
+    {
+        $this->registerConfigCommandAlias($command);
+
+        return parent::add($command);
+    }
+
+    /**
+     * @param \Symfony\Component\Console\Command\Command $command
+     */
+    protected function registerConfigCommandAlias(Command $command)
+    {
+        if ($this->hasConfigCommandAliases()) {
+            foreach ($this->config['commands']['aliases'] as $alias) {
+                if (is_array($alias)) {
+                    $aliasCommandName = key($alias);
+                    $originalCommand = array_shift(explode(' ', $alias[$aliasCommandName]));
+                    if ($command->getName() == $originalCommand) {
+                        $currentCommandAliases = $command->getAliases();
+                        $currentCommandAliases[] = $aliasCommandName;
+                        $command->setAliases($currentCommandAliases);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Runs the current application with possible command aliases
+     *
+     * @param InputInterface  $input  An Input instance
+     * @param OutputInterface $output An Output instance
+     *
+     * @return integer 0 if everything went fine, or an error code
+     */
+    public function doRun(InputInterface $input, OutputInterface $output)
+    {
+        $input = $this->checkConfigCommandAlias($input);
+
+        parent::doRun($input, $output);
+    }
+
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @return \Symfony\Component\Console\Input\ArgvInput|\Symfony\Component\Console\Input\InputInterface
+     */
+    protected function checkConfigCommandAlias(InputInterface $input)
+    {
+        if ($this->hasConfigCommandAliases()) {
+            foreach ($this->config['commands']['aliases'] as $alias) {
+                if (is_array($alias)) {
+                    $aliasCommandName = key($alias);
+                    if ($input->getFirstArgument() == $aliasCommandName) {
+                        $aliasCommandParams = array_slice(String::trimExplodeEmpty(' ', $alias[$aliasCommandName]), 1);
+                        if (count($aliasCommandParams) > 0) {
+                            // replace with aliased data
+                            $input = new ArgvInput(array_merge($_SERVER['argv'], $aliasCommandParams));
+                        }
+                    }
+                }
+            }
+            return $input;
+        }
+        return $input;
     }
 }

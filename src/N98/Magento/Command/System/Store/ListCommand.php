@@ -19,8 +19,6 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:store:list')
-            ->setAliases(array('system:store:list'))
-            ->addDeprecatedAlias('system:store:list', 'Please use sys:store:list')
             ->setDescription('Lists all installed store-views');
     }
 

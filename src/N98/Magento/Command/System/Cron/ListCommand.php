@@ -19,8 +19,6 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:cron:list')
-            ->setAliases(array('system:cron:list'))
-            ->addDeprecatedAlias('system:cron:list', 'Please use sys:cron:list')
             ->setDescription('Lists all cronjobs');
     }
 

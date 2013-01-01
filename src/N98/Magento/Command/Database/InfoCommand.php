@@ -13,7 +13,6 @@ class InfoCommand extends AbstractDatabaseCommand
     {
         $this
             ->setName('db:info')
-            ->setAliases(array('database:info'))
             ->addDeprecatedAlias('database:info', 'Please use db:info')
             ->setDescription('Dumps database informations')
         ;

@@ -19,7 +19,7 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('dev:module:list')
-            ->setAliases(array('sys:modules:list', 'system:modules:list')) // deprecated
+            ->setAliases(array('sys:modules:list')) // deprecated
             ->setDescription('List all installed modules');
     }
 

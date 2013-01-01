@@ -12,8 +12,8 @@ class ConsoleCommand extends AbstractDatabaseCommand
     protected function configure()
     {
         $this
-            ->setName('database:console')
-            ->setAliases(array('mysql-client', 'db:console'))
+            ->setName('db:console')
+            ->setAliases(array('mysql-client'))
             ->setDescription('Opens mysql client by database config from local.xml')
         ;
     }

@@ -17,7 +17,6 @@ class DumpCommand extends AbstractDatabaseCommand
 
         $this
             ->setName('db:dump')
-            ->setAliases(array('database:dump'))
             ->addArgument('filename', InputArgument::OPTIONAL, 'Dump filename')
             ->addOption('add-time', null, InputOption::VALUE_NONE, 'Adds time to filename (only if filename was not provided)')
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysqldump command. Do not execute')

@@ -14,10 +14,8 @@ class MaintenanceCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:maintenance')
-            ->setAliases(array('system:maintenance'))
             ->addOption('on', null, InputOption::VALUE_NONE, 'Force maintenance mode')
             ->addOption('off', null, InputOption::VALUE_NONE, 'Disable maintenance mode')
-            ->addDeprecatedAlias('system:maintenance', 'Please use sys:maintenance')
             ->setDescription('Toggles maintenance mode.')
         ;
     }

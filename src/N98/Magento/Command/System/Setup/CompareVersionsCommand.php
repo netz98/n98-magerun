@@ -14,8 +14,6 @@ class CompareVersionsCommand extends AbstractMagentoCommand
         $this
             ->setName('sys:setup:compare-versions')
             ->addOption('ignore-data', null, InputOption::VALUE_NONE, 'Ignore data updates')
-            ->setAliases(array('system:setup:compare-versions'))
-            ->addDeprecatedAlias('system:setup:compare-versions', 'Please use sys:setup:compare-versions')
             ->setDescription('Compare module version with core_resource table.');
     }
 
