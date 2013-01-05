@@ -5,7 +5,7 @@
 REMOVED DEPRECATED ALIASES
 --------------------------
 
-We have removed all deprecated aliases.
+We have removed all deprecated aliases:
 
 - cache:clear
 - database:console
@@ -26,16 +26,14 @@ We have removed all deprecated aliases.
 You can restore the old aliases by new "command alias feature" by adding
 some entries in your configuration.
 
-Please look in our wiki:
-
-"https://github.com/netz98/n98-magerun/wiki/Command-aliases"
-
 ------------
 New Features
 ------------
 
 * New feature: Global system config (/etc/n98-magerun.yaml)
-  See: https://github.com/netz98/n98-magerun/wiki/Config
+
+  https://github.com/netz98/n98-magerun/wiki/Config
 
 * Command Aliases by config
 
+  https://github.com/netz98/n98-magerun/wiki/Command-aliases
