@@ -40,7 +40,7 @@ class ConfigurationLoader
 
         // MAGENTO_ROOT/app/etc/n98-magerun.yaml
         $projectConfigFile = $magentoRootFolder . DIRECTORY_SEPARATOR . 'app/etc/' . $this->_customConfigFilename;
-        if ($homeDirectory && file_exists($personalConfigFile)) {
+        if ($projectConfigFile && file_exists($projectConfigFile)) {
             $projectConfig = Yaml::parse($projectConfigFile);
             $config = $this->mergeArrays($config, $projectConfig);
         }
