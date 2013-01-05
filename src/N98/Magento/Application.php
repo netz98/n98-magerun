@@ -92,7 +92,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.45.0';
+    const APP_VERSION = '1.46.0';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -371,14 +371,18 @@ class Application extends BaseApplication
     {
         if ($this->hasConfigCommandAliases()) {
             foreach ($this->config['commands']['aliases'] as $alias) {
-                if (is_array($alias)) {
-                    $aliasCommandName = key($alias);
-                    $originalCommand = array_shift(explode(' ', $alias[$aliasCommandName]));
-                    if ($command->getName() == $originalCommand) {
-                        $currentCommandAliases = $command->getAliases();
-                        $currentCommandAliases[] = $aliasCommandName;
-                        $command->setAliases($currentCommandAliases);
-                    }
+                if (!is_array($alias)) {
+                    continue;
+                }
+
+                $aliasCommandName = key($alias);
+                $commandString = $alias[$aliasCommandName];
+
+                $originalCommand = array_shift(explode(' ', $commandString));
+                if ($command->getName() == $originalCommand) {
+                    $currentCommandAliases = $command->getAliases();
+                    $currentCommandAliases[] = $aliasCommandName;
+                    $command->setAliases($currentCommandAliases);
                 }
             }
         }
@@ -413,7 +417,12 @@ class Application extends BaseApplication
                         $aliasCommandParams = array_slice(String::trimExplodeEmpty(' ', $alias[$aliasCommandName]), 1);
                         if (count($aliasCommandParams) > 0) {
                             // replace with aliased data
-                            $input = new ArgvInput(array_merge($_SERVER['argv'], $aliasCommandParams));
+                            $mergedParams = array_merge(
+                                array_slice($_SERVER['argv'], 0, 2),
+                                $aliasCommandParams,
+                                array_slice($_SERVER['argv'], 2)
+                            );
+                            $input = new ArgvInput($mergedParams);
                         }
                     }
                 }

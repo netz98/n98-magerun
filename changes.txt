@@ -1,32 +1,41 @@
-1.45.0
+1.46.0
 ======
 
-- Added new command "cutomer:create:dummy"
+--------------------------
+REMOVED DEPRECATED ALIASES
+--------------------------
 
-1.44.2
-======
+We have removed all deprecated aliases.
 
-- Added --on and --off options to "sys:maintenance" command.
+- cache:clear
+- database:console
+- database:dump
+- database:info
+- system:modules:list
+- system:cron:list
+- system:setup:compare-versions
+- sys:run-setup-scripts
+- system:run-setup-scripts
+- system:store:list
+- system:url:list
+- system:website:list
+- system:check
+- system:info
+- system:maintenance
 
+You can restore the old aliases by new "command alias feature" by adding
+some entries in your configuration.
 
-1.44.1
-======
+Please look in our wiki:
 
-- Fire the adminhtml_cache_flush_all event before flushing the cache (by Jonathan Day - @aligent)
+"https://github.com/netz98/n98-magerun/wiki/Command-aliases"
 
-1.44.0
-======
+------------
+New Features
+------------
 
-- New command "db:import"
+* New feature: Global system config (/etc/n98-magerun.yaml)
+  See: https://github.com/netz98/n98-magerun/wiki/Config
 
+* Command Aliases by config
 
-1.43.0
-======
-
-- New unattended installation (by Jasper de Craecker - @jasperdcbe)
-
------------------------------------------------------------
-Please not that there are some deprecated command prefixes:
-
-- system -> use sys
-- database -> use db

@@ -23,27 +23,44 @@ class ConfigurationLoader
     {
         $config = Yaml::parse(__DIR__ . '/../../../../config.yaml');
 
+        // Check if there is a global config file in /etc folder
+        $systemWideConfigFile = '/etc/' . $this->_customConfigFilename;
+        if ($systemWideConfigFile && file_exists($systemWideConfigFile)) {
+            $systemConfig = Yaml::parse($systemWideConfigFile);
+            $config = $this->mergeArrays($config, $systemConfig);
+        }
+
         // Check if there is a user config file. ~/.n98-magerun.yaml
         $homeDirectory = getenv('HOME');
         $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
-
-        // MAGENTO_ROOT/app/etc/n98-magerun.yaml
-        $projectConfigFile = $magentoRootFolder . DIRECTORY_SEPARATOR . 'app/etc/' . $this->_customConfigFilename;
-
         if ($homeDirectory && file_exists($personalConfigFile)) {
             $personalConfig = Yaml::parse($personalConfigFile);
             $config = $this->mergeArrays($config, $personalConfig);
         }
 
-        if (file_exists($projectConfigFile)) {
+        // MAGENTO_ROOT/app/etc/n98-magerun.yaml
+        $projectConfigFile = $magentoRootFolder . DIRECTORY_SEPARATOR . 'app/etc/' . $this->_customConfigFilename;
+        if ($homeDirectory && file_exists($personalConfigFile)) {
             $projectConfig = Yaml::parse($projectConfigFile);
-            foreach($projectConfig['autoloaders'] as &$value) {
-                $value = str_replace('%root%', $magentoRootFolder, $value);
-            }
             $config = $this->mergeArrays($config, $projectConfig);
         }
 
+        $config = $this->_initAutoloaders($magentoRootFolder, $config);
         $this->_configArray = $config;
+    }
+
+    /**
+     * @param $magentoRootFolder
+     * @param $config
+     * @return mixed
+     */
+    protected function _initAutoloaders($magentoRootFolder, $config)
+    {
+        foreach ($config['autoloaders'] as &$value) {
+            $value = str_replace('%root%', $magentoRootFolder, $value);
+        }
+
+        return $config;
     }
 
     /**
