@@ -24,12 +24,12 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output);
         if ($this->initMagento()) {
-            $packages = $this->getDesignPackageModel()->getThemeList();
+            $packages = $this->getThemes();
             $table = array();
             foreach ($packages as $package => $themes) {
                 foreach ($themes as $theme) {
                     $table[] = array(
-                        'name' => $package . '/' . $theme
+                        'name' => ($package ? $package . '/' : '') . $theme
                     );
                 }
             }
@@ -39,14 +39,20 @@ class ListCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return Mage_Core_Model_Design_Package
+     * @return array
      */
-    protected function getDesignPackageModel()
+    protected function getThemes()
     {
         if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return \Mage::getModel('Mage_Core_Model_Design_Package');
+            $collection = \Mage::getModel('Mage_Core_Model_Theme')->getLabelsCollection();
+            $themes = array();
+            foreach ($collection as $theme) {
+                $themes[] = $theme['label'];
+            }
+
+            return array($themes);
         }
 
-        return \Mage::getModel('core/design_package');
+        return \Mage::getModel('core/design_package')->getThemeList();
     }
 }
