@@ -61,6 +61,9 @@ use N98\Magento\Command\Developer\Module\Rewrite\ListCommand as ModuleRewriteLis
 use N98\Magento\Command\Developer\Module\Rewrite\ConflictsCommand as ModuleRewriteConflictsCommand;
 use N98\Magento\Command\Developer\Module\CreateCommand as ModuleCreateCommand;
 use N98\Magento\Command\Developer\Module\Observer\ListCommand as ModuleObserverListCommand;
+use N98\Magento\Command\Developer\Theme\DuplicatesCommand as ThemeDuplicatesCommand;
+use N98\Magento\Command\Developer\Theme\ListCommand as ThemeListCommand;
+//use N98\Magento\Command\Developer\Theme\InfoCommand as ThemeInfoCommand;
 use N98\Magento\Command\MagentoConnect\ListExtensionsCommand as MagentoConnectionListExtensionsCommand;
 use N98\Magento\Command\MagentoConnect\InstallExtensionCommand as MagentoConnectionInstallExtensionCommand;
 use N98\Magento\Command\MagentoConnect\DownloadExtensionCommand as MagentoConnectionDownloadExtensionCommand;
@@ -178,6 +181,9 @@ class Application extends BaseApplication
         $this->add(new TemplateHintsBlocksCommand());
         $this->add(new TranslateInlineShopCommand());
         $this->add(new TranslateInlineAdminCommand());
+        $this->add(new ThemeDuplicatesCommand());
+        $this->add(new ThemeListCommand());
+        //$this->add(new ThemeInfoCommand());
         $this->add(new ProfilerCommand());
         $this->add(new SymlinksCommand());
         $this->add(new DevelopmentLogCommand());
@@ -196,7 +202,10 @@ class Application extends BaseApplication
 
         $this->add(new MagentoCmsPagePublishCommand());
         $this->add(new MagentoCmsBannerToggleCommand());
-        $this->add(new SelfUpdateCommand());
+
+        if ('phar:' === substr(__FILE__, 0, 5)) {
+            $this->add(new SelfUpdateCommand());
+        }
     }
 
     /**
