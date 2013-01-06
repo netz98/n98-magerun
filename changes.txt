@@ -1,3 +1,9 @@
+1.47.0
+======
+
+* New command "dev:theme:list": Lists all your frontend themes.
+* New command "dev:theme:duplicates": Lists all duplicated files in your theme.
+
 1.46.1
 ======
 

@@ -689,6 +689,33 @@ Lists all registered observer by type.
 
 Type is one of "adminhtml", "global", "frontend".
 
+Theme List
+""""""""""
+
+Lists all frontend themes
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:theme:list
+
+
+Find Duplicates in your theme
+"""""""""""""""""""""""""""""
+
+Find duplicate files (templates, layout, locale, etc.) between two themes.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:theme:duplicates theme [originalTheme]
+
+* `originTheme` default is "base/default".
+
+Example:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:theme:duplicates default/default
+
 
 List Extensions
 """""""""""""""
