@@ -81,6 +81,16 @@ If you don't have installed the .phar file system wide you can call it with the 
 
    php n98-magerun.phar list
 
+Customer Info
+"""""""""""""
+
+Loads basic customer info by email address.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar  customer:info [email] [website]
+
+
 Create customer
 """""""""""""""
 

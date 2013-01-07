@@ -1,16 +1,13 @@
+1.48.0
+======
+
+* New command "customer:info"
+
 1.47.0
 ======
 
 * New command "dev:theme:list": Lists all your frontend themes.
 * New command "dev:theme:duplicates": Lists all duplicated files in your theme.
-
-1.46.1
-======
-
-Little config loader fix.
-
-1.46.0
-======
 
 --------------------------
 REMOVED DEPRECATED ALIASES
