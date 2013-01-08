@@ -56,8 +56,10 @@ class ConfigurationLoader
      */
     protected function _initAutoloaders($magentoRootFolder, $config)
     {
-        foreach ($config['autoloaders'] as &$value) {
-            $value = str_replace('%root%', $magentoRootFolder, $value);
+        if (isset($config['autoloaders']) && is_array($config['autoloaders'])) {
+            foreach ($config['autoloaders'] as &$value) {
+                $value = str_replace('%root%', $magentoRootFolder, $value);
+            }
         }
 
         return $config;
