@@ -4,7 +4,7 @@ $gitHubUrl = 'https://github.com/' . strtolower($vendorNamespace) . '/' . $vendo
 
 ?><?php echo $vendorNamespace ?> <?php echo $moduleName ?> Extension
 =====================
-This is a short description of what the extension does.
+<?php echo $description ? $description : 'Add your description here' ?>
 
 Facts
 -----
@@ -52,7 +52,7 @@ Any contribution is highly appreciated. The best way to contribute code is to op
 
 Developer
 ---------
-FirstName LastName
+<?php echo $authorName ?>
 [http://www.firstname-lastname.com](http://www.firstname-lastname.com)
 [@FirstNameLastName](https://twitter.com/FirstNameLastName)
 

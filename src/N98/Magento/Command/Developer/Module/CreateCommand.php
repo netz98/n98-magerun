@@ -61,6 +61,11 @@ class CreateCommand extends AbstractMagentoCommand
             ->addOption('add-models', null, InputOption::VALUE_NONE, 'Adds models')
             ->addOption('add-all', null, InputOption::VALUE_NONE, 'Adds blocks, helpers and models')
             ->addOption('modman', null, InputOption::VALUE_NONE, 'Create all files in folder with a modman file.')
+            ->addOption('add-readme', null, InputOption::VALUE_NONE, 'Adds a readme.md file to generated module')
+            ->addOption('add-composer', null, InputOption::VALUE_NONE, 'Adds a composer.json file to generated module')
+            ->addOption('author-name', null, InputOption::VALUE_OPTIONAL, 'Author for readme.md or composer.json')
+            ->addOption('author-email', null, InputOption::VALUE_OPTIONAL, 'Author for readme.md or composer.json')
+            ->addOption('description', null, InputOption::VALUE_OPTIONAL, 'Description for readme.md or composer.json')
             ->setDescription('Creates an registers new magento module.');
     }
 
@@ -95,6 +100,7 @@ class CreateCommand extends AbstractMagentoCommand
         if ($this->modmanMode) {
             $this->writeModmanFile($input, $output);
         }
+        $this->writeComposerConfig($input, $output);
     }
 
     protected function initView($input)
@@ -106,6 +112,9 @@ class CreateCommand extends AbstractMagentoCommand
         $view->assign('createBlocks', $input->getOption('add-blocks'));
         $view->assign('createModels', $input->getOption('add-models'));
         $view->assign('createHelpers', $input->getOption('add-helpers'));
+        $view->assign('authorName', $input->getOption('author-name'));
+        $view->assign('authorEmail', $input->getOption('author-email'));
+        $view->assign('description', $input->getOption('description'));
         $this->view = $view;
     }
 
@@ -191,15 +200,38 @@ class CreateCommand extends AbstractMagentoCommand
      *
      * @see https://raw.github.com/sprankhub/Magento-Extension-Sample-Readme/master/readme.markdown
      *
-     * @param $input
-     * @param $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      */
     protected function writeReadme($input, $output) {
+        if (!$input->getOption('add-readme')) {
+            return;
+        }
         $this->view->setTemplate($this->baseFolder . '/app/etc/modules/readme.phtml');
         if ($this->modmanMode) {
             $outFile = $this->_magentoRootFolder . '/../readme.md';
         } else {
             $outFile = $this->moduleDirectory . '/etc/readme.md';
+        }
+        file_put_contents($outFile, $this->view->render());
+        $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
+    }
+
+    /**
+     * Write composer.json
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    protected function writeComposerConfig($input, $output) {
+        if (!$input->getOption('add-composer')) {
+            return;
+        }
+        $this->view->setTemplate($this->baseFolder . '/composer.phtml');
+        if ($this->modmanMode) {
+            $outFile = $this->_magentoRootFolder . '/../composer.json';
+        } else {
+            $outFile = $this->moduleDirectory . '/etc/composer.json';
         }
         file_put_contents($outFile, $this->view->render());
         $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
