@@ -1,4 +1,12 @@
+1.49.0
+======
+
+* Removed deprecated alias "system:check" -> Use sys:check
+* Added new options to dev:module:create "--add-composer", "--author-email", "--author-name"
+* Made readme generation optional by option "--add-readme"
+
 1.48.1
+======
 
 * Fix for issue #71: PHP warning in ConfigurationLoader.php Line 59 since update to 1.48.0
 
@@ -6,46 +14,3 @@
 ======
 
 * New command "customer:info"
-
-1.47.0
-======
-
-* New command "dev:theme:list": Lists all your frontend themes.
-* New command "dev:theme:duplicates": Lists all duplicated files in your theme.
-
---------------------------
-REMOVED DEPRECATED ALIASES
---------------------------
-
-We have removed all deprecated aliases:
-
-- cache:clear
-- database:console
-- database:dump
-- database:info
-- system:modules:list
-- system:cron:list
-- system:setup:compare-versions
-- sys:run-setup-scripts
-- system:run-setup-scripts
-- system:store:list
-- system:url:list
-- system:website:list
-- system:check
-- system:info
-- system:maintenance
-
-You can restore the old aliases by new "command alias feature" by adding
-some entries in your configuration.
-
-------------
-New Features
-------------
-
-* New feature: Global system config (/etc/n98-magerun.yaml)
-
-  https://github.com/netz98/n98-magerun/wiki/Config
-
-* Command Aliases by config
-
-  https://github.com/netz98/n98-magerun/wiki/Command-aliases
