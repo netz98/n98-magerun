@@ -3,7 +3,7 @@
 
 * Removed deprecated alias "system:check" -> Use sys:check
 * Added new options to dev:module:create "--add-composer", "--author-email", "--author-name"
-* Made readme generation optional by option "--add-readme"
+* Made readme generation in dev:module:create command optional by option "--add-readme"
 
 1.48.1
 ======
