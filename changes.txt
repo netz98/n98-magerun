@@ -1,3 +1,7 @@
+1.48.1
+
+* Fix for issue #71: PHP warning in ConfigurationLoader.php Line 59 since update to 1.48.0
+
 1.48.0
 ======
 
