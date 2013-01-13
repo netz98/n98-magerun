@@ -642,7 +642,7 @@ Creates an empty module and registers it in current magento shop:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:module:create [--add-blocks] [--add-helpers] [--add-models] [--add-all] [--modman] vendorNamespace moduleName [codePool]
+   $ n98-magerun.phar dev:module:create [--add-blocks] [--add-helpers] [--add-models] [--add-all] [--modman] [--add-readme] [--add-composer] [--author-name[="..."]] [--author-email[="..."]] [--description[="..."]] vendorNamespace moduleName [codePool]
 
 Code-Pool defaults to `local`.
 
@@ -658,6 +658,14 @@ Example:
 Run this command inside your `.modman` folder.
 
 * --add-all option add blocks, helpers and models.
+
+* --add-readme Adds a readme.md file to your module.
+
+* --add-composer Adds a composer.json to your module.
+
+* --author-email Author email for composer.json file.
+
+* --author-name Author name for composer.json file.
 
 List Modules
 """"""""""""
