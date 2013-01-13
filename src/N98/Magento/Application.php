@@ -123,6 +123,14 @@ class Application extends BaseApplication
      */
     protected $_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_1;
 
+    private static $logo = "
+     ___ ___
+ _ _/ _ ( _ )___ _ __  __ _ __ _ ___ _ _ _  _ _ _
+| ' \_, / _ \___| '  \/ _` / _` / -_) '_| || | ' \
+|_||_/_/\___/   |_|_|_\__,_\__, \___|_|  \_,_|_||_|
+                           |___/
+";
+
     public function __construct($autoloader)
     {
         $this->autoloader = $autoloader;
@@ -208,6 +216,19 @@ class Application extends BaseApplication
         if ('phar:' === substr(__FILE__, 0, 5)) {
             $this->add(new SelfUpdateCommand());
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getHelp()
+    {
+        return self::$logo . parent::getHelp();
+    }
+
+    public function getLongVersion()
+    {
+        return parent::getLongVersion() . ' by <info>netz98 new media GmbH</info>';
     }
 
     /**
