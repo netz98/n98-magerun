@@ -80,6 +80,14 @@ If you don't have installed the .phar file system wide you can call it with the 
 
    php n98-magerun.phar list
 
+
+Open Shop in Browser
+""""""""""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar open-browser [store]
+
 Customer Info
 """""""""""""
 

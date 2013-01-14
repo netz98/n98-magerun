@@ -72,6 +72,7 @@ use N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand as MagentoConnect
 use N98\Magento\Command\Cms\Page\PublishCommand as MagentoCmsPagePublishCommand;
 use N98\Magento\Command\Cms\Banner\ToggleCommand as MagentoCmsBannerToggleCommand;
 use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
+use N98\Magento\Command\OpenBrowserCommand;
 use N98\Util\OperatingSystem;
 use N98\Util\Console\Helper\ParameterHelper;
 use Xanido\Console\Helper\TableHelper;
@@ -96,7 +97,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.49.0';
+    const APP_VERSION = '1.50.0';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -208,6 +209,7 @@ class Application extends BaseApplication
             $this->add(new MagentoConnectionInstallExtensionCommand());
             $this->add(new MagentoConnectionDownloadExtensionCommand());
             $this->add(new MagentoConnectionUpgradeExtensionCommand());
+            $this->add(new OpenBrowserCommand());
         }
 
         $this->add(new MagentoCmsPagePublishCommand());

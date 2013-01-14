@@ -1,16 +1,11 @@
+1.50.0
+======
+
+* Added new experimental command "open-browser".
+
 1.49.0
 ======
 
 * Removed deprecated alias "system:check" -> Use sys:check
 * Added new options to dev:module:create "--add-composer", "--author-email", "--author-name"
 * Made readme generation in dev:module:create command optional by option "--add-readme"
-
-1.48.1
-======
-
-* Fix for issue #71: PHP warning in ConfigurationLoader.php Line 59 since update to 1.48.0
-
-1.48.0
-======
-
-* New command "customer:info"
