@@ -1,4 +1,5 @@
 1.50.1
+======
 
 * Changed composer.json generation: "magento-hackathon/magento-composer-installer" version by @Vinai
 
