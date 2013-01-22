@@ -1,3 +1,8 @@
+1.51.0
+======
+
+* Added --junit-log option to dev:theme:duplicates command
+
 1.50.1
 ======
 

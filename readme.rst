@@ -731,7 +731,7 @@ Find duplicate files (templates, layout, locale, etc.) between two themes.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:theme:duplicates theme [originalTheme]
+   $ n98-magerun.phar dev:theme:duplicates [--log-junit="..."] theme [originalTheme]
 
 * `originTheme` default is "base/default".
 
@@ -741,6 +741,8 @@ Example:
 
    $ n98-magerun.phar dev:theme:duplicates default/default
 
+
+* If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
 
 List Extensions
 """""""""""""""
