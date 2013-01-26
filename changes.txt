@@ -1,3 +1,8 @@
+1.51.1
+======
+
+* Fixed issue #74 : cache:flush throws warning (Thanks to @mystix)
+
 1.51.0
 ======
 
@@ -12,10 +17,3 @@
 ======
 
 * Added new experimental command "open-browser".
-
-1.49.0
-======
-
-* Removed deprecated alias "system:check" -> Use sys:check
-* Added new options to dev:module:create "--add-composer", "--author-email", "--author-name"
-* Made readme generation in dev:module:create command optional by option "--add-readme"
