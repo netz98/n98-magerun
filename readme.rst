@@ -24,6 +24,12 @@ Download phar file
 
     wget https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar
 
+or if you have problems with SSL certificate:
+
+.. code-block:: sh
+
+   curl -o n98-magerun.phar https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar
+
 You can make the .phar file executable.
 
 .. code-block:: sh
