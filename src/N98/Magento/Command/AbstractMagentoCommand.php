@@ -133,10 +133,15 @@ abstract class AbstractMagentoCommand extends Command
         if ($this->_magentoRootFolder !== null) {
             if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
                 require_once $this->_magentoRootFolder . '/app/bootstrap.php';
+                if (version_compare(\Mage::getVersion(), '2.0.0.0-dev41') >= 0) {
+                    \Mage::app(array('MAGE_RUN_CODE' => 'admin'));
+                } else {
+                    \Mage::app('admin');
+                }
             } else {
                 require_once $this->_magentoRootFolder . '/app/Mage.php';
+                \Mage::app('admin');
             }
-            \Mage::app('admin');
             return true;
         }
 
