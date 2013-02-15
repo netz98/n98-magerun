@@ -830,6 +830,8 @@ Example of an unattended Magento CE 1.7.0.2 installation:
 
    $ n98-magerun.phar install --dbHost="localhost" --dbUser="mydbuser" --dbPass="mysecret" --dbName="magentodb" --installSampleData=yes --useDefaultConfigParams=yes --magentoVersionByName="magento-ce-1.7.0.2" --installationFolder="magento" --baseUrl="http://magento.localdomain/"
 
+See it in action: http://youtu.be/WU-CbJ86eQc
+
 
 Magento Uninstaller
 """""""""""""""""""
