@@ -334,7 +334,7 @@ Set Config
 
 .. code-block:: sh
 
-   $ n98-magerun.phar config:set [--scope[="..."]] [--scope-id[="..."]] path value
+   $ n98-magerun.phar config:set [--scope[="..."]] [--scope-id[="..."]] [--encrypt] path value
 
 Arguments:
     path        The config path
@@ -343,19 +343,21 @@ Arguments:
 Options:
     --scope     The config value's scope (default: "default")
     --scope-id  The config value's scope ID (default: "0")
+    --decrypt   Decrypt the config value using local.xml's crypt key
 
 Get Config
 """"""""""
 
 .. code-block:: sh
 
-   $ n98-magerun.phar config:get [--scope-id="..."] [path]
+   $ n98-magerun.phar config:get [--scope-id="..."] [--decrypt] [path]
 
 Arguments:
     path        The config path
 
 Options:
     --scope-id  The config value's scope ID
+    --decrypt   Decrypt the config value using local.xml's crypt key
 
 Help:
     If path is not set, all available config items will be listed. path may contain wildcards (*)
