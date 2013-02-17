@@ -47,6 +47,7 @@ EOT
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
+            /* @var $collection \Mage_Core_Model_Resource_Db_Collection_Abstract */
             $collection = $this->_getConfigDataModel()->getCollection();
             $searchPath = $input->getArgument('path');
 
@@ -64,13 +65,19 @@ EOT
                 ));
             }
 
+            // sort according to the config overwrite order
+            // trick to force order default -> (f)website -> store , because f comes after d and before s
+            $collection->addOrder('REPLACE(scope, "website", "fwebsite")', \Mage_Core_Model_Resource_Db_Collection_Abstract::SORT_ORDER_ASC);
+
+            $collection->addOrder('scope_id', \Mage_Core_Model_Resource_Db_Collection_Abstract::SORT_ORDER_ASC);
+
             if($collection->count() == 0) {
                 $output->writeln(sprintf("Couldn't find a config value for \"%s\"", $input->getArgument('path')));
                 return;
             }
 
             foreach ($collection as $item) {
-                $table[$item->getPath()] = array(
+                $table[] = array(
                     'Path'     => $item->getPath(),
                     'Scope'    => str_pad($item->getScope(), 8, ' ', STR_PAD_BOTH),
                     'Scope-ID' => str_pad($item->getScopeId(), 8, ' ', STR_PAD_BOTH),
