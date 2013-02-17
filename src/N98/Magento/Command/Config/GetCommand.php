@@ -2,13 +2,12 @@
 
 namespace N98\Magento\Command\Config;
 
-use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GetCommand extends AbstractMagentoCommand
+class GetCommand extends AbstractConfigCommand
 {
     protected function configure()
     {
@@ -27,6 +26,7 @@ EOT
                 )
             ->addArgument('path', InputArgument::OPTIONAL, 'The config path')
             ->addOption('scope-id', null, InputOption::VALUE_REQUIRED, 'The config value\'s scope ID')
+            ->addOption('decrypt', null, InputOption::VALUE_NONE, 'Decrypt the config value using local.xml\'s crypt key')
         ;
     }
 
@@ -69,17 +69,31 @@ EOT
                 return;
             }
 
-            foreach ($collection as $item){
+            foreach ($collection as $item) {
                 $table[$item->getPath()] = array(
                     'Path'     => $item->getPath(),
                     'Scope'    => str_pad($item->getScope(), 8, ' ', STR_PAD_BOTH),
                     'Scope-ID' => str_pad($item->getScopeId(), 8, ' ', STR_PAD_BOTH),
-                    'Value'    => substr($item->getValue(), 0, 50)
+                    'Value'    => substr($this->_formatValue($item->getValue(), $input->getOption('decrypt')), 0, 50)
                 );
             }
 
             ksort($table);
             $this->getHelper('table')->write($output, $table);
         }
+    }
+
+    /**
+     * @param string $value
+     * @param boolean $decryptionRequired
+     * @return string
+     */
+    protected function _formatValue($value, $decryptionRequired)
+    {
+        if ($decryptionRequired) {
+            $value = $this->getEncryptionModel()->decrypt($value);
+        }
+
+        return $value;
     }
 }
