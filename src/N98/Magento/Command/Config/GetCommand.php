@@ -65,6 +65,8 @@ EOT
                 ));
             }
 
+            $collection->addOrder('path', \Mage_Core_Model_Resource_Db_Collection_Abstract::SORT_ORDER_ASC);
+
             // sort according to the config overwrite order
             // trick to force order default -> (f)website -> store , because f comes after d and before s
             $collection->addOrder('REPLACE(scope, "website", "fwebsite")', \Mage_Core_Model_Resource_Db_Collection_Abstract::SORT_ORDER_ASC);

@@ -1,3 +1,9 @@
+1.52.1
+======
+
+* Magento 2 issue #76: Compatibility with dev42 build
+* Fixed issue #58: config:get did not display overlapping config paths
+
 1.52.0
 ======
 
