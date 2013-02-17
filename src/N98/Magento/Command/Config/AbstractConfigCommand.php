@@ -11,7 +11,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
      */
     protected function getEncryptionModel()
     {
-        return $this->_getModel('core/encryption', $mage2ClassName = null)
-            ->setHelper($this->getCoreHelper());
+        return $this->_getModel('core/encryption', 'Mage_Core_Model_Encryption')
+                    ->setHelper($this->getCoreHelper());
     }
 }
