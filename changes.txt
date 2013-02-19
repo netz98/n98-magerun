@@ -1,3 +1,9 @@
+1.52.2
+======
+
+* Fixed issue #81: Fix for cases where a module may be installed that doesn't have a config.xml
+(Thanks to @kalenjordan / @sparcksoft)
+
 1.52.1
 ======
 
