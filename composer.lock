@@ -30,6 +30,7 @@
                     "Faker": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -76,20 +77,26 @@
                 {
                     "name": "Igor Wiedler",
                     "email": "igor@wiedler.ch",
-                    "homepage": "http://wiedler.ch/igor/"
+                    "homepage": "http://wiedler.ch/igor/",
+                    "role": null
                 },
                 {
                     "name": "Bruno Prieto Reis",
-                    "email": "bruno.p.reis@gmail.com"
+                    "email": "bruno.p.reis@gmail.com",
+                    "homepage": null,
+                    "role": null
                 },
                 {
                     "name": "Justin Rainbow",
-                    "email": "justin.rainbow@gmail.com"
+                    "email": "justin.rainbow@gmail.com",
+                    "homepage": null,
+                    "role": null
                 },
                 {
                     "name": "Robert Schönthal",
                     "email": "seroscho@googlemail.com",
-                    "homepage": "http://digitalkaoz.net"
+                    "homepage": "http://digitalkaoz.net",
+                    "role": null
                 }
             ],
             "description": "A library to validate a json schema.",
@@ -104,25 +111,26 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "git@github.com:cmuench/junit-xml.git",
-                "reference": "3ba5887b124034c423d48d7deea2e665c4da83ec"
+                "url": "https://github.com/cmuench/junit-xml.git",
+                "reference": "8f92b609bc3635ba772e7d5afb80a76cc7187d58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/cmuench/junit-xml/archive/3ba5887b124034c423d48d7deea2e665c4da83ec.zip",
-                "reference": "3ba5887b124034c423d48d7deea2e665c4da83ec",
+                "url": "https://api.github.com/repos/cmuench/junit-xml/zipball/8f92b609bc3635ba772e7d5afb80a76cc7187d58",
+                "reference": "8f92b609bc3635ba772e7d5afb80a76cc7187d58",
                 "shasum": ""
             },
             "require-dev": {
                 "phpunit/phpunit": "3.7.7"
             },
-            "time": "2012-10-28 15:09:39",
+            "time": "2013-02-19 12:20:59",
             "type": "library",
             "autoload": {
                 "psr-0": {
                     "N98\\JUnitXml": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
