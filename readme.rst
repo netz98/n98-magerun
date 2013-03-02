@@ -636,6 +636,15 @@ Activate/Deactivate system.log and exception.log for a store:
 
    $ n98-magerun.phar dev:log [store_code]
 
+Toggle Development Database Query Logging
+"""""""""""""""""""""""
+
+Activate/Deactivate MySQL query logging via lib/Varien/Db/Adapter/Pdo/Mysql.php
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:log:db [--on] [--off]
+
 Toggle Symlinks
 """""""""""""""
 

@@ -1,3 +1,9 @@
+1.54.0
+======
+
+* New command dev:db:log by @sparksoft
+* Fix for issue #88 MySQL Port number needed on db functions (dump/import) by @asalce
+
 1.53.0
 ======
 
@@ -24,13 +30,3 @@
 ======
 
 * Fixed issue #74 : cache:flush throws warning (Thanks to @mystix)
-
-1.51.0
-======
-
-* Added --junit-log option to dev:theme:duplicates command
-
-1.50.1
-======
-
-* Changed composer.json generation: "magento-hackathon/magento-composer-installer" version by @Vinai

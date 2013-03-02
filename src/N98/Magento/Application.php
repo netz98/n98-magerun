@@ -2,8 +2,6 @@
 
 namespace N98\Magento;
 
-//use N98\Magento\Command\Developer\Theme\InfoCommand as ThemeInfoCommand;
-
 use N98\Magento\Command\Admin\DisableNotificationsCommand;
 use N98\Magento\Command\Admin\User\ChangePasswordCommand as ChangeAdminUserPasswordCommand;
 use N98\Magento\Command\Admin\User\CreateUserCommand as AdminUserCreateCommand;
@@ -31,6 +29,7 @@ use N98\Magento\Command\Database\ImportCommand as DatabaseImportCommand;
 use N98\Magento\Command\Database\InfoCommand as DatabaseInfoCommand;
 use N98\Magento\Command\Design\DemoNoticeCommand as DesignDemoNoticeCommand;
 use N98\Magento\Command\Developer\LogCommand as DevelopmentLogCommand;
+use N98\Magento\Command\Developer\LogDbCommand as DevelopmentLogDbCommand;
 use N98\Magento\Command\Developer\Module\CreateCommand as ModuleCreateCommand;
 use N98\Magento\Command\Developer\Module\ListCommand as ModuleListCommand;
 use N98\Magento\Command\Developer\Module\Observer\ListCommand as ModuleObserverListCommand;
@@ -98,7 +97,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.53.0';
+    const APP_VERSION = '1.54.0';
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -195,10 +194,10 @@ class Application extends BaseApplication
         $this->add(new TranslateInlineAdminCommand());
         $this->add(new ThemeDuplicatesCommand());
         $this->add(new ThemeListCommand());
-        //$this->add(new ThemeInfoCommand());
         $this->add(new ProfilerCommand());
         $this->add(new SymlinksCommand());
         $this->add(new DevelopmentLogCommand());
+        $this->add(new DevelopmentLogDbCommand());
         $this->add(new ModuleListCommand());
         $this->add(new ModuleRewriteListCommand());
         $this->add(new ModuleRewriteConflictsCommand());
