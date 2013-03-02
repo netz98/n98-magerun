@@ -1,3 +1,8 @@
+1.53.0
+======
+
+* Updated symfony compontents to version 2.2.0
+
 1.52.2
 ======
 
