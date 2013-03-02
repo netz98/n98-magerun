@@ -1,7 +1,7 @@
 1.54.0
 ======
 
-* New command dev:db:log by @sparksoft
+* New command dev:db:log by @sparcksoft
 * Fix for issue #88 MySQL Port number needed on db functions (dump/import) by @asalce
 
 1.53.0
