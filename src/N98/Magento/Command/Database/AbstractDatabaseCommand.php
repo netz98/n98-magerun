@@ -62,6 +62,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
         $string .= ' '
                 . '-u' . escapeshellarg(strval($this->dbSettings['username']))
                 . ' '
+                . (isset($this->dbSettings['port']) ? '-P' . escapeshellarg($this->dbSettings['port']) . ' ' : '')
                 . (!strval($this->dbSettings['password'] == '') ? '-p' . escapeshellarg($this->dbSettings['password']) . ' ' : '')
                 . escapeshellarg(strval($this->dbSettings['dbname']));
 
