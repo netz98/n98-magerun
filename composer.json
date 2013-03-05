@@ -4,7 +4,7 @@
     "license": "MIT",
     "require": {
         "php": ">=5.3.3",
-        "symfony/console": "2.2.0",
+        "symfony/console": "2.2.x-dev",
         "symfony/finder": "2.2.0",
         "symfony/yaml": "2.2.0",
         "symfony/process": "2.2.0",
