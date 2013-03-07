@@ -1,7 +1,13 @@
+1.54.2
+======
+
+* #94: Fix: Lots of strict standards warnings
+* #93: Fix: Fatal error when displaying error messages
+
 1.54.1
 ======
 
-* Fixed issue #90 (commands that called others were brokend) by updating symfony/console (v2.2.0 => 2.2.x-dev)
+* Fixed issue #90 (commands that called others were broken) by updating symfony/console (v2.2.0 => 2.2.x-dev)
 
 1.54.0
 ======
