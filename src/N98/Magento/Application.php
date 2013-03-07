@@ -412,7 +412,7 @@ class Application extends BaseApplication
                 $aliasCommandName = key($alias);
                 $commandString = $alias[$aliasCommandName];
 
-                $originalCommand = array_shift(explode(' ', $commandString));
+                list($originalCommand) = explode(' ', $commandString);
                 if ($command->getName() == $originalCommand) {
                     $currentCommandAliases = $command->getAliases();
                     $currentCommandAliases[] = $aliasCommandName;
