@@ -60,23 +60,29 @@ class RunCommand extends AbstractMagentoCommand
                 }
                 $callback = array($model, $run[2]);
 
-                $schedule = \Mage::getModel('cron/schedule');
-                $schedule->trySchedule(time());
-                $schedule->tryLockJob();
-
                 $output->write('<info>Run </info><comment>' . get_class($model) . '::' . $run[2] . '</comment> ');
 
-                $schedule
-                    ->setStatus(\Mage_Cron_Model_Schedule::STATUS_RUNNING)
-                    ->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
-                    ->save();
+                try {
+                    $schedule = \Mage::getModel('cron/schedule');
+                    $schedule
+                        ->setJobCode($jobCode)
+                        ->setStatus(\Mage_Cron_Model_Schedule::STATUS_RUNNING)
+                        ->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
+                        ->save();
 
-                call_user_func_array($callback, array($schedule));
+                    call_user_func_array($callback, array($schedule));
 
-                $schedule
-                    ->setStatus(\Mage_Cron_Model_Schedule::STATUS_SUCCESS)
-                    ->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
-                    ->save();
+                    $schedule
+                        ->setStatus(\Mage_Cron_Model_Schedule::STATUS_SUCCESS)
+                        ->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
+                        ->save();
+                } catch (Exception $e) {
+                    $schedule
+                        ->setStatus(\Mage_Cron_Model_Schedule::STATUS_ERROR)
+                        ->setMessages($e->getMessage())
+                        ->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
+                        ->save();
+                }
 
                 $output->writeln('<info>done</info>');
             }

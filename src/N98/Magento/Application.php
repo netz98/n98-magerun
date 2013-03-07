@@ -58,6 +58,7 @@ use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
 use N98\Magento\Command\System\CheckCommand as SystemCheckCommand;
 use N98\Magento\Command\System\Cron\ListCommand as SystemCronListCommand;
 use N98\Magento\Command\System\Cron\RunCommand as SystemCronRunCommand;
+use N98\Magento\Command\System\Cron\HistoryCommand as SystemCronHistoryCommand;
 use N98\Magento\Command\System\InfoCommand as SystemInfoCommand;
 use N98\Magento\Command\System\MaintenanceCommand as SystemMaintenanceCommand;
 use N98\Magento\Command\System\Setup\CompareVersionsCommand as SetupCompareVersionsCommand;
@@ -187,6 +188,7 @@ class Application extends BaseApplication
         $this->add(new SystemWebsiteListCommand());
         $this->add(new SystemCronListCommand());
         $this->add(new SystemCronRunCommand());
+        $this->add(new SystemCronHistoryCommand());
         $this->add(new SystemUrlListCommand());
         $this->add(new SetupRunScriptsCommand());
         $this->add(new SetupCompareVersionsCommand());
