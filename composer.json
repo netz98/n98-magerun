@@ -2,6 +2,11 @@
     "name": "n98/magerun",
     "description": "Tools for managing Magento projects and installations",
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/netz98/n98-magerun/issues"
+    },
+    "homepage": "http://netz98.github.com/n98-magerun/",
+    "keywords": ["magento", "installer"],
     "require": {
         "php": ">=5.3.3",
         "symfony/console": "2.2.x-dev",
