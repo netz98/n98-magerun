@@ -131,6 +131,8 @@ class DumpCommand extends AbstractDatabaseCommand
             $resolvedExcludes[] = $exclude;
         }
 
+        asort($resolvedExcludes);
+        $resolvedExcludes = array_unique($resolvedExcludes);
         return $resolvedExcludes;
     }
 
@@ -234,6 +236,8 @@ class DumpCommand extends AbstractDatabaseCommand
                 }
                 if ($returnValue > 0) {
                     $output->writeln('<error>' . implode(PHP_EOL, $commandOutput) . '</error>');
+                    $output->writeln('<error>Return Code: '.$returnValue.'. ABORTED.</error>');
+                    return;
                 }
             }
             if (!$input->getOption('stdout')) {

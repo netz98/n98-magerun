@@ -1,3 +1,8 @@
+1.54.3
+======
+
+* #98: Improved db:dump --strip handling of errors and duplicate table names
+
 1.54.2
 ======
 
