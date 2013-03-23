@@ -625,7 +625,7 @@ Toggle profiler for debugging a store:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:profiler [store_code]
+   $ n98-magerun.phar dev:profiler [--on] [--off] [--global] [store]
 
 Toggle Development Logs
 """""""""""""""""""""""
@@ -634,7 +634,7 @@ Activate/Deactivate system.log and exception.log for a store:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:log [store_code]
+   $ n98-magerun.phar dev:log [--on] [--off] [--global] [store]
 
 Toggle Development Database Query Logging
 """""""""""""""""""""""
@@ -652,7 +652,7 @@ Allow usage of symlinks for a store-view:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:symlinks <store_code>
+   $ n98-magerun.phar dev:symlinks [--on] [--off] [--global] [store_code]
 
 Global scope can be set by not permitting store_code parameter:
 
