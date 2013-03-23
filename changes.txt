@@ -1,48 +1,32 @@
+======
+1.55.0
+======
+
+* New commands sys:cron:run and sys:cron:history (issue #83)
+* Added --on, --off, --global option to some config command
+
+======
 1.54.3
 ======
 
 * #98: Improved db:dump --strip handling of errors and duplicate table names
 
+======
 1.54.2
 ======
 
 * #94: Fix: Lots of strict standards warnings
 * #93: Fix: Fatal error when displaying error messages
 
+======
 1.54.1
 ======
 
 * Fixed issue #90 (commands that called others were broken) by updating symfony/console (v2.2.0 => 2.2.x-dev)
 
+======
 1.54.0
 ======
 
 * New command dev:db:log by @sparcksoft
 * Fix for issue #88 MySQL Port number needed on db functions (dump/import) by @asalce
-
-1.53.0
-======
-
-* Updated Symfony components to version 2.2.0
-
-1.52.2
-======
-
-* Fixed issue #81: Fix for cases where a module may be installed that doesn't have a config.xml
-(Thanks to @kalenjordan / @sparcksoft)
-
-1.52.1
-======
-
-* Magento 2 issue #76: Compatibility with dev42 build
-* Fixed issue #58: config:get did not display overlapping config paths
-
-1.52.0
-======
-
-* New encrypt/decrypt options for config:get and config:set commands. (Thanks to @ajbonner)
-
-1.51.1
-======
-
-* Fixed issue #74 : cache:flush throws warning (Thanks to @mystix)

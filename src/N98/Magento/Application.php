@@ -56,9 +56,9 @@ use N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand as MagentoConnect
 use N98\Magento\Command\OpenBrowserCommand;
 use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
 use N98\Magento\Command\System\CheckCommand as SystemCheckCommand;
+use N98\Magento\Command\System\Cron\HistoryCommand as SystemCronHistoryCommand;
 use N98\Magento\Command\System\Cron\ListCommand as SystemCronListCommand;
 use N98\Magento\Command\System\Cron\RunCommand as SystemCronRunCommand;
-use N98\Magento\Command\System\Cron\HistoryCommand as SystemCronHistoryCommand;
 use N98\Magento\Command\System\InfoCommand as SystemInfoCommand;
 use N98\Magento\Command\System\MaintenanceCommand as SystemMaintenanceCommand;
 use N98\Magento\Command\System\Setup\CompareVersionsCommand as SetupCompareVersionsCommand;
@@ -85,47 +85,22 @@ class Application extends BaseApplication
      * @var int
      */
     const MAGENTO_MAJOR_VERSION_1 = 1;
-
     /**
      * @var int
      */
     const MAGENTO_MAJOR_VERSION_2 = 2;
-
     /**
      * @var string
      */
     const APP_NAME = 'n98-magerun';
+    /**
+     * @var string
+     */
+    const APP_VERSION = '1.55.0';
 
     /**
      * @var string
      */
-    const APP_VERSION = '1.54.3';
-
-    /**
-     * @var \Composer\Autoload\ClassLoader
-     */
-    protected $autoloader;
-
-    /**
-     * @var array
-     */
-    protected $config;
-
-    /**
-     * @var string
-     */
-    protected $_magentoRootFolder = null;
-
-    /**
-     * @var bool
-     */
-    protected $_magentoEnterprise = false;
-
-    /**
-     * @var int
-     */
-    protected $_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_1;
-
     private static $logo = "
      ___ ___
  _ _/ _ ( _ )___ _ __  __ _ __ _ ___ _ _ _  _ _ _
@@ -133,6 +108,26 @@ class Application extends BaseApplication
 |_||_/_/\___/   |_|_|_\__,_\__, \___|_|  \_,_|_||_|
                            |___/
 ";
+    /**
+     * @var \Composer\Autoload\ClassLoader
+     */
+    protected $autoloader;
+    /**
+     * @var array
+     */
+    protected $config;
+    /**
+     * @var string
+     */
+    protected $_magentoRootFolder = null;
+    /**
+     * @var bool
+     */
+    protected $_magentoEnterprise = false;
+    /**
+     * @var int
+     */
+    protected $_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_1;
 
     public function __construct($autoloader)
     {
@@ -225,19 +220,6 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return string
-     */
-    public function getHelp()
-    {
-        return self::$logo . parent::getHelp();
-    }
-
-    public function getLongVersion()
-    {
-        return parent::getLongVersion() . ' by <info>netz98 new media GmbH</info>';
-    }
-
-    /**
      * Search for magento root folder
      *
      * @param OutputInterface $output
@@ -272,7 +254,8 @@ class Application extends BaseApplication
                 ->in($searchFolder);
 
             if ($finder->count() >= 2) {
-                $files = iterator_to_array($finder, false); /* @var $file \SplFileInfo */
+                $files = iterator_to_array($finder, false);
+                /* @var $file \SplFileInfo */
 
                 if (count($files) == 2) {
                     // Magento 2 has no skin folder.
@@ -292,31 +275,6 @@ class Application extends BaseApplication
             }
         }
     }
-
-    /**
-     * @return boolean
-     */
-    public function isMagentoEnterprise()
-    {
-        return $this->_magentoEnterprise;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMagentoRootFolder()
-    {
-        return $this->_magentoRootFolder;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMagentoMajorVersion()
-    {
-        return $this->_magentoMajorVersion;
-    }
-
 
     /**
      * Add own helpers to helperset.
@@ -342,51 +300,14 @@ class Application extends BaseApplication
 
     protected function registerCustomCommands()
     {
-        if (isset($this->config['commands']['customCommands']) && is_array($this->config['commands']['customCommands'])) {
+        if (isset($this->config['commands']['customCommands']) && is_array(
+            $this->config['commands']['customCommands']
+        )
+        ) {
             foreach ($this->config['commands']['customCommands'] as $commandClass) {
                 $this->add(new $commandClass);
             }
         }
-    }
-
-    /**
-     * @param \Composer\Autoload\ClassLoader $autoloader
-     */
-    public function setAutoloader($autoloader)
-    {
-        $this->autoloader = $autoloader;
-    }
-
-    /**
-     * @return \Composer\Autoload\ClassLoader
-     */
-    public function getAutoloader()
-    {
-        return $this->autoloader;
-    }
-
-    /**
-     * @param array $config
-     */
-    public function setConfig($config)
-    {
-        $this->config = $config;
-    }
-
-    /**
-     * @return array
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * @return bool
-     */
-    private function hasConfigCommandAliases()
-    {
-        return isset($this->config['commands']['aliases']) && is_array($this->config['commands']['aliases']);
     }
 
     /**
@@ -427,9 +348,78 @@ class Application extends BaseApplication
     }
 
     /**
+     * @return string
+     */
+    public function getHelp()
+    {
+        return self::$logo . parent::getHelp();
+    }
+
+    public function getLongVersion()
+    {
+        return parent::getLongVersion() . ' by <info>netz98 new media GmbH</info>';
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMagentoEnterprise()
+    {
+        return $this->_magentoEnterprise;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMagentoRootFolder()
+    {
+        return $this->_magentoRootFolder;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMagentoMajorVersion()
+    {
+        return $this->_magentoMajorVersion;
+    }
+
+    /**
+     * @return \Composer\Autoload\ClassLoader
+     */
+    public function getAutoloader()
+    {
+        return $this->autoloader;
+    }
+
+    /**
+     * @param \Composer\Autoload\ClassLoader $autoloader
+     */
+    public function setAutoloader($autoloader)
+    {
+        $this->autoloader = $autoloader;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * @param array $config
+     */
+    public function setConfig($config)
+    {
+        $this->config = $config;
+    }
+
+    /**
      * Runs the current application with possible command aliases
      *
-     * @param InputInterface  $input  An Input instance
+     * @param InputInterface $input  An Input instance
      * @param OutputInterface $output An Output instance
      *
      * @return integer 0 if everything went fine, or an error code
@@ -468,5 +458,13 @@ class Application extends BaseApplication
             return $input;
         }
         return $input;
+    }
+
+    /**
+     * @return bool
+     */
+    private function hasConfigCommandAliases()
+    {
+        return isset($this->config['commands']['aliases']) && is_array($this->config['commands']['aliases']);
     }
 }
