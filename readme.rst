@@ -518,6 +518,8 @@ Runs a cronjob by code.
 
    $ n98-magerun.phar sys:cron:run [job]
 
+If no `job` argument is passed you can select a job from a list.
+
 Cronjob History
 """""""""""""""
 
