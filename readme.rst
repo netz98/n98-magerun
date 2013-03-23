@@ -500,14 +500,32 @@ Lists all websites.
 
    $ n98-magerun.phar sys:website:list
 
-Magento Cronjobs
-""""""""""""""""
+List Cronjobs
+"""""""""""""
 
 Lists all cronjobs defined in config.xml files.
 
 .. code-block:: sh
 
    $ n98-magerun.phar sys:cron:list
+
+Run Cronjob
+"""""""""""
+
+Runs a cronjob by code.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:cron:run [job]
+
+Cronjob History
+"""""""""""""""
+
+Last executed cronjobs with status.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:cron:history
 
 List URLs
 """""""""
