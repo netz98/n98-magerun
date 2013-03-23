@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListCommand extends AbstractMagentoCommand
+class ListCommand extends AbstractCronCommand
 {
     /**
      * @var array
@@ -34,33 +34,7 @@ class ListCommand extends AbstractMagentoCommand
         $this->writeSection($output, 'Cronjob List');
         $this->initMagento();
 
-        foreach (\Mage::getConfig()->getNode('crontab/jobs')->children() as $job) {
-            $table[(string) $job->getName()] = array('Job'  => (string) $job->getName()) + $this->getSchedule($job);
-        }
-
-        ksort($table);
+        $table = $this->getJobs();
         $this->getHelper('table')->write($output, $table);
-    }
-
-    /**
-     * @param $job
-     * @return array
-     */
-    protected function getSchedule($job)
-    {
-        $expr = (string) $job->schedule->cron_expr;
-        if ($expr) {
-            $schedule = $this->_getModel('cron/schedule', 'Mage_Cron_Model_Schedule');
-            $schedule->setCronExpr($expr);
-            $array = $schedule->getCronExprArr();
-            return array(
-                'm'  => $array[0],
-                'h'  => $array[1],
-                'D'  => $array[2],
-                'M'  => $array[3],
-                'WD' => $array[4]
-            );
-        }
-        return array('m' => '  ', 'h' => '  ', 'D' => '  ', 'M' => '  ', 'WD' => '  ');
     }
 }

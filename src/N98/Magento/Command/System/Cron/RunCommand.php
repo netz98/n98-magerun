@@ -7,11 +7,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Validator\Exception\InvalidArgumentException;
 
-class RunCommand extends AbstractMagentoCommand
+class RunCommand extends AbstractCronCommand
 {
     const REGEX_RUN_MODEL = '#^([a-z0-9_]+/[a-z0-9_]+)::([a-z0-9_]+)$#i';
-
     /**
      * @var array
      */
@@ -21,7 +21,7 @@ class RunCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:cron:run')
-            ->addArgument('job', InputArgument::REQUIRED, 'Job code')
+            ->addArgument('job', InputArgument::OPTIONAL, 'Job code')
             ->setDescription('Runs a cronjob by job code');
     }
 
@@ -36,6 +36,10 @@ class RunCommand extends AbstractMagentoCommand
         if ($this->initMagento()) {
 
             $jobCode = $input->getArgument('job');
+            if (!$jobCode) {
+                $this->writeSection($output, 'Cronjob');
+                $jobCode = $this->askJobCode($input, $output, $this->getJobs());
+            }
 
             $jobsRoot = \Mage::getConfig()->getNode('crontab/jobs');
             $defaultJobsRoot = \Mage::getConfig()->getNode('default/crontab/jobs');
@@ -91,4 +95,38 @@ class RunCommand extends AbstractMagentoCommand
             }
         }
     }
+
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param array $jobs
+     * @return mixed
+     * @throws \InvalidArgumentException
+     * @throws \Exception
+     */
+    protected function askJobCode(InputInterface $input, OutputInterface $output, $jobs)
+    {
+        $i = 1;
+        foreach ($jobs as $job) {
+            $question[] = '<comment>[' . ($i++) . ']</comment> ' . $job['Job'] . PHP_EOL;
+        }
+        $question[] = '<question>Please select job: </question>' . PHP_EOL;
+
+        $jobCode = $this->getHelperSet()->get('dialog')->askAndValidate(
+            $output,
+            $question,
+            function ($typeInput) use ($jobs) {
+                $subArray = array_slice($jobs, $typeInput - 1, 1);
+                $firstElement = current($subArray);
+                if (!$firstElement) {
+                    throw new InvalidArgumentException('Invalid job');
+                }
+
+                return $firstElement['Job'];
+            }
+        );
+
+        return $jobCode;
+    }
+
 }
