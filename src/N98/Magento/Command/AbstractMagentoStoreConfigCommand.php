@@ -5,6 +5,7 @@ namespace N98\Magento\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Console\Input\StringInput;
@@ -26,6 +27,11 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      * @var string
      */
     const SCOPE_GLOBAL = 'global';
+
+    /**
+     * Store view or global by additional option
+     */
+    const SCOPE_STORE_VIEW_GLOBAL = 'store_view_global';
 
     /**
      * @var string
@@ -66,10 +72,16 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
     {
         $this
             ->setName($this->commandName)
+            ->addOption('on', null, InputOption::VALUE_NONE, 'Switch on')
+            ->addOption('off', null, InputOption::VALUE_NONE, 'Switch off')
             ->setDescription($this->commandDescription)
         ;
 
-        if ($this->scope == self::SCOPE_STORE_VIEW) {
+        if ($this->scope == self::SCOPE_STORE_VIEW_GLOBAL) {
+            $this->addOption('global', null, InputOption::VALUE_NONE, 'Set value on default scope');
+        }
+
+        if ($this->scope == self::SCOPE_STORE_VIEW || $this->scope == self::SCOPE_STORE_VIEW_GLOBAL) {
             $this->addArgument('store', InputArgument::OPTIONAL, 'Store code or ID');
         }
 
@@ -84,14 +96,29 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output);
         if ($this->initMagento()) {
-            if ($this->scope == self::SCOPE_STORE_VIEW) {
+
+            $runOnStoreView = false;
+            if ($this->scope == self::SCOPE_STORE_VIEW
+                || ($this->scope == self::SCOPE_STORE_VIEW_GLOBAL && !$input->getOption('global'))
+            )
+            {
+                $runOnStoreView = true;
+            }
+
+            if ($runOnStoreView) {
                 $store = $this->_initStore($input, $output);
             } else {
                 $store = \Mage::app()->getStore(\Mage_Core_Model_App::ADMIN_STORE_ID);
             }
         }
 
-        $isFalse = !\Mage::getStoreConfigFlag($this->configPath, $store->getId());
+        if ($input->getOption('on')) {
+            $isFalse = true;
+        } elseif ($input->getOption('off')) {
+            $isFalse = false;
+        } else {
+            $isFalse = !\Mage::getStoreConfigFlag($this->configPath, $store->getId());
+        }
 
         $this->_beforeSave($store, $isFalse);
 
@@ -104,7 +131,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 
         $comment = '<comment>' . $this->toggleComment . '</comment> '
                  . '<info>' . (!$isFalse ? $this->falseName : $this->trueName) . '</info>'
-                 . ($this->scope == self::SCOPE_STORE_VIEW ? ' <comment>for store</comment> <info>' . $store->getCode() . '</info>' : '');
+                 . ($runOnStoreView ? ' <comment>for store</comment> <info>' . $store->getCode() . '</info>' : '');
         $output->writeln($comment);
 
         $this->_afterSave($store, $isFalse);

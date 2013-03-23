@@ -29,5 +29,5 @@ class ProfilerCommand extends AbstractMagentoStoreConfigCommand
     /**
      * @var string
      */
-    protected $scope = self::SCOPE_STORE_VIEW;
+    protected $scope = self::SCOPE_STORE_VIEW_GLOBAL;
 }
