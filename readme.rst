@@ -614,6 +614,8 @@ Opens PHP interactive shell with initialized Magento Admin-Store.
 
    $ n98-magerun.phar dev:console
 
+See it in action: http://www.youtube.com/watch?v=Bo-8nbUyq9Y
+
 
 Toggle Template Hints
 """""""""""""""""""""
