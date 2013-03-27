@@ -28,6 +28,7 @@ use N98\Magento\Command\Database\DumpCommand as DatabaseDumpCommand;
 use N98\Magento\Command\Database\ImportCommand as DatabaseImportCommand;
 use N98\Magento\Command\Database\InfoCommand as DatabaseInfoCommand;
 use N98\Magento\Command\Design\DemoNoticeCommand as DesignDemoNoticeCommand;
+use N98\Magento\Command\Developer\ConsoleCommand as DevelopmentConsoleCommand;
 use N98\Magento\Command\Developer\LogCommand as DevelopmentLogCommand;
 use N98\Magento\Command\Developer\LogDbCommand as DevelopmentLogDbCommand;
 use N98\Magento\Command\Developer\Module\CreateCommand as ModuleCreateCommand;
@@ -67,6 +68,7 @@ use N98\Magento\Command\System\Store\Config\BaseUrlListCommand as SystemStoreCon
 use N98\Magento\Command\System\Store\ListCommand as SystemStoreListCommand;
 use N98\Magento\Command\System\Url\ListCommand as SystemUrlListCommand;
 use N98\Magento\Command\System\Website\ListCommand as SystemWebsiteListCommand;
+use N98\Magento\EntryPoint\Magerun as MagerunEntryPoint;
 use N98\Util\Console\Helper\ParameterHelper;
 use N98\Util\OperatingSystem;
 use N98\Util\String;
@@ -96,8 +98,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.55.0';
-
+    const APP_VERSION = '1.56.0';
     /**
      * @var string
      */
@@ -197,6 +198,7 @@ class Application extends BaseApplication
         $this->add(new SymlinksCommand());
         $this->add(new DevelopmentLogCommand());
         $this->add(new DevelopmentLogDbCommand());
+        $this->add(new DevelopmentConsoleCommand());
         $this->add(new ModuleListCommand());
         $this->add(new ModuleRewriteListCommand());
         $this->add(new ModuleRewriteConflictsCommand());
@@ -214,7 +216,7 @@ class Application extends BaseApplication
         $this->add(new MagentoCmsPagePublishCommand());
         $this->add(new MagentoCmsBannerToggleCommand());
 
-        if ('phar:' === substr(__FILE__, 0, 5)) {
+        if ($this->isPharMode()) {
             $this->add(new SelfUpdateCommand());
         }
     }
@@ -348,6 +350,50 @@ class Application extends BaseApplication
     }
 
     /**
+     * @return bool
+     */
+    private function hasConfigCommandAliases()
+    {
+        return isset($this->config['commands']['aliases']) && is_array($this->config['commands']['aliases']);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPharMode()
+    {
+        return 'phar:' === substr(__FILE__, 0, 5);
+    }
+
+    public function initMagento()
+    {
+        if ($this->_magentoRootFolder !== null) {
+            if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
+                require_once $this->_magentoRootFolder . '/app/bootstrap.php';
+                if (version_compare(\Mage::getVersion(), '2.0.0.0-dev42') >= 0) {
+                    $params = array(
+                        \Mage::PARAM_RUN_CODE => 'admin',
+                        \Mage::PARAM_RUN_TYPE => 'store',
+                        'entryPoint' => basename(__FILE__),
+                    );
+                    $entryPoint = new MagerunEntryPoint(BP, $params);
+                } else
+                    if (version_compare(\Mage::getVersion(), '2.0.0.0-dev41') >= 0) {
+                        \Mage::app(array('MAGE_RUN_CODE' => 'admin'));
+                    } else {
+                        \Mage::app('admin');
+                    }
+            } else {
+                require_once $this->_magentoRootFolder . '/app/Mage.php';
+                \Mage::app('admin');
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * @return string
      */
     public function getHelp()
@@ -458,13 +504,5 @@ class Application extends BaseApplication
             return $input;
         }
         return $input;
-    }
-
-    /**
-     * @return bool
-     */
-    private function hasConfigCommandAliases()
-    {
-        return isset($this->config['commands']['aliases']) && is_array($this->config['commands']['aliases']);
     }
 }

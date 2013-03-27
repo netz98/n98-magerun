@@ -2,7 +2,6 @@
 
 namespace N98\Magento\Command;
 
-use N98\Magento\EntryPoint\Magerun as MagerunEntryPoint;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -131,30 +130,12 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function initMagento()
     {
-        if ($this->_magentoRootFolder !== null) {
-            if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-                require_once $this->_magentoRootFolder . '/app/bootstrap.php';
-                if (version_compare(\Mage::getVersion(), '2.0.0.0-dev42') >= 0) {
-                    $params = array(
-                        \Mage::PARAM_RUN_CODE => 'admin',
-                        \Mage::PARAM_RUN_TYPE => 'store',
-                        'entryPoint' => basename(__FILE__),
-                        );
-                    $entryPoint = new MagerunEntryPoint(BP, $params);
-                } else
-                if (version_compare(\Mage::getVersion(), '2.0.0.0-dev41') >= 0) {
-                    \Mage::app(array('MAGE_RUN_CODE' => 'admin'));
-                } else {
-                    \Mage::app('admin');
-                }
-            } else {
-                require_once $this->_magentoRootFolder . '/app/Mage.php';
-                \Mage::app('admin');
-            }
-            return true;
+        $init = $this->getApplication()->initMagento();
+        if ($init) {
+            $this->_magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
         }
 
-        return false;
+        return $init;
     }
 
     /**

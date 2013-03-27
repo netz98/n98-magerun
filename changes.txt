@@ -1,4 +1,10 @@
 ======
+1.56.0
+======
+
+* Added new experimental dev:console command.
+
+======
 1.55.0
 ======
 
@@ -23,10 +29,3 @@
 ======
 
 * Fixed issue #90 (commands that called others were broken) by updating symfony/console (v2.2.0 => 2.2.x-dev)
-
-======
-1.54.0
-======
-
-* New command dev:db:log by @sparcksoft
-* Fix for issue #88 MySQL Port number needed on db functions (dump/import) by @asalce

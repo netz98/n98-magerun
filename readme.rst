@@ -605,6 +605,15 @@ Publishes a page by page id and revision.
 
 Useful to automatically publish a page by a cron job.
 
+Ineractive Development Console
+""""""""""""""""""""""""""""""
+
+Opens PHP interactive shell with initialized Magento Admin-Store.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:console
+
 
 Toggle Template Hints
 """""""""""""""""""""
