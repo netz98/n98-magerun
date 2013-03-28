@@ -616,6 +616,8 @@ Opens PHP interactive shell with initialized Magento Admin-Store.
 
 See it in action: http://www.youtube.com/watch?v=zAWpRpawTGc
 
+The command is only available for PHP 5.4 users.
+
 
 Toggle Template Hints
 """""""""""""""""""""

@@ -1,5 +1,5 @@
 {
-    "hash": "8a09af788c871e5a1cca98b28501f474",
+    "hash": "bee51061f37656c9ede59815c47bc109",
     "packages": [
         {
             "name": "fzaninotto/faker",
@@ -18,7 +18,6 @@
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2012-10-29 02:32:06",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -44,7 +43,8 @@
                 "data",
                 "faker",
                 "fixtures"
-            ]
+            ],
+            "time": "2012-10-29 02:32:06"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -63,7 +63,6 @@
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2012-01-03 00:33:17",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -104,7 +103,8 @@
             "keywords": [
                 "json",
                 "schema"
-            ]
+            ],
+            "time": "2012-01-03 00:33:17"
         },
         {
             "name": "n98/junit-xml",
@@ -123,7 +123,6 @@
             "require-dev": {
                 "phpunit/phpunit": "3.7.7"
             },
-            "time": "2013-02-19 12:20:59",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -140,7 +139,8 @@
                     "email": "c.muench@netz98.de"
                 }
             ],
-            "description": "JUnit XML Document generation library"
+            "description": "JUnit XML Document generation library",
+            "time": "2013-02-19 12:20:59"
         },
         {
             "name": "seld/jsonlint",
@@ -159,7 +159,6 @@
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2013-02-11 23:03:12",
             "bin": [
                 "bin/jsonlint"
             ],
@@ -184,10 +183,11 @@
             "description": "JSON Linter",
             "keywords": [
                 "json",
-                "parser",
                 "linter",
+                "parser",
                 "validator"
-            ]
+            ],
+            "time": "2013-02-11 23:03:12"
         },
         {
             "name": "symfony/console",
@@ -196,18 +196,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "7dc8d04604e6592665132e503aafde729eaf5611"
+                "reference": "d146fc32a9cf13bc479820e515048298a34cd432"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/7dc8d04604e6592665132e503aafde729eaf5611",
-                "reference": "7dc8d04604e6592665132e503aafde729eaf5611",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/d146fc32a9cf13bc479820e515048298a34cd432",
+                "reference": "d146fc32a9cf13bc479820e515048298a34cd432",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2013-03-01 14:42:44",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -234,7 +233,8 @@
                 }
             ],
             "description": "Symfony Console Component",
-            "homepage": "http://symfony.com"
+            "homepage": "http://symfony.com",
+            "time": "2013-03-19 20:48:08"
         },
         {
             "name": "symfony/finder",
@@ -254,7 +254,6 @@
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2013-02-28 14:06:36",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -281,7 +280,8 @@
                 }
             ],
             "description": "Symfony Finder Component",
-            "homepage": "http://symfony.com"
+            "homepage": "http://symfony.com",
+            "time": "2013-02-28 14:06:36"
         },
         {
             "name": "symfony/process",
@@ -301,7 +301,6 @@
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2013-02-18 21:28:10",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -328,7 +327,8 @@
                 }
             ],
             "description": "Symfony Process Component",
-            "homepage": "http://symfony.com"
+            "homepage": "http://symfony.com",
+            "time": "2013-02-18 21:28:10"
         },
         {
             "name": "symfony/translation",
@@ -356,7 +356,6 @@
                 "symfony/config": "2.2.*",
                 "symfony/yaml": "2.2.*"
             },
-            "time": "2013-02-08 16:10:57",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -383,7 +382,8 @@
                 }
             ],
             "description": "Symfony Translation Component",
-            "homepage": "http://symfony.com"
+            "homepage": "http://symfony.com",
+            "time": "2013-02-08 16:10:57"
         },
         {
             "name": "symfony/validator",
@@ -417,7 +417,6 @@
                 "symfony/locale": "2.2.*",
                 "symfony/yaml": "2.2.*"
             },
-            "time": "2013-02-28 14:29:34",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -444,7 +443,8 @@
                 }
             ],
             "description": "Symfony Validator Component",
-            "homepage": "http://symfony.com"
+            "homepage": "http://symfony.com",
+            "time": "2013-02-28 14:29:34"
         },
         {
             "name": "symfony/yaml",
@@ -464,7 +464,6 @@
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2013-01-27 16:49:19",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -491,10 +490,13 @@
                 }
             ],
             "description": "Symfony Yaml Component",
-            "homepage": "http://symfony.com"
+            "homepage": "http://symfony.com",
+            "time": "2013-01-27 16:49:19"
         }
     ],
-    "packages-dev": null,
+    "packages-dev": [
+
+    ],
     "aliases": [
 
     ],
@@ -502,5 +504,11 @@
     "stability-flags": {
         "symfony/console": 20,
         "n98/junit-xml": 20
-    }
+    },
+    "platform": {
+        "php": ">=5.3.3"
+    },
+    "platform-dev": [
+
+    ]
 }

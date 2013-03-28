@@ -98,7 +98,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.56.0';
+    const APP_VERSION = '1.56.1';
     /**
      * @var string
      */
@@ -198,7 +198,6 @@ class Application extends BaseApplication
         $this->add(new SymlinksCommand());
         $this->add(new DevelopmentLogCommand());
         $this->add(new DevelopmentLogDbCommand());
-        $this->add(new DevelopmentConsoleCommand());
         $this->add(new ModuleListCommand());
         $this->add(new ModuleRewriteListCommand());
         $this->add(new ModuleRewriteConflictsCommand());
@@ -215,6 +214,10 @@ class Application extends BaseApplication
 
         $this->add(new MagentoCmsPagePublishCommand());
         $this->add(new MagentoCmsBannerToggleCommand());
+
+        if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
+            $this->add(new DevelopmentConsoleCommand());
+        }
 
         if ($this->isPharMode()) {
             $this->add(new SelfUpdateCommand());
