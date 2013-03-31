@@ -31,6 +31,7 @@ use N98\Magento\Command\Design\DemoNoticeCommand as DesignDemoNoticeCommand;
 use N98\Magento\Command\Developer\ConsoleCommand as DevelopmentConsoleCommand;
 use N98\Magento\Command\Developer\LogCommand as DevelopmentLogCommand;
 use N98\Magento\Command\Developer\LogDbCommand as DevelopmentLogDbCommand;
+use N98\Magento\Command\Developer\LogSizeCommand as DevelopmentLogSizeCommand;
 use N98\Magento\Command\Developer\Module\CreateCommand as ModuleCreateCommand;
 use N98\Magento\Command\Developer\Module\ListCommand as ModuleListCommand;
 use N98\Magento\Command\Developer\Module\Observer\ListCommand as ModuleObserverListCommand;
@@ -198,6 +199,7 @@ class Application extends BaseApplication
         $this->add(new SymlinksCommand());
         $this->add(new DevelopmentLogCommand());
         $this->add(new DevelopmentLogDbCommand());
+        $this->add(new DevelopmentLogSizeCommand());
         $this->add(new ModuleListCommand());
         $this->add(new ModuleRewriteListCommand());
         $this->add(new ModuleRewriteConflictsCommand());
