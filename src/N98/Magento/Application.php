@@ -38,6 +38,7 @@ use N98\Magento\Command\Developer\Module\Observer\ListCommand as ModuleObserverL
 use N98\Magento\Command\Developer\Module\Rewrite\ConflictsCommand as ModuleRewriteConflictsCommand;
 use N98\Magento\Command\Developer\Module\Rewrite\ListCommand as ModuleRewriteListCommand;
 use N98\Magento\Command\Developer\ProfilerCommand;
+use N98\Magento\Command\Developer\ReportCountCommand as DevelopmentReportCountCommand;
 use N98\Magento\Command\Developer\SymlinksCommand;
 use N98\Magento\Command\Developer\TemplateHintsBlocksCommand;
 use N98\Magento\Command\Developer\TemplateHintsCommand;
@@ -200,6 +201,7 @@ class Application extends BaseApplication
         $this->add(new DevelopmentLogCommand());
         $this->add(new DevelopmentLogDbCommand());
         $this->add(new DevelopmentLogSizeCommand());
+        $this->add(new DevelopmentReportCountCommand());
         $this->add(new ModuleListCommand());
         $this->add(new ModuleRewriteListCommand());
         $this->add(new ModuleRewriteConflictsCommand());
