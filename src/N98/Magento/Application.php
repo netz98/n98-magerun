@@ -133,7 +133,10 @@ class Application extends BaseApplication
      */
     protected $_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_1;
 
-    public function __construct($autoloader)
+    /**
+     * @param \Composer\Autoload\ClassLoader $autoloader
+     */
+    public function __construct($autoloader = null)
     {
         $this->autoloader = $autoloader;
         parent::__construct(self::APP_NAME, self::APP_VERSION);
@@ -147,8 +150,10 @@ class Application extends BaseApplication
         $this->config = $configLoader->toArray();
 
         $this->registerHelpers();
-        $this->registerCustomAutoloaders();
-        $this->registerCustomCommands();
+        if ($autoloader) {
+            $this->registerCustomAutoloaders();
+            $this->registerCustomCommands();
+        }
 
         $this->add(new GenerateLocalXmlConfigCommand());
         $this->add(new DatabaseDumpCommand());
@@ -373,9 +378,9 @@ class Application extends BaseApplication
 
     public function initMagento()
     {
-        if ($this->_magentoRootFolder !== null) {
+        if ($this->getMagentoRootFolder() !== null) {
             if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-                require_once $this->_magentoRootFolder . '/app/bootstrap.php';
+                require_once $this->getMagentoRootFolder() . '/app/bootstrap.php';
                 if (version_compare(\Mage::getVersion(), '2.0.0.0-dev42') >= 0) {
                     $params = array(
                         \Mage::PARAM_RUN_CODE => 'admin',
@@ -390,7 +395,7 @@ class Application extends BaseApplication
                         \Mage::app('admin');
                     }
             } else {
-                require_once $this->_magentoRootFolder . '/app/Mage.php';
+                require_once $this->getMagentoRootFolder() . '/app/Mage.php';
                 \Mage::app('admin');
             }
             return true;
