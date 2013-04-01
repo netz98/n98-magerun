@@ -59,6 +59,7 @@ class CreateCommand extends AbstractMagentoCommand
             ->addOption('add-blocks', null, InputOption::VALUE_NONE, 'Adds blocks')
             ->addOption('add-helpers', null, InputOption::VALUE_NONE, 'Adds helpers')
             ->addOption('add-models', null, InputOption::VALUE_NONE, 'Adds models')
+            ->addOption('add-setup', null, InputOption::VALUE_NONE, 'Adds SQL setup')
             ->addOption('add-all', null, InputOption::VALUE_NONE, 'Adds blocks, helpers and models')
             ->addOption('modman', null, InputOption::VALUE_NONE, 'Create all files in folder with a modman file.')
             ->addOption('add-readme', null, InputOption::VALUE_NONE, 'Adds a readme.md file to generated module')
@@ -112,6 +113,7 @@ class CreateCommand extends AbstractMagentoCommand
         $view->assign('createBlocks', $input->getOption('add-blocks'));
         $view->assign('createModels', $input->getOption('add-models'));
         $view->assign('createHelpers', $input->getOption('add-helpers'));
+        $view->assign('createSetup', $input->getOption('add-setup'));
         $view->assign('authorName', $input->getOption('author-name'));
         $view->assign('authorEmail', $input->getOption('author-email'));
         $view->assign('description', $input->getOption('description'));
@@ -161,6 +163,18 @@ class CreateCommand extends AbstractMagentoCommand
         if ($input->getOption('add-models')) {
             mkdir($this->moduleDirectory . '/Model');
             $output->writeln('<info>Created directory: <comment>' .  $this->moduleDirectory . '/Model' .'<comment></info>');
+        }
+
+        // Create SQL and Data folder
+        if ($input->getOption('add-setup')) {
+            $sqlSetupFolder = $this->moduleDirectory . '/sql/' . strtolower($this->vendorNamespace) . '_' . strtolower($this->moduleName) . '_setup';
+            mkdir($sqlSetupFolder, 0777, true);
+            $output->writeln('<info>Created directory: <comment>' . $sqlSetupFolder . '<comment></info>');
+
+            $dataSetupFolder = $this->moduleDirectory . '/data/' . strtolower($this->vendorNamespace) . '_' . strtolower($this->moduleName) . '_setup';
+            mkdir($dataSetupFolder, 0777, true);
+            $output->writeln('<info>Created directory: <comment>' . $dataSetupFolder . '<comment></info>');
+
         }
     }
 
