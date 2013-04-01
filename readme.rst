@@ -619,8 +619,8 @@ See it in action: http://www.youtube.com/watch?v=zAWpRpawTGc
 The command is only available for PHP 5.4 users.
 
 
-Toggle Template Hints
-"""""""""""""""""""""
+Template Hints
+""""""""""""""
 
 Toggle debug template hints settings of a store
 
@@ -628,8 +628,8 @@ Toggle debug template hints settings of a store
 
    $ n98-magerun.phar dev:template-hints [store_code]
 
-Toggle Template Hints Blocks
-""""""""""""""""""""""""""""
+Template Hints Blocks
+"""""""""""""""""""""
 
 Toggle debug template hints blocks settings of a store
 
@@ -637,8 +637,8 @@ Toggle debug template hints blocks settings of a store
 
    $ n98-magerun.phar dev:template-hints-blocks [store_code]
 
-Toggle Inline Translation
-"""""""""""""""""""""""""
+Inline Translation
+""""""""""""""""""
 
 Toggle settings for shop frontend:
 
@@ -652,8 +652,8 @@ Toggle for admin area:
 
    $ n98-magerun.phar dev:translate:admin
 
-Toggle Profiler
-"""""""""""""""
+Profiler
+""""""""
 
 Toggle profiler for debugging a store:
 
@@ -661,8 +661,8 @@ Toggle profiler for debugging a store:
 
    $ n98-magerun.phar dev:profiler [--on] [--off] [--global] [store]
 
-Toggle Development Logs
-"""""""""""""""""""""""
+Development Logs
+""""""""""""""""
 
 Activate/Deactivate system.log and exception.log for a store:
 
@@ -670,14 +670,27 @@ Activate/Deactivate system.log and exception.log for a store:
 
    $ n98-magerun.phar dev:log [--on] [--off] [--global] [store]
 
-Toggle Development Database Query Logging
-"""""""""""""""""""""""
+Show size of a log file:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:log:size [log_filename]
 
 Activate/Deactivate MySQL query logging via lib/Varien/Db/Adapter/Pdo/Mysql.php
 
 .. code-block:: sh
 
    $ n98-magerun.phar dev:log:db [--on] [--off]
+
+
+Reports
+"""""""
+
+Prints count of reports in var/reports folder.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:report:count
 
 Toggle Symlinks
 """""""""""""""
