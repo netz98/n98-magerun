@@ -902,6 +902,15 @@ Uninstalls Magento: Drops your database and recursive deletes installation folde
 
 **Please be careful: This removes all data from your installation.**
 
+n98-magerun Shell
+"""""""""""""""""
+
+If you need autocompletion for all n98-magerun commands you can start with "shell command".
+
+.. code-block:: sh
+
+   $ n98-magerun.phar shell
+
 
 Autocompletion
 --------------

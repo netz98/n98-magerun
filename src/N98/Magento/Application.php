@@ -57,6 +57,7 @@ use N98\Magento\Command\MagentoConnect\InstallExtensionCommand as MagentoConnect
 use N98\Magento\Command\MagentoConnect\ListExtensionsCommand as MagentoConnectionListExtensionsCommand;
 use N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand as MagentoConnectionUpgradeExtensionCommand;
 use N98\Magento\Command\OpenBrowserCommand;
+use N98\Magento\Command\ShellCommand;
 use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
 use N98\Magento\Command\System\CheckCommand as SystemCheckCommand;
 use N98\Magento\Command\System\Cron\HistoryCommand as SystemCronHistoryCommand;
@@ -100,7 +101,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.56.1';
+    const APP_VERSION = '1.57.0';
     /**
      * @var string
      */
@@ -207,6 +208,7 @@ class Application extends BaseApplication
         $this->add(new ModuleRewriteConflictsCommand());
         $this->add(new ModuleCreateCommand());
         $this->add(new ModuleObserverListCommand());
+        $this->add(new ShellCommand());
 
         if (!OperatingSystem::isWindows()) {
             $this->add(new MagentoConnectionListExtensionsCommand());
@@ -218,10 +220,7 @@ class Application extends BaseApplication
 
         $this->add(new MagentoCmsPagePublishCommand());
         $this->add(new MagentoCmsBannerToggleCommand());
-
-        if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
-            $this->add(new DevelopmentConsoleCommand());
-        }
+        $this->add(new DevelopmentConsoleCommand());
 
         if ($this->isPharMode()) {
             $this->add(new SelfUpdateCommand());
@@ -512,4 +511,23 @@ class Application extends BaseApplication
         }
         return $input;
     }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     */
+    public function run(InputInterface $input = null, OutputInterface $output = null)
+    {
+        $return = parent::run($input, $output);
+
+        // Fix for no return values -> used in interactive shell to prevent error output
+        if ($return === null) {
+            return 0;
+        }
+
+        return $return;
+    }
+
+
 }

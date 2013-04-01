@@ -29,10 +29,13 @@ class ConsoleCommand extends AbstractMagentoCommand
             2 => STDERR
         );
 
-        $prependFile = __DIR__ . '/../../../../../res/dev/console_auto_prepend.php';
-        $exec = 'php -a -d auto_prepend_file=' . escapeshellarg($prependFile);
+        $prependFile = realpath(__DIR__ . '/../../../../../res/dev/console_auto_prepend.php');
+        $exec = '/usr/bin/env php -d auto_prepend_file=' . escapeshellarg($prependFile) . ' -a';
 
         $pipes = array();
-        proc_open($exec, $descriptorSpec, $pipes);
+        $process = proc_open($exec, $descriptorSpec, $pipes);
+        if (!is_resource($process)) {
+            throw new RuntimeException('Cannot init interactive shell');
+        }
     }
 }
