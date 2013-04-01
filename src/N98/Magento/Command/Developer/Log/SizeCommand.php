@@ -1,6 +1,6 @@
 <?php
 
-namespace N98\Magento\Command\Developer;
+namespace N98\Magento\Command\Developer\Log;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -9,15 +9,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class LogSizeCommand extends AbstractMagentoCommand
+class SizeCommand extends AbstractLogCommand
 {
-    protected $_input = null;
-    protected $_output = null;
-    
     protected function configure()
     {
         $this->setName('dev:log:size')
-             ->addArgument('log_filename', InputArgument::REQUIRED, 'Name of log file.')
+             ->addArgument('log_filename', InputArgument::OPTIONAL, 'Name of log file.')
              ->setDescription('Get size of log file');
     }
     
@@ -28,26 +25,27 @@ class LogSizeCommand extends AbstractMagentoCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->_input = $input;
-        $this->_output = $output;
-
         $this->detectMagento($output);
-        $this->initMagento();
-        
-        $dir = \Mage::getBaseDir('log');
-        $fileName = $input->getArgument('log_filename');
-        $path = $dir . DS . $fileName;
-        
-        if (file_exists($path)) {
-            $size = @filesize($path);
-            
-            if ($size === false) {
-                throw new \RuntimeException('Couldn\t detect filesize.');
+        if ($this->initMagento()) {
+
+            $fileName = $input->getArgument('log_filename');
+            if ($fileName === null) {
+                $fileName = $this->askLogFile($output);
             }
-        } else {
-            $size = 0;
+
+            $path = $this->getLogDir() . DIRECTORY_SEPARATOR . $fileName;
+
+            if ($this->logfileExists($fileName)) {
+                $size = @filesize($path);
+
+                if ($size === false) {
+                    throw new \RuntimeException('Couldn\t detect filesize.');
+                }
+            } else {
+                $size = 0;
+            }
+
+            $output->writeln("$size");
         }
-        
-        $output->writeln("$size");
     }
 }

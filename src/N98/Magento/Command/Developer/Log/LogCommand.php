@@ -1,6 +1,6 @@
 <?php
 
-namespace N98\Magento\Command\Developer;
+namespace N98\Magento\Command\Developer\Log;
 
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
 

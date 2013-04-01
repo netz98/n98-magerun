@@ -1,6 +1,6 @@
 <?php
 
-namespace N98\Magento\Command\Developer;
+namespace N98\Magento\Command\Developer\Log;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\Cache\ClearCommand as ClearCacheCommand;
@@ -10,11 +10,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class LogDbCommand extends AbstractMagentoCommand
+class DbCommand extends AbstractLogCommand
 {
-    protected $_input = null;
-    protected $_output = null;
-
     protected function configure()
     {
         $this->setName('dev:log:db')
@@ -23,10 +20,12 @@ class LogDbCommand extends AbstractMagentoCommand
              ->setDescription('Turn on/off database query logging');
     }
 
+    /**
+     * @return string
+     */
     protected function  _getVarienAdapterPhpFile()
     {
-        $varienAdapterPhpFile = $this->_magentoRootFolder . '/lib/Varien/Db/Adapter/Pdo/Mysql.php';
-        return $varienAdapterPhpFile;
+        return $this->_magentoRootFolder . '/lib/Varien/Db/Adapter/Pdo/Mysql.php';
     }
 
     /**
@@ -36,16 +35,13 @@ class LogDbCommand extends AbstractMagentoCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->_input = $input;
-        $this->_output = $output;
-
         $this->detectMagento($output);
         $this->initMagento();
 
         $output->writeln("<info>Looking in " . $this->_getVarienAdapterPhpFile() . "</info>");
 
-        $this->_replaceVariable($input, '$_debug');
-        $this->_replaceVariable($input, '$_logAllQueries');
+        $this->_replaceVariable($input, $output, '$_debug');
+        $this->_replaceVariable($input, $output, '$_logAllQueries');
 
         $output->writeln("<info>Done. You can tail <comment>" . $this->_getDebugLogFilename() . "</comment></info>");
     }
@@ -59,7 +55,14 @@ class LogDbCommand extends AbstractMagentoCommand
         return 'var/debug/pdo_mysql.log';
     }
 
-    protected function _replaceVariable($input, $variable)
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface  $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param string                                         $variable
+     * @return void
+     * @throws \Exception
+     */
+    protected function _replaceVariable($input, $output, $variable)
     {
         $varienAdapterPhpFile = $this->_getVarienAdapterPhpFile();
         $contents = file_get_contents($varienAdapterPhpFile);
@@ -79,7 +82,7 @@ class LogDbCommand extends AbstractMagentoCommand
             $newValue = ($currentValue == 'false') ? 'true' : 'false';
         }
 
-        $this->_output->writeln("<info>Changed <comment>" . $variable . "</comment> to <comment>" . $newValue  . "</comment></info>");
+        $output->writeln("<info>Changed <comment>" . $variable . "</comment> to <comment>" . $newValue  . "</comment></info>");
 
         $contents = preg_replace($debugLinePattern, "protected " . $variable . " = " . $newValue, $contents);
         file_put_contents($varienAdapterPhpFile, $contents);
