@@ -28,6 +28,7 @@ Build phar with:
         <exclude name=".svn/**" />
         <exclude name="**/Tests/**" />
         <exclude name="**/tests/**" />
+        <exclude name="**/doc/**" />
         <exclude name="fzaninotto/faker/src/Faker/ORM" />
     </fileset>
 

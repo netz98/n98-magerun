@@ -17,7 +17,8 @@
         "justinrainbow/json-schema": "1.1.*",
         "seld/jsonlint": "1.*",
         "n98/junit-xml": "dev-master",
-        "fzaninotto/faker": "1.1.0"
+        "fzaninotto/faker": "1.1.0",
+        "composer/composer": "dev-master"
     },
     "autoload": {
         "psr-0": {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Xanido\Console\Helper;
+namespace N98\Util\Console\Helper;
 
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use Symfony\Component\Console\Output\OutputInterface;

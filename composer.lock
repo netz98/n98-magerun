@@ -1,6 +1,75 @@
 {
-    "hash": "bee51061f37656c9ede59815c47bc109",
+    "hash": "bcb5efb00479036f596301ebe741be0a",
     "packages": [
+        {
+            "name": "composer/composer",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/composer.git",
+                "reference": "83084eedf93ebd0d04db42e51f690eccbfc0854f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/composer/zipball/83084eedf93ebd0d04db42e51f690eccbfc0854f",
+                "reference": "83084eedf93ebd0d04db42e51f690eccbfc0854f",
+                "shasum": ""
+            },
+            "require": {
+                "justinrainbow/json-schema": "1.1.*",
+                "php": ">=5.3.2",
+                "seld/jsonlint": "1.*",
+                "symfony/console": ">=2.1,<3.0",
+                "symfony/finder": ">=2.1,<3.0",
+                "symfony/process": ">=2.1,<3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=3.7.10.0,<3.8"
+            },
+            "suggest": {
+                "ext-openssl": "Enabling the openssl extension allows you to access https URLs for repositories and packages",
+                "ext-zip": "Enabling the zip extension allows you to unzip archives, and allows gzip compression of all internet traffic"
+            },
+            "bin": [
+                "bin/composer"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Composer": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Nils Adermann",
+                    "email": "naderman@naderman.de",
+                    "homepage": "http://www.naderman.de"
+                }
+            ],
+            "description": "Dependency Manager",
+            "homepage": "http://getcomposer.org/",
+            "keywords": [
+                "autoload",
+                "dependency",
+                "package"
+            ],
+            "time": "2013-04-01 10:18:27"
+        },
         {
             "name": "fzaninotto/faker",
             "version": "v1.1.0",
@@ -76,26 +145,20 @@
                 {
                     "name": "Igor Wiedler",
                     "email": "igor@wiedler.ch",
-                    "homepage": "http://wiedler.ch/igor/",
-                    "role": null
+                    "homepage": "http://wiedler.ch/igor/"
                 },
                 {
                     "name": "Bruno Prieto Reis",
-                    "email": "bruno.p.reis@gmail.com",
-                    "homepage": null,
-                    "role": null
+                    "email": "bruno.p.reis@gmail.com"
                 },
                 {
                     "name": "Justin Rainbow",
-                    "email": "justin.rainbow@gmail.com",
-                    "homepage": null,
-                    "role": null
+                    "email": "justin.rainbow@gmail.com"
                 },
                 {
                     "name": "Robert Schönthal",
                     "email": "seroscho@googlemail.com",
-                    "homepage": "http://digitalkaoz.net",
-                    "role": null
+                    "homepage": "http://digitalkaoz.net"
                 }
             ],
             "description": "A library to validate a json schema.",
@@ -503,7 +566,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "symfony/console": 20,
-        "n98/junit-xml": 20
+        "n98/junit-xml": 20,
+        "composer/composer": 20
     },
     "platform": {
         "php": ">=5.3.3"
