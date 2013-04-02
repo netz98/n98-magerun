@@ -1,4 +1,13 @@
 ======
+1.58.0
+======
+
+* Issue #87 - Add option to create magento module with sql folder
+   - new option --add-setup for dev:module:create command
+* dev:log:size command - Do not prompt if no log file exists.
+* Moved composer from src folder in vendor (update with composer.phar)
+
+======
 1.57.0
 ======
 

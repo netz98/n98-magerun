@@ -50,12 +50,18 @@ class AbstractLogCommand extends AbstractMagentoCommand
         }
         $question[] = '<question>Please select a log file: </question>';
 
-        return $this->getHelperSet()->get('dialog')->askAndValidate($output, $question, function($typeInput) use ($files) {
+        if (count($logFiles) == 0) {
+            return '';
+        }
+
+        $logFile = $this->getHelperSet()->get('dialog')->askAndValidate($output, $question, function($typeInput) use ($files) {
             if (!isset($files[$typeInput - 1])) {
                 throw new \InvalidArgumentException('Invalid file');
             }
 
             return $files[$typeInput - 1];
         });
+
+        return $logFile;
     }
 }

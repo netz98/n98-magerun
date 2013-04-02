@@ -17,7 +17,12 @@
         "justinrainbow/json-schema": "1.1.*",
         "seld/jsonlint": "1.*",
         "n98/junit-xml": "dev-master",
-        "fzaninotto/faker": "1.1.0"
+        "fzaninotto/faker": "1.1.0",
+        "composer/composer": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.19",
+        "phpunit/phpunit-story": "1.0.1"
     },
     "autoload": {
         "psr-0": {

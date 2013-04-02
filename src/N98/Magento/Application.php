@@ -29,8 +29,8 @@ use N98\Magento\Command\Database\ImportCommand as DatabaseImportCommand;
 use N98\Magento\Command\Database\InfoCommand as DatabaseInfoCommand;
 use N98\Magento\Command\Design\DemoNoticeCommand as DesignDemoNoticeCommand;
 use N98\Magento\Command\Developer\ConsoleCommand as DevelopmentConsoleCommand;
-use N98\Magento\Command\Developer\Log\LogCommand as DevelopmentLogCommand;
 use N98\Magento\Command\Developer\Log\DbCommand as DevelopmentLogDbCommand;
+use N98\Magento\Command\Developer\Log\LogCommand as DevelopmentLogCommand;
 use N98\Magento\Command\Developer\Log\SizeCommand as DevelopmentLogSizeCommand;
 use N98\Magento\Command\Developer\Module\CreateCommand as ModuleCreateCommand;
 use N98\Magento\Command\Developer\Module\ListCommand as ModuleListCommand;
@@ -57,8 +57,8 @@ use N98\Magento\Command\MagentoConnect\InstallExtensionCommand as MagentoConnect
 use N98\Magento\Command\MagentoConnect\ListExtensionsCommand as MagentoConnectionListExtensionsCommand;
 use N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand as MagentoConnectionUpgradeExtensionCommand;
 use N98\Magento\Command\OpenBrowserCommand;
-use N98\Magento\Command\ShellCommand;
 use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
+use N98\Magento\Command\ShellCommand;
 use N98\Magento\Command\System\CheckCommand as SystemCheckCommand;
 use N98\Magento\Command\System\Cron\HistoryCommand as SystemCronHistoryCommand;
 use N98\Magento\Command\System\Cron\ListCommand as SystemCronListCommand;
@@ -73,6 +73,7 @@ use N98\Magento\Command\System\Url\ListCommand as SystemUrlListCommand;
 use N98\Magento\Command\System\Website\ListCommand as SystemWebsiteListCommand;
 use N98\Magento\EntryPoint\Magerun as MagerunEntryPoint;
 use N98\Util\Console\Helper\ParameterHelper;
+use N98\Util\Console\Helper\TableHelper;
 use N98\Util\OperatingSystem;
 use N98\Util\String;
 use Symfony\Component\Console\Application as BaseApplication;
@@ -82,7 +83,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
-use Xanido\Console\Helper\TableHelper;
 
 class Application extends BaseApplication
 {
@@ -101,7 +101,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.57.0';
+    const APP_VERSION = '1.58.0';
     /**
      * @var string
      */
@@ -133,7 +133,10 @@ class Application extends BaseApplication
      */
     protected $_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_1;
 
-    public function __construct($autoloader)
+    /**
+     * @param \Composer\Autoload\ClassLoader $autoloader
+     */
+    public function __construct($autoloader = null)
     {
         $this->autoloader = $autoloader;
         parent::__construct(self::APP_NAME, self::APP_VERSION);
@@ -147,8 +150,10 @@ class Application extends BaseApplication
         $this->config = $configLoader->toArray();
 
         $this->registerHelpers();
-        $this->registerCustomAutoloaders();
-        $this->registerCustomCommands();
+        if ($autoloader) {
+            $this->registerCustomAutoloaders();
+            $this->registerCustomCommands();
+        }
 
         $this->add(new GenerateLocalXmlConfigCommand());
         $this->add(new DatabaseDumpCommand());
@@ -373,9 +378,9 @@ class Application extends BaseApplication
 
     public function initMagento()
     {
-        if ($this->_magentoRootFolder !== null) {
+        if ($this->getMagentoRootFolder() !== null) {
             if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-                require_once $this->_magentoRootFolder . '/app/bootstrap.php';
+                require_once $this->getMagentoRootFolder() . '/app/bootstrap.php';
                 if (version_compare(\Mage::getVersion(), '2.0.0.0-dev42') >= 0) {
                     $params = array(
                         \Mage::PARAM_RUN_CODE => 'admin',
@@ -390,7 +395,7 @@ class Application extends BaseApplication
                         \Mage::app('admin');
                     }
             } else {
-                require_once $this->_magentoRootFolder . '/app/Mage.php';
+                require_once $this->getMagentoRootFolder() . '/app/Mage.php';
                 \Mage::app('admin');
             }
             return true;

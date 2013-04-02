@@ -27,5 +27,14 @@
             </<?php echo strtolower($vendorNamespace) ?>_<?php echo strtolower($moduleName) ?>>
         </models>
 <?php endif; ?>
+<?php if ($createSetup): ?>
+        <resources>
+            <<?php echo strtolower($vendorNamespace) ?>_<?php echo strtolower($moduleName) ?>_setup>
+                <setup>
+                    <module><?php echo $vendorNamespace ?>_<?php echo $moduleName ?></module>
+                </setup>
+            </<?php echo strtolower($vendorNamespace) ?>_<?php echo strtolower($moduleName) ?>_setup>
+        </resources>
+<?php endif; ?>
     </global>
 </config>

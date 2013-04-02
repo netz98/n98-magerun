@@ -31,7 +31,7 @@ class CleanCommand extends AbstractCacheCommand
             foreach(array_keys($allTypes) as $type) {
                 if ($input->getArgument('type') == '' || $input->getArgument('type') == $type) {
                     \Mage::app()->getCacheInstance()->cleanType($type);
-                    $output->writeln('<info>' . $type . ' cache cleared</info>');
+                    $output->writeln('<info>' . $type . ' cache cleaned</info>');
                 }
             }
         }

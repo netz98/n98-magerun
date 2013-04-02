@@ -28,13 +28,18 @@ Build phar with:
         <exclude name=".svn/**" />
         <exclude name="**/Tests/**" />
         <exclude name="**/tests/**" />
+        <exclude name="**/doc/**" />
         <exclude name="fzaninotto/faker/src/Faker/ORM" />
+        <exclude name="phpunit/**" />
     </fileset>
 
     <target name="dist">
-    <exec command="composer.phar install" dir="${project.basedir}" passthru="true" />
+        <exec command="composer.phar install" dir="${project.basedir}" passthru="true" />
         <phingcall target="dist_unix" />
         <phingcall target="dist_win" />
+
+        <!-- Revert dev settings -->
+        <exec command="composer.phar install --dev" dir="${project.basedir}" passthru="true" />
     </target>
 
     <target name="dist_unix">

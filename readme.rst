@@ -714,7 +714,7 @@ Creates an empty module and registers it in current magento shop:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:module:create [--add-blocks] [--add-helpers] [--add-models] [--add-all] [--modman] [--add-readme] [--add-composer] [--author-name[="..."]] [--author-email[="..."]] [--description[="..."]] vendorNamespace moduleName [codePool]
+   $ n98-magerun.phar dev:module:create [--add-blocks] [--add-helpers] [--add-models] [--add-setup] [--add-all] [--modman] [--add-readme] [--add-composer] [--author-name[="..."]] [--author-email[="..."]] [--description[="..."]] vendorNamespace moduleName [codePool]
 
 Code-Pool defaults to `local`.
 
