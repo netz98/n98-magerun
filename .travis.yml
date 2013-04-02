@@ -1,0 +1,19 @@
+language: php
+
+env:
+  - DB=mysql
+
+php:
+  - 5.3
+  - 5.4
+
+before_script:
+  - curl -s http://getcomposer.org/installer | php
+  - php composer.phar install --dev
+  - git clone magento https://github.com/LokeyCoding/magento-mirror.git -b magento-1.7
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS `magento_travis`;'
+  - php -f install.php -- --license_agreement_accepted yes --locale en_US --timezone Europe/Berlin --default_currency EUR --db_host localhost --db_name magento_travis --db_user root --db_pass "" --url http://travis.magento.local/ --skip_url_validation yes --use_rewrites yes --use_secure no --secure_base_url --use_secure_admin no --admin_firstname John --admin_lastname Doe --admin_email admin@example.com --admin_username admin --admin_password password123
+  - setenv N98_MAGERUN_TEST_MAGENTO_ROOT=./magento
+  -
+
+script: vendor/bin/phpunit
