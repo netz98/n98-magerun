@@ -4,6 +4,9 @@ netz98 magerun CLI tools
 
 The n98 magerun cli tools provides some handy tools to work with Magento from command line.
 
+.. image:: https://api.travis-ci.org/netz98/n98-magerun.png
+   :target: https://travis-ci.org/netz98/n98-magerun
+
 Compatibility
 -------------
 The tools are currently only tested with PHP 5.3.10 within Ubuntu 12.04 Linux and on Mac OS X.
