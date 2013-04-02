@@ -1,5 +1,10 @@
 language: php
 
+branches:
+  only:
+    - master
+    - develop
+
 env:
   - DB=mysql
 
