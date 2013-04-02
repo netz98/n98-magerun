@@ -16,6 +16,6 @@ class CleanCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $this->assertRegExp('/config cache cleaned/', $commandTester->getDisplay());
+        $this->assertContains('config cache cleaned', $commandTester->getDisplay());
     }
 }
