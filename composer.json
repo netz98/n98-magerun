@@ -22,7 +22,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.19",
-        "phpunit/phpunit-story": "1.0.1"
+        "phpunit/phpunit-story": "1.0.1",
+        "phpunit/phpunit-invoker": "1.1.2"
     },
     "autoload": {
         "psr-0": {
