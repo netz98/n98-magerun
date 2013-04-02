@@ -1,5 +1,5 @@
 {
-    "hash": "98669dd3b9a0daf231da2b45e78012c2",
+    "hash": "ec06017b4356658d9ac1bdc51dfc1a00",
     "packages": [
         {
             "name": "composer/composer",
@@ -7,12 +7,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "83084eedf93ebd0d04db42e51f690eccbfc0854f"
+                "reference": "fc54a48b522291818f451fd0a82e613abceac98a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/83084eedf93ebd0d04db42e51f690eccbfc0854f",
-                "reference": "83084eedf93ebd0d04db42e51f690eccbfc0854f",
+                "url": "https://api.github.com/repos/composer/composer/zipball/fc54a48b522291818f451fd0a82e613abceac98a",
+                "reference": "fc54a48b522291818f451fd0a82e613abceac98a",
                 "shasum": ""
             },
             "require": {
@@ -68,7 +68,7 @@
                 "dependency",
                 "package"
             ],
-            "time": "2013-04-01 10:18:27"
+            "time": "2013-04-02 09:32:11"
         },
         {
             "name": "fzaninotto/faker",
@@ -655,6 +655,52 @@
                 "iterator"
             ],
             "time": "2012-10-11 04:44:38"
+        },
+        {
+            "name": "phpunit/php-invoker",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "git://github.com/sebastianbergmann/php-invoker.git",
+                "reference": "1.1.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/sebastianbergmann/php-invoker/zipball/1.1.2",
+                "reference": "1.1.2",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pcntl": "*",
+                "php": ">=5.2.7",
+                "phpunit/php-timer": ">=1.0.1@stable"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "PHP/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                ""
+            ],
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sb@sebastian-bergmann.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "Utility class for invoking callables with a timeout.",
+            "homepage": "http://www.phpunit.de/",
+            "keywords": [
+                "process"
+            ],
+            "time": "2012-10-05 09:20:45"
         },
         {
             "name": "phpunit/php-text-template",
