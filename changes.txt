@@ -5,6 +5,7 @@
 * Fix for issue #95 - customer:create enforces password with at least one digit for frontend customers
 * db:dump command -> Added new --force and --print-only-filename options.
 * Added more unit test tests
+* Fixed warning in cron:history command.
 
 ======
 1.58.0
