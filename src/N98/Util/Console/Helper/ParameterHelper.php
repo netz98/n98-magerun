@@ -2,15 +2,14 @@
 
 namespace N98\Util\Console\Helper;
 
+use N98\Util\Validator\FakeMetadataFactory;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Translation\Translator;
-use Symfony\Component\Validator\Tests\Fixtures\FakeMetadataFactory;
 use Symfony\Component\Validator\Validator;
 use Symfony\Component\Validator\Constraints;
-use Symfony\Component\Validator\Mapping\BlackholeMetadataFactory;
 use Symfony\Component\Validator\ConstraintValidatorFactory;
 
 /**

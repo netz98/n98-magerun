@@ -1,4 +1,10 @@
 ======
+1.59.1
+======
+
+* Maintenance release for missing class in phar file.
+
+======
 1.59.0
 ======
 
