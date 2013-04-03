@@ -20,9 +20,11 @@ class DumpCommand extends AbstractDatabaseCommand
             ->addArgument('filename', InputArgument::OPTIONAL, 'Dump filename')
             ->addOption('add-time', null, InputOption::VALUE_NONE, 'Adds time to filename (only if filename was not provided)')
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysqldump command. Do not execute')
+            ->addOption('print-only-filename', null, InputOption::VALUE_NONE, 'Execute and prints not output expected the dump filename')
             ->addOption('no-single-transaction', null, InputOption::VALUE_NONE, 'Do not use single-transaction (not recommended, this is blocking)')
             ->addOption('stdout', null, InputOption::VALUE_NONE, 'Dump to stdout')
             ->addOption('strip', null, InputOption::VALUE_OPTIONAL, 'Tables to strip (dump only structure of those tables)')
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not prompt if all options are defined')
             ->addDeprecatedAlias('database:dump', 'Please use db:dump')
             ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml');
     }
@@ -146,7 +148,7 @@ class DumpCommand extends AbstractDatabaseCommand
     {
         $this->detectDbSettings($output);
 
-        if (!$input->getOption('stdout')) {
+        if (!$input->getOption('stdout') && !$input->getOption('only-command') && !$input->getOption('print-only-filename')) {
             $this->writeSection($output, 'Dump MySQL Database');
         }
 
@@ -156,7 +158,11 @@ class DumpCommand extends AbstractDatabaseCommand
             $defaultName = $this->dbSettings['dbname']
                          . ($input->getOption('add-time') ? $timeStamp : '')
                          . '.sql';
-            $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question> [<comment>' . $defaultName . '</comment>]', $defaultName);
+            if (!$input->getOption('force')) {
+                $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question> [<comment>' . $defaultName . '</comment>]', $defaultName);
+            } else {
+                $fileName = $defaultName;
+            }
         } else {
             if (($input->getOption('add-time'))) {
                 $extension_pos = strrpos($fileName, '.'); // find position of the last dot, so where the extension starts
@@ -174,7 +180,7 @@ class DumpCommand extends AbstractDatabaseCommand
 
         if ($input->getOption('strip')) {
             $stripTables = $this->resolveTables(explode(' ', $input->getOption('strip')));
-            if (!$input->getOption('stdout')) {
+            if (!$input->getOption('stdout') && !$input->getOption('only-command') && !$input->getOption('print-only-filename')) {
                 $output->writeln('<comment>No-data export for: <info>' . implode(' ',$stripTables) . '</info></comment>');
             }
         } else {
@@ -219,12 +225,12 @@ class DumpCommand extends AbstractDatabaseCommand
             $execs[] = $exec;
         }
 
-        if ($input->getOption('only-command')) {
+        if ($input->getOption('only-command') && !$input->getOption('print-only-filename')) {
             foreach($execs as $exec) {
                 $output->writeln($exec);
             }
         } else {
-            if (!$input->getOption('stdout')) {
+            if (!$input->getOption('stdout') && !$input->getOption('only-command') && !$input->getOption('print-only-filename')) {
                 $output->writeln('<comment>Start dumping database <info>' . $this->dbSettings['dbname'] . '</info> to file <info>' . $fileName . '</info>');
             }
 
@@ -240,9 +246,14 @@ class DumpCommand extends AbstractDatabaseCommand
                     return;
                 }
             }
-            if (!$input->getOption('stdout')) {
+
+            if (!$input->getOption('stdout') && !$input->getOption('print-only-filename')) {
                 $output->writeln('<info>Finished</info>');
             }
+        }
+
+        if ($input->getOption('print-only-filename')) {
+            $output->writeln($fileName);
         }
     }
 
