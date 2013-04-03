@@ -185,10 +185,13 @@ Arguments:
     filename        Dump filename
 
 Options:
-    --add-time      Adds time to filename
-    --only-command  Print only mysqldump command. Do not execute
-    --stdout        Dump to stdout
-    --strip         Tables to strip (dump only structure of those tables)
+     --add-time               Adds time to filename (only if filename was not provided)
+     --only-command           Print only mysqldump command. Do not execute
+     --print-only-filename    Execute and prints not output expected the dump filename
+     --no-single-transaction  Do not use single-transaction (not recommended, this is blocking)
+     --stdout                 Dump to stdout
+     --strip                  Tables to strip (dump only structure of those tables)
+     --force (-f)             Do not prompt if all options are defined
 
 .. code-block:: sh
 
