@@ -7,6 +7,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Translation\Translator;
+use Symfony\Component\Validator\Tests\Fixtures\FakeMetadataFactory;
 use Symfony\Component\Validator\Validator;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\BlackholeMetadataFactory;
@@ -141,14 +142,28 @@ class ParameterHelper extends AbstractHelper
      * @param string $argumentName
      * @return string
      */
-    public function askPassword(InputInterface $input, OutputInterface $output, $argumentName = 'password')
+    public function askPassword(
+        InputInterface $input,
+        OutputInterface $output,
+        $argumentName = 'password',
+        $needDigits = true
+    )
     {
+        $validators = array();
+
+        if ($needDigits) {
+            $regex = array(
+                'pattern' => '/^(?=.*\d)(?=.*[a-zA-Z])/',
+                'message' => 'Password must contain letters and at least one digit'
+            );
+            $validators[] = new Constraints\Regex($regex);
+        }
+
+        $validators[] = new Constraints\Length(array('min' => 6));
+
         $constraints = new Constraints\Collection(
             array(
-                'password' => array(
-                    new Constraints\Regex(array('pattern' => '/^(?=.*\d)(?=.*[a-zA-Z])/', 'message' => 'Password must contain letters and at least one digit')),
-                    new Constraints\MinLength(array('limit' => 6))
-                )
+                'password' => $validators
             )
         );
 
@@ -198,7 +213,7 @@ class ParameterHelper extends AbstractHelper
     {
         if ($this->validator == null) {
             $factory = new ConstraintValidatorFactory();
-            $this->validator = new Validator(new BlackholeMetadataFactory(), $factory, new Translator('en'));
+            $this->validator = new Validator(new FakeMetadataFactory(), $factory, new Translator('en'));
         }
 
         return $this->validator;
