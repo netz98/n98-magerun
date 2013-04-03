@@ -20,7 +20,7 @@ class DumpCommand extends AbstractDatabaseCommand
             ->addArgument('filename', InputArgument::OPTIONAL, 'Dump filename')
             ->addOption('add-time', null, InputOption::VALUE_NONE, 'Adds time to filename (only if filename was not provided)')
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysqldump command. Do not execute')
-            ->addOption('print-only-filename', null, InputOption::VALUE_NONE, 'Execute and prints not output expected the dump filename')
+            ->addOption('print-only-filename', null, InputOption::VALUE_NONE, 'Execute and prints not output except the dump filename')
             ->addOption('no-single-transaction', null, InputOption::VALUE_NONE, 'Do not use single-transaction (not recommended, this is blocking)')
             ->addOption('stdout', null, InputOption::VALUE_NONE, 'Dump to stdout')
             ->addOption('strip', null, InputOption::VALUE_OPTIONAL, 'Tables to strip (dump only structure of those tables)')
