@@ -1,4 +1,10 @@
 ======
+1.59.0
+======
+
+* Fix for issue #95 - customer:create enforces password with at least one digit for frontend customers
+
+======
 1.58.0
 ======
 
@@ -6,12 +12,3 @@
    - new option --add-setup for dev:module:create command
 * dev:log:size command - Do not prompt if no log file exists.
 * Moved composer from src folder in vendor (update with composer.phar)
-
-======
-1.57.0
-======
-
-* New command: dev:log:size - Prints size (in bytes) of log files. (Thanks to @mzeis)
-* New command: dev:report:count - Number of report files. (Thanks to @mzeis)
-* New command: shell - Interactive n98-magerun shell with autocompletion for commands
-* Reactivated command dev:console for PHP 5.3 (command does not work in all environments)
