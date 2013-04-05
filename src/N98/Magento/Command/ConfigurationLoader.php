@@ -31,7 +31,8 @@ class ConfigurationLoader
         }
 
         // Check if there is a user config file. ~/.n98-magerun.yaml
-        $homeDirectory = getenv('HOME');
+        $helper = new \N98\Util\Environment();
+        $homeDirectory = $helper->getHomeDirectory();
         $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
         if ($homeDirectory && file_exists($personalConfigFile)) {
             $personalConfig = Yaml::parse($personalConfigFile);
