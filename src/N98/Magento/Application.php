@@ -134,16 +134,24 @@ class Application extends BaseApplication
     protected $_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_1;
 
     /**
-     * @param \Composer\Autoload\ClassLoader $autoloader
+     * @var bool
      */
-    public function __construct($autoloader = null)
+    protected $_isPharMode = false;
+
+    /**
+     * @param \Composer\Autoload\ClassLoader $autoloader
+     * @param bool                           $isPharMode
+     */
+    public function __construct($autoloader = null, $isPharMode = false)
     {
         $this->autoloader = $autoloader;
+
         parent::__construct(self::APP_NAME, self::APP_VERSION);
 
         // Suppress DateTime warnings
         date_default_timezone_set(@date_default_timezone_get());
 
+        $this->setPharMode($isPharMode);
         $this->detectMagento();
 
         $configLoader = new ConfigurationLoader($this->_magentoRootFolder);
@@ -155,81 +163,7 @@ class Application extends BaseApplication
             $this->registerCustomCommands();
         }
 
-        $this->add(new GenerateLocalXmlConfigCommand());
-        $this->add(new DatabaseDumpCommand());
-        $this->add(new DatabaseDropCommand());
-        $this->add(new DatabaseInfoCommand());
-        $this->add(new DatabaseImportCommand());
-        $this->add(new DatabaseConsoleCommand());
-        $this->add(new ConfigPrintCommand());
-        $this->add(new ConfigGetCommand());
-        $this->add(new ConfigSetCommand());
-        $this->add(new CacheCleanCommand());
-        $this->add(new CacheFlushCommand());
-        $this->add(new CacheListCommand());
-        $this->add(new CacheEnableCommand());
-        $this->add(new CacheDisableCommand());
-        $this->add(new IndexerListCommand());
-        $this->add(new IndexerReindexCommand());
-        $this->add(new IndexerReindexAllCommand());
-        $this->add(new ChangeAdminUserPasswordCommand());
-        $this->add(new AdminUserListCommand());
-        $this->add(new AdminUserCreateCommand());
-        $this->add(new CustomerCreateCommand());
-        $this->add(new CustomerListCommand());
-        $this->add(new CustomerChangePasswordCommand());
-        $this->add(new CustomerCreateDummyCommand());
-        $this->add(new CustomerInfoCommand());
-        $this->add(new DisableNotificationsCommand());
-        $this->add(new DesignDemoNoticeCommand());
-        $this->add(new InstallCommand());
-        $this->add(new UninstallCommand());
-        $this->add(new SystemMaintenanceCommand());
-        $this->add(new SystemInfoCommand());
-        $this->add(new SystemCheckCommand());
-        $this->add(new SystemStoreListCommand());
-        $this->add(new SystemStoreConfigBaseUrlListCommand());
-        $this->add(new SystemWebsiteListCommand());
-        $this->add(new SystemCronListCommand());
-        $this->add(new SystemCronRunCommand());
-        $this->add(new SystemCronHistoryCommand());
-        $this->add(new SystemUrlListCommand());
-        $this->add(new SetupRunScriptsCommand());
-        $this->add(new SetupCompareVersionsCommand());
-        $this->add(new TemplateHintsCommand());
-        $this->add(new TemplateHintsBlocksCommand());
-        $this->add(new TranslateInlineShopCommand());
-        $this->add(new TranslateInlineAdminCommand());
-        $this->add(new ThemeDuplicatesCommand());
-        $this->add(new ThemeListCommand());
-        $this->add(new ProfilerCommand());
-        $this->add(new SymlinksCommand());
-        $this->add(new DevelopmentLogCommand());
-        $this->add(new DevelopmentLogDbCommand());
-        $this->add(new DevelopmentLogSizeCommand());
-        $this->add(new DevelopmentReportCountCommand());
-        $this->add(new ModuleListCommand());
-        $this->add(new ModuleRewriteListCommand());
-        $this->add(new ModuleRewriteConflictsCommand());
-        $this->add(new ModuleCreateCommand());
-        $this->add(new ModuleObserverListCommand());
-        $this->add(new ShellCommand());
-
-        if (!OperatingSystem::isWindows()) {
-            $this->add(new MagentoConnectionListExtensionsCommand());
-            $this->add(new MagentoConnectionInstallExtensionCommand());
-            $this->add(new MagentoConnectionDownloadExtensionCommand());
-            $this->add(new MagentoConnectionUpgradeExtensionCommand());
-            $this->add(new OpenBrowserCommand());
-        }
-
-        $this->add(new MagentoCmsPagePublishCommand());
-        $this->add(new MagentoCmsBannerToggleCommand());
-        $this->add(new DevelopmentConsoleCommand());
-
-        if ($this->isPharMode()) {
-            $this->add(new SelfUpdateCommand());
-        }
+        $this->registerCommands();
     }
 
     /**
@@ -369,11 +303,19 @@ class Application extends BaseApplication
     }
 
     /**
+     * @param bool $mode
+     */
+    public function setPharMode($mode)
+    {
+        $this->_isPharMode = $mode;
+    }
+
+    /**
      * @return bool
      */
     public function isPharMode()
     {
-        return 'phar:' === substr(__FILE__, 0, 5);
+        return $this->_isPharMode;
     }
 
     public function initMagento()
@@ -532,6 +474,85 @@ class Application extends BaseApplication
         }
 
         return $return;
+    }
+
+    protected function registerCommands()
+    {
+        $this->add(new GenerateLocalXmlConfigCommand());
+        $this->add(new DatabaseDumpCommand());
+        $this->add(new DatabaseDropCommand());
+        $this->add(new DatabaseInfoCommand());
+        $this->add(new DatabaseImportCommand());
+        $this->add(new DatabaseConsoleCommand());
+        $this->add(new ConfigPrintCommand());
+        $this->add(new ConfigGetCommand());
+        $this->add(new ConfigSetCommand());
+        $this->add(new CacheCleanCommand());
+        $this->add(new CacheFlushCommand());
+        $this->add(new CacheListCommand());
+        $this->add(new CacheEnableCommand());
+        $this->add(new CacheDisableCommand());
+        $this->add(new IndexerListCommand());
+        $this->add(new IndexerReindexCommand());
+        $this->add(new IndexerReindexAllCommand());
+        $this->add(new ChangeAdminUserPasswordCommand());
+        $this->add(new AdminUserListCommand());
+        $this->add(new AdminUserCreateCommand());
+        $this->add(new CustomerCreateCommand());
+        $this->add(new CustomerListCommand());
+        $this->add(new CustomerChangePasswordCommand());
+        $this->add(new CustomerCreateDummyCommand());
+        $this->add(new CustomerInfoCommand());
+        $this->add(new DisableNotificationsCommand());
+        $this->add(new DesignDemoNoticeCommand());
+        $this->add(new InstallCommand());
+        $this->add(new UninstallCommand());
+        $this->add(new SystemMaintenanceCommand());
+        $this->add(new SystemInfoCommand());
+        $this->add(new SystemCheckCommand());
+        $this->add(new SystemStoreListCommand());
+        $this->add(new SystemStoreConfigBaseUrlListCommand());
+        $this->add(new SystemWebsiteListCommand());
+        $this->add(new SystemCronListCommand());
+        $this->add(new SystemCronRunCommand());
+        $this->add(new SystemCronHistoryCommand());
+        $this->add(new SystemUrlListCommand());
+        $this->add(new SetupRunScriptsCommand());
+        $this->add(new SetupCompareVersionsCommand());
+        $this->add(new TemplateHintsCommand());
+        $this->add(new TemplateHintsBlocksCommand());
+        $this->add(new TranslateInlineShopCommand());
+        $this->add(new TranslateInlineAdminCommand());
+        $this->add(new ThemeDuplicatesCommand());
+        $this->add(new ThemeListCommand());
+        $this->add(new ProfilerCommand());
+        $this->add(new SymlinksCommand());
+        $this->add(new DevelopmentLogCommand());
+        $this->add(new DevelopmentLogDbCommand());
+        $this->add(new DevelopmentLogSizeCommand());
+        $this->add(new DevelopmentReportCountCommand());
+        $this->add(new ModuleListCommand());
+        $this->add(new ModuleRewriteListCommand());
+        $this->add(new ModuleRewriteConflictsCommand());
+        $this->add(new ModuleCreateCommand());
+        $this->add(new ModuleObserverListCommand());
+        $this->add(new ShellCommand());
+
+        if (!OperatingSystem::isWindows()) {
+            $this->add(new MagentoConnectionListExtensionsCommand());
+            $this->add(new MagentoConnectionInstallExtensionCommand());
+            $this->add(new MagentoConnectionDownloadExtensionCommand());
+            $this->add(new MagentoConnectionUpgradeExtensionCommand());
+            $this->add(new OpenBrowserCommand());
+        }
+
+        $this->add(new MagentoCmsPagePublishCommand());
+        $this->add(new MagentoCmsBannerToggleCommand());
+        $this->add(new DevelopmentConsoleCommand());
+
+        if ($this->isPharMode()) {
+            $this->add(new SelfUpdateCommand());
+        }
     }
 
 

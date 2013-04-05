@@ -36,7 +36,6 @@ Build phar with:
     <target name="dist">
         <exec command="composer.phar install" dir="${project.basedir}" passthru="true" />
         <phingcall target="dist_unix" />
-        <phingcall target="dist_win" />
 
         <!-- Revert dev settings -->
         <exec command="composer.phar install --dev" dir="${project.basedir}" passthru="true" />
@@ -63,23 +62,6 @@ Build phar with:
         <exec command="git update-index --chmod=+x n98-magerun.phar" />
         <chmod file="./n98-magerun.phar" mode="775" />
         <exec command="git add ./n98-magerun.phar" />
-    </target>
-
-    <target name="dist_win">
-        <pharpackage basedir="./" stub="_cli_stub_windows.php" signature="sha512" compression="bzip2" destfile="./n98-magerun-windows.phar">
-            <metadata>
-                <element name="version" value="1.0.0" />
-                <element name="authors">
-                    <element name="Christian Münch">
-                        <element name="e-mail" value="c.muench@netz98.de" />
-                    </element>
-                </element>
-            </metadata>
-            <fileset refid="root_folder" />
-            <fileset refid="src_folder" />
-            <fileset refid="res_folder" />
-            <fileset refid="vendor_folder" />
-        </pharpackage>
     </target>
 
     <target name="install">

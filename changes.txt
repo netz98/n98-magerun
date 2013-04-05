@@ -1,4 +1,11 @@
 ======
+1.60.0
+======
+
+* Removed windows phar version.
+* Fixed issue #105: Run without phar extension
+
+======
 1.59.1
 ======
 
