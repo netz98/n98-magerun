@@ -2,6 +2,7 @@
 1.60.0
 ======
 
+* Added new command dev:ide:phpstorm:meta to generate meta file for code completion.
 * Removed windows phar version.
 * Fixed issue #105: Run without phar extension
 

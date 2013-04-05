@@ -688,6 +688,15 @@ Activate/Deactivate MySQL query logging via lib/Varien/Db/Adapter/Pdo/Mysql.php
 
    $ n98-magerun.phar dev:log:db [--on] [--off]
 
+Development IDE Support
+"""""""""""""""""""""""
+
+**PhpStorm Code Completion** -> Meta file generation.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:ide:phpstorm:meta [--stdout]
+
 
 Reports
 """""""
