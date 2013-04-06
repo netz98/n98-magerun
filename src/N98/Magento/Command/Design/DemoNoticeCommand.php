@@ -14,7 +14,7 @@ class DemoNoticeCommand extends AbstractMagentoStoreConfigCommand
     /**
      * @var string
      */
-    protected $toggleComment = 'demo notice';
+    protected $toggleComment = 'Demo Notice';
 
     /**
      * @var string

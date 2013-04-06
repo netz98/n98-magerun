@@ -20,7 +20,7 @@ class CreateCommand extends AbstractMagentoCommand
     protected $view;
 
     /**
-     * @var string
+     * @var strin
      */
     protected $baseFolder;
 

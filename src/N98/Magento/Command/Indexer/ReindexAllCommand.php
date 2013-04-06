@@ -26,6 +26,9 @@ class ReindexAllCommand extends AbstractIndexerCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
+
+            $this->disableObservers();
+
             $indexCollection = $this->_getIndexerModel()->getProcessesCollection();
             foreach ($indexCollection as $indexer) {
                 $indexer->reindexEverything();

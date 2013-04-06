@@ -55,6 +55,17 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
     }
 
     /**
+     * Disable observer which try to create adminhtml session on CLI
+     */
+    protected function disableObservers()
+    {
+        $node = \Mage::app()->getConfig()->getNode('adminhtml/events/core_locale_set_locale/observers/bind_locale');
+        if ($node) {
+            $node->appendChild(new \Varien_Simplexml_Element('<type>disabled</type>'));
+        }
+    }
+
+    /**
      * Returns the runtime in total seconds
      *
      * @param $indexer

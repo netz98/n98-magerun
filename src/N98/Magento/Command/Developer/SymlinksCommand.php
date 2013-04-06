@@ -37,10 +37,10 @@ class SymlinksCommand extends AbstractMagentoStoreConfigCommand
     /**
      * @var string
      */
-    protected $falseName = 'allowed';
+    protected $falseName = 'denied';
 
     /**
      * @var string
      */
-    protected $trueName = 'denied';
+    protected $trueName = 'allowed';
 }
