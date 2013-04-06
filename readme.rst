@@ -55,6 +55,11 @@ Add this to your php.ini file:
 
    suhosin.executor.include.whitelist="phar"
 
+
+**You don't like the filenanme?**
+
+Just rename it to whatever you want.
+
 Install with Composer
 """""""""""""""""""""
 
