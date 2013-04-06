@@ -262,7 +262,7 @@ Opens the MySQL console client with your database settings from local.xml
 Database Drop
 """""""""""""
 
-Opens the MySQL console client with your database settings from local.xml
+Drops the database configured in local.xml.
 
 * Requires MySQL CLI tools
 
