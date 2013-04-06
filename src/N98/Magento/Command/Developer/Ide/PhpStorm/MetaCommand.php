@@ -53,6 +53,7 @@ class MetaCommand extends AbstractMagentoCommand
         'Centinel',
         'Checkout',
         'Cms',
+        'Core',
         'Customer',
         'Dataflow',
         'Directory',
@@ -177,7 +178,7 @@ class MetaCommand extends AbstractMagentoCommand
 
         $modelAliases = array_keys((array) \Mage::getConfig()->getNode('global/models'));
         foreach ($modelAliases as $modelAlias) {
-            $resourceHelper = \Mage::getResourceHelper($modelAlias);
+            $resourceHelper = @\Mage::getResourceHelper($modelAlias);
             if (is_object($resourceHelper)) {
                 $classes[$modelAlias] = get_class($resourceHelper);
             }
@@ -204,7 +205,9 @@ class MetaCommand extends AbstractMagentoCommand
                 }
                 $resourceModelNodePath = 'global/models/' . strval($modelDefinition->resourceModel);
                 $resourceModelConfig = \Mage::getConfig()->getNode($resourceModelNodePath);
-                $classPrefix = strval($resourceModelConfig->class);
+                if ($resourceModelConfig) {
+                    $classPrefix = strval($resourceModelConfig->class);
+                }
             } else {
                 $classPrefix = strval($modelDefinition->class);
             }
