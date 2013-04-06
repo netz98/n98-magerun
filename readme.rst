@@ -56,7 +56,7 @@ Add this to your php.ini file:
    suhosin.executor.include.whitelist="phar"
 
 
-**You don't like the filenanme?**
+**You don't like the filename?**
 
 Just rename it to whatever you want.
 
