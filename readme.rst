@@ -269,6 +269,27 @@ Opens the MySQL console client with your database settings from local.xml
 .. code-block:: sh
 
    $ n98-magerun.phar db:drop  [-f|--force]
+   
+Database Query
+""""""""""""""
+
+Executes an SQL query on the current configured database. Wrap your SQL in
+single or double quotes.
+
+If your query produces a result (e.g. a SELECT statement), the output of the
+mysql cli tool will be returned.
+
+* Requires MySQL CLI tools
+
+Arguments:
+    query        SQL query
+
+Options:
+     --only-command           Print only mysql command. Do not execute
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:query [--only-command] [query]
 
 List Indexes
 """"""""""""

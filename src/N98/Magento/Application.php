@@ -27,6 +27,7 @@ use N98\Magento\Command\Database\DropCommand as DatabaseDropCommand;
 use N98\Magento\Command\Database\DumpCommand as DatabaseDumpCommand;
 use N98\Magento\Command\Database\ImportCommand as DatabaseImportCommand;
 use N98\Magento\Command\Database\InfoCommand as DatabaseInfoCommand;
+use N98\Magento\Command\Database\QueryCommand as DatabaseQueryCommand;
 use N98\Magento\Command\Design\DemoNoticeCommand as DesignDemoNoticeCommand;
 use N98\Magento\Command\Developer\Ide\PhpStorm\MetaCommand as DevelopmentIdePhpStormMetaCommand;
 use N98\Magento\Command\Developer\ConsoleCommand as DevelopmentConsoleCommand;
@@ -485,6 +486,7 @@ class Application extends BaseApplication
         $this->add(new DatabaseInfoCommand());
         $this->add(new DatabaseImportCommand());
         $this->add(new DatabaseConsoleCommand());
+        $this->add(new DatabaseQueryCommand());
         $this->add(new ConfigPrintCommand());
         $this->add(new ConfigGetCommand());
         $this->add(new ConfigSetCommand());
