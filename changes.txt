@@ -1,4 +1,10 @@
 ======
+1.60.1
+======
+
+* Fix for issue #108: dev:ide:phpstorm:meta does not detect some aliases
+
+======
 1.60.0
 ======
 

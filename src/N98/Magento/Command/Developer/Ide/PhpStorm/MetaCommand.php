@@ -34,6 +34,48 @@ class MetaCommand extends AbstractMagentoCommand
        ),
     );
 
+    /**
+     * @var array
+     */
+    protected $missingHelperDefinitionModules = array(
+        'Backup',
+        'Bundle',
+        'Captcha',
+        'Catalog',
+        'Centinel',
+        'Checkout',
+        'Cms',
+        'Customer',
+        'Dataflow',
+        'Directory',
+        'Downloadable',
+        'Eav',
+        'Index',
+        'Install',
+        'Log',
+        'Media',
+        'Newsletter',
+        'Page',
+        'Payment',
+        'Paypal',
+        'Persistent',
+        'Poll',
+        'Rating',
+        'Reports',
+        'Review',
+        'Rss',
+        'Rule',
+        'Sales',
+        'Shipping',
+        'Sitemap',
+        'Tag',
+        'Tax',
+        'Usa',
+        'Weee',
+        'Widget',
+        'Wishlist',
+    );
+
     protected function configure()
     {
         $this
@@ -53,39 +95,15 @@ class MetaCommand extends AbstractMagentoCommand
         $this->detectMagento($output);
         if ($this->initMagento()) {
             if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_1) {
-
                 $classMaps = array();
                 foreach ($this->groups as $group) {
+                    if (!$input->getOption('stdout')) {
+                    }
+                    $output->writeln('<info>Generating definitions for <comment>' . $group . '</comment> group</info>');
                     $classMaps[$group] = $this->getClassMapForGroup($group);
                 }
 
-                $map = <<<PHP
-<?php
-namespace PHPSTORM_META {
-    /** @noinspection PhpUnusedLocalVariableInspection */
-    /** @noinspection PhpIllegalArrayKeyTypeInspection */
-    \$STATIC_METHOD_TYPES = [
-PHP;
-                $map .= "\n";
-                foreach ($this->groupFactories as $group => $methods) {
-                    foreach ($methods as $method) {
-                        $map .= "        " . $method. "('') => [\n";
-                        foreach ($classMaps[$group] as $classPrefix => $class) {
-                            $map .= "            '$classPrefix' instanceof \\$class,\n";
-                        }
-                        $map .= "        ], \n";
-                    }
-                }
-                $map .= <<<PHP
-    ];
-}
-PHP;
-                if ($input->getOption('stdout')) {
-                    $output->writeln($map);
-                } else {
-                    \file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php', $map);
-                }
-
+                $this->writeToOutput($input, $output, $classMaps);
             } else {
                 $output->write('Magento 2 is currently not supported');
             }
@@ -105,15 +123,20 @@ PHP;
     }
 
     /**
-     * @param SplFileInfo $file
-     * @param $classPrefix
+     * @param SplFileInfo   $file
+     * @param string        $classPrefix
+     * @param string        $group
      * @return string
      */
-    protected function getClassPrefix(SplFileInfo $file, $classPrefix)
+    protected function getClassPrefix(SplFileInfo $file, $classPrefix, $group = '')
     {
         $path = str_replace('.php', '', $file->getRelativePathname());
+        $path = str_replace('\\', '/', $path);
         $parts = explode('/', $path);
         $parts = array_map('lcfirst', $parts);
+        if ($path == 'Data' && ($group == 'helpers')) {
+            array_pop($parts);
+        }
 
         return rtrim($classPrefix . '/' . implode('_', $parts), '/');
     }
@@ -125,12 +148,7 @@ PHP;
     protected function getClassMapForGroup($group)
     {
         $classes = array();
-        foreach (\Mage::getConfig()->getNode('global/' . ($group == 'resourceModels' ? 'models' : $group))->children() as $prefix => $modelDefinition) {
-
-            // Handle not existing "class" entry for "core" module.
-            if ($prefix == 'core' && $group == 'helpers') {
-                $modelDefinition->class = 'Mage_Core_Helper';
-            }
+        foreach ($this->getGroupXmlDefinition($group) as $prefix => $modelDefinition) {
 
             if (empty($modelDefinition->class)) {
                 continue;
@@ -173,16 +191,74 @@ PHP;
                 ->notName('upgrade-*')
                 ->notName('mysql4-*');
             foreach ($finder as $file) {
-                $classPrefix = $this->getClassPrefix($file, $prefix);
-                if ($group != 'helpers' && strpos($classPrefix, '/') === false) {
-                    continue;
-                }
-
+                $classPrefix = $this->getClassPrefix($file, $prefix, $group);
                 $realClass = $this->getRealClassname($file, $group == 'resourceModels' ? $resouceModelConfig->class : $modelDefinition->class);
                 $classes[$classPrefix] = $realClass;
             }
         }
 
         return $classes;
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @param $classMaps
+     */
+    protected function writeToOutput(InputInterface $input, OutputInterface $output, $classMaps)
+    {
+        $map = <<<PHP
+<?php
+namespace PHPSTORM_META {
+    /** @noinspection PhpUnusedLocalVariableInspection */
+    /** @noinspection PhpIllegalArrayKeyTypeInspection */
+    \$STATIC_METHOD_TYPES = [
+PHP;
+        $map .= "\n";
+        foreach ($this->groupFactories as $group => $methods) {
+            foreach ($methods as $method) {
+                $map .= "        " . $method . "('') => [\n";
+                foreach ($classMaps[$group] as $classPrefix => $class) {
+                    $map .= "            '$classPrefix' instanceof \\$class,\n";
+                }
+                $map .= "        ], \n";
+            }
+        }
+        $map .= <<<PHP
+    ];
+}
+PHP;
+        if ($input->getOption('stdout')) {
+            $output->writeln($map);
+        } else {
+            if (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php', $map)) {
+                $output->writeln('<info>File <comment>.phpstorm.meta.php</comment> generated</info>');
+            }
+        }
+    }
+
+    /**
+     * @param $group
+     * @return \Mage_Core_Model_Config_Element
+     */
+    protected function getGroupXmlDefinition($group)
+    {
+        if ($group == 'resourceModels') {
+            $group = 'models';
+        }
+
+        $definitions = \Mage::getConfig()->getNode('global/' . $group);
+
+        if ($group == 'helpers') {
+            foreach ($this->missingHelperDefinitionModules as $moduleName) {
+                $moduleXmlDefinition = '<'. strtolower($moduleName) .'>'
+                                     . '   <class>Mage_' . $moduleName . '_Helper</class>'
+                                     . '</' . strtolower($moduleName). '>';
+                $children = new \Varien_Simplexml_Element($moduleXmlDefinition);
+                $definitions->appendChild($children);
+            }
+        }
+
+        return $definitions->children();
     }
 }
