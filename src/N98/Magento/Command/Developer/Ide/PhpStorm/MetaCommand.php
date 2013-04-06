@@ -240,6 +240,7 @@ class MetaCommand extends AbstractMagentoCommand
                 ->notName('mysql4-*')
                 ->notName('mssql-*')
                 ->notName('oracle-*');
+
             foreach ($finder as $file) {
                 $classIdentifier = $this->getClassIdentifier($file, $prefix, $group);
                 $classNameByPath = $this->getRealClassname($file, $classPrefix);
@@ -248,12 +249,15 @@ class MetaCommand extends AbstractMagentoCommand
                     case 'blocks':
                         $classNameAfterRewrites = \Mage::getConfig()->getBlockClassName($classIdentifier);
                         break;
+
                     case 'helpers':
                         $classNameAfterRewrites = \Mage::getConfig()->getHelperClassName($classIdentifier);
                         break;
+
                     case 'models':
                         $classNameAfterRewrites = \Mage::getConfig()->getModelClassName($classIdentifier);
                         break;
+
                     case 'resource models':
                     default:
                         $classNameAfterRewrites = \Mage::getConfig()->getResourceModelClassName($classIdentifier);
@@ -332,11 +336,25 @@ PHP;
 
         $definitions = \Mage::getConfig()->getNode('global/' . $group);
 
-        if ($group == 'helpers') {
+        if (in_array($group, array('blocks', 'helpers', 'models'))) {
             foreach ($this->missingHelperDefinitionModules as $moduleName) {
+                switch ($group) {
+                    case 'blocks':
+                        $groupClassType = 'Block';
+                        break;
+
+                    case 'helpers':
+                        $groupClassType = 'Helper';
+                        break;
+
+                    case 'models':
+                        $groupClassType = 'Model';
+                        break;
+                }
+
                 $moduleXmlDefinition = '<'. strtolower($moduleName) .'>'
-                                     . '   <class>Mage_' . $moduleName . '_Helper</class>'
-                                     . '</' . strtolower($moduleName). '>';
+                    . '   <class>Mage_' . $moduleName . '_' . $groupClassType .'</class>'
+                    . '</' . strtolower($moduleName). '>';
                 $children = new \Varien_Simplexml_Element($moduleXmlDefinition);
                 $definitions->appendChild($children);
             }
