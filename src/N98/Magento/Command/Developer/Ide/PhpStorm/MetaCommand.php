@@ -15,23 +15,31 @@ class MetaCommand extends AbstractMagentoCommand
      * @var array
      */
     protected $groups = array(
+        'blocks',
         'helpers',
         'models',
-        'resourceModels'
+        'resource helpers',
+        'resource models'
     );
 
     protected $groupFactories = array(
+        'blocks' => array(
+            '\Mage::getBlockSingleton'
+        ),
+        'helpers' => array(
+            '\Mage::helper'
+        ),
         'models' => array(
             '\Mage::getModel',
             '\Mage::getSingleton',
         ),
-        'resourceModels' => array(
+        'resource helpers' => array(
+            '\Mage::getResourceHelper'
+        ),
+        'resource models' => array(
             '\Mage::getResourceModel',
             '\Mage::getResourceSingleton',
         ),
-        'helpers' => array(
-            '\Mage::helper'
-       ),
     );
 
     /**
@@ -80,7 +88,7 @@ class MetaCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('dev:ide:phpstorm:meta')
-            ->addOption('stdout', null, InputOption::VALUE_NONE, 'Print to stdout instad of file .phpstorm.meta.php')
+            ->addOption('stdout', null, InputOption::VALUE_NONE, 'Print to stdout instead of file .phpstorm.meta.php')
             ->setDescription('Generates meta data file for PhpStorm auto completion')
         ;
     }
@@ -88,7 +96,8 @@ class MetaCommand extends AbstractMagentoCommand
     /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param string $package
+     * @internal param string $package
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -128,7 +137,7 @@ class MetaCommand extends AbstractMagentoCommand
      * @param string        $group
      * @return string
      */
-    protected function getClassPrefix(SplFileInfo $file, $classPrefix, $group = '')
+    protected function getClassIdentifier(SplFileInfo $file, $classPrefix, $group = '')
     {
         $path = str_replace('.php', '', $file->getRelativePathname());
         $path = str_replace('\\', '/', $path);
@@ -142,30 +151,69 @@ class MetaCommand extends AbstractMagentoCommand
     }
 
     /**
+     * Verify whether given class is defined in given file because there is no sense in adding class with incorrect
+     * file or path. Examples:
+     * app/code/core/Mage/Core/Model/Mysql4/Design/Theme/Collection.php -> Mage_Core_Model_Mysql4_Design_Theme
+     * app/code/core/Mage/Payment/Model/Paygate/Request.php             -> Mage_Paygate_Model_Authorizenet_Request
+     * app/code/core/Mage/Dataflow/Model/Convert/Iterator.php           -> Mage_Dataflow_Model_Session_Adapter_Iterator
+     *
+     * @param SplFileInfo $file
+     * @param string $className
+     * @return int
+     */
+    protected function isClassDefinedInFile(SplFileInfo $file, $className)
+    {
+        return preg_match("/class\s+{$className}/m", $file->getContents());
+    }
+
+    /**
+     * Resource helper is always one per module for each db type and uses model alias
+     *
+     * @return array
+     */
+    protected function getResourceHelperMap()
+    {
+        $classes = array();
+
+        $modelAliases = array_keys((array) \Mage::getConfig()->getNode('global/models'));
+        foreach ($modelAliases as $modelAlias) {
+            $resourceHelper = \Mage::getResourceHelper($modelAlias);
+            if (is_object($resourceHelper)) {
+                $classes[$modelAlias] = get_class($resourceHelper);
+            }
+        }
+
+        return $classes;
+    }
+
+    /**
      * @param string $group
      * @return array
      */
     protected function getClassMapForGroup($group)
     {
+        if ($group == 'resource helpers') {
+            return $this->getResourceHelperMap();
+        }
+
         $classes = array();
         foreach ($this->getGroupXmlDefinition($group) as $prefix => $modelDefinition) {
-
-            if (empty($modelDefinition->class)) {
-                continue;
-            }
-            if ($group == 'resourceModels') {
+            if ($group == 'resource models') {
                 if (empty($modelDefinition->resourceModel)) {
                     continue;
                 }
                 $resourceModelNodePath = 'global/models/' . strval($modelDefinition->resourceModel);
-                $resouceModelConfig = \Mage::getConfig()->getNode($resourceModelNodePath);
-                if (empty($resouceModelConfig->class)) {
-                    continue;
-                }
-                $classBaseFolder = str_replace('_', '/', $resouceModelConfig->class);
+                $resourceModelConfig = \Mage::getConfig()->getNode($resourceModelNodePath);
+                $classPrefix = strval($resourceModelConfig->class);
             } else {
-                $classBaseFolder = str_replace('_', '/', $modelDefinition->class);
+                $classPrefix = strval($modelDefinition->class);
             }
+
+            if (empty($classPrefix)) {
+                continue;
+            }
+
+            $classBaseFolder = str_replace('_', '/', $classPrefix);
             $searchFolders = array(
                 \Mage::getBaseDir('code') . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . $classBaseFolder,
                 \Mage::getBaseDir('code') . DIRECTORY_SEPARATOR . 'community' . DIRECTORY_SEPARATOR . $classBaseFolder,
@@ -189,11 +237,45 @@ class MetaCommand extends AbstractMagentoCommand
                 ->name('*.php')
                 ->notName('install-*')
                 ->notName('upgrade-*')
-                ->notName('mysql4-*');
+                ->notName('mysql4-*')
+                ->notName('mssql-*')
+                ->notName('oracle-*');
             foreach ($finder as $file) {
-                $classPrefix = $this->getClassPrefix($file, $prefix, $group);
-                $realClass = $this->getRealClassname($file, $group == 'resourceModels' ? $resouceModelConfig->class : $modelDefinition->class);
-                $classes[$classPrefix] = $realClass;
+                $classIdentifier = $this->getClassIdentifier($file, $prefix, $group);
+                $classNameByPath = $this->getRealClassname($file, $classPrefix);
+
+                switch ($group) {
+                    case 'blocks':
+                        $classNameAfterRewrites = \Mage::getConfig()->getBlockClassName($classIdentifier);
+                        break;
+                    case 'helpers':
+                        $classNameAfterRewrites = \Mage::getConfig()->getHelperClassName($classIdentifier);
+                        break;
+                    case 'models':
+                        $classNameAfterRewrites = \Mage::getConfig()->getModelClassName($classIdentifier);
+                        break;
+                    case 'resource models':
+                    default:
+                        $classNameAfterRewrites = \Mage::getConfig()->getResourceModelClassName($classIdentifier);
+                        break;
+                }
+
+                if ($classNameAfterRewrites) {
+                    $addToList = true;
+                    if ($classNameAfterRewrites === $classNameByPath
+                        && !$this->isClassDefinedInFile($file, $classNameByPath)
+                    ) {
+                        $addToList = false;
+                    }
+
+                    if ($addToList) {
+                        $classes[$classIdentifier] = $classNameAfterRewrites;
+
+                        if ($group == 'helpers' && strpos($classIdentifier, '/') === false) {
+                            $classes[$classIdentifier . '/data'] = $classNameAfterRewrites;
+                        }
+                    }
+                }
             }
         }
 
@@ -212,6 +294,7 @@ class MetaCommand extends AbstractMagentoCommand
 namespace PHPSTORM_META {
     /** @noinspection PhpUnusedLocalVariableInspection */
     /** @noinspection PhpIllegalArrayKeyTypeInspection */
+    /** @noinspection PhpLanguageLevelInspection */
     \$STATIC_METHOD_TYPES = [
 PHP;
         $map .= "\n";
@@ -243,7 +326,7 @@ PHP;
      */
     protected function getGroupXmlDefinition($group)
     {
-        if ($group == 'resourceModels') {
+        if ($group == 'resource models') {
             $group = 'models';
         }
 
