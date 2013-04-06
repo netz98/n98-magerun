@@ -1,4 +1,11 @@
 ======
+1.60.2
+======
+
+* Added Mage::getBlockSingleton() and Mage::getResourceHelper() support, class rewrites support, fixed some bugs
+(Thanks to @zyava)
+
+======
 1.60.1
 ======
 
@@ -11,27 +18,3 @@
 * Added new command dev:ide:phpstorm:meta to generate meta file for code completion.
 * Removed windows phar version.
 * Fixed issue #105: Run without phar extension
-
-======
-1.59.1
-======
-
-* Maintenance release for missing class in phar file.
-
-======
-1.59.0
-======
-
-* Fix for issue #95 - customer:create enforces password with at least one digit for frontend customers
-* db:dump command -> Added new --force and --print-only-filename options.
-* Added more unit test tests
-* Fixed warning in cron:history command.
-
-======
-1.58.0
-======
-
-* Issue #87 - Add option to create magento module with sql folder
-   - new option --add-setup for dev:module:create command
-* dev:log:size command - Do not prompt if no log file exists.
-* Moved composer from src folder in vendor (update with composer.phar)
