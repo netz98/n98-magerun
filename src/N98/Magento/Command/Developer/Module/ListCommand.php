@@ -47,7 +47,7 @@ class ListCommand extends AbstractMagentoCommand
             $this->infos[] = array(
                 'codePool' => $moduleInfo['codePool'],
                 'Name'     => $moduleName,
-                'Version'  => isset($moduleInfo['version']) ? $moduleInfo : '',
+                'Version'  => isset($moduleInfo['version']) ? $moduleInfo['version'] : '',
                 'Status'   => $this->formatActive($moduleInfo['active']),
             );
         }
