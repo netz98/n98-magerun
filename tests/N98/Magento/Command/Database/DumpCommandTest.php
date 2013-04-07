@@ -18,16 +18,20 @@ class DumpCommandTest extends TestCase
                 '--add-time'     => true,
                 '--only-command' => true,
                 '--force'        => true,
+                '--compression'  => 'gz'
             )
         );
     
         $this->assertRegExp('/mysqldump/', $commandTester->getDisplay());
         $this->assertRegExp('/\.sql/', $commandTester->getDisplay());
+        $this->assertContains(".sql.gz", $commandTester->getDisplay());
     }
 
     public function testWithStripOption()
     {
         $command = $this->getCommand();
+
+        $this->getApplication()->initMagento();
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -36,7 +40,8 @@ class DumpCommandTest extends TestCase
                 '--add-time'     => true,
                 '--only-command' => true,
                 '--force'        => true,
-                '--strip'        => '@development'
+                '--strip'        => '@development',
+                '--compression'  => 'gzip'
             )
         );
 
@@ -47,6 +52,8 @@ class DumpCommandTest extends TestCase
         $this->assertRegExp("/--ignore-table=$db.customer_address_entity/", $commandTester->getDisplay());
         $this->assertRegExp("/--ignore-table=$db.sales_flat_order/", $commandTester->getDisplay());
         $this->assertRegExp("/--ignore-table=$db.sales_flat_order_item/", $commandTester->getDisplay());
+        $this->assertRegExp("/--ignore-table=$db.sales_flat_order_item/", $commandTester->getDisplay());
+        $this->assertContains(".sql.gz", $commandTester->getDisplay());
     }
 
     /**

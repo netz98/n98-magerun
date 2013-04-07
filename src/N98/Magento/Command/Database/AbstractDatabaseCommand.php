@@ -75,8 +75,10 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
         }
         
         switch ($type) {
+            case 'gz':
             case 'gzip':
                 return new Compressor\Gzip;
+
             default:
                 throw new \InvalidArgumentException("Compression type '$type' is not supported.");
         }
