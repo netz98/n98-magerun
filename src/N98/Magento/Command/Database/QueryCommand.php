@@ -44,11 +44,9 @@ class QueryCommand extends AbstractDatabaseCommand
     {
         $this->detectDbSettings($output);
         
-        $query = $input->getArgument('query');
-       
         if (($query = $input->getArgument('query')) === null) {
             $dialog = $this->getHelperSet()->get('dialog');
-            $query = $dialog->ask($output, '<question>SQL query:</question>');
+            $query = $dialog->ask($output, '<question>SQL Query:</question>');
         }
         
         $query = $this->getEscapedSql($query);        
