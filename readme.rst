@@ -186,11 +186,14 @@ Dump database
 
 Dumps configured magento database with `mysqldump`.
 
+* Requires MySQL CLI tools
+
 Arguments:
     filename        Dump filename
 
 Options:
      --add-time               Adds time to filename (only if filename was not provided)
+     --compression (-c)       Compress the dump file using one of the supported algorithms
      --only-command           Print only mysqldump command. Do not execute
      --print-only-filename    Execute and prints not output except the dump filename
      --no-single-transaction  Do not use single-transaction (not recommended, this is blocking)
@@ -213,7 +216,13 @@ Or directly to stdout:
 .. code-block:: sh
 
    $ n98-magerun.phar db:dump --stdout
+   
+Use compression (gzip cli tool has to be installed):   
 
+.. code-block:: sh
+
+   $ n98-magerun.phar db:dump --compression="gzip" 
+   
 Stripped Database Dump
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -249,9 +258,26 @@ Imports an SQL file with mysql cli client into current configured database.
 
 * Requires MySQL CLI tools
 
+Arguments:
+    filename        Dump filename
+
+Options:
+     --compression (-c)       The compression of the specified file
+     --only-command           Print only mysql command. Do not execute
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:dump
+
 .. code-block:: sh
 
    $ n98-magerun.phar db:import [--only-command] [filename]
+   
+Use decompression (gzip cli tool has to be installed):   
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:import --compression="gzip" [filename]    
 
 Database Console / MySQL Client
 """""""""""""""""""""""""""""""

@@ -14,6 +14,7 @@ class ImportCommand extends AbstractDatabaseCommand
         $this
             ->setName('db:import')
             ->addArgument('filename', InputArgument::OPTIONAL, 'Dump filename')
+            ->addOption('compression', 'c', InputOption::VALUE_REQUIRED, 'The compression of the specified file')
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysql command. Do not execute')
             ->setDescription('Imports database with mysql cli client according to database defined in local.xml');
     }
@@ -32,11 +33,16 @@ class ImportCommand extends AbstractDatabaseCommand
         $fileName = $input->getArgument('filename');
 
         if (!file_exists($fileName)) {
-            throw new \InvalidArgumentException('SQL file does not exist');
+            throw new \InvalidArgumentException('File does not exist');
         }
+        
+        $compressor = $this->getCompressor($input->getOption('compression'));
 
-        // dump data for all other tables
-        $exec = 'mysql ' . $this->getMysqlClientToolConnectionString() . ' < ' . escapeshellarg($fileName);
+        // create import command
+        $exec = $compressor->getDecompressingCommand(
+            'mysql ' . $this->getMysqlClientToolConnectionString(),
+            escapeshellarg($fileName)
+        );
 
         if ($input->getOption('only-command')) {
             $output->writeln($exec);
@@ -51,4 +57,8 @@ class ImportCommand extends AbstractDatabaseCommand
         }
     }
 
+    public function asText() {
+        return parent::asText() . "\n" .
+            $this->getCompressionHelp();
+    }
 }
