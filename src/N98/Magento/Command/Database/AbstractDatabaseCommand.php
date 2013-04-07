@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Database;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\Database\Compressor;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
@@ -47,6 +48,40 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
         }
     }
 
+    /**
+     * Generate help for compression
+     *
+     * @return string
+     * @throws \Exception
+     */
+    protected function getCompressionHelp()
+    {
+        $messages = array();
+        $messages[] = '';
+        $messages[] = '<comment>Compression option</comment>';
+        $messages[] = ' Supported compression: gzip';
+        $messages[] = ' The gzip cli tool has to be installed.';
+        return implode("\n", $messages);
+    }
+
+    /**
+     * @param string $type
+     * @return \N98\Magento\Command\Database\Compressor\AbstractCompressor
+     */
+    protected function getCompressor($type)
+    {
+        if ($type === null) {
+            return new Compressor\Uncompressed;
+        }
+        
+        switch ($type) {
+            case 'gzip':
+                return new Compressor\Gzip;
+            default:
+                throw new \InvalidArgumentException("Compression type '$type' is not supported.");
+        }
+    }
+    
     /**
      * @return string
      */

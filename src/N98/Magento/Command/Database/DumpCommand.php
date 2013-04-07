@@ -19,6 +19,7 @@ class DumpCommand extends AbstractDatabaseCommand
             ->setName('db:dump')
             ->addArgument('filename', InputArgument::OPTIONAL, 'Dump filename')
             ->addOption('add-time', null, InputOption::VALUE_NONE, 'Adds time to filename (only if filename was not provided)')
+            ->addOption('compression', 'c', InputOption::VALUE_REQUIRED, 'Compress the dump file using one of the supported algorithms')
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysqldump command. Do not execute')
             ->addOption('print-only-filename', null, InputOption::VALUE_NONE, 'Execute and prints not output except the dump filename')
             ->addOption('no-single-transaction', null, InputOption::VALUE_NONE, 'Do not use single-transaction (not recommended, this is blocking)')
@@ -73,6 +74,7 @@ class DumpCommand extends AbstractDatabaseCommand
         $messages[] = ' You can use wildcards like * and ? in the table names to strip multiple tables.';
         $messages[] = ' In addition you can specify pre-defined table groups, that start with an @';
         $messages[] = ' Example: "dataflow_batch_export unimportant_module_* @log';
+        $messages[] = '';
         $messages[] = '<comment>Available Table Groups</comment>';
 
         $definitions = $this->getTableDefinitions();
@@ -90,6 +92,7 @@ class DumpCommand extends AbstractDatabaseCommand
 
     public function asText() {
         return parent::asText() . "\n" .
+            $this->getCompressionHelp() . "\n" . 
             $this->getTableDefinitionHelp();
     }
 
@@ -151,32 +154,9 @@ class DumpCommand extends AbstractDatabaseCommand
         if (!$input->getOption('stdout') && !$input->getOption('only-command') && !$input->getOption('print-only-filename')) {
             $this->writeSection($output, 'Dump MySQL Database');
         }
-
-        $timeStamp = '_' . date('Y-m-d_His');
-        if (($fileName = $input->getArgument('filename')) === null && !$input->getOption('stdout')) {
-            $dialog = $this->getHelperSet()->get('dialog');
-            $defaultName = $this->dbSettings['dbname']
-                         . ($input->getOption('add-time') ? $timeStamp : '')
-                         . '.sql';
-            if (!$input->getOption('force')) {
-                $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question> [<comment>' . $defaultName . '</comment>]', $defaultName);
-            } else {
-                $fileName = $defaultName;
-            }
-        } else {
-            if (($input->getOption('add-time'))) {
-                $extension_pos = strrpos($fileName, '.'); // find position of the last dot, so where the extension starts
-                if ($extension_pos !== false) {
-                    $fileName = substr($fileName, 0, $extension_pos) . $timeStamp . substr($fileName, $extension_pos);
-                } else {
-                    $fileName .= $timeStamp;
-                }
-            }
-        }
-
-        if (substr($fileName, -4, 4) !== '.sql') {
-            $fileName .= '.sql';
-        }
+        
+        $compressor = $this->getCompressor($input->getOption('compression'));
+        $fileName = $this->getFileName($input, $output, $compressor);
 
         if ($input->getOption('strip')) {
             $stripTables = $this->resolveTables(explode(' ', $input->getOption('strip')));
@@ -199,6 +179,7 @@ class DumpCommand extends AbstractDatabaseCommand
 
         if (!$stripTables) {
             $exec = 'mysqldump ' . $dumpOptions . $this->getMysqlClientToolConnectionString();
+            $exec = $compressor->getCompressingCommand($exec);
             if (!$input->getOption('stdout')) {
                 $exec .= ' > ' . escapeshellarg($fileName);
             }
@@ -207,6 +188,7 @@ class DumpCommand extends AbstractDatabaseCommand
             // dump structure for strip-tables
             $exec = 'mysqldump ' . $dumpOptions . '--no-data ' . $this->getMysqlClientToolConnectionString();
             $exec .= ' ' . implode(' ', $stripTables);
+            $exec = $compressor->getCompressingCommand($exec);
             if (!$input->getOption('stdout')) {
                 $exec .= ' > ' . escapeshellarg($fileName);
             }
@@ -219,6 +201,7 @@ class DumpCommand extends AbstractDatabaseCommand
 
             // dump data for all other tables
             $exec = 'mysqldump ' . $dumpOptions . $ignore . $this->getMysqlClientToolConnectionString();
+            $exec = $compressor->getCompressingCommand($exec);
             if (!$input->getOption('stdout')) {
                 $exec .= ' >> ' . escapeshellarg($fileName);
             }
@@ -257,4 +240,37 @@ class DumpCommand extends AbstractDatabaseCommand
         }
     }
 
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param \N98\Magento\Command\Database\Compressor $compressor
+     */
+    protected function getFileName(InputInterface $input, OutputInterface $output, Compressor\AbstractCompressor $compressor)
+    {
+        $timeStamp = '_' . date('Y-m-d_His');
+        if (($fileName = $input->getArgument('filename')) === null && !$input->getOption('stdout')) {
+            $dialog = $this->getHelperSet()->get('dialog');
+            $defaultName = $this->dbSettings['dbname']
+                         . ($input->getOption('add-time') ? $timeStamp : '')
+                         . '.sql';
+            if (!$input->getOption('force')) {
+                $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question> [<comment>' . $defaultName . '</comment>]', $defaultName);
+            } else {
+                $fileName = $defaultName;
+            }
+        } else {
+            if (($input->getOption('add-time'))) {
+                $extension_pos = strrpos($fileName, '.'); // find position of the last dot, so where the extension starts
+                if ($extension_pos !== false) {
+                    $fileName = substr($fileName, 0, $extension_pos) . $timeStamp . substr($fileName, $extension_pos);
+                } else {
+                    $fileName .= $timeStamp;
+                }
+            }
+        }
+        
+        $fileName = $compressor->getFileName($fileName);
+        
+        return $fileName;
+    }
 }
