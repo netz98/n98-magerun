@@ -184,7 +184,7 @@ class MetaCommand extends AbstractMagentoCommand
 
         $modelAliases = array_keys((array) \Mage::getConfig()->getNode('global/models'));
         foreach ($modelAliases as $modelAlias) {
-            $resourceHelper = \Mage::getResourceHelper($modelAlias);
+            $resourceHelper = @\Mage::getResourceHelper($modelAlias);
             if (is_object($resourceHelper)) {
                 $classes[$modelAlias] = get_class($resourceHelper);
             }
