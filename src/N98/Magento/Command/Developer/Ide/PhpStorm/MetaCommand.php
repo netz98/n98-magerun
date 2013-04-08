@@ -18,7 +18,6 @@ class MetaCommand extends AbstractMagentoCommand
         'blocks',
         'helpers',
         'models',
-        'resource helpers',
         'resource models'
     );
 
@@ -106,10 +105,17 @@ class MetaCommand extends AbstractMagentoCommand
         if ($this->initMagento()) {
             if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_1) {
                 $classMaps = array();
+
+                // magento CE <1.5 has no resource helpers
+                if (method_exists('\Mage', 'getResourceHelper')) {
+                    $this->groups[] = 'resource helpers';
+                }
+
                 foreach ($this->groups as $group) {
                     if (!$input->getOption('stdout')) {
+                        $output->writeln('<info>Generating definitions for <comment>' . $group . '</comment> group</info>');
                     }
-                    $output->writeln('<info>Generating definitions for <comment>' . $group . '</comment> group</info>');
+
                     $classMaps[$group] = $this->getClassMapForGroup($group);
                 }
 
@@ -178,7 +184,7 @@ class MetaCommand extends AbstractMagentoCommand
 
         $modelAliases = array_keys((array) \Mage::getConfig()->getNode('global/models'));
         foreach ($modelAliases as $modelAlias) {
-            $resourceHelper = @\Mage::getResourceHelper($modelAlias);
+            $resourceHelper = \Mage::getResourceHelper($modelAlias);
             if (is_object($resourceHelper)) {
                 $classes[$modelAlias] = get_class($resourceHelper);
             }
@@ -193,6 +199,9 @@ class MetaCommand extends AbstractMagentoCommand
      */
     protected function getClassMapForGroup($group)
     {
+        /**
+         * Generate resource helper only for Magento >= EE 1.11 or CE 1.6
+         */
         if ($group == 'resource helpers') {
             return $this->getResourceHelperMap();
         }

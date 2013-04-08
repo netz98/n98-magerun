@@ -1,4 +1,10 @@
 ======
+1.61.1
+======
+
+* Fix for "dev:ide:phpstorm:meta" command for Magento CE <= 1.5 -> File generation and --stdout parameter
+
+======
 1.61.0
 ======
 
