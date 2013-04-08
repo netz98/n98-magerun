@@ -1,4 +1,10 @@
 ======
+1.61.2
+======
+
+* "dev:ide:phpstorm:meta" command: Disabled resource helper generation for old Magento versions.
+
+======
 1.61.1
 ======
 

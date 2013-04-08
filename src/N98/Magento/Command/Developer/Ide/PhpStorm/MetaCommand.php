@@ -18,7 +18,8 @@ class MetaCommand extends AbstractMagentoCommand
         'blocks',
         'helpers',
         'models',
-        'resource models'
+        'resource models',
+        'resource helpers',
     );
 
     protected $groupFactories = array(
@@ -106,17 +107,12 @@ class MetaCommand extends AbstractMagentoCommand
             if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_1) {
                 $classMaps = array();
 
-                // magento CE <1.5 has no resource helpers
-                if (method_exists('\Mage', 'getResourceHelper')) {
-                    $this->groups[] = 'resource helpers';
-                }
-
                 foreach ($this->groups as $group) {
-                    if (!$input->getOption('stdout')) {
-                        $output->writeln('<info>Generating definitions for <comment>' . $group . '</comment> group</info>');
-                    }
-
                     $classMaps[$group] = $this->getClassMapForGroup($group);
+
+                    if (!$input->getOption('stdout') && count($classMaps[$group]) > 0) {
+                        $output->writeln('<info>Generated definitions for <comment>' . $group . '</comment> group</info>');
+                    }
                 }
 
                 $this->writeToOutput($input, $output, $classMaps);
@@ -182,9 +178,15 @@ class MetaCommand extends AbstractMagentoCommand
     {
         $classes = array();
 
+        if (($this->_magentoEnterprise && version_compare(\Mage::getVersion(), '1.11.2.0', '<='))
+            || (!$this->_magentoEnterprise && version_compare(\Mage::getVersion(), '1.6.2.0', '<='))
+        ) {
+            return $classes;
+        }
+
         $modelAliases = array_keys((array) \Mage::getConfig()->getNode('global/models'));
         foreach ($modelAliases as $modelAlias) {
-            $resourceHelper = @\Mage::getResourceHelper($modelAlias);
+            $resourceHelper = \Mage::getResourceHelper($modelAlias);
             if (is_object($resourceHelper)) {
                 $classes[$modelAlias] = get_class($resourceHelper);
             }
