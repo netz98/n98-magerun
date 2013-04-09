@@ -179,7 +179,7 @@ class MetaCommand extends AbstractMagentoCommand
         $classes = array();
 
         if (($this->_magentoEnterprise && version_compare(\Mage::getVersion(), '1.11.2.0', '<='))
-            || (!$this->_magentoEnterprise && version_compare(\Mage::getVersion(), '1.6.0.0', '<='))
+            || (!$this->_magentoEnterprise && version_compare(\Mage::getVersion(), '1.6.2.0', '<'))
         ) {
             return $classes;
         }
