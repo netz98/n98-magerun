@@ -1,4 +1,10 @@
 ======
+1.61.3
+======
+
+* Fix issue #114 - MetaCommand getResourceHelperMap() excludes version 1.6.2.0
+
+======
 1.61.2
 ======
 
