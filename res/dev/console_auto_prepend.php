@@ -24,4 +24,6 @@ MAGENTO INTERACTIVE CONSOLE
 ===========================
 WELCOME;
     echo PHP_EOL . PHP_EOL . 'Initialized Magento (' . \Mage::getVersion() . ')' . PHP_EOL . PHP_EOL;
+} else {
+    echo "FATAL: Magento could not be initialized." . PHP_EOL;
 }
