@@ -331,7 +331,7 @@ class Application extends BaseApplication
                         \Mage::PARAM_RUN_TYPE => 'store',
                         'entryPoint' => basename(__FILE__),
                     );
-                    $entryPoint = new MagerunEntryPoint(BP, $params);
+                    new MagerunEntryPoint(BP, $params);
                 } else
                     if (version_compare(\Mage::getVersion(), '2.0.0.0-dev41') >= 0) {
                         \Mage::app(array('MAGE_RUN_CODE' => 'admin'));
