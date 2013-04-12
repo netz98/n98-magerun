@@ -462,6 +462,40 @@ class Application extends BaseApplication
     }
 
     /**
+     * Returns an array of possible abbreviations given a set of names.
+     * This is the reverted version if changed method of symfony framework.
+     * I reverted this to enable commands like customer:create and customer:create:dummy.
+     * This will not work with current dev-master of symfony console components which
+     * causes an error like "Command "customer:create" is ambiguous".
+     *
+     * @TODO Check if this is a bug in symfony or wanted.
+     * @param array $names An array of names
+     *
+     * @return array An array of abbreviations
+     */
+    public static function getAbbreviations($names)
+    {
+        $abbrevs = array();
+        foreach ($names as $name) {
+            for ($len = strlen($name) - 1; $len > 0; --$len) {
+                $abbrev = substr($name, 0, $len);
+                if (!isset($abbrevs[$abbrev])) {
+                    $abbrevs[$abbrev] = array($name);
+                } else {
+                    $abbrevs[$abbrev][] = $name;
+                }
+            }
+        }
+
+        // Non-abbreviations always get entered, even if they aren't unique
+        foreach ($names as $name) {
+            $abbrevs[$name] = array($name);
+        }
+
+        return $abbrevs;
+    }
+
+    /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
