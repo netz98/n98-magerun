@@ -36,7 +36,7 @@ class ConflictsCommand extends AbstractRewriteCommand
                 $rewrites = $this->loadRewrites();
                 $conflictCounter = 0;
                 foreach ($rewrites as $type => $data) {
-                    if (count($data) > 0) {
+                    if (count($data) > 0 && is_array($data)) {
                         foreach ($data as $class => $rewriteClass) {
                             if (count($rewriteClass) > 1) {
                                 if ($this->_isInheritanceConflict($rewriteClass)) {
@@ -108,17 +108,19 @@ class ConflictsCommand extends AbstractRewriteCommand
         $testCase = $suite->addTestCase();
         $testCase->setName('Magento Rewrite Conflict Test');
         $testCase->setClassname('ConflictsCommand');
-        foreach ($conflicts as $conflictRow) {
-            $testCase->addFailure(
-                sprintf(
-                    'Rewrite conflict: Type %s | Class: %s, Rewrites: %s | Loaded class: %s',
-                    $conflictRow['Type'],
-                    $conflictRow['Class'],
-                    $conflictRow['Rewrites'],
-                    $conflictRow['Loaded Class']
-                ),
-                'MagentoRewriteConflictException'
-            );
+        if (count($conflicts) > 0) {
+            foreach ($conflicts as $conflictRow) {
+                $testCase->addFailure(
+                    sprintf(
+                        'Rewrite conflict: Type %s | Class: %s, Rewrites: %s | Loaded class: %s',
+                        $conflictRow['Type'],
+                        $conflictRow['Class'],
+                        $conflictRow['Rewrites'],
+                        $conflictRow['Loaded Class']
+                    ),
+                    'MagentoRewriteConflictException'
+                );
+            }
         }
 
         $document->save($filename);
