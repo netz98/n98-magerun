@@ -978,6 +978,24 @@ If you need autocompletion for all n98-magerun commands you can start with "shel
 
    $ n98-magerun.phar shell
 
+n98-magerun Script
+""""""""""""""""""
+
+Run multiple commands from a script file.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar script filename
+
+Example:
+
+.. code-block::
+
+   # This is a comment
+   cache:flush
+
+   # Set multiple config
+   config:set "web/cookie/cookie_domain" example.com
 
 Autocompletion
 --------------

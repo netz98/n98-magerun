@@ -1,4 +1,10 @@
 ======
+1.62.0
+======
+
+* New command "script" to run multiple commands in one session (Issue #117)
+
+======
 1.61.3
 ======
 

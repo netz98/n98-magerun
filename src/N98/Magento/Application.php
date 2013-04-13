@@ -59,6 +59,7 @@ use N98\Magento\Command\MagentoConnect\InstallExtensionCommand as MagentoConnect
 use N98\Magento\Command\MagentoConnect\ListExtensionsCommand as MagentoConnectionListExtensionsCommand;
 use N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand as MagentoConnectionUpgradeExtensionCommand;
 use N98\Magento\Command\OpenBrowserCommand;
+use N98\Magento\Command\ScriptCommand;
 use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
 use N98\Magento\Command\ShellCommand;
 use N98\Magento\Command\System\CheckCommand as SystemCheckCommand;
@@ -103,7 +104,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.61.3';
+    const APP_VERSION = '1.62.0';
     /**
      * @var string
      */
@@ -575,6 +576,7 @@ class Application extends BaseApplication
         $this->add(new ModuleCreateCommand());
         $this->add(new ModuleObserverListCommand());
         $this->add(new ShellCommand());
+        $this->add(new ScriptCommand());
 
         if (!OperatingSystem::isWindows()) {
             $this->add(new MagentoConnectionListExtensionsCommand());
