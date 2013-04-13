@@ -16,11 +16,11 @@ before_script:
   - curl -s http://getcomposer.org/installer | php
   - php composer.phar install --dev --prefer-source
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `magento_travis`;'
-  - bin/n98-magerun install --magentoVersionByName=magento-ce-1.6.2.0 --installationFolder="./magento-1.6.2.0" --dbHost=localhost --dbUser=root --dbPass='' --dbName="magento_travis" --installSampleData=yes --useDefaultConfigParams=yes --baseUrl="http://travis.magento.local/"
+  - bin/n98-magerun install --magentoVersionByName=magento-mirror-1.6.2.0 --installationFolder="./magento-1.6.2.0" --dbHost=localhost --dbUser=root --dbPass='' --dbName="magento_travis" --installSampleData=yes --useDefaultConfigParams=yes --baseUrl="http://travis.magento.local/"
   - bin/n98-magerun install --magentoVersionByName=magento-ce-1.7.0.2 --installationFolder="./magento-1.7.0.2" --dbHost=localhost --dbUser=root --dbPass='' --dbName="magento_travis" --installSampleData=yes --useDefaultConfigParams=yes --baseUrl="http://travis.magento.local/"
 
 script:
-  - export N98_MAGERUN_TEST_MAGENTO_ROOT=./magento-mirror-1.6.2.0
+  - export N98_MAGERUN_TEST_MAGENTO_ROOT=./magento-1.6.2.0
   - vendor/bin/phpunit
   - php tests/check-coverage.php clover.xml 54
   - export N98_MAGERUN_TEST_MAGENTO_ROOT=./magento-1.7.0.2
