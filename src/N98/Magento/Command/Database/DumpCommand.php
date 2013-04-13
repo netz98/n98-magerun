@@ -26,7 +26,6 @@ class DumpCommand extends AbstractDatabaseCommand
             ->addOption('stdout', null, InputOption::VALUE_NONE, 'Dump to stdout')
             ->addOption('strip', null, InputOption::VALUE_OPTIONAL, 'Tables to strip (dump only structure of those tables)')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not prompt if all options are defined')
-            ->addDeprecatedAlias('database:dump', 'Please use db:dump')
             ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml');
     }
 
