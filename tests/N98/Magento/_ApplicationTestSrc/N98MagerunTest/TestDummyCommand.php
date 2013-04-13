@@ -2,6 +2,9 @@
 
 namespace N98MagerunTest;
 
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 class TestDummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
 {
     protected function configure()

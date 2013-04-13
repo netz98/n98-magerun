@@ -31,7 +31,8 @@ class DumpCommand extends AbstractConfigCommand
             if (!$config) {
                 throw new \InvalidArgumentException('xpath was not found');
             }
-            $dom = \DOMDocument::loadXML($config->asXml());
+            $dom = new \DOMDocument();
+            $dom->loadXML($config->asXml());
             $dom->preserveWhiteSpace = false;
             $dom->formatOutput = true;
             $output->writeln($dom->saveXML());
