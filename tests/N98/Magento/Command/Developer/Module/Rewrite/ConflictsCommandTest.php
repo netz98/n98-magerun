@@ -19,7 +19,7 @@ class ConflictsCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
-                'command'     => $command->getName(),
+                'command' => $command->getName(),
             )
         );
         $this->assertContains('No rewrite conflicts was found', $commandTester->getDisplay());
@@ -37,6 +37,6 @@ class ConflictsCommandTest extends TestCase
         );
         $this->assertEquals('', $commandTester->getDisplay());
         $this->assertFileExists('_output.xml');
-        unlink('_output.xml');
+        @unlink('_output.xml');
     }
 }
