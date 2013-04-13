@@ -122,7 +122,7 @@ class Application extends BaseApplication
     /**
      * @var array
      */
-    protected $config;
+    protected $config = array();
     /**
      * @var string
      */
@@ -142,31 +142,18 @@ class Application extends BaseApplication
     protected $_isPharMode = false;
 
     /**
+     * @var bool
+     */
+    protected $_isInitialized = false;
+
+    /**
      * @param \Composer\Autoload\ClassLoader $autoloader
      * @param bool                           $isPharMode
      */
-    public function __construct($autoloader = null, $isPharMode = false)
+    public function __construct($autoloader = null)
     {
         $this->autoloader = $autoloader;
-
         parent::__construct(self::APP_NAME, self::APP_VERSION);
-
-        // Suppress DateTime warnings
-        date_default_timezone_set(@date_default_timezone_get());
-
-        $this->setPharMode($isPharMode);
-        $this->detectMagento();
-
-        $configLoader = new ConfigurationLoader($this->_magentoRootFolder);
-        $this->config = $configLoader->toArray();
-
-        $this->registerHelpers();
-        if ($autoloader) {
-            $this->registerCustomAutoloaders();
-            $this->registerCustomCommands();
-        }
-
-        $this->registerCommands();
     }
 
     /**
@@ -250,9 +237,8 @@ class Application extends BaseApplication
 
     protected function registerCustomCommands()
     {
-        if (isset($this->config['commands']['customCommands']) && is_array(
-            $this->config['commands']['customCommands']
-        )
+        if (isset($this->config['commands']['customCommands'])
+            && is_array($this->config['commands']['customCommands'])
         ) {
             foreach ($this->config['commands']['customCommands'] as $commandClass) {
                 $this->add(new $commandClass);
@@ -503,6 +489,8 @@ class Application extends BaseApplication
      */
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
+        $this->init();
+
         $return = parent::run($input, $output);
 
         // Fix for no return values -> used in interactive shell to prevent error output
@@ -595,5 +583,34 @@ class Application extends BaseApplication
         }
     }
 
+    /**
+     * @param array $initConfig
+     * @return array
+     */
+    protected function _loadConfig($initConfig)
+    {
+        $configLoader = new ConfigurationLoader($initConfig, $this->_magentoRootFolder);
+
+        return $configLoader->toArray();
+    }
+
+    public function init()
+    {
+        if (!$this->_isInitialized) {
+            // Suppress DateTime warnings
+            date_default_timezone_set(@date_default_timezone_get());
+
+            $this->detectMagento();
+            $this->config = $this->_loadConfig($this->config);
+            $this->registerHelpers();
+            if ($this->autoloader) {
+                $this->registerCustomAutoloaders();
+                $this->registerCustomCommands();
+            }
+            $this->registerCommands();
+
+            $this->_isInitialized = true;
+        }
+    }
 
 }

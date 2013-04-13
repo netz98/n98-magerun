@@ -17,11 +17,13 @@ class ConfigurationLoader
     protected $_customConfigFilename = 'n98-magerun.yaml';
 
     /**
+     * @param array $initConfig
      * @param string $magentoRootFolder
      */
-    public function __construct($magentoRootFolder)
+    public function __construct($initConfig, $magentoRootFolder)
     {
         $config = Yaml::parse(__DIR__ . '/../../../../config.yaml');
+        $config = $this->mergeArrays($config, $initConfig);
 
         // Check if there is a global config file in /etc folder
         $systemWideConfigFile = '/etc/' . $this->_customConfigFilename;

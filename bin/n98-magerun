@@ -1,9 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-require __DIR__.'/../src/bootstrap.php';
-
-$application = new N98\Magento\Application($loader);
+$application = require __DIR__.'/../src/bootstrap.php';
 $application->run();
 
 __HALT_COMPILER();

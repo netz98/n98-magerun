@@ -13,4 +13,6 @@ if ((!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php')) && (!$loader
         'php composer.phar install'.PHP_EOL);
 }
 
-return $loader;
+$application = new \N98\Magento\Application($loader);
+
+return $application;

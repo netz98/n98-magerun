@@ -2,7 +2,7 @@
          bootstrap="tests/bootstrap.php"
          backupStaticAttributes="false"
          cacheTokens="false"
-         colors="false"
+         colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
@@ -16,7 +16,7 @@
          stopOnSkipped="false"
          testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
          strict="false"
-         verbose="false ">
+         verbose="true">
     <testsuites>
         <testsuite name="n98-magerun Tests">
             <directory>./tests</directory>

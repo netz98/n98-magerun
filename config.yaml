@@ -1,4 +1,7 @@
 commands:
+  customCommands: []
+  aliases: []
+
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
       - name: magento-ce-1.6.2.0

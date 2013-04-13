@@ -3,9 +3,8 @@
 
 Phar::mapPhar('n98-magerun.phar');
 
-$autoloader = require_once 'phar://n98-magerun.phar/src/bootstrap.php';
-
-$application = new N98\Magento\Application($autoloader, true);
+$application = require_once 'phar://n98-magerun.phar/src/bootstrap.php';
+$application->setPharMode(true);
 $application->run();
 
 __HALT_COMPILER();
