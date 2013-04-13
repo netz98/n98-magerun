@@ -1,2 +1,7 @@
+# Comment
 cache:list
-sys:website:list
+
+# Another comment
+
+ # Ignore this line
+  sys:website:list

@@ -25,6 +25,7 @@ class ScriptCommand extends AbstractMagentoCommand
         $script = \file_get_contents($input->getArgument('filename'));
         $commands = explode("\n", $script);
         foreach ($commands as $commandString) {
+            $commandString = trim($commandString);
             if (empty($commandString) || substr($commandString, 0, 1) === '#') {
                 continue;
             }
