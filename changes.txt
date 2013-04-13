@@ -3,6 +3,7 @@
 ======
 
 * New command "script" to run multiple commands in one session (Issue #117)
+* #118 Fixes for dev console
 
 ======
 1.61.3
