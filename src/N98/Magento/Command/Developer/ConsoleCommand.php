@@ -29,7 +29,8 @@ class ConsoleCommand extends AbstractMagentoCommand
             2 => STDERR
         );
 
-        $prependFile = realpath(__DIR__ . '/../../../../../res/dev/console_auto_prepend.php');
+        $prependFile = __DIR__ . '/../../../../../res/dev/console_auto_prepend.php';
+
         $exec = '/usr/bin/env php -d auto_prepend_file=' . escapeshellarg($prependFile) . ' -a';
 
         $pipes = array();
