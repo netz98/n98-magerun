@@ -54,6 +54,23 @@ class DumpCommandTest extends TestCase
         $this->assertRegExp("/--ignore-table=$db.sales_flat_order_item/", $commandTester->getDisplay());
         $this->assertRegExp("/--ignore-table=$db.sales_flat_order_item/", $commandTester->getDisplay());
         $this->assertContains(".sql.gz", $commandTester->getDisplay());
+
+
+        /**
+         * Uncompressed
+         */
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command'        => $command->getName(),
+                '--add-time'     => true,
+                '--only-command' => true,
+                '--force'        => true,
+                '--strip'        => '@development',
+            )
+        );
+        $this->assertNotContains(".sql.gz", $commandTester->getDisplay());
+
     }
 
     /**
