@@ -5,7 +5,7 @@ namespace N98\Magento\Command\Developer\Theme;
 use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
 
-class ListCommandTest extends TestCase
+class DuplicatesCommandTest extends TestCase
 {
     public function testExecute()
     {
