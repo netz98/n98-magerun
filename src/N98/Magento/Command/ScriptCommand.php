@@ -15,14 +15,14 @@ class ScriptCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('script')
-            ->addArgument('filename', InputArgument::REQUIRED, 'Script file')
+            ->addArgument('filename', InputArgument::OPTIONAL, 'Script file')
             ->setDescription('Runs multiple n98-magerun commands')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $script = \file_get_contents($input->getArgument('filename'));
+        $script = $this->_getContent($input->getArgument('filename'));
         $commands = explode("\n", $script);
         foreach ($commands as $commandString) {
             $commandString = trim($commandString);
@@ -33,5 +33,20 @@ class ScriptCommand extends AbstractMagentoCommand
             $input = new StringInput($commandString);
             $this->getApplication()->run($input, $output);
         }
+    }
+
+    /**
+     * @param string $input
+     * @return string
+     */
+    protected function _getContent($filename)
+    {
+        if ($filename == '-' || empty($filename)) {
+            $script = \file_get_contents('php://stdin', 'r');
+        } else {
+            $script = \file_get_contents($filename);
+        }
+
+        return $script;
     }
 }

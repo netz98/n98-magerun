@@ -997,6 +997,18 @@ Example:
    # Set multiple config
    config:set "web/cookie/cookie_domain" example.com
 
+
+Optionally you can work with unix pipes.
+
+.. code-block:: sh
+
+   $ echo "cache:flush" | n98-magerun-dev script
+
+.. code-block:: sh
+
+   $ n98-magerun-dev script < filename
+
+
 Autocompletion
 --------------
 
