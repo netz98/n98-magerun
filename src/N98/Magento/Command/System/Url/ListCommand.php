@@ -74,45 +74,52 @@ class ListCommand extends AbstractMagentoCommand
 
                 if ($input->getOption('add-categories')) {
                     $collection = \Mage::getResourceModel('sitemap/catalog_category')->getCollection($storeId);
-                    foreach ($collection as $item) { /* @var $item \Varien_Object */
-                        $urls[] = $linkBaseUrl . $item->getUrl();
+                    if ($collection) {
+                        foreach ($collection as $item) { /* @var $item \Varien_Object */
+                            $urls[] = $linkBaseUrl . $item->getUrl();
+                        }
+                        unset($collection);
                     }
-                    unset($collection);
                 }
 
                 if ($input->getOption('add-products')) {
                     $collection = \Mage::getResourceModel('sitemap/catalog_product')->getCollection($storeId);
-                    foreach ($collection as $item) { /* @var $item \Varien_Object */
-                        $urls[] = $linkBaseUrl . $item->getUrl();
+                    if ($collection) {
+                        foreach ($collection as $item) { /* @var $item \Varien_Object */
+                            $urls[] = $linkBaseUrl . $item->getUrl();
+                        }
+                        unset($collection);
                     }
-                    unset($collection);
                 }
 
                 if ($input->getOption('add-cmspages')) {
                     $collection = \Mage::getResourceModel('sitemap/cms_page')->getCollection($storeId);
-                    foreach ($collection as $item) { /* @var $item \Varien_Object */
-                        $urls[] = $linkBaseUrl . $item->getUrl();
+                    if ($collection) {
+                        foreach ($collection as $item) { /* @var $item \Varien_Object */
+                            $urls[] = $linkBaseUrl . $item->getUrl();
+                        }
+                        unset($collection);
                     }
-                    unset($collection);
                 }
 
             } // foreach ($stores as $storeId)
 
-            foreach ($urls as $url) {
+            if (count($urls) > 0) {
+                foreach ($urls as $url) {
 
-                // pre-process
-                $line = $input->getArgument('linetemplate');
-                $line = str_replace('{url}', $url, $line);
+                    // pre-process
+                    $line = $input->getArgument('linetemplate');
+                    $line = str_replace('{url}', $url, $line);
 
-                $parts = parse_url($url);
-                foreach ($parts as $key => $value) {
-                    $line = str_replace('{'.$key.'}', $value, $line);
+                    $parts = parse_url($url);
+                    foreach ($parts as $key => $value) {
+                        $line = str_replace('{'.$key.'}', $value, $line);
+                    }
+
+                    // ... and output
+                    $output->writeln($line);
                 }
-
-                // ... and output
-                $output->writeln($line);
             }
-
         }
     }
 }

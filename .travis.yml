@@ -21,4 +21,4 @@ before_script:
 script:
   - export N98_MAGERUN_TEST_MAGENTO_ROOT=./magento-1.7.0.2
   - vendor/bin/phpunit
-  - php tests/check-coverage.php clover.xml 58
+  - php tests/check-coverage.php clover.xml 63
