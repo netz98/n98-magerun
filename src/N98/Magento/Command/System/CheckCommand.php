@@ -132,7 +132,8 @@ class CheckCommand extends AbstractMagentoCommand
             'apc',
             'eaccelerator',
             'xcache',
-            'Zend Optimizer'
+            'Zend Optimizer',
+            'Zend OPcache',
         );
         $bytecodeCacheExtensionLoaded = false;
         $bytecodeCacheExtension = null;
