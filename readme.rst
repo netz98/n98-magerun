@@ -991,11 +991,11 @@ Example:
 
 .. code-block::
 
-   # This is a comment
-   cache:flush
-
    # Set multiple config
    config:set "web/cookie/cookie_domain" example.com
+
+   # This is a comment
+   cache:flush
 
 
 Optionally you can work with unix pipes.
@@ -1007,6 +1007,17 @@ Optionally you can work with unix pipes.
 .. code-block:: sh
 
    $ n98-magerun-dev script < filename
+
+It is even possible to create executable scripts:
+
+Create file `test.magerun` and make it executable (`chmod +x test.magerun`):
+
+.. code-block:: sh
+
+   #!/usr/local/bin/n98-magerun.phar script
+
+   config:set "web/cookie/cookie_domain" example.com
+   cache:flush
 
 
 Autocompletion
