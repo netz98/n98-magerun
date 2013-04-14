@@ -16,9 +16,12 @@ class ListCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
-                'command'      => $command->getName(),
-                'stores'       => 0, // admin store
-                'linetemplate' => 'prefix {url} suffix'
+                'command'          => $command->getName(),
+                'stores'           => 0, // admin store
+                'linetemplate'     => 'prefix {url} suffix',
+                '--add-categories' => true,
+                '--add-products'   => true,
+                '--add-cmspages'   => true,
             )
         );
 
