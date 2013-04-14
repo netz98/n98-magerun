@@ -3,6 +3,8 @@
 ======
 
 * New command "script" to run multiple commands in one session (Issue #117)
+* Updated composer dependencies.
+* #57 - local-config:generate should wrap values in CDATA
 * #118 Fixes for dev console
 
 ======
@@ -29,24 +31,3 @@
 
 * New command db:query to run DB queries
 * New --compression option for db:dump command. (Thanks to @mzeis for both commands)
-
-======
-1.60.2
-======
-
-* Added Mage::getBlockSingleton() and Mage::getResourceHelper() support, class rewrites support, fixed some bugs
-(Thanks to @zyava)
-
-======
-1.60.1
-======
-
-* Fix for issue #108: dev:ide:phpstorm:meta does not detect some aliases
-
-======
-1.60.0
-======
-
-* Added new command dev:ide:phpstorm:meta to generate meta file for code completion.
-* Removed windows phar version.
-* Fixed issue #105: Run without phar extension
