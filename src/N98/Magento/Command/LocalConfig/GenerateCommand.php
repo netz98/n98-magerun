@@ -32,7 +32,7 @@ class GenerateCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        $configFile = $this->_magentoRootFolder . '/app/etc/local.xml';
+        $configFile = $this->_getLocalConfigFilename();
         $configFileTemplate = $this->_magentoRootFolder . '/app/etc/local.xml.template';
         if (!file_exists($configFile)) {
             $this->writeSection($output, 'Generate Magento local.xml');
@@ -53,20 +53,20 @@ class GenerateCommand extends AbstractMagentoCommand
                 '{{date}}'               => date(\DateTime::RFC2822),
                 '{{key}}'                => md5(uniqid()),
                 '{{db_prefix}}'          => '',
-                '{{db_host}}'            => $input->getArgument('db-host'),
-                '{{db_user}}'            => $input->getArgument('db-user'),
-                '{{db_pass}}'            => $input->getArgument('db-pass'),
-                '{{db_name}}'            => $input->getArgument('db-name'),
+                '{{db_host}}'            => $this->_wrapCData($input->getArgument('db-host')),
+                '{{db_user}}'            => $this->_wrapCData($input->getArgument('db-user')),
+                '{{db_pass}}'            => $this->_wrapCData($input->getArgument('db-pass')),
+                '{{db_name}}'            => $this->_wrapCData($input->getArgument('db-name')),
                 '{{db_init_statemants}}' => 'SET NAMES utf8', // this is right -> magento has a little typo bug "statemants".
                 '{{db_model}}'           => 'mysql4',
                 '{{db_type}}'            => 'pdo_mysql',
                 '{{db_pdo_type}}'        => '',
-                '{{session_save}}'       => $input->getArgument('session-save'),
-                '{{admin_frontname}}'    => $input->getArgument('admin-frontname'),
+                '{{session_save}}'       => $this->_wrapCData($input->getArgument('session-save')),
+                '{{admin_frontname}}'    => $this->_wrapCData($input->getArgument('admin-frontname')),
             );
 
             $newFileContent = str_replace(array_keys($replace), array_values($replace), $content);
-            if (file_put_contents($this->_magentoRootFolder . '/app/etc/local.xml', $newFileContent)) {
+            if (file_put_contents($configFile, $newFileContent)) {
                 $output->writeln('<info>Generated config</info>');
             } else {
                 $output->writeln('<error>could not save config</error>');
@@ -133,5 +133,27 @@ class GenerateCommand extends AbstractMagentoCommand
             $output->writeln('<error>admin-frontname was not set.</error>');
             return;
         }
+    }
+
+    /**
+     * @return string
+     */
+    protected function _getLocalConfigFilename()
+    {
+        $configFile = $this->_magentoRootFolder . '/app/etc/local.xml';
+        return $configFile;
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    protected function _wrapCData($value)
+    {
+        if (!strstr($value, 'CDATA')) {
+            return '<![CDATA[' . $value . ']]>';
+        }
+
+        return $value;
     }
 }
