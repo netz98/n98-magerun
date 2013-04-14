@@ -1,4 +1,11 @@
 ======
+1.62.1
+======
+
+* UNIX Pipe support for script command.
+* Fix for #119 sys:check does not detect Zend Optcode Cache
+
+======
 1.62.0
 ======
 
