@@ -216,13 +216,13 @@ Or directly to stdout:
 .. code-block:: sh
 
    $ n98-magerun.phar db:dump --stdout
-   
-Use compression (gzip cli tool has to be installed):   
+
+Use compression (gzip cli tool has to be installed):
 
 .. code-block:: sh
 
-   $ n98-magerun.phar db:dump --compression="gzip" 
-   
+   $ n98-magerun.phar db:dump --compression="gzip"
+
 Stripped Database Dump
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -272,12 +272,12 @@ Options:
 .. code-block:: sh
 
    $ n98-magerun.phar db:import [--only-command] [filename]
-   
-Use decompression (gzip cli tool has to be installed):   
+
+Use decompression (gzip cli tool has to be installed):
 
 .. code-block:: sh
 
-   $ n98-magerun.phar db:import --compression="gzip" [filename]    
+   $ n98-magerun.phar db:import --compression="gzip" [filename]
 
 Database Console / MySQL Client
 """""""""""""""""""""""""""""""
@@ -300,7 +300,7 @@ Drops the database configured in local.xml.
 .. code-block:: sh
 
    $ n98-magerun.phar db:drop  [-f|--force]
-   
+
 Database Query
 """"""""""""""
 
@@ -1019,6 +1019,16 @@ Create file `test.magerun` and make it executable (`chmod +x test.magerun`):
    config:set "web/cookie/cookie_domain" example.com
    cache:flush
 
+   # Run a shell script with "!" as first char
+   ! ls -l
+
+   # Register your own variable (only key = value currently supported)
+   ${my.var}=bar
+
+   ! echo ${my.var}
+
+   # Use resolved variables from n98-magerun in shell commands
+   ! ls -l ${magento_root}/code/local
 
 Autocompletion
 --------------
