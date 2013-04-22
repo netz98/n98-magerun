@@ -7,12 +7,6 @@
 * Fixed Issue #101: n98-magerun dev:console fatal error
 
 ======
-1.63.0
-======
-
-* Added support to run shell scripts inside a magerun script.
-
-======
 1.62.1
 ======
 
