@@ -103,7 +103,7 @@ commands:
 
       - id: sales
         description: Sales data (orders, invoices, creditmemos etc)
-        tables: sales_order_aggregated* sales_order_tax* sales_flat_order* sales_flat_creditmemo_* sales_flat_invoice_* sales_flat_quote sales_recurring_* sales_refunded_* sales_payment_*
+        tables: sales_order_aggregated* sales_order_tax* sales_flat* sales_recurring_* sales_refunded_* sales_payment_*
 
       - id: customers
         description: Customer data
