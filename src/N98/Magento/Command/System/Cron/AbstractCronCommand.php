@@ -30,6 +30,10 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
     {
         $expr = (string) $job->schedule->cron_expr;
         if ($expr) {
+            if ($expr == 'always') {
+                return array('m' => '*', 'h' => '*', 'D' => '*', 'M' => '*', 'WD' => '*');
+            }
+
             $schedule = $this->_getModel('cron/schedule', 'Mage_Cron_Model_Schedule');
             $schedule->setCronExpr($expr);
             $array = $schedule->getCronExprArr();
@@ -41,6 +45,7 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
                 'WD' => $array[4]
             );
         }
+
         return array('m' => '  ', 'h' => '  ', 'D' => '  ', 'M' => '  ', 'WD' => '  ');
     }
 }
