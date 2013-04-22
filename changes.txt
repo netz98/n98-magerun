@@ -5,6 +5,7 @@
 * Shell exec support inside of n98-magerun scripts. See "script" command example in readme.
 * Fixed issue #115: db:dump --strip=@sales : does not strip shipment tables
 * Fixed Issue #101: n98-magerun dev:console fatal error
+* Issue 125: dev:log:size should be able to report on pdo_mysql.log
 
 ======
 1.62.1

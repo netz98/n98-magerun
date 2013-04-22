@@ -30,12 +30,12 @@ class SizeCommand extends AbstractLogCommand
 
             $fileName = $input->getArgument('log_filename');
             if ($fileName === null) {
-                $fileName = $this->askLogFile($output);
+                $path = $this->askLogFile($output);
+            } else {
+                $path = $this->getLogDir() . DIRECTORY_SEPARATOR . $fileName;
             }
 
-            $path = $this->getLogDir() . DIRECTORY_SEPARATOR . $fileName;
-
-            if ($this->logfileExists($fileName)) {
+            if ($this->logfileExists(basename($path))) {
                 $size = @filesize($path);
 
                 if ($size === false) {

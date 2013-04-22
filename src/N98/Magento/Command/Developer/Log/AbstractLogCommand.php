@@ -14,7 +14,16 @@ class AbstractLogCommand extends AbstractMagentoCommand
     protected function getLogFileIterator()
     {
         $finder = new Finder();
-        return $finder->files()->in($this->getLogDir());
+
+        $logDirs = array(
+            $this->getLogDir(),
+        );
+
+        if (is_dir($this->getDebugDir())) {
+            $logDirs[] = $this->getDebugDir();
+        }
+
+        return $finder->files()->in($logDirs);
     }
 
     /**
@@ -23,6 +32,14 @@ class AbstractLogCommand extends AbstractMagentoCommand
     protected function getLogDir()
     {
         return \Mage::getBaseDir('log');
+    }
+
+    /**
+     * @return string
+     */
+    protected function getDebugDir()
+    {
+        return \Mage::getBaseDir('var') . '/debug';
     }
 
     /**
@@ -44,7 +61,7 @@ class AbstractLogCommand extends AbstractMagentoCommand
         $logFiles = $this->getLogFileIterator();
         $i = 0;
         foreach ($logFiles as $logFile) {
-            $files[$i] = $logFile->getFilename();
+            $files[$i] = $logFile->getPathname();
             $question[] = '<comment>[' . ($i + 1) . ']</comment> ' . $logFile->getFilename() . PHP_EOL;
             $i++;
         }
