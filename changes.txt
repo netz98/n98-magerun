@@ -7,6 +7,12 @@
 * Fixed Issue #101: n98-magerun dev:console fatal error
 
 ======
+1.63.0
+======
+
+* Added support to run shell scripts inside a magerun script.
+
+======
 1.62.1
 ======
 
@@ -21,3 +27,28 @@
 * Updated composer dependencies.
 * #57 - local-config:generate should wrap values in CDATA
 * #118 Fixes for dev console
+
+======
+1.61.3
+======
+
+* Fix issue #114 - MetaCommand getResourceHelperMap() excludes version 1.6.2.0
+
+======
+1.61.2
+======
+
+* "dev:ide:phpstorm:meta" command: Disabled resource helper generation for old Magento versions.
+
+======
+1.61.1
+======
+
+* Fix for "dev:ide:phpstorm:meta" command for Magento CE <= 1.5 -> File generation and --stdout parameter
+
+======
+1.61.0
+======
+
+* New command db:query to run DB queries
+* New --compression option for db:dump command. (Thanks to @mzeis for both commands)

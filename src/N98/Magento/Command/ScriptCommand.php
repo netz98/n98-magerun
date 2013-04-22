@@ -11,6 +11,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ScriptCommand extends AbstractMagentoCommand
 {
+    /**
+     * @var array
+     */
+    protected $scriptVars = array();
+
     protected function configure()
     {
         $this
@@ -24,14 +29,34 @@ class ScriptCommand extends AbstractMagentoCommand
     {
         $script = $this->_getContent($input->getArgument('filename'));
         $commands = explode("\n", $script);
+        $this->initScriptVars();
         foreach ($commands as $commandString) {
             $commandString = trim($commandString);
-            if (empty($commandString) || substr($commandString, 0, 1) === '#') {
+            if (empty($commandString)) {
                 continue;
             }
-            $this->getApplication()->setAutoExit(false);
-            $input = new StringInput($commandString);
-            $this->getApplication()->run($input, $output);
+            $firstChar = substr($commandString, 0, 1);
+
+            switch ($firstChar) {
+
+                // comment
+                case '#':
+                    continue;
+                    break;
+
+                // set var
+                case '$':
+                    $this->registerVariable($commandString);
+                    break;
+
+                // run shell script
+                case '!':
+                    $this->runShellCommand($output, $commandString);
+                    break;
+
+                default:
+                    $this->runMagerunCommand($input, $output, $commandString);
+            }
         }
     }
 
@@ -48,5 +73,60 @@ class ScriptCommand extends AbstractMagentoCommand
         }
 
         return $script;
+    }
+
+    /**
+     * @param string $commandString
+     * @return void
+     */
+    protected function registerVariable($commandString)
+    {
+        if (preg_match('/^(\$\{[a-zA-Z0-9-_.]+\})=(.+)/', $commandString, $matches)) {
+            $this->scriptVars[$matches[1]] = $matches[2];
+        }
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @param                 $commandString
+     */
+    protected function runMagerunCommand(InputInterface $input, OutputInterface $output, $commandString)
+    {
+        $this->getApplication()->setAutoExit(false);
+        $input = new StringInput($commandString);
+        $this->getApplication()->run($input, $output);
+    }
+
+    /**
+     * @param $commandString
+     */
+    protected function _prepareShellCommand($commandString)
+    {
+        $commandString = ltrim($commandString, '!');
+        $commandString = str_replace(array_keys($this->scriptVars), $this->scriptVars, $commandString);
+
+        return $commandString;
+    }
+
+    protected function initScriptVars()
+    {
+        $this->scriptVars = array(
+            '${magento.root}' => $this->getApplication()->getMagentoRootFolder(),
+        );
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param                 $commandString
+     * @param                 $returnValue
+     */
+    protected function runShellCommand(OutputInterface $output, $commandString)
+    {
+        $commandString = $this->_prepareShellCommand($commandString);
+        $returnValue = shell_exec($commandString);
+        if (!empty($returnValue)) {
+            $output->writeln($returnValue);
+        }
     }
 }
