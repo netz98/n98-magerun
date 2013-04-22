@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\MagentoConnect;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -36,6 +37,14 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
                 shell_exec($this->mageScript . ' mage-setup');
             }
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return !OperatingSystem::isWindows();
     }
 
     /**

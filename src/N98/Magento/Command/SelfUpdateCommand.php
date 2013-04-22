@@ -31,6 +31,14 @@ EOT
         ;
     }
 
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->getApplication()->isPharMode();
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new ConsoleIO($input, $output, $this->getHelperSet());

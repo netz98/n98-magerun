@@ -565,22 +565,15 @@ class Application extends BaseApplication
         $this->add(new ModuleObserverListCommand());
         $this->add(new ShellCommand());
         $this->add(new ScriptCommand());
-
-        if (!OperatingSystem::isWindows()) {
-            $this->add(new MagentoConnectionListExtensionsCommand());
-            $this->add(new MagentoConnectionInstallExtensionCommand());
-            $this->add(new MagentoConnectionDownloadExtensionCommand());
-            $this->add(new MagentoConnectionUpgradeExtensionCommand());
-            $this->add(new OpenBrowserCommand());
-        }
-
+        $this->add(new MagentoConnectionListExtensionsCommand());
+        $this->add(new MagentoConnectionInstallExtensionCommand());
+        $this->add(new MagentoConnectionDownloadExtensionCommand());
+        $this->add(new MagentoConnectionUpgradeExtensionCommand());
+        $this->add(new OpenBrowserCommand());
         $this->add(new MagentoCmsPagePublishCommand());
         $this->add(new MagentoCmsBannerToggleCommand());
         $this->add(new DevelopmentConsoleCommand());
-
-        if ($this->isPharMode()) {
-            $this->add(new SelfUpdateCommand());
-        }
+        $this->add(new SelfUpdateCommand());
     }
 
     /**

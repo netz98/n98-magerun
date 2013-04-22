@@ -31,6 +31,8 @@ class OpenBrowserCommand extends AbstractMagentoCommand
         $opener = '';
         if ($os->isMacOs()) {
             $opener = 'open';
+        } elseif ($os->isWindows()) {
+            $opener = 'start';
         } else {
             // Linux
             if (exec('which xde-open')) {
