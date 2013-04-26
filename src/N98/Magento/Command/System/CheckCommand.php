@@ -41,6 +41,7 @@ class CheckCommand extends AbstractMagentoCommand
                 $output->writeln("<error>WARNING: Magento 2 requirements are not yet defined. Until then Magento 1 requirements are checked.</error>");
             }
 
+            $this->checkSettings($input, $output);
             $this->checkFilesystem($input, $output);
             $this->checkPhp($input, $output);
             $this->checkSecurity($input, $output);
@@ -178,6 +179,34 @@ class CheckCommand extends AbstractMagentoCommand
     }
 
     /**
+     * Check cookie domain
+     *
+     * @param $output
+     */
+    protected function checkSettingsCookie($output)
+    {
+        $cookieDomainErrors = 0;
+        foreach (\Mage::app()->getStores() as $store) {
+            $secureBaseUrl = \Mage::getStoreConfig('web/secure/base_url', $store);
+            $unsecureBaseUrl = \Mage::getStoreConfig('web/unsecure/base_url', $store);
+            $cookieDomain = \Mage::getStoreConfig('web/cookie/cookie_domain', $store);
+            if (!empty($cookieDomain)) {
+                if (!strpos(parse_url($secureBaseUrl, PHP_URL_HOST), $cookieDomain)
+                    || !strpos(parse_url($unsecureBaseUrl, PHP_URL_HOST), $cookieDomain)
+                ) {
+                    $output->writeln(
+                        '<error><comment>Store: ' . $store->getCode() . '</comment> Cookie Domain/BaseURL mismatch</error>'
+                    );
+                    $cookieDomainErrors++;
+                }
+            }
+        }
+        if ($cookieDomainErrors === 0) {
+            $output->writeln('<comment>Cookie Settings</comment> <info>OK</info>');
+        }
+    }
+
+    /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return int|void
@@ -215,5 +244,18 @@ class CheckCommand extends AbstractMagentoCommand
         } else {
             $output->writeln("<error>Required MySQL Storage Engine \"InnoDB\" not found!</error>");
         }
+    }
+
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return int|void
+     */
+    protected function checkSettings($input, $output)
+    {
+        $this->writeSection($output, 'Check: Settings');
+        $this->checkSettingsCookie($output);
+
+
     }
 }

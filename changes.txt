@@ -1,4 +1,12 @@
 ======
+1.64.0
+======
+
+* Added cookie domain verification to sys:check command
+* Added vendors to sys:info command
+* Updated composer dependencies
+
+======
 1.63.0
 ======
 

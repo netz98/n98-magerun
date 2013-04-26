@@ -1,8 +1,4 @@
 {
-    "_readme": [
-        "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
-    ],
     "hash": "4a8100928ee6c75e90a641a524bdd0e5",
     "packages": [
         {
@@ -11,12 +7,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "c65567447c84eb6a8c0f229c40b0865cd4dcecb5"
+                "reference": "3aa78431464a695f0c707e33413a0f81a9347a0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/c65567447c84eb6a8c0f229c40b0865cd4dcecb5",
-                "reference": "c65567447c84eb6a8c0f229c40b0865cd4dcecb5",
+                "url": "https://api.github.com/repos/composer/composer/zipball/3aa78431464a695f0c707e33413a0f81a9347a0b",
+                "reference": "3aa78431464a695f0c707e33413a0f81a9347a0b",
                 "shasum": ""
             },
             "require": {
@@ -72,7 +68,7 @@
                 "dependency",
                 "package"
             ],
-            "time": "2013-04-11 10:42:14"
+            "time": "2013-04-26 09:02:53"
         },
         {
             "name": "fzaninotto/faker",
@@ -102,6 +98,7 @@
                     "Faker": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -170,7 +167,7 @@
                 "json",
                 "schema"
             ],
-            "time": "2012-01-02 21:33:17"
+            "time": "2012-01-03 00:33:17"
         },
         {
             "name": "n98/junit-xml",
@@ -262,12 +259,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "a10a2fb156267b9b8f01d717a06979e6ebb69251"
+                "reference": "a18e75dc51abe4576f221f46e1f74057e3f2ed64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/a10a2fb156267b9b8f01d717a06979e6ebb69251",
-                "reference": "a10a2fb156267b9b8f01d717a06979e6ebb69251",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/a18e75dc51abe4576f221f46e1f74057e3f2ed64",
+                "reference": "a18e75dc51abe4576f221f46e1f74057e3f2ed64",
                 "shasum": ""
             },
             "require": {
@@ -300,7 +297,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2013-04-11 10:05:07"
+            "time": "2013-04-17 05:27:14"
         },
         {
             "name": "symfony/finder",
