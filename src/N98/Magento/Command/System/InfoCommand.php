@@ -108,8 +108,11 @@ class InfoCommand extends AbstractMagentoCommand
         $codePools = array(
             'core'      => $this->_magentoRootFolder . '/app/code/core/',
             'community' => $this->_magentoRootFolder . '/app/code/community/',
-            'local'     => $this->_magentoRootFolder . '/app/code/local/',
         );
+
+        if (is_dir($this->_magentoRootFolder . '/app/code/local/')) {
+            $codePools['local'] = $this->_magentoRootFolder . '/app/code/local/';
+        }
 
         foreach ($codePools as $codePool => $codePoolDir) {
             $finder = new Finder();

@@ -1,5 +1,9 @@
 {
-    "hash": "4a8100928ee6c75e90a641a524bdd0e5",
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "6822e5d9cb99e2f459ad28a1a6dde2d7",
     "packages": [
         {
             "name": "composer/composer",
@@ -7,19 +11,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "3aa78431464a695f0c707e33413a0f81a9347a0b"
+                "reference": "cc9dac8fe2bb7f998b2414731fe01b217c79fa7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/3aa78431464a695f0c707e33413a0f81a9347a0b",
-                "reference": "3aa78431464a695f0c707e33413a0f81a9347a0b",
+                "url": "https://api.github.com/repos/composer/composer/zipball/cc9dac8fe2bb7f998b2414731fe01b217c79fa7b",
+                "reference": "cc9dac8fe2bb7f998b2414731fe01b217c79fa7b",
                 "shasum": ""
             },
             "require": {
                 "justinrainbow/json-schema": "1.1.*",
                 "php": ">=5.3.2",
                 "seld/jsonlint": "1.*",
-                "symfony/console": ">=2.1,<3.0",
+                "symfony/console": ">=2.3,<3.0",
                 "symfony/finder": ">=2.1,<3.0",
                 "symfony/process": ">=2.1,<3.0"
             },
@@ -68,7 +72,7 @@
                 "dependency",
                 "package"
             ],
-            "time": "2013-04-26 09:02:53"
+            "time": "2013-04-26 22:31:22"
         },
         {
             "name": "fzaninotto/faker",
@@ -98,7 +102,6 @@
                     "Faker": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -167,7 +170,7 @@
                 "json",
                 "schema"
             ],
-            "time": "2012-01-03 00:33:17"
+            "time": "2012-01-02 21:33:17"
         },
         {
             "name": "n98/junit-xml",
@@ -254,26 +257,29 @@
         },
         {
             "name": "symfony/console",
-            "version": "2.2.x-dev",
+            "version": "dev-master",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "a18e75dc51abe4576f221f46e1f74057e3f2ed64"
+                "reference": "7bcef9e062cc89b893a35c67a7456d41cb50113d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/a18e75dc51abe4576f221f46e1f74057e3f2ed64",
-                "reference": "a18e75dc51abe4576f221f46e1f74057e3f2ed64",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/7bcef9e062cc89b893a35c67a7456d41cb50113d",
+                "reference": "7bcef9e062cc89b893a35c67a7456d41cb50113d",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
+            "require-dev": {
+                "symfony/event-dispatcher": ">=2.1,<3.0"
+            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.3-dev"
                 }
             },
             "autoload": {
@@ -297,7 +303,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2013-04-17 05:27:14"
+            "time": "2013-04-25 13:33:44"
         },
         {
             "name": "symfony/finder",
@@ -713,52 +719,6 @@
                 "iterator"
             ],
             "time": "2012-10-11 04:44:38"
-        },
-        {
-            "name": "phpunit/php-invoker",
-            "version": "1.1.2",
-            "source": {
-                "type": "git",
-                "url": "git://github.com/sebastianbergmann/php-invoker.git",
-                "reference": "1.1.2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/sebastianbergmann/php-invoker/zipball/1.1.2",
-                "reference": "1.1.2",
-                "shasum": ""
-            },
-            "require": {
-                "ext-pcntl": "*",
-                "php": ">=5.2.7",
-                "phpunit/php-timer": ">=1.0.1@stable"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "PHP/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                ""
-            ],
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Bergmann",
-                    "email": "sb@sebastian-bergmann.de",
-                    "role": "lead"
-                }
-            ],
-            "description": "Utility class for invoking callables with a timeout.",
-            "homepage": "http://www.phpunit.de/",
-            "keywords": [
-                "process"
-            ],
-            "time": "2012-10-05 09:20:45"
         },
         {
             "name": "phpunit/php-text-template",
