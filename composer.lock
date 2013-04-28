@@ -1,5 +1,9 @@
 {
-    "hash": "35c70e6020a3a3d736f72aefebecaa37",
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "396e9295e401147db9311970e12e1355",
     "packages": [
         {
             "name": "composer/composer",
@@ -7,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "cc9dac8fe2bb7f998b2414731fe01b217c79fa7b"
+                "reference": "823ca21e6cf9c4f4c7a13060e678e7ad32cc40a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/cc9dac8fe2bb7f998b2414731fe01b217c79fa7b",
-                "reference": "cc9dac8fe2bb7f998b2414731fe01b217c79fa7b",
+                "url": "https://api.github.com/repos/composer/composer/zipball/823ca21e6cf9c4f4c7a13060e678e7ad32cc40a4",
+                "reference": "823ca21e6cf9c4f4c7a13060e678e7ad32cc40a4",
                 "shasum": ""
             },
             "require": {
@@ -68,7 +72,7 @@
                 "dependency",
                 "package"
             ],
-            "time": "2013-04-26 22:31:22"
+            "time": "2013-04-28 15:07:29"
         },
         {
             "name": "fzaninotto/faker",
@@ -125,7 +129,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/justinrainbow/json-schema/zipball/v1.1.0",
+                "url": "https://github.com/justinrainbow/json-schema/archive/v1.1.0.zip",
                 "reference": "v1.1.0",
                 "shasum": ""
             },
@@ -138,6 +142,7 @@
                     "JsonSchema": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "NewBSD"
             ],
