@@ -51,6 +51,8 @@ class ApplicationTest extends TestCase
         $testDummyCommand = $application->find('n98mageruntest:test:dummy');
         $this->assertInstanceOf('\N98MagerunTest\TestDummyCommand', $testDummyCommand);
 
+        $this->assertTrue($application->getDefinition()->hasOption('root-dir'));
+
         // check alias
         $this->assertInstanceOf('\N98\Magento\Command\Cache\FlushCommand', $application->find('cf'));
     }

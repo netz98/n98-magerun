@@ -83,6 +83,7 @@ use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
@@ -104,7 +105,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.64.1';
+    const APP_VERSION = '1.65.0';
 
     /**
      * @var string
@@ -158,18 +159,41 @@ class Application extends BaseApplication
     }
 
     /**
+     * @return \Symfony\Component\Console\Input\InputDefinition|void
+     */
+    protected function getDefaultInputDefinition()
+    {
+        $inputDefinition = parent::getDefaultInputDefinition();
+        $rootDirOption = new InputOption(
+            '--root-dir',
+            '',
+            InputOption::VALUE_OPTIONAL,
+            'Force magento root dir. No auto detection'
+        );
+        $inputDefinition->addOption($rootDirOption);
+
+        return $inputDefinition;
+    }
+
+
+    /**
      * Search for magento root folder
-     *
-     * @param OutputInterface $output
-     * @param bool $silent print debug messages
      */
     public function detectMagento()
     {
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            $folder = exec('@echo %cd%'); // @TODO not currently tested!!!
+
+        $specialGlobalOptions = getopt('', array('root-dir:'));
+
+        if (count($specialGlobalOptions) > 0) {
+            $folder = realpath($specialGlobalOptions['root-dir']);
         } else {
-            $folder = exec('pwd');
+            if (OperatingSystem::isWindows()) {
+                $folder = exec('@echo %cd%'); // @TODO not currently tested!!!
+            } else {
+                $folder = exec('pwd');
+            }
         }
+
 
         $folders = array();
         $folderParts = explode(DIRECTORY_SEPARATOR, $folder);
