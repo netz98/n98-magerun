@@ -186,12 +186,15 @@ class Application extends BaseApplication
 
         if (count($specialGlobalOptions) > 0) {
             $folder = realpath($specialGlobalOptions['root-dir']);
-        } else {
-            if (OperatingSystem::isWindows()) {
-                $folder = exec('@echo %cd%'); // @TODO not currently tested!!!
-            } else {
-                $folder = exec('pwd');
+            if (is_dir($folder)) {
+                \chdir($folder);
             }
+        }
+
+        if (OperatingSystem::isWindows()) {
+            $folder = exec('@echo %cd%'); // @TODO not currently tested!!!
+        } else {
+            $folder = exec('pwd');
         }
 
 
