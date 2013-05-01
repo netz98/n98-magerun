@@ -179,34 +179,6 @@ class CheckCommand extends AbstractMagentoCommand
     }
 
     /**
-     * Check cookie domain
-     *
-     * @param $output
-     */
-    protected function checkSettingsCookie($output)
-    {
-        $cookieDomainErrors = 0;
-        foreach (\Mage::app()->getStores() as $store) {
-            $secureBaseUrl = \Mage::getStoreConfig('web/secure/base_url', $store);
-            $unsecureBaseUrl = \Mage::getStoreConfig('web/unsecure/base_url', $store);
-            $cookieDomain = \Mage::getStoreConfig('web/cookie/cookie_domain', $store);
-            if (!empty($cookieDomain)) {
-                if (!strpos(parse_url($secureBaseUrl, PHP_URL_HOST), $cookieDomain)
-                    || !strpos(parse_url($unsecureBaseUrl, PHP_URL_HOST), $cookieDomain)
-                ) {
-                    $output->writeln(
-                        '<error><comment>Store: ' . $store->getCode() . '</comment> Cookie Domain/BaseURL mismatch</error>'
-                    );
-                    $cookieDomainErrors++;
-                }
-            }
-        }
-        if ($cookieDomainErrors === 0) {
-            $output->writeln('<comment>Cookie Settings</comment> <info>OK</info>');
-        }
-    }
-
-    /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return int|void
@@ -254,8 +226,80 @@ class CheckCommand extends AbstractMagentoCommand
     protected function checkSettings($input, $output)
     {
         $this->writeSection($output, 'Check: Settings');
+        $this->checkSettingsBaseUrl($output);
         $this->checkSettingsCookie($output);
+    }
 
+    /**
+     * Check cookie domain
+     *
+     * @param $output
+     */
+    protected function checkSettingsCookie($output)
+    {
+        $check = function($value, $store) {
+            $cookieDomain = \Mage::getStoreConfig('web/cookie/cookie_domain', $store);
 
+            $ok = true;
+            if (!empty($cookieDomain)) {
+                $ok = !strpos(parse_url($value, PHP_URL_HOST), $cookieDomain);
+            }
+
+            return $ok;
+        };
+
+        $this->_checkSetting(
+            $output,
+            'Cookie Domain (unsecure)',
+            'web/unsecure/base_url',
+            'Cookie Domain and Unsecure BaseURL (http) does not match',
+            $check
+        );
+
+        $this->_checkSetting(
+            $output,
+            'Cookie Domain (secure)',
+            'web/secure/base_url',
+            'Cookie Domain and Secure BaseURL (https) does not match',
+            $check
+        );
+    }
+
+    /**
+     * @param $output
+     */
+    protected function checkSettingsBaseUrl($output)
+    {
+        $errorMessage = 'localhost should not be used as hostname. <info>Hostname must contain a dot</info>';
+        $check = function($value, $store) {
+            return parse_url($value, PHP_URL_HOST) !== 'localhost';
+        };
+
+        $this->_checkSetting($output, 'Unsecure BaseURL', 'web/unsecure/base_url', $errorMessage, $check);
+        $this->_checkSetting($output, 'Secure BaseURL', 'web/secure/base_url', $errorMessage, $check);
+    }
+
+    /**
+     * @param $output
+     * @param $configPath
+     * @param Closure $check
+     * @param $errorMessage
+     * @param $checkType
+     */
+    protected function _checkSetting($output, $checkType, $configPath, $errorMessage, \Closure $check)
+    {
+        $errors = 0;
+        foreach (\Mage::app()->getStores() as $store) {
+            $configValue = \Mage::getStoreConfig($configPath, $store);
+            if (!$check($configValue, $store)) {
+                $output->writeln(
+                    '<error><comment>Store: ' . $store->getCode() . '</comment> ' . $errorMessage . '</error>'
+                );
+                $errors++;
+            }
+        }
+        if ($errors === 0) {
+            $output->writeln('<comment>' . $checkType . '</comment> <info>OK</info>');
+        }
     }
 }

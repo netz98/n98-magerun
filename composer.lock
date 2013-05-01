@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "823ca21e6cf9c4f4c7a13060e678e7ad32cc40a4"
+                "reference": "29fcca8595c8c19ebb4d01ae993fa868d53f181d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/823ca21e6cf9c4f4c7a13060e678e7ad32cc40a4",
-                "reference": "823ca21e6cf9c4f4c7a13060e678e7ad32cc40a4",
+                "url": "https://api.github.com/repos/composer/composer/zipball/29fcca8595c8c19ebb4d01ae993fa868d53f181d",
+                "reference": "29fcca8595c8c19ebb4d01ae993fa868d53f181d",
                 "shasum": ""
             },
             "require": {
@@ -72,7 +72,7 @@
                 "dependency",
                 "package"
             ],
-            "time": "2013-04-28 15:07:29"
+            "time": "2013-04-30 10:14:27"
         },
         {
             "name": "fzaninotto/faker",
@@ -264,12 +264,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "7bcef9e062cc89b893a35c67a7456d41cb50113d"
+                "reference": "23d784fe28aecc50d671eb9596b17b920e158e5f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/7bcef9e062cc89b893a35c67a7456d41cb50113d",
-                "reference": "7bcef9e062cc89b893a35c67a7456d41cb50113d",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/23d784fe28aecc50d671eb9596b17b920e158e5f",
+                "reference": "23d784fe28aecc50d671eb9596b17b920e158e5f",
                 "shasum": ""
             },
             "require": {
@@ -305,7 +305,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2013-04-25 13:33:44"
+            "time": "2013-04-30 07:16:44"
         },
         {
             "name": "symfony/finder",
