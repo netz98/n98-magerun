@@ -65,13 +65,13 @@ EOT
                 ));
             }
 
-            $collection->addOrder('path', \Mage_Core_Model_Resource_Db_Collection_Abstract::SORT_ORDER_ASC);
+            $collection->addOrder('path', 'ASC');
 
             // sort according to the config overwrite order
             // trick to force order default -> (f)website -> store , because f comes after d and before s
-            $collection->addOrder('REPLACE(scope, "website", "fwebsite")', \Mage_Core_Model_Resource_Db_Collection_Abstract::SORT_ORDER_ASC);
+            $collection->addOrder('REPLACE(scope, "website", "fwebsite")', 'ASC');
 
-            $collection->addOrder('scope_id', \Mage_Core_Model_Resource_Db_Collection_Abstract::SORT_ORDER_ASC);
+            $collection->addOrder('scope_id', 'ASC');
 
             if($collection->count() == 0) {
                 $output->writeln(sprintf("Couldn't find a config value for \"%s\"", $input->getArgument('path')));
