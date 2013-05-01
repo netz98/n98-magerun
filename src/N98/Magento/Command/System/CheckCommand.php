@@ -41,6 +41,7 @@ class CheckCommand extends AbstractMagentoCommand
                 $output->writeln("<error>WARNING: Magento 2 requirements are not yet defined. Until then Magento 1 requirements are checked.</error>");
             }
 
+            $this->checkSettings($input, $output);
             $this->checkFilesystem($input, $output);
             $this->checkPhp($input, $output);
             $this->checkSecurity($input, $output);
@@ -214,6 +215,91 @@ class CheckCommand extends AbstractMagentoCommand
             $output->writeln("<info>Required MySQL Storage Engine <comment>InnoDB</comment> found.</info>");
         } else {
             $output->writeln("<error>Required MySQL Storage Engine \"InnoDB\" not found!</error>");
+        }
+    }
+
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return int|void
+     */
+    protected function checkSettings($input, $output)
+    {
+        $this->writeSection($output, 'Check: Settings');
+        $this->checkSettingsBaseUrl($output);
+        $this->checkSettingsCookie($output);
+    }
+
+    /**
+     * Check cookie domain
+     *
+     * @param $output
+     */
+    protected function checkSettingsCookie($output)
+    {
+        $check = function($value, $store) {
+            $cookieDomain = \Mage::getStoreConfig('web/cookie/cookie_domain', $store);
+
+            $ok = true;
+            if (!empty($cookieDomain)) {
+                $ok = !strpos(parse_url($value, PHP_URL_HOST), $cookieDomain);
+            }
+
+            return $ok;
+        };
+
+        $this->_checkSetting(
+            $output,
+            'Cookie Domain (unsecure)',
+            'web/unsecure/base_url',
+            'Cookie Domain and Unsecure BaseURL (http) does not match',
+            $check
+        );
+
+        $this->_checkSetting(
+            $output,
+            'Cookie Domain (secure)',
+            'web/secure/base_url',
+            'Cookie Domain and Secure BaseURL (https) does not match',
+            $check
+        );
+    }
+
+    /**
+     * @param $output
+     */
+    protected function checkSettingsBaseUrl($output)
+    {
+        $errorMessage = 'localhost should not be used as hostname. <info>Hostname must contain a dot</info>';
+        $check = function($value, $store) {
+            return parse_url($value, PHP_URL_HOST) !== 'localhost';
+        };
+
+        $this->_checkSetting($output, 'Unsecure BaseURL', 'web/unsecure/base_url', $errorMessage, $check);
+        $this->_checkSetting($output, 'Secure BaseURL', 'web/secure/base_url', $errorMessage, $check);
+    }
+
+    /**
+     * @param $output
+     * @param $configPath
+     * @param Closure $check
+     * @param $errorMessage
+     * @param $checkType
+     */
+    protected function _checkSetting($output, $checkType, $configPath, $errorMessage, \Closure $check)
+    {
+        $errors = 0;
+        foreach (\Mage::app()->getStores() as $store) {
+            $configValue = \Mage::getStoreConfig($configPath, $store);
+            if (!$check($configValue, $store)) {
+                $output->writeln(
+                    '<error><comment>Store: ' . $store->getCode() . '</comment> ' . $errorMessage . '</error>'
+                );
+                $errors++;
+            }
+        }
+        if ($errors === 0) {
+            $output->writeln('<comment>' . $checkType . '</comment> <info>OK</info>');
         }
     }
 }

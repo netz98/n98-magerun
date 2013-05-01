@@ -23,9 +23,15 @@ class TestCase extends \PHPUnit_Framework_TestCase
                 );
             }
 
-            $this->application = $this->getMock('N98\Magento\Application', array('getMagentoRootFolder', 'detectMagento'));
+            $this->application = $this->getMock(
+                'N98\Magento\Application',
+                array('getMagentoRootFolder', 'detectMagento')
+            );
             $this->application->init();
             $this->application->expects($this->any())->method('getMagentoRootFolder')->will($this->returnValue($root));
+            $this->application->initMagento();
+
+            spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
         }
 
         return $this->application;

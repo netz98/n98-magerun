@@ -6,26 +6,20 @@
         "issues": "https://github.com/netz98/n98-magerun/issues"
     },
     "homepage": "http://netz98.github.com/n98-magerun/",
-    "keywords": ["magento", "installer"],
+    "keywords": ["magento", "installer", "cli"],
     "require": {
         "php": ">=5.3.3",
-        "symfony/console": "2.2.x-dev",
+        "symfony/console": "~2.3@dev",
         "symfony/finder": "2.2.1",
         "symfony/yaml": "2.2.1",
         "symfony/process": "2.2.1",
         "symfony/validator": "2.2.1",
-        "justinrainbow/json-schema": "1.1.*",
-        "seld/jsonlint": "1.*",
         "n98/junit-xml": "dev-master",
         "fzaninotto/faker": "1.1.0",
         "composer/composer": "dev-master"
     },
     "require-dev": {
-        "phpunit/phpunit": "3.7.19",
-        "phpunit/phpunit-story": "1.0.2",
-        "phpunit/phpunit-selenium": "1.2.12",
-        "phpunit/dbunit": "1.2.3",
-        "phpunit/php-invoker": "1.1.2"
+        "phpunit/phpunit": "3.7.19"
     },
     "autoload": {
         "psr-0": {

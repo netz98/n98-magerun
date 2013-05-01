@@ -79,7 +79,11 @@ abstract class AbstractMagentoCommand extends Command
             $this->_initWebsites();
         }
 
-        return $this->_websiteCodeMap[$websiteId];
+        if (isset($this->_websiteCodeMap[$websiteId])) {
+            return $this->_websiteCodeMap[$websiteId];
+        }
+
+        return '';
     }
 
     /**

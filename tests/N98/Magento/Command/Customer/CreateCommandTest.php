@@ -12,6 +12,10 @@ class CreateCommandTest extends TestCase
         $command = $this->_getCommand();
         $generatedEmail = uniqid() . '@example.com';
 
+        $this->getApplication()->initMagento();
+
+        $website = \Mage::app()->getWebsite();
+
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
@@ -20,6 +24,7 @@ class CreateCommandTest extends TestCase
                 'password'  => 'password123',
                 'firstname' => 'John',
                 'lastname'  => 'Doe',
+                'website'   => $website->getCode(),
             )
         );
     

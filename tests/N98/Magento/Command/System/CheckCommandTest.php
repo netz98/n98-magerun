@@ -16,6 +16,7 @@ class CheckCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
+        $this->assertRegExp('/Check: Settings/', $commandTester->getDisplay());
         $this->assertRegExp('/Check: Filesystem/', $commandTester->getDisplay());
         $this->assertRegExp('/Check: PHP/', $commandTester->getDisplay());
         $this->assertRegExp('/Check: Security/', $commandTester->getDisplay());

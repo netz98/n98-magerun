@@ -1028,7 +1028,7 @@ Create file `test.magerun` and make it executable (`chmod +x test.magerun`):
    ! echo ${my.var}
 
    # Use resolved variables from n98-magerun in shell commands
-   ! ls -l ${magento_root}/code/local
+   ! ls -l ${magento.root}/code/local
 
 Autocompletion
 --------------
