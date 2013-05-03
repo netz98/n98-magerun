@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Developer;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
