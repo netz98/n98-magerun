@@ -31,17 +31,19 @@ commands:
 
       - name: magento-mirror-1.4.2.0
         version: 1.4.2.0
-        dist:
-          url: https://github.com/LokeyCoding/magento-mirror/archive/1.4.2.0.zip
-          type: zip
+        source:
+          url: git://github.com/LokeyCoding/magento-mirror.git
+          type: git
+          reference: magento-1.4
         extra:
           sample-data: sample-data-1.1.2
 
       - name: magento-mirror-1.5.1.0
         version: 1.5.1.0
-        dist:
-          url: https://github.com/LokeyCoding/magento-mirror/archive/1.5.1.0.zip
-          type: zip
+        source:
+          url: git://github.com/LokeyCoding/magento-mirror.git
+          type: git
+          reference: magento-1.5
         extra:
           sample-data: sample-data-1.1.2
 
