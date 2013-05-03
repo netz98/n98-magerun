@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Database;
 
+use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -27,6 +28,14 @@ class DumpCommand extends AbstractDatabaseCommand
             ->addOption('strip', null, InputOption::VALUE_OPTIONAL, 'Tables to strip (dump only structure of those tables)')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not prompt if all options are defined')
             ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return !OperatingSystem::isWindows();
     }
 
     public function getTableDefinitions()

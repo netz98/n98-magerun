@@ -21,6 +21,11 @@ class ConsoleCommand extends AbstractMagentoCommand
      */
     public function isEnabled()
     {
+        if (OperatingSystem::isWindows()) {
+
+            return false;
+        }
+
         if ($this->getApplication()->isPharMode()) {
             $pharFile = $_SERVER['argv'][0];
             return substr($pharFile, -5) == '.phar';
