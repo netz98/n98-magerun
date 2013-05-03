@@ -179,6 +179,7 @@ class DumpCommand extends AbstractDatabaseCommand
         if (!$stripTables) {
             $exec = 'mysqldump ' . $dumpOptions . $this->getMysqlClientToolConnectionString();
             $exec = $compressor->getCompressingCommand($exec);
+            $exec .= $this->postDumpPipeCommands();
             if (!$input->getOption('stdout')) {
                 $exec .= ' > ' . escapeshellarg($fileName);
             }
@@ -188,6 +189,7 @@ class DumpCommand extends AbstractDatabaseCommand
             $exec = 'mysqldump ' . $dumpOptions . '--no-data ' . $this->getMysqlClientToolConnectionString();
             $exec .= ' ' . implode(' ', $stripTables);
             $exec = $compressor->getCompressingCommand($exec);
+            $exec .= $this->postDumpPipeCommands();
             if (!$input->getOption('stdout')) {
                 $exec .= ' > ' . escapeshellarg($fileName);
             }
@@ -240,6 +242,16 @@ class DumpCommand extends AbstractDatabaseCommand
     }
 
     /**
+     * Commands which filter mysql data. Piped to mysqldump command
+     *
+     * @return string
+     */
+    protected function postDumpPipeCommands()
+    {
+        return ' | sed -e ' . escapeshellarg('s/DEFINER[ ]*=[ ]*[^*]*\*/\*/');
+    }
+
+    /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param \N98\Magento\Command\Database\Compressor $compressor
@@ -267,9 +279,9 @@ class DumpCommand extends AbstractDatabaseCommand
                 }
             }
         }
-        
+
         $fileName = $compressor->getFileName($fileName);
-        
+
         return $fileName;
     }
 }
