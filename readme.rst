@@ -20,10 +20,10 @@ Build Status
 
 Compatibility
 -------------
-The tools are currently only tested with PHP 5.3.10 within Ubuntu 12.04 Linux and on Mac OS X.
-If you are a Windows user you can help us with a quick test.
+The tools will automatically be tested for multiple PHP versions (5.3, 5.4, 5.5). It's currently currently running in various Linux distributions and Mac OS X.
+Microsoft Windows is not fully supported (some Commands like `db:dump` or `install` are excluded).
 
-The tools should work with Magento 2 development branch.
+The tool partially works with Magento 2 development branch.
 
 
 Installation
