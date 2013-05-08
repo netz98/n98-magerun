@@ -187,8 +187,8 @@ class DumpCommand extends AbstractDatabaseCommand
 
         if (!$stripTables) {
             $exec = 'mysqldump ' . $dumpOptions . $this->getMysqlClientToolConnectionString();
-            $exec = $compressor->getCompressingCommand($exec);
             $exec .= $this->postDumpPipeCommands();
+            $exec = $compressor->getCompressingCommand($exec);
             if (!$input->getOption('stdout')) {
                 $exec .= ' > ' . escapeshellarg($fileName);
             }
@@ -197,8 +197,8 @@ class DumpCommand extends AbstractDatabaseCommand
             // dump structure for strip-tables
             $exec = 'mysqldump ' . $dumpOptions . '--no-data ' . $this->getMysqlClientToolConnectionString();
             $exec .= ' ' . implode(' ', $stripTables);
-            $exec = $compressor->getCompressingCommand($exec);
             $exec .= $this->postDumpPipeCommands();
+            $exec = $compressor->getCompressingCommand($exec);
             if (!$input->getOption('stdout')) {
                 $exec .= ' > ' . escapeshellarg($fileName);
             }
@@ -211,6 +211,7 @@ class DumpCommand extends AbstractDatabaseCommand
 
             // dump data for all other tables
             $exec = 'mysqldump ' . $dumpOptions . $ignore . $this->getMysqlClientToolConnectionString();
+            $exec .= $this->postDumpPipeCommands();
             $exec = $compressor->getCompressingCommand($exec);
             if (!$input->getOption('stdout')) {
                 $exec .= ' >> ' . escapeshellarg($fileName);
