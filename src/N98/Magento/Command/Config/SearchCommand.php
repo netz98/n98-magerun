@@ -50,10 +50,12 @@ EOT
         foreach($matches as $match)
         {            
             $output->writeln('Found a <info>' . $match->type . '</info> with a match');            
-            $output->writeln($this->_getPathFromMatch($match));
+            $output->writeln('  ' . $this->_getPhpMageStoreConfigPathFromMatch($match));
+            $output->writeln('  ' . $this->_getPathFromMatch($match));
+            
             if($match->match_type == 'comment')
             {
-                $output->writeln(
+                $output->writeln('  ' .
                     str_ireplace(
                         $search_string,
                         '<info>'.$search_string.'</info>',
@@ -63,6 +65,34 @@ EOT
             }
             $output->writeln('');
         }
+    }
+    
+    protected function _getPhpMageStoreConfigPathFromMatch($match)
+    {
+        $path = '';
+        switch($match->type)
+        {
+            case 'section':                
+                $path = $match->node->getName();
+                break;
+            case 'field':
+                $parent = current($match->node->xpath('parent::*'));
+                $parent = current($parent->xpath('parent::*'));            
+                
+                $grand  = current($parent->xpath('parent::*'));
+                $grand  = current($grand->xpath('parent::*'));
+                
+                $path = $grand->getName() . '/' . $parent->getName() . '/' . $match->node->getName();
+                break;
+            case 'group':
+                $parent = current($match->node->xpath('parent::*'));
+                $parent = current($parent->xpath('parent::*'));
+                $path = $parent->getName() . '/' . $match->node->getName();
+                break;
+            default:
+                exit(__METHOD__);
+        }    
+        return "Mage::getStoreConfig('".$path."')";
     }
     
     protected function _getPathFromMatch($match)
