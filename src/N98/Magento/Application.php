@@ -16,6 +16,7 @@ use N98\Magento\Command\Cms\Page\PublishCommand as MagentoCmsPagePublishCommand;
 use N98\Magento\Command\Config\DumpCommand as ConfigPrintCommand;
 use N98\Magento\Command\Config\GetCommand as ConfigGetCommand;
 use N98\Magento\Command\Config\SetCommand as ConfigSetCommand;
+use N98\Magento\Command\Config\SearchCommand as ConfigSearchCommand;
 use N98\Magento\Command\ConfigurationLoader;
 use N98\Magento\Command\Customer\ChangePasswordCommand as CustomerChangePasswordCommand;
 use N98\Magento\Command\Customer\CreateCommand as CustomerCreateCommand;
@@ -541,6 +542,7 @@ class Application extends BaseApplication
         $this->add(new ConfigPrintCommand());
         $this->add(new ConfigGetCommand());
         $this->add(new ConfigSetCommand());
+        $this->add(new ConfigSearchCommand());
         $this->add(new CacheCleanCommand());
         $this->add(new CacheFlushCommand());
         $this->add(new CacheListCommand());
