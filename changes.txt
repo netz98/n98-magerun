@@ -1,3 +1,13 @@
+**************
+RECENT CHANGES
+**************
+
+======
+1.65.1
+======
+
+* Fix: DEFINER removal in db:dump not working for strip and zip
+
 ======
 1.65.0
 ======
@@ -6,26 +16,6 @@
 * Fixed issue #130 - Remove DEFINER statements from db dumps
 * install command: Changed download URL of magento-mirror-1.4 and magento-mirror-1.5
 
-======
-1.64.1
-======
-
-* Fixed some commands to be compatible with Magento 1.4 and Magento 1.5 branches
-
-======
-1.64.0
-======
-
-* Added BaseURL, cookie domain verification to sys:check command
-* Added vendors to sys:info command
-* Updated composer dependencies
-
-======
-1.63.0
-======
-
-* Shell exec support inside of n98-magerun scripts. See "script" command example in readme.
-* Issue 125: dev:log:size should be able to report on pdo_mysql.log
-* Fixed issue #115 - db:dump --strip=@sales : does not strip shipment tables
-* Fixed issue #101 - n98-magerun dev:console fatal error
-* Fixed issue 121 - sys:cron:list throws error in Magento EE 1.13
+-----------------------------------------
+SEE FULL CHANGELOG: http://bit.ly/10IDU1H
+-----------------------------------------
