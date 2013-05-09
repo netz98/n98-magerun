@@ -6,7 +6,7 @@ RECENT CHANGES
 1.65.1
 ======
 
-* Fix: DEFINER removal in db:dump not working for strip and zip
+* Fix: DEFINER removal in db:dump not working for strip and zip (by @s3lf)
 
 ======
 1.65.0
