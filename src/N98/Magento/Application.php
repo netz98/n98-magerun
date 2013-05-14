@@ -602,6 +602,7 @@ class Application extends BaseApplication
         $this->add(new MagentoCmsBannerToggleCommand());
         $this->add(new DevelopmentConsoleCommand());
         $this->add(new SelfUpdateCommand());
+        $this->add(new \N98\Magento\Command\Developer\AttributeProductCommand());
     }
 
     /**
