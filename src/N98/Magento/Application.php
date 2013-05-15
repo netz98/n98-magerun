@@ -335,6 +335,33 @@ class Application extends BaseApplication
         return $this->_isPharMode;
     }
 
+    public function checkVarDir(OutputInterface $output)
+    {
+        $configOptions = new \Mage_Core_Model_Config_Options();
+
+        $tempVarDir = $configOptions->getSysTmpDir().DS.'magento'.DS.'var';
+        $currentVarDir = $configOptions->getVarDir();
+
+        if (is_dir($tempVarDir)) {
+            if ($currentVarDir == $tempVarDir) {
+                // no too bad - magerun seems to use the same folder which Magento actually uses
+                // but it still might not be intended to run at /tmp/magento
+                // but we might add a check here if there are cache files present
+            } else {
+                $output->writeln('<error>Possible configuration problem</error>');
+                $output->writeln('');
+                $output->writeln(sprintf('n98-magerun is currently using the var-folder <comment>%s</comment>, but on your system the folder <comment>%s</comment> exists.', $currentVarDir, $tempVarDir));
+                $output->writeln(sprintf('This could indicate that the Magento system on the webserver is using the temporary fallback directory <comment>%s</comment>.', $tempVarDir));
+                $output->writeln(sprintf('In the result cache clearing might not effect your website, as magerun is using a different folder.'));
+                $output->writeln(sprintf('If this is the case, make sure that your webserver can access <comment>%s</comment>', $currentVarDir));
+                $output->writeln('See also: https://github.com/netz98/n98-magerun/wiki/File-system-permissions');
+                $output->writeln('---------------------------------------------------');
+
+                return false;
+            }
+        }
+    }
+
     public function initMagento()
     {
         if ($this->getMagentoRootFolder() !== null) {
@@ -357,6 +384,7 @@ class Application extends BaseApplication
                 require_once $this->getMagentoRootFolder() . '/app/Mage.php';
                 \Mage::app('admin');
             }
+
             return true;
         }
 

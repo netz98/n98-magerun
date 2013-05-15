@@ -35,7 +35,7 @@ class CheckCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento($output, true)) {
+        if ($this->initMagento($output, $output, true)) {
 
             if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
                 $output->writeln("<error>WARNING: Magento 2 requirements are not yet defined. Until then Magento 1 requirements are checked.</error>");

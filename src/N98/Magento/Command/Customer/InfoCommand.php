@@ -33,7 +33,7 @@ class InfoCommand extends AbstractCustomerCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento()) {
+        if ($this->initMagento($output)) {
             $email = $this->getHelper('parameter')->askEmail($input, $output);
             $website = $this->getHelper('parameter')->askWebsite($input, $output);
 

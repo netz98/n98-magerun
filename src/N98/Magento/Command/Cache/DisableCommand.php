@@ -25,7 +25,7 @@ class DisableCommand extends AbstractCacheCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
+        if ($this->initMagento($output)) {
             $allTypes = \Mage::app()->useCache();
             $cacheTypes = array_keys($this->getCoreHelper()->getCacheTypes());
             $enable = array();

@@ -33,7 +33,7 @@ class RunCommand extends AbstractCronCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
+        if ($this->initMagento($output)) {
 
             $jobCode = $input->getArgument('job');
             if (!$jobCode) {

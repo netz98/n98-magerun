@@ -30,7 +30,7 @@ class CreateCommand extends AbstractCustomerCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
+        if ($this->initMagento($output)) {
 
             $dialog = $this->getHelperSet()->get('dialog');
 

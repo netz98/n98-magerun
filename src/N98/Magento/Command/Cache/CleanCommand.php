@@ -26,7 +26,7 @@ class CleanCommand extends AbstractCacheCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
+        if ($this->initMagento($output)) {
             $allTypes = \Mage::app()->useCache();
             foreach(array_keys($allTypes) as $type) {
                 if ($input->getArgument('type') == '' || $input->getArgument('type') == $type) {

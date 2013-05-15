@@ -32,7 +32,7 @@ class HistoryCommand extends AbstractMagentoCommand
         $this->detectMagento($output, true);
 
         $this->writeSection($output, 'Last executed jobs');
-        $this->initMagento();
+        $this->initMagento($output);
 
         $collection = \Mage::getModel('cron/schedule')->getCollection();
         $collection->addFieldToFilter('status', array('neq' => \Mage_Cron_Model_Schedule::STATUS_PENDING))
