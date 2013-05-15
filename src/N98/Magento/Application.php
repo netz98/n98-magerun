@@ -344,19 +344,17 @@ class Application extends BaseApplication
 
         if (is_dir($tempVarDir)) {
             if ($currentVarDir == $tempVarDir) {
-                // no too bad - magerun seems to use the same folder which Magento actually uses
-                // but it still might not be intended to run at /tmp/magento
-                // but we might add a check here if there are cache files present
-            } else {
-                $output->writeln('<error>Possible configuration problem</error>');
+                $output->writeln(sprintf('<error>Fallback folder %s is used in n98-magerun</error>', $tempVarDir));
                 $output->writeln('');
-                $output->writeln(sprintf('n98-magerun is currently using the var-folder <comment>%s</comment>, but on your system the folder <comment>%s</comment> exists.', $currentVarDir, $tempVarDir));
-                $output->writeln(sprintf('This could indicate that the Magento system on the webserver is using the temporary fallback directory <comment>%s</comment>.', $tempVarDir));
-                $output->writeln(sprintf('In the result cache clearing might not effect your website, as magerun is using a different folder.'));
-                $output->writeln(sprintf('If this is the case, make sure that your webserver can access <comment>%s</comment>', $currentVarDir));
-                $output->writeln('See also: https://github.com/netz98/n98-magerun/wiki/File-system-permissions');
-                $output->writeln('---------------------------------------------------');
-
+                $output->writeln('n98-magerun is using the fallback folder. If there is another folder configured for Magento, this can cause serious problems.');
+                $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
+                $output->writeln('');
+            } else {
+                $output->writeln(sprintf('<error>Folder %s found, but not used in n98-magerun</error>', $tempVarDir));
+                $output->writeln('');
+                $output->writeln(sprintf('This might cause serious problems. n98-magerun is using the configured var-folder <comment>%s</comment>', $currentVarDir));
+                $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
+                $output->writeln('');
                 return false;
             }
         }
