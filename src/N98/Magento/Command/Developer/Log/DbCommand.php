@@ -36,7 +36,7 @@ class DbCommand extends AbstractLogCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        $this->initMagento();
+        $this->initMagento($output);
 
         $output->writeln("<info>Looking in " . $this->_getVarienAdapterPhpFile() . "</info>");
 

@@ -32,7 +32,7 @@ class ListCommand extends AbstractMagentoCommand
         $this->detectMagento($output, true);
 
         $this->writeSection($output, 'Magento Stores');
-        $this->initMagento();
+        $this->initMagento($output);
 
         foreach (\Mage::app()->getStores() as $store) {
             $table[$store->getId()] = array(

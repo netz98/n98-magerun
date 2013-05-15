@@ -34,7 +34,7 @@ class InfoCommand extends AbstractMagentoCommand
 
         $this->writeSection($output, 'Magento System Information');
 
-        $this->initMagento();
+        $this->initMagento($output);
 
         $this->infos['Version'] = \Mage::getVersion();
         $this->infos['Edition'] = ($this->_magentoEnterprise ? 'Enterprise' : 'Community');

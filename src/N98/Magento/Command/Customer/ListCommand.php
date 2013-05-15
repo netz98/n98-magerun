@@ -26,7 +26,7 @@ class ListCommand extends AbstractCustomerCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
+        if ($this->initMagento($output)) {
 
             $config = $this->getCommandConfig();
 

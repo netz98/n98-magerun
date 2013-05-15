@@ -30,7 +30,7 @@ class InfoCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento()) {
+        if ($this->initMagento($output)) {
         }
     }
 }

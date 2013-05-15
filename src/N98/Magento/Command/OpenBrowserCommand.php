@@ -49,7 +49,7 @@ class OpenBrowserCommand extends AbstractMagentoCommand
         }
 
         $this->detectMagento($output);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento($output, $output)) {
             $store = $this->getHelperSet()->get('parameter')->askStore($input, $output);
             $url = $store->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK) . '?___store=' . $store->getCode();
             $output->writeln('Opening URL <comment>' . $url . '</comment> in browser');

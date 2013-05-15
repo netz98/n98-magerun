@@ -46,7 +46,7 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
+        if ($this->initMagento($output)) {
             /* @var $collection \Mage_Core_Model_Resource_Db_Collection_Abstract */
             $collection = $this->_getConfigDataModel()->getCollection();
             $searchPath = $input->getArgument('path');

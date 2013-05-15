@@ -26,7 +26,7 @@ class ReindexCommand extends AbstractIndexerCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
+        if ($this->initMagento($output)) {
             $this->writeSection($output, 'Reindex');
             $this->disableObservers();
             $indexCode = $input->getArgument('index_code');
