@@ -24,6 +24,10 @@ class Gzip extends AbstractCompressor
      */
     public function getDecompressingCommand($mysqlCmd, $fileName)
     {
+        if ($this->hasPipeViewer()) {
+            return 'pv -cN gzip ' . $fileName . ' | gzip -d | pv -cN mysql | ' . $mysqlCmd;
+        }
+
         return 'gzip -dc < ' . $fileName . ' | ' . $mysqlCmd;
     }
     

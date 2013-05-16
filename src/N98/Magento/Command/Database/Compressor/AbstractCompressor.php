@@ -28,4 +28,12 @@ abstract class AbstractCompressor
      * @return string
      */
     abstract public function getFileName($fileName);
+
+    /**
+     * @return bool
+     */
+    protected function hasPipeViewer()
+    {
+        return `which pv` !== '';
+    }
 }
