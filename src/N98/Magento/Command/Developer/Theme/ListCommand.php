@@ -23,7 +23,7 @@ class ListCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento()) {
+        if ($this->initMagento($output)) {
             $packages = $this->getThemes();
             $table = array();
             foreach ($packages as $package => $themes) {

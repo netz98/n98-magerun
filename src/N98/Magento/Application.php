@@ -335,6 +335,31 @@ class Application extends BaseApplication
         return $this->_isPharMode;
     }
 
+    public function checkVarDir(OutputInterface $output)
+    {
+        $configOptions = new \Mage_Core_Model_Config_Options();
+
+        $tempVarDir = $configOptions->getSysTmpDir().DS.'magento'.DS.'var';
+        $currentVarDir = $configOptions->getVarDir();
+
+        if (is_dir($tempVarDir)) {
+            if ($currentVarDir == $tempVarDir) {
+                $output->writeln(sprintf('<error>Fallback folder %s is used in n98-magerun</error>', $tempVarDir));
+                $output->writeln('');
+                $output->writeln('n98-magerun is using the fallback folder. If there is another folder configured for Magento, this can cause serious problems.');
+                $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
+                $output->writeln('');
+            } else {
+                $output->writeln(sprintf('<error>Folder %s found, but not used in n98-magerun</error>', $tempVarDir));
+                $output->writeln('');
+                $output->writeln(sprintf('This might cause serious problems. n98-magerun is using the configured var-folder <comment>%s</comment>', $currentVarDir));
+                $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
+                $output->writeln('');
+                return false;
+            }
+        }
+    }
+
     public function initMagento()
     {
         if ($this->getMagentoRootFolder() !== null) {
@@ -357,6 +382,7 @@ class Application extends BaseApplication
                 require_once $this->getMagentoRootFolder() . '/app/Mage.php';
                 \Mage::app('admin');
             }
+
             return true;
         }
 

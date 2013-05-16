@@ -25,7 +25,7 @@ class ReindexAllCommand extends AbstractIndexerCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
+        if ($this->initMagento($output)) {
 
             $this->disableObservers();
 

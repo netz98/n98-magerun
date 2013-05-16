@@ -50,7 +50,7 @@ class PublishCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
         $this->requireEnterprise($output);
-        if ($this->initMagento()) {
+        if ($this->initMagento($output)) {
             $this->writeSection($output, 'CMS Publish');
             $pageId = $input->getArgument('page_id');
             $revisionId = $input->getArgument('revision_id');
