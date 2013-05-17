@@ -29,10 +29,18 @@ class ReindexAllCommand extends AbstractIndexerCommand
 
             $this->disableObservers();
 
-            $indexCollection = $this->_getIndexerModel()->getProcessesCollection();
-            foreach ($indexCollection as $indexer) {
-                $indexer->reindexEverything();
-                $output->writeln('<info>Successfully reindexed</info> <comment>' . $indexer->getIndexerCode() . '</comment>');
+            try {
+                Mage::dispatchEvent('shell_reindex_init_process');
+                $indexCollection = $this->_getIndexerModel()->getProcessesCollection();
+                foreach ($indexCollection as $indexer) {
+                    $indexer->reindexEverything();
+                    $output->writeln(
+                        '<info>Successfully reindexed</info> <comment>' . $indexer->getIndexerCode() . '</comment>'
+                    );
+                }
+                Mage::dispatchEvent('shell_reindex_init_process');
+            } catch (\Exception $e) {
+                Mage::dispatchEvent('shell_reindex_init_process');
             }
         }
     }

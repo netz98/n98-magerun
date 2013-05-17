@@ -45,27 +45,42 @@ class ReindexCommand extends AbstractIndexerCommand
                     return $indexerList[$typeInput - 1]['code'];
                 });
             }
-            $process = $this->_getIndexerModel()->getProcessByCode($indexCode);
-            if (!$process) {
-                throw new \InvalidArgumentException('Indexer was not found!');
-            }
-            $output->writeln('<info>Started reindex of: <comment>' . $indexCode . '</comment></info>');
 
-            /**
-             * Try to estimate runtime. If index was aborted or never created we have a timestamp < 0
-             */
-            $runtimeInSeconds = $this->getRuntimeInSeconds($process);
-            if ($runtimeInSeconds > 0) {
-                $estimatedEnd = new \DateTime('now', new \DateTimeZone('UTC'));
-                $estimatedEnd->add(new \DateInterval('PT' . $runtimeInSeconds . 'S'));
-                $output->writeln('<info>Estimated end: <comment>' . $estimatedEnd->format('Y-m-d H:i:s T') . '</comment></info>');
-            }
+            try {
+                Mage::dispatchEvent('shell_reindex_init_process');
+                $process = $this->_getIndexerModel()->getProcessByCode($indexCode);
+                if (!$process) {
+                    throw new \InvalidArgumentException('Indexer was not found!');
+                }
+                $output->writeln('<info>Started reindex of: <comment>' . $indexCode . '</comment></info>');
 
-            $startTime = new \DateTime('now');
-            $dateTimeUtils = new \N98\Util\DateTime();
-            $process->reindexEverything();
-            $endTime = new \DateTime('now');
-            $output->writeln('<info>Successfully reindexed <comment>' . $indexCode . '</comment> (Runtime: <comment>' . $dateTimeUtils->getDifferenceAsString($startTime, $endTime) .'</comment>)</info>');
+                /**
+                 * Try to estimate runtime. If index was aborted or never created we have a timestamp < 0
+                 */
+                $runtimeInSeconds = $this->getRuntimeInSeconds($process);
+                if ($runtimeInSeconds > 0) {
+                    $estimatedEnd = new \DateTime('now', new \DateTimeZone('UTC'));
+                    $estimatedEnd->add(new \DateInterval('PT' . $runtimeInSeconds . 'S'));
+                    $output->writeln(
+                        '<info>Estimated end: <comment>' . $estimatedEnd->format('Y-m-d H:i:s T') . '</comment></info>'
+                    );
+                }
+
+                $startTime = new \DateTime('now');
+                $dateTimeUtils = new \N98\Util\DateTime();
+                $process->reindexEverything();
+                $endTime = new \DateTime('now');
+                $output->writeln(
+                    '<info>Successfully reindexed <comment>' . $indexCode . '</comment> (Runtime: <comment>' . $dateTimeUtils->getDifferenceAsString(
+                        $startTime,
+                        $endTime
+                    ) . '</comment>)</info>'
+                );
+                Mage::dispatchEvent('shell_reindex_finalize_process');
+            } catch (\Exception $e) {
+                $output->writeln('<error>' . $e->getMessage() . '</error>');
+                Mage::dispatchEvent('shell_reindex_finalize_process');
+            }
         }
     }
 }
