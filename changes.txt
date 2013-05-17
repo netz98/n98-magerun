@@ -3,6 +3,14 @@ RECENT CHANGES
 **************
 
 ======
+1.66.0
+======
+
+* Issue #37 - check /var dir location in sys:check or general warning when intializing magento (by @amenk)
+* db:dump --human-readable option added
+* Fix: DEFINER removal in db:dump not working for strip and zip
+
+======
 1.65.1
 ======
 
