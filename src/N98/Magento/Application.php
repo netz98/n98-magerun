@@ -129,6 +129,7 @@ class Application extends BaseApplication
      * @var string
      */
     protected $_magentoRootFolder = null;
+
     /**
      * @var bool
      */
@@ -181,7 +182,6 @@ class Application extends BaseApplication
      */
     public function detectMagento()
     {
-
         $specialGlobalOptions = getopt('', array('root-dir:'));
 
         if (count($specialGlobalOptions) > 0) {
@@ -425,6 +425,14 @@ class Application extends BaseApplication
     }
 
     /**
+     * @param string $magentoRootFolder
+     */
+    public function setMagentoRootFolder($magentoRootFolder)
+    {
+        $this->_magentoRootFolder = $magentoRootFolder;
+    }
+
+    /**
      * @return int
      */
     public function getMagentoMajorVersion()
@@ -655,7 +663,9 @@ class Application extends BaseApplication
             date_default_timezone_set(@date_default_timezone_get());
 
             $this->detectMagento();
-            $this->config = $this->_loadConfig($this->config);
+            if (count($this->config) == 0) { // made for unit tests to inject a complete config
+                $this->config = $this->_loadConfig($this->config);
+            }
             $this->registerHelpers();
             if ($this->autoloader) {
                 $this->registerCustomAutoloaders();
