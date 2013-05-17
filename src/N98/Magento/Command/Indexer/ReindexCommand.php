@@ -47,7 +47,7 @@ class ReindexCommand extends AbstractIndexerCommand
             }
 
             try {
-                Mage::dispatchEvent('shell_reindex_init_process');
+                \Mage::dispatchEvent('shell_reindex_init_process');
                 $process = $this->_getIndexerModel()->getProcessByCode($indexCode);
                 if (!$process) {
                     throw new \InvalidArgumentException('Indexer was not found!');
@@ -69,6 +69,7 @@ class ReindexCommand extends AbstractIndexerCommand
                 $startTime = new \DateTime('now');
                 $dateTimeUtils = new \N98\Util\DateTime();
                 $process->reindexEverything();
+                \Mage::dispatchEvent($process->getIndexerCode() . '_shell_reindex_after');
                 $endTime = new \DateTime('now');
                 $output->writeln(
                     '<info>Successfully reindexed <comment>' . $indexCode . '</comment> (Runtime: <comment>' . $dateTimeUtils->getDifferenceAsString(
@@ -76,10 +77,10 @@ class ReindexCommand extends AbstractIndexerCommand
                         $endTime
                     ) . '</comment>)</info>'
                 );
-                Mage::dispatchEvent('shell_reindex_finalize_process');
+                \Mage::dispatchEvent('shell_reindex_finalize_process');
             } catch (\Exception $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
-                Mage::dispatchEvent('shell_reindex_finalize_process');
+                \Mage::dispatchEvent('shell_reindex_finalize_process');
             }
         }
     }
