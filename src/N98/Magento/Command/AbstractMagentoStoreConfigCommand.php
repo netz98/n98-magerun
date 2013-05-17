@@ -95,7 +95,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
 
             $runOnStoreView = false;
             if ($this->scope == self::SCOPE_STORE_VIEW

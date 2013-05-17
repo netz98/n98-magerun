@@ -26,7 +26,7 @@ class CountCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        $this->initMagento($output);
+        $this->initMagento();
         
         $dir = \Mage::getBaseDir('var') . DIRECTORY_SEPARATOR . 'report' . DIRECTORY_SEPARATOR;
         $count = $this->getFileCount($dir);

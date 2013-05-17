@@ -27,7 +27,7 @@ class ListCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
             $type = $input->getArgument('type');
 
             $areas = array(

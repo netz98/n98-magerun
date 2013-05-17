@@ -25,7 +25,7 @@ class RunCommand extends AbstractMagentoCommand
     {
         $this->getApplication()->setAutoExit(false);
         $this->detectMagento($output);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
 
             $this->getApplication()->run(new StringInput('cache:flush'), new NullOutput());
 

@@ -25,7 +25,7 @@ class FlushCommand extends AbstractCacheCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
 
             \Mage::app()->loadAreaPart('adminhtml', 'events');
             \Mage::dispatchEvent('adminhtml_cache_flush_all', array('output' => $output));

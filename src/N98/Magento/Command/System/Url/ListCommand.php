@@ -57,7 +57,7 @@ class ListCommand extends AbstractMagentoCommand
         }
 
         $this->detectMagento($output, true);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
 
             $stores = explode(',', $input->getArgument('stores'));
 

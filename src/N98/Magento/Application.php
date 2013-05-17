@@ -335,14 +335,20 @@ class Application extends BaseApplication
         return $this->_isPharMode;
     }
 
+    /**
+     * @param OutputInterface $output
+     * @return bool
+     */
     public function checkVarDir(OutputInterface $output)
     {
-        $configOptions = new \Mage_Core_Model_Config_Options();
-
-        $tempVarDir = $configOptions->getSysTmpDir().DS.'magento'.DS.'var';
-        $currentVarDir = $configOptions->getVarDir();
+        $tempVarDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'magento' . DIRECTORY_SEPARATOR .  'var';
 
         if (is_dir($tempVarDir)) {
+            $this->initMagento();
+
+            $configOptions = new \Mage_Core_Model_Config_Options();
+            $currentVarDir = $configOptions->getVarDir();
+
             if ($currentVarDir == $tempVarDir) {
                 $output->writeln(sprintf('<error>Fallback folder %s is used in n98-magerun</error>', $tempVarDir));
                 $output->writeln('');
@@ -355,6 +361,7 @@ class Application extends BaseApplication
                 $output->writeln(sprintf('This might cause serious problems. n98-magerun is using the configured var-folder <comment>%s</comment>', $currentVarDir));
                 $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
                 $output->writeln('');
+
                 return false;
             }
         }
@@ -382,7 +389,6 @@ class Application extends BaseApplication
                 require_once $this->getMagentoRootFolder() . '/app/Mage.php';
                 \Mage::app('admin');
             }
-
             return true;
         }
 
@@ -469,6 +475,7 @@ class Application extends BaseApplication
     public function doRun(InputInterface $input, OutputInterface $output)
     {
         $input = $this->checkConfigCommandAlias($input);
+        $this->checkVarDir($output);
 
         parent::doRun($input, $output);
     }
