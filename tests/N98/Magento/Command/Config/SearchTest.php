@@ -20,6 +20,16 @@ class SearchTest extends TestCase
                 'text'      => 'This message will be shown',
             )
         );
-        $this->assertContains('Found a field with a match', $commandTester->getDisplay());        
+        $this->assertContains('Found a field with a match', $commandTester->getDisplay());
+
+
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command'   => $command->getName(),
+                'text'      => 'xyz1234567890',
+            )
+        );
+        $this->assertContains('No matches for xyz1234567890', $commandTester->getDisplay());
     }
 }

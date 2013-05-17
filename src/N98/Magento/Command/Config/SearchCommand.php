@@ -38,22 +38,26 @@ EOT
             $system = \Mage::getConfig()->loadModulesConfiguration('system.xml');
             $matches = $this->_searchConfiguration($searchString, $system);
 
-            foreach ($matches as $match) {
-                $output->writeln('Found a <comment>' . $match->type . '</comment> with a match');
-                $output->writeln('  ' . $this->_getPhpMageStoreConfigPathFromMatch($match));
-                $output->writeln('  ' . $this->_getPathFromMatch($match));
+            if (count($matches) > 0) {
+                foreach ($matches as $match) {
+                    $output->writeln('Found a <comment>' . $match->type . '</comment> with a match');
+                    $output->writeln('  ' . $this->_getPhpMageStoreConfigPathFromMatch($match));
+                    $output->writeln('  ' . $this->_getPathFromMatch($match));
 
-                if ($match->match_type == 'comment') {
-                    $output->writeln(
-                        '  ' .
-                        str_ireplace(
-                            $searchString,
-                            '<info>' . $searchString . '</info>',
-                            (string)$match->node->comment
-                        )
-                    );
+                    if ($match->match_type == 'comment') {
+                        $output->writeln(
+                            '  ' .
+                            str_ireplace(
+                                $searchString,
+                                '<info>' . $searchString . '</info>',
+                                (string)$match->node->comment
+                            )
+                        );
+                    }
+                    $output->writeln('');
                 }
-                $output->writeln('');
+            } else {
+                $output->writeln('<info>No matches for <comment>' . $searchString . '</comment></info>');
             }
         }
     }
@@ -77,7 +81,6 @@ EOT
             $tmp = $this->_searchConfigurationNodes(
                 $searchString,
                 $system->getNode()->xpath($xpath)
-            //$system->getNode($section)
             );
             $matches = array_merge($matches, $tmp);
         }
