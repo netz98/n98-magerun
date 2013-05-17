@@ -6,6 +6,8 @@ RECENT CHANGES
 1.67.0
 ======
 
+* Issue #135 - Feature Request: Config Seach (by @storm)
+
 
 ======
 1.66.0
