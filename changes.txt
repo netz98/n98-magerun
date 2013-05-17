@@ -3,6 +3,11 @@ RECENT CHANGES
 **************
 
 ======
+1.67.0
+======
+
+
+======
 1.66.0
 ======
 
@@ -16,14 +21,6 @@ RECENT CHANGES
 ======
 
 * Fix: DEFINER removal in db:dump not working for strip and zip (by @s3lf)
-
-======
-1.65.0
-======
-
-* Added new global option --root-dir to explicit set magento root folder.
-* Fixed issue #130 - Remove DEFINER statements from db dumps
-* install command: Changed download URL of magento-mirror-1.4 and magento-mirror-1.5
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H

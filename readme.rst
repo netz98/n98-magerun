@@ -208,6 +208,7 @@ Options:
      --only-command           Print only mysqldump command. Do not execute
      --print-only-filename    Execute and prints not output except the dump filename
      --no-single-transaction  Do not use single-transaction (not recommended, this is blocking)
+     --human-readable         Use a single insert with column names per row. Useful to track database differences, but significantly slows down a later import
      --stdout                 Dump to stdout
      --strip                  Tables to strip (dump only structure of those tables)
      --force (-f)             Do not prompt if all options are defined
@@ -430,6 +431,16 @@ Options:
 
 Help:
     If path is not set, all available config items will be listed. path may contain wildcards (*)
+
+Config Search
+"""""""""""""
+
+Search system configuration descriptions.
+
+ .. code-block:: sh
+
+   $ n98-magerun.phar text
+
 
 List Magento cache status
 """""""""""""""""""""""""
