@@ -40,7 +40,7 @@ class ToggleCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
         $this->requireEnterprise($output);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
             $this->writeSection($output, 'Banner Toggle');
             $bannerId = $input->getArgument('banner_id');
 

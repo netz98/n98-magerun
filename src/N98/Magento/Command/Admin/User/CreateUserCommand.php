@@ -30,7 +30,7 @@ class CreateUserCommand extends AbstractAdminUserCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
 
             // Username
             if (($username = $input->getArgument('username')) == null) {

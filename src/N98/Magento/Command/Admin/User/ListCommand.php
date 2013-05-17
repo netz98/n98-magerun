@@ -25,7 +25,7 @@ class ListCommand extends AbstractAdminUserCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
             $userList = $this->getUserModel()->getCollection();
             $table = array();
             foreach ($userList as $user) {

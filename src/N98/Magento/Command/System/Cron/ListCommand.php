@@ -32,7 +32,7 @@ class ListCommand extends AbstractCronCommand
         $this->detectMagento($output, true);
 
         $this->writeSection($output, 'Cronjob List');
-        $this->initMagento($output);
+        $this->initMagento();
 
         $table = $this->getJobs();
         $this->getHelper('table')->write($output, $table);

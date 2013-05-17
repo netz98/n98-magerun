@@ -24,7 +24,7 @@ class CompareVersionsCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
             $modules = \Mage::getConfig()->getNode('modules');
             $resourceModel = $this->_getResourceSingleton('core/resource', 'Mage_Core_Model_Resource_Resource');
             $setups = \Mage::getConfig()->getNode('global/resources')->children();

@@ -26,7 +26,7 @@ class ListCommand extends AbstractRewriteCommand
     {
         $this->detectMagento($output, true);
         $this->writeSection($output, 'Rewrites');
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
 
             $rewrites = $this->loadRewrites();
             $table = array();

@@ -38,7 +38,7 @@ class SetCommand extends AbstractConfigCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
             $config = $this->_getConfigModel();
             $config->saveConfig(
                 $input->getArgument('path'),

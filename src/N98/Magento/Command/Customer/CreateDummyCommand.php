@@ -49,7 +49,7 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
 
             $website = $this->getHelperSet()->get('parameter')->askWebsite($input, $output);
 

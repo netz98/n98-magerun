@@ -28,10 +28,10 @@ class ConflictsCommand extends AbstractRewriteCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
             $table = new \Zend_Text_Table(array('columnWidths' => array(8, 30, 60, 60)));
             $tableData = array();
-            if ($this->initMagento($output)) {
+            if ($this->initMagento()) {
                 $time = microtime(true);
                 $rewrites = $this->loadRewrites();
                 $conflictCounter = 0;

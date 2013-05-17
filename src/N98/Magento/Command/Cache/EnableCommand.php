@@ -25,7 +25,7 @@ class EnableCommand extends AbstractCacheCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
             $cacheTypes = array_keys($this->getCoreHelper()->getCacheTypes());
             $enable = array();
             foreach ($cacheTypes as $type) {

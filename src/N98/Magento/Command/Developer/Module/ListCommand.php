@@ -33,7 +33,7 @@ class ListCommand extends AbstractMagentoCommand
         $this->detectMagento($output, true);
 
         $this->writeSection($output, 'Magento Modules');
-        $this->initMagento($output);
+        $this->initMagento();
         $this->findInstalledModules();
 
         ksort($this->infos);

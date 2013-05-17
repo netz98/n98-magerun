@@ -103,7 +103,7 @@ class MetaCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
             if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_1) {
                 $classMaps = array();
 

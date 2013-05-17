@@ -130,14 +130,11 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * Bootstrap magento shop
      *
-     * @param $output
      * @return bool
      */
-    protected function initMagento($output)
+    protected function initMagento()
     {
         $init = $this->getApplication()->initMagento();
-        if (!$this->getApplication()->checkVarDir($output));
-
         if ($init) {
             $this->_magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
         }

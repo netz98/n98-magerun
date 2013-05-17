@@ -25,14 +25,23 @@ class ReindexAllCommand extends AbstractIndexerCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
 
             $this->disableObservers();
 
-            $indexCollection = $this->_getIndexerModel()->getProcessesCollection();
-            foreach ($indexCollection as $indexer) {
-                $indexer->reindexEverything();
-                $output->writeln('<info>Successfully reindexed</info> <comment>' . $indexer->getIndexerCode() . '</comment>');
+            try {
+                \Mage::dispatchEvent('shell_reindex_init_process');
+                $indexCollection = $this->_getIndexerModel()->getProcessesCollection();
+                foreach ($indexCollection as $indexer) {
+                    $indexer->reindexEverything();
+                    \Mage::dispatchEvent($indexer->getIndexerCode() . '_shell_reindex_after');
+                    $output->writeln(
+                        '<info>Successfully reindexed</info> <comment>' . $indexer->getIndexerCode() . '</comment>'
+                    );
+                }
+                \Mage::dispatchEvent('shell_reindex_init_process');
+            } catch (\Exception $e) {
+                \Mage::dispatchEvent('shell_reindex_init_process');
             }
         }
     }

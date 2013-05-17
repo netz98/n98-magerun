@@ -26,7 +26,7 @@ class ListCommand extends AbstractIndexerCommand
     {
         $this->detectMagento($output, true);
         $this->writeSection($output, 'Index list');
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
             $table = array();
             foreach ($this->getIndexerList() as $index) {
                 $table[] = array(

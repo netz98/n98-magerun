@@ -3,6 +3,15 @@ RECENT CHANGES
 **************
 
 ======
+1.66.0
+======
+
+* Issue #37 - check /var dir location in sys:check or general warning when intializing magento (by @amenk)
+* Issue #137 - index:reindex should dispatch new index events (CE 1.8, EE 1.13)
+* db:dump --human-readable option added
+* Fix: DEFINER removal in db:dump not working for strip and zip
+
+======
 1.65.1
 ======
 
