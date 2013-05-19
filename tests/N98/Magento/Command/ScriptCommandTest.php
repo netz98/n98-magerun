@@ -21,7 +21,10 @@ class ScriptCommandTest extends TestCase
                 'filename'  => __DIR__ . '/_files/test.mr',
             )
         );
+
         $this->assertContains('code', $commandTester->getDisplay());
+        $this->assertContains('foo.sql', $commandTester->getDisplay());
+        $this->assertContains('root: ' . $this->getApplication()->getMagentoRootFolder(), $commandTester->getDisplay());
         $this->assertContains('Magento Websites', $commandTester->getDisplay());
         $this->assertContains('web/secure/base_url', $commandTester->getDisplay());
         $this->assertContains('web/seo/use_rewrites => 1', $commandTester->getDisplay());

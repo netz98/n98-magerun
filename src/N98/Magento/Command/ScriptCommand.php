@@ -94,6 +94,7 @@ class ScriptCommand extends AbstractMagentoCommand
     protected function runMagerunCommand(InputInterface $input, OutputInterface $output, $commandString)
     {
         $this->getApplication()->setAutoExit(false);
+        $commandString = $this->_replaceScriptVars($commandString);
         $input = new StringInput($commandString);
         $this->getApplication()->run($input, $output);
     }
@@ -104,7 +105,7 @@ class ScriptCommand extends AbstractMagentoCommand
     protected function _prepareShellCommand($commandString)
     {
         $commandString = ltrim($commandString, '!');
-        $commandString = str_replace(array_keys($this->scriptVars), $this->scriptVars, $commandString);
+        $commandString = $this->_replaceScriptVars($commandString);
 
         return $commandString;
     }
@@ -128,5 +129,16 @@ class ScriptCommand extends AbstractMagentoCommand
         if (!empty($returnValue)) {
             $output->writeln($returnValue);
         }
+    }
+
+    /**
+     * @param $commandString
+     * @return mixed
+     */
+    protected function _replaceScriptVars($commandString)
+    {
+        $commandString = str_replace(array_keys($this->scriptVars), $this->scriptVars, $commandString);
+
+        return $commandString;
     }
 }
