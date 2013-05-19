@@ -3,11 +3,17 @@ RECENT CHANGES
 **************
 
 ======
+1.68.0
+======
+
+* Issue #141 - Resolve variables inside of magerun calls in script
+* Added new predefined variables to script command.
+
+======
 1.67.0
 ======
 
 * Issue #135 - Feature Request: Config Seach (by @storm)
-
 
 ======
 1.66.0
@@ -17,12 +23,6 @@ RECENT CHANGES
 * Issue #137 - index:reindex should dispatch new index events (CE 1.8, EE 1.13)
 * db:dump --human-readable option added
 * Fix: DEFINER removal in db:dump not working for strip and zip
-
-======
-1.65.1
-======
-
-* Fix: DEFINER removal in db:dump not working for strip and zip (by @s3lf)
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
