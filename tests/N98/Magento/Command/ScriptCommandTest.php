@@ -28,6 +28,7 @@ class ScriptCommandTest extends TestCase
 
         $this->assertContains('magento.root: ' . $this->getApplication()->getMagentoRootFolder(), $commandTester->getDisplay());
         $this->assertContains('magento.version: ' . \Mage::getVersion(), $commandTester->getDisplay());
+        $this->assertContains('magerun.version: ' . $this->getApplication()->getVersion(), $commandTester->getDisplay());
 
         $this->assertContains('code', $commandTester->getDisplay());
         $this->assertContains('foo.sql', $commandTester->getDisplay());

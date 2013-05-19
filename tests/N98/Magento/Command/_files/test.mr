@@ -10,6 +10,7 @@ ${foo}=foo.sql
 ! echo "magento.edition: ${magento.edition}"
 ! echo "magento.version: ${magento.version}"
 ! echo "php.version: ${php.version}"
+! echo "magerun.version: ${magerun.version}"
 
  # Ignore this line and trim whitespaces for next command
       sys:website:list

@@ -1057,6 +1057,7 @@ Pre-defined variables:
 * ${magento.root}    -> Magento Root-Folder
 * ${magento.version} -> Magento Version i.e. 1.7.0.2
 * ${magento.edition} -> Magento Edition -> Community or Enterprise
+* ${magerun.version} -> Magerun version i.e. 1.66.0
 * ${php.version}     -> PHP Version
 
 Autocompletion

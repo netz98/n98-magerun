@@ -120,6 +120,7 @@ class ScriptCommand extends AbstractMagentoCommand
             '${magento.version}' => \Mage::getVersion(),
             '${magento.edition}' => is_callable(array('\Mage', 'getEdition')) ? \Mage::getEdition() : 'Community',
             '${php.version}'     => substr(phpversion(), 0, strpos(phpversion(), '-')),
+            '${magerun.version}' => $this->getApplication()->getVersion(),
         );
     }
 
