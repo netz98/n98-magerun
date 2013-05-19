@@ -22,9 +22,15 @@ class ScriptCommandTest extends TestCase
             )
         );
 
+        // Check pre defined vars
+        $edition = is_callable(array('\Mage', 'getEdition')) ? \Mage::getEdition() : 'Community';
+        $this->assertContains('magento.edition: ' . $edition, $commandTester->getDisplay());
+
+        $this->assertContains('magento.root: ' . $this->getApplication()->getMagentoRootFolder(), $commandTester->getDisplay());
+        $this->assertContains('magento.version: ' . \Mage::getVersion(), $commandTester->getDisplay());
+
         $this->assertContains('code', $commandTester->getDisplay());
         $this->assertContains('foo.sql', $commandTester->getDisplay());
-        $this->assertContains('root: ' . $this->getApplication()->getMagentoRootFolder(), $commandTester->getDisplay());
         $this->assertContains('Magento Websites', $commandTester->getDisplay());
         $this->assertContains('web/secure/base_url', $commandTester->getDisplay());
         $this->assertContains('web/seo/use_rewrites => 1', $commandTester->getDisplay());

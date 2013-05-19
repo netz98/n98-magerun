@@ -1052,6 +1052,13 @@ Create file `test.magerun` and make it executable (`chmod +x test.magerun`):
    # Use resolved variables from n98-magerun in shell commands
    ! ls -l ${magento.root}/code/local
 
+Pre-defined variables:
+
+* ${magento.root}    -> Magento Root-Folder
+* ${magento.version} -> Magento Version i.e. 1.7.0.2
+* ${magento.edition} -> Magento Edition -> Community or Enterprise
+* ${php.version}     -> PHP Version
+
 Autocompletion
 --------------
 

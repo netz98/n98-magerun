@@ -6,7 +6,10 @@ ${foo}=foo.sql
 # Another comment
 
 # Shell exec with magerun script var
-! echo "root: ${magento.root}"
+! echo "magento.root: ${magento.root}"
+! echo "magento.edition: ${magento.edition}"
+! echo "magento.version: ${magento.version}"
+! echo "php.version: ${php.version}"
 
  # Ignore this line and trim whitespaces for next command
       sys:website:list
