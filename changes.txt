@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.68.1
+======
+
+* Fixed issue #143 - db:import error "sh: pv: not found"
+
+======
 1.68.0
 ======
 

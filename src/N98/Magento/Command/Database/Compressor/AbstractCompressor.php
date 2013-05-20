@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Database\Compressor;
 
+use N98\Util\OperatingSystem;
+
 abstract class AbstractCompressor
 {
     /**
@@ -34,6 +36,10 @@ abstract class AbstractCompressor
      */
     protected function hasPipeViewer()
     {
-        return `which pv` !== '';
+        if (OperatingSystem::isWindows()) {
+            return false;
+        }
+
+        return `which pv` != '';
     }
 }
