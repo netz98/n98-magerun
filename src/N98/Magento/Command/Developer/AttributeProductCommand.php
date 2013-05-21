@@ -7,7 +7,6 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class AttributeProductCommand extends AbstractMagentoCommand
 {
-
     protected $read;
 
     protected function configure()
@@ -106,6 +105,13 @@ class AttributeProductCommand extends AbstractMagentoCommand
         }
     }
 
+    /**
+     * Gets attribute labels from database
+     * 
+     * @param Mage_Catalog_Model_Resource_Eav_Attribute $attribute
+     * 
+     * @return array
+     */
     protected function _getAttributeLabels($attribute)
     {
         $select = $this->read->select()
@@ -122,6 +128,13 @@ class AttributeProductCommand extends AbstractMagentoCommand
         return $attributeLabels;
     }
 
+    /**
+     * Gets attribute options from database
+     *
+     * @param Mage_Catalog_Model_Resource_Eav_Attribute $attribute
+     *
+     * @return array
+     */
     protected function _getOptionArrayForAttribute($attribute)
     {
         $select = $this->read->select()
@@ -141,6 +154,11 @@ class AttributeProductCommand extends AbstractMagentoCommand
         return array('values' => $values);
     }
 
+    /**
+     * Gets key legend for catalog product attribute
+     *
+     * @return array
+     */
     protected function _getKeyLegend()
     {
         return array(
