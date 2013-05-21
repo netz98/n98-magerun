@@ -9,6 +9,8 @@ use Symfony\Component\Console\Input\InputArgument;
  * Ported attribute migration script from:
  * 
  * https://github.com/astorm/Pulsestorm/blob/master/magento-create-setup.php
+ * 
+ * It creates attribute script for existing attribute
  *
  * Originally created by Alan Storm
  *
