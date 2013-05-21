@@ -85,13 +85,10 @@ class AttributeProductCommand extends AbstractMagentoCommand
             //generate script using simple string concatenation, making
             //a single tear fall down the cheek of a CS professor
             $script = "<?php
-if (! (\$this instanceof Mage_Catalog_Model_Resource_Setup) ) {
-throw new Exception(\"Resource Class needs to inherit from \" .
-\"Mage_Catalog_Model_Resource_Setup for this to work\");
-}
+\$setup = new Mage_Eav_Model_Entity_Setup('core_setup');
 
 \$attr = $arrayCode;
-\$this->addAttribute('catalog_product','$attributeCode',\$attr);
+\$setup->addAttribute('catalog_product','$attributeCode',\$attr);
             ";
 
             $attributeLabels = $this->_getAttributeLabels($attribute);
@@ -100,7 +97,8 @@ throw new Exception(\"Resource Class needs to inherit from \" .
             $labelsScript = "
 \$attribute = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product','$attributeCode');
 \$attribute->setStoreLabels($attributeLabelsCode);
-\$attribute->save()";
+\$attribute->save()
+";
 
             $script .= $labelsScript;
 
@@ -118,7 +116,7 @@ throw new Exception(\"Resource Class needs to inherit from \" .
 
         $attributeLabels = array();
         foreach ($query->fetchAll() as $row) {
-            $attributeLabels[] = array($row['store_id'] => $row['value']);
+            $attributeLabels[$row['store_id']] = $row['value'];
         }
 
         return $attributeLabels;
