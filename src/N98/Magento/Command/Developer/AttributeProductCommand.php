@@ -5,6 +5,16 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
+/**
+ * Ported attribute migration script from:
+ * 
+ * https://github.com/astorm/Pulsestorm/blob/master/magento-create-setup.php
+ *
+ * Originally created by Alan Storm
+ *
+ * @author Dusan Lukic <ldusan84@gmail.com>
+ */
+
 class AttributeProductCommand extends AbstractMagentoCommand
 {
     protected $read;
