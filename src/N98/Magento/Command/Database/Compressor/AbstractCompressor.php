@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Database\Compressor;
 
+use N98\Util\OperatingSystem;
+
 abstract class AbstractCompressor
 {
     /**
@@ -28,4 +30,16 @@ abstract class AbstractCompressor
      * @return string
      */
     abstract public function getFileName($fileName);
+
+    /**
+     * @return bool
+     */
+    protected function hasPipeViewer()
+    {
+        if (OperatingSystem::isWindows()) {
+            return false;
+        }
+
+        return `which pv` != '';
+    }
 }

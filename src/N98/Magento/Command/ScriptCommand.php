@@ -27,35 +27,38 @@ class ScriptCommand extends AbstractMagentoCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $script = $this->_getContent($input->getArgument('filename'));
-        $commands = explode("\n", $script);
-        $this->initScriptVars();
-        foreach ($commands as $commandString) {
-            $commandString = trim($commandString);
-            if (empty($commandString)) {
-                continue;
-            }
-            $firstChar = substr($commandString, 0, 1);
-
-            switch ($firstChar) {
-
-                // comment
-                case '#':
+        $this->detectMagento($output);
+        if ($this->initMagento()) {
+            $script = $this->_getContent($input->getArgument('filename'));
+            $commands = explode("\n", $script);
+            $this->initScriptVars();
+            foreach ($commands as $commandString) {
+                $commandString = trim($commandString);
+                if (empty($commandString)) {
                     continue;
-                    break;
+                }
+                $firstChar = substr($commandString, 0, 1);
 
-                // set var
-                case '$':
-                    $this->registerVariable($commandString);
-                    break;
+                switch ($firstChar) {
 
-                // run shell script
-                case '!':
-                    $this->runShellCommand($output, $commandString);
-                    break;
+                    // comment
+                    case '#':
+                        continue;
+                        break;
 
-                default:
-                    $this->runMagerunCommand($input, $output, $commandString);
+                    // set var
+                    case '$':
+                        $this->registerVariable($commandString);
+                        break;
+
+                    // run shell script
+                    case '!':
+                        $this->runShellCommand($output, $commandString);
+                        break;
+
+                    default:
+                        $this->runMagerunCommand($input, $output, $commandString);
+                }
             }
         }
     }
@@ -94,6 +97,7 @@ class ScriptCommand extends AbstractMagentoCommand
     protected function runMagerunCommand(InputInterface $input, OutputInterface $output, $commandString)
     {
         $this->getApplication()->setAutoExit(false);
+        $commandString = $this->_replaceScriptVars($commandString);
         $input = new StringInput($commandString);
         $this->getApplication()->run($input, $output);
     }
@@ -104,7 +108,7 @@ class ScriptCommand extends AbstractMagentoCommand
     protected function _prepareShellCommand($commandString)
     {
         $commandString = ltrim($commandString, '!');
-        $commandString = str_replace(array_keys($this->scriptVars), $this->scriptVars, $commandString);
+        $commandString = $this->_replaceScriptVars($commandString);
 
         return $commandString;
     }
@@ -112,7 +116,11 @@ class ScriptCommand extends AbstractMagentoCommand
     protected function initScriptVars()
     {
         $this->scriptVars = array(
-            '${magento.root}' => $this->getApplication()->getMagentoRootFolder(),
+            '${magento.root}'    => $this->getApplication()->getMagentoRootFolder(),
+            '${magento.version}' => \Mage::getVersion(),
+            '${magento.edition}' => is_callable(array('\Mage', 'getEdition')) ? \Mage::getEdition() : 'Community',
+            '${php.version}'     => substr(phpversion(), 0, strpos(phpversion(), '-')),
+            '${magerun.version}' => $this->getApplication()->getVersion(),
         );
     }
 
@@ -128,5 +136,16 @@ class ScriptCommand extends AbstractMagentoCommand
         if (!empty($returnValue)) {
             $output->writeln($returnValue);
         }
+    }
+
+    /**
+     * @param $commandString
+     * @return mixed
+     */
+    protected function _replaceScriptVars($commandString)
+    {
+        $commandString = str_replace(array_keys($this->scriptVars), $this->scriptVars, $commandString);
+
+        return $commandString;
     }
 }

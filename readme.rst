@@ -203,14 +203,15 @@ Arguments:
     filename        Dump filename
 
 Options:
-     --add-time               Adds time to filename (only if filename was not provided)
-     --compression (-c)       Compress the dump file using one of the supported algorithms
-     --only-command           Print only mysqldump command. Do not execute
-     --print-only-filename    Execute and prints not output except the dump filename
-     --no-single-transaction  Do not use single-transaction (not recommended, this is blocking)
-     --stdout                 Dump to stdout
-     --strip                  Tables to strip (dump only structure of those tables)
-     --force (-f)             Do not prompt if all options are defined
+     --add-time                 Adds time to filename (only if filename was not provided)
+     --compression (-c)         Compress the dump file using one of the supported algorithms
+     --only-command             Print only mysqldump command. Do not execute
+     --print-only-filename      Execute and prints not output except the dump filename
+     --no-single-transaction    Do not use single-transaction (not recommended, this is blocking)
+     --human-readable           Use a single insert with column names per row.
+     --stdout                   Dump to stdout
+     --strip                    Tables to strip (dump only structure of those tables)
+     --force (-f)               Do not prompt if all options are defined
 
 .. code-block:: sh
 
@@ -430,6 +431,16 @@ Options:
 
 Help:
     If path is not set, all available config items will be listed. path may contain wildcards (*)
+
+Config Search
+"""""""""""""
+
+Search system configuration descriptions.
+
+ .. code-block:: sh
+
+   $ n98-magerun.phar text
+
 
 List Magento cache status
 """""""""""""""""""""""""
@@ -1040,6 +1051,14 @@ Create file `test.magerun` and make it executable (`chmod +x test.magerun`):
 
    # Use resolved variables from n98-magerun in shell commands
    ! ls -l ${magento.root}/code/local
+
+Pre-defined variables:
+
+* ${magento.root}    -> Magento Root-Folder
+* ${magento.version} -> Magento Version i.e. 1.7.0.2
+* ${magento.edition} -> Magento Edition -> Community or Enterprise
+* ${magerun.version} -> Magerun version i.e. 1.66.0
+* ${php.version}     -> PHP Version
 
 Autocompletion
 --------------

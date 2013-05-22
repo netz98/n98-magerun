@@ -24,6 +24,10 @@ class Uncompressed extends AbstractCompressor
      */
     public function getDecompressingCommand($mysqlCmd, $fileName)
     {
+        if ($this->hasPipeViewer()) {
+            return 'pv ' . $fileName . ' | ' . $mysqlCmd;
+        }
+
         return $mysqlCmd . ' < ' . $fileName;
     }
     
