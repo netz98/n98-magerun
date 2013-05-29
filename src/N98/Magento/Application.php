@@ -31,6 +31,7 @@ use N98\Magento\Command\Database\InfoCommand as DatabaseInfoCommand;
 use N98\Magento\Command\Database\QueryCommand as DatabaseQueryCommand;
 use N98\Magento\Command\Design\DemoNoticeCommand as DesignDemoNoticeCommand;
 use N98\Magento\Command\Developer\Ide\PhpStorm\MetaCommand as DevelopmentIdePhpStormMetaCommand;
+use N98\Magento\Command\Developer\Setup\Script\AttributeCommand as DevelopmentSetupScriptAttributeCommand;
 use N98\Magento\Command\Developer\ConsoleCommand as DevelopmentConsoleCommand;
 use N98\Magento\Command\Developer\Log\DbCommand as DevelopmentLogDbCommand;
 use N98\Magento\Command\Developer\Log\LogCommand as DevelopmentLogCommand;
@@ -629,6 +630,7 @@ class Application extends BaseApplication
         $this->add(new DevelopmentLogSizeCommand());
         $this->add(new DevelopmentReportCountCommand());
         $this->add(new DevelopmentIdePhpStormMetaCommand());
+        $this->add(new DevelopmentSetupScriptAttributeCommand());
         $this->add(new ModuleListCommand());
         $this->add(new ModuleRewriteListCommand());
         $this->add(new ModuleRewriteConflictsCommand());
