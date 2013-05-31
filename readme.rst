@@ -1036,7 +1036,7 @@ Create file `test.magerun` and make it executable (`chmod +x test.magerun`):
 
 .. code-block:: sh
 
-   #!/usr/local/bin/n98-magerun.phar script
+   #!/usr/bin/env n98-magerun.phar script
 
    config:set "web/cookie/cookie_domain" example.com
    cache:flush
