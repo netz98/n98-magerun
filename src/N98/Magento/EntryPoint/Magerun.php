@@ -11,7 +11,18 @@ namespace N98\Magento\EntryPoint;
  */
 class Magerun extends \Mage_Core_Model_EntryPointAbstract
 {
-    public function _processRequest()
+    /**
+     * @param string $baseDir
+     * @param array $params
+     */
+    public function __construct($baseDir, array $params = array())
+    {
+        $this->_params = $params;
+        $config = new \Mage_Core_Model_Config_Primary($baseDir, $this->_params);
+        parent::__construct($config);
+    }
+
+    public function processRequest()
     {
         // NOP
     }

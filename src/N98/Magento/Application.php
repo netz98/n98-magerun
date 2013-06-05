@@ -123,10 +123,12 @@ class Application extends BaseApplication
      * @var \Composer\Autoload\ClassLoader
      */
     protected $autoloader;
+
     /**
      * @var array
      */
     protected $config = array();
+
     /**
      * @var string
      */
@@ -136,10 +138,16 @@ class Application extends BaseApplication
      * @var bool
      */
     protected $_magentoEnterprise = false;
+
     /**
      * @var int
      */
     protected $_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_1;
+
+    /**
+     * @var EntryPoint
+     */
+    protected $_magento2EntryPoint = null;
 
     /**
      * @var bool
@@ -184,63 +192,18 @@ class Application extends BaseApplication
      */
     public function detectMagento()
     {
-        $specialGlobalOptions = getopt('', array('root-dir:'));
-
-        if (count($specialGlobalOptions) > 0) {
-            $folder = realpath($specialGlobalOptions['root-dir']);
-            if (is_dir($folder)) {
-                \chdir($folder);
+        if ($this->getMagentoRootFolder() === null) {
+            $this->_checkRootDirOption();
+            if (OperatingSystem::isWindows()) {
+                $folder = exec('@echo %cd%'); // @TODO not currently tested!!!
+            } else {
+                $folder = exec('pwd');
             }
-        }
-
-        if (OperatingSystem::isWindows()) {
-            $folder = exec('@echo %cd%'); // @TODO not currently tested!!!
         } else {
-            $folder = exec('pwd');
+            $folder = $this->getMagentoRootFolder();
         }
 
-
-        $folders = array();
-        $folderParts = explode(DIRECTORY_SEPARATOR, $folder);
-        foreach ($folderParts as $key => $part) {
-            $explodedFolder = implode(DIRECTORY_SEPARATOR, array_slice($folderParts, 0, $key + 1));
-            if ($explodedFolder !== '') {
-                $folders[] = $explodedFolder;
-            }
-        }
-
-        foreach (array_reverse($folders) as $searchFolder) {
-            $finder = new Finder();
-            $finder
-                ->directories()
-                ->depth(0)
-                ->followLinks()
-                ->name('app')
-                ->name('skin')
-                ->name('lib')
-                ->in($searchFolder);
-
-            if ($finder->count() >= 2) {
-                $files = iterator_to_array($finder, false);
-                /* @var $file \SplFileInfo */
-
-                if (count($files) == 2) {
-                    // Magento 2 has no skin folder.
-                    // @TODO find a better magento 2.x check
-                    $this->_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_2;
-                }
-
-                $this->_magentoRootFolder = dirname($files[0]->getRealPath());
-
-                if (is_callable(array('\Mage', 'getEdition'))) {
-                    $this->_magentoEnterprise = (\Mage::getEdition() == 'Enterprise');
-                } else {
-                    $this->_magentoEnterprise = is_dir($this->_magentoRootFolder . '/app/code/core/Enterprise');
-                }
-
-                return;
-            }
-        }
+        $this->_detectMagentoVersion($folder);
     }
 
     /**
@@ -373,24 +336,11 @@ class Application extends BaseApplication
     {
         if ($this->getMagentoRootFolder() !== null) {
             if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-                require_once $this->getMagentoRootFolder() . '/app/bootstrap.php';
-                if (version_compare(\Mage::getVersion(), '2.0.0.0-dev42') >= 0) {
-                    $params = array(
-                        \Mage::PARAM_RUN_CODE => 'admin',
-                        \Mage::PARAM_RUN_TYPE => 'store',
-                        'entryPoint' => basename(__FILE__),
-                    );
-                    new MagerunEntryPoint(BP, $params);
-                } else
-                    if (version_compare(\Mage::getVersion(), '2.0.0.0-dev41') >= 0) {
-                        \Mage::app(array('MAGE_RUN_CODE' => 'admin'));
-                    } else {
-                        \Mage::app('admin');
-                    }
+                $this->_initMagento2();
             } else {
-                require_once $this->getMagentoRootFolder() . '/app/Mage.php';
-                \Mage::app('admin');
+                $this->_initMagento1();
             }
+
             return true;
         }
 
@@ -679,6 +629,103 @@ class Application extends BaseApplication
 
             $this->_isInitialized = true;
         }
+    }
+
+    /**
+     * @return string
+     */
+    protected function _checkRootDirOption()
+    {
+        $specialGlobalOptions = getopt('', array('root-dir:'));
+
+        if (count($specialGlobalOptions) > 0) {
+            $folder = realpath($specialGlobalOptions['root-dir']);
+            if (is_dir($folder)) {
+                \chdir($folder);
+
+                return;
+            }
+        }
+    }
+
+    /**
+     * @param $folder
+     */
+    protected function _detectMagentoVersion($folder)
+    {
+        $folders = array();
+        $folderParts = explode(DIRECTORY_SEPARATOR, $folder);
+        foreach ($folderParts as $key => $part) {
+            $explodedFolder = implode(DIRECTORY_SEPARATOR, array_slice($folderParts, 0, $key + 1));
+            if ($explodedFolder !== '') {
+                $folders[] = $explodedFolder;
+            }
+        }
+
+        foreach (array_reverse($folders) as $searchFolder) {
+            $finder = new Finder();
+            $finder
+                ->directories()
+                ->depth(0)
+                ->followLinks()
+                ->name('app')
+                ->name('skin')
+                ->name('lib')
+                ->in($searchFolder);
+
+            if ($finder->count() >= 2) {
+                $files = iterator_to_array($finder, false);
+                /* @var $file \SplFileInfo */
+
+                if (count($files) == 2) {
+                    // Magento 2 has no skin folder.
+                    // @TODO find a better magento 2.x check
+                    $this->_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_2;
+                }
+
+                $this->_magentoRootFolder = dirname($files[0]->getRealPath());
+
+                if (is_callable(array('\Mage', 'getEdition'))) {
+                    $this->_magentoEnterprise = (\Mage::getEdition() == 'Enterprise');
+                } else {
+                    $this->_magentoEnterprise = is_dir($this->_magentoRootFolder . '/app/code/core/Enterprise');
+                }
+
+                return;
+            }
+        }
+    }
+
+    protected function _initMagento2()
+    {
+        if ($this->_magento2EntryPoint === null) {
+            require_once $this->getMagentoRootFolder() . '/app/bootstrap.php';
+
+            if (version_compare(\Mage::getVersion(), '2.0.0.0-dev42') >= 0) {
+                $params = array(
+                    \Mage::PARAM_RUN_CODE => 'admin',
+                    \Mage::PARAM_RUN_TYPE => 'store',
+                    'entryPoint'          => basename(__FILE__),
+                );
+                try {
+                    $this->_magento2EntryPoint = new MagerunEntryPoint(BP, $params);
+                } catch (\Exception $e) {
+                    // @TODO problem with objectmanager during tests. Find a better soluttion to reset object manager
+                }
+            } else {
+                if (version_compare(\Mage::getVersion(), '2.0.0.0-dev41') >= 0) {
+                    \Mage::app(array('MAGE_RUN_CODE' => 'admin'));
+                } else {
+                    \Mage::app('admin');
+                }
+            }
+        }
+    }
+
+    protected function _initMagento1()
+    {
+        require_once $this->getMagentoRootFolder() . '/app/Mage.php';
+        \Mage::app('admin');
     }
 
 }

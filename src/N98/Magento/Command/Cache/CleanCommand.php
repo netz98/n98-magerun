@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Cache;
 
+use N98\Magento\Application;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,6 +17,11 @@ class CleanCommand extends AbstractCacheCommand
             ->addArgument('type', InputArgument::OPTIONAL, 'Cache type code like "config"')
             ->setDescription('Clean magento cache')
         ;
+    }
+
+    public function isEnabled()
+    {
+        return $this->getApplication()->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1;
     }
 
     /**
