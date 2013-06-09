@@ -762,6 +762,23 @@ Activate/Deactivate MySQL query logging via lib/Varien/Db/Adapter/Pdo/Mysql.php
 
    $ n98-magerun.phar dev:log:db [--on] [--off]
 
+Setup Script Generation
+"""""""""""""""""""""""
+
+Generate Script for attributes:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:setup:script:attribute entityType attributeCode
+
+i.e.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:setup:script:attribute catalog_product color
+
+Currently only *catalog_product* entity type is supported.
+
 Development IDE Support
 """""""""""""""""""""""
 
@@ -1046,6 +1063,9 @@ Create file `test.magerun` and make it executable (`chmod +x test.magerun`):
 
    # Register your own variable (only key = value currently supported)
    ${my.var}=bar
+
+   # Let magerun ask for variable value - add a question mark
+   ${my.var}=?
 
    ! echo ${my.var}
 

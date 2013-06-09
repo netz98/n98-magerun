@@ -3,6 +3,15 @@ RECENT CHANGES
 **************
 
 ======
+1.69.0
+======
+
+* New command dev:setup:script:attribute to generate attribute setup scripts (by Dusan Lukic, Alan Storm)
+* db:dump --strip: Added enterprise tables
+* Fixed fatal error if /tmp/magento exists and magerun was started outside of Magento Root.
+* Script command: Ask for variable value
+
+======
 1.68.1
 ======
 
@@ -20,15 +29,6 @@ RECENT CHANGES
 ======
 
 * Issue #135 - Feature Request: Config Seach (by @storm)
-
-======
-1.66.0
-======
-
-* Issue #37 - check /var dir location in sys:check or general warning when intializing magento (by @amenk)
-* Issue #137 - index:reindex should dispatch new index events (CE 1.8, EE 1.13)
-* db:dump --human-readable option added
-* Fix: DEFINER removal in db:dump not working for strip and zip
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
