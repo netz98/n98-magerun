@@ -67,7 +67,7 @@ class CreateCommand extends AbstractMagentoCommand
             ->addOption('author-name', null, InputOption::VALUE_OPTIONAL, 'Author for readme.md or composer.json')
             ->addOption('author-email', null, InputOption::VALUE_OPTIONAL, 'Author for readme.md or composer.json')
             ->addOption('description', null, InputOption::VALUE_OPTIONAL, 'Description for readme.md or composer.json')
-            ->setDescription('Creates an registers new magento module.');
+            ->setDescription('Create and register a new magento module.');
     }
 
     /**
