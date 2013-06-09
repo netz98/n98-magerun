@@ -22,7 +22,7 @@ class AttributeCommandTest extends TestCase
                  'attributeCode' => 'sku',
             )
         );
-        $this->assertContains("'backend' => 'catalog/product_attribute_backend_sku'", $commandTester->getDisplay());
+        $this->assertContains("'type' => 'static',", $commandTester->getDisplay());
         $this->assertContains(
             "Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', 'sku');",
             $commandTester->getDisplay()
