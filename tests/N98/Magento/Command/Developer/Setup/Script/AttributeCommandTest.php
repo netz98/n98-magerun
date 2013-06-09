@@ -5,7 +5,7 @@ namespace N98\Magento\Command\Developer\Setup\Script;
 use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
 
-class ProfilerCommandTest extends TestCase
+class AttributeCommandTest extends TestCase
 {
     public function testExecute()
     {
@@ -17,10 +17,15 @@ class ProfilerCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
-                 'command'  => $command->getName(),
-                 'code'     => 'name',
+                 'command'       => $command->getName(),
+                 'entityType'    => 'catalog_product',
+                 'attributeCode' => 'sku',
             )
         );
-        $this->assertContains("'label' => 'Name',", $commandTester->getDisplay());
+        $this->assertContains("'backend' => 'catalog/product_attribute_backend_sku'", $commandTester->getDisplay());
+        $this->assertContains(
+            "Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', 'sku');",
+            $commandTester->getDisplay()
+        );
     }
 }
