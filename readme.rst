@@ -685,7 +685,7 @@ Publishes a page by page id and revision.
 
 Useful to automatically publish a page by a cron job.
 
-Ineractive Development Console
+Interactive Development Console
 """"""""""""""""""""""""""""""
 
 Opens PHP interactive shell with initialized Magento Admin-Store.
