@@ -7,9 +7,10 @@ RECENT CHANGES
 ======
 
 * New command dev:setup:script:attribute to generate attribute setup scripts (by Dusan Lukic, Alan Storm)
-* db:dump --strip: Added enterprise tables
-* Fixed fatal error if /tmp/magento exists and magerun was started outside of Magento Root.
-* Script command: Ask for variable value
+* db:dump --strip: Added enterprise tables (by Alexander Menk)
+* config:get New --update-script option (by Alexander Menk)
+* Fixed fatal error if /tmp/magento exists and magerun was started outside of Magento Root. (by Christian Münch)
+* Script command: Ask for variable value (by Christian Münch)
 
 ======
 1.68.1
