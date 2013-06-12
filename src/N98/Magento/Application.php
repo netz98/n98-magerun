@@ -42,6 +42,7 @@ use N98\Magento\Command\Developer\Module\Rewrite\ConflictsCommand as ModuleRewri
 use N98\Magento\Command\Developer\Module\Rewrite\ListCommand as ModuleRewriteListCommand;
 use N98\Magento\Command\Developer\ProfilerCommand;
 use N98\Magento\Command\Developer\Report\CountCommand as DevelopmentReportCountCommand;
+use N98\Magento\Command\Developer\ResolveCommand as DevelopmentResolveCommand;
 use N98\Magento\Command\Developer\SymlinksCommand;
 use N98\Magento\Command\Developer\TemplateHintsBlocksCommand;
 use N98\Magento\Command\Developer\TemplateHintsCommand;
@@ -628,6 +629,7 @@ class Application extends BaseApplication
         $this->add(new DevelopmentLogDbCommand());
         $this->add(new DevelopmentLogSizeCommand());
         $this->add(new DevelopmentReportCountCommand());
+        $this->add(new DevelopmentResolveCommand());
         $this->add(new DevelopmentIdePhpStormMetaCommand());
         $this->add(new ModuleListCommand());
         $this->add(new ModuleRewriteListCommand());
