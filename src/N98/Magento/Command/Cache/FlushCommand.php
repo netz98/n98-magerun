@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Cache;
 
+use N98\Magento\Application;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,6 +16,11 @@ class FlushCommand extends AbstractCacheCommand
             ->setName('cache:flush')
             ->setDescription('Flush magento cache storage')
         ;
+    }
+
+    public function isEnabled()
+    {
+        return $this->getApplication()->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1;
     }
 
     /**

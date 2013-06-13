@@ -48,7 +48,7 @@ class ScriptCommand extends AbstractMagentoCommand
 
                     // set var
                     case '$':
-                        $this->registerVariable($commandString);
+                        $this->registerVariable($output, $commandString);
                         break;
 
                     // run shell script
@@ -79,13 +79,22 @@ class ScriptCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param string $commandString
+     * @param OutputInterface $output
+     * @param string          $commandString
      * @return void
      */
-    protected function registerVariable($commandString)
+    protected function registerVariable(OutputInterface $output, $commandString)
     {
         if (preg_match('/^(\$\{[a-zA-Z0-9-_.]+\})=(.+)/', $commandString, $matches)) {
-            $this->scriptVars[$matches[1]] = $matches[2];
+            if ($matches[2] == '?') {
+                $dialog = $this->getHelperSet()->get('dialog');
+                $this->scriptVars[$matches[1]] = $dialog->ask(
+                    $output,
+                    '<info>Please enter a value for <comment>' . $matches[1] . '</comment>:</info> '
+                );
+            } else {
+                $this->scriptVars[$matches[1]] = $matches[2];
+            }
         }
     }
 

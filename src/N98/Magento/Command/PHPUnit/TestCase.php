@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\PHPUnit;
 
+use N98\Magento\Application;
+
 class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -25,13 +27,14 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
             $this->application = $this->getMock(
                 'N98\Magento\Application',
-                array('getMagentoRootFolder', 'detectMagento')
+                array('getMagentoRootFolder')
             );
-            $this->application->init();
             $this->application->expects($this->any())->method('getMagentoRootFolder')->will($this->returnValue($root));
+            $this->application->init();
             $this->application->initMagento();
-
-            spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
+            if ($this->application->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1) {
+                spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
+            }
         }
 
         return $this->application;

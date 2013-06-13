@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Cache;
 
+use N98\Magento\Application;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,6 +16,11 @@ class DisableCommand extends AbstractCacheCommand
             ->setName('cache:disable')
             ->setDescription('Disables magento caches')
         ;
+    }
+
+    public function isEnabled()
+    {
+        return $this->getApplication()->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1;
     }
 
     /**

@@ -37,7 +37,7 @@ class ApplicationTest extends TestCase
                 ),
                 'aliases' => array(
                     array(
-                        'cf' => 'cache:flush'
+                        'cl' => 'cache:list'
                     )
                 ),
             ),
@@ -66,6 +66,6 @@ class ApplicationTest extends TestCase
         $this->assertTrue($application->getDefinition()->hasOption('root-dir'));
 
         // check alias
-        $this->assertInstanceOf('\N98\Magento\Command\Cache\FlushCommand', $application->find('cf'));
+        $this->assertInstanceOf('\N98\Magento\Command\Cache\ListCommand', $application->find('cl'));
     }
 }
