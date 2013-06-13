@@ -7,12 +7,12 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ResolveCommand extends AbstractMagentoCommand
+class LookupCommand extends AbstractMagentoCommand
 {
     protected function configure()
     {
         $this
-            ->setName('dev:resolve')
+            ->setName('dev:class:lookup')
             ->setDescription('Resolves a grouped class name')
             ->addArgument('type', InputArgument::REQUIRED, 'The type of the class (helper|block|model)')
             ->addArgument('name', InputArgument::REQUIRED, 'The grouped class name')
