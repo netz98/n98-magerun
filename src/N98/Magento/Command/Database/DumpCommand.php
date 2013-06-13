@@ -129,7 +129,7 @@ class DumpCommand extends AbstractDatabaseCommand
             }
 
             // resolve wildcards
-            if (strpos($exclude, '*')) {
+            if (strpos($exclude, '*') !== false) {
                 $connection = $this->_getConnection();
                 $sth = $connection->prepare('SHOW TABLES LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
                 $sth->execute(
