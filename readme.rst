@@ -781,20 +781,20 @@ Prints count of reports in var/reports folder.
 
    $ n98-magerun.phar dev:report:count
    
-Resolve
+Class Lookup
 """""""
 
 Resolves the given type and grouped class name to a class name, useful for debugging rewrites.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:resolve <block|model|helper> <name>
+   $ n98-magerun.phar dev:class:lookup <block|model|helper> <name>
    
 Example:   
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:resolve model catalog/product
+   $ n98-magerun.phar dev:class:lookup model catalog/product
 
 Toggle Symlinks
 """""""""""""""
