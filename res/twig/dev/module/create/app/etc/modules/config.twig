@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <{{ vendorNamespace }}_{{ moduleName }}>
+            <version>1.0.0</version>
+        </{{ vendorNamespace }}_{{ moduleName }}>
+    </modules>
+    <global>
+{% if createBlocks %}
+        <blocks>
+            <{{ vendorNamespace | lower }}_{{ moduleName | lower }}>
+                <class>{{ vendorNamespace }}_{{ moduleName }}_Block</class>
+            </{{ vendorNamespace | lower }}_{{ moduleName | lower }}>
+        </blocks>
+{% endif %}
+{% if createHelpers %}
+        <helpers>
+            <{{ vendorNamespace | lower }}_{{ moduleName | lower }}>
+                <class>{{ vendorNamespace }}_{{ moduleName }}_Helper</class>
+            </{{ vendorNamespace | lower }}_{{ moduleName | lower }}>
+        </helpers>
+{% endif %}
+{% if createModels %}
+        <models>
+            <{{ vendorNamespace | lower }}_{{ moduleName | lower }}>
+                <class>{{ vendorNamespace }}_{{ moduleName }}_Model</class>
+            </{{ vendorNamespace | lower }}_{{ moduleName | lower }}>
+        </models>
+{% endif %}
+{% if createSetup %}
+        <resources>
+            <{{ vendorNamespace | lower }}_{{ moduleName | lower }}_setup>
+                <setup>
+                    <module>{{ vendorNamespace }}_{{ moduleName }}</module>
+                </setup>
+            </{{ vendorNamespace | lower }}_{{ moduleName | lower }}_setup>
+        </resources>
+{% endif %}
+    </global>
+</config>

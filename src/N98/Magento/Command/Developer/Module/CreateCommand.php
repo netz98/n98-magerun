@@ -20,7 +20,12 @@ class CreateCommand extends AbstractMagentoCommand
     protected $view;
 
     /**
-     * @var strin
+     * @var array
+     */
+    protected $twigVars = array();
+
+    /**
+     * @var string
      */
     protected $baseFolder;
 
@@ -87,6 +92,7 @@ class CreateCommand extends AbstractMagentoCommand
             $this->detectMagento($output);
         }
         $this->baseFolder = __DIR__ . '/../../../../../../res/module/create';
+
         $this->vendorNamespace = ucfirst($input->getArgument('vendorNamespace'));
         $this->moduleName = ucfirst($input->getArgument('moduleName'));
         $this->codePool = $input->getArgument('codePool');
@@ -117,6 +123,20 @@ class CreateCommand extends AbstractMagentoCommand
         $view->assign('authorName', $input->getOption('author-name'));
         $view->assign('authorEmail', $input->getOption('author-email'));
         $view->assign('description', $input->getOption('description'));
+
+        $this->twigVars = array(
+            'vendorNamespace' => $this->vendorNamespace,
+            'moduleName'      => $this->moduleName,
+            'codePool'        => $this->codePool,
+            'createBlocks'    => $input->getOption('add-blocks'),
+            'createModels'    => $input->getOption('add-models'),
+            'createHelpers'   => $input->getOption('add-helpers'),
+            'createSetup'     => $input->getOption('add-setup'),
+            'authorName'      => $input->getOption('author-name'),
+            'authorEmail'     => $input->getOption('author-email'),
+            'description'     => $input->getOption('description'),
+        );
+
         $this->view = $view;
     }
 
@@ -193,9 +213,9 @@ class CreateCommand extends AbstractMagentoCommand
 
     protected function writeModuleConfig($input, $output)
     {
-        $this->view->setTemplate($this->baseFolder . '/app/etc/modules/config.phtml');
         $outFile = $this->moduleDirectory . '/etc/config.xml';
-        file_put_contents($outFile, $this->view->render());
+        file_put_contents($outFile, $this->getHelper('twig')->render('dev/module/create/app/etc/modules/config.twig', $this->twigVars));
+
         $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
     }
 

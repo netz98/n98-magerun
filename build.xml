@@ -29,7 +29,10 @@ Build phar with:
         <exclude name="**/Tests/**" />
         <exclude name="**/tests/**" />
         <exclude name="**/doc/**" />
+        <exclude name="**/docs/**" />
         <exclude name="fzaninotto/faker/src/Faker/ORM" />
+        <exclude name="twig/twig/test/**" />
+        <exclude name="twig/twig/ext/**" />
         <exclude name="phpunit/**" />
     </fileset>
 

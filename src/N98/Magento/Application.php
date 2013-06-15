@@ -79,6 +79,7 @@ use N98\Magento\Command\System\Website\ListCommand as SystemWebsiteListCommand;
 use N98\Magento\EntryPoint\Magerun as MagerunEntryPoint;
 use N98\Util\Console\Helper\ParameterHelper;
 use N98\Util\Console\Helper\TableHelper;
+use N98\Util\Console\Helper\TwigHelper;
 use N98\Util\OperatingSystem;
 use N98\Util\String;
 use Symfony\Component\Console\Application as BaseApplication;
@@ -214,6 +215,15 @@ class Application extends BaseApplication
         $helperSet = $this->getHelperSet();
         $helperSet->set(new TableHelper(), 'table');
         $helperSet->set(new ParameterHelper(), 'parameter');
+
+        // Twig
+        $twigBaseDirs = array(
+            __DIR__ . '/../../../res/twig'
+        );
+        if (isset($this->config['twig']['baseDirs']) && is_array($this->config['twig']['baseDirs'])) {
+            $twigBaseDirs = array_merge(array_reverse($this->config['twig']['baseDirs']), $twigBaseDirs);
+        }
+        $helperSet->set(new TwigHelper($twigBaseDirs), 'twig');
     }
 
     /**
@@ -437,6 +447,10 @@ class Application extends BaseApplication
         $input = $this->checkConfigCommandAlias($input);
         $this->checkVarDir($output);
 
+        if (OutputInterface::VERBOSITY_DEBUG <= $output->getVerbosity()) {
+            $output->writeln('DEBUG');
+        }
+
         parent::doRun($input, $output);
     }
 
@@ -510,7 +524,12 @@ class Application extends BaseApplication
      */
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
-        $this->init();
+        try {
+            $this->init();
+        } catch (\Exception $e) {
+            $output = new ConsoleOutput();
+            $this->renderException($e, $output);
+        }
 
         $return = parent::run($input, $output);
 

@@ -1,3 +1,6 @@
+twig:
+  baseDirs:
+
 commands:
   customCommands: []
   aliases: []
