@@ -29,12 +29,27 @@ class TwigHelper extends Helper
     }
 
     /**
+     * Renders a twig template file
+     *
      * @param string $template
      * @param array  $variables
      */
     public function render($template, $variables = array())
     {
         return $this->twig->render($template, $variables);
+    }
+
+    /**
+     * Renders a twig string
+     *
+     * @param       $string
+     * @param array $variables
+     *
+     * @return string
+     */
+    public function renderString($string, $variables = array())
+    {
+        return $this->twig->renderString($string, $variables);
     }
 
     /**

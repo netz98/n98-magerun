@@ -102,6 +102,7 @@ class CreateCommand extends AbstractMagentoCommand
             $this->writeModmanFile($input, $output);
         }
         $this->writeComposerConfig($input, $output);
+        $this->addAdditionalFiles($input, $output);
     }
 
     protected function initView($input)
@@ -224,7 +225,8 @@ class CreateCommand extends AbstractMagentoCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      */
-    protected function writeReadme($input, $output) {
+    protected function writeReadme($input, $output)
+    {
         if (!$input->getOption('add-readme')) {
             return;
         }
@@ -246,7 +248,8 @@ class CreateCommand extends AbstractMagentoCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      */
-    protected function writeComposerConfig($input, $output) {
+    protected function writeComposerConfig($input, $output)
+    {
         if (!$input->getOption('add-composer')) {
             return;
         }
@@ -260,5 +263,38 @@ class CreateCommand extends AbstractMagentoCommand
             $this->getHelper('twig')->render('dev/module/create/composer.twig', $this->twigVars)
         );
         $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
+    }
+
+    protected function addAdditionalFiles($input, $output)
+    {
+        $config = $this->getCommandConfig();
+        if (isset($config['additionalFiles']) && is_array($config['additionalFiles'])) {
+            foreach ($config['additionalFiles'] as $template => $outFileRaw) {
+                $outFile = $this->_getOutfile($outFileRaw);
+                if (!is_dir(dirname($outFile))) {
+                    mkdir(dirname($outFile));
+                }
+                file_put_contents(
+                    $outFile,
+                    $this->getHelper('twig')->render($template, $this->twigVars)
+                );
+                $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
+            }
+
+        }
+    }
+
+    /**
+     * @param string $filename
+     * @return string
+     */
+    private function _getOutfile($filename)
+    {
+        $pathes = array(
+            'rootDir'   => $this->_magentoRootFolder,
+            'moduleDir' => $this->moduleDirectory,
+        );
+
+        return $this->getHelper('twig')->renderString($filename, array_merge($this->twigVars, $pathes));
     }
 }
