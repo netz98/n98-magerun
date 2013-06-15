@@ -17,7 +17,6 @@ class Twig
      */
     public function __construct(array $baseDirs)
     {
-        var_dump($baseDirs); die;
         $loader = new \Twig_Loader_Filesystem($baseDirs);
         $this->twigEnv = new \Twig_Environment($loader);
     }

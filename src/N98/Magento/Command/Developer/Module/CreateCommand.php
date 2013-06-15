@@ -15,11 +15,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CreateCommand extends AbstractMagentoCommand
 {
     /**
-     * @var PhpView
-     */
-    protected $view;
-
-    /**
      * @var array
      */
     protected $twigVars = array();
@@ -112,18 +107,6 @@ class CreateCommand extends AbstractMagentoCommand
 
     protected function initView($input)
     {
-        $view = new PhpView();
-        $view->assign('vendorNamespace', $this->vendorNamespace);
-        $view->assign('moduleName', $this->moduleName);
-        $view->assign('codePool', $this->codePool);
-        $view->assign('createBlocks', $input->getOption('add-blocks'));
-        $view->assign('createModels', $input->getOption('add-models'));
-        $view->assign('createHelpers', $input->getOption('add-helpers'));
-        $view->assign('createSetup', $input->getOption('add-setup'));
-        $view->assign('authorName', $input->getOption('author-name'));
-        $view->assign('authorEmail', $input->getOption('author-email'));
-        $view->assign('description', $input->getOption('description'));
-
         $this->twigVars = array(
             'vendorNamespace' => $this->vendorNamespace,
             'moduleName'      => $this->moduleName,
@@ -136,8 +119,6 @@ class CreateCommand extends AbstractMagentoCommand
             'authorEmail'     => $input->getOption('author-email'),
             'description'     => $input->getOption('description'),
         );
-
-        $this->view = $view;
     }
 
     protected function createModuleDirectories($input, $output)
@@ -200,30 +181,37 @@ class CreateCommand extends AbstractMagentoCommand
 
     protected function writeEtcModules($input, $output)
     {
-        $this->view->setTemplate($this->baseFolder . '/app/etc/modules/definition.phtml');
         $outFile = $this->_magentoRootFolder
                  . '/app/etc/modules/'
                  . $this->vendorNamespace
                  . '_'
                  . $this->moduleName
                  . '.xml';
-        file_put_contents($outFile, $this->view->render());
+        file_put_contents(
+            $outFile,
+            $this->getHelper('twig')->render('dev/module/create/app/etc/modules/definition.twig', $this->twigVars)
+        );
         $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
     }
 
     protected function writeModuleConfig($input, $output)
     {
         $outFile = $this->moduleDirectory . '/etc/config.xml';
-        file_put_contents($outFile, $this->getHelper('twig')->render('dev/module/create/app/etc/modules/config.twig', $this->twigVars));
+        file_put_contents(
+            $outFile,
+            $this->getHelper('twig')->render('dev/module/create/app/etc/modules/config.twig', $this->twigVars)
+        );
 
         $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
     }
 
     protected function writeModmanFile($input, $output)
     {
-        $this->view->setTemplate($this->baseFolder . '/modman.phtml');
         $outFile = $this->_magentoRootFolder . '/../modman';
-        file_put_contents($outFile, $this->view->render());
+        file_put_contents(
+            $outFile,
+            $this->getHelper('twig')->render('dev/module/create/modman.twig', $this->twigVars)
+        );
         $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
     }
 
@@ -241,13 +229,15 @@ class CreateCommand extends AbstractMagentoCommand
         if (!$input->getOption('add-readme')) {
             return;
         }
-        $this->view->setTemplate($this->baseFolder . '/app/etc/modules/readme.phtml');
         if ($this->modmanMode) {
             $outFile = $this->_magentoRootFolder . '/../readme.md';
         } else {
             $outFile = $this->moduleDirectory . '/etc/readme.md';
         }
-        file_put_contents($outFile, $this->view->render());
+        file_put_contents(
+            $outFile,
+            $this->getHelper('twig')->render('dev/module/create/app/etc/modules/readme.twig', $this->twigVars)
+        );
         $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
     }
 
@@ -261,13 +251,15 @@ class CreateCommand extends AbstractMagentoCommand
         if (!$input->getOption('add-composer')) {
             return;
         }
-        $this->view->setTemplate($this->baseFolder . '/composer.phtml');
         if ($this->modmanMode) {
             $outFile = $this->_magentoRootFolder . '/../composer.json';
         } else {
             $outFile = $this->moduleDirectory . '/etc/composer.json';
         }
-        file_put_contents($outFile, $this->view->render());
+        file_put_contents(
+            $outFile,
+            $this->getHelper('twig')->render('dev/module/create/app/etc/modules/composer.twig', $this->twigVars)
+        );
         $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
     }
 }
