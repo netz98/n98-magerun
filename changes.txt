@@ -3,6 +3,15 @@ RECENT CHANGES
 **************
 
 ======
+1.70.0
+======
+
+* Support to add own files in dev:module:create command (by Christian Münch)
+* Support to modify templates of dev:module:create command  (by Christian Münch)
+* Added --add-time=prefix to db:dump command (by Alexander Menk)
+* New command dev:class:lookup (by Rick Kuipers)
+
+======
 1.69.0
 ======
 
