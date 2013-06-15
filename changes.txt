@@ -10,6 +10,7 @@ RECENT CHANGES
 * Support to modify templates of dev:module:create command  (by Christian Münch)
 * Added --add-time=prefix to db:dump command (by Alexander Menk)
 * New command dev:class:lookup (by Rick Kuipers)
+* Added --unstable option to self-update command to fetch the current unstable develop version.
 
 ======
 1.69.0

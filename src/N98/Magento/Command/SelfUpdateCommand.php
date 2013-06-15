@@ -7,6 +7,7 @@ use N98\Util\OperatingSystem;
 use Composer\Util\RemoteFilesystem;
 use Composer\IO\ConsoleIO;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -19,6 +20,7 @@ class SelfUpdateCommand extends AbstractMagentoCommand
         $this
             ->setName('self-update')
             ->setAliases(array('selfupdate'))
+            ->addOption('unstable', null, InputOption::VALUE_NONE, 'Load unstable version from develop branch')
             ->setDescription('Updates n98-magerun.phar to the latest version.')
             ->setHelp(<<<EOT
 The <info>self-update</info> command checks github for newer
@@ -43,17 +45,20 @@ EOT
     {
         $io = new ConsoleIO($input, $output, $this->getHelperSet());
         $rfs = new RemoteFilesystem($io);
-        $latest = trim($rfs->getContents('raw.github.com', 'https://raw.github.com/netz98/n98-magerun/master/version.txt', false));
 
-        if ($this->getApplication()->getVersion() !== $latest) {
+        $loadUnstable = $input->getOption('unstable');
+        if ($loadUnstable) {
+            $versionTxtUrl = 'https://raw.github.com/netz98/n98-magerun/develop/version.txt';
+            $remoteFilename = 'https://raw.github.com/netz98/n98-magerun/develop/n98-magerun.phar';
+        } else {
+            $versionTxtUrl = 'https://raw.github.com/netz98/n98-magerun/master/version.txt';
+            $remoteFilename = 'https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar';
+        }
+
+        $latest = trim($rfs->getContents('raw.github.com', $versionTxtUrl, false));
+
+        if ($this->getApplication()->getVersion() !== $latest || $loadUnstable) {
             $output->writeln(sprintf("Updating to version <info>%s</info>.", $latest));
-
-            $os = new OperatingSystem();
-            if ($os->isWindows()) {
-                $remoteFilename = 'https://raw.github.com/netz98/n98-magerun/master/n98-magerun-windows.phar';
-            } else {
-                $remoteFilename = 'https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar';
-            }
 
             $localFilename = $_SERVER['argv'][0];
             if (!is_writable($localFilename)) {
