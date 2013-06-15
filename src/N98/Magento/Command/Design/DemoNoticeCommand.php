@@ -26,4 +26,5 @@ class DemoNoticeCommand extends AbstractMagentoStoreConfigCommand
      */
     protected $commandDescription = 'Toggles demo store notice for a store view';
 
+    protected $scope = self::SCOPE_STORE_VIEW_GLOBAL;
 }
