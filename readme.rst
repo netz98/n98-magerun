@@ -685,8 +685,8 @@ Publishes a page by page id and revision.
 
 Useful to automatically publish a page by a cron job.
 
-Ineractive Development Console
-""""""""""""""""""""""""""""""
+Interactive Development Console
+"""""""""""""""""""""""""""""""
 
 Opens PHP interactive shell with initialized Magento Admin-Store.
 
@@ -797,6 +797,22 @@ Prints count of reports in var/reports folder.
 .. code-block:: sh
 
    $ n98-magerun.phar dev:report:count
+
+""""""""""""""""""""""""""
+Resolve/Lookup Class Names
+""""""""""""""""""""""""""
+
+Resolves the given type and grouped class name to a class name, useful for debugging rewrites.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:class:lookup <block|model|helper> <name>
+   
+Example:   
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:resolve model catalog/product
 
 Toggle Symlinks
 """""""""""""""

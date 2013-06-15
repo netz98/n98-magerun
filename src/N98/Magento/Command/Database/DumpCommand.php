@@ -19,7 +19,7 @@ class DumpCommand extends AbstractDatabaseCommand
         $this
             ->setName('db:dump')
             ->addArgument('filename', InputArgument::OPTIONAL, 'Dump filename')
-            ->addOption('add-time', 't', InputOption::VALUE_NONE, 'Adds time to filename (only if filename was not provided)')
+            ->addOption('add-time', 't', InputOption::VALUE_OPTIONAL, 'Adds time to filename (only if filename was not provided)')
             ->addOption('compression', 'c', InputOption::VALUE_REQUIRED, 'Compress the dump file using one of the supported algorithms')
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysqldump command. Do not execute')
             ->addOption('print-only-filename', null, InputOption::VALUE_NONE, 'Execute and prints not output except the dump filename')
@@ -129,7 +129,7 @@ class DumpCommand extends AbstractDatabaseCommand
             }
 
             // resolve wildcards
-            if (strpos($exclude, '*')) {
+            if (strpos($exclude, '*') !== false) {
                 $connection = $this->_getConnection();
                 $sth = $connection->prepare('SHOW TABLES LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
                 $sth->execute(
@@ -272,12 +272,24 @@ class DumpCommand extends AbstractDatabaseCommand
      */
     protected function getFileName(InputInterface $input, OutputInterface $output, Compressor\AbstractCompressor $compressor)
     {
-        $timeStamp = '_' . date('Y-m-d_His');
+        $namePrefix = '';
+        $nameSuffix = '';
+        $nameExtension = '.sql';
+
+        if ($input->getOption('add-time') !== false) {
+            $timeStamp = date('Y-m-d_His');
+
+            if ($input->getOption('add-time') == 'suffix') {
+                $nameSuffix = '_' . $timeStamp;
+            } else {
+                $namePrefix = $timeStamp . '_';
+            }
+        }
+
         if (($fileName = $input->getArgument('filename')) === null && !$input->getOption('stdout')) {
             $dialog = $this->getHelperSet()->get('dialog');
-            $defaultName = $this->dbSettings['dbname']
-                         . ($input->getOption('add-time') ? $timeStamp : '')
-                         . '.sql';
+            $defaultName = $namePrefix . $this->dbSettings['dbname'] . $nameSuffix
+                         . $nameExtension;
             if (!$input->getOption('force')) {
                 $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question> [<comment>' . $defaultName . '</comment>]', $defaultName);
             } else {
@@ -285,12 +297,9 @@ class DumpCommand extends AbstractDatabaseCommand
             }
         } else {
             if (($input->getOption('add-time'))) {
-                $extension_pos = strrpos($fileName, '.'); // find position of the last dot, so where the extension starts
-                if ($extension_pos !== false) {
-                    $fileName = substr($fileName, 0, $extension_pos) . $timeStamp . substr($fileName, $extension_pos);
-                } else {
-                    $fileName .= $timeStamp;
-                }
+                $path_parts = pathinfo($fileName);
+                $fileName = ($path_parts['dirname'] == '.' ? '' : $path_parts['dirname'] . DIRECTORY_SEPARATOR ) .
+                    $namePrefix . $path_parts['filename'] . $nameSuffix . '.' . $path_parts['extension'];
             }
         }
 
