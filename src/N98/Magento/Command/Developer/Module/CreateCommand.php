@@ -3,7 +3,6 @@
 namespace N98\Magento\Command\Developer\Module;
 
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\View\PhpView;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -258,7 +257,7 @@ class CreateCommand extends AbstractMagentoCommand
         }
         file_put_contents(
             $outFile,
-            $this->getHelper('twig')->render('dev/module/create/app/etc/modules/composer.twig', $this->twigVars)
+            $this->getHelper('twig')->render('dev/module/create/composer.twig', $this->twigVars)
         );
         $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
     }
