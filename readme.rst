@@ -199,11 +199,11 @@ Dumps configured magento database with `mysqldump`.
 
 * Requires MySQL CLI tools
 
-Arguments:
+**Arguments**
 
     filename        Dump filename
 
-*Options*
+**Options**
 
 +==========================+===================================================================+
 | Option                   | Description                                                       |
