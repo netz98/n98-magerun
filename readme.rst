@@ -205,6 +205,25 @@ Dumps configured magento database with `mysqldump`.
 
 **Options**
 
+  --add-time                 
+        Adds time to filename (only if filename was not provided)     
+  --compression (-c)         
+        Compress the dump file using one of the supported algorithms     
+  --only-command             
+        Print only mysqldump command. Do not execute     
+  --print-only-filename      
+        Execute and prints not output except the dump filename     
+  --no-single-transaction    
+        Do not use single-transaction (not recommended, this is blocking)
+  --human-readable           
+        Use a single insert with column names per row.     
+  --stdout                   
+        Dump to stdout     
+  --strip                    
+        Tables to strip (dump only structure of those tables)     
+  --force (-f)               
+        Do not prompt if all options are defined     
+
 
 .. code-block:: sh
 
