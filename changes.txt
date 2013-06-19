@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.70.3
+======
+
+* Recursively create non existing folders in dev:module:create command for additional files.
+
+======
 1.70.2
 ======
 

@@ -272,7 +272,7 @@ class CreateCommand extends AbstractMagentoCommand
             foreach ($config['additionalFiles'] as $template => $outFileRaw) {
                 $outFile = $this->_getOutfile($outFileRaw);
                 if (!is_dir(dirname($outFile))) {
-                    mkdir(dirname($outFile));
+                    mkdir(dirname($outFile), 0777, true);
                 }
                 file_put_contents(
                     $outFile,
