@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.70.2
+======
+
+* Fixed bug #163: Task dev:module:create Missing question mark
+
+======
 1.70.1
 ======
 
@@ -27,25 +33,6 @@ RECENT CHANGES
 * config:get New --update-script option (by Alexander Menk)
 * Fixed fatal error if /tmp/magento exists and magerun was started outside of Magento Root. (by Christian Münch)
 * Script command: Ask for variable value (by Christian Münch)
-
-======
-1.68.1
-======
-
-* Fixed issue #143 - db:import error "sh: pv: not found"
-
-======
-1.68.0
-======
-
-* Issue #141 - Resolve variables inside of magerun calls in script
-* Added new predefined variables to script command.
-
-======
-1.67.0
-======
-
-* Issue #135 - Feature Request: Config Seach (by @storm)
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
