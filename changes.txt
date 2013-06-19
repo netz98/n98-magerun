@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.70.1
+======
+
+* Fixed bug #163: Task dev:module:create generates invalid XML code
+
+======
 1.70.0
 ======
 
