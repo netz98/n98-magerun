@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.70.4
+======
+
+* Install command does not recognize --dbPass option since last symfony component update
+
+======
 1.70.3
 ======
 
