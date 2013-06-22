@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.70.6
+======
+
+* Install command: Fixed problem with existing installation folder occured with absolute paths.
+
+======
 1.70.5
 ======
 

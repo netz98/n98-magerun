@@ -147,7 +147,7 @@ class InstallCommand extends AbstractMagentoCommand
                     throw new \InvalidArgumentException('Cannot create folder.');
                 }
             } else {
-                $folderName = trim($folderName, '. /');
+                $folderName = rtrim(trim($folderName, '. '), '/');
                 $folderName = realpath($folderName);
                 return $folderName;
             }
