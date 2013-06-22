@@ -143,11 +143,11 @@ class InstallCommand extends AbstractMagentoCommand
     {
         $validateInstallationFolder = function($folderName) {
             if (!is_dir($folderName)) {
-                if (!mkdir($folderName)) {
+                if (!mkdir($folderName,0777, true)) {
                     throw new \InvalidArgumentException('Cannot create folder.');
                 }
             } else {
-                $folderName = trim($folderName, '. /');
+                $folderName = rtrim(trim($folderName, '. '), '/');
                 $folderName = realpath($folderName);
                 return $folderName;
             }
@@ -236,7 +236,7 @@ class InstallCommand extends AbstractMagentoCommand
         do {
             $this->config['db_host'] = $input->getOption('dbHost') !== null ? $input->getOption('dbHost') : $dialog->askAndValidate($output, '<question>Please enter the database host:</question> <comment>[localhost]</comment>: ', $this->notEmptyCallback, false, 'localhost');
             $this->config['db_user'] = $input->getOption('dbUser') !== null ? $input->getOption('dbUser') : $dialog->askAndValidate($output, '<question>Please enter the database username:</question> ', $this->notEmptyCallback);
-            $this->config['db_pass'] = $input->hasParameterOption('--dbPass=') ? $input->getOption('dbPass') : $dialog->ask($output, '<question>Please enter the database password:</question> ');
+            $this->config['db_pass'] = $input->hasParameterOption('--dbPass=' . $input->getOption('dbPass')) ? $input->getOption('dbPass') : $dialog->ask($output, '<question>Please enter the database password:</question> ');
             $this->config['db_name'] = $input->getOption('dbName') !== null ? $input->getOption('dbName') : $dialog->askAndValidate($output, '<question>Please enter the database name:</question> ', $this->notEmptyCallback);
             $db = $this->validateDatabaseSettings($output);
         } while ($db === false);

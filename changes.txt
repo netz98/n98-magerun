@@ -3,43 +3,40 @@ RECENT CHANGES
 **************
 
 ======
-1.70.0
+1.70.6
 ======
 
-* Support to add own files in dev:module:create command (by Christian Münch)
-* Support to modify templates of dev:module:create command  (by Christian Münch)
-* Added --add-time=prefix to db:dump command (by Alexander Menk)
-* New command dev:class:lookup (by Rick Kuipers)
-* Added --unstable option to self-update command to fetch the current unstable develop version.
+* Install command: Fixed problem with existing installation folder occured with absolute paths.
 
 ======
-1.69.0
+1.70.5
 ======
 
-* New command dev:setup:script:attribute to generate attribute setup scripts (by Dusan Lukic, Alan Storm)
-* db:dump --strip: Added enterprise tables (by Alexander Menk)
-* config:get New --update-script option (by Alexander Menk)
-* Fixed fatal error if /tmp/magento exists and magerun was started outside of Magento Root. (by Christian Münch)
-* Script command: Ask for variable value (by Christian Münch)
+* Install command does not create folder recursive
 
 ======
-1.68.1
+1.70.4
 ======
 
-* Fixed issue #143 - db:import error "sh: pv: not found"
+* Install command does not recognize --dbPass option since last symfony component update
 
 ======
-1.68.0
+1.70.3
 ======
 
-* Issue #141 - Resolve variables inside of magerun calls in script
-* Added new predefined variables to script command.
+* Recursively create non existing folders in dev:module:create command for additional files.
 
 ======
-1.67.0
+1.70.2
 ======
 
-* Issue #135 - Feature Request: Config Seach (by @storm)
+* Fixed bug #163: Task dev:module:create Missing question mark
+
+======
+1.70.1
+======
+
+* Fixed bug #163: Task dev:module:create generates invalid XML code
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
