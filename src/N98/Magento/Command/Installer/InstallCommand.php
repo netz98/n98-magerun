@@ -143,7 +143,7 @@ class InstallCommand extends AbstractMagentoCommand
     {
         $validateInstallationFolder = function($folderName) {
             if (!is_dir($folderName)) {
-                if (!mkdir($folderName)) {
+                if (!mkdir($folderName,0777, true)) {
                     throw new \InvalidArgumentException('Cannot create folder.');
                 }
             } else {

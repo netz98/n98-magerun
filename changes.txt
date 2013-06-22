@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.70.5
+======
+
+* Install command does not create folder recursive
+
+======
 1.70.4
 ======
 
@@ -25,26 +31,6 @@ RECENT CHANGES
 ======
 
 * Fixed bug #163: Task dev:module:create generates invalid XML code
-
-======
-1.70.0
-======
-
-* Support to add own files in dev:module:create command (by Christian Münch)
-* Support to modify templates of dev:module:create command  (by Christian Münch)
-* Added --add-time=prefix to db:dump command (by Alexander Menk)
-* New command dev:class:lookup (by Rick Kuipers)
-* Added --unstable option to self-update command to fetch the current unstable develop version.
-
-======
-1.69.0
-======
-
-* New command dev:setup:script:attribute to generate attribute setup scripts (by Dusan Lukic, Alan Storm)
-* db:dump --strip: Added enterprise tables (by Alexander Menk)
-* config:get New --update-script option (by Alexander Menk)
-* Fixed fatal error if /tmp/magento exists and magerun was started outside of Magento Root. (by Christian Münch)
-* Script command: Ask for variable value (by Christian Münch)
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
