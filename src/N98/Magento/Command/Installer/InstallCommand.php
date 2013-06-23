@@ -148,7 +148,6 @@ class InstallCommand extends AbstractMagentoCommand
                 }
             } else {
                 $folderName = rtrim(trim($folderName, '. '), '/');
-                $folderName = realpath($folderName);
                 return $folderName;
             }
 
@@ -167,7 +166,7 @@ class InstallCommand extends AbstractMagentoCommand
 
         }
 
-        $this->config['installationFolder'] = $installationFolder;
+        $this->config['installationFolder'] = realpath($installationFolder);
     }
 
     protected function test($folderName) {
@@ -297,6 +296,8 @@ class InstallCommand extends AbstractMagentoCommand
                         false
                     );
 
+                    $this->_fixComposerExtractionBug();
+
                     $expandedFolder = $this->config['installationFolder']
                         . DIRECTORY_SEPARATOR
                         . str_replace(array('.tar.gz', '.tar.bz2', '.zip'), '', basename($package->getDistUrl()));
@@ -336,6 +337,20 @@ class InstallCommand extends AbstractMagentoCommand
                     }
                 }
             }
+        }
+    }
+
+    protected function _fixComposerExtractionBug()
+    {
+        $mediaFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'media';
+        $wrongFolder = $mediaFolder . DIRECTORY_SEPARATOR . 'media';
+        if (is_dir($wrongFolder)) {
+            $filesystem = new Filesystem();
+            $filesystem->recursiveCopy(
+                $wrongFolder,
+                $mediaFolder
+            );
+            $filesystem->recursiveRemoveDirectory($wrongFolder);
         }
     }
 

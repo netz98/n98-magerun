@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.70.7
+======
+
+* Install command: Fixed problem with sample data and current composer downloader
+
+======
 1.70.6
 ======
 
@@ -19,24 +25,6 @@ RECENT CHANGES
 ======
 
 * Install command does not recognize --dbPass option since last symfony component update
-
-======
-1.70.3
-======
-
-* Recursively create non existing folders in dev:module:create command for additional files.
-
-======
-1.70.2
-======
-
-* Fixed bug #163: Task dev:module:create Missing question mark
-
-======
-1.70.1
-======
-
-* Fixed bug #163: Task dev:module:create generates invalid XML code
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
