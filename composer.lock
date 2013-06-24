@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "d498e73363f8dae5b9984bf84ff2a2ca27240925"
+                "reference": "c93aecee4d3998d17a1986f042187d38dd394397"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/d498e73363f8dae5b9984bf84ff2a2ca27240925",
-                "reference": "d498e73363f8dae5b9984bf84ff2a2ca27240925",
+                "url": "https://api.github.com/repos/composer/composer/zipball/c93aecee4d3998d17a1986f042187d38dd394397",
+                "reference": "c93aecee4d3998d17a1986f042187d38dd394397",
                 "shasum": ""
             },
             "require": {
@@ -72,7 +72,7 @@
                 "dependency",
                 "package"
             ],
-            "time": "2013-06-13 15:45:05"
+            "time": "2013-06-20 12:05:54"
         },
         {
             "name": "fzaninotto/faker",
@@ -129,7 +129,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/justinrainbow/json-schema/archive/v1.1.0.zip",
+                "url": "https://github.com/justinrainbow/json-schema/zipball/v1.1.0",
                 "reference": "v1.1.0",
                 "shasum": ""
             },
@@ -142,7 +142,6 @@
                     "JsonSchema": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "NewBSD"
             ],
@@ -406,17 +405,17 @@
         },
         {
             "name": "symfony/translation",
-            "version": "v2.3.0",
+            "version": "v2.3.1",
             "target-dir": "Symfony/Component/Translation",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Translation.git",
-                "reference": "v2.3.0-RC1"
+                "reference": "v2.3.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Translation/zipball/v2.3.0-RC1",
-                "reference": "v2.3.0-RC1",
+                "url": "https://api.github.com/repos/symfony/Translation/zipball/v2.3.1",
+                "reference": "v2.3.1",
                 "shasum": ""
             },
             "require": {

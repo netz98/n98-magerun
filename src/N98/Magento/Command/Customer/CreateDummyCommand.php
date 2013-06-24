@@ -50,13 +50,17 @@ HELP;
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
+            
+            $res = $this->getCustomerModel()->getResource();
+            
+            $faker = \Faker\Factory::create($input->getArgument('locale'));
+            $faker->addProvider(new \N98\Util\Faker\Provider\Internet($faker));
 
             $website = $this->getHelperSet()->get('parameter')->askWebsite($input, $output);
 
+            $res->beginTransaction();
             for ($i = 0; $i < $input->getArgument('count'); $i++) {
                 $customer = $this->getCustomerModel();
-
-                $faker = \Faker\Factory::create($input->getArgument('locale'));
 
                 $email = $faker->safeEmail;
 
@@ -78,7 +82,12 @@ HELP;
                 } else {
                     $output->writeln('<error>Customer ' . $email . ' already exists</error>');
                 }
+                if ($i % 1000 == 0) {
+                    $res->commit();
+                    $res->beginTransaction();
+                }
             }
+            $res->commit();
 
         }
     }
