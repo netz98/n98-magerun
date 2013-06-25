@@ -290,7 +290,7 @@ class DumpCommand extends AbstractDatabaseCommand
             $dialog = $this->getHelperSet()->get('dialog');
             $defaultName = $namePrefix . $this->dbSettings['dbname'] . $nameSuffix
                          . $nameExtension;
-            if (!$input->getOption('force')) {
+            if (!$input->getOption('force') && !$input->getOption('no-interaction')) {
                 $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question> [<comment>' . $defaultName . '</comment>]', $defaultName);
             } else {
                 $fileName = $defaultName;
