@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "c93aecee4d3998d17a1986f042187d38dd394397"
+                "reference": "082268370649bdbe1c13bf109f7d4fbdc8ce0b71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/c93aecee4d3998d17a1986f042187d38dd394397",
-                "reference": "c93aecee4d3998d17a1986f042187d38dd394397",
+                "url": "https://api.github.com/repos/composer/composer/zipball/082268370649bdbe1c13bf109f7d4fbdc8ce0b71",
+                "reference": "082268370649bdbe1c13bf109f7d4fbdc8ce0b71",
                 "shasum": ""
             },
             "require": {
@@ -72,7 +72,7 @@
                 "dependency",
                 "package"
             ],
-            "time": "2013-06-20 12:05:54"
+            "time": "2013-06-28 18:42:06"
         },
         {
             "name": "fzaninotto/faker",
@@ -129,7 +129,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/justinrainbow/json-schema/zipball/v1.1.0",
+                "url": "https://github.com/justinrainbow/json-schema/archive/v1.1.0.zip",
                 "reference": "v1.1.0",
                 "shasum": ""
             },
@@ -142,6 +142,7 @@
                     "JsonSchema": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "NewBSD"
             ],
@@ -263,12 +264,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "699ccfc18fff7912c08021de878477f0724850b3"
+                "reference": "b68fd0262ebae63f796d188f48eaa470044861fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/699ccfc18fff7912c08021de878477f0724850b3",
-                "reference": "699ccfc18fff7912c08021de878477f0724850b3",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/b68fd0262ebae63f796d188f48eaa470044861fd",
+                "reference": "b68fd0262ebae63f796d188f48eaa470044861fd",
                 "shasum": ""
             },
             "require": {
@@ -307,7 +308,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2013-06-11 07:15:38"
+            "time": "2013-06-23 08:16:33"
         },
         {
             "name": "symfony/finder",
