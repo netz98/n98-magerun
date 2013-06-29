@@ -27,38 +27,36 @@ class ScriptCommand extends AbstractMagentoCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->detectMagento($output);
-        if ($this->initMagento()) {
-            $script = $this->_getContent($input->getArgument('filename'));
-            $commands = explode("\n", $script);
+        $script = $this->_getContent($input->getArgument('filename'));
+        $commands = explode("\n", $script);
+
+        foreach ($commands as $commandString) {
+            $commandString = trim($commandString);
+            if (empty($commandString)) {
+                continue;
+            }
+            $firstChar = substr($commandString, 0, 1);
             $this->initScriptVars();
-            foreach ($commands as $commandString) {
-                $commandString = trim($commandString);
-                if (empty($commandString)) {
+
+            switch ($firstChar) {
+
+                // comment
+                case '#':
                     continue;
-                }
-                $firstChar = substr($commandString, 0, 1);
+                    break;
 
-                switch ($firstChar) {
+                // set var
+                case '$':
+                    $this->registerVariable($output, $commandString);
+                    break;
 
-                    // comment
-                    case '#':
-                        continue;
-                        break;
+                // run shell script
+                case '!':
+                    $this->runShellCommand($output, $commandString);
+                    break;
 
-                    // set var
-                    case '$':
-                        $this->registerVariable($output, $commandString);
-                        break;
-
-                    // run shell script
-                    case '!':
-                        $this->runShellCommand($output, $commandString);
-                        break;
-
-                    default:
-                        $this->runMagerunCommand($input, $output, $commandString);
-                }
+                default:
+                    $this->runMagerunCommand($input, $output, $commandString);
             }
         }
     }
@@ -124,13 +122,14 @@ class ScriptCommand extends AbstractMagentoCommand
 
     protected function initScriptVars()
     {
-        $this->scriptVars = array(
-            '${magento.root}'    => $this->getApplication()->getMagentoRootFolder(),
-            '${magento.version}' => \Mage::getVersion(),
-            '${magento.edition}' => is_callable(array('\Mage', 'getEdition')) ? \Mage::getEdition() : 'Community',
-            '${php.version}'     => substr(phpversion(), 0, strpos(phpversion(), '-')),
-            '${magerun.version}' => $this->getApplication()->getVersion(),
-        );
+        if (class_exists('\Mage')) {
+            $this->scriptVars['${magento.root}'] = $this->getApplication()->getMagentoRootFolder();
+            $this->scriptVars['${magento.version}'] = \Mage::getVersion();
+            $this->scriptVars['${magento.edition}'] = is_callable(array('\Mage', 'getEdition')) ? \Mage::getEdition() : 'Community';
+        }
+
+        $this->scriptVars['${php.version}']     = substr(phpversion(), 0, strpos(phpversion(), '-'));
+        $this->scriptVars['${magerun.version}'] = $this->getApplication()->getVersion();
     }
 
     /**
