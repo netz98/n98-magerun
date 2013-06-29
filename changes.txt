@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.70.8
+======
+
+* Fixed issue #168 Script feature initialises magento
+
+======
 1.70.7
 ======
 
