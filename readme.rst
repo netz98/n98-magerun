@@ -433,7 +433,7 @@ Arguments:
 Options:
     --scope     The config value's scope (default: "default")
     --scope-id  The config value's scope ID (default: "0")
-    --decrypt   Decrypt the config value using local.xml's crypt key
+    --encrypt   Encrypt the config value using local.xml's crypt key
 
 Get Config
 """"""""""
