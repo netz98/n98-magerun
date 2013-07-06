@@ -17,37 +17,18 @@ class ConfigurationLoader
     protected $_customConfigFilename = 'n98-magerun.yaml';
 
     /**
-     * @param array $initConfig
+     * @param array $config
      * @param string $magentoRootFolder
      */
-    public function __construct($initConfig, $magentoRootFolder)
+    public function __construct($config, $magentoRootFolder)
     {
-        $config = Yaml::parse(__DIR__ . '/../../../../config.yaml');
-        $config = $this->mergeArrays($config, $initConfig);
+        $config = $this->loadDistConfig($config);
+        $config = $this->loadBundleConfig($config);
+        $config = $this->loadSystemConfig($config);
+        $config = $this->loadUserConfig($config);
+        $config = $this->loadProjectConfig($magentoRootFolder, $config);
+        $config = $this->initAutoloaders($magentoRootFolder, $config);
 
-        // Check if there is a global config file in /etc folder
-        $systemWideConfigFile = '/etc/' . $this->_customConfigFilename;
-        if ($systemWideConfigFile && file_exists($systemWideConfigFile)) {
-            $systemConfig = Yaml::parse($systemWideConfigFile);
-            $config = $this->mergeArrays($config, $systemConfig);
-        }
-
-        // Check if there is a user config file. ~/.n98-magerun.yaml
-        $homeDirectory = getenv('HOME');
-        $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
-        if ($homeDirectory && file_exists($personalConfigFile)) {
-            $personalConfig = Yaml::parse($personalConfigFile);
-            $config = $this->mergeArrays($config, $personalConfig);
-        }
-
-        // MAGENTO_ROOT/app/etc/n98-magerun.yaml
-        $projectConfigFile = $magentoRootFolder . DIRECTORY_SEPARATOR . 'app/etc/' . $this->_customConfigFilename;
-        if ($projectConfigFile && file_exists($projectConfigFile)) {
-            $projectConfig = Yaml::parse($projectConfigFile);
-            $config = $this->mergeArrays($config, $projectConfig);
-        }
-
-        $config = $this->_initAutoloaders($magentoRootFolder, $config);
         $this->_configArray = $config;
     }
 
@@ -56,7 +37,7 @@ class ConfigurationLoader
      * @param $config
      * @return mixed
      */
-    protected function _initAutoloaders($magentoRootFolder, $config)
+    protected function initAutoloaders($magentoRootFolder, $config)
     {
         if (isset($config['autoloaders']) && is_array($config['autoloaders'])) {
             foreach ($config['autoloaders'] as &$value) {
@@ -105,6 +86,89 @@ class ConfigurationLoader
     public function toArray()
     {
         return $this->_configArray;
+    }
+
+    /**
+     * @param array $initConfig
+     *
+     * @return array
+     */
+    protected function loadDistConfig($initConfig)
+    {
+        $config = Yaml::parse(__DIR__ . '/../../../../config.yaml');
+        $config = $this->mergeArrays($config, $initConfig);
+
+        return $config;
+    }
+
+    /**
+     * Check if there is a global config file in /etc folder
+     *
+     * @param array $config
+     *
+     * @return array
+     */
+    public function loadSystemConfig($config)
+    {
+        $systemWideConfigFile = '/etc/' . $this->_customConfigFilename;
+        if ($systemWideConfigFile && file_exists($systemWideConfigFile)) {
+            $systemConfig = Yaml::parse($systemWideConfigFile);
+            $config = $this->mergeArrays($config, $systemConfig);
+
+            return $config;
+        }
+
+        return $config;
+    }
+
+    /**
+     * Load config from all installed bundles
+     *
+     * @param array $config
+     *
+     * @return array
+     */
+    public function loadBundleConfig($config)
+    {
+        return $config;
+    }
+
+    /**
+     * Check if there is a user config file. ~/.n98-magerun.yaml
+     *
+     * @param array $config
+     *
+     * @return array
+     */
+    public function loadUserConfig($config)
+    {
+        $homeDirectory = getenv('HOME');
+        $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
+        if ($homeDirectory && file_exists($personalConfigFile)) {
+            $personalConfig = Yaml::parse($personalConfigFile);
+            $config = $this->mergeArrays($config, $personalConfig);
+            return $config;
+        }
+        return $config;
+    }
+
+    /**
+     * MAGENTO_ROOT/app/etc/n98-magerun.yaml
+     *
+     * @param string $magentoRootFolder
+     * @param array $config
+     *
+     * @return array
+     */
+    public function loadProjectConfig($magentoRootFolder, $config)
+    {
+        $projectConfigFile = $magentoRootFolder . DIRECTORY_SEPARATOR . 'app/etc/' . $this->_customConfigFilename;
+        if ($projectConfigFile && file_exists($projectConfigFile)) {
+            $projectConfig = Yaml::parse($projectConfigFile);
+            $config = $this->mergeArrays($config, $projectConfig);
+            return $config;
+        }
+        return $config;
     }
 
 }
