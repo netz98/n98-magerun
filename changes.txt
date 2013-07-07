@@ -6,7 +6,7 @@ RECENT CHANGES
 1.72.0
 ======
 
-* Module system to add own commands
+* Module system to add own commands (by @cmuench)
 
 ======
 1.71.0
