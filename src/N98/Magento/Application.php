@@ -78,6 +78,7 @@ use N98\Magento\Command\System\Store\ListCommand as SystemStoreListCommand;
 use N98\Magento\Command\System\Url\ListCommand as SystemUrlListCommand;
 use N98\Magento\Command\System\Website\ListCommand as SystemWebsiteListCommand;
 use N98\Magento\EntryPoint\Magerun as MagerunEntryPoint;
+use N98\Util\ArrayFunctions;
 use N98\Util\Console\Helper\ParameterHelper;
 use N98\Util\Console\Helper\TableHelper;
 use N98\Util\Console\Helper\TwigHelper;
@@ -631,16 +632,14 @@ class Application extends BaseApplication
         return $configLoader->toArray();
     }
 
-    public function init()
+    public function init($initConfig = array())
     {
         if (!$this->_isInitialized) {
             // Suppress DateTime warnings
             date_default_timezone_set(@date_default_timezone_get());
 
             $this->detectMagento();
-            if (count($this->config) == 0) { // made for unit tests to inject a complete config
-                $this->config = $this->_loadConfig($this->config);
-            }
+            $this->config = $this->_loadConfig(ArrayFunctions::mergeArrays($this->config, $initConfig));
             $this->registerHelpers();
             if ($this->autoloader) {
                 $this->registerCustomAutoloaders();

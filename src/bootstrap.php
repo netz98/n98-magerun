@@ -1,9 +1,11 @@
 <?php
 
-function includeIfExists($file)
-{
-    if (file_exists($file)) {
-        return include $file;
+if (!function_exists('includeIfExists')) {
+    function includeIfExists($file)
+    {
+        if (file_exists($file)) {
+            return include $file;
+        }
     }
 }
 

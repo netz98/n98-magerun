@@ -42,8 +42,9 @@ class ApplicationTest extends TestCase
                 ),
             ),
         );
-        $application->setConfig($configArray);
+
         $application->setAutoExit(false);
+        $application->init($configArray);
         $application->run(new StringInput('list'), new NullOutput());
 
         // Check if autoloaders, commands and aliases are registered
@@ -53,7 +54,6 @@ class ApplicationTest extends TestCase
         $testDummyCommand = $application->find('n98mageruntest:test:dummy');
         $this->assertInstanceOf('\N98MagerunTest\TestDummyCommand', $testDummyCommand);
 
-
         $commandTester = new CommandTester($testDummyCommand);
         $commandTester->execute(
             array(
@@ -61,11 +61,31 @@ class ApplicationTest extends TestCase
             )
         );
         $this->assertContains('dummy', $commandTester->getDisplay());
-
-
         $this->assertTrue($application->getDefinition()->hasOption('root-dir'));
 
         // check alias
         $this->assertInstanceOf('\N98\Magento\Command\Cache\ListCommand', $application->find('cl'));
+    }
+
+    public function testPlugins()
+    {
+        /**
+         * Check autoloading
+         */
+        $application = require __DIR__ . '/../../../src/bootstrap.php';
+        $application->setMagentoRootFolder(getenv('N98_MAGERUN_TEST_MAGENTO_ROOT'));
+
+        // Load plugin config
+        $injectConfig = array(
+            'plugin' => array(
+                'folders' => array(
+                    __DIR__ . '/_ApplicationTestModules'
+                )
+            )
+        );
+        $application->init($injectConfig);
+
+        // Check for module command
+        $this->assertInstanceOf('TestModule\FooCommand', $application->find('testmodule:foo'));
     }
 }
