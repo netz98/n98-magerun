@@ -1,6 +1,10 @@
 twig:
   baseDirs:
 
+plugin:
+  folders:
+    - /usr/local/share/n98-magerun/modules
+
 commands:
   customCommands: []
   aliases: []

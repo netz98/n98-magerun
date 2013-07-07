@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command;
 
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
 class ConfigurationLoader
@@ -23,7 +24,7 @@ class ConfigurationLoader
     public function __construct($config, $magentoRootFolder)
     {
         $config = $this->loadDistConfig($config);
-        $config = $this->loadBundleConfig($config);
+        $config = $this->loadPluginConfig($config, $magentoRootFolder);
         $config = $this->loadSystemConfig($config);
         $config = $this->loadUserConfig($config);
         $config = $this->loadProjectConfig($magentoRootFolder, $config);
@@ -124,12 +125,37 @@ class ConfigurationLoader
     /**
      * Load config from all installed bundles
      *
-     * @param array $config
+     * @param array  $config
+     * @param string $magentoRootFolder
      *
      * @return array
      */
-    public function loadBundleConfig($config)
+    public function loadPluginConfig($config, $magentoRootFolder)
     {
+        // Glob plugin folders
+        $finder = new Finder();
+        $finder
+            ->files()
+            ->depth(1)
+            ->name('n98-magerun.yaml')
+            ->in($config['plugin']['folders']);
+
+        foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
+            $moduleConfig = Yaml::parse($file->getRealPath());
+
+            if (isset($moduleConfig['autoloaders'])) {
+                foreach ($moduleConfig['autoloaders'] as &$value) {
+                    $replace = array(
+                        '%module%' => $file->getPath(),
+                    );
+
+                    $value = str_replace(array_keys($replace), $replace, $value);
+                }
+            }
+
+            $config = $this->mergeArrays($config, $moduleConfig);
+        }
+
         return $config;
     }
 
