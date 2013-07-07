@@ -25,7 +25,7 @@ class ConfigurationLoader
     public function __construct($config, $magentoRootFolder)
     {
         $config = $this->loadDistConfig($config);
-        $config = $this->loadPluginConfig($config, $magentoRootFolder);
+        $config = $this->loadPluginConfig($config);
         $config = $this->loadSystemConfig($config);
         $config = $this->loadUserConfig($config);
         $config = $this->loadProjectConfig($magentoRootFolder, $config);
@@ -95,11 +95,10 @@ class ConfigurationLoader
      * Load config from all installed bundles
      *
      * @param array  $config
-     * @param string $magentoRootFolder
      *
      * @return array
      */
-    public function loadPluginConfig($config, $magentoRootFolder)
+    public function loadPluginConfig($config)
     {
         $moduleBaseFolders = array();
         foreach ($config['plugin']['folders'] as $folder) {
@@ -108,28 +107,30 @@ class ConfigurationLoader
             }
         }
 
-        // Glob plugin folders
-        $finder = new Finder();
-        $finder
-            ->files()
-            ->depth(1)
-            ->name('n98-magerun.yaml')
-            ->in($moduleBaseFolders);
+        if (count($moduleBaseFolders) > 0) {
+            // Glob plugin folders
+            $finder = new Finder();
+            $finder
+                ->files()
+                ->depth(1)
+                ->name('n98-magerun.yaml')
+                ->in($moduleBaseFolders);
 
-        foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
-            $moduleConfig = Yaml::parse($file->getRealPath());
+            foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                $moduleConfig = Yaml::parse($file->getRealPath());
 
-            if (isset($moduleConfig['autoloaders'])) {
-                foreach ($moduleConfig['autoloaders'] as &$value) {
-                    $replace = array(
-                        '%module%' => $file->getPath(),
-                    );
+                if (isset($moduleConfig['autoloaders'])) {
+                    foreach ($moduleConfig['autoloaders'] as &$value) {
+                        $replace = array(
+                            '%module%' => $file->getPath(),
+                        );
 
-                    $value = str_replace(array_keys($replace), $replace, $value);
+                        $value = str_replace(array_keys($replace), $replace, $value);
+                    }
                 }
-            }
 
-            $config = ArrayFunctions::mergeArrays($config, $moduleConfig);
+                $config = ArrayFunctions::mergeArrays($config, $moduleConfig);
+            }
         }
 
         return $config;
