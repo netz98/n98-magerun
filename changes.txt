@@ -6,6 +6,12 @@ RECENT CHANGES
 1.71.0
 ======
 
+* Module system to add own commands
+
+======
+1.71.0
+======
+
 * Performance improvements for customer:create:dummy (by @lukenm)
 * Fixed issue #168 Script feature initialises magento
 
