@@ -101,13 +101,20 @@ class ConfigurationLoader
      */
     public function loadPluginConfig($config, $magentoRootFolder)
     {
+        $moduleBaseFolders = array();
+        foreach ($config['plugin']['folders'] as $folder) {
+            if (is_dir($folder)) {
+                $moduleBaseFolders[] = $folder;
+            }
+        }
+
         // Glob plugin folders
         $finder = new Finder();
         $finder
             ->files()
             ->depth(1)
             ->name('n98-magerun.yaml')
-            ->in($config['plugin']['folders']);
+            ->in($moduleBaseFolders);
 
         foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
             $moduleConfig = Yaml::parse($file->getRealPath());
