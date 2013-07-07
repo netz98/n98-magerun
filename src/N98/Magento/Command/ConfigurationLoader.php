@@ -25,7 +25,7 @@ class ConfigurationLoader
     public function __construct($config, $magentoRootFolder)
     {
         $config = $this->loadDistConfig($config);
-        $config = $this->loadPluginConfig($config);
+        $config = $this->loadPluginConfig($config, $magentoRootFolder);
         $config = $this->loadSystemConfig($config);
         $config = $this->loadUserConfig($config);
         $config = $this->loadProjectConfig($magentoRootFolder, $config);
@@ -95,12 +95,15 @@ class ConfigurationLoader
      * Load config from all installed bundles
      *
      * @param array  $config
+     * @param string $magentoRootFolder
      *
      * @return array
      */
-    public function loadPluginConfig($config)
+    public function loadPluginConfig($config, $magentoRootFolder)
     {
         $moduleBaseFolders = array();
+        $config['plugin']['folders'][] = getenv('HOME') . '/.n98-magerun/modules';
+        $config['plugin']['folders'][] = $magentoRootFolder . '/lib/n98-magerun/modules';
         foreach ($config['plugin']['folders'] as $folder) {
             if (is_dir($folder)) {
                 $moduleBaseFolders[] = $folder;
