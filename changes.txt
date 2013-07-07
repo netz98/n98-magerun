@@ -3,7 +3,7 @@ RECENT CHANGES
 **************
 
 ======
-1.71.0
+1.72.0
 ======
 
 * Module system to add own commands
@@ -26,18 +26,6 @@ RECENT CHANGES
 ======
 
 * Install command: Fixed problem with existing installation folder occured with absolute paths.
-
-======
-1.70.5
-======
-
-* Install command does not create folder recursive
-
-======
-1.70.4
-======
-
-* Install command does not recognize --dbPass option since last symfony component update
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
