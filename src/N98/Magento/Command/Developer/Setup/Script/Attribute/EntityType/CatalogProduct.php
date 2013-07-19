@@ -100,7 +100,7 @@ TEXT;
         $labelsScript = "
 \$attribute = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', '" . $this->attribute->getAttributeCode() . "');
 \$attribute->setStoreLabels($attributeLabelsCode);
-\$attribute->save()
+\$attribute->save();
 ";
         $script .= $labelsScript;
 
