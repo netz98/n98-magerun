@@ -547,6 +547,9 @@ class Application extends BaseApplication
         return $return;
     }
 
+    /**
+     * @return void
+     */
     protected function registerCommands()
     {
         $this->add(new GenerateLocalXmlConfigCommand());
@@ -627,6 +630,7 @@ class Application extends BaseApplication
 
     /**
      * @param array $initConfig
+     *
      * @return array
      */
     protected function _loadConfig($initConfig)
@@ -636,6 +640,11 @@ class Application extends BaseApplication
         return $configLoader->toArray();
     }
 
+    /**
+     * @param array $initConfig
+     *
+     * @return void
+     */
     public function init($initConfig = array())
     {
         if (!$this->_isInitialized) {
@@ -672,6 +681,9 @@ class Application extends BaseApplication
         }
     }
 
+    /**
+     * @return void
+     */
     protected function _initMagento2()
     {
         if ($this->_magento2EntryPoint === null) {
@@ -698,6 +710,9 @@ class Application extends BaseApplication
         }
     }
 
+    /**
+     * @return void
+     */
     protected function _initMagento1()
     {
         require_once $this->getMagentoRootFolder() . '/app/Mage.php';
