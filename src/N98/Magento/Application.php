@@ -82,6 +82,7 @@ use N98\Util\ArrayFunctions;
 use N98\Util\Console\Helper\ParameterHelper;
 use N98\Util\Console\Helper\TableHelper;
 use N98\Util\Console\Helper\TwigHelper;
+use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\OperatingSystem;
 use N98\Util\String;
 use Symfony\Component\Console\Application as BaseApplication;
@@ -91,7 +92,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Finder\Finder;
 
 class Application extends BaseApplication
 {
@@ -189,7 +189,6 @@ class Application extends BaseApplication
         return $inputDefinition;
     }
 
-
     /**
      * Search for magento root folder
      */
@@ -206,7 +205,12 @@ class Application extends BaseApplication
             $folder = $this->getMagentoRootFolder();
         }
 
-        $this->_detectMagentoVersion($folder);
+        $this->getHelperSet()->set(new MagentoHelper(), 'magento');
+        $magentoHelper = $this->getHelperSet()->get('magento'); /* @var $magentoHelper MagentoHelper */
+        $magentoHelper->detect($folder);
+        $this->_magentoRootFolder = $magentoHelper->getRootFolder();
+        $this->_magentoEnterprise = $magentoHelper->isEnterpriseEdition();
+        $this->_magentoMajorVersion = $magentoHelper->getMajorVersion();
     }
 
     /**
@@ -662,54 +666,6 @@ class Application extends BaseApplication
             $folder = realpath($specialGlobalOptions['root-dir']);
             if (is_dir($folder)) {
                 \chdir($folder);
-
-                return;
-            }
-        }
-    }
-
-    /**
-     * @param $folder
-     */
-    protected function _detectMagentoVersion($folder)
-    {
-        $folders = array();
-        $folderParts = explode(DIRECTORY_SEPARATOR, $folder);
-        foreach ($folderParts as $key => $part) {
-            $explodedFolder = implode(DIRECTORY_SEPARATOR, array_slice($folderParts, 0, $key + 1));
-            if ($explodedFolder !== '') {
-                $folders[] = $explodedFolder;
-            }
-        }
-
-        foreach (array_reverse($folders) as $searchFolder) {
-            $finder = new Finder();
-            $finder
-                ->directories()
-                ->depth(0)
-                ->followLinks()
-                ->name('app')
-                ->name('skin')
-                ->name('lib')
-                ->in($searchFolder);
-
-            if ($finder->count() >= 2) {
-                $files = iterator_to_array($finder, false);
-                /* @var $file \SplFileInfo */
-
-                if (count($files) == 2) {
-                    // Magento 2 has no skin folder.
-                    // @TODO find a better magento 2.x check
-                    $this->_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_2;
-                }
-
-                $this->_magentoRootFolder = dirname($files[0]->getRealPath());
-
-                if (is_callable(array('\Mage', 'getEdition'))) {
-                    $this->_magentoEnterprise = (\Mage::getEdition() == 'Enterprise');
-                } else {
-                    $this->_magentoEnterprise = is_dir($this->_magentoRootFolder . '/app/code/core/Enterprise');
-                }
 
                 return;
             }

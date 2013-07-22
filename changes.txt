@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.73.0
+======
+
+* Detect Magento inside of modman folders (by @cmuench).
+
+======
 1.72.0
 ======
 
@@ -14,18 +20,6 @@ RECENT CHANGES
 
 * Performance improvements for customer:create:dummy (by @lukenm)
 * Fixed issue #168 Script feature initialises magento
-
-======
-1.70.7
-======
-
-* Install command: Fixed problem with sample data and current composer downloader
-
-======
-1.70.6
-======
-
-* Install command: Fixed problem with existing installation folder occured with absolute paths.
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
