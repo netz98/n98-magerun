@@ -13,6 +13,9 @@ Build Status
 .. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=master
    :target: https://travis-ci.org/netz98/n98-magerun
 
+.. image:: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5/badge.png
+   :target: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5
+
 **Development Branch**
 
 .. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=develop
