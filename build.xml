@@ -11,6 +11,7 @@ Build phar with:
 
 -->
 <project name="n98-magerun" default="dist">
+    <taskdef name="patched-pharpackage" classname="build.tasks.PatchedPharPackageTask" />
 
     <fileset dir="." id="root_folder">
         <include name="config.yaml" />
@@ -45,7 +46,7 @@ Build phar with:
     </target>
 
     <target name="dist_unix">
-        <pharpackage basedir="./" stub="_cli_stub.php" signature="sha512" compression="bzip2" destfile="./n98-magerun.phar">
+        <patched-pharpackage basedir="./" stub="_cli_stub.php" signature="sha512" compression="bzip2" destfile="./n98-magerun.phar">
             <metadata>
                 <element name="version" value="1.0.0" />
                 <element name="authors">
@@ -58,7 +59,7 @@ Build phar with:
             <fileset refid="src_folder" />
             <fileset refid="res_folder" />
             <fileset refid="vendor_folder" />
-        </pharpackage>
+        </patched-pharpackage>
 
         <!-- make phar executable -->
         <exec command="git config core.filemode true" />
