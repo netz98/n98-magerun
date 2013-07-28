@@ -99,8 +99,8 @@ class DumpCommand extends AbstractDatabaseCommand
 
     }
 
-    public function asText() {
-        return parent::asText() . "\n" .
+    public function getHelp() {
+        return parent::getHelp() . "\n" .
             $this->getCompressionHelp() . "\n" . 
             $this->getTableDefinitionHelp();
     }

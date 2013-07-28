@@ -8,6 +8,7 @@ RECENT CHANGES
 
 * Detect Magento inside of modman folders (reads .basedir file) (by Christian Münch).
 * Bugfix in dev:setup:script:attribute command. (by Martin Schultheiss)
+* Bugfix #182: db:dump --strip help missing (list of groups)
 
 ======
 1.72.0
