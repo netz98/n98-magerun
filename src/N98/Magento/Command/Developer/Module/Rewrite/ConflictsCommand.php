@@ -139,8 +139,9 @@ class ConflictsCommand extends AbstractRewriteCommand
         $classes = array_reverse($classes);
         for ($i = 0; $i < count($classes) - 1; $i++) {
             try {
-                $reflectionClass = new \ReflectionClass($classes[$i]);
-                if ($reflectionClass->getParentClass()->getName() !== $classes[$i + 1]) {
+                $firstClass = new $classes[$i];
+                $nextClass = new $classes[$i + 1];
+                if (! ($firstClass instanceof $nextClass)) {
                     return true;
                 }
             } catch (\Exception $e) {
