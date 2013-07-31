@@ -139,13 +139,32 @@ class ConflictsCommand extends AbstractRewriteCommand
         $classes = array_reverse($classes);
         for ($i = 0; $i < count($classes) - 1; $i++) {
             try {
-                $reflectionClass = new \ReflectionClass($classes[$i]);
-                if ($reflectionClass->getParentClass()->getName() !== $classes[$i + 1]) {
+                if (! $this->_isSubclass($classes[$i], $classes[$i + 1])) {
                     return true;
                 }
             } catch (\Exception $e) {
                 return true;
             }
+        }
+
+        return false;
+    }
+
+    protected function _isSubclass($firstClass, $nextClass)
+    {
+        $currentReflectionClass = new \ReflectionClass($firstClass);
+        while ($currentReflectionClass) {
+            $parentClassReflection = $currentReflectionClass->getParentClass();
+            if (!$parentClassReflection) {
+                return false;
+            }
+
+            $parentClass = $parentClassReflection->getName();
+            if ($parentClass == $nextClass) {
+                return true;
+            }
+
+            $currentReflectionClass = new \ReflectionClass($parentClass);
         }
 
         return false;
