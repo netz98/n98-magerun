@@ -154,7 +154,12 @@ class ConflictsCommand extends AbstractRewriteCommand
     {
         $currentReflectionClass = new \ReflectionClass($firstClass);
         while ($currentReflectionClass) {
-            $parentClass = $currentReflectionClass->getParentClass()->getName();
+            $parentClassReflection = $currentReflectionClass->getParentClass();
+            if (!$parentClassReflection) {
+                return false;
+            }
+
+            $parentClass = $parentClassReflection->getName();
             if ($parentClass == $nextClass) {
                 return true;
             }
