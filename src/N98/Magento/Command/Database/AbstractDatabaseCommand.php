@@ -173,7 +173,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
             $this->_connection->query('USE `'.$this->dbSettings['dbname'].'`');
         } catch(\PDOException $e) {
         }
-        
+
         $this->_connection->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
         $this->_connection->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 
