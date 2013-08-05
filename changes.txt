@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.73.1
+======
+
+* Fixing issue #185 - Allowing rewrite conflicts command to
+
+======
 1.73.0
 ======
 
