@@ -117,13 +117,14 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
         // baseline of DSN parts
         $dsn = $this->dbSettings;
 
-        // don't pass the username, password, charset, persistent and driver_options in the DSN
+        // don't pass the username, password, charset, database, persistent and driver_options in the DSN
         unset($dsn['username']);
         unset($dsn['password']);
         unset($dsn['options']);
         unset($dsn['charset']);
         unset($dsn['persistent']);
         unset($dsn['driver_options']);
+        unset($dsn['dbname']);
 
         // use all remaining parts in the DSN
         $buildDsn = array();
@@ -167,6 +168,12 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
 
         /** @link http://bugs.mysql.com/bug.php?id=18551 */
         $this->_connection->query("SET SQL_MODE=''");
+
+        try {
+            $this->_connection->query('USE `'.$this->dbSettings['dbname'].'`');
+        } catch(\PDOException $e) {
+        }
+        
         $this->_connection->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
         $this->_connection->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 
