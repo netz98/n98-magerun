@@ -13,6 +13,7 @@ use N98\Magento\Command\Cache\FlushCommand as CacheFlushCommand;
 use N98\Magento\Command\Cache\ListCommand as CacheListCommand;
 use N98\Magento\Command\Cms\Banner\ToggleCommand as MagentoCmsBannerToggleCommand;
 use N98\Magento\Command\Cms\Page\PublishCommand as MagentoCmsPagePublishCommand;
+use N98\Magento\Command\Config\DeleteCommand as ConfigDeleteCommand;
 use N98\Magento\Command\Config\DumpCommand as ConfigPrintCommand;
 use N98\Magento\Command\Config\GetCommand as ConfigGetCommand;
 use N98\Magento\Command\Config\SetCommand as ConfigSetCommand;
@@ -24,6 +25,7 @@ use N98\Magento\Command\Customer\CreateDummyCommand as CustomerCreateDummyComman
 use N98\Magento\Command\Customer\InfoCommand as CustomerInfoCommand;
 use N98\Magento\Command\Customer\ListCommand as CustomerListCommand;
 use N98\Magento\Command\Database\ConsoleCommand as DatabaseConsoleCommand;
+use N98\Magento\Command\Database\CreateCommand as DatabaseCreateCommand;
 use N98\Magento\Command\Database\DropCommand as DatabaseDropCommand;
 use N98\Magento\Command\Database\DumpCommand as DatabaseDumpCommand;
 use N98\Magento\Command\Database\ImportCommand as DatabaseImportCommand;
@@ -110,7 +112,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.73.0';
+    const APP_VERSION = '1.74.0';
 
     /**
      * @var string
@@ -558,7 +560,9 @@ class Application extends BaseApplication
         $this->add(new DatabaseInfoCommand());
         $this->add(new DatabaseImportCommand());
         $this->add(new DatabaseConsoleCommand());
+        $this->add(new DatabaseCreateCommand());
         $this->add(new DatabaseQueryCommand());
+        $this->add(new ConfigDeleteCommand());
         $this->add(new ConfigPrintCommand());
         $this->add(new ConfigGetCommand());
         $this->add(new ConfigSetCommand());

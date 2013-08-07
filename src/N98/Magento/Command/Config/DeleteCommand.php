@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SetCommand extends AbstractConfigCommand
+class DeleteCommand extends AbstractConfigCommand
 {
     /**
      * @var array
@@ -21,13 +21,11 @@ class SetCommand extends AbstractConfigCommand
     protected function configure()
     {
         $this
-            ->setName('config:set')
-            ->setDescription('Set a core config item')
+            ->setName('config:delete')
+            ->setDescription('Deletes a core config item')
             ->addArgument('path', InputArgument::REQUIRED, 'The config path')
-            ->addArgument('value', InputArgument::REQUIRED, 'The config value')
             ->addOption('scope', null, InputOption::VALUE_OPTIONAL, 'The config value\'s scope (default, websites, stores)', 'default')
             ->addOption('scope-id', null, InputOption::VALUE_OPTIONAL, 'The config value\'s scope ID', '0')
-            ->addOption('encrypt', null, InputOption::VALUE_NONE, 'The config value should be encrypted using local.xml\'s crypt key')
         ;
     }
 
@@ -45,13 +43,12 @@ class SetCommand extends AbstractConfigCommand
             $this->_validateScopeParam($input->getOption('scope'));
             $scopeId = $this->_convertScopeIdParam($input->getOption('scope'), $input->getOption('scope-id'));
 
-            $config->saveConfig(
+            $config->deleteConfig(
                 $input->getArgument('path'),
-                $this->_formatValue($input->getArgument('value'), $input->getOption('encrypt')),
                 $input->getOption('scope'),
                 $scopeId
             );
-            $output->writeln('<comment>' . $input->getArgument('path') . "</comment> => <comment>" . $input->getArgument('value') . '</comment>');
+            $output->writeln('<info>Deleted entry</info> <comment>scope => ' . $input->getOption('scope') . ' path => ' . $input->getArgument('path') . '</comment></info>');
         }
     }
 }

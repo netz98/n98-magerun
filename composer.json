@@ -20,7 +20,7 @@
         "twig/twig": "1.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "3.7.22"
+        "phpunit/phpunit": "3.7.23"
     },
     "autoload": {
         "psr-0": {

@@ -121,18 +121,4 @@ EOT
             }
         }
     }
-
-    /**
-     * @param string $value
-     * @param boolean $decryptionRequired
-     * @return string
-     */
-    protected function _formatValue($value, $decryptionRequired)
-    {
-        if ($decryptionRequired) {
-            $value = $this->getEncryptionModel()->decrypt($value);
-        }
-
-        return $value;
-    }
 }
