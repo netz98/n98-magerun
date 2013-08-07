@@ -19,6 +19,8 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('dev:module:list')
+            ->addOption('codepool', null, InputOption::VALUE_OPTIONAL, 'Show modules in a specific codepool')
+            ->addOption('status', null, InputOption::VALUE_OPTIONAL, 'Show modules with a specific status')
             ->setAliases(array('sys:modules:list')) // deprecated
             ->setDescription('List all installed modules');
     }
@@ -35,9 +37,13 @@ class ListCommand extends AbstractMagentoCommand
         $this->writeSection($output, 'Magento Modules');
         $this->initMagento();
         $this->findInstalledModules();
+        $this->filterModules($input);
 
-        ksort($this->infos);
-        $this->getHelper('table')->write($output, $this->infos);
+        if ( ! empty($this->infos)) {
+            $this->getHelper('table')->write($output, $this->infos);
+        } else {
+            $output->writeln("No modules match the specified criteria.");
+        }
     }
 
     protected function findInstalledModules()
@@ -50,6 +56,26 @@ class ListCommand extends AbstractMagentoCommand
                 'Version'  => isset($moduleInfo['version']) ? $moduleInfo['version'] : '',
                 'Status'   => $this->formatActive($moduleInfo['active']),
             );
+        }
+    }
+
+    protected function filterModules($input)
+    {
+        if ($input->getOption("codepool")) {
+            $this->filterByField("codePool", $input->getOption("codepool"));
+        }
+
+        if ($input->getOption("status")) {
+            $this->filterByField('Status', $input->getOption("status"));
+        }
+    }
+
+    protected function filterByField($field, $value)
+    {
+        foreach ($this->infos as $k => $info) {
+            if ($info[$field] != $value) {
+                unset($this->infos[$k]);
+            }
         }
     }
 
