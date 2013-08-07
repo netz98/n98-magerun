@@ -68,9 +68,13 @@ class ScriptCommand extends AbstractMagentoCommand
     protected function _getContent($filename)
     {
         if ($filename == '-' || empty($filename)) {
-            $script = \file_get_contents('php://stdin', 'r');
+            $script = @\file_get_contents('php://stdin', 'r');
         } else {
-            $script = \file_get_contents($filename);
+            $script = @\file_get_contents($filename);
+        }
+
+        if (!$script) {
+            throw new \RuntimeException('Script file was not found');
         }
 
         return $script;

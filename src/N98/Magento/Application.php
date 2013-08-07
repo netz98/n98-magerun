@@ -13,6 +13,7 @@ use N98\Magento\Command\Cache\FlushCommand as CacheFlushCommand;
 use N98\Magento\Command\Cache\ListCommand as CacheListCommand;
 use N98\Magento\Command\Cms\Banner\ToggleCommand as MagentoCmsBannerToggleCommand;
 use N98\Magento\Command\Cms\Page\PublishCommand as MagentoCmsPagePublishCommand;
+use N98\Magento\Command\Config\DeleteCommand as ConfigDeleteCommand;
 use N98\Magento\Command\Config\DumpCommand as ConfigPrintCommand;
 use N98\Magento\Command\Config\GetCommand as ConfigGetCommand;
 use N98\Magento\Command\Config\SetCommand as ConfigSetCommand;
@@ -561,6 +562,7 @@ class Application extends BaseApplication
         $this->add(new DatabaseConsoleCommand());
         $this->add(new DatabaseCreateCommand());
         $this->add(new DatabaseQueryCommand());
+        $this->add(new ConfigDeleteCommand());
         $this->add(new ConfigPrintCommand());
         $this->add(new ConfigGetCommand());
         $this->add(new ConfigSetCommand());
