@@ -6,11 +6,12 @@ RECENT CHANGES
 1.74.0
 ======
 
-* Fixeed issue #185 - dev:module:rewrite:conflicts command doesn't detect inheritance past the parent class (by Kalen Jordan)
 * New db:create command (by Michael O'Connell)
 * New config:delete command (by Christian Münch)
 * Add ability to filter modules list. (by Peter O'Callaghan)
+* Fixed issue #168 - script feature initialises magento
 * Fixed issue #188 - Cookie Domain is not recognized in any case (by Christian Münch)
+* Fixed issue #185 - dev:module:rewrite:conflicts command doesn't detect inheritance past the parent class (by Kalen Jordan)
 
 ======
 1.73.0
