@@ -325,6 +325,15 @@ Opens the MySQL console client with your database settings from local.xml
 
    $ n98-magerun.phar db:console
 
+Database Create
+"""""""""""""""
+
+Create currently configured database
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:create
+
 Database Drop
 """""""""""""
 
