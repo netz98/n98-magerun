@@ -899,7 +899,7 @@ Lists all installed modules with codepool and version
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:module:list
+   $ n98-magerun.phar dev:module:list  [--codepool[="..."]] [--status[="..."]] [--vendor=[="..."]]
 
 Rewrite List
 """"""""""""

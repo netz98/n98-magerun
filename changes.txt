@@ -3,10 +3,13 @@ RECENT CHANGES
 **************
 
 ======
-1.73.1
+1.74.0
 ======
 
 * Fixing issue #185 - Allowing rewrite conflicts command to
+* Fixeed issue #185 - dev:module:rewrite:conflicts command doesn't detect inheritance past the parent class (by Kalen Jordan)
+* New db:create command (by Michael O'Connell)
+* Add ability to filter modules list.
 
 ======
 1.73.0

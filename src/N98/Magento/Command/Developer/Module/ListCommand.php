@@ -21,6 +21,7 @@ class ListCommand extends AbstractMagentoCommand
             ->setName('dev:module:list')
             ->addOption('codepool', null, InputOption::VALUE_OPTIONAL, 'Show modules in a specific codepool')
             ->addOption('status', null, InputOption::VALUE_OPTIONAL, 'Show modules with a specific status')
+            ->addOption('vendor', null, InputOption::VALUE_OPTIONAL, 'Show modules of a specified vendor')
             ->setAliases(array('sys:modules:list')) // deprecated
             ->setDescription('List all installed modules');
     }
@@ -61,19 +62,40 @@ class ListCommand extends AbstractMagentoCommand
 
     protected function filterModules($input)
     {
-        if ($input->getOption("codepool")) {
-            $this->filterByField("codePool", $input->getOption("codepool"));
+        if ($input->getOption('codepool')) {
+            $this->filterByField("codePool", $input->getOption('codepool'));
         }
 
-        if ($input->getOption("status")) {
-            $this->filterByField('Status', $input->getOption("status"));
+        if ($input->getOption('status')) {
+            $this->filterByField('Status', $input->getOption('status'));
+        }
+
+        if ($input->getOption('vendor')) {
+            $this->filterByFieldStartsWith('Name', $input->getOption('vendor'));
         }
     }
 
+    /**
+     * @param string $field
+     * @param strnig $value
+     */
     protected function filterByField($field, $value)
     {
         foreach ($this->infos as $k => $info) {
             if ($info[$field] != $value) {
+                unset($this->infos[$k]);
+            }
+        }
+    }
+
+    /**
+     * @param string $field
+     * @param strnig $value
+     */
+    protected function filterByFieldStartsWith($field, $value)
+    {
+        foreach ($this->infos as $k => $info) {
+            if (strncmp($info[$field], $value, strlen($value))) {
                 unset($this->infos[$k]);
             }
         }
