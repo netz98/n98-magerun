@@ -242,7 +242,7 @@ class CheckCommand extends AbstractMagentoCommand
 
             $ok = true;
             if (!empty($cookieDomain)) {
-                $ok = !strpos(parse_url($value, PHP_URL_HOST), $cookieDomain);
+                $ok = strpos(parse_url($value, PHP_URL_HOST), $cookieDomain);
             }
 
             return $ok;
