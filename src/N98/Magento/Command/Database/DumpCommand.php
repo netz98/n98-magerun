@@ -106,52 +106,6 @@ class DumpCommand extends AbstractDatabaseCommand
     }
 
     /**
-     * @param $param
-     * @param array $resolved Which definitions where already resolved -> prevent endless loops
-     */
-    protected function resolveTables($excludes, $resolved = array())
-    {
-        $definitions = $this->getTableDefinitions();
-
-        $resolvedExcludes = array();
-        foreach($excludes as $exclude) {
-            if (substr($exclude, 0, 1) == '@') {
-                $code = substr($exclude, 1);
-                if (!isset($definitions[$code])) {
-                    throw new \Exception('Table-groups could not be resolved: '.$exclude);
-                }
-                if (!isset($resolved[$code])) {
-                    $resolved[$code] = true;
-                    $tables = $this->resolveTables(explode(' ', $definitions[$code]['tables']), $resolved);
-                    $resolvedExcludes = array_merge($resolvedExcludes, $tables);
-                }
-                continue;
-            }
-
-            // resolve wildcards
-            if (strpos($exclude, '*') !== false) {
-                $connection = $this->_getConnection();
-                $sth = $connection->prepare('SHOW TABLES LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
-                $sth->execute(
-                    array(':like' => str_replace('*', '%', $exclude))
-                );
-                $rows = $sth->fetchAll();
-                foreach($rows as $row) {
-                    $resolvedExcludes[] = $row[0];
-                }
-                continue;
-            }
-
-            $resolvedExcludes[] = $exclude;
-        }
-
-        asort($resolvedExcludes);
-        $resolvedExcludes = array_unique($resolvedExcludes);
-        return $resolvedExcludes;
-    }
-
-
-    /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return int|void
@@ -168,7 +122,7 @@ class DumpCommand extends AbstractDatabaseCommand
         $fileName = $this->getFileName($input, $output, $compressor);
 
         if ($input->getOption('strip')) {
-            $stripTables = $this->resolveTables(explode(' ', $input->getOption('strip')));
+            $stripTables = $this->resolveTables(explode(' ', $input->getOption('strip')), $this->getTableDefinitions());
             if (!$input->getOption('stdout') && !$input->getOption('only-command') && !$input->getOption('print-only-filename')) {
                 $output->writeln('<comment>No-data export for: <info>' . implode(' ',$stripTables) . '</info></comment>');
             }

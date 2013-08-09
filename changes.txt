@@ -3,6 +3,13 @@ RECENT CHANGES
 **************
 
 ======
+1.74.1
+======
+
+* Modules: Resolve symlinks
+* getCommandConfig method in Commands can now access config of other commands.
+
+======
 1.74.0
 ======
 
