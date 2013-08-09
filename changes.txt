@@ -8,6 +8,7 @@ RECENT CHANGES
 
 * Modules: Resolve symlinks
 * getCommandConfig method in Commands can now access config of other commands.
+* Fixed issue #175 - dev:setup:script:attribute not working with prefixed tables
 
 ======
 1.74.0
