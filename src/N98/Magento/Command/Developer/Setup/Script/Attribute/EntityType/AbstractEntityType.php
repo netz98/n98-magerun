@@ -66,7 +66,7 @@ abstract class AbstractEntityType
     public function getAttributeLabels($attribute)
     {
         $select = $this->readConnection->select()
-            ->from($this->readConnection->getTableName('eav_attribute_label'))
+            ->from(\Mage::getSingleton('core/resource')->getTableName('eav_attribute_label'))
             ->where('attribute_id = ?', $attribute->getId());
 
         $query = $select->query();
@@ -89,9 +89,9 @@ abstract class AbstractEntityType
     protected function getOptions($attribute)
     {
         $select = $this->readConnection->select()
-            ->from(array('o' => $this->readConnection->getTableName('eav_attribute_option')))
+            ->from(array('o' => \Mage::getSingleton('core/resource')->getTableName('eav_attribute_option')))
             ->join(
-                array('ov' => $this->readConnection->getTableName('eav_attribute_option_value')),
+                array('ov' => \Mage::getSingleton('core/resource')->getTableName('eav_attribute_option_value')),
                 'o.option_id = ov.option_id')
             ->where('o.attribute_id = ?', $attribute->getId())
             ->where('ov.store_id = 0')
