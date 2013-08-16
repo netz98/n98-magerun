@@ -30,13 +30,16 @@ class ListCommand extends AbstractAdminUserCommand
             $table = array();
             foreach ($userList as $user) {
                 $table[] = array(
-                    'id'       => '  ' . $user->getId(),
-                    'username' => $user->getUsername(),
-                    'email'    => $user->getEmail(),
-                    'status'   => $user->getIsActive() ? 'active' : 'inactive',
+                    $user->getId(),
+                    $user->getUsername(),
+                    $user->getEmail(),
+                    $user->getIsActive() ? 'active' : 'inactive',
                 );
             }
-            $this->getHelper('table')->write($output, $table);
+            $this->getHelper('table')
+                ->setHeaders(array('id', 'username', 'email', 'status'))
+                ->setRows($table)
+                ->render($output);
         }
     }
 }

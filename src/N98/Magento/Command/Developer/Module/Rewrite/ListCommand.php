@@ -25,7 +25,6 @@ class ListCommand extends AbstractRewriteCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        $this->writeSection($output, 'Rewrites');
         if ($this->initMagento()) {
 
             $rewrites = $this->loadRewrites();
@@ -34,16 +33,19 @@ class ListCommand extends AbstractRewriteCommand
                 if (count($data) > 0) {
                     foreach ($data as $class => $rewriteClass) {
                         $table[] = array(
-                            'Type'  => $type,
-                            'Class' => $class,
-                            'Rewrite' => implode(', ', $rewriteClass)
+                            $type,
+                            $class,
+                            implode(', ', $rewriteClass)
                         );
                     }
                 }
             }
 
             if (count($table) > 0) {
-                $this->getHelper('table')->write($output, $table);
+                $this->getHelper('table')
+                    ->setHeaders(array('Type', 'Class', 'Rewrite'))
+                    ->setRows($table)
+                    ->render($output);
             } else {
                 $output->writeln('<info>No rewrites was found.</info>');
             }

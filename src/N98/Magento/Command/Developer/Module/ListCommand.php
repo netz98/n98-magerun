@@ -41,7 +41,10 @@ class ListCommand extends AbstractMagentoCommand
         $this->filterModules($input);
 
         if ( ! empty($this->infos)) {
-            $this->getHelper('table')->write($output, $this->infos);
+            $this->getHelper('table')
+                ->setHeaders('codePool', 'Name', 'Version', 'Status')
+                ->setRows($this->infos)
+                ->render($output);
         } else {
             $output->writeln("No modules match the specified criteria.");
         }
@@ -52,10 +55,10 @@ class ListCommand extends AbstractMagentoCommand
         $modules = \Mage::app()->getConfig()->getNode('modules')->asArray();
         foreach ($modules as $moduleName => $moduleInfo) {
             $this->infos[] = array(
-                'codePool' => $moduleInfo['codePool'],
-                'Name'     => $moduleName,
-                'Version'  => isset($moduleInfo['version']) ? $moduleInfo['version'] : '',
-                'Status'   => $this->formatActive($moduleInfo['active']),
+                $moduleInfo['codePool'],
+                $moduleName,
+                isset($moduleInfo['version']) ? $moduleInfo['version'] : '',
+                $this->formatActive($moduleInfo['active']),
             );
         }
     }

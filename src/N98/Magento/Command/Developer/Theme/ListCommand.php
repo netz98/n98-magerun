@@ -29,12 +29,15 @@ class ListCommand extends AbstractMagentoCommand
             foreach ($packages as $package => $themes) {
                 foreach ($themes as $theme) {
                     $table[] = array(
-                        'name' => ($package ? $package . '/' : '') . $theme
+                        ($package ? $package . '/' : '') . $theme
                     );
                 }
             }
 
-            $this->getHelper('table')->write($output, $table);
+            $this->getHelper('table')
+                ->setHeaders(array('Theme'))
+                ->setRows($table)
+                ->render($output);
         }
     }
 

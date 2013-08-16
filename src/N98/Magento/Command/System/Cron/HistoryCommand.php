@@ -41,12 +41,15 @@ class HistoryCommand extends AbstractMagentoCommand
         $table = array();
         foreach ($collection as $job) {
             $table[] = array(
-                'Job'      => $job->getJobCode(),
-                'Status'   => $job->getStatus(),
-                'Finished' => $job->getFinishedAt()
+                $job->getJobCode(),
+                $job->getStatus(),
+                $job->getFinishedAt(),
             );
         }
 
-        $this->getHelper('table')->write($output, $table);
+        $this->getHelper('table')
+            ->setHeaders(array('Job', 'Status', 'Finished'))
+            ->setRows($table)
+            ->render($output);
     }
 }

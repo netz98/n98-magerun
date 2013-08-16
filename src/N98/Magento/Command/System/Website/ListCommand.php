@@ -36,12 +36,15 @@ class ListCommand extends AbstractMagentoCommand
 
         foreach (\Mage::app()->getWebsites() as $store) {
             $table[$store->getId()] = array(
-                'id'   => '  ' . $store->getId(),
-                'code' => $store->getCode(),
+                $store->getId(),
+                $store->getCode(),
             );
         }
 
         ksort($table);
-        $this->getHelper('table')->write($output, $table);
+        $this->getHelper('table')
+            ->setHeaders(array('id', 'code'))
+            ->setRows($table)
+            ->render($output);
     }
 }

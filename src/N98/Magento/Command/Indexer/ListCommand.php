@@ -25,18 +25,20 @@ class ListCommand extends AbstractIndexerCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        $this->writeSection($output, 'Index list');
         if ($this->initMagento()) {
             $table = array();
             foreach ($this->getIndexerList() as $index) {
                 $table[] = array(
-                    'code'   => $index['code'],
-                    'status' => $index['status'],
-                    'time'   => $index['last_runtime'],
+                    $index['code'],
+                    $index['status'],
+                    $index['last_runtime'],
                 );
             }
 
-            $this->getHelper('table')->write($output, $table);
+            $this->getHelper('table')
+                ->setHeaders(array('code', 'status', 'time'))
+                ->setRows($table)
+                ->render($output, $table);
         }
     }
 }

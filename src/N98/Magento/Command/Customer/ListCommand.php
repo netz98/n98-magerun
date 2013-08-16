@@ -48,16 +48,19 @@ class ListCommand extends AbstractCustomerCommand
             $table = array();
             foreach ($collection as $customer) {
                 $table[] = array(
-                    'id'        => $customer->getId(),
-                    'email'     => $customer->getEmail(),
-                    'firstname' => $customer->getFirstname(),
-                    'lastname'  => $customer->getLastname(),
-                    'website'   => $this->_getWebsiteCodeById($customer->getwebsiteId()),
+                    $customer->getId(),
+                    $customer->getEmail(),
+                    $customer->getFirstname(),
+                    $customer->getLastname(),
+                    $this->_getWebsiteCodeById($customer->getwebsiteId()),
                 );
             }
 
             if (count($table) > 0) {
-                $this->getHelper('table')->write($output, $table);
+                $this->getHelper('table')
+                    ->setHeaders(array('id', 'email', 'firstname', 'lastname', 'website'))
+                    ->setRows($table)
+                    ->render($output);
             } else {
                 $output->writeln('<comment>No customers found</comment>');
             }

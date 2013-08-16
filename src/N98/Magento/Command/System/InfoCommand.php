@@ -51,13 +51,13 @@ class InfoCommand extends AbstractMagentoCommand
 
         $table = array();
         foreach ($this->infos as $key => $value) {
-            $table[] = array(
-                'name'  => $key,
-                'value' => $value,
-            );
+            $table[] = array($key, $value);
         }
 
-        $this->getHelper('table')->write($output, $table);
+        $this->getHelper('table')
+            ->setHeaders(array('name', 'value'))
+            ->setRows($table)
+            ->render($output);
     }
 
     protected function _addCacheInfos()

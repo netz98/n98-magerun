@@ -35,6 +35,9 @@ class ListCommand extends AbstractCronCommand
         $this->initMagento();
 
         $table = $this->getJobs();
-        $this->getHelper('table')->write($output, $table);
+        $this->getHelper('table')
+            ->setHeaders(array_keys(current($table)))
+            ->setRows($table)
+            ->render($output);
     }
 }
