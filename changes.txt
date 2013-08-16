@@ -3,6 +3,13 @@ RECENT CHANGES
 **************
 
 ======
+1.75.0
+======
+
+* Changed all internal call of own table helper to new native symfony helper.
+* Updated dependencies
+
+======
 1.74.1
 ======
 
