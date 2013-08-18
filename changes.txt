@@ -11,6 +11,7 @@ RECENT CHANGES
 * Issue #47 - Warning if running as root
 * Issue #55 - Multi-reindex
 * Issue #171 - open-browser: admin backend
+* Issue #116 - Added "report_compared_product_index" and "report_viewed_*" tables to "log" group
 * Fixed issue #164 - dev:ide:phpstorm:meta debug mode isn't enough verbose to detect where the problem is
 * Fixed issue #187 - Cache flush is not compatible with older versions of Enterprise
 
