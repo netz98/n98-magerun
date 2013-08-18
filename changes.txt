@@ -8,6 +8,7 @@ RECENT CHANGES
 
 * Changed all internal call of own table helper to new native symfony helper.
 * Updated dependencies
+* Issue #47 - Warning if running as root
 * Issue #55 - Multi-reindex
 * Issue #171 - open-browser: admin backend
 * Fixed issue #164 - dev:ide:phpstorm:meta debug mode isn't enough verbose to detect where the problem is

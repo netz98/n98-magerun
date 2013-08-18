@@ -97,6 +97,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Application extends BaseApplication
 {
+    const WARNING_ROOT_USER = '<error>It\'s not recommended to run n98-magerun as root user</error>';
     /**
      * @var int
      */
@@ -453,6 +454,7 @@ class Application extends BaseApplication
     public function doRun(InputInterface $input, OutputInterface $output)
     {
         $input = $this->checkConfigCommandAlias($input);
+        $this->checkRunningAsRootUser($output);
         $this->checkVarDir($output);
 
         if (OutputInterface::VERBOSITY_DEBUG <= $output->getVerbosity()) {
@@ -460,6 +462,22 @@ class Application extends BaseApplication
         }
 
         parent::doRun($input, $output);
+    }
+
+    /**
+     * Display a warning if a running n98-magerun as root user
+     */
+    protected function checkRunningAsRootUser(OutputInterface $output)
+    {
+        if (OperatingSystem::isLinux() || OperatingSystem::isMacOs()) {
+            if (function_exists('posix_getuid')) {
+                if (posix_getuid() === 0) {
+                    $output->writeln('');
+                    $output->writeln(self::WARNING_ROOT_USER);
+                    $output->writeln('');
+                }
+            }
+        }
     }
 
     /**
