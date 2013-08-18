@@ -8,6 +8,9 @@ RECENT CHANGES
 
 * Changed all internal call of own table helper to new native symfony helper.
 * Updated dependencies
+* Issue #55 - Multi-reindex
+* Fixed issue #164 - dev:ide:phpstorm:meta debug mode isn't enough verbose to detect where the problem is
+* Fixed issue #187 - Cache flush is not compatible with older versions of Enterprise
 
 ======
 1.74.1

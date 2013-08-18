@@ -17,7 +17,7 @@ class ReindexCommandTest extends TestCase
         $commandTester->execute(
             array(
                 'command'    => $command->getName(),
-                'index_code' => 'tag_summary',
+                'index_code' => 'tag_summary,tag_summary', // run index twice
             )
         );
     

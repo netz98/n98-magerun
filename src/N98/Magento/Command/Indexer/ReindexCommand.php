@@ -38,49 +38,67 @@ class ReindexCommand extends AbstractIndexerCommand
                 }
                 $question[] = '<question>Please select a indexer:</question>';
 
-                $indexCode = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($indexerList) {
-                    if (!isset($indexerList[$typeInput - 1])) {
-                        throw new \InvalidArgumentException('Invalid indexer');
+                $indexCodes = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($indexerList) {
+                    if (strstr($typeInput, ',')) {
+                        $typeInputs = \N98\Util\String::trimExplodeEmpty(',', $typeInput);
+                    } else {
+                        $typeInputs = array($typeInput);
                     }
-                    return $indexerList[$typeInput - 1]['code'];
+
+                    $returnCodes = array();
+                    foreach ($typeInputs as $typeInput) {
+                        if (!isset($indexerList[$typeInput - 1])) {
+                            throw new \InvalidArgumentException('Invalid indexer');
+                        }
+
+                        $returnCodes[] = $indexerList[$typeInput - 1]['code'];
+                    }
+
+                    return $returnCodes;
                 });
+            } else {
+                // take cli argument
+                $indexCodes = \N98\Util\String::trimExplodeEmpty(',', $indexCode);
             }
 
-            try {
-                \Mage::dispatchEvent('shell_reindex_init_process');
-                $process = $this->_getIndexerModel()->getProcessByCode($indexCode);
-                if (!$process) {
-                    throw new \InvalidArgumentException('Indexer was not found!');
-                }
-                $output->writeln('<info>Started reindex of: <comment>' . $indexCode . '</comment></info>');
+            foreach ($indexCodes as $indexCode) {
 
-                /**
-                 * Try to estimate runtime. If index was aborted or never created we have a timestamp < 0
-                 */
-                $runtimeInSeconds = $this->getRuntimeInSeconds($process);
-                if ($runtimeInSeconds > 0) {
-                    $estimatedEnd = new \DateTime('now', new \DateTimeZone('UTC'));
-                    $estimatedEnd->add(new \DateInterval('PT' . $runtimeInSeconds . 'S'));
+                try {
+                    \Mage::dispatchEvent('shell_reindex_init_process');
+                    $process = $this->_getIndexerModel()->getProcessByCode($indexCode);
+                    if (!$process) {
+                        throw new \InvalidArgumentException('Indexer was not found!');
+                    }
+                    $output->writeln('<info>Started reindex of: <comment>' . $indexCode . '</comment></info>');
+
+                    /**
+                     * Try to estimate runtime. If index was aborted or never created we have a timestamp < 0
+                     */
+                    $runtimeInSeconds = $this->getRuntimeInSeconds($process);
+                    if ($runtimeInSeconds > 0) {
+                        $estimatedEnd = new \DateTime('now', new \DateTimeZone('UTC'));
+                        $estimatedEnd->add(new \DateInterval('PT' . $runtimeInSeconds . 'S'));
+                        $output->writeln(
+                            '<info>Estimated end: <comment>' . $estimatedEnd->format('Y-m-d H:i:s T') . '</comment></info>'
+                        );
+                    }
+
+                    $startTime = new \DateTime('now');
+                    $dateTimeUtils = new \N98\Util\DateTime();
+                    $process->reindexEverything();
+                    \Mage::dispatchEvent($process->getIndexerCode() . '_shell_reindex_after');
+                    $endTime = new \DateTime('now');
                     $output->writeln(
-                        '<info>Estimated end: <comment>' . $estimatedEnd->format('Y-m-d H:i:s T') . '</comment></info>'
+                        '<info>Successfully reindexed <comment>' . $indexCode . '</comment> (Runtime: <comment>' . $dateTimeUtils->getDifferenceAsString(
+                            $startTime,
+                            $endTime
+                        ) . '</comment>)</info>'
                     );
+                    \Mage::dispatchEvent('shell_reindex_finalize_process');
+                } catch (\Exception $e) {
+                    $output->writeln('<error>' . $e->getMessage() . '</error>');
+                    \Mage::dispatchEvent('shell_reindex_finalize_process');
                 }
-
-                $startTime = new \DateTime('now');
-                $dateTimeUtils = new \N98\Util\DateTime();
-                $process->reindexEverything();
-                \Mage::dispatchEvent($process->getIndexerCode() . '_shell_reindex_after');
-                $endTime = new \DateTime('now');
-                $output->writeln(
-                    '<info>Successfully reindexed <comment>' . $indexCode . '</comment> (Runtime: <comment>' . $dateTimeUtils->getDifferenceAsString(
-                        $startTime,
-                        $endTime
-                    ) . '</comment>)</info>'
-                );
-                \Mage::dispatchEvent('shell_reindex_finalize_process');
-            } catch (\Exception $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
-                \Mage::dispatchEvent('shell_reindex_finalize_process');
             }
         }
     }
