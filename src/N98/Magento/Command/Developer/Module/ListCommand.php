@@ -42,7 +42,7 @@ class ListCommand extends AbstractMagentoCommand
 
         if ( ! empty($this->infos)) {
             $this->getHelper('table')
-                ->setHeaders('codePool', 'Name', 'Version', 'Status')
+                ->setHeaders(array('codePool', 'Name', 'Version', 'Status'))
                 ->setRows($this->infos)
                 ->render($output);
         } else {
