@@ -9,6 +9,7 @@ class DateTime
      *
      * @param \DateTime $time1
      * @param \DateTime $time2
+     *
      * @return string
      */
     public function getDifferenceAsString(\DateTime $time1, \DateTime $time2)
