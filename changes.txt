@@ -15,46 +15,8 @@ RECENT CHANGES
 * Fixed issue #164 - dev:ide:phpstorm:meta debug mode isn't enough verbose to detect where the problem is
 * Fixed issue #187 - Cache flush is not compatible with older versions of Enterprise
 
-======
-1.74.1
-======
-
-* Modules: Resolve symlinks
-* getCommandConfig method in Commands can now access config of other commands.
-* Fixed issue #175 - dev:setup:script:attribute not working with prefixed tables
-
-======
-1.74.0
-======
-
-* Fixeed issue #185 - dev:module:rewrite:conflicts command doesn't detect inheritance past the parent class (by Kalen Jordan)
-* New db:create command (by Michael O'Connell)
-* New config:delete command (by Christian Münch)
-* Add ability to filter modules list. (by Peter O'Callaghan)
-* Fixed issue #188 - Cookie Domain is not recognized in any case (by Christian Münch)
-
-======
-1.73.0
-======
-
-* Detect Magento inside of modman folders (reads .basedir file) (by Christian Münch).
-* Bugfix in dev:setup:script:attribute command. (by Martin Schultheiss)
-* Bugfix #182: db:dump --strip help missing (list of groups)
-* Updated dependencies
-
-======
-1.72.0
-======
-
-* Module system to add own commands (by Christian Münch)
-
-======
-1.71.0
-======
-
-* Performance improvements for customer:create:dummy (by Luke Mills)
-* Fixed issue #168 Script feature initialises magento
-
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
 -----------------------------------------
+
+Visit our new blog http://magerun.net
