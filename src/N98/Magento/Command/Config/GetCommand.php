@@ -111,28 +111,17 @@ EOT
                 $formattedTable = array();
                 foreach($table as $row) {
                     $formattedTable[] = array(
-                        'Path'     => $row['path'],
-                        'Scope'    => str_pad($row['scope'], 8, ' ', STR_PAD_BOTH),
-                        'Scope-ID' => str_pad($row['scope_id'], 8, ' ', STR_PAD_BOTH),
-                        'Value'    => substr($row['value'], 0, 50)
+                        $row['path'],
+                        str_pad($row['scope'], 8, ' ', STR_PAD_BOTH),
+                        str_pad($row['scope_id'], 8, ' ', STR_PAD_BOTH),
+                        substr($row['value'], 0, 50)
                     );
                 }
-                $this->getHelper('table')->write($output, $formattedTable);
+                $this->getHelper('table')
+                    ->setHeaders(array('Path', 'Scope', 'Scope-ID', 'Value'))
+                    ->setRows($formattedTable)
+                    ->render($output);
             }
         }
-    }
-
-    /**
-     * @param string $value
-     * @param boolean $decryptionRequired
-     * @return string
-     */
-    protected function _formatValue($value, $decryptionRequired)
-    {
-        if ($decryptionRequired) {
-            $value = $this->getEncryptionModel()->decrypt($value);
-        }
-
-        return $value;
     }
 }

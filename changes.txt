@@ -3,27 +3,20 @@ RECENT CHANGES
 **************
 
 ======
-1.73.0
+1.75.0
 ======
 
-* Detect Magento inside of modman folders (reads .basedir file) (by Christian Münch).
-* Bugfix in dev:setup:script:attribute command. (by Martin Schultheiss)
-* Bugfix #182: db:dump --strip help missing (list of groups)
+* Changed all internal call of own table helper to new native symfony helper.
 * Updated dependencies
-
-======
-1.72.0
-======
-
-* Module system to add own commands (by Christian Münch)
-
-======
-1.71.0
-======
-
-* Performance improvements for customer:create:dummy (by Luke Mills)
-* Fixed issue #168 Script feature initialises magento
+* Issue #47 - Warning if running as root
+* Issue #55 - Multi-reindex
+* Issue #171 - open-browser: admin backend
+* Issue #116 - Added "report_compared_product_index" and "report_viewed_*" tables to "log" group
+* Fixed issue #164 - dev:ide:phpstorm:meta debug mode isn't enough verbose to detect where the problem is
+* Fixed issue #187 - Cache flush is not compatible with older versions of Enterprise
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
 -----------------------------------------
+
+Visit our new blog http://magerun.net

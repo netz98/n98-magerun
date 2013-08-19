@@ -100,7 +100,7 @@ commands:
     table-groups:
       - id: log
         description: Log tables
-        tables: log_url log_url_info log_visitor log_visitor_info log_visitor_online report_event
+        tables: log_url log_url_info log_visitor log_visitor_info log_visitor_online report_event report_compared_product_index report_viewed_*
 
       - id: dataflowtemp
         description: Temporary tables of the dataflow import/export tool
@@ -112,7 +112,7 @@ commands:
 
       - id: sales
         description: Sales data (orders, invoices, creditmemos etc)
-        tables: sales_order_aggregated* sales_order_tax* sales_flat* sales_recurring_* sales_refunded_* sales_payment_* enterprise_sales_* enterprise_customer_sales_*
+        tables: sales_order_aggregated* sales_order_tax* sales_flat* sales_recurring_* sales_refunded_* sales_payment_* enterprise_sales_* enterprise_customer_sales_* sales_bestsellers_*
 
       - id: customers
         description: Customer data - Should not be used without @sales

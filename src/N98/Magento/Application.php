@@ -13,6 +13,7 @@ use N98\Magento\Command\Cache\FlushCommand as CacheFlushCommand;
 use N98\Magento\Command\Cache\ListCommand as CacheListCommand;
 use N98\Magento\Command\Cms\Banner\ToggleCommand as MagentoCmsBannerToggleCommand;
 use N98\Magento\Command\Cms\Page\PublishCommand as MagentoCmsPagePublishCommand;
+use N98\Magento\Command\Config\DeleteCommand as ConfigDeleteCommand;
 use N98\Magento\Command\Config\DumpCommand as ConfigPrintCommand;
 use N98\Magento\Command\Config\GetCommand as ConfigGetCommand;
 use N98\Magento\Command\Config\SetCommand as ConfigSetCommand;
@@ -24,6 +25,7 @@ use N98\Magento\Command\Customer\CreateDummyCommand as CustomerCreateDummyComman
 use N98\Magento\Command\Customer\InfoCommand as CustomerInfoCommand;
 use N98\Magento\Command\Customer\ListCommand as CustomerListCommand;
 use N98\Magento\Command\Database\ConsoleCommand as DatabaseConsoleCommand;
+use N98\Magento\Command\Database\CreateCommand as DatabaseCreateCommand;
 use N98\Magento\Command\Database\DropCommand as DatabaseDropCommand;
 use N98\Magento\Command\Database\DumpCommand as DatabaseDumpCommand;
 use N98\Magento\Command\Database\ImportCommand as DatabaseImportCommand;
@@ -95,6 +97,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Application extends BaseApplication
 {
+    const WARNING_ROOT_USER = '<error>It\'s not recommended to run n98-magerun as root user</error>';
     /**
      * @var int
      */
@@ -110,7 +113,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.73.0';
+    const APP_VERSION = '1.75.0';
 
     /**
      * @var string
@@ -451,6 +454,7 @@ class Application extends BaseApplication
     public function doRun(InputInterface $input, OutputInterface $output)
     {
         $input = $this->checkConfigCommandAlias($input);
+        $this->checkRunningAsRootUser($output);
         $this->checkVarDir($output);
 
         if (OutputInterface::VERBOSITY_DEBUG <= $output->getVerbosity()) {
@@ -458,6 +462,22 @@ class Application extends BaseApplication
         }
 
         parent::doRun($input, $output);
+    }
+
+    /**
+     * Display a warning if a running n98-magerun as root user
+     */
+    protected function checkRunningAsRootUser(OutputInterface $output)
+    {
+        if (OperatingSystem::isLinux() || OperatingSystem::isMacOs()) {
+            if (function_exists('posix_getuid')) {
+                if (posix_getuid() === 0) {
+                    $output->writeln('');
+                    $output->writeln(self::WARNING_ROOT_USER);
+                    $output->writeln('');
+                }
+            }
+        }
     }
 
     /**
@@ -558,7 +578,9 @@ class Application extends BaseApplication
         $this->add(new DatabaseInfoCommand());
         $this->add(new DatabaseImportCommand());
         $this->add(new DatabaseConsoleCommand());
+        $this->add(new DatabaseCreateCommand());
         $this->add(new DatabaseQueryCommand());
+        $this->add(new ConfigDeleteCommand());
         $this->add(new ConfigPrintCommand());
         $this->add(new ConfigGetCommand());
         $this->add(new ConfigSetCommand());

@@ -36,16 +36,19 @@ class ListExtensionsCommand extends AbstractConnectCommand
                             continue;
                         }
                         $table[] = array(
-                            'Package'   => $matches[1],
-                            'Version'   => $matches[2],
-                            'Stability' => $matches[3],
+                            $matches[1],
+                            $matches[2],
+                            $matches[3],
                         );
                     }
                 }
             }
 
             if (count($table) > 0) {
-                $this->getHelper('table')->write($output, $table);
+                $this->getHelper('table')
+                    ->setHeaders(array('Package', 'Version', 'Stability'))
+                    ->setRows($table)
+                    ->render($output);
             }
         } else {
             $output->writeln('<error>' . $extensions . '</error>');

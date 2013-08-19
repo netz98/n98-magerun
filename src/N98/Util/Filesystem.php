@@ -8,6 +8,8 @@ class Filesystem
      * @param string $src
      * @param string $dst
      * @param array  $blacklist
+     *
+     * @return void
      */
     public function recursiveCopy($src, $dst, $blacklist = array())
     {
@@ -29,6 +31,8 @@ class Filesystem
      * @param string $directory
      * @param bool empty
      * @see http://lixlpixel.org/recursive_function/php/recursive_directory_delete/
+     *
+     * @return bool
      */
     public function recursiveRemoveDirectory($directory, $empty = false)
     {

@@ -30,18 +30,19 @@ class ListCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-
-        $this->writeSection($output, 'Magento Stores');
         $this->initMagento();
 
         foreach (\Mage::app()->getStores() as $store) {
             $table[$store->getId()] = array(
-                'id'   => '  ' . $store->getId(),
-                'code' => $store->getCode(),
+                $store->getId(),
+                $store->getCode(),
             );
         }
 
         ksort($table);
-        $this->getHelper('table')->write($output, $table);
+        $this->getHelper('table')
+            ->setHeaders(array('id', 'code'))
+            ->setRows($table)
+            ->render($output);
     }
 }

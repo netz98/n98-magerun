@@ -16,7 +16,6 @@ class ListCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $this->assertRegExp('/Magento Stores/', $commandTester->getDisplay());
         $this->assertRegExp('/id/', $commandTester->getDisplay());
         $this->assertRegExp('/code/', $commandTester->getDisplay());
     }

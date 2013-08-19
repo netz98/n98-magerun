@@ -117,13 +117,14 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
         // baseline of DSN parts
         $dsn = $this->dbSettings;
 
-        // don't pass the username, password, charset, persistent and driver_options in the DSN
+        // don't pass the username, password, charset, database, persistent and driver_options in the DSN
         unset($dsn['username']);
         unset($dsn['password']);
         unset($dsn['options']);
         unset($dsn['charset']);
         unset($dsn['persistent']);
         unset($dsn['driver_options']);
+        unset($dsn['dbname']);
 
         // use all remaining parts in the DSN
         $buildDsn = array();
@@ -167,9 +168,62 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
 
         /** @link http://bugs.mysql.com/bug.php?id=18551 */
         $this->_connection->query("SET SQL_MODE=''");
+
+        try {
+            $this->_connection->query('USE `'.$this->dbSettings['dbname'].'`');
+        } catch(\PDOException $e) {
+        }
+        
         $this->_connection->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
         $this->_connection->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 
         return $this->_connection;
+    }
+
+    /**
+     * @param array $param
+     * @param array $definitions
+     * @param array $resolved Which definitions where already resolved -> prevent endless loops
+     *
+     * @return array
+     */
+    protected function resolveTables($excludes, $definitions, $resolved = array())
+    {
+        $resolvedExcludes = array();
+        foreach ($excludes as $exclude) {
+            if (substr($exclude, 0, 1) == '@') {
+                $code = substr($exclude, 1);
+                if (!isset($definitions[$code])) {
+                    throw new \Exception('Table-groups could not be resolved: '.$exclude);
+                }
+                if (!isset($resolved[$code])) {
+                    $resolved[$code] = true;
+                    $tables = $this->resolveTables(explode(' ', $definitions[$code]['tables']), $definitions, $resolved);
+                    $resolvedExcludes = array_merge($resolvedExcludes, $tables);
+                }
+                continue;
+            }
+
+            // resolve wildcards
+            if (strpos($exclude, '*') !== false) {
+                $connection = $this->_getConnection();
+                $sth = $connection->prepare('SHOW TABLES LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+                $sth->execute(
+                    array(':like' => str_replace('*', '%', $exclude))
+                );
+                $rows = $sth->fetchAll();
+                foreach($rows as $row) {
+                    $resolvedExcludes[] = $row[0];
+                }
+                continue;
+            }
+
+            $resolvedExcludes[] = $exclude;
+        }
+
+        asort($resolvedExcludes);
+        $resolvedExcludes = array_unique($resolvedExcludes);
+
+        return $resolvedExcludes;
     }
 }

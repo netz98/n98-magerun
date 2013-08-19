@@ -5,7 +5,7 @@ namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
 abstract class AbstractEntityType
 {
     /**
-     * @var Varien_Db_Adapter_Interface
+     * @var \Varien_Db_Adapter_Interface
      */
     protected $readConnection;
 
@@ -25,7 +25,7 @@ abstract class AbstractEntityType
     protected $warnings = array();
 
     /**
-     * @param Mage_Eav_Model_Entity_Attribute $attribute
+     * @param \Mage_Eav_Model_Entity_Attribute $attribute
      */
     public function __construct($attribute)
     {
@@ -59,14 +59,14 @@ abstract class AbstractEntityType
     /**
      * Gets attribute labels from database
      *
-     * @param Mage_Eav_Model_Entity_Attribute $attribute
+     * @param \Mage_Eav_Model_Entity_Attribute $attribute
      *
      * @return array
      */
     public function getAttributeLabels($attribute)
     {
         $select = $this->readConnection->select()
-            ->from('eav_attribute_label')
+            ->from(\Mage::getSingleton('core/resource')->getTableName('eav_attribute_label'))
             ->where('attribute_id = ?', $attribute->getId());
 
         $query = $select->query();
@@ -82,18 +82,20 @@ abstract class AbstractEntityType
     /**
      * Gets attribute options from database
      *
-     * @param Mage_Eav_Model_Entity_Attribute $attribute
+     * @param \Mage_Eav_Model_Entity_Attribute $attribute
      *
      * @return array
      */
     protected function getOptions($attribute)
     {
         $select = $this->readConnection->select()
-            ->from('eav_attribute_option')
-            ->join('eav_attribute_option_value', 'eav_attribute_option.option_id=eav_attribute_option_value.option_id')
-            ->where('attribute_id = ?', $attribute->getId())
-            ->where('store_id = 0')
-            ->order('eav_attribute_option_value.option_id');
+            ->from(array('o' => \Mage::getSingleton('core/resource')->getTableName('eav_attribute_option')))
+            ->join(
+                array('ov' => \Mage::getSingleton('core/resource')->getTableName('eav_attribute_option_value')),
+                'o.option_id = ov.option_id')
+            ->where('o.attribute_id = ?', $attribute->getId())
+            ->where('ov.store_id = 0')
+            ->order('ov.option_id');
 
         $query = $select->query();
 

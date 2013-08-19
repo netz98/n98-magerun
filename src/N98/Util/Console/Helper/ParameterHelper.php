@@ -35,14 +35,17 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param string $argumentName
+     * @param string                                            $argumentName
+     * @param  bool                                             $withDefaultStore
+     *
      * @return mixed
+     *
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    public function askStore(InputInterface $input, OutputInterface $output, $argumentName = 'store')
+    public function askStore(InputInterface $input, OutputInterface $output, $argumentName = 'store', $withDefaultStore = false)
     {
         try {
             if ($input->getArgument($argumentName) === null) {
@@ -52,7 +55,7 @@ class ParameterHelper extends AbstractHelper
         } catch (\Exception $e) {
             $stores = array();
             $i = 0;
-            foreach (\Mage::app()->getStores() as $store) {
+            foreach (\Mage::app()->getStores($withDefaultStore) as $store) {
                 $stores[$i] = $store->getId();
                 $question[] = '<comment>[' . ($i + 1) . ']</comment> ' . $store->getCode() . ' - ' . $store->getName() . PHP_EOL;
                 $i++;

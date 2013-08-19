@@ -325,6 +325,15 @@ Opens the MySQL console client with your database settings from local.xml
 
    $ n98-magerun.phar db:console
 
+Database Create
+"""""""""""""""
+
+Create currently configured database
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:create
+
 Database Drop
 """""""""""""
 
@@ -372,6 +381,18 @@ Index by indexer code. Code is optional. If you don't specify a code you can pic
 .. code-block:: sh
 
    $ n98-magerun.phar index:reindex [code]
+
+
+Since 1.75.0 it's possible to run mutiple indexers by seperating code with a comma.
+
+i.e.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar index:reindex catalog_product_attribute,tag_summary
+
+If no index is provided as argument you can select indexers from menu by "number" like "1,3" for first and third
+indexer.
 
 Reindex All
 """""""""""
@@ -434,7 +455,7 @@ Arguments:
     value       The config value
 
 Options:
-    --scope     The config value's scope (default: "default")
+    --scope     The config value's scope (default: "default" | Can be "default", "websites", "stores")
     --scope-id  The config value's scope ID (default: "0")
     --encrypt   Encrypt the config value using local.xml's crypt key
 
@@ -454,6 +475,20 @@ Options:
 
 Help:
     If path is not set, all available config items will be listed. path may contain wildcards (*)
+
+Delete Config
+"""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar config:delete [--scope[="..."]] [--scope-id[="..."]] path
+
+Arguments:
+    path        The config path
+
+Options:
+    --scope     The config scope (default, websites, stores)
+    --scope-id  The config value's scope ID
 
 Config Search
 """""""""""""
@@ -890,7 +925,7 @@ Lists all installed modules with codepool and version
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:module:list
+   $ n98-magerun.phar dev:module:list  [--codepool[="..."]] [--status[="..."]] [--vendor=[="..."]]
 
 Rewrite List
 """"""""""""
