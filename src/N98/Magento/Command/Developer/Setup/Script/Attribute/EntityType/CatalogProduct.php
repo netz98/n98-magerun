@@ -88,7 +88,7 @@ TEXT;
 //generate script using simple string concatenation, making
         //a single tear fall down the cheek of a CS professor
         $script = "<?php
-\$setup = new Mage_Eav_Model_Entity_Setup('core_setup');
+\$setup = new Mage_Catalog_Model_Resource_Setup('core_setup');
 
 \$attr = $arrayCode;
 \$setup->addAttribute('catalog_product', '" . $this->attribute->getAttributeCode() . "', \$attr);
