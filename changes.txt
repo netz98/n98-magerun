@@ -6,7 +6,6 @@ RECENT CHANGES
 1.75.0
 ======
 
-* Changed all internal call of own table helper to new native symfony helper.
 * Updated dependencies
 * Issue #47 - Warning if running as root
 * Issue #55 - Multi-reindex
