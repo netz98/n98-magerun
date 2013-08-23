@@ -6,7 +6,8 @@ RECENT CHANGES
 1.75.1
 ======
 
-* Issue #202 - Permission error on Nexcess servers
+* Fixed issue #202 - Permission error on Nexcess servers
+* Fixed issue #194 - Exported setup script with attribute uses incorrect Setup class (by Jonathan Day)
 
 ======
 1.75.0
