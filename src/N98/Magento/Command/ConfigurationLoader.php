@@ -117,6 +117,7 @@ class ConfigurationLoader
                 ->files()
                 ->depth(1)
                 ->followLinks()
+                ->ignoreUnreadableDirs()
                 ->name('n98-magerun.yaml')
                 ->in($moduleBaseFolders);
 

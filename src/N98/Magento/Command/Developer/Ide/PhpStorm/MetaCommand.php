@@ -259,6 +259,7 @@ class MetaCommand extends AbstractMagentoCommand
                 ->files()
                 ->in($searchFolders)
                 ->followLinks()
+                ->ignoreUnreadableDirs()
                 ->name('*.php')
                 ->notName('install-*')
                 ->notName('upgrade-*')

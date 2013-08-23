@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.75.1
+======
+
+* Issue #202 - Permission error on Nexcess servers
+
+======
 1.75.0
 ======
 

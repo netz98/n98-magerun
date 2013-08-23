@@ -112,6 +112,7 @@ class MagentoHelper extends AbstractHelper
             $finder = new Finder();
             $finder
                 ->files()
+                ->ignoreUnreadableDirs(true)
                 ->depth(0)
                 ->followLinks()
                 ->ignoreDotFiles(false)
@@ -142,6 +143,7 @@ class MagentoHelper extends AbstractHelper
         $finder = new Finder();
         $finder
             ->directories()
+            ->ignoreUnreadableDirs(true)
             ->depth(0)
             ->followLinks()
             ->name('app')

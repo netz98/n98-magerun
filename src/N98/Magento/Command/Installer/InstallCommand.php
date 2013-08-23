@@ -578,6 +578,7 @@ class InstallCommand extends AbstractMagentoCommand
 
             $finder = new Finder();
             $finder->directories()
+                ->ignoreUnreadableDirs(true)
                 ->in(array($varFolder, $mediaFolder));
             foreach ($finder as $dir) {
                 @chmod($dir->getRealpath(), 0777);
