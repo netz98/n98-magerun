@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\MagentoConnect;
 
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -12,7 +13,7 @@ class ListExtensionsCommand extends AbstractConnectCommand
         $this
             ->setName('extension:list')
             ->setAliases(array('extension:search'))
-            ->addArgument('search', \Symfony\Component\Console\Input\InputArgument::OPTIONAL, 'Search string')
+            ->addArgument('search', InputArgument::OPTIONAL, 'Search string')
             ->setDescription('List magento connection extensions')
         ;
     }
