@@ -9,8 +9,8 @@ class OnCommand extends AbstractCommand
      *
      * @var string
      */
-    const COMMAND_NAME               = 'dev:module:dependencies:on';
-    const COMMAND_DESCRIPTION        = 'Show list of modules which given module depends on';
+    const COMMAND_NAME               = "dev:module:dependencies:on";
+    const COMMAND_DESCRIPTION        = "Show list of modules which given module depends on";
     const COMMAND_SECTION_TITLE_TEXT = "List of module %s dependencies";
     const COMMAND_NO_RESULTS_TEXT    = "Module %s doesn't have dependencies";
     /**#@-*/
