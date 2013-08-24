@@ -169,7 +169,6 @@ class Application extends BaseApplication
 
     /**
      * @param \Composer\Autoload\ClassLoader $autoloader
-     * @param bool                           $isPharMode
      */
     public function __construct($autoloader = null)
     {
@@ -322,8 +321,8 @@ class Application extends BaseApplication
     }
 
     /**
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param OutputInterface $output
-     * @return bool
      */
     public function checkVarDir(OutputInterface $output)
     {
@@ -346,8 +345,6 @@ class Application extends BaseApplication
                     $output->writeln(sprintf('This might cause serious problems. n98-magerun is using the configured var-folder <comment>%s</comment>', $currentVarDir));
                     $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
                     $output->writeln('');
-
-                    return false;
                 }
             }
         }

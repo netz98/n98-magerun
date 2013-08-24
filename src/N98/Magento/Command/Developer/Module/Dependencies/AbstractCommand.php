@@ -28,7 +28,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
      */
     protected $modules;
 
-        /**
+    /**
      * Configure command
      */
     protected function configure()

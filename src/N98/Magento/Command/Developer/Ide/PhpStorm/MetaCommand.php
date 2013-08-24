@@ -8,7 +8,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use Symfony\Component\Process\Exception\RuntimeException;
 
 class MetaCommand extends AbstractMagentoCommand
 {
@@ -23,6 +22,11 @@ class MetaCommand extends AbstractMagentoCommand
         'resource helpers',
     );
 
+    /**
+     * List of supported static factory methods
+     *
+     * @var array
+     */
     protected $groupFactories = array(
         'blocks' => array(
             '\Mage::getBlockSingleton'
@@ -164,14 +168,12 @@ class MetaCommand extends AbstractMagentoCommand
      * @param SplFileInfo     $file
      * @param string          $className
      * @param OutputInterface $output
-     *
      * @return bool
      */
     protected function isClassDefinedInFile(SplFileInfo $file, $className, OutputInterface $output)
     {
         try {
             return preg_match("/class\s+{$className}/m", $file->getContents());
-
         } catch (\Exception $e) {
             $output->writeln('<error>File: ' . $file->__toString() . ' | ' . $e->getMessage() . '</error>');
             return false;
@@ -205,9 +207,8 @@ class MetaCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param string          $group
-     * @paran OutputInterface $output
-     *
+     * @param string $group
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return array
      */
     protected function getClassMapForGroup($group, OutputInterface $output)
