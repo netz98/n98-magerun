@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\MagentoConnect;
 
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -11,7 +12,7 @@ class UpgradeExtensionCommand extends AbstractConnectCommand
     {
         $this
             ->setName('extension:upgrade')
-            ->addArgument('package', \Symfony\Component\Console\Input\InputArgument::REQUIRED, 'Package to upgrade')
+            ->addArgument('package', InputArgument::REQUIRED, 'Package to upgrade')
             ->setDescription('Upgrade magento-connect package')
         ;
     }

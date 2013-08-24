@@ -326,4 +326,17 @@ abstract class AbstractMagentoCommand extends Command
     {
         return in_array(strtolower($value), array('y', 'yes', 1, 'true'));
     }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    protected function formatActive($value)
+    {
+        if (in_array($value, array(1, 'true'))) {
+            return 'active';
+        }
+
+        return 'inactive';
+    }
 }
