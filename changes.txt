@@ -8,6 +8,7 @@ RECENT CHANGES
 
 * Fixed issue #202 - Permission error on Nexcess servers
 * Fixed issue #194 - Exported setup script with attribute uses incorrect Setup class (by Jonathan Day)
+* Fixed issue #197 - Doesn't run when /tmp/magento/var exists and database is not created / tables missing
 * Fixed issue #199 - Error with dev:module:rewrite:conflicts
 
 ======
