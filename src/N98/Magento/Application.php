@@ -44,6 +44,7 @@ use N98\Magento\Command\Developer\Module\Observer\ListCommand as ModuleObserverL
 use N98\Magento\Command\Developer\Module\Rewrite\ConflictsCommand as ModuleRewriteConflictsCommand;
 use N98\Magento\Command\Developer\Module\Rewrite\ListCommand as ModuleRewriteListCommand;
 use N98\Magento\Command\Developer\Module\Dependencies\OnCommand as ModuleDependenciesOnCommand;
+use N98\Magento\Command\Developer\Module\Dependencies\FromCommand as ModuleDependenciesFromCommand;
 use N98\Magento\Command\Developer\ProfilerCommand;
 use N98\Magento\Command\Developer\Report\CountCommand as DevelopmentReportCountCommand;
 use N98\Magento\Command\Developer\ClassLookupCommand as DevelopmentClassLookupCommand;
@@ -639,6 +640,7 @@ class Application extends BaseApplication
         $this->add(new ModuleCreateCommand());
         $this->add(new ModuleObserverListCommand());
         $this->add(new ModuleDependenciesOnCommand());
+        $this->add(new ModuleDependenciesFromCommand());
         $this->add(new ShellCommand());
         $this->add(new ScriptCommand());
         $this->add(new MagentoConnectionListExtensionsCommand());
