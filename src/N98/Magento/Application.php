@@ -330,8 +330,8 @@ class Application extends BaseApplication
         if (is_dir($tempVarDir)) {
             $this->detectMagento();
             /* If magento is not installed yet, don't check */
-            if ($this->_magentoRootFolder !== null
-                && !file_exists($this->_magentoRootFolder . '/app/etc/local.xml')
+            if ($this->_magentoRootFolder === null
+                || !file_exists($this->_magentoRootFolder . '/app/etc/local.xml')
             ) {
                 return;
             }
