@@ -92,7 +92,7 @@ class InfoCommand extends AbstractMagentoCommand
         }
 
         if (count($folders) > 0) {
-            $finder = new Finder();
+            $finder = Finder::create();
             $finder
                 ->files()
                 ->ignoreUnreadableDirs(true)
@@ -116,7 +116,7 @@ class InfoCommand extends AbstractMagentoCommand
         }
 
         foreach ($codePools as $codePool => $codePoolDir) {
-            $finder = new Finder();
+            $finder = Finder::create();
             $finder
                 ->directories()
                 ->ignoreUnreadableDirs(true)

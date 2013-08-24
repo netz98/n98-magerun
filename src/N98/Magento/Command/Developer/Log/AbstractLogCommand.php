@@ -13,7 +13,7 @@ class AbstractLogCommand extends AbstractMagentoCommand
      */
     protected function getLogFileIterator()
     {
-        $finder = new Finder();
+        $finder = Finder::create();
         $finder->ignoreUnreadableDirs(true);
 
         $logDirs = array(

@@ -254,12 +254,12 @@ class MetaCommand extends AbstractMagentoCommand
                 continue;
             }
 
-            $finder = new Finder();
+            $finder = Finder::create();
             $finder
                 ->files()
                 ->in($searchFolders)
                 ->followLinks()
-                ->ignoreUnreadableDirs()
+                ->ignoreUnreadableDirs(true)
                 ->name('*.php')
                 ->notName('install-*')
                 ->notName('upgrade-*')

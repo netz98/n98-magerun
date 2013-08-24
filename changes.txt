@@ -8,6 +8,7 @@ RECENT CHANGES
 
 * Fixed issue #202 - Permission error on Nexcess servers
 * Fixed issue #194 - Exported setup script with attribute uses incorrect Setup class (by Jonathan Day)
+* Fixed issue #199 - Error with dev:module:rewrite:conflicts
 
 ======
 1.75.0

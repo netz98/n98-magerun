@@ -75,7 +75,7 @@ class DuplicatesCommand extends AbstractMagentoCommand
      */
     protected function getChecksums($baseFolder)
     {
-        $finder = new Finder();
+        $finder = Finder::create();
         $finder
             ->files()
             ->ignoreUnreadableDirs(true)
