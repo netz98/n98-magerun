@@ -55,19 +55,19 @@ class OnCommandTest extends TestCase
                 '$moduleName'   => 'Mage_Customer',
                 '$all'          => 0,
                 '$expectations' => array('Mage_Dataflow', 'Mage_Directory', 'Mage_Eav'),
-                '$notContains'  => array('Mage_Core'),
+                '$notContains'  => array('Mage_Core', 'Mage_Compiler', 'Mage_AdminNotification'),
             ),
             'Mage_Customer module, with --all' => array(
                 '$moduleName'   => 'Mage_Customer',
                 '$all'          => 1,
                 '$expectations' => array('Mage_Core', 'Mage_Dataflow', 'Mage_Directory', 'Mage_Eav'),
-                '$notContains'  => array(),
+                '$notContains'  => array('Mage_Compiler', 'Mage_AdminNotification'),
             ),
             'Mage_Customer module, with -a' => array(
                 '$moduleName'   => 'Mage_Customer',
                 '$all'          => 2,
                 '$expectations' => array('Mage_Core', 'Mage_Dataflow', 'Mage_Directory', 'Mage_Eav'),
-                '$notContains'  => array(),
+                '$notContains'  => array('Mage_Compiler', 'Mage_AdminNotification'),
             ),
         );
     }
