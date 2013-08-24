@@ -336,7 +336,16 @@ class Application extends BaseApplication
                 return;
             }
 
-            $this->initMagento();
+            try {
+                $this->initMagento();
+            } catch (\Exception $e) {
+                $message = 'Cannot initialize Magento. Please check your configuration. '
+                         . 'Some n98-magerun command will not work. Got message: '
+                         . $e->getMessage();
+                $output->writeln($message);
+
+                return;
+            }
 
             $configOptions = new \Mage_Core_Model_Config_Options();
             $currentVarDir = $configOptions->getVarDir();
