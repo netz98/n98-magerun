@@ -51,7 +51,6 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      * Generate help for compression
      *
      * @return string
-     * @throws \Exception
      */
     protected function getCompressionHelp()
     {
@@ -60,7 +59,8 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
         $messages[] = '<comment>Compression option</comment>';
         $messages[] = ' Supported compression: gzip';
         $messages[] = ' The gzip cli tool has to be installed.';
-        return implode("\n", $messages);
+        $messages[] = ' Additionally, for data-to-csv option tar cli tool has to be installed too.';
+        return implode(PHP_EOL, $messages);
     }
 
     /**
