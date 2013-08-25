@@ -156,21 +156,23 @@ class DumpCommand extends AbstractDatabaseCommand
             $dataToCsv = true;
         }
 
-        if (!$input->getOption('stdout') && !$input->getOption('only-command')
-            && !$input->getOption('print-only-filename')
-        ) {
-            $this->writeSection($output, 'Dump MySQL Database');
-        }
-
         $compressor = $this->getCompressor($input->getOption('compression'));
         $fileName   = $this->getFileName($input, $output);
+
+        if ($input->getOption('print-only-filename')) {
+            $output->writeln($compressor->getFileName($fileName));
+
+            return;
+        }
+
+        if (!$input->getOption('stdout') && !$input->getOption('only-command')) {
+            $this->writeSection($output, 'Dump MySQL Database');
+        }
 
         $stripTables = array();
         if ($input->getOption('strip')) {
             $stripTables = $this->resolveTables(explode(' ', $input->getOption('strip')), $this->getTableDefinitions());
-            if (!$input->getOption('stdout') && !$input->getOption('only-command')
-                && !$input->getOption('print-only-filename')
-            ) {
+            if (!$input->getOption('stdout') && !$input->getOption('only-command')) {
                 $output->writeln('<comment>No-data export for: <info>' . implode(' ', $stripTables)
                     . '</info></comment>'
                 );
@@ -359,14 +361,12 @@ SQL;
      */
     protected function runExecs(InputInterface $input, OutputInterface $output, $fileName, array $execs)
     {
-        if ($input->getOption('only-command') && !$input->getOption('print-only-filename')) {
+        if ($input->getOption('only-command')) {
             foreach ($execs as $exec) {
                 $output->writeln($exec);
             }
         } else {
-            if (!$input->getOption('stdout') && !$input->getOption('only-command')
-                && !$input->getOption('print-only-filename')
-            ) {
+            if (!$input->getOption('stdout') && !$input->getOption('only-command')) {
                 $output->writeln('<comment>Start dumping database <info>' . $this->dbSettings['dbname']
                     . '</info> to file <info>' . $fileName . '</info>'
                 );
@@ -387,13 +387,9 @@ SQL;
                 }
             }
 
-            if (!$input->getOption('stdout') && !$input->getOption('print-only-filename')) {
+            if (!$input->getOption('stdout')) {
                 $output->writeln('<info>Finished</info>');
             }
-        }
-
-        if ($input->getOption('print-only-filename')) {
-            $output->writeln($fileName);
         }
     }
 
