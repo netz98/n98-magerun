@@ -3,9 +3,10 @@ RECENT CHANGES
 **************
 
 ======
-1.75.1
+1.76.0
 ======
 
+* New commands dev:module:dependencies:on and dev:module:dependencies:from (by Dmitriy Zavalkin)
 * Fixed issue #202 - Permission error on Nexcess servers
 * Fixed issue #194 - Exported setup script with attribute uses incorrect Setup class (by Jonathan Day)
 * Fixed issue #197 - Doesn't run when /tmp/magento/var exists and database is not created / tables missing

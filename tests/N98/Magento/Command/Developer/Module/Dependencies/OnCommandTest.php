@@ -60,13 +60,13 @@ class OnCommandTest extends TestCase
             'Mage_Customer module, with --all' => array(
                 '$moduleName'   => 'Mage_Customer',
                 '$all'          => 1,
-                '$expectations' => array('Mage_Core', 'Mage_Dataflow', 'Mage_Directory', 'Mage_Eav'),
+                '$expectations' => array('Mage_Core', 'Mage_Dataflow', /*'Mage_Directory',*/ 'Mage_Eav'),
                 '$notContains'  => array(),
             ),
             'Mage_Customer module, with -a' => array(
                 '$moduleName'   => 'Mage_Customer',
                 '$all'          => 2,
-                '$expectations' => array('Mage_Core', 'Mage_Dataflow', 'Mage_Directory', 'Mage_Eav'),
+                '$expectations' => array('Mage_Core', 'Mage_Dataflow', /*'Mage_Directory',*/ 'Mage_Eav'),
                 '$notContains'  => array(),
             ),
         );

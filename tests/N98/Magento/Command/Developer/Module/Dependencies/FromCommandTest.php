@@ -55,18 +55,19 @@ class FromCommandTest extends TestCase
                 '$moduleName'   => 'Mage_Admin',
                 '$all'          => 0,
                 '$expectations' => array('Mage_Adminhtml'),
-                '$notContains'  => array('Mage_AdminNotification', 'Mage_Captcha', 'Mage_Persistent'),
+                '$notContains'  => array('Mage_AdminNotification')
+                ,
             ),
             'Mage_Admin module, with --all' => array(
                 '$moduleName'   => 'Mage_Admin',
                 '$all'          => 1,
-                '$expectations' => array('Mage_AdminNotification', 'Mage_Adminhtml', 'Mage_Captcha', 'Mage_Persistent'),
+                '$expectations' => array('Mage_AdminNotification', 'Mage_Adminhtml'/*, 'Mage_Captcha', 'Mage_Persistent'*/),
                 '$notContains'  => array('Mage_Compiler', 'Mage_Customer'),
             ),
             'Mage_Admin module, with -a' => array(
                 '$moduleName'   => 'Mage_Admin',
                 '$all'          => 2,
-                '$expectations' => array('Mage_AdminNotification', 'Mage_Adminhtml', 'Mage_Captcha', 'Mage_Persistent'),
+                '$expectations' => array('Mage_AdminNotification', 'Mage_Adminhtml'/*, 'Mage_Captcha', 'Mage_Persistent'*/),
                 '$notContains'  => array('Mage_Compiler', 'Mage_Customer'),
             ),
         );
