@@ -19,7 +19,6 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      */
     protected $isSocketConnect = false;
 
-
     /**
      * @var \PDO
      */
@@ -67,23 +66,21 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
     /**
      * @param string $type
      * @return \N98\Magento\Command\Database\Compressor\AbstractCompressor
+     * @throws \InvalidArgumentException
      */
     protected function getCompressor($type)
     {
-        if ($type === null) {
-            return new Compressor\Uncompressed;
-        }
-        
         switch ($type) {
+            case null:
+                return new Compressor\Uncompressed;
             case 'gz':
             case 'gzip':
                 return new Compressor\Gzip;
-
             default:
-                throw new \InvalidArgumentException("Compression type '$type' is not supported.");
+                throw new \InvalidArgumentException("Compression type '{$type}' is not supported.");
         }
     }
-    
+
     /**
      * @return string
      */
@@ -142,6 +139,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      * Connects to the database without initializing magento
      *
      * @return \PDO
+     * @throws \Exception
      */
     protected function _getConnection()
     {
@@ -154,7 +152,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
         }
 
         if (strpos($this->dbSettings['host'], '/') !== false) {
-            $this->dbSettings['unix_socket'] = $this->_config['host'];
+            $this->dbSettings['unix_socket'] = $this->dbSettings['host'];
             unset($this->dbSettings['host']);
         } else if (strpos($this->dbSettings['host'], ':') !== false) {
             list($this->dbSettings['host'], $this->dbSettings['port']) = explode(':', $this->dbSettings['host']);
@@ -173,7 +171,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
             $this->_connection->query('USE `'.$this->dbSettings['dbname'].'`');
         } catch(\PDOException $e) {
         }
-        
+
         $this->_connection->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
         $this->_connection->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 
@@ -181,13 +179,13 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param array $param
+     * @param array $excludes
      * @param array $definitions
      * @param array $resolved Which definitions where already resolved -> prevent endless loops
-     *
      * @return array
+     * @throws \Exception
      */
-    protected function resolveTables($excludes, $definitions, $resolved = array())
+    protected function resolveTables(array $excludes, array $definitions, array $resolved = array())
     {
         $resolvedExcludes = array();
         foreach ($excludes as $exclude) {

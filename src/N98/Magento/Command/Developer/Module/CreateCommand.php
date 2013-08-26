@@ -73,6 +73,7 @@ class CreateCommand extends AbstractMagentoCommand
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return int|void
+     * @throws \InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -95,17 +96,17 @@ class CreateCommand extends AbstractMagentoCommand
         }
         $this->initView($input);
         $this->createModuleDirectories($input, $output);
-        $this->writeEtcModules($input, $output);
-        $this->writeModuleConfig($input, $output);
+        $this->writeEtcModules($output);
+        $this->writeModuleConfig($output);
         $this->writeReadme($input, $output);
         if ($this->modmanMode) {
-            $this->writeModmanFile($input, $output);
+            $this->writeModmanFile($output);
         }
         $this->writeComposerConfig($input, $output);
-        $this->addAdditionalFiles($input, $output);
+        $this->addAdditionalFiles($output);
     }
 
-    protected function initView($input)
+    protected function initView(InputInterface $input)
     {
         $this->twigVars = array(
             'vendorNamespace' => $this->vendorNamespace,
@@ -121,7 +122,7 @@ class CreateCommand extends AbstractMagentoCommand
         );
     }
 
-    protected function createModuleDirectories($input, $output)
+    protected function createModuleDirectories(InputInterface $input, OutputInterface $output)
     {
         if ($this->modmanMode) {
             $modManDir = $this->vendorNamespace . '_' . $this->moduleName. '/src';
@@ -179,7 +180,7 @@ class CreateCommand extends AbstractMagentoCommand
         }
     }
 
-    protected function writeEtcModules($input, $output)
+    protected function writeEtcModules(OutputInterface $output)
     {
         $outFile = $this->_magentoRootFolder
                  . '/app/etc/modules/'
@@ -194,7 +195,7 @@ class CreateCommand extends AbstractMagentoCommand
         $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
     }
 
-    protected function writeModuleConfig($input, $output)
+    protected function writeModuleConfig(OutputInterface $output)
     {
         $outFile = $this->moduleDirectory . '/etc/config.xml';
         file_put_contents(
@@ -205,7 +206,7 @@ class CreateCommand extends AbstractMagentoCommand
         $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
     }
 
-    protected function writeModmanFile($input, $output)
+    protected function writeModmanFile(OutputInterface $output)
     {
         $outFile = $this->_magentoRootFolder . '/../modman';
         file_put_contents(
@@ -248,7 +249,7 @@ class CreateCommand extends AbstractMagentoCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      */
-    protected function writeComposerConfig($input, $output)
+    protected function writeComposerConfig(InputInterface $input, OutputInterface $output)
     {
         if (!$input->getOption('add-composer')) {
             return;
@@ -265,7 +266,7 @@ class CreateCommand extends AbstractMagentoCommand
         $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
     }
 
-    protected function addAdditionalFiles($input, $output)
+    protected function addAdditionalFiles(OutputInterface $output)
     {
         $config = $this->getCommandConfig();
         if (isset($config['additionalFiles']) && is_array($config['additionalFiles'])) {

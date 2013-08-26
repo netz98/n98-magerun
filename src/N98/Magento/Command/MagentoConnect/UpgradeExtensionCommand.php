@@ -21,7 +21,7 @@ class UpgradeExtensionCommand extends AbstractConnectCommand
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param string $package
      */
-    protected function doAction($input, $output, $package)
+    protected function doAction(InputInterface $input, OutputInterface $output, $package)
     {
         $output->writeln($this->callMageScript($input, $output, 'upgrade community ' . $package));
     }
