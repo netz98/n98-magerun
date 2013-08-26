@@ -340,8 +340,12 @@ class Application extends BaseApplication
                 $this->initMagento();
             } catch (\Exception $e) {
                 $message = 'Cannot initialize Magento. Please check your configuration. '
-                         . 'Some n98-magerun command will not work. Got message: '
-                         . $e->getMessage();
+                         . 'Some n98-magerun command will not work. Got message: ';
+                if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $output->getVerbosity()) {
+                    $message .= $e->getTraceAsString();
+                } else {
+                    $message .= $e->getMessage();
+                }
                 $output->writeln($message);
 
                 return;
