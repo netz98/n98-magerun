@@ -75,8 +75,14 @@ class DuplicatesCommand extends AbstractMagentoCommand
      */
     protected function getChecksums($baseFolder)
     {
-        $finder = new Finder();
-        $finder->files()->ignoreDotFiles(true)->ignoreVCS(true)->followLinks()->in($baseFolder);
+        $finder = Finder::create();
+        $finder
+            ->files()
+            ->ignoreUnreadableDirs(true)
+            ->ignoreDotFiles(true)
+            ->ignoreVCS(true)
+            ->followLinks()
+            ->in($baseFolder);
         $checksums = array();
         foreach ($finder as $file) {
             /* @var $file \Symfony\Component\Finder\SplFileInfo */

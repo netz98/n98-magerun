@@ -946,6 +946,21 @@ The command checks class inheritance in order of your module dependencies.
 
 * If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
 
+Module Dependencies
+"""""""""""""""""""
+
+Show list of modules which given module depends on
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:module:dependencies:on [-a|--all] moduleName
+
+Show list of modules which depend from module
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:module:dependencies:from [-a|--all] moduleName
+
 Observer List
 """""""""""""
 

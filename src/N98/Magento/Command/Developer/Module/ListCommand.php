@@ -63,7 +63,12 @@ class ListCommand extends AbstractMagentoCommand
         }
     }
 
-    protected function filterModules($input)
+    /**
+     * Filter modules by codepool, status and vendor if such options were inputted by user
+     *
+     * @param InputInterface $input
+     */
+    protected function filterModules(InputInterface $input)
     {
         if ($input->getOption('codepool')) {
             $this->filterByField("codePool", $input->getOption('codepool'));
@@ -80,7 +85,7 @@ class ListCommand extends AbstractMagentoCommand
 
     /**
      * @param string $field
-     * @param strnig $value
+     * @param string $value
      */
     protected function filterByField($field, $value)
     {
@@ -93,7 +98,7 @@ class ListCommand extends AbstractMagentoCommand
 
     /**
      * @param string $field
-     * @param strnig $value
+     * @param string $value
      */
     protected function filterByFieldStartsWith($field, $value)
     {
@@ -102,18 +107,5 @@ class ListCommand extends AbstractMagentoCommand
                 unset($this->infos[$k]);
             }
         }
-    }
-
-    /**
-     * @param string $value
-     * @return string
-     */
-    private function formatActive($value)
-    {
-        if (in_array($value, array(1, 'true'))) {
-            return 'active';
-        }
-
-        return 'inactive';
     }
 }

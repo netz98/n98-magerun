@@ -11,7 +11,7 @@ class DownloadExtensionCommand extends AbstractConnectCommand
     {
         $this
             ->setName('extension:download')
-            ->addArgument('package', \Symfony\Component\Console\Input\InputArgument::REQUIRED, 'Packge to download')
+            ->addArgument('package', \Symfony\Component\Console\Input\InputArgument::REQUIRED, 'Package to download')
             ->setDescription('Download magento-connect package')
         ;
     }
@@ -21,7 +21,7 @@ class DownloadExtensionCommand extends AbstractConnectCommand
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param string $package
      */
-    protected function doAction($input, $output, $package)
+    protected function doAction(InputInterface $input, OutputInterface $output, $package)
     {
         $output->writeln($this->callMageScript($input, $output, 'download community ' . $package));
     }

@@ -43,6 +43,8 @@ use N98\Magento\Command\Developer\Module\ListCommand as ModuleListCommand;
 use N98\Magento\Command\Developer\Module\Observer\ListCommand as ModuleObserverListCommand;
 use N98\Magento\Command\Developer\Module\Rewrite\ConflictsCommand as ModuleRewriteConflictsCommand;
 use N98\Magento\Command\Developer\Module\Rewrite\ListCommand as ModuleRewriteListCommand;
+use N98\Magento\Command\Developer\Module\Dependencies\OnCommand as ModuleDependenciesOnCommand;
+use N98\Magento\Command\Developer\Module\Dependencies\FromCommand as ModuleDependenciesFromCommand;
 use N98\Magento\Command\Developer\ProfilerCommand;
 use N98\Magento\Command\Developer\Report\CountCommand as DevelopmentReportCountCommand;
 use N98\Magento\Command\Developer\ClassLookupCommand as DevelopmentClassLookupCommand;
@@ -113,7 +115,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.75.0';
+    const APP_VERSION = '1.76.0';
 
     /**
      * @var string
@@ -328,25 +330,46 @@ class Application extends BaseApplication
         $tempVarDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'magento' . DIRECTORY_SEPARATOR .  'var';
 
         if (is_dir($tempVarDir)) {
-            if ($this->initMagento()) {
-                $configOptions = new \Mage_Core_Model_Config_Options();
-                $currentVarDir = $configOptions->getVarDir();
+            $this->detectMagento();
+            /* If magento is not installed yet, don't check */
+            if ($this->_magentoRootFolder === null
+                || !file_exists($this->_magentoRootFolder . '/app/etc/local.xml')
+            ) {
+                return;
+            }
 
-                if ($currentVarDir == $tempVarDir) {
-                    $output->writeln(sprintf('<error>Fallback folder %s is used in n98-magerun</error>', $tempVarDir));
-                    $output->writeln('');
-                    $output->writeln('n98-magerun is using the fallback folder. If there is another folder configured for Magento, this can cause serious problems.');
-                    $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
-                    $output->writeln('');
+            try {
+                $this->initMagento();
+            } catch (\Exception $e) {
+                $message = 'Cannot initialize Magento. Please check your configuration. '
+                         . 'Some n98-magerun command will not work. Got message: ';
+                if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $output->getVerbosity()) {
+                    $message .= $e->getTraceAsString();
                 } else {
-                    $output->writeln(sprintf('<error>Folder %s found, but not used in n98-magerun</error>', $tempVarDir));
-                    $output->writeln('');
-                    $output->writeln(sprintf('This might cause serious problems. n98-magerun is using the configured var-folder <comment>%s</comment>', $currentVarDir));
-                    $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
-                    $output->writeln('');
-
-                    return false;
+                    $message .= $e->getMessage();
                 }
+                $output->writeln($message);
+
+                return;
+            }
+
+            $configOptions = new \Mage_Core_Model_Config_Options();
+            $currentVarDir = $configOptions->getVarDir();
+
+            if ($currentVarDir == $tempVarDir) {
+                $output->writeln(sprintf('<error>Fallback folder %s is used in n98-magerun</error>', $tempVarDir));
+                $output->writeln('');
+                $output->writeln('n98-magerun is using the fallback folder. If there is another folder configured for Magento, this can cause serious problems.');
+                $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
+                $output->writeln('');
+            } else {
+                $output->writeln(sprintf('<error>Folder %s found, but not used in n98-magerun</error>', $tempVarDir));
+                $output->writeln('');
+                $output->writeln(sprintf('This might cause serious problems. n98-magerun is using the configured var-folder <comment>%s</comment>', $currentVarDir));
+                $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
+                $output->writeln('');
+
+                return false;
             }
         }
     }
@@ -635,8 +658,11 @@ class Application extends BaseApplication
         $this->add(new ModuleListCommand());
         $this->add(new ModuleRewriteListCommand());
         $this->add(new ModuleRewriteConflictsCommand());
+        $this->add(new ModuleDependenciesOnCommand());
+        $this->add(new ModuleDependenciesFromCommand());
         $this->add(new ModuleCreateCommand());
         $this->add(new ModuleObserverListCommand());
+        $this->add(new ModuleDependenciesOnCommand());
         $this->add(new ShellCommand());
         $this->add(new ScriptCommand());
         $this->add(new MagentoConnectionListExtensionsCommand());

@@ -109,9 +109,10 @@ class MagentoHelper extends AbstractHelper
     protected function checkModman($folders)
     {
         foreach (array_reverse($folders) as $searchFolder) {
-            $finder = new Finder();
+            $finder = Finder::create();
             $finder
                 ->files()
+                ->ignoreUnreadableDirs(true)
                 ->depth(0)
                 ->followLinks()
                 ->ignoreDotFiles(false)
@@ -139,9 +140,10 @@ class MagentoHelper extends AbstractHelper
      */
     protected function _search($searchFolder)
     {
-        $finder = new Finder();
+        $finder = Finder::create();
         $finder
             ->directories()
+            ->ignoreUnreadableDirs(true)
             ->depth(0)
             ->followLinks()
             ->name('app')

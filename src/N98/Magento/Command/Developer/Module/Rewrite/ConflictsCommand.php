@@ -138,10 +138,14 @@ class ConflictsCommand extends AbstractRewriteCommand
         $classes = array_reverse($classes);
         for ($i = 0; $i < count($classes) - 1; $i++) {
             try {
-                $firstClass = new $classes[$i];
-                $nextClass = new $classes[$i + 1];
-                if (! ($firstClass instanceof $nextClass)) {
-                    return true;
+                if (class_exists($classes[$i])
+                    && class_exists($classes[$i + 1])
+                ) {
+                    $firstClass = new $classes[$i];
+                    $nextClass = new $classes[$i + 1];
+                    if (! ($firstClass instanceof $nextClass)) {
+                        return true;
+                    }
                 }
             } catch (\Exception $e) {
                 return true;

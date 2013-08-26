@@ -112,11 +112,12 @@ class ConfigurationLoader
 
         if (count($moduleBaseFolders) > 0) {
             // Glob plugin folders
-            $finder = new Finder();
+            $finder = Finder::create();
             $finder
                 ->files()
                 ->depth(1)
                 ->followLinks()
+                ->ignoreUnreadableDirs(true)
                 ->name('n98-magerun.yaml')
                 ->in($moduleBaseFolders);
 
