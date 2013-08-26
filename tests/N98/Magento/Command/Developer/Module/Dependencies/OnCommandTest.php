@@ -54,7 +54,7 @@ class OnCommandTest extends TestCase
             'Mage_Customer module, no --all' => array(
                 '$moduleName'   => 'Mage_Customer',
                 '$all'          => 0,
-                '$expectations' => array('Mage_Dataflow', 'Mage_Directory', 'Mage_Eav'),
+                '$expectations' => array('Mage_Dataflow', /*'Mage_Directory',*/ 'Mage_Eav'),
                 '$notContains'  => array('Mage_Core'),
             ),
             'Mage_Customer module, with --all' => array(
