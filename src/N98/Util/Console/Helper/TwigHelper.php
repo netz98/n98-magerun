@@ -11,7 +11,7 @@ use Symfony\Component\Console\Helper\Helper;
 class TwigHelper extends Helper
 {
     /**
-     * @var \N98\Util\Template\Twig
+     * @var Twig
      */
     protected $twig;
 
@@ -32,7 +32,8 @@ class TwigHelper extends Helper
      * Renders a twig template file
      *
      * @param string $template
-     * @param array  $variables
+     * @param array $variables
+     * @return mixed
      */
     public function render($template, $variables = array())
     {
@@ -42,9 +43,8 @@ class TwigHelper extends Helper
     /**
      * Renders a twig string
      *
-     * @param       $string
+     * @param string $string
      * @param array $variables
-     *
      * @return string
      */
     public function renderString($string, $variables = array())
