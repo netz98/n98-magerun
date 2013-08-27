@@ -25,7 +25,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
     protected $_connection = null;
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      */
     protected function detectDbSettings(OutputInterface $output)
     {
@@ -51,7 +51,6 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      * Generate help for compression
      *
      * @return string
-     * @throws \Exception
      */
     protected function getCompressionHelp()
     {
@@ -60,12 +59,13 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
         $messages[] = '<comment>Compression option</comment>';
         $messages[] = ' Supported compression: gzip';
         $messages[] = ' The gzip cli tool has to be installed.';
-        return implode("\n", $messages);
+        $messages[] = ' Additionally, for data-to-csv option tar cli tool has to be installed too.';
+        return implode(PHP_EOL, $messages);
     }
 
     /**
      * @param string $type
-     * @return \N98\Magento\Command\Database\Compressor\AbstractCompressor
+     * @return Compressor\AbstractCompressor
      * @throws \InvalidArgumentException
      */
     protected function getCompressor($type)
@@ -101,7 +101,6 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
 
         return $string;
     }
-
 
     /**
      * Creates a PDO DSN for the adapter from $this->_config settings.
@@ -223,5 +222,67 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
         $resolvedExcludes = array_unique($resolvedExcludes);
 
         return $resolvedExcludes;
+    }
+
+
+    /**
+     * Get mysql tmpdir
+     *
+     * @return bool|string
+     */
+    protected function detectMysqlTmpDir()
+    {
+        $exec = 'mysql ' . $this->getMysqlClientToolConnectionString() . " -e 'SELECT @@tmpdir;'";
+
+        exec($exec, $commandOutput, $returnValue);
+        if (isset($commandOutput[1])) {
+            return $commandOutput[1];
+        }
+
+        return false;
+    }
+
+    /**
+     * Check whether current mysql user has $privilege privilege
+     *
+     * @param string $privilege
+     * @return bool
+     */
+    protected function mysqlUserHasPrivilege($privilege)
+    {
+        $exec = 'mysql ' . $this->getMysqlClientToolConnectionString() . " -e 'SHOW GRANTS'";
+
+        exec($exec, $commandOutput, $returnValue);
+        if (isset($commandOutput[1])) {
+            unset($commandOutput[0]);
+
+            foreach ($commandOutput as $line) {
+                if (preg_match('/^GRANT(.*)' . strtoupper($privilege) .'/', $line)
+                    || preg_match('/^GRANT(.*)ALL/', $line)
+                ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get list of db tables
+     *
+     * @return bool|array
+     */
+    protected function getTables()
+    {
+        $exec = 'mysql ' . $this->getMysqlClientToolConnectionString() . " -e 'SHOW TABLES;'";
+
+        exec($exec, $commandOutput, $returnValue);
+        if (isset($commandOutput[1])) {
+            unset($commandOutput[0]);
+            return $commandOutput;
+        }
+
+        return false;
     }
 }

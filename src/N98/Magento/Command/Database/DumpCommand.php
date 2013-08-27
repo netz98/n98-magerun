@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Database;
 
+use N98\Magento\Command\Database\Compressor\AbstractCompressor;
+use N98\Magento\Command\Database\Compressor\Uncompressed;
 use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -11,6 +13,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DumpCommand extends AbstractDatabaseCommand
 {
+    const CSV_DATA_FOLDER_SUFFIX = '_csv_data';
+
     /**
      * @var array
      */
@@ -35,7 +39,8 @@ class DumpCommand extends AbstractDatabaseCommand
             ->addOption('stdout', null, InputOption::VALUE_NONE, 'Dump to stdout')
             ->addOption('strip', 's', InputOption::VALUE_OPTIONAL, 'Tables to strip (dump only structure of those tables)')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not prompt if all options are defined')
-            ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml');
+            ->addOption('data-to-csv', 'd', InputOption::VALUE_NONE, 'Dump table data to csv files.')
+            ->setDescription('Dumps database with mysqldump cli client according to information from local.xml');
     }
 
     /**
@@ -108,37 +113,67 @@ class DumpCommand extends AbstractDatabaseCommand
         return implode(PHP_EOL, $messages);
     }
 
+    /**
+     * Generate help for data-to-csv option
+     *
+     * @return string
+     */
+    protected function getDataToCsvHelp()
+    {
+        $messages = array();
+        $messages[] = '';
+        $messages[] = '<comment>data-to-csv option</comment>';
+        $messages[] = ' Decreases result archive size.';
+        $messages[] = ' Speedups export by 10-20%, depending on db size.';
+        $messages[] = ' Dramatically speedups import, depending on db size it can be 5,6 and even more times faster.';
+        $messages[] = ' Requirements:';
+        $messages[] = '     1. Must be used only on the same host where mysql server (mysqld) is running';
+        $messages[] = '     2. Export to csv option needs mysqld running with tmpdir variables set (either in my.cnf or as runtime option --tmpdir)';
+        $messages[] = '     3. mysql user must have FILE privilege';
+        $messages[] = ' For more info see SELECT ... INTO documentation: http://dev.mysql.com/doc/refman/5.5/en/select-into.html';
+
+        return implode(PHP_EOL, $messages);
+    }
+
     public function getHelp()
     {
         return parent::getHelp() . PHP_EOL
             . $this->getCompressionHelp() . PHP_EOL
-            . $this->getTableDefinitionHelp();
+            . $this->getTableDefinitionHelp() . PHP_EOL
+            . $this->getDataToCsvHelp();
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectDbSettings($output);
 
-        if (!$input->getOption('stdout') && !$input->getOption('only-command')
-            && !$input->getOption('print-only-filename')
-        ) {
-            $this->writeSection($output, 'Dump MySQL Database');
+        $dataToCsv = false;
+        if ($input->getOption('data-to-csv')) {
+            $dataToCsv = true;
         }
 
         $compressor = $this->getCompressor($input->getOption('compression'));
-        $fileName   = $this->getFileName($input, $output, $compressor);
+        $fileName   = $this->getFileName($input, $output);
 
-        $stripTables = false;
+        if ($input->getOption('print-only-filename')) {
+            $output->writeln($compressor->getFileName($fileName));
+
+            return;
+        }
+
+        if (!$input->getOption('stdout') && !$input->getOption('only-command')) {
+            $this->writeSection($output, 'Dump MySQL Database');
+        }
+
+        $stripTables = array();
         if ($input->getOption('strip')) {
             $stripTables = $this->resolveTables(explode(' ', $input->getOption('strip')), $this->getTableDefinitions());
-            if (!$input->getOption('stdout') && !$input->getOption('only-command')
-                && !$input->getOption('print-only-filename')
-            ) {
+            if (!$input->getOption('stdout') && !$input->getOption('only-command')) {
                 $output->writeln('<comment>No-data export for: <info>' . implode(' ', $stripTables)
                     . '</info></comment>'
                 );
@@ -147,70 +182,159 @@ class DumpCommand extends AbstractDatabaseCommand
 
         $dumpOptions = '';
         if ($input->getOption('no-single-transaction')) {
-            $dumpOptions = '--single-transaction ';
+            $dumpOptions .= '--single-transaction ';
         }
-
         if ($input->getOption('human-readable')) {
             $dumpOptions .= '--complete-insert --skip-extended-insert ';
         }
+
         $execs = array();
-
-        if (!$stripTables) {
-            $exec = 'mysqldump ' . $dumpOptions . $this->getMysqlClientToolConnectionString();
+        if ($dataToCsv) {
+            $exec = $this->getExecToDumpDbStructureOnly($dumpOptions, $stripTables);
             $exec .= $this->postDumpPipeCommands();
-            $exec = $compressor->getCompressingCommand($exec);
-            if (!$input->getOption('stdout')) {
-                $exec .= ' > ' . escapeshellarg($fileName);
-            }
+            $exec .=  ' > ' . escapeshellarg($fileName);
             $execs[] = $exec;
+
+            $folderName = $fileName . static::CSV_DATA_FOLDER_SUFFIX;
+            $dataToCsvExecs = $this->getExecToDumpDbDataAsCsv($folderName, $stripTables);
+
+            $execs = array_merge($execs,
+                $this->prepareDataToCsvExecs($dataToCsvExecs, $fileName, $folderName, $compressor, $input)
+            );
         } else {
-            // dump structure for strip-tables
-            $exec = 'mysqldump ' . $dumpOptions . '--no-data ' . $this->getMysqlClientToolConnectionString();
-            $exec .= ' ' . implode(' ', $stripTables);
+            $exec = $this->getExecToDumpDbStructureAndDataAsSql($dumpOptions, $stripTables);
             $exec .= $this->postDumpPipeCommands();
-            $exec = $compressor->getCompressingCommand($exec);
-            if (!$input->getOption('stdout')) {
-                $exec .= ' > ' . escapeshellarg($fileName);
-            }
-            $execs[] = $exec;
-
-            $ignore = '';
-            foreach ($stripTables as $stripTable) {
-                $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $stripTable . ' ';
-            }
-
-            // dump data for all other tables
-            $exec = 'mysqldump ' . $dumpOptions . $ignore . $this->getMysqlClientToolConnectionString();
-            $exec .= $this->postDumpPipeCommands();
-            $exec = $compressor->getCompressingCommand($exec);
-            if (!$input->getOption('stdout')) {
-                $exec .= ' >> ' . escapeshellarg($fileName);
-            }
-            $execs[] = $exec;
+            $execs[] = $this->prepareExec($exec, $compressor, $input, $fileName);
         }
 
-        $this->runExecs($execs, $fileName, $input, $output);
+        $this->runExecs($input, $output, $compressor, $fileName, $execs);
     }
 
     /**
-     * @param array $execs
-     * @param string $fileName
+     * Get mysqldump command to dump db structure
+     *
+     * @param string $dumpOptions
+     * @param array $stripTables
+     * @return string
+     */
+    protected function getExecToDumpDbStructureOnly($dumpOptions, array $stripTables)
+    {
+        $exec = 'mysqldump ' . $dumpOptions . '--no-data ' . $this->getMysqlClientToolConnectionString();
+        $exec .= ' ' . implode(' ', $stripTables);
+
+        return $exec;
+    }
+
+    /**
+     * Get mysqldump command to dump db data
+     *
+     * @param string $dumpOptions
+     * @param array $stripTables
+     * @return string
+     */
+    protected function getExecToDumpDbStructureAndDataAsSql($dumpOptions, array $stripTables)
+    {
+        $ignore = '';
+        foreach ($stripTables as $stripTable) {
+            $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $stripTable . ' ';
+        }
+
+        $exec = 'mysqldump ' . $dumpOptions . $ignore . $this->getMysqlClientToolConnectionString();
+
+        return $exec;
+    }
+
+    /**
+     * Get mysqldump command to dump db data
+     *
+     * @param string $folderName
+     * @param array $stripTables
+     * @return array
+     * @throws \Exception
+     */
+    protected function getExecToDumpDbDataAsCsv($folderName, array $stripTables)
+    {
+        $mysqlTmpDir = $this->detectMysqlTmpDir();
+        if (!$mysqlTmpDir) {
+            throw new \Exception('No mysql tmpdir detected.');
+        }
+        if (!is_writable($mysqlTmpDir)) {
+            throw new \Exception("Mysql tmpdir isn't writable for current user.");
+        }
+
+        if (!$this->mysqlUserHasPrivilege('FILE')) {
+            throw new \Exception("Current mysql user doesn't have FILE privilege.");
+        }
+
+        $tables = $this->getTables();
+        if (!$tables) {
+            throw new \Exception("Can't get list of db tables.");
+        }
+        $tablesToDump = array_diff($tables, $stripTables);
+
+        $tmpFolderName = rtrim($mysqlTmpDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $folderName
+            . DIRECTORY_SEPARATOR;
+
+        $execs = array(
+            'rm -rf ' . $tmpFolderName,
+            'mkdir -p ' . $tmpFolderName
+        );
+        $connectionString = $this->getMysqlClientToolConnectionString();
+        foreach ($tablesToDump as $table) {
+            $execs[] = <<<SQL
+mysql {$connectionString} <<EOF
+    SELECT * INTO OUTFILE '{$tmpFolderName}{$table}.data.csv'
+        FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+        LINES TERMINATED BY '\\n'
+    FROM {$table};
+EOF
+SQL;
+        }
+
+        $execs[] = 'mv ' . $tmpFolderName . ' .';
+
+        return $execs;
+    }
+
+
+    /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @param Compressor\AbstractCompressor $compressor
+     * @param string $fileName
+     * @param array $execs
      */
-    private function runExecs(array $execs, $fileName, InputInterface $input, OutputInterface $output)
+    protected function runExecs(InputInterface $input, OutputInterface $output, AbstractCompressor $compressor,
+        $fileName, array $execs
+    )
     {
-        if ($input->getOption('only-command') && !$input->getOption('print-only-filename')) {
+        if ($input->getOption('only-command')) {
             foreach ($execs as $exec) {
                 $output->writeln($exec);
             }
         } else {
-            if (!$input->getOption('stdout') && !$input->getOption('only-command')
-                && !$input->getOption('print-only-filename')
-            ) {
-                $output->writeln('<comment>Start dumping database <info>' . $this->dbSettings['dbname']
-                    . '</info> to file <info>' . $fileName . '</info>'
-                );
+            if (!$input->getOption('stdout') && !$input->getOption('only-command')) {
+                if ($input->getOption('data-to-csv')) {
+                    if ($compressor instanceof Uncompressed) {
+                        $output->writeln('<comment>Start dumping database <info>' . $this->dbSettings['dbname']
+                            . '</info> to the file <info>' . $fileName . '</info></comment>'
+                        );
+                        $output->writeln('<comment>Data files in csv format will be saved to the folder <info>'
+                            . $fileName . static::CSV_DATA_FOLDER_SUFFIX . '</info></comment>'
+                        );
+                    } else {
+                        $output->writeln('<comment>Start dumping database <info>' . $this->dbSettings['dbname']
+                            . '</info>'
+                        );
+                        $output->writeln('Both table structure sql dump and data files in csv format will be '
+                            . 'saved to the file <info>' . $compressor->getFileName($fileName) . '</info></comment>'
+                        );
+                    }
+                } else {
+                    $output->writeln('<comment>Start dumping database <info>' . $this->dbSettings['dbname']
+                        . '</info> to the file <info>' . $compressor->getFileName($fileName) . '</info></comment>'
+                    );
+                }
             }
 
             foreach ($execs as $exec) {
@@ -228,13 +352,9 @@ class DumpCommand extends AbstractDatabaseCommand
                 }
             }
 
-            if (!$input->getOption('stdout') && !$input->getOption('print-only-filename')) {
+            if (!$input->getOption('stdout')) {
                 $output->writeln('<info>Finished</info>');
             }
-        }
-
-        if ($input->getOption('print-only-filename')) {
-            $output->writeln($fileName);
         }
     }
 
@@ -249,14 +369,13 @@ class DumpCommand extends AbstractDatabaseCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param \N98\Magento\Command\Database\Compressor\AbstractCompressor $compressor
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @internal param \N98\Magento\Command\Database\Compressor\AbstractCompressor $compressor
      * @return string
      */
-    protected function getFileName(InputInterface $input, OutputInterface $output,
-        Compressor\AbstractCompressor $compressor
-    ) {
+    protected function getFileName(InputInterface $input, OutputInterface $output)
+    {
         $namePrefix    = '';
         $nameSuffix    = '';
         $nameExtension = '.sql';
@@ -290,8 +409,60 @@ class DumpCommand extends AbstractDatabaseCommand
             }
         }
 
-        $fileName = $compressor->getFileName($fileName);
-
         return $fileName;
+    }
+
+    /**
+     * Prepare mysqldump command according to user input, add post dump pipe commands
+     *
+     * @param string $exec
+     * @param AbstractCompressor $compressor
+     * @param InputInterface $input
+     * @param string $fileName
+     * @param bool $pipe
+     * @return string
+     */
+    protected function prepareExec($exec, AbstractCompressor $compressor, InputInterface $input, $fileName,
+        $pipe = true
+    )
+    {
+        $fileName = $compressor->getFileName($fileName, $pipe);
+        if (!$pipe) {
+            $exec = $fileName . ' ' . $exec;
+        }
+        $exec = $compressor->getCompressingCommand($exec, $pipe);
+        if (!$input->getOption('stdout')) {
+            if ($pipe) {
+                $exec .=  ' > ' . escapeshellarg($fileName);
+            }
+        }
+
+        return $exec;
+    }
+
+    /**
+     * Generate exes needed to dump
+     *
+     * @param array $dataToCsvExecs
+     * @param string $fileName
+     * @param string $folderName
+     * @param AbstractCompressor $compressor
+     * @param InputInterface $input
+     * @return array
+     */
+    private function prepareDataToCsvExecs(array $dataToCsvExecs, $fileName, $folderName,
+        AbstractCompressor $compressor, InputInterface $input
+    )
+    {
+        $execs = array('rm -rf ' . $folderName);
+        $execs = array_merge($execs, $dataToCsvExecs);
+        // ugly!!! :(
+        if (!($compressor instanceof Uncompressed)) {
+            $execs[] = $this->prepareExec($fileName . ' ' . $folderName, $compressor, $input, $fileName, false);
+            $execs[] = 'rm -f ' . $fileName;
+            $execs[] = 'rm -rf ' . $folderName;
+        }
+
+        return $execs;
     }
 }
