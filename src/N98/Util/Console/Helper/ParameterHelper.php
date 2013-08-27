@@ -8,6 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Translation\Translator;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\ConstraintValidatorFactory;
@@ -18,7 +19,7 @@ use Symfony\Component\Validator\ConstraintValidatorFactory;
 class ParameterHelper extends AbstractHelper
 {
     /**
-     * @var
+     * @var Validator
      */
     protected $validator = null;
 
@@ -35,13 +36,11 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface   $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param string                                            $argumentName
-     * @param  bool                                             $withDefaultStore
-     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @param string $argumentName
+     * @param bool $withDefaultStore
      * @return mixed
-     *
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
@@ -55,6 +54,7 @@ class ParameterHelper extends AbstractHelper
         } catch (\Exception $e) {
             $stores = array();
             $i = 0;
+            /** @var \Mage_Core_Model_Store $store */
             foreach (\Mage::app()->getStores($withDefaultStore) as $store) {
                 $stores[$i] = $store->getId();
                 $question[] = '<comment>[' . ($i + 1) . ']</comment> ' . $store->getCode() . ' - ' . $store->getName() . PHP_EOL;
@@ -77,8 +77,8 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @param string $argumentName
      * @return mixed
      * @throws \InvalidArgumentException
@@ -94,6 +94,7 @@ class ParameterHelper extends AbstractHelper
         } catch (\Exception $e) {
             $i = 0;
             $websites = array();
+            /** @var \Mage_Core_Model_Website $website */
             foreach (\Mage::app()->getWebsites() as $website) {
                 $websites[$i] = $website->getId();
                 $question[] = '<comment>[' . ($i + 1) . ']</comment> ' . $website->getCode() . ' - ' . $website->getName() . PHP_EOL;
@@ -119,8 +120,8 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @param string $argumentName
      * @return string
      */
@@ -139,15 +140,13 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @param string $argumentName
+     * @param bool $needDigits
      * @return string
      */
-    public function askPassword(
-        InputInterface $input,
-        OutputInterface $output,
-        $argumentName = 'password',
+    public function askPassword(InputInterface $input, OutputInterface $output, $argumentName = 'password',
         $needDigits = true
     )
     {
@@ -173,19 +172,20 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param string $argumentName
+     * @param OutputInterface $output
+     * @param $name
      * @param string $value
      * @param $constraints
      * @return mixed
-     * @throws \InvalidArgumentException
      */
     protected function _validateArgument(OutputInterface $output, $name, $value, $constraints)
     {
         $this->initValidator();
         $validator = $this->validator;
 
+        $errors = array();
         if (!empty($value)) {
+            /** @var ConstraintViolation[] $errors */
             $errors = $validator->validateValue(array($name => $value), $constraints);
             if (count($errors) > 0) {
                 $output->writeln('<error>' . $errors[0]->getMessage() . '</error>');
@@ -198,6 +198,7 @@ class ParameterHelper extends AbstractHelper
                 $output,
                 $question,
                 function ($typeInput) use ($validator, $constraints, $name) {
+                    /** @var ConstraintViolation[] $errors */
                     $errors = $validator->validateValue(array($name => $typeInput), $constraints);
                     if (count($errors) > 0) {
                         throw new \InvalidArgumentException($errors[0]->getMessage());
@@ -211,6 +212,11 @@ class ParameterHelper extends AbstractHelper
         return $value;
     }
 
+    /**
+     * Return current validator instance
+     *
+     * @return Validator
+     */
     protected function initValidator()
     {
         if ($this->validator == null) {
