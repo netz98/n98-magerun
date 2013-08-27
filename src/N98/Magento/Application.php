@@ -115,7 +115,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.76.0';
+    const APP_VERSION = '1.77.0';
 
     /**
      * @var string
@@ -224,8 +224,6 @@ class Application extends BaseApplication
     protected function registerHelpers()
     {
         $helperSet = $this->getHelperSet();
-        $helperSet->set(new TableHelper(), 'table');
-        $helperSet->set(new ParameterHelper(), 'parameter');
 
         // Twig
         $twigBaseDirs = array(
@@ -235,6 +233,10 @@ class Application extends BaseApplication
             $twigBaseDirs = array_merge(array_reverse($this->config['twig']['baseDirs']), $twigBaseDirs);
         }
         $helperSet->set(new TwigHelper($twigBaseDirs), 'twig');
+
+        foreach ($this->config['helpers'] as $helperName => $helperClass) {
+            $helperSet->set(new $helperClass(), $helperName);
+        }
     }
 
     /**

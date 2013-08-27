@@ -5,6 +5,10 @@ plugin:
   folders:
     - /usr/local/share/n98-magerun/modules
 
+helpers:
+  parameter: N98\Util\Console\Helper\ParameterHelper
+  table: N98\Util\Console\Helper\TableHelper
+
 commands:
   customCommands: []
   aliases: []
