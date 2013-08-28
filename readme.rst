@@ -1167,6 +1167,8 @@ Pre-defined variables:
 * ${magento.edition} -> Magento Edition -> Community or Enterprise
 * ${magerun.version} -> Magerun version i.e. 1.66.0
 * ${php.version}     -> PHP Version
+* ${script.file}     -> Current script file path
+* ${script.dir}      -> Current script file dir
 
 n98-magerun Script Repository
 """""""""""""""""""""""""""""

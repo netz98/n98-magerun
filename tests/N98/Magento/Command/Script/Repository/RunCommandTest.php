@@ -27,5 +27,6 @@ class RunCommandTest extends TestCase
 
         // Runs sys:info -> Check for any output
         $this->assertContains('Vendors (core)', $commandTester->getDisplay());
+        $this->assertContains(__DIR__ . '/_scripts/hello-world.magerun', $commandTester->getDisplay());
     }
 }

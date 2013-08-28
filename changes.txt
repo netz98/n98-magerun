@@ -9,6 +9,7 @@ RECENT CHANGES
 * New script repository commands (by Christian Münch)
 * Ability to add helpers by config - Issue #204 (by Christian Münch)
 * Moved command registration out to dist config.
+* Added new script variables
 * Updated Symfony dependencies
 
 ======

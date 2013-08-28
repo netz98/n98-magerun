@@ -16,6 +16,11 @@ class ScriptCommand extends AbstractMagentoCommand
      */
     protected $scriptVars = array();
 
+    /**
+     * @var string
+     */
+    protected $_scriptFilename = '';
+
     protected function configure()
     {
         $this
@@ -27,7 +32,8 @@ class ScriptCommand extends AbstractMagentoCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $script = $this->_getContent($input->getArgument('filename'));
+        $this->_scriptFilename = $input->getArgument('filename');
+        $script = $this->_getContent($this->_scriptFilename);
         $commands = explode("\n", $script);
 
         foreach ($commands as $commandString) {
@@ -142,6 +148,8 @@ class ScriptCommand extends AbstractMagentoCommand
 
         $this->scriptVars['${php.version}']     = substr(phpversion(), 0, strpos(phpversion(), '-'));
         $this->scriptVars['${magerun.version}'] = $this->getApplication()->getVersion();
+        $this->scriptVars['${script.file}'] = $this->_scriptFilename;
+        $this->scriptVars['${script.dir}'] = dirname($this->_scriptFilename);
     }
 
     /**
