@@ -32,7 +32,7 @@ class ListCommand extends AbstractRepositoryCommand
             $table = array();
             foreach ($files as $file) {
                 $table[] = array(
-                    $file['fileinfo']->getFilename(),
+                    substr($file['fileinfo']->getFilename(), 0, -strlen(self::MAGERUN_EXTENSION)),
                     $file['location'],
                     $file['description'],
                 );

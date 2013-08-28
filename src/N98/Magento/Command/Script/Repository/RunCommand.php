@@ -11,8 +11,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RunCommand extends AbstractRepositoryCommand
 {
-    const MAGERUN_EXTENSION = '.magerun';
-
     protected function configure()
     {
         $this

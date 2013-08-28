@@ -56,6 +56,8 @@ class ScriptLoader
                 'location'    => $this->_getLocation($file->getPathname()),
             );
         }
+
+        ksort($this->_scriptFiles);
     }
 
     /**
