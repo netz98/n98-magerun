@@ -6,7 +6,10 @@ RECENT CHANGES
 1.77.0
 ======
 
-* Ability to add helpers by config - Issue #204 (Christian Münch)
+* New script repository commands (by Christian Münch)
+* Ability to add helpers by config - Issue #204 (by Christian Münch)
+* Moved command registration out to dist config.
+* Updated Symfony dependencies
 
 ======
 1.76.0
@@ -17,19 +20,6 @@ RECENT CHANGES
 * Fixed issue #194 - Exported setup script with attribute uses incorrect Setup class (by Jonathan Day)
 * Fixed issue #197 - Doesn't run when /tmp/magento/var exists and database is not created / tables missing
 * Fixed issue #199 - Error with dev:module:rewrite:conflicts
-
-======
-1.75.0
-======
-
-* Changed all internal call of own table helper to new native symfony helper.
-* Updated dependencies
-* Issue #47 - Warning if running as root
-* Issue #55 - Multi-reindex
-* Issue #171 - open-browser: admin backend
-* Issue #116 - Added "report_compared_product_index" and "report_viewed_*" tables to "log" group
-* Fixed issue #164 - dev:ide:phpstorm:meta debug mode isn't enough verbose to detect where the problem is
-* Fixed issue #187 - Cache flush is not compatible with older versions of Enterprise
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H

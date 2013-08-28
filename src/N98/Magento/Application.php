@@ -2,85 +2,7 @@
 
 namespace N98\Magento;
 
-use N98\Magento\Command\Admin\DisableNotificationsCommand;
-use N98\Magento\Command\Admin\User\ChangePasswordCommand as ChangeAdminUserPasswordCommand;
-use N98\Magento\Command\Admin\User\CreateUserCommand as AdminUserCreateCommand;
-use N98\Magento\Command\Admin\User\ListCommand as AdminUserListCommand;
-use N98\Magento\Command\Cache\CleanCommand as CacheCleanCommand;
-use N98\Magento\Command\Cache\DisableCommand as CacheDisableCommand;
-use N98\Magento\Command\Cache\EnableCommand as CacheEnableCommand;
-use N98\Magento\Command\Cache\FlushCommand as CacheFlushCommand;
-use N98\Magento\Command\Cache\ListCommand as CacheListCommand;
-use N98\Magento\Command\Cms\Banner\ToggleCommand as MagentoCmsBannerToggleCommand;
-use N98\Magento\Command\Cms\Page\PublishCommand as MagentoCmsPagePublishCommand;
-use N98\Magento\Command\Config\DeleteCommand as ConfigDeleteCommand;
-use N98\Magento\Command\Config\DumpCommand as ConfigPrintCommand;
-use N98\Magento\Command\Config\GetCommand as ConfigGetCommand;
-use N98\Magento\Command\Config\SetCommand as ConfigSetCommand;
-use N98\Magento\Command\Config\SearchCommand as ConfigSearchCommand;
 use N98\Magento\Command\ConfigurationLoader;
-use N98\Magento\Command\Customer\ChangePasswordCommand as CustomerChangePasswordCommand;
-use N98\Magento\Command\Customer\CreateCommand as CustomerCreateCommand;
-use N98\Magento\Command\Customer\CreateDummyCommand as CustomerCreateDummyCommand;
-use N98\Magento\Command\Customer\InfoCommand as CustomerInfoCommand;
-use N98\Magento\Command\Customer\ListCommand as CustomerListCommand;
-use N98\Magento\Command\Database\ConsoleCommand as DatabaseConsoleCommand;
-use N98\Magento\Command\Database\CreateCommand as DatabaseCreateCommand;
-use N98\Magento\Command\Database\DropCommand as DatabaseDropCommand;
-use N98\Magento\Command\Database\DumpCommand as DatabaseDumpCommand;
-use N98\Magento\Command\Database\ImportCommand as DatabaseImportCommand;
-use N98\Magento\Command\Database\InfoCommand as DatabaseInfoCommand;
-use N98\Magento\Command\Database\QueryCommand as DatabaseQueryCommand;
-use N98\Magento\Command\Design\DemoNoticeCommand as DesignDemoNoticeCommand;
-use N98\Magento\Command\Developer\Ide\PhpStorm\MetaCommand as DevelopmentIdePhpStormMetaCommand;
-use N98\Magento\Command\Developer\Setup\Script\AttributeCommand as DevelopmentSetupScriptAttributeCommand;
-use N98\Magento\Command\Developer\ConsoleCommand as DevelopmentConsoleCommand;
-use N98\Magento\Command\Developer\Log\DbCommand as DevelopmentLogDbCommand;
-use N98\Magento\Command\Developer\Log\LogCommand as DevelopmentLogCommand;
-use N98\Magento\Command\Developer\Log\SizeCommand as DevelopmentLogSizeCommand;
-use N98\Magento\Command\Developer\Module\CreateCommand as ModuleCreateCommand;
-use N98\Magento\Command\Developer\Module\ListCommand as ModuleListCommand;
-use N98\Magento\Command\Developer\Module\Observer\ListCommand as ModuleObserverListCommand;
-use N98\Magento\Command\Developer\Module\Rewrite\ConflictsCommand as ModuleRewriteConflictsCommand;
-use N98\Magento\Command\Developer\Module\Rewrite\ListCommand as ModuleRewriteListCommand;
-use N98\Magento\Command\Developer\Module\Dependencies\OnCommand as ModuleDependenciesOnCommand;
-use N98\Magento\Command\Developer\Module\Dependencies\FromCommand as ModuleDependenciesFromCommand;
-use N98\Magento\Command\Developer\ProfilerCommand;
-use N98\Magento\Command\Developer\Report\CountCommand as DevelopmentReportCountCommand;
-use N98\Magento\Command\Developer\ClassLookupCommand as DevelopmentClassLookupCommand;
-use N98\Magento\Command\Developer\SymlinksCommand;
-use N98\Magento\Command\Developer\TemplateHintsBlocksCommand;
-use N98\Magento\Command\Developer\TemplateHintsCommand;
-use N98\Magento\Command\Developer\Theme\DuplicatesCommand as ThemeDuplicatesCommand;
-use N98\Magento\Command\Developer\Theme\ListCommand as ThemeListCommand;
-use N98\Magento\Command\Developer\TranslateInlineAdminCommand;
-use N98\Magento\Command\Developer\TranslateInlineShopCommand;
-use N98\Magento\Command\Indexer\ListCommand as IndexerListCommand;
-use N98\Magento\Command\Indexer\ReindexAllCommand as IndexerReindexAllCommand;
-use N98\Magento\Command\Indexer\ReindexCommand as IndexerReindexCommand;
-use N98\Magento\Command\Installer\InstallCommand;
-use N98\Magento\Command\Installer\UninstallCommand;
-use N98\Magento\Command\LocalConfig\GenerateCommand as GenerateLocalXmlConfigCommand;
-use N98\Magento\Command\MagentoConnect\DownloadExtensionCommand as MagentoConnectionDownloadExtensionCommand;
-use N98\Magento\Command\MagentoConnect\InstallExtensionCommand as MagentoConnectionInstallExtensionCommand;
-use N98\Magento\Command\MagentoConnect\ListExtensionsCommand as MagentoConnectionListExtensionsCommand;
-use N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand as MagentoConnectionUpgradeExtensionCommand;
-use N98\Magento\Command\OpenBrowserCommand;
-use N98\Magento\Command\ScriptCommand;
-use N98\Magento\Command\SelfUpdateCommand as SelfUpdateCommand;
-use N98\Magento\Command\ShellCommand;
-use N98\Magento\Command\System\CheckCommand as SystemCheckCommand;
-use N98\Magento\Command\System\Cron\HistoryCommand as SystemCronHistoryCommand;
-use N98\Magento\Command\System\Cron\ListCommand as SystemCronListCommand;
-use N98\Magento\Command\System\Cron\RunCommand as SystemCronRunCommand;
-use N98\Magento\Command\System\InfoCommand as SystemInfoCommand;
-use N98\Magento\Command\System\MaintenanceCommand as SystemMaintenanceCommand;
-use N98\Magento\Command\System\Setup\CompareVersionsCommand as SetupCompareVersionsCommand;
-use N98\Magento\Command\System\Setup\RunCommand as SetupRunScriptsCommand;
-use N98\Magento\Command\System\Store\Config\BaseUrlListCommand as SystemStoreConfigBaseUrlListCommand;
-use N98\Magento\Command\System\Store\ListCommand as SystemStoreListCommand;
-use N98\Magento\Command\System\Url\ListCommand as SystemUrlListCommand;
-use N98\Magento\Command\System\Website\ListCommand as SystemWebsiteListCommand;
 use N98\Magento\EntryPoint\Magerun as MagerunEntryPoint;
 use N98\Util\ArrayFunctions;
 use N98\Util\Console\Helper\ParameterHelper;
@@ -593,92 +515,6 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return void
-     */
-    protected function registerCommands()
-    {
-        $this->add(new GenerateLocalXmlConfigCommand());
-        $this->add(new DatabaseDumpCommand());
-        $this->add(new DatabaseDropCommand());
-        $this->add(new DatabaseInfoCommand());
-        $this->add(new DatabaseImportCommand());
-        $this->add(new DatabaseConsoleCommand());
-        $this->add(new DatabaseCreateCommand());
-        $this->add(new DatabaseQueryCommand());
-        $this->add(new ConfigDeleteCommand());
-        $this->add(new ConfigPrintCommand());
-        $this->add(new ConfigGetCommand());
-        $this->add(new ConfigSetCommand());
-        $this->add(new ConfigSearchCommand());
-        $this->add(new CacheCleanCommand());
-        $this->add(new CacheFlushCommand());
-        $this->add(new CacheListCommand());
-        $this->add(new CacheEnableCommand());
-        $this->add(new CacheDisableCommand());
-        $this->add(new IndexerListCommand());
-        $this->add(new IndexerReindexCommand());
-        $this->add(new IndexerReindexAllCommand());
-        $this->add(new ChangeAdminUserPasswordCommand());
-        $this->add(new AdminUserListCommand());
-        $this->add(new AdminUserCreateCommand());
-        $this->add(new CustomerCreateCommand());
-        $this->add(new CustomerListCommand());
-        $this->add(new CustomerChangePasswordCommand());
-        $this->add(new CustomerCreateDummyCommand());
-        $this->add(new CustomerInfoCommand());
-        $this->add(new DisableNotificationsCommand());
-        $this->add(new DesignDemoNoticeCommand());
-        $this->add(new InstallCommand());
-        $this->add(new UninstallCommand());
-        $this->add(new SystemMaintenanceCommand());
-        $this->add(new SystemInfoCommand());
-        $this->add(new SystemCheckCommand());
-        $this->add(new SystemStoreListCommand());
-        $this->add(new SystemStoreConfigBaseUrlListCommand());
-        $this->add(new SystemWebsiteListCommand());
-        $this->add(new SystemCronListCommand());
-        $this->add(new SystemCronRunCommand());
-        $this->add(new SystemCronHistoryCommand());
-        $this->add(new SystemUrlListCommand());
-        $this->add(new SetupRunScriptsCommand());
-        $this->add(new SetupCompareVersionsCommand());
-        $this->add(new TemplateHintsCommand());
-        $this->add(new TemplateHintsBlocksCommand());
-        $this->add(new TranslateInlineShopCommand());
-        $this->add(new TranslateInlineAdminCommand());
-        $this->add(new ThemeDuplicatesCommand());
-        $this->add(new ThemeListCommand());
-        $this->add(new ProfilerCommand());
-        $this->add(new SymlinksCommand());
-        $this->add(new DevelopmentLogCommand());
-        $this->add(new DevelopmentLogDbCommand());
-        $this->add(new DevelopmentLogSizeCommand());
-        $this->add(new DevelopmentReportCountCommand());
-        $this->add(new DevelopmentClassLookupCommand());
-        $this->add(new DevelopmentIdePhpStormMetaCommand());
-        $this->add(new DevelopmentSetupScriptAttributeCommand());
-        $this->add(new ModuleListCommand());
-        $this->add(new ModuleRewriteListCommand());
-        $this->add(new ModuleRewriteConflictsCommand());
-        $this->add(new ModuleDependenciesOnCommand());
-        $this->add(new ModuleDependenciesFromCommand());
-        $this->add(new ModuleCreateCommand());
-        $this->add(new ModuleObserverListCommand());
-        $this->add(new ModuleDependenciesOnCommand());
-        $this->add(new ShellCommand());
-        $this->add(new ScriptCommand());
-        $this->add(new MagentoConnectionListExtensionsCommand());
-        $this->add(new MagentoConnectionInstallExtensionCommand());
-        $this->add(new MagentoConnectionDownloadExtensionCommand());
-        $this->add(new MagentoConnectionUpgradeExtensionCommand());
-        $this->add(new OpenBrowserCommand());
-        $this->add(new MagentoCmsPagePublishCommand());
-        $this->add(new MagentoCmsBannerToggleCommand());
-        $this->add(new DevelopmentConsoleCommand());
-        $this->add(new SelfUpdateCommand());
-    }
-
-    /**
      * @param array $initConfig
      *
      * @return array
@@ -708,7 +544,6 @@ class Application extends BaseApplication
                 $this->registerCustomAutoloaders();
                 $this->registerCustomCommands();
             }
-            $this->registerCommands();
 
             $this->_isInitialized = true;
         }
