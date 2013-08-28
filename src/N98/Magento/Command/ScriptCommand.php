@@ -36,7 +36,6 @@ class ScriptCommand extends AbstractMagentoCommand
                 continue;
             }
             $firstChar = substr($commandString, 0, 1);
-            $this->initScriptVars();
 
             switch ($firstChar) {
 
@@ -119,6 +118,15 @@ class ScriptCommand extends AbstractMagentoCommand
     protected function _prepareShellCommand($commandString)
     {
         $commandString = ltrim($commandString, '!');
+
+        // @TODO find a better place
+        if (strstr($commandString, '${magento.root}')
+            || strstr($commandString, '${magento.version}')
+            || strstr($commandString, '${magento.edition}')
+        ) {
+            $this->initMagento();
+        }
+        $this->initScriptVars();
         $commandString = $this->_replaceScriptVars($commandString);
 
         return $commandString;
