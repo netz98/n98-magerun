@@ -5,8 +5,6 @@ namespace N98\Magento;
 use N98\Magento\Command\ConfigurationLoader;
 use N98\Magento\EntryPoint\Magerun as MagerunEntryPoint;
 use N98\Util\ArrayFunctions;
-use N98\Util\Console\Helper\ParameterHelper;
-use N98\Util\Console\Helper\TableHelper;
 use N98\Util\Console\Helper\TwigHelper;
 use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\OperatingSystem;
