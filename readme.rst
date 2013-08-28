@@ -1172,7 +1172,7 @@ n98-magerun Script Repository
 """""""""""""""""""""""""""""
 You can organize your scripts in a repository.
 Simply place a script in folder */usr/local/share/n98-magerun/scripts* or in your home dir
-in folder *<HOME>/n98-magerun/scripts*.
+in folder *<HOME>/.n98-magerun/scripts*.
 
 Scripts must have the file extension *.magerun*.
 
