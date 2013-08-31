@@ -13,6 +13,13 @@ script:
   folders:
     - /usr/local/share/n98-magerun/scripts
 
+detect:
+  subFolders:
+    - web
+    - public
+    - webroot
+    - web-root
+
 commands:
   customCommands:
     - N98\Magento\Command\Admin\DisableNotificationsCommand
