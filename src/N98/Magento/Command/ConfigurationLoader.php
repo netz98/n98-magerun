@@ -19,16 +19,23 @@ class ConfigurationLoader
     protected $_customConfigFilename = 'n98-magerun.yaml';
 
     /**
+     * Load config
+     * If $magentoRootFolder is null, only non-project config is loaded
+     *
      * @param array $config
      * @param string $magentoRootFolder
      */
     public function __construct($config, $magentoRootFolder)
     {
         $config = $this->loadDistConfig($config);
-        $config = $this->loadPluginConfig($config, $magentoRootFolder);
+        if ($magentoRootFolder != null) {
+            $config = $this->loadPluginConfig($config, $magentoRootFolder);
+        }
         $config = $this->loadSystemConfig($config);
         $config = $this->loadUserConfig($config);
-        $config = $this->loadProjectConfig($magentoRootFolder, $config);
+        if ($magentoRootFolder != null) {
+            $config = $this->loadProjectConfig($magentoRootFolder, $config);
+        }
         $config = $this->initAutoloaders($magentoRootFolder, $config);
 
         $this->_configArray = $config;
