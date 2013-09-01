@@ -18,20 +18,6 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class InitCommandTest extends TestCase
 {
-    public function testWrapper()
-    {
-        $command = $this->getApplication()->find('composer:init');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(
-            array(
-                 'command' => $command->getName(),
-            ),
-            array(
-                'interactive' => false
-            )
-        );
-    }
-
     public function testParseValidAuthorString()
     {
         $command = new InitCommand();
