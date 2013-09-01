@@ -38,13 +38,18 @@ class MagentoHelper extends AbstractHelper
      * Start Magento detection
      *
      * @param string $folder
+     * @param array $subFolders Sub-folders to check
      */
-    public function detect($folder)
+    public function detect($folder, $subFolders = array())
     {
         $folders = $this->splitPathFolders($folder);
         $folders = $this->checkModman($folders);
+        $folders = array_merge($folders, $subFolders);
 
         foreach (array_reverse($folders) as $searchFolder) {
+            if (!is_dir($searchFolder)) {
+                continue;
+            }
             if ($this->_search($searchFolder)) {
                break;
             }

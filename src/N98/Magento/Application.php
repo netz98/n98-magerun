@@ -115,6 +115,22 @@ class Application extends BaseApplication
     }
 
     /**
+     * Get names of sub-folders to be scanned during Magento detection
+     * @return array
+     */
+    public function getDetectSubFolders()
+    {
+        $tempConfig = $this->config = $this->_loadConfig(array());
+
+        if (isset($tempConfig['detect'])) {
+            if (isset($tempConfig['detect']['subFolders'])) {
+                return $tempConfig['detect']['subFolders'];
+            }
+        }
+        return array();
+    }
+
+    /**
      * Search for magento root folder
      */
     public function detectMagento()
@@ -132,7 +148,8 @@ class Application extends BaseApplication
 
         $this->getHelperSet()->set(new MagentoHelper(), 'magento');
         $magentoHelper = $this->getHelperSet()->get('magento'); /* @var $magentoHelper MagentoHelper */
-        $magentoHelper->detect($folder);
+        $subFolders = $this->getDetectSubFolders();
+        $magentoHelper->detect($folder,$subFolders);
         $this->_magentoRootFolder = $magentoHelper->getRootFolder();
         $this->_magentoEnterprise = $magentoHelper->isEnterpriseEdition();
         $this->_magentoMajorVersion = $magentoHelper->getMajorVersion();
