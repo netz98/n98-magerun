@@ -441,7 +441,7 @@ class Application extends BaseApplication
             $output->writeln('DEBUG');
         }
 
-        parent::doRun($input, $output);
+        return parent::doRun($input, $output);
     }
 
     /**
