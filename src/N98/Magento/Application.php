@@ -11,15 +11,17 @@ use N98\Util\OperatingSystem;
 use N98\Util\String;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class Application extends BaseApplication
 {
-    const WARNING_ROOT_USER = '<error>It\'s not recommended to run n98-magerun as root user</error>';
     /**
      * @var int
      */
@@ -93,6 +95,11 @@ class Application extends BaseApplication
     protected $_isInitialized = false;
 
     /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     */
+    protected $dispatcher;
+
+    /**
      * @param \Composer\Autoload\ClassLoader $autoloader
      * @param bool                           $isPharMode
      */
@@ -135,6 +142,8 @@ class Application extends BaseApplication
 
     /**
      * Search for magento root folder
+     *
+     * @return void
      */
     public function detectMagento()
     {
@@ -152,7 +161,7 @@ class Application extends BaseApplication
         $this->getHelperSet()->set(new MagentoHelper(), 'magento');
         $magentoHelper = $this->getHelperSet()->get('magento'); /* @var $magentoHelper MagentoHelper */
         $subFolders = $this->getDetectSubFolders();
-        $magentoHelper->detect($folder,$subFolders);
+        $magentoHelper->detect($folder, $subFolders);
         $this->_magentoRootFolder = $magentoHelper->getRootFolder();
         $this->_magentoEnterprise = $magentoHelper->isEnterpriseEdition();
         $this->_magentoMajorVersion = $magentoHelper->getMajorVersion();
@@ -160,6 +169,8 @@ class Application extends BaseApplication
 
     /**
      * Add own helpers to helperset.
+     *
+     * @return void
      */
     protected function registerHelpers()
     {
@@ -191,13 +202,23 @@ class Application extends BaseApplication
         }
     }
 
+    /**
+     * @return void
+     */
     protected function registerCustomCommands()
     {
         if (isset($this->config['commands']['customCommands'])
             && is_array($this->config['commands']['customCommands'])
         ) {
             foreach ($this->config['commands']['customCommands'] as $commandClass) {
-                $this->add(new $commandClass);
+                if (is_array($commandClass)) { // Support for key => value (name -> class)
+                    $resolvedCommandClass = current($commandClass);
+                    $command = new $resolvedCommandClass();
+                    $command->setName(key($commandClass));
+                } else {
+                    $command = new $commandClass();
+                }
+                $this->add($command);
             }
         }
     }
@@ -264,6 +285,8 @@ class Application extends BaseApplication
     }
 
     /**
+     * @TODO Move logic into "EventSubscriber"
+     *
      * @param OutputInterface $output
      * @return bool
      */
@@ -418,31 +441,17 @@ class Application extends BaseApplication
      */
     public function doRun(InputInterface $input, OutputInterface $output)
     {
+        $event = new ConsoleEvent(new Command('dummy'), $input, $output);
+        $this->dispatcher->dispatch('console.run.before', $event);
+
         $input = $this->checkConfigCommandAlias($input);
-        $this->checkRunningAsRootUser($output);
         $this->checkVarDir($output);
 
         if (OutputInterface::VERBOSITY_DEBUG <= $output->getVerbosity()) {
             $output->writeln('DEBUG');
         }
 
-        parent::doRun($input, $output);
-    }
-
-    /**
-     * Display a warning if a running n98-magerun as root user
-     */
-    protected function checkRunningAsRootUser(OutputInterface $output)
-    {
-        if (OperatingSystem::isLinux() || OperatingSystem::isMacOs()) {
-            if (function_exists('posix_getuid')) {
-                if (posix_getuid() === 0) {
-                    $output->writeln('');
-                    $output->writeln(self::WARNING_ROOT_USER);
-                    $output->writeln('');
-                }
-            }
-        }
+        return parent::doRun($input, $output);
     }
 
     /**
@@ -472,40 +481,6 @@ class Application extends BaseApplication
             return $input;
         }
         return $input;
-    }
-
-    /**
-     * Returns an array of possible abbreviations given a set of names.
-     * This is the reverted version if changed method of symfony framework.
-     * I reverted this to enable commands like customer:create and customer:create:dummy.
-     * This will not work with current dev-master of symfony console components which
-     * causes an error like "Command "customer:create" is ambiguous".
-     *
-     * @TODO Check if this is a bug in symfony or wanted.
-     * @param array $names An array of names
-     *
-     * @return array An array of abbreviations
-     */
-    public static function getAbbreviations($names)
-    {
-        $abbrevs = array();
-        foreach ($names as $name) {
-            for ($len = strlen($name) - 1; $len > 0; --$len) {
-                $abbrev = substr($name, 0, $len);
-                if (!isset($abbrevs[$abbrev])) {
-                    $abbrevs[$abbrev] = array($name);
-                } else {
-                    $abbrevs[$abbrev][] = $name;
-                }
-            }
-        }
-
-        // Non-abbreviations always get entered, even if they aren't unique
-        foreach ($names as $name) {
-            $abbrevs[$name] = array($name);
-        }
-
-        return $abbrevs;
     }
 
     /**
@@ -543,11 +518,14 @@ class Application extends BaseApplication
             // Suppress DateTime warnings
             date_default_timezone_set(@date_default_timezone_get());
 
-            $configLoader = new ConfigurationLoader($initConfig);
+            $configLoader = new ConfigurationLoader(ArrayFunctions::mergeArrays($this->config, $initConfig));
             $this->partialConfig = $configLoader->getPartialConfig();
             $this->detectMagento();
             $configLoader->loadStageTwo($this->_magentoRootFolder);
             $this->config = $configLoader->toArray();;
+            $this->dispatcher = new EventDispatcher();
+            $this->setDispatcher($this->dispatcher);
+            $this->registerEventSubscribers();
             $this->registerHelpers();
             if ($this->autoloader) {
                 $this->registerCustomAutoloaders();
@@ -555,6 +533,17 @@ class Application extends BaseApplication
             }
 
             $this->_isInitialized = true;
+        }
+    }
+
+    /**
+     * @return void
+     */
+    protected function registerEventSubscribers()
+    {
+        foreach ($this->config['event']['subscriber'] as $subscriberClass) {
+            $subscriber = new $subscriberClass();
+            $this->dispatcher->addSubscriber($subscriber);
         }
     }
 
@@ -612,5 +601,4 @@ class Application extends BaseApplication
         require_once $this->getMagentoRootFolder() . '/app/Mage.php';
         \Mage::app('admin');
     }
-
 }

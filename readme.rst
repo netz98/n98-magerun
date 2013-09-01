@@ -16,6 +16,9 @@ Build Status
 .. image:: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5/badge.png
    :target: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5
 
+.. image:: https://poser.pugx.org/n98/magerun/v/stable.png
+   :target: https://packagist.org/packages/n98/magerun
+
 **Development Branch**
 
 .. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=develop

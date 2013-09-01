@@ -6,11 +6,20 @@ RECENT CHANGES
 1.77.0
 ======
 
+* New commands to embedded composer:
+  - composer:init
+  - composer:install
+  - composer:require
+  - composer:update
+  - composer:validate
+  - composer:search
+  - composer:diagnose
 * New script repository commands (by Christian Münch)
 * Ability to add helpers by config - Issue #204 (by Christian Münch)
 * Moved command registration out to dist config.
 * Added new script variables
 * Updated Symfony dependencies
+* Support for Symfony Console Events / Added Event Dispatcher
 
 ======
 1.76.0
