@@ -77,6 +77,7 @@ class InstallCommand extends AbstractMagentoCommand
         $this->downloadMagento($input, $output);
         $this->createDatabase($input, $output);
         $this->installSampleData($input, $output);
+        $this->removeEmptyFolders();
         $this->setDirectoryPermissions($output);
         $this->installMagento($input, $output, $this->config['installationFolder']);
     }
@@ -303,6 +304,11 @@ class InstallCommand extends AbstractMagentoCommand
                         $filesystem->recursiveRemoveDirectory($expandedFolder);
                     }
 
+                    // Remove empty folder
+                    if (is_dir($this->config['installationFolder'] . '/vendor/composer')) {
+                        $filesystem->recursiveRemoveDirectory($this->config['installationFolder'] . '/vendor/composer');
+                    }
+
                     // Install sample data
                     $sampleDataSqlFile = glob($this->config['installationFolder'] . '/_temp_demo_data/magento_*sample_data*sql');
                     $db = $this->config['db']; /* @var $db \PDO */
@@ -339,15 +345,31 @@ class InstallCommand extends AbstractMagentoCommand
 
     protected function _fixComposerExtractionBug()
     {
+        $filesystem = new Filesystem();
+
         $mediaFolder = $this->config['installationFolder'] . '/media';
         $wrongFolder = $this->config['installationFolder'] . '/_temp_demo_data/media';
         if (is_dir($wrongFolder)) {
-            $filesystem = new Filesystem();
             $filesystem->recursiveCopy(
                 $wrongFolder,
                 $mediaFolder
             );
             $filesystem->recursiveRemoveDirectory($wrongFolder);
+        }
+    }
+
+    /**
+     * Remove empty composer extraction folder
+     */
+    protected function removeEmptyFolders()
+    {
+        if (is_dir(getcwd() . '/vendor')) {
+            $finder = new Finder();
+            $finder->files()->depth(3)->in(getcwd() . '/vendor');
+            if ($finder->count() == 0) {
+                $filesystem = new Filesystem();
+                $filesystem->recursiveRemoveDirectory(getcwd() . '/vendor');
+            }
         }
     }
 
