@@ -11,6 +11,7 @@ RECENT CHANGES
 * Moved command registration out to dist config.
 * Added new script variables
 * Updated Symfony dependencies
+* Support for Symfony Console Events / Added Event Dispatcher
 
 ======
 1.76.0

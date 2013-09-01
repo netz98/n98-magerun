@@ -8,6 +8,7 @@ plugin:
 helpers:
   parameter: N98\Util\Console\Helper\ParameterHelper
   table: N98\Util\Console\Helper\TableHelper
+  dialog: Composer\Command\Helper\DialogHelper
 
 script:
   folders:
@@ -19,6 +20,11 @@ detect:
     - public
     - webroot
     - web-root
+
+event:
+  subscriber:
+    - N98\Magento\EventSubscriber
+    #- N98\Magento\Command\ComposerWrapper\EventSubscriber
 
 commands:
   customCommands:
@@ -101,8 +107,8 @@ commands:
     - N98\Magento\Command\System\Store\Config\BaseUrlListCommand 
     - N98\Magento\Command\System\Store\ListCommand 
     - N98\Magento\Command\System\Url\ListCommand 
-    - N98\Magento\Command\System\Website\ListCommand 
-  
+    - N98\Magento\Command\System\Website\ListCommand
+
   aliases: []
 
   N98\Magento\Command\Installer\InstallCommand:
