@@ -17,9 +17,13 @@ script:
 detect:
   subFolders:
     - web
+    - www
+    - htdocs
     - public
+    - pub
     - webroot
     - web-root
+    - wwwroot
 
 event:
   subscriber:
