@@ -90,16 +90,6 @@ class Application extends BaseApplication
     protected $_isInitialized = false;
 
     /**
-     * @var Composer
-     */
-    protected $composer;
-
-    /**
-     * @var IOInterface
-     */
-    protected $io;
-
-    /**
      * @var \Symfony\Component\EventDispatcher\EventDispatcher
      */
     protected $dispatcher;

@@ -24,7 +24,7 @@ detect:
 event:
   subscriber:
     - N98\Magento\EventSubscriber
-    #- N98\Magento\Command\ComposerWrapper\EventSubscriber
+    - N98\Magento\Command\ComposerWrapper\EventSubscriber
 
 commands:
   customCommands:
@@ -108,6 +108,13 @@ commands:
     - N98\Magento\Command\System\Store\ListCommand 
     - N98\Magento\Command\System\Url\ListCommand 
     - N98\Magento\Command\System\Website\ListCommand
+    - "composer:init": Composer\Command\InitCommand
+    - "composer:install": Composer\Command\InstallCommand
+    - "composer:require": Composer\Command\RequireCommand
+    - "composer:update": Composer\Command\UpdateCommand
+    - "composer:validate": Composer\Command\ValidateCommand
+    - "composer:search": Composer\Command\SearchCommand
+    - "composer:diagnose": Composer\Command\DiagnoseCommand
 
   aliases: []
 

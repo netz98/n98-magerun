@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "6916712d877a9201c43da142de4f2885",
+    "hash": "9dcbaa09f2739e07db5e84bd041aef4f",
     "packages": [
         {
             "name": "composer/composer",
@@ -210,68 +210,6 @@
             ],
             "description": "JUnit XML Document generation library",
             "time": "2013-08-22 12:49:41"
-        },
-        {
-            "name": "ocramius/proxy-manager",
-            "version": "0.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Ocramius/ProxyManager.git",
-                "reference": "880ea3f2458d21781bcf3319b6756e69e9b322c4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Ocramius/ProxyManager/zipball/880ea3f2458d21781bcf3319b6756e69e9b322c4",
-                "reference": "880ea3f2458d21781bcf3319b6756e69e9b322c4",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3",
-                "zendframework/zend-code": "2.*"
-            },
-            "require-dev": {
-                "phpmd/phpmd": "1.4.*",
-                "phpunit/phpunit": ">=3.7",
-                "satooshi/php-coveralls": "~0.6",
-                "squizlabs/php_codesniffer": "1.4.*",
-                "zendframework/zend-stdlib": "2.*"
-            },
-            "suggest": {
-                "zendframework/zend-stdlib": "To use the hydrator proxy"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.4.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "ProxyManager\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Marco Pivetta",
-                    "email": "ocramius@gmail.com",
-                    "homepage": "http://ocramius.github.com/",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A library providing utilities to generate, instantiate and generally operate with Object Proxies",
-            "homepage": "https://github.com/Ocramius/ProxyManager",
-            "keywords": [
-                "aop",
-                "lazy loading",
-                "proxy",
-                "proxy pattern",
-                "service proxies"
-            ],
-            "time": "2013-06-30 16:44:31"
         },
         {
             "name": "seld/jsonlint",
@@ -732,139 +670,6 @@
                 "templating"
             ],
             "time": "2013-08-03 15:35:31"
-        },
-        {
-            "name": "zendframework/zend-code",
-            "version": "2.2.4",
-            "target-dir": "Zend/Code",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendCode.git",
-                "reference": "36e39f1abe09bdccff324f0713f79e9315e726fb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendCode/zipball/36e39f1abe09bdccff324f0713f79e9315e726fb",
-                "reference": "36e39f1abe09bdccff324f0713f79e9315e726fb",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3",
-                "zendframework/zend-eventmanager": "self.version"
-            },
-            "require-dev": {
-                "doctrine/common": ">=2.1"
-            },
-            "suggest": {
-                "doctrine/common": "Doctrine\\Common >=2.1 for annotation features"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.2-dev",
-                    "dev-develop": "2.3-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Zend\\Code\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "provides facilities to generate arbitrary code using an object oriented interface",
-            "keywords": [
-                "code",
-                "zf2"
-            ],
-            "time": "2013-08-21 17:08:24"
-        },
-        {
-            "name": "zendframework/zend-eventmanager",
-            "version": "2.2.4",
-            "target-dir": "Zend/EventManager",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendEventManager.git",
-                "reference": "f325feef4e1a19b873936e5b116980fbe88dd176"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendEventManager/zipball/f325feef4e1a19b873936e5b116980fbe88dd176",
-                "reference": "f325feef4e1a19b873936e5b116980fbe88dd176",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3",
-                "zendframework/zend-stdlib": "self.version"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.2-dev",
-                    "dev-develop": "2.3-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Zend\\EventManager\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "keywords": [
-                "eventmanager",
-                "zf2"
-            ],
-            "time": "2013-06-12 19:45:10"
-        },
-        {
-            "name": "zendframework/zend-stdlib",
-            "version": "2.2.4",
-            "target-dir": "Zend/Stdlib",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zendframework/Component_ZendStdlib.git",
-                "reference": "7c87ce4e840957596bf3401fa4ae4fb0355682e2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendStdlib/zipball/7c87ce4e840957596bf3401fa4ae4fb0355682e2",
-                "reference": "7c87ce4e840957596bf3401fa4ae4fb0355682e2",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "suggest": {
-                "zendframework/zend-eventmanager": "To support aggregate hydrator usage",
-                "zendframework/zend-servicemanager": "To support hydrator plugin manager usage"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.2-dev",
-                    "dev-develop": "2.3-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Zend\\Stdlib\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "keywords": [
-                "stdlib",
-                "zf2"
-            ],
-            "time": "2013-08-21 17:08:07"
         }
     ],
     "packages-dev": [
