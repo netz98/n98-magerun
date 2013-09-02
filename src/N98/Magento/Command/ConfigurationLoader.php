@@ -262,11 +262,12 @@ class ConfigurationLoader
             $projectConfigFile = $magentoRootFolder . DIRECTORY_SEPARATOR . 'app/etc/' . $this->_customConfigFilename;
             if ($projectConfigFile && file_exists($projectConfigFile)) {
                 $this->_projectConfig = Yaml::parse($projectConfigFile);
-                return $config;
+
+                $config = ArrayFunctions::mergeArrays($config, $this->_projectConfig);
+
             }
         }
 
-        $config = ArrayFunctions::mergeArrays($config, $this->_projectConfig);
         return $config;
     }
 
