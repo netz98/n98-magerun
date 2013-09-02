@@ -1,0 +1,3 @@
+# Cache Flush Command Test (Hello World)
+sys:info
+! echo "${script.file}"

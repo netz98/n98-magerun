@@ -1,11 +1,32 @@
 **************
 RECENT CHANGES
 **************
+
 ======
 1.77.1
 ======
 
 * Bugfix for project configuration loader
+
+======
+1.77.0
+======
+
+* New commands to embedded composer:
+  - composer:init
+  - composer:install
+  - composer:require
+  - composer:update
+  - composer:validate
+  - composer:search
+  - composer:diagnose
+* New script repository commands (by Christian Münch)
+* Enhanced Folder Detection (by Alexander Menk)
+* Ability to add helpers by config - Issue #204 (by Christian Münch)
+* Moved command registration out to dist config.
+* Added new script variables
+* Updated Symfony dependencies
+* Support for Symfony Console Events / Added Event Dispatcher
 
 ======
 1.76.0
@@ -16,18 +37,6 @@ RECENT CHANGES
 * Fixed issue #194 - Exported setup script with attribute uses incorrect Setup class (by Jonathan Day)
 * Fixed issue #197 - Doesn't run when /tmp/magento/var exists and database is not created / tables missing
 * Fixed issue #199 - Error with dev:module:rewrite:conflicts
-
-======
-1.75.0
-======
-
-* Updated dependencies
-* Issue #47 - Warning if running as root
-* Issue #55 - Multi-reindex
-* Issue #171 - open-browser: admin backend
-* Issue #116 - Added "report_compared_product_index" and "report_viewed_*" tables to "log" group
-* Fixed issue #164 - dev:ide:phpstorm:meta debug mode isn't enough verbose to detect where the problem is
-* Fixed issue #187 - Cache flush is not compatible with older versions of Enterprise
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
