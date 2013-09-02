@@ -16,9 +16,6 @@ Build Status
 .. image:: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5/badge.png
    :target: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5
 
-.. image:: https://poser.pugx.org/n98/magerun/v/stable.png
-   :target: https://packagist.org/packages/n98/magerun
-
 **Development Branch**
 
 .. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=develop
@@ -1170,31 +1167,6 @@ Pre-defined variables:
 * ${magento.edition} -> Magento Edition -> Community or Enterprise
 * ${magerun.version} -> Magerun version i.e. 1.66.0
 * ${php.version}     -> PHP Version
-* ${script.file}     -> Current script file path
-* ${script.dir}      -> Current script file dir
-
-n98-magerun Script Repository
-"""""""""""""""""""""""""""""
-You can organize your scripts in a repository.
-Simply place a script in folder */usr/local/share/n98-magerun/scripts* or in your home dir
-in folder *<HOME>/.n98-magerun/scripts*.
-
-Scripts must have the file extension *.magerun*.
-
-After that you can list all scripts with the *script:repo:list* command.
-The first line of the script can contain a comment (line prefixed with #) which will be displayed as description.
-
-.. code-block:: sh
-
-   $ n98-magerun.phar script:repo:list
-
-If you want to execute a script from repository this can be done by *script:repo:run* command.
-
-.. code-block:: sh
-
-   $ n98-magerun.phar script:repo:run [script]
-
-Script argument is optional. If you don't specify any you can select one from a list.
 
 Autocompletion
 --------------

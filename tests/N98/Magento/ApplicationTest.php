@@ -2,13 +2,11 @@
 
 namespace N98\Magento;
 
-use N98\Util\ArrayFunctions;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
 use N98\Magento\Application;
-use Symfony\Component\Yaml\Yaml;
 
 class ApplicationTest extends TestCase
 {
@@ -29,8 +27,6 @@ class ApplicationTest extends TestCase
         $prefixes = $loader->getPrefixes();
         $this->assertArrayHasKey('N98', $prefixes);
 
-        $distConfigArray = Yaml::parse(file_get_contents(__DIR__ . '/../../../config.yaml'));
-
         $configArray = array(
             'autoloaders' => array(
                 'N98MagerunTest' => __DIR__ . '/_ApplicationTestSrc',
@@ -48,7 +44,7 @@ class ApplicationTest extends TestCase
         );
 
         $application->setAutoExit(false);
-        $application->init(ArrayFunctions::mergeArrays($distConfigArray, $configArray));
+        $application->init($configArray);
         $application->run(new StringInput('list'), new NullOutput());
 
         // Check if autoloaders, commands and aliases are registered

@@ -6,68 +6,12 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 use N98\Util\ArrayFunctions;
 
-/**
- * Config consists of several parts which are merged.
- * The configuration which is global (not Magento project specific) is loaded
- * during construction.
- *
- * As soon as the Magento folder is known, loadStageTwo should be called.
- *
- * The toArray method only works if the Magento folder specific configuration is already loaded.
- *
- * Class ConfigurationLoader
- * @package N98\Magento\Command
- */
 class ConfigurationLoader
 {
-
-    /**
-     * Config passed in the constructor
-     *
-     * @var array
-     */
-    protected $_initialConfig;
-
     /**
      * @var array
      */
-    protected $_configArray = null;
-
-
-    /**
-     * Cache
-     *
-     * @var array
-     */
-    protected $_distConfig;
-
-    /**
-     * Cache
-     *
-     * @var array
-     */
-    protected $_pluginConfig;
-
-    /**
-     * Cache
-     *
-     * @var array
-     */
-    protected $_systemConfig;
-
-    /**
-     * Cache
-     *
-     * @var array
-     */
-    protected $_userConfig;
-
-    /**
-     * Cache
-     *
-     * @var array
-     */
-    protected $_projectConfig;
+    protected $_configArray;
 
     /**
      * @var string
@@ -75,35 +19,18 @@ class ConfigurationLoader
     protected $_customConfigFilename = 'n98-magerun.yaml';
 
     /**
-     * Load config
-     * If $magentoRootFolder is null, only non-project config is loaded
-     *
      * @param array $config
      * @param string $magentoRootFolder
      */
-    public function __construct($config)
+    public function __construct($config, $magentoRootFolder)
     {
-        $this->_initialConfig = $config;
-    }
-
-    public function getPartialConfig()
-    {
-        $config = $this->_initialConfig;
-        $config = $this->loadDistConfig($config);
-        $config = $this->loadSystemConfig($config);
-        $config = $this->loadUserConfig($config);
-        return $config;
-    }
-
-    public function loadStageTwo($magentoRootFolder)
-    {
-        $config = $this->_initialConfig;
         $config = $this->loadDistConfig($config);
         $config = $this->loadPluginConfig($config, $magentoRootFolder);
         $config = $this->loadSystemConfig($config);
         $config = $this->loadUserConfig($config);
         $config = $this->loadProjectConfig($magentoRootFolder, $config);
         $config = $this->initAutoloaders($magentoRootFolder, $config);
+
         $this->_configArray = $config;
     }
 
@@ -119,6 +46,7 @@ class ConfigurationLoader
                 $value = str_replace('%root%', $magentoRootFolder, $value);
             }
         }
+
         return $config;
     }
 
@@ -127,9 +55,6 @@ class ConfigurationLoader
      */
     public function toArray()
     {
-        if ($this->_configArray == null) {
-            throw new \ErrorException('Configuration not yet fully loaded');
-        }
         return $this->_configArray;
     }
 
@@ -140,10 +65,8 @@ class ConfigurationLoader
      */
     protected function loadDistConfig($initConfig)
     {
-        if ($this->_distConfig == null) {
-            $this->_distConfig = Yaml::parse(__DIR__ . '/../../../../config.yaml');
-        }
-        $config = ArrayFunctions::mergeArrays($this->_distConfig, $initConfig);
+        $config = Yaml::parse(__DIR__ . '/../../../../config.yaml');
+        $config = ArrayFunctions::mergeArrays($config, $initConfig);
 
         return $config;
     }
@@ -157,16 +80,14 @@ class ConfigurationLoader
      */
     public function loadSystemConfig($config)
     {
-        if ($this->_systemConfig == null) {
-            $systemWideConfigFile = '/etc/' . $this->_customConfigFilename;
-            if ($systemWideConfigFile && file_exists($systemWideConfigFile)) {
-                $this->_systemConfig = Yaml::parse($systemWideConfigFile);
-            } else {
-                $this->_systemConfig = array();
-            }
+        $systemWideConfigFile = '/etc/' . $this->_customConfigFilename;
+        if ($systemWideConfigFile && file_exists($systemWideConfigFile)) {
+            $systemConfig = Yaml::parse($systemWideConfigFile);
+            $config = ArrayFunctions::mergeArrays($config, $systemConfig);
+
+            return $config;
         }
 
-        $config = ArrayFunctions::mergeArrays($config, $this->_systemConfig);
         return $config;
     }
 
@@ -180,46 +101,43 @@ class ConfigurationLoader
      */
     public function loadPluginConfig($config, $magentoRootFolder)
     {
-        if ($this->_pluginConfig == null) {
-            $this->_pluginConfig = array();
-            $moduleBaseFolders = array();
-            $config['plugin']['folders'][] = getenv('HOME') . '/.n98-magerun/modules';
-            $config['plugin']['folders'][] = $magentoRootFolder . '/lib/n98-magerun/modules';
-            foreach ($config['plugin']['folders'] as $folder) {
-                if (is_dir($folder)) {
-                    $moduleBaseFolders[] = $folder;
-                }
-            }
-
-            if (count($moduleBaseFolders) > 0) {
-                // Glob plugin folders
-                $finder = Finder::create();
-                $finder
-                    ->files()
-                    ->depth(1)
-                    ->followLinks()
-                    ->ignoreUnreadableDirs(true)
-                    ->name('n98-magerun.yaml')
-                    ->in($moduleBaseFolders);
-
-                foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
-                    $this->_pluginConfig = Yaml::parse($file->getRealPath());
-
-                    if (isset($this->_pluginConfig['autoloaders'])) {
-                        foreach ($this->_pluginConfig['autoloaders'] as &$value) {
-                            $replace = array(
-                                '%module%' => $file->getPath(),
-                            );
-
-                            $value = str_replace(array_keys($replace), $replace, $value);
-                        }
-                    }
-
-                }
+        $moduleBaseFolders = array();
+        $config['plugin']['folders'][] = getenv('HOME') . '/.n98-magerun/modules';
+        $config['plugin']['folders'][] = $magentoRootFolder . '/lib/n98-magerun/modules';
+        foreach ($config['plugin']['folders'] as $folder) {
+            if (is_dir($folder)) {
+                $moduleBaseFolders[] = $folder;
             }
         }
 
-        $config = ArrayFunctions::mergeArrays($config, $this->_pluginConfig);
+        if (count($moduleBaseFolders) > 0) {
+            // Glob plugin folders
+            $finder = Finder::create();
+            $finder
+                ->files()
+                ->depth(1)
+                ->followLinks()
+                ->ignoreUnreadableDirs(true)
+                ->name('n98-magerun.yaml')
+                ->in($moduleBaseFolders);
+
+            foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                $moduleConfig = Yaml::parse($file->getRealPath());
+
+                if (isset($moduleConfig['autoloaders'])) {
+                    foreach ($moduleConfig['autoloaders'] as &$value) {
+                        $replace = array(
+                            '%module%' => $file->getPath(),
+                        );
+
+                        $value = str_replace(array_keys($replace), $replace, $value);
+                    }
+                }
+
+                $config = ArrayFunctions::mergeArrays($config, $moduleConfig);
+            }
+        }
+
         return $config;
     }
 
@@ -232,18 +150,13 @@ class ConfigurationLoader
      */
     public function loadUserConfig($config)
     {
-        if ($this->_userConfig == null) {
-            $this->_userConfig = array();
-            $homeDirectory = getenv('HOME');
-            $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
-            if ($homeDirectory && file_exists($personalConfigFile)) {
-                $this->_userConfig = Yaml::parse($personalConfigFile);
-                return $config;
-            }
+        $homeDirectory = getenv('HOME');
+        $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
+        if ($homeDirectory && file_exists($personalConfigFile)) {
+            $personalConfig = Yaml::parse($personalConfigFile);
+            $config = ArrayFunctions::mergeArrays($config, $personalConfig);
+            return $config;
         }
-
-        $config = ArrayFunctions::mergeArrays($config, $this->_userConfig);
-
         return $config;
     }
 
@@ -257,16 +170,12 @@ class ConfigurationLoader
      */
     public function loadProjectConfig($magentoRootFolder, $config)
     {
-        if ($this->_projectConfig == null) {
-            $this->_projectConfig = array();
-            $projectConfigFile = $magentoRootFolder . DIRECTORY_SEPARATOR . 'app/etc/' . $this->_customConfigFilename;
-            if ($projectConfigFile && file_exists($projectConfigFile)) {
-                $this->_projectConfig = Yaml::parse($projectConfigFile);
-                return $config;
-            }
+        $projectConfigFile = $magentoRootFolder . DIRECTORY_SEPARATOR . 'app/etc/' . $this->_customConfigFilename;
+        if ($projectConfigFile && file_exists($projectConfigFile)) {
+            $projectConfig = Yaml::parse($projectConfigFile);
+            $config = ArrayFunctions::mergeArrays($config, $projectConfig);
+            return $config;
         }
-
-        $config = ArrayFunctions::mergeArrays($config, $this->_projectConfig);
         return $config;
     }
 
