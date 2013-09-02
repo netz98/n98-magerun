@@ -1,6 +1,11 @@
 **************
 RECENT CHANGES
 **************
+======
+1.77.1
+======
+
+* Bugfix for project configuration loader
 
 ======
 1.76.0
