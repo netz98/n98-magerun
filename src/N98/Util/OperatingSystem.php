@@ -49,12 +49,14 @@ class OperatingSystem
     }
 
     /**
+     * Detect installed command line utilities
+     *
      * @param string $program
      * @return bool
      */
-    public function isProgramInstalled($program)
+    public static function isProgramInstalled($program)
     {
-        $out = null;
+        $out    = null;
         $return = null;
         @exec('which ' . $program, $out, $return);
 

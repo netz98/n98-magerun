@@ -2,16 +2,18 @@
 
 namespace N98\Magento\Command\Installer;
 
+use Composer\Package\PackageInterface;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Filesystem;
 use N98\Util\OperatingSystem;
 use N98\Util\Database as DatabaseUtils;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * Class InstallCommand
@@ -61,9 +63,10 @@ class InstallCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return int|void
+     * @throws \RuntimeException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -83,8 +86,8 @@ class InstallCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @throws \InvalidArgumentException
      */
     protected function selectMagentoVersion(InputInterface $input, OutputInterface $output)
@@ -129,8 +132,8 @@ class InstallCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      */
     protected function chooseInstallationFolder(InputInterface $input, OutputInterface $output)
     {
@@ -167,8 +170,8 @@ class InstallCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param array $magentoVersionData
-     * @param string $installationFolder
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return bool
      */
     public function downloadMagento(InputInterface $input, OutputInterface $output) {
@@ -216,10 +219,12 @@ class InstallCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      */
     protected function createDatabase(InputInterface $input, OutputInterface $output)
     {
+        /** @var DialogHelper $dialog */
         $dialog = $this->getHelperSet()->get('dialog');
 
         /**
@@ -238,11 +243,7 @@ class InstallCommand extends AbstractMagentoCommand
 
     /**
      * @param OutputInterface $output
-     * @param string $dbHost
-     * @param string $dbUser
-     * @param string $dbPass
-     * @param string $dbName
-     * @return bool|PDO
+     * @return bool|\PDO
      */
     protected function validateDatabaseSettings(OutputInterface $output)
     {
@@ -263,17 +264,19 @@ class InstallCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      */
     protected function installSampleData(InputInterface $input, OutputInterface $output)
     {
-        $magentoPackage = $this->config['magentoPackage']; /* @var $magentoPackage \Composer\Package\MemoryPackage */
+        /* @var $magentoPackage PackageInterface */
+        $magentoPackage = $this->config['magentoPackage'];
         $extra  = $magentoPackage->getExtra();
         if (!isset($extra['sample-data'])) {
             return;
         }
 
+        /** @var DialogHelper $dialog */
         $dialog = $this->getHelperSet()->get('dialog');
 
         $installSampleData = ($input->getOption('installSampleData') !== null) ? $this->_parseBoolOption($input->getOption('installSampleData')) : $dialog->askConfirmation($output, '<question>Install sample data?</question> <comment>[y]</comment>: ');
@@ -313,8 +316,7 @@ class InstallCommand extends AbstractMagentoCommand
                     $sampleDataSqlFile = glob($this->config['installationFolder'] . '/_temp_demo_data/magento_*sample_data*sql');
                     $db = $this->config['db']; /* @var $db \PDO */
                     if (isset($sampleDataSqlFile[0])) {
-                        $os = new OperatingSystem();
-                        if ($os->isProgramInstalled('mysql')) {
+                        if (OperatingSystem::isProgramInstalled('mysql')) {
                             $exec = 'mysql '
                                 . '-h' . escapeshellarg(strval($this->config['db_host']))
                                 . ' '
@@ -374,19 +376,20 @@ class InstallCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return array
      */
     protected function installMagento(InputInterface $input, OutputInterface $output)
     {
         $this->getApplication()->setAutoExit(false);
+        /** @var DialogHelper $dialog */
         $dialog = $this->getHelperSet()->get('dialog');
 
         $defaults = $this->commandConfig['installation']['defaults'];
 
         $useDefaultConfigParams = $this->_parseBoolOption($input->getOption('useDefaultConfigParams'));
-        
+
         $sessionSave = $useDefaultConfigParams ? $defaults['session_save'] : $dialog->ask(
             $output,
             '<question>Please enter the session save:</question> <comment>[' . $defaults['session_save'] . ']</comment>: ',
@@ -522,6 +525,7 @@ class InstallCommand extends AbstractMagentoCommand
         $output->writeln('<comment>' . $installCommand . '</comment>');
         exec($installCommand);
 
+        /** @var DialogHelper $dialog */
         $dialog = $this->getHelperSet()->get('dialog');
 
         /**
@@ -580,7 +584,7 @@ class InstallCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      */
     protected function setDirectoryPermissions($output)
     {
@@ -607,6 +611,7 @@ class InstallCommand extends AbstractMagentoCommand
             $finder->directories()
                 ->ignoreUnreadableDirs(true)
                 ->in(array($varFolder, $mediaFolder));
+            /** @var SplFileInfo $dir */
             foreach ($finder as $dir) {
                 @chmod($dir->getRealpath(), 0777);
             }
