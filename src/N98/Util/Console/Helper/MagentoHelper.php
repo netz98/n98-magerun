@@ -5,7 +5,6 @@ namespace N98\Util\Console\Helper;
 use N98\Magento\Application;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 
 class MagentoHelper extends AbstractHelper
 {
@@ -161,10 +160,8 @@ class MagentoHelper extends AbstractHelper
             ->in($searchFolder);
 
         if ($finder->count() >= 2) {
-            /** @var SplFileInfo[] $files */
+            /** @var \Symfony\Component\Finder\SplFileInfo[] $files */
             $files = iterator_to_array($finder, false);
-            /* @var $file \SplFileInfo */
-
             if (count($files) == 2) {
                 // Magento 2 has no skin folder.
                 // @TODO find a better magento 2.x check
