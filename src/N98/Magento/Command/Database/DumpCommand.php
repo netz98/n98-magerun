@@ -39,7 +39,7 @@ class DumpCommand extends AbstractDatabaseCommand
             ->addOption('stdout', null, InputOption::VALUE_NONE, 'Dump to stdout')
             ->addOption('strip', 's', InputOption::VALUE_OPTIONAL, 'Tables to strip (dump only structure of those tables)')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not prompt if all options are defined')
-            ->addOption('data-to-csv', 'd', InputOption::VALUE_NONE, 'Dump table data to csv files.')
+            ->addOption('data-to-csv', 'd', InputOption::VALUE_NONE, 'Dump table data to csv files')
             ->setDescription('Dumps database with mysqldump cli client according to information from local.xml');
     }
 
@@ -219,8 +219,12 @@ class DumpCommand extends AbstractDatabaseCommand
      */
     protected function getExecToDumpDbStructureOnly($dumpOptions, array $stripTables)
     {
-        $exec = 'mysqldump ' . $dumpOptions . '--no-data ' . $this->getMysqlClientToolConnectionString();
-        $exec .= ' ' . implode(' ', $stripTables);
+        $ignore = '';
+        foreach ($stripTables as $stripTable) {
+            $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $stripTable . ' ';
+        }
+
+        $exec = 'mysqldump ' . $dumpOptions . '--no-data ' . $ignore. $this->getMysqlClientToolConnectionString();
 
         return $exec;
     }
@@ -254,7 +258,7 @@ class DumpCommand extends AbstractDatabaseCommand
      */
     protected function getExecToDumpDbDataAsCsv($folderName, array $stripTables)
     {
-        $mysqlTmpDir = $this->detectMysqlTmpDir();
+        $mysqlTmpDir = $this->getMysqlVariableValue('tmpdir');
         if (!$mysqlTmpDir) {
             throw new \Exception('No mysql tmpdir detected.');
         }
@@ -296,7 +300,6 @@ SQL;
         return $execs;
     }
 
-
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
@@ -313,7 +316,7 @@ SQL;
                 $output->writeln($exec);
             }
         } else {
-            if (!$input->getOption('stdout') && !$input->getOption('only-command')) {
+            if (!$input->getOption('stdout')) {
                 if ($input->getOption('data-to-csv')) {
                     if ($compressor instanceof Uncompressed) {
                         $output->writeln('<comment>Start dumping database <info>' . $this->dbSettings['dbname']
@@ -327,7 +330,8 @@ SQL;
                             . '</info>'
                         );
                         $output->writeln('Both table structure sql dump and data files in csv format will be '
-                            . 'saved to the file <info>' . $compressor->getFileName($fileName) . '</info></comment>'
+                            . 'saved to the file <info>' . $compressor->getFileName($fileName, false)
+                            . '</info></comment>'
                         );
                     }
                 } else {

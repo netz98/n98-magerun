@@ -228,11 +228,12 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
     /**
      * Get mysql tmpdir
      *
+     * @param string $variable
      * @return bool|string
      */
-    protected function detectMysqlTmpDir()
+    protected function getMysqlVariableValue($variable)
     {
-        $exec = 'mysql ' . $this->getMysqlClientToolConnectionString() . " -e 'SELECT @@tmpdir;'";
+        $exec = 'mysql ' . $this->getMysqlClientToolConnectionString() . " -e 'SELECT @@{$variable};'";
 
         exec($exec, $commandOutput, $returnValue);
         if (isset($commandOutput[1])) {
