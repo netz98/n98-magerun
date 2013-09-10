@@ -203,10 +203,10 @@ class ConfigurationLoader
                     ->in($moduleBaseFolders);
 
                 foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
-                    $this->_pluginConfig = Yaml::parse($file->getRealPath());
+                    $localPluginConfig = Yaml::parse($file->getRealPath());
 
-                    if (isset($this->_pluginConfig['autoloaders'])) {
-                        foreach ($this->_pluginConfig['autoloaders'] as &$value) {
+                    if (isset($localPluginConfig['autoloaders'])) {
+                        foreach ($localPluginConfig['autoloaders'] as &$value) {
                             $replace = array(
                                 '%module%' => $file->getPath(),
                             );
@@ -215,11 +215,13 @@ class ConfigurationLoader
                         }
                     }
 
+                    $this->_pluginConfig = ArrayFunctions::mergeArrays($this->_pluginConfig, $localPluginConfig);
                 }
             }
         }
 
         $config = ArrayFunctions::mergeArrays($config, $this->_pluginConfig);
+
         return $config;
     }
 
