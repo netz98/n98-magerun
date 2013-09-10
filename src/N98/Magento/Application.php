@@ -526,11 +526,11 @@ class Application extends BaseApplication
             $this->dispatcher = new EventDispatcher();
             $this->setDispatcher($this->dispatcher);
             $this->registerEventSubscribers();
-            $this->registerHelpers();
             if ($this->autoloader) {
                 $this->registerCustomAutoloaders();
                 $this->registerCustomCommands();
             }
+            $this->registerHelpers();
 
             $this->_isInitialized = true;
         }
