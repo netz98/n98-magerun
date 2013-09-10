@@ -101,7 +101,7 @@ class ConfigurationLoader
         $config = $this->loadDistConfig($config);
         $config = $this->loadPluginConfig($config, $magentoRootFolder);
         $config = $this->loadSystemConfig($config);
-        $config = $this->loadUserConfig($config);
+        $config = $this->loadUserConfig($config, $magentoRootFolder);
         $config = $this->loadProjectConfig($magentoRootFolder, $config);
         $config = $this->initAutoloaders($magentoRootFolder, $config);
         $this->_configArray = $config;
@@ -203,18 +203,8 @@ class ConfigurationLoader
                     ->in($moduleBaseFolders);
 
                 foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
-                    $localPluginConfig = Yaml::parse($file->getRealPath());
-
-                    if (isset($localPluginConfig['autoloaders'])) {
-                        foreach ($localPluginConfig['autoloaders'] as &$value) {
-                            $replace = array(
-                                '%module%' => $file->getPath(),
-                            );
-
-                            $value = str_replace(array_keys($replace), $replace, $value);
-                        }
-                    }
-
+                    $localPluginConfig = \file_get_contents($file->getRealPath());
+                    $localPluginConfig = Yaml::parse($this->applyVariables($localPluginConfig, $magentoRootFolder, $file));
                     $this->_pluginConfig = ArrayFunctions::mergeArrays($this->_pluginConfig, $localPluginConfig);
                 }
             }
@@ -226,20 +216,41 @@ class ConfigurationLoader
     }
 
     /**
+     * @param string                                $rawConfig
+     * @param string                                $magentoRootFolder
+     * @param \Symfony\Component\Finder\SplFileInfo $file
+     *
+     * @return string
+     */
+    protected function applyVariables($rawConfig, $magentoRootFolder, $file = null)
+    {
+        $replace = array(
+            '%module%' => $file ? $file->getPath() : '',
+            '%root%'   => $magentoRootFolder,
+        );
+
+        return str_replace(array_keys($replace), $replace, $rawConfig);
+    }
+
+
+    /**
      * Check if there is a user config file. ~/.n98-magerun.yaml
      *
-     * @param array $config
+     * @param array  $config
+     * @param string $magentoRootFolder
      *
      * @return array
      */
-    public function loadUserConfig($config)
+    public function loadUserConfig($config, $magentoRootFolder = null)
     {
         if ($this->_userConfig == null) {
             $this->_userConfig = array();
             $homeDirectory = getenv('HOME');
             $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
             if ($homeDirectory && file_exists($personalConfigFile)) {
-                $this->_userConfig = Yaml::parse($personalConfigFile);
+                $userConfig = $this->applyVariables(\file_get_contents($personalConfigFile), $magentoRootFolder, null);
+                $this->_userConfig = Yaml::parse($userConfig);
+
                 return $config;
             }
         }
@@ -263,7 +274,8 @@ class ConfigurationLoader
             $this->_projectConfig = array();
             $projectConfigFile = $magentoRootFolder . DIRECTORY_SEPARATOR . 'app/etc/' . $this->_customConfigFilename;
             if ($projectConfigFile && file_exists($projectConfigFile)) {
-                $this->_projectConfig = Yaml::parse($projectConfigFile);
+                $projectConfig = $this->applyVariables(\file_get_contents($projectConfigFile), $magentoRootFolder, null);
+                $this->_projectConfig = Yaml::parse($projectConfig);
                 return $config;
             }
         }
