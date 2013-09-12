@@ -141,9 +141,7 @@ class ConflictsCommand extends AbstractRewriteCommand
                 if (class_exists($classes[$i])
                     && class_exists($classes[$i + 1])
                 ) {
-                    $firstClass = new $classes[$i];
-                    $nextClass = new $classes[$i + 1];
-                    if (! ($firstClass instanceof $nextClass)) {
+                    if (! is_a($classes[$i], $classes[$i + 1], true)) {
                         return true;
                     }
                 }
