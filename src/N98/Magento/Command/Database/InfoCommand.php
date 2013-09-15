@@ -46,7 +46,7 @@ class InfoCommand extends AbstractDatabaseCommand
         );
         $output->writeln(str_pad('JDBC-Connection-String', 25, ' ') . ': ' . $jdbcConnectionString);
 
-        $mysqlCliString = 'mysql ' . $this->getMysqlClientToolConnectionString();
+        $mysqlCliString = 'mysql ' . $this->getHelper('database')->getMysqlClientToolConnectionString();
 
         $output->writeln(str_pad('MySQL-Cli-String', 25, ' ') . ': ' . $mysqlCliString);
     }

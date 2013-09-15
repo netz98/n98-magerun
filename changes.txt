@@ -7,6 +7,9 @@ RECENT CHANGES
 ======
 
 * New database console helper
+  with new functions:
+  - mysqlUserHasPrivilege
+
 * Feature: #212 admin:user:create - allow assigning an existing role (by Alexander Menk)
 * Fixed: Project configuration loader
 * Fixed: LogicException thrown by script:repo:list where no script directories exist (by David Alger)

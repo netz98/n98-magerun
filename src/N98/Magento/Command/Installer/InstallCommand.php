@@ -77,6 +77,7 @@ class InstallCommand extends AbstractMagentoCommand
         $this->downloadMagento($input, $output);
         $this->createDatabase($input, $output);
         $this->installSampleData($input, $output);
+        $this->removeEmptyFolders();
         $this->setDirectoryPermissions($output);
         $this->installMagento($input, $output, $this->config['installationFolder']);
     }
@@ -278,23 +279,24 @@ class InstallCommand extends AbstractMagentoCommand
         $installSampleData = ($input->getOption('installSampleData') !== null) ? $this->_parseBoolOption($input->getOption('installSampleData')) : $dialog->askConfirmation($output, '<question>Install sample data?</question> <comment>[y]</comment>: ');
 
         if ($installSampleData) {
+            $filesystem = new Filesystem();
+
             foreach ($this->commandConfig['demo-data-packages'] as $demoPackageData) {
                 if ($demoPackageData['name'] == $extra['sample-data']) {
                     $package = $this->downloadByComposerConfig(
                         $input,
                         $output,
                         $demoPackageData,
-                        $this->config['installationFolder'],
+                        $this->config['installationFolder'] . '/_temp_demo_data',
                         false
                     );
 
                     $this->_fixComposerExtractionBug();
 
                     $expandedFolder = $this->config['installationFolder']
-                        . DIRECTORY_SEPARATOR
-                        . str_replace(array('.tar.gz', '.tar.bz2', '.zip'), '', basename($package->getDistUrl()));
+                                    . '/_temp_demo_data/'
+                                    . str_replace(array('.tar.gz', '.tar.bz2', '.zip'), '', basename($package->getDistUrl()));
                     if (is_dir($expandedFolder)) {
-                        $filesystem = new Filesystem();
                         $filesystem->recursiveCopy(
                             $expandedFolder,
                             $this->config['installationFolder']
@@ -302,8 +304,13 @@ class InstallCommand extends AbstractMagentoCommand
                         $filesystem->recursiveRemoveDirectory($expandedFolder);
                     }
 
+                    // Remove empty folder
+                    if (is_dir($this->config['installationFolder'] . '/vendor/composer')) {
+                        $filesystem->recursiveRemoveDirectory($this->config['installationFolder'] . '/vendor/composer');
+                    }
+
                     // Install sample data
-                    $sampleDataSqlFile = glob($this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'magento_*sample_data*sql');
+                    $sampleDataSqlFile = glob($this->config['installationFolder'] . '/_temp_demo_data/magento_*sample_data*sql');
                     $db = $this->config['db']; /* @var $db \PDO */
                     if (isset($sampleDataSqlFile[0])) {
                         if (OperatingSystem::isProgramInstalled('mysql')) {
@@ -328,20 +335,40 @@ class InstallCommand extends AbstractMagentoCommand
                     }
                 }
             }
+
+            if (is_dir($this->config['installationFolder'] . '/_temp_demo_data')) {
+                $filesystem->recursiveRemoveDirectory($this->config['installationFolder'] . '/_temp_demo_data');
+            }
         }
     }
 
     protected function _fixComposerExtractionBug()
     {
-        $mediaFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'media';
-        $wrongFolder = $mediaFolder . DIRECTORY_SEPARATOR . 'media';
+        $filesystem = new Filesystem();
+
+        $mediaFolder = $this->config['installationFolder'] . '/media';
+        $wrongFolder = $this->config['installationFolder'] . '/_temp_demo_data/media';
         if (is_dir($wrongFolder)) {
-            $filesystem = new Filesystem();
             $filesystem->recursiveCopy(
                 $wrongFolder,
                 $mediaFolder
             );
             $filesystem->recursiveRemoveDirectory($wrongFolder);
+        }
+    }
+
+    /**
+     * Remove empty composer extraction folder
+     */
+    protected function removeEmptyFolders()
+    {
+        if (is_dir(getcwd() . '/vendor')) {
+            $finder = new Finder();
+            $finder->files()->depth(3)->in(getcwd() . '/vendor');
+            if ($finder->count() == 0) {
+                $filesystem = new Filesystem();
+                $filesystem->recursiveRemoveDirectory(getcwd() . '/vendor');
+            }
         }
     }
 
