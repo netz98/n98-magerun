@@ -194,7 +194,7 @@ class DatabaseHelper extends AbstractHelper
      */
     public function getMysqlVariableValue($variable)
     {
-        $statement = $this->_getConnection()->query("SELECT @@{$variable};");
+        $statement = $this->getConnection()->query("SELECT @@{$variable};");
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
         if ($result) {
             return $result;
