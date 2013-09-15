@@ -19,7 +19,9 @@ class EventSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array('console.run.before' => 'checkRunningAsRootUser');
+        return array(
+            'console.run.before' => 'checkRunningAsRootUser'
+        );
     }
 
     /**

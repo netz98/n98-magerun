@@ -26,12 +26,10 @@ class OpenBrowserCommand extends AbstractMagentoCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $os = new OperatingSystem();
-
         $opener = '';
-        if ($os->isMacOs()) {
+        if (OperatingSystem::isMacOs()) {
             $opener = 'open';
-        } elseif ($os->isWindows()) {
+        } elseif (OperatingSystem::isWindows()) {
             $opener = 'start';
         } else {
             // Linux

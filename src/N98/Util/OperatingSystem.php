@@ -52,7 +52,7 @@ class OperatingSystem
      * @param string $program
      * @return bool
      */
-    public function isProgramInstalled($program)
+    public static function isProgramInstalled($program)
     {
         $out = null;
         $return = null;

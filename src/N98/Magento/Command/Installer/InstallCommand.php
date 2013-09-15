@@ -3,15 +3,15 @@
 namespace N98\Magento\Command\Installer;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\Database as DatabaseUtils;
 use N98\Util\Filesystem;
 use N98\Util\OperatingSystem;
-use N98\Util\Database as DatabaseUtils;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Class InstallCommand
@@ -313,8 +313,7 @@ class InstallCommand extends AbstractMagentoCommand
                     $sampleDataSqlFile = glob($this->config['installationFolder'] . '/_temp_demo_data/magento_*sample_data*sql');
                     $db = $this->config['db']; /* @var $db \PDO */
                     if (isset($sampleDataSqlFile[0])) {
-                        $os = new OperatingSystem();
-                        if ($os->isProgramInstalled('mysql')) {
+                        if (OperatingSystem::isProgramInstalled('mysql')) {
                             $exec = 'mysql '
                                 . '-h' . escapeshellarg(strval($this->config['db_host']))
                                 . ' '

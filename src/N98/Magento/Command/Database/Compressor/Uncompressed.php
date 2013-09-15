@@ -19,17 +19,18 @@ class Uncompressed extends AbstractCompressor
     /**
      * Returns the command line for decompressing the dump file.
      *
-     * @param string $mysqlCmd MySQL client tool connection string
+     * @param string $command MySQL client tool connection string
      * @param string $fileName Filename (shell argument escaped)
+     * @param bool $pipe
      * @return string
      */
-    public function getDecompressingCommand($mysqlCmd, $fileName)
+    public function getDecompressingCommand($command, $fileName, $pipe = true)
     {
         if ($this->hasPipeViewer()) {
-            return 'pv ' . $fileName . ' | ' . $mysqlCmd;
+            return 'pv ' . $fileName . ' | ' . $command;
         }
 
-        return $mysqlCmd . ' < ' . $fileName;
+        return $command . ' < ' . $fileName;
     }
 
     /**

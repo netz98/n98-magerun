@@ -37,7 +37,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.77.0';
+    const APP_VERSION = '1.78.0';
 
     /**
      * @var string
@@ -186,7 +186,9 @@ class Application extends BaseApplication
         $helperSet->set(new TwigHelper($twigBaseDirs), 'twig');
 
         foreach ($this->config['helpers'] as $helperName => $helperClass) {
-            $helperSet->set(new $helperClass(), $helperName);
+            if (class_exists($helperClass)) {
+                $helperSet->set(new $helperClass(), $helperName);
+            }
         }
     }
 
@@ -526,11 +528,11 @@ class Application extends BaseApplication
             $this->dispatcher = new EventDispatcher();
             $this->setDispatcher($this->dispatcher);
             $this->registerEventSubscribers();
-            $this->registerHelpers();
             if ($this->autoloader) {
                 $this->registerCustomAutoloaders();
                 $this->registerCustomCommands();
             }
+            $this->registerHelpers();
 
             $this->_isInitialized = true;
         }

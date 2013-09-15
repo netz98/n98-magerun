@@ -1,0 +1,293 @@
+<?php
+
+namespace N98\Util\Console\Helper;
+
+use Symfony\Component\Console\Helper\Helper as AbstractHelper;
+use N98\Util\Console\Helper\MagentoHelper;
+use N98\Magento\Application;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class DatabaseHelper extends AbstractHelper
+{
+    /**
+     * @var array
+     */
+    protected $dbSettings = null;
+
+    /**
+     * @var bool
+     */
+    protected $isSocketConnect = false;
+
+    /**
+     * @var \PDO
+     */
+    protected $_connection = null;
+
+    /**
+     * @param OutputInterface $output
+     * @param bool            $silent
+     */
+    public function detectDbSettings(OutputInterface $output, $silent = true)
+    {
+        if ($this->dbSettings == null) {
+            $command = $this->getHelperSet()->getCommand();
+            if ($command == null) {
+                $application = new Application();
+            } else {
+                $application = $command->getApplication(); /* @var $application Application */
+            }
+            $application->detectMagento();
+
+            $configFile = $application->getMagentoRootFolder() . '/app/etc/local.xml';
+
+            $config = simplexml_load_file($configFile, 'SimpleXMLElement', LIBXML_NOCDATA);
+            if (!$config->global->resources->default_setup->connection) {
+                $output->writeln('<error>DB settings was not found in local.xml file</error>');
+                return;
+            }
+            $this->dbSettings = (array) $config->global->resources->default_setup->connection;
+            if (isset($this->dbSettings['comment'])) {
+                unset($this->dbSettings['comment']);
+            }
+
+            if (isset($this->dbSettings['unix_socket'])) {
+                $this->isSocketConnect = true;
+            }
+        }
+    }
+
+    /**
+     * Connects to the database without initializing magento
+     *
+     * @return \PDO
+     * @throws \Exception
+     */
+    public function getConnection(OutputInterface $output = null)
+    {
+        if ($output == null) {
+            $output = new NullOutput();
+        }
+
+        if ($this->_connection) {
+            return $this->_connection;
+        }
+
+        $this->detectDbSettings($output);
+
+        if (!extension_loaded('pdo_mysql')) {
+            throw new \Exception('pdo_mysql extension is not installed');
+        }
+
+        if (strpos($this->dbSettings['host'], '/') !== false) {
+            $this->dbSettings['unix_socket'] = $this->dbSettings['host'];
+            unset($this->dbSettings['host']);
+        } else if (strpos($this->dbSettings['host'], ':') !== false) {
+            list($this->dbSettings['host'], $this->dbSettings['port']) = explode(':', $this->dbSettings['host']);
+        }
+
+        $this->_connection = new \PDO(
+            $this->dsn(),
+            $this->dbSettings['username'],
+            $this->dbSettings['password']
+        );
+
+        /** @link http://bugs.mysql.com/bug.php?id=18551 */
+        $this->_connection->query("SET SQL_MODE=''");
+
+        try {
+            $this->_connection->query('USE `'.$this->dbSettings['dbname'].'`');
+        } catch(\PDOException $e) {
+        }
+
+        $this->_connection->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
+        $this->_connection->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+
+        return $this->_connection;
+    }
+
+    /**
+     * Creates a PDO DSN for the adapter from $this->_config settings.
+     *
+     * @see Zend_Db_Adapter_Pdo_Abstract
+     * @return string
+     */
+    public function dsn()
+    {
+        $this->detectDbSettings(new NullOutput());
+
+        // baseline of DSN parts
+        $dsn = $this->dbSettings;
+
+        // don't pass the username, password, charset, database, persistent and driver_options in the DSN
+        unset($dsn['username']);
+        unset($dsn['password']);
+        unset($dsn['options']);
+        unset($dsn['charset']);
+        unset($dsn['persistent']);
+        unset($dsn['driver_options']);
+        unset($dsn['dbname']);
+
+        // use all remaining parts in the DSN
+        $buildDsn = array();
+        foreach ($dsn as $key => $val) {
+            if (is_array($val)) {
+                continue;
+            }
+            $buildDsn[$key] = "$key=$val";
+        }
+
+        return 'mysql:' . implode(';', $buildDsn);
+    }
+
+    /**
+     * Check whether current mysql user has $privilege privilege
+     *
+     * @param string $privilege
+     * @return bool
+     */
+    public function mysqlUserHasPrivilege($privilege)
+    {
+        $statement = $this->getConnection()->query('SHOW GRANTS');
+
+        $result = $statement->fetchAll(\PDO::FETCH_COLUMN);
+        foreach ($result as $row) {
+            if (preg_match('/^GRANT(.*)' . strtoupper($privilege) .'/', $row)
+                || preg_match('/^GRANT(.*)ALL/', $row)
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMysqlClientToolConnectionString()
+    {
+        $this->detectDbSettings(new NullOutput());
+
+        if ($this->isSocketConnect) {
+            $string = '--socket=' . escapeshellarg(strval($this->dbSettings['unix_socket']));
+        } else {
+            $string = '-h' . escapeshellarg(strval($this->dbSettings['host']));
+        }
+
+        $string .= ' '
+            . '-u' . escapeshellarg(strval($this->dbSettings['username']))
+            . ' '
+            . (isset($this->dbSettings['port']) ? '-P' . escapeshellarg($this->dbSettings['port']) . ' ' : '')
+            . (!strval($this->dbSettings['password'] == '') ? '-p' . escapeshellarg($this->dbSettings['password']) . ' ' : '')
+            . escapeshellarg(strval($this->dbSettings['dbname']));
+
+        return $string;
+    }
+
+    /**
+     * Get mysql variable value
+     *
+     * @param string $variable
+     * @return bool|string
+     */
+    public function getMysqlVariableValue($variable)
+    {
+        $statement = $this->getConnection()->query("SELECT @@{$variable};");
+        $result = $statement->fetch(\PDO::FETCH_ASSOC);
+        if ($result) {
+            return $result;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array $list
+     * @param array $definitions
+     * @param array $resolved Which definitions where already resolved -> prevent endless loops
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function resolveTables(array $list, array $definitions = array(), array $resolved = array())
+    {
+        $resolvedList = array();
+        foreach ($list as $entry) {
+            if (substr($entry, 0, 1) == '@') {
+                $code = substr($entry, 1);
+                if (!isset($definitions[$code])) {
+                    throw new \Exception('Table-groups could not be resolved: '.$entry);
+                }
+                if (!isset($resolved[$code])) {
+                    $resolved[$code] = true;
+                    $tables = $this->resolveTables(explode(' ', $definitions[$code]['tables']), $definitions, $resolved);
+                    $resolvedList = array_merge($resolvedList, $tables);
+                }
+                continue;
+            }
+
+            // resolve wildcards
+            if (strpos($entry, '*') !== false) {
+                $connection = $this->getConnection();
+                $sth = $connection->prepare('SHOW TABLES LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+                $sth->execute(
+                    array(':like' => str_replace('*', '%', $entry))
+                );
+                $rows = $sth->fetchAll();
+                foreach ($rows as $row) {
+                    $resolvedList[] = $row[0];
+                }
+                continue;
+            }
+
+            $resolvedList[] = $entry;
+        }
+
+        asort($resolvedList);
+        $resolvedList = array_unique($resolvedList);
+
+        return $resolvedList;
+    }
+
+    /**
+     * Get list of db tables
+     *
+     * @return bool|array
+     */
+    public function getTables()
+    {
+        $statement = $this->getConnection()->query('SHOW TABLES');
+
+        return $statement->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
+    /**
+     * @return array
+     */
+    public function getDbSettings()
+    {
+        return $this->dbSettings;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsSocketConnect()
+    {
+        return $this->isSocketConnect;
+    }
+
+    /**
+     * Returns the canonical name of this helper.
+     *
+     * @return string The canonical name
+     *
+     * @api
+     */
+    public function getName()
+    {
+        return 'database';
+    }
+}

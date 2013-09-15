@@ -40,7 +40,7 @@ class ImportCommand extends AbstractDatabaseCommand
 
         // create import command
         $exec = $compressor->getDecompressingCommand(
-            'mysql ' . $this->getMysqlClientToolConnectionString(),
+            'mysql ' . $this->getHelper('database')->getMysqlClientToolConnectionString(),
             escapeshellarg($fileName)
         );
 

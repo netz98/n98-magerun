@@ -3,34 +3,18 @@ RECENT CHANGES
 **************
 
 ======
-1.77.0
+1.78.0
 ======
 
-* New commands to embedded composer:
-  - composer:init
-  - composer:install
-  - composer:require
-  - composer:update
-  - composer:validate
-  - composer:search
-  - composer:diagnose
-* New script repository commands (by Christian Münch)
-* Enhanced Folder Detection (by Alexander Menk)
-* Ability to add helpers by config - Issue #204 (by Christian Münch)
-* Moved command registration out to dist config.
-* Added new script variables
-* Updated Symfony dependencies
-* Support for Symfony Console Events / Added Event Dispatcher
+* New database console helper
+  with new functions (by Dmitriy Zavalkin):
+  - mysqlUserHasPrivilege
+  - getMysqlVariableValue
 
-======
-1.76.0
-======
-
-* New commands dev:module:dependencies:on and dev:module:dependencies:from (by Dmitriy Zavalkin)
-* Fixed issue #202 - Permission error on Nexcess servers
-* Fixed issue #194 - Exported setup script with attribute uses incorrect Setup class (by Jonathan Day)
-* Fixed issue #197 - Doesn't run when /tmp/magento/var exists and database is not created / tables missing
-* Fixed issue #199 - Error with dev:module:rewrite:conflicts
+* Feature: #212 admin:user:create - allow assigning an existing role (by Alexander Menk)
+* Fixed: Project configuration loader
+* Fixed: LogicException thrown by script:repo:list where no script directories exist (by David Alger)
+* Fixed issue #185 - Dont instantiate classes when checking inheritance (by Luke Rotherfield)
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H

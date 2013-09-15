@@ -33,7 +33,7 @@ class ConsoleCommand extends AbstractDatabaseCommand
            2 => STDERR
         );
 
-        $exec = 'mysql ' . $this->getMysqlClientToolConnectionString();
+        $exec = 'mysql ' . $this->getHelper('database')->getMysqlClientToolConnectionString();
 
         $pipes = array();
         proc_open($exec, $descriptorSpec, $pipes);
