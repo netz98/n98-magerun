@@ -2,6 +2,7 @@
 
 namespace N98\Util\Console\Helper;
 
+use N98\Magento\Application;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use Symfony\Component\Finder\Finder;
 
@@ -15,7 +16,7 @@ class MagentoHelper extends AbstractHelper
     /**
      * @var
      */
-    protected $_magentoMajorVersion = \N98\Magento\Application::MAGENTO_MAJOR_VERSION_1;
+    protected $_magentoMajorVersion = Application::MAGENTO_MAJOR_VERSION_1;
 
     /**
      * @var bool
@@ -142,7 +143,8 @@ class MagentoHelper extends AbstractHelper
     }
 
     /**
-     * @param $searchFolder
+     * @param string $searchFolder
+     * @return bool
      */
     protected function _search($searchFolder)
     {
@@ -158,13 +160,12 @@ class MagentoHelper extends AbstractHelper
             ->in($searchFolder);
 
         if ($finder->count() >= 2) {
+            /** @var \Symfony\Component\Finder\SplFileInfo[] $files */
             $files = iterator_to_array($finder, false);
-            /* @var $file \SplFileInfo */
-
             if (count($files) == 2) {
                 // Magento 2 has no skin folder.
                 // @TODO find a better magento 2.x check
-                $this->_magentoMajorVersion = \N98\Magento\Application::MAGENTO_MAJOR_VERSION_2;
+                $this->_magentoMajorVersion = Application::MAGENTO_MAJOR_VERSION_2;
             }
 
             $this->_magentoRootFolder = dirname($files[0]->getRealPath());

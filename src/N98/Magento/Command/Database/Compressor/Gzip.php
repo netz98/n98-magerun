@@ -23,17 +23,27 @@ class Gzip extends AbstractCompressor
     /**
      * Returns the command line for decompressing the dump file.
      *
-     * @param string $mysqlCmd MySQL client tool connection string
+     * @param string $command
      * @param string $fileName Filename (shell argument escaped)
+     * @param bool $pipe
      * @return string
      */
-    public function getDecompressingCommand($mysqlCmd, $fileName)
+    public function getDecompressingCommand($command, $fileName, $pipe = true)
     {
-        if ($this->hasPipeViewer()) {
-            return 'pv -cN gzip ' . $fileName . ' | gzip -d | pv -cN mysql | ' . $mysqlCmd;
-        }
+        if ($pipe) {
+            if ($this->hasPipeViewer()) {
+                return 'pv -cN gzip ' . escapeshellarg($fileName) . ' | gzip -d | pv -cN ' . $command;
+            }
 
-        return 'gzip -dc < ' . $fileName . ' | ' . $mysqlCmd;
+            return 'gzip -dc < ' . escapeshellarg($fileName) . ' | ' . $command;
+        } else {
+            if ($this->hasPipeViewer()) {
+                return 'pv -cN tar -zxf ' . escapeshellarg($fileName) . ' && pv -cN ' . $command;
+            }
+
+            return 'tar -zxf ' . escapeshellarg($fileName) . ' -C ' . dirname($fileName) . ' && ' . $command . ' < '
+                . escapeshellarg(substr($fileName, 0, -4));
+        }
     }
 
     /**

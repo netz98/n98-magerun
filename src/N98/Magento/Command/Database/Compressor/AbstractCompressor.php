@@ -18,11 +18,12 @@ abstract class AbstractCompressor
     /**
      * Returns the command line for decompressing the dump file.
      *
-     * @param string $mysqlCmd MySQL client tool connection string
+     * @param string $command MySQL client tool connection string
      * @param string $fileName Filename (shell argument escaped)
+     * @param bool $pipe
      * @return string
      */
-    abstract public function getDecompressingCommand($mysqlCmd, $fileName);
+    abstract public function getDecompressingCommand($command, $fileName, $pipe = true);
 
     /**
      * Returns the file name for the compressed dump file.
@@ -34,6 +35,8 @@ abstract class AbstractCompressor
     abstract public function getFileName($fileName, $pipe = true);
 
     /**
+     * Check whether pv is installed
+     *
      * @return bool
      */
     protected function hasPipeViewer()
@@ -42,6 +45,6 @@ abstract class AbstractCompressor
             return false;
         }
 
-        return `which pv` != '';
+        return OperatingSystem::isProgramInstalled('pv');
     }
 }
