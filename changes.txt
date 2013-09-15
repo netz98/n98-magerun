@@ -7,8 +7,9 @@ RECENT CHANGES
 ======
 
 * New database console helper
-  with new functions:
+  with new functions (by Dmitriy Zavalkin):
   - mysqlUserHasPrivilege
+  - getMysqlVariableValue
 
 * Feature: #212 admin:user:create - allow assigning an existing role (by Alexander Menk)
 * Fixed: Project configuration loader
