@@ -577,7 +577,7 @@ Create admin user
 
 .. code-block:: sh
 
-   $ n98-magerun.phar admin:user:create [username] [email] [password] [firstname] [lastname]
+   $ n98-magerun.phar admin:user:create [username] [email] [password] [firstname] [lastname] [role]
 
 
 Change admin user password
