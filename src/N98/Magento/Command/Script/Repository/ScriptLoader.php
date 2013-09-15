@@ -35,8 +35,10 @@ class ScriptLoader
                 unset($this->_scriptFolders[$key]);
             }
         }
-
-        $this->findScripts();
+        
+        if (count($this->_scriptFolders)) {
+            $this->findScripts();
+        }
     }
 
     protected function findScripts()
