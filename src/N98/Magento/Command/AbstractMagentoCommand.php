@@ -339,4 +339,17 @@ abstract class AbstractMagentoCommand extends Command
 
         return 'inactive';
     }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int
+     */
+    public function run(InputInterface $input, OutputInterface $output)
+    {
+        $this->getHelperSet()->setCommand($this);
+
+        return parent::run($input, $output);
+    }
 }

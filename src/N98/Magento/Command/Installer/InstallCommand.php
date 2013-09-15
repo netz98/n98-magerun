@@ -3,15 +3,15 @@
 namespace N98\Magento\Command\Installer;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\Database as DatabaseUtils;
 use N98\Util\Filesystem;
 use N98\Util\OperatingSystem;
-use N98\Util\Database as DatabaseUtils;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Class InstallCommand
@@ -77,7 +77,6 @@ class InstallCommand extends AbstractMagentoCommand
         $this->downloadMagento($input, $output);
         $this->createDatabase($input, $output);
         $this->installSampleData($input, $output);
-        $this->removeEmptyFolders();
         $this->setDirectoryPermissions($output);
         $this->installMagento($input, $output, $this->config['installationFolder']);
     }
@@ -279,24 +278,23 @@ class InstallCommand extends AbstractMagentoCommand
         $installSampleData = ($input->getOption('installSampleData') !== null) ? $this->_parseBoolOption($input->getOption('installSampleData')) : $dialog->askConfirmation($output, '<question>Install sample data?</question> <comment>[y]</comment>: ');
 
         if ($installSampleData) {
-            $filesystem = new Filesystem();
-
             foreach ($this->commandConfig['demo-data-packages'] as $demoPackageData) {
                 if ($demoPackageData['name'] == $extra['sample-data']) {
                     $package = $this->downloadByComposerConfig(
                         $input,
                         $output,
                         $demoPackageData,
-                        $this->config['installationFolder'] . '/_temp_demo_data',
+                        $this->config['installationFolder'],
                         false
                     );
 
                     $this->_fixComposerExtractionBug();
 
                     $expandedFolder = $this->config['installationFolder']
-                                    . '/_temp_demo_data/'
-                                    . str_replace(array('.tar.gz', '.tar.bz2', '.zip'), '', basename($package->getDistUrl()));
+                        . DIRECTORY_SEPARATOR
+                        . str_replace(array('.tar.gz', '.tar.bz2', '.zip'), '', basename($package->getDistUrl()));
                     if (is_dir($expandedFolder)) {
+                        $filesystem = new Filesystem();
                         $filesystem->recursiveCopy(
                             $expandedFolder,
                             $this->config['installationFolder']
@@ -304,17 +302,11 @@ class InstallCommand extends AbstractMagentoCommand
                         $filesystem->recursiveRemoveDirectory($expandedFolder);
                     }
 
-                    // Remove empty folder
-                    if (is_dir($this->config['installationFolder'] . '/vendor/composer')) {
-                        $filesystem->recursiveRemoveDirectory($this->config['installationFolder'] . '/vendor/composer');
-                    }
-
                     // Install sample data
-                    $sampleDataSqlFile = glob($this->config['installationFolder'] . '/_temp_demo_data/magento_*sample_data*sql');
+                    $sampleDataSqlFile = glob($this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'magento_*sample_data*sql');
                     $db = $this->config['db']; /* @var $db \PDO */
                     if (isset($sampleDataSqlFile[0])) {
-                        $os = new OperatingSystem();
-                        if ($os->isProgramInstalled('mysql')) {
+                        if (OperatingSystem::isProgramInstalled('mysql')) {
                             $exec = 'mysql '
                                 . '-h' . escapeshellarg(strval($this->config['db_host']))
                                 . ' '
@@ -336,40 +328,20 @@ class InstallCommand extends AbstractMagentoCommand
                     }
                 }
             }
-
-            if (is_dir($this->config['installationFolder'] . '/_temp_demo_data')) {
-                $filesystem->recursiveRemoveDirectory($this->config['installationFolder'] . '/_temp_demo_data');
-            }
         }
     }
 
     protected function _fixComposerExtractionBug()
     {
-        $filesystem = new Filesystem();
-
-        $mediaFolder = $this->config['installationFolder'] . '/media';
-        $wrongFolder = $this->config['installationFolder'] . '/_temp_demo_data/media';
+        $mediaFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'media';
+        $wrongFolder = $mediaFolder . DIRECTORY_SEPARATOR . 'media';
         if (is_dir($wrongFolder)) {
+            $filesystem = new Filesystem();
             $filesystem->recursiveCopy(
                 $wrongFolder,
                 $mediaFolder
             );
             $filesystem->recursiveRemoveDirectory($wrongFolder);
-        }
-    }
-
-    /**
-     * Remove empty composer extraction folder
-     */
-    protected function removeEmptyFolders()
-    {
-        if (is_dir(getcwd() . '/vendor')) {
-            $finder = new Finder();
-            $finder->files()->depth(3)->in(getcwd() . '/vendor');
-            if ($finder->count() == 0) {
-                $filesystem = new Filesystem();
-                $filesystem->recursiveRemoveDirectory(getcwd() . '/vendor');
-            }
         }
     }
 

@@ -6,9 +6,10 @@ plugin:
     - /usr/local/share/n98-magerun/modules
 
 helpers:
+  database: N98\Util\Console\Helper\DatabaseHelper
+  dialog: Composer\Command\Helper\DialogHelper
   parameter: N98\Util\Console\Helper\ParameterHelper
   table: N98\Util\Console\Helper\TableHelper
-  dialog: Composer\Command\Helper\DialogHelper
 
 script:
   folders:

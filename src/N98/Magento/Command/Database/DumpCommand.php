@@ -135,7 +135,7 @@ class DumpCommand extends AbstractDatabaseCommand
 
         $stripTables = false;
         if ($input->getOption('strip')) {
-            $stripTables = $this->resolveTables(explode(' ', $input->getOption('strip')), $this->getTableDefinitions());
+            $stripTables = $this->getHelper('database')->resolveTables(explode(' ', $input->getOption('strip')), $this->getTableDefinitions());
             if (!$input->getOption('stdout') && !$input->getOption('only-command')
                 && !$input->getOption('print-only-filename')
             ) {

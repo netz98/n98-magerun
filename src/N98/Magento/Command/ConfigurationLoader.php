@@ -20,7 +20,6 @@ use N98\Util\ArrayFunctions;
  */
 class ConfigurationLoader
 {
-
     /**
      * Config passed in the constructor
      *
@@ -32,7 +31,6 @@ class ConfigurationLoader
      * @var array
      */
     protected $_configArray = null;
-
 
     /**
      * Cache
@@ -86,6 +84,9 @@ class ConfigurationLoader
         $this->_initialConfig = $config;
     }
 
+    /**
+     * @return array
+     */
     public function getPartialConfig()
     {
         $config = $this->_initialConfig;
@@ -95,6 +96,9 @@ class ConfigurationLoader
         return $config;
     }
 
+    /**
+     * @param string $magentoRootFolder
+     */
     public function loadStageTwo($magentoRootFolder)
     {
         $config = $this->_initialConfig;
@@ -103,23 +107,7 @@ class ConfigurationLoader
         $config = $this->loadSystemConfig($config);
         $config = $this->loadUserConfig($config, $magentoRootFolder);
         $config = $this->loadProjectConfig($magentoRootFolder, $config);
-        $config = $this->initAutoloaders($magentoRootFolder, $config);
         $this->_configArray = $config;
-    }
-
-    /**
-     * @param $magentoRootFolder
-     * @param $config
-     * @return mixed
-     */
-    protected function initAutoloaders($magentoRootFolder, $config)
-    {
-        if (isset($config['autoloaders']) && is_array($config['autoloaders'])) {
-            foreach ($config['autoloaders'] as &$value) {
-                $value = str_replace('%root%', $magentoRootFolder, $value);
-            }
-        }
-        return $config;
     }
 
     /**
@@ -281,6 +269,7 @@ class ConfigurationLoader
         }
 
         $config = ArrayFunctions::mergeArrays($config, $this->_projectConfig);
+
         return $config;
     }
 

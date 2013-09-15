@@ -186,7 +186,9 @@ class Application extends BaseApplication
         $helperSet->set(new TwigHelper($twigBaseDirs), 'twig');
 
         foreach ($this->config['helpers'] as $helperName => $helperClass) {
-            $helperSet->set(new $helperClass(), $helperName);
+            if (class_exists($helperClass)) {
+                $helperSet->set(new $helperClass(), $helperName);
+            }
         }
     }
 
