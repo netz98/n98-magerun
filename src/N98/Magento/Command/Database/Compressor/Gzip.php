@@ -32,13 +32,13 @@ class Gzip extends AbstractCompressor
     {
         if ($pipe) {
             if ($this->hasPipeViewer()) {
-                return 'pv -cN gzip ' . escapeshellarg($fileName) . ' | gzip -d | pv -cN ' . $command;
+                return 'pv -cN gzip ' . escapeshellarg($fileName) . ' | gzip -d | pv -cN mysql | ' . $command;
             }
 
             return 'gzip -dc < ' . escapeshellarg($fileName) . ' | ' . $command;
         } else {
             if ($this->hasPipeViewer()) {
-                return 'pv -cN tar -zxf ' . escapeshellarg($fileName) . ' && pv -cN ' . $command;
+                return 'pv -cN tar -zxf ' . escapeshellarg($fileName) . ' && pv -cN mysql | ' . $command;
             }
 
             return 'tar -zxf ' . escapeshellarg($fileName) . ' -C ' . dirname($fileName) . ' && ' . $command . ' < '
