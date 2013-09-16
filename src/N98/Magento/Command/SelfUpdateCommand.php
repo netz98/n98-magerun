@@ -2,13 +2,15 @@
 
 namespace N98\Magento\Command;
 
+use Composer\Downloader\FilesystemException;
+use Composer\IO\ConsoleIO;
+use Composer\Util\RemoteFilesystem;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\OperatingSystem;
-use Composer\Util\RemoteFilesystem;
-use Composer\IO\ConsoleIO;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * @author Igor Wiedler <igor@wiedler.ch>
@@ -43,6 +45,20 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->getApplication()->setDispatcher(new EventDispatcher()); // do not allow to execute any code after update
+
+        $localFilename = realpath($_SERVER['argv'][0]) ?: $_SERVER['argv'][0];
+        $tempFilename = dirname($localFilename) . '/' . basename($localFilename, '.phar').'-temp.phar';
+
+        // check for permissions in local filesystem before start connection process
+        if (!is_writable($tempDirectory = dirname($tempFilename))) {
+            throw new FilesystemException('n98-magerun update failed: the "' . $tempDirectory . '" directory used to download the temp file could not be written');
+        }
+
+        if (!is_writable($localFilename)) {
+            throw new FilesystemException('n98-magerun update failed: the "' . $localFilename . '" file could not be written');
+        }
+
         $io = new ConsoleIO($input, $output, $this->getHelperSet());
         $rfs = new RemoteFilesystem($io);
 
@@ -60,14 +76,13 @@ EOT
         if ($this->getApplication()->getVersion() !== $latest || $loadUnstable) {
             $output->writeln(sprintf("Updating to version <info>%s</info>.", $latest));
 
-            $localFilename = $_SERVER['argv'][0];
-            if (!is_writable($localFilename)) {
-                throw new \RuntimeException('phar is not writeable. Please change permissions or run as root or with sudo.');
-            }
-
-            $tempFilename = basename($localFilename, '.phar').'-temp.phar';
-
             $rfs->copy('raw.github.com', $remoteFilename, $tempFilename);
+
+            if (!file_exists($tempFilename)) {
+                $output->writeln('<error>The download of the new n98-magerun version failed for an unexpected reason');
+
+                return 1;
+            }
 
             try {
                 @chmod($tempFilename, 0777 & ~umask());
