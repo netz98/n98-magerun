@@ -100,6 +100,13 @@ class Application extends BaseApplication
     protected $dispatcher;
 
     /**
+     * If root dir is set by root-dir option this flag is true
+     *
+     * @var bool
+     */
+    protected $_directRootDir = false;
+
+    /**
      * @param \Composer\Autoload\ClassLoader $autoloader
      * @param bool                           $isPharMode
      */
@@ -160,7 +167,11 @@ class Application extends BaseApplication
 
         $this->getHelperSet()->set(new MagentoHelper(), 'magento');
         $magentoHelper = $this->getHelperSet()->get('magento'); /* @var $magentoHelper MagentoHelper */
-        $subFolders = $this->getDetectSubFolders();
+        if (!$this->_directRootDir) {
+            $subFolders = $this->getDetectSubFolders();
+        } else {
+            $subFolders = array();
+        }
         $magentoHelper->detect($folder, $subFolders);
         $this->_magentoRootFolder = $magentoHelper->getRootFolder();
         $this->_magentoEnterprise = $magentoHelper->isEnterpriseEdition();
@@ -557,7 +568,13 @@ class Application extends BaseApplication
         $specialGlobalOptions = getopt('', array('root-dir:'));
 
         if (count($specialGlobalOptions) > 0) {
+            if (isset($specialGlobalOptions['root-dir'][0])
+                && $specialGlobalOptions['root-dir'][0] == '~'
+            ) {
+                $specialGlobalOptions['root-dir'] = getenv('HOME') . substr($specialGlobalOptions['root-dir'], 1);
+            }
             $folder = realpath($specialGlobalOptions['root-dir']);
+            $this->_directRootDir = true;
             if (is_dir($folder)) {
                 \chdir($folder);
 

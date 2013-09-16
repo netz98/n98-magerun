@@ -7,6 +7,7 @@ RECENT CHANGES
 ======
 
 * Fixed Issue #219 - db:import with no arguments throws PHP Warnings
+* Support "~" in --root-path option
 * sys:setup:run - Better error printing
 
 ======
