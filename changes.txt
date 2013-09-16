@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.78.1
+======
+
+* Fixed Issue #219 - db:import with no arguments throws PHP Warnings
+
+======
 1.78.0
 ======
 
