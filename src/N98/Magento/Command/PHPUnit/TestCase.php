@@ -5,6 +5,12 @@ namespace N98\Magento\Command\PHPUnit;
 use N98\Magento\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
+/**
+ * Class TestCase
+ *
+ * @codeCoverageIgnore
+ * @package N98\Magento\Command\PHPUnit
+ */
 class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**

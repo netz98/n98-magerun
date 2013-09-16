@@ -13,7 +13,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
+ * @codeCoverageIgnore
  * @author Igor Wiedler <igor@wiedler.ch>
+ * @author Christian Münch <c.muench@netz98.de>
  */
 class SelfUpdateCommand extends AbstractMagentoCommand
 {

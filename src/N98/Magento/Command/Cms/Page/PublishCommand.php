@@ -12,7 +12,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
+/**
+ * Class PublishCommand
+ *
+ * @codeCoverageIgnore Only testable with closed source enterprise edition
+ * @package N98\Magento\Command\Cms\Page
+ */
 class PublishCommand extends AbstractMagentoCommand
 {
     protected function configure()
@@ -23,6 +28,14 @@ class PublishCommand extends AbstractMagentoCommand
             ->addArgument('revision_id', InputArgument::REQUIRED, 'Revision ID (the ID, not the sequential number)')
             ->setDescription('Publish a CMS page revision (Enterprise only)')
         ;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->getApplication()->isMagentoEnterprise();
     }
 
     /**

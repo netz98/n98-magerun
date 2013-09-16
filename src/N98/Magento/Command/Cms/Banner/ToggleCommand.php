@@ -11,7 +11,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
+/**
+ * Class ToggleCommand
+ *
+ * @codeCoverageIgnore Only testable with closed source enterprise edition
+ * @package N98\Magento\Command\Cms\Banner
+ */
 class ToggleCommand extends AbstractMagentoCommand
 {
     protected function configure()
@@ -21,6 +26,14 @@ class ToggleCommand extends AbstractMagentoCommand
             ->addArgument('banner_id', InputArgument::REQUIRED, 'Banner ID')
             ->setDescription('Toggle a banner (Enterprise only)')
         ;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->getApplication()->isMagentoEnterprise();
     }
 
     /**
