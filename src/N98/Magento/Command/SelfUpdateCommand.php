@@ -84,10 +84,10 @@ EOT
                 }
 
             } catch (\Exception $e) {
+                @unlink($tempFilename);
                 if (!$e instanceof \UnexpectedValueException && !$e instanceof \PharException) {
                     throw $e;
                 }
-                unlink($tempFilename);
                 $output->writeln('<error>The download is corrupted ('.$e->getMessage().').</error>');
                 $output->writeln('<error>Please re-run the self-update command to try again.</error>');
             }
