@@ -45,8 +45,6 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getApplication()->setDispatcher(new EventDispatcher()); // do not allow to execute any code after update
-
         $localFilename = realpath($_SERVER['argv'][0]) ?: $_SERVER['argv'][0];
         $tempFilename = dirname($localFilename) . '/' . basename($localFilename, '.phar').'-temp.phar';
 
@@ -85,6 +83,8 @@ EOT
             }
 
             try {
+                \error_reporting(E_ALL); // supress notices
+
                 @chmod($tempFilename, 0777 & ~umask());
                 // test the phar validity
                 $phar = new \Phar($tempFilename);
@@ -98,6 +98,7 @@ EOT
                     $output->writeln($changeLogContent);
                 }
 
+                $this->_exit();
             } catch (\Exception $e) {
                 @unlink($tempFilename);
                 if (!$e instanceof \UnexpectedValueException && !$e instanceof \PharException) {
@@ -109,5 +110,18 @@ EOT
         } else {
             $output->writeln("<info>You are using the latest n98-magerun version.</info>");
         }
+    }
+
+    /**
+     * Stop execution
+     *
+     * This is a workaround to prevent warning of dispatcher after replacing
+     * the phar file.
+     *
+     * @return void
+     */
+    protected function _exit()
+    {
+        exit;
     }
 }
