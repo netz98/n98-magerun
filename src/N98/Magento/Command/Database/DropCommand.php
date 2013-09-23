@@ -35,7 +35,7 @@ class DropCommand extends AbstractDatabaseCommand
         }
 
         if ($shouldDrop) {
-            $db = $this->_getConnection();
+            $db = $this->getHelper('database')->getConnection();
             $db->query("DROP DATABASE `" . $this->dbSettings['dbname'] . "`");
             $output->writeln('<info>Dropped database</info> <comment>' . $this->dbSettings['dbname'] . '</comment>');
         }
