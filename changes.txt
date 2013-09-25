@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.78.2
+======
+
+* Fixed broken db:drop command
+
+======
 1.78.1
 ======
 
