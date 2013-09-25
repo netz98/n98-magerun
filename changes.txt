@@ -3,6 +3,13 @@ RECENT CHANGES
 **************
 
 ======
+1.78.3
+======
+
+* Added Magento CE 1.8.0.0 as installer source
+* Fixed issue #222 (by Marc Harding)
+
+======
 1.78.2
 ======
 
