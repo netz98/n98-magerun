@@ -115,7 +115,7 @@ class MagentoHelper extends AbstractHelper
     protected function checkModman($folders)
     {
         foreach (array_reverse($folders) as $searchFolder) {
-            if(!is_readable($searchFolder)) {
+            if (!is_readable($searchFolder)) {
                 continue;
             }            
             $finder = Finder::create();
