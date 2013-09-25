@@ -125,10 +125,10 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
-      - name: magento-ce-1.6.2.0
-        version: 1.6.2.0
+      - name: magento-ce-1.8.0.0
+        version: 1.8.0.0
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.6.2.0/magento-1.6.2.0.tar.gz
+          url: http://www.magentocommerce.com/downloads/assets/1.8.0.0/magento-1.8.0.0.tar.gz
           type: tar
         extra:
           sample-data: sample-data-1.6.1.0
@@ -141,14 +141,37 @@ commands:
         extra:
           sample-data: sample-data-1.6.1.0
 
-      - name: mageplus-master
-        version: dev-master
-        source:
-          url: https://github.com/mageplus/mageplus.git
-          type: git
-          reference: master
+      - name: magento-ce-1.6.2.0
+        version: 1.6.2.0
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.6.2.0/magento-1.6.2.0.tar.gz
+          type: tar
         extra:
           sample-data: sample-data-1.6.1.0
+
+      - name: magento-mirror-1.7.0.2
+        version: 1.7.0.2
+        dist:
+          url: https://github.com/LokeyCoding/magento-mirror/archive/1.7.0.2.tar.gz
+          type: tar
+        extra:
+          sample-data: sample-data-1.6.1.0
+
+      - name: magento-mirror-1.6.2.0
+        version: 1.6.2.0
+        dist:
+          url: https://github.com/LokeyCoding/magento-mirror/archive/1.6.2.0.tar.gz
+          type: tar
+        extra:
+          sample-data: sample-data-1.6.1.0
+
+      - name: magento-mirror-1.5.1.0
+        version: 1.5.1.0
+        dist:
+          url: https://github.com/LokeyCoding/magento-mirror/archive/1.5.1.0.tar.gz
+          type: tar
+        extra:
+          sample-data: sample-data-1.1.2
 
       - name: magento-mirror-1.4.2.0
         version: 1.4.2.0
@@ -159,20 +182,12 @@ commands:
         extra:
           sample-data: sample-data-1.1.2
 
-      - name: magento-mirror-1.5.1.0
-        version: 1.5.1.0
+      - name: mageplus-master
+        version: dev-master
         source:
-          url: git://github.com/LokeyCoding/magento-mirror.git
+          url: https://github.com/mageplus/mageplus.git
           type: git
-          reference: magento-1.5
-        extra:
-          sample-data: sample-data-1.1.2
-
-      - name: magento-mirror-1.6.2.0
-        version: 1.6.2.0
-        dist:
-          url: https://github.com/LokeyCoding/magento-mirror/archive/1.6.2.0.zip
-          type: zip
+          reference: master
         extra:
           sample-data: sample-data-1.6.1.0
 
