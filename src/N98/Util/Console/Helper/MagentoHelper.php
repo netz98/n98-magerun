@@ -47,7 +47,7 @@ class MagentoHelper extends AbstractHelper
         $folders = array_merge($folders, $subFolders);
 
         foreach (array_reverse($folders) as $searchFolder) {
-            if (!is_dir($searchFolder)) {
+            if (!is_dir($searchFolder) || !is_readable($searchFolder)) {
                 continue;
             }
             if ($this->_search($searchFolder)) {
