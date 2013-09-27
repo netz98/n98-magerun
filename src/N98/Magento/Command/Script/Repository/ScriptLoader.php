@@ -18,15 +18,22 @@ class ScriptLoader
     protected $_homeScriptFolder = '';
 
     /**
+     * @var string
+     */
+    protected $_magentoRootFolder = '';
+
+    /**
      * @var array
      */
     protected $_scriptFolders = array();
 
     /**
-     * @param array $scriptFolders
+     * @param array  $scriptFolders
+     * @param string $magentoRootFolder
      */
-    public function __construct(array $scriptFolders)
+    public function __construct(array $scriptFolders, $magentoRootFolder = null)
     {
+        $this->_magentoRootFolder = $magentoRootFolder;
         $this->_homeScriptFolder = getenv('HOME') . '/.n98-magerun/scripts';
         $this->_scriptFolders = $scriptFolders;
         $this->_scriptFolders[] = $this->_homeScriptFolder;
@@ -92,8 +99,16 @@ class ScriptLoader
      */
     protected function _getLocation($pathname)
     {
+        if (strstr($pathname, $this->_magentoRootFolder)) {
+            return 'project';
+        }
+
         if (dirname($pathname) == $this->_homeScriptFolder) {
             return 'personal';
+        }
+
+        if (strstr($pathname, 'n98-magerun/modules')) {
+            return 'module';
         }
 
         return 'system';

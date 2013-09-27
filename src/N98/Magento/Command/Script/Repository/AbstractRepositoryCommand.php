@@ -17,7 +17,7 @@ class AbstractRepositoryCommand extends AbstractMagentoCommand
     protected function getScripts()
     {
         $config = $this->getApplication()->getConfig();
-        $loader = new ScriptLoader($config['script']['folders']);
+        $loader = new ScriptLoader($config['script']['folders'], $this->getApplication()->getMagentoRootFolder());
         $files = $loader->getFiles();
 
         return $files;

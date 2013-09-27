@@ -264,11 +264,10 @@ class ConfigurationLoader
             if ($projectConfigFile && file_exists($projectConfigFile)) {
                 $projectConfig = $this->applyVariables(\file_get_contents($projectConfigFile), $magentoRootFolder, null);
                 $this->_projectConfig = Yaml::parse($projectConfig);
-                return $config;
             }
-        }
 
-        $config = ArrayFunctions::mergeArrays($config, $this->_projectConfig);
+            $config = ArrayFunctions::mergeArrays($config, $this->_projectConfig);
+        }
 
         return $config;
     }
