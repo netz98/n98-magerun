@@ -3,6 +3,13 @@ RECENT CHANGES
 **************
 
 ======
+1.78.4
+======
+
+* Fixed config merging of project specific configs
+* Fix for issue #202 (by David Alger)
+
+======
 1.78.3
 ======
 
