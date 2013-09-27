@@ -26,6 +26,7 @@ class DeleteCommand extends AbstractConfigCommand
             ->addArgument('path', InputArgument::REQUIRED, 'The config path')
             ->addOption('scope', null, InputOption::VALUE_OPTIONAL, 'The config value\'s scope (default, websites, stores)', 'default')
             ->addOption('scope-id', null, InputOption::VALUE_OPTIONAL, 'The config value\'s scope ID', '0')
+            ->addOption('all', null, InputOption::VALUE_NONE, 'Delete all entries by path')
         ;
     }
 
@@ -43,12 +44,70 @@ class DeleteCommand extends AbstractConfigCommand
             $this->_validateScopeParam($input->getOption('scope'));
             $scopeId = $this->_convertScopeIdParam($input->getOption('scope'), $input->getOption('scope-id'));
 
-            $config->deleteConfig(
-                $input->getArgument('path'),
-                $input->getOption('scope'),
-                $scopeId
-            );
-            $output->writeln('<info>Deleted entry</info> <comment>scope => ' . $input->getOption('scope') . ' path => ' . $input->getArgument('path') . '</comment></info>');
+            $deleted = array();
+
+            if ($input->getOption('all')) {
+
+                // Default
+                $config->deleteConfig(
+                    $input->getArgument('path'),
+                    'default',
+                    0
+                );
+
+                $deleted[] = array(
+                    'path'    => $input->getArgument('path'),
+                    'scope'   => 'default',
+                    'scopeId' => 0,
+                );
+
+                // Delete websites
+                foreach (\Mage::app()->getWebsites() as $website) {
+                    $config->deleteConfig(
+                        $input->getArgument('path'),
+                        'websites',
+                        $website->getId()
+                    );
+                    $deleted[] = array(
+                        'path'    => $input->getArgument('path'),
+                        'scope'   => 'websites',
+                        'scopeId' => $website->getId(),
+                    );
+                }
+
+                // Delete stores
+                foreach (\Mage::app()->getStores() as $store) {
+                    $config->deleteConfig(
+                        $input->getArgument('path'),
+                        'stores',
+                        $store->getId()
+                    );
+                    $deleted[] = array(
+                        'path'    => $input->getArgument('path'),
+                        'scope'   => 'stores',
+                        'scopeId' => $store->getId(),
+                    );
+                }
+            } else {
+                $config->deleteConfig(
+                    $input->getArgument('path'),
+                    $input->getOption('scope'),
+                    $scopeId
+                );
+
+                $deleted[] = array(
+                    'path'    => $input->getArgument('path'),
+                    'scope'   => $input->getOption('scope'),
+                    'scopeId' => $scopeId,
+                );
+            }
+        }
+
+        if (count($deleted) > 0) {
+            $this->getHelper('table')
+                ->setHeaders(array('path', 'scope', 'id'))
+                ->setRows($deleted)
+                ->render($output);
         }
     }
 }

@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.79.0
+======
+
+* Added --all option to config:delete command
+
+======
 1.78.4
 ======
 
