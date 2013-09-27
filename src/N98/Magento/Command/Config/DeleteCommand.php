@@ -105,7 +105,7 @@ class DeleteCommand extends AbstractConfigCommand
 
         if (count($deleted) > 0) {
             $this->getHelper('table')
-                ->setHeaders(array('path', 'scope', 'id'))
+                ->setHeaders(array('deleted path', 'scope', 'id'))
                 ->setRows($deleted)
                 ->render($output);
         }
