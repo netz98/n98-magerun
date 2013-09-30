@@ -5,7 +5,7 @@ namespace N98\Magento\Command\Config;
 use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
 
-class DeleteTest extends TestCase
+class DeleteCommandTest extends TestCase
 {
     public function testExecute()
     {

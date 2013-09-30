@@ -7,6 +7,7 @@ RECENT CHANGES
 ======
 
 * Added --all option to config:delete command
+* Added --magerun-script option to config:get command
 
 ======
 1.78.4
@@ -14,6 +15,12 @@ RECENT CHANGES
 
 * Fixed config merging of project specific configs
 * Fix for issue #202 (by David Alger)
+
+======
+1.79.0
+======
+
+* Added new option "config-script" to "config:get" command
 
 ======
 1.78.3
@@ -37,20 +44,6 @@ RECENT CHANGES
 * sys:setup:run - Better error printing
 * Check edition for enterprise only commands. Hide in Magento CE.
 * Updated 3rt party dependencies
-
-======
-1.78.0
-======
-
-* New database console helper
-  with new functions (by Dmitriy Zavalkin):
-  - mysqlUserHasPrivilege
-  - getMysqlVariableValue
-
-* Feature: #212 admin:user:create - allow assigning an existing role (by Alexander Menk)
-* Fixed: Project configuration loader
-* Fixed: LogicException thrown by script:repo:list where no script directories exist (by David Alger)
-* Fixed issue #185 - Dont instantiate classes when checking inheritance (by Luke Rotherfield)
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H

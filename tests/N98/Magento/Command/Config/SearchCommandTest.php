@@ -5,7 +5,7 @@ namespace N98\Magento\Command\Config;
 use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
 
-class SearchTest extends TestCase
+class SearchCommandTest extends TestCase
 {
     public function testExecute()
     {
