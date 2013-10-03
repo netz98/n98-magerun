@@ -12,7 +12,7 @@ RECENT CHANGES
 * Added support for multiline config:set values "with \n" replacement.
 * Added new --define option to script command
 * Fixed broken db:create command
-
+* Updated Symfony components to 2.3.5
 
 ======
 1.78.4
@@ -26,29 +26,6 @@ RECENT CHANGES
 ======
 
 * Added new option "config-script" to "config:get" command
-
-======
-1.78.3
-======
-
-* Added Magento CE 1.8.0.0 as installer source
-* Fixed issue #222 (by Marc Harding)
-
-======
-1.78.2
-======
-
-* Fixed broken db:drop command
-
-======
-1.78.1
-======
-
-* Fixed Issue #219 - db:import with no arguments throws PHP Warnings
-* Support "~" in --root-path option
-* sys:setup:run - Better error printing
-* Check edition for enterprise only commands. Hide in Magento CE.
-* Updated 3rt party dependencies
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
