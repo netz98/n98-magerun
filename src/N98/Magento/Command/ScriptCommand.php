@@ -3,7 +3,10 @@
 namespace N98\Magento\Command;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\String;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Shell;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,6 +29,7 @@ class ScriptCommand extends AbstractMagentoCommand
         $this
             ->setName('script')
             ->addArgument('filename', InputArgument::OPTIONAL, 'Script file')
+            ->addOption('define', 'd', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Defines a variable')
             ->setDescription('Runs multiple n98-magerun commands')
         ;
     }
@@ -33,8 +37,10 @@ class ScriptCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->_scriptFilename = $input->getArgument('filename');
+        $this->_initDefines($input);
         $script = $this->_getContent($this->_scriptFilename);
         $commands = explode("\n", $script);
+        $this->initScriptVars();
 
         foreach ($commands as $commandString) {
             $commandString = trim($commandString);
@@ -62,6 +68,23 @@ class ScriptCommand extends AbstractMagentoCommand
 
                 default:
                     $this->runMagerunCommand($input, $output, $commandString);
+            }
+        }
+    }
+
+    /**
+     * @param InputInterface $input
+     */
+    protected function _initDefines(InputInterface $input)
+    {
+        $defines = $input->getOption('define');
+        if (is_string($defines)) {
+            $defines = array($defines);
+        }
+        if (count($defines) > 0) {
+            foreach ($defines as $define) {
+                list($variable, $value) = String::trimExplodeEmpty('=', $define);
+                $this->scriptVars['${' . $variable. '}'] = $value;
             }
         }
     }
@@ -95,9 +118,17 @@ class ScriptCommand extends AbstractMagentoCommand
         if (preg_match('/^(\$\{[a-zA-Z0-9-_.]+\})=(.+)/', $commandString, $matches)) {
             if ($matches[2] == '?') {
                 $dialog = $this->getHelperSet()->get('dialog');
-                $this->scriptVars[$matches[1]] = $dialog->ask(
+                /* @var $dialog DialogHelper */
+                $this->scriptVars[$matches[1]] = $dialog->askAndValidate(
                     $output,
-                    '<info>Please enter a value for <comment>' . $matches[1] . '</comment>:</info> '
+                    '<info>Please enter a value for <comment>' . $matches[1] . '</comment>:</info> ',
+                    function($value) {
+                        if ($value == '') {
+                            throw new \Exception('Please enter a value');
+                        }
+
+                        return $value;
+                    }
                 );
             } else {
                 $this->scriptVars[$matches[1]] = $matches[2];
