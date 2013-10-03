@@ -262,13 +262,16 @@ class DatabaseHelper extends AbstractHelper
     /**
      * Get list of db tables
      *
-     * @return bool|array
+     * @return array
      */
     public function getTables()
     {
         $statement = $this->getConnection()->query('SHOW TABLES');
+        if ($statement) {
+            return $statement->fetchAll(\PDO::FETCH_COLUMN);
+        }
 
-        return $statement->fetchAll(\PDO::FETCH_COLUMN);
+        return array();
     }
 
     /**
