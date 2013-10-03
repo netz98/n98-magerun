@@ -25,6 +25,7 @@ is the same as
 EOT
                 )
             ->addArgument('path', InputArgument::OPTIONAL, 'The config path')
+            ->addOption('scope', null, InputOption::VALUE_REQUIRED, 'The config value\'s scope')
             ->addOption('scope-id', null, InputOption::VALUE_REQUIRED, 'The config value\'s scope ID')
             ->addOption('decrypt', null, InputOption::VALUE_NONE, 'Decrypt the config value using local.xml\'s crypt key')
             ->addOption('update-script', null, InputOption::VALUE_NONE, 'Output as update script lines')
@@ -60,11 +61,23 @@ EOT
             $collection->addFieldToFilter('path', array(
                 'like' => str_replace('*', '%', $searchPath)
             ));
-            
+
+            if ($scopeId = $input->getOption('scope')) {
+                $collection->addFieldToFilter(
+                    'scope',
+                    array(
+                         'eq' => $scopeId
+                    )
+                );
+            }
+
             if ($scopeId = $input->getOption('scope-id')) {
-                $collection->addFieldToFilter('scope_id', array(
-                    'eq' => $scopeId
-                ));
+                $collection->addFieldToFilter(
+                    'scope_id',
+                    array(
+                        'eq' => $scopeId
+                    )
+                );
             }
 
             $collection->addOrder('path', 'ASC');
@@ -161,10 +174,11 @@ EOT
     protected function renderAsMagerunScript(OutputInterface $output, $table)
     {
         foreach ($table as $row) {
+            $value = str_replace(array("\n", "\r"), array('\n', '\r'), $row['value']);
             $line = 'config:set ' . $row['path']
                   . ' --scope-id=' . $row['scope_id']
                   . ' --scope=' . $row['scope']
-                  . " '" . $row['value'] . "'";
+                  . ' ' . escapeshellarg($value);
             $output->writeln($line);
         }
     }

@@ -467,12 +467,13 @@ Get Config
 
 .. code-block:: sh
 
-   $ n98-magerun.phar config:get [--scope-id="..."] [--decrypt] [path]
+   $ n98-magerun.phar config:get [--scope="..."] [--scope-id="..."] [--decrypt] [path]
 
 Arguments:
     path        The config path
 
 Options:
+    --scope     The config value's scope (default, websites, stores)
     --scope-id  The config value's scope ID
     --decrypt   Decrypt the config value using local.xml's crypt key
 
@@ -1116,7 +1117,7 @@ Run multiple commands from a script file.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar script filename
+   $ n98-magerun.phar [-d|--define[="..."]] [filename]
 
 Example:
 
@@ -1124,6 +1125,9 @@ Example:
 
    # Set multiple config
    config:set "web/cookie/cookie_domain" example.com
+
+   # Set with multiline values with "\n"
+   config:set "general/store_information/address" "First line\nSecond line\nThird line"
 
    # This is a comment
    cache:flush
@@ -1137,7 +1141,7 @@ Optionally you can work with unix pipes.
 
 .. code-block:: sh
 
-   $ n98-magerun-dev script < filename
+   $ n98-magerun.phar script < filename
 
 It is even possible to create executable scripts:
 
@@ -1173,6 +1177,19 @@ Pre-defined variables:
 * ${php.version}     -> PHP Version
 * ${script.file}     -> Current script file path
 * ${script.dir}      -> Current script file dir
+
+Variables can be passed to a script with "--define (-d)" option.
+
+Example:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar script -d foo=bar filename
+
+   # This will register the variable ${foo} with value bar.
+
+It's possible to define multiple values by passing more than one option.
+
 
 n98-magerun Script Repository
 """""""""""""""""""""""""""""

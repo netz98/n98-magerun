@@ -8,6 +8,11 @@ RECENT CHANGES
 
 * Added --all option to config:delete command
 * Added --magerun-script option to config:get command
+* Added --scope option to config:set command
+* Added support for multiline config:set values "with \n" replacement.
+* Added new --define option to script command
+* Fixed broken db:create command
+
 
 ======
 1.78.4

@@ -45,9 +45,12 @@ class SetCommand extends AbstractConfigCommand
             $this->_validateScopeParam($input->getOption('scope'));
             $scopeId = $this->_convertScopeIdParam($input->getOption('scope'), $input->getOption('scope-id'));
 
+            $value = str_replace(array('\n', '\r'), array("\n", "\r"), $input->getArgument('value'));
+            $value = $this->_formatValue($value, $input->getOption('encrypt'));
+
             $config->saveConfig(
                 $input->getArgument('path'),
-                $this->_formatValue($input->getArgument('value'), $input->getOption('encrypt')),
+                $value,
                 $input->getOption('scope'),
                 $scopeId
             );
