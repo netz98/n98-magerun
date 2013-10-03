@@ -21,12 +21,6 @@ RECENT CHANGES
 * Fixed config merging of project specific configs
 * Fix for issue #202 (by David Alger)
 
-======
-1.79.0
-======
-
-* Added new option "config-script" to "config:get" command
-
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
 -----------------------------------------
