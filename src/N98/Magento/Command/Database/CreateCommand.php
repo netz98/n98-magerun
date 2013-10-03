@@ -26,7 +26,7 @@ class CreateCommand extends AbstractDatabaseCommand
     {
         $this->detectDbSettings($output);
 
-        $db = $this->_getConnection();
+        $db = $this->getHelper('database')->getConnection();
         $db->query('CREATE DATABASE IF NOT EXISTS `' . $this->dbSettings['dbname'] . '`');
         $output->writeln('<info>Created database</info> <comment>' . $this->dbSettings['dbname'] . '</comment>');
     }
