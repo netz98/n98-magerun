@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.80.0
+======
+
+* Support for modules inside the vendor folder if app is not in phar mode
+
+======
 1.79.0
 ======
 

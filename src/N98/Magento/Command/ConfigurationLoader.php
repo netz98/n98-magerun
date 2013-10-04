@@ -3,6 +3,7 @@
 namespace N98\Magento\Command;
 
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 use N98\Util\ArrayFunctions;
 
@@ -73,15 +74,21 @@ class ConfigurationLoader
     protected $_customConfigFilename = 'n98-magerun.yaml';
 
     /**
+     * @var bool
+     */
+    protected $_isPharMode = true;
+
+    /**
      * Load config
      * If $magentoRootFolder is null, only non-project config is loaded
      *
      * @param array $config
-     * @param string $magentoRootFolder
+     * @param bool  $isPharMode
      */
-    public function __construct($config)
+    public function __construct($config, $isPharMode)
     {
         $this->_initialConfig = $config;
+        $this->_isPharMode = $isPharMode;
     }
 
     /**
@@ -179,6 +186,24 @@ class ConfigurationLoader
                 }
             }
 
+            /**
+             * Allow modules to be placed vendor folder if not in phar mode
+             */
+            if (!$this->_isPharMode) {
+                $finder = Finder::create();
+                $finder
+                    ->files()
+                    ->depth(2)
+                    ->followLinks()
+                    ->ignoreUnreadableDirs(true)
+                    ->name('n98-magerun.yaml')
+                    ->in(realpath(__DIR__ . '/../../../../vendor'));
+
+                foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                    $this->registerPluginConfigFile($magentoRootFolder, $file);
+                }
+            }
+
             if (count($moduleBaseFolders) > 0) {
                 // Glob plugin folders
                 $finder = Finder::create();
@@ -191,9 +216,7 @@ class ConfigurationLoader
                     ->in($moduleBaseFolders);
 
                 foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
-                    $localPluginConfig = \file_get_contents($file->getRealPath());
-                    $localPluginConfig = Yaml::parse($this->applyVariables($localPluginConfig, $magentoRootFolder, $file));
-                    $this->_pluginConfig = ArrayFunctions::mergeArrays($this->_pluginConfig, $localPluginConfig);
+                    $this->registerPluginConfigFile($magentoRootFolder, $file);
                 }
             }
         }
@@ -270,6 +293,20 @@ class ConfigurationLoader
         }
 
         return $config;
+    }
+
+    /**
+     * Loads a plugin config file and merges it to plugin config
+     *
+     * @param string       $magentoRootFolder
+     * @param SplFileInfo $file
+     */
+    protected function registerPluginConfigFile($magentoRootFolder, $file)
+    {
+        $localPluginConfig = \file_get_contents($file->getRealPath());
+        $localPluginConfig = Yaml::parse($this->applyVariables($localPluginConfig, $magentoRootFolder, $file));
+
+        $this->_pluginConfig = ArrayFunctions::mergeArrays($this->_pluginConfig, $localPluginConfig);
     }
 
 }
