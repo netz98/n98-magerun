@@ -57,6 +57,16 @@ class Application extends BaseApplication
     /**
      * @var array
      */
+    protected $initConfig = array();
+
+    /**
+     * @var ConfigurationLoader
+     */
+    protected $configurationLoader = null;
+
+    /**
+     * @var array
+     */
     protected $config = array();
 
     /**
@@ -139,9 +149,10 @@ class Application extends BaseApplication
      */
     public function getDetectSubFolders()
     {
-        if (isset($this->partialConfig['detect'])) {
-            if (isset($this->partialConfig['detect']['subFolders'])) {
-                return $this->partialConfig['detect']['subFolders'];
+        $partialConfig = $this->getPartialConfig();
+        if (isset($partialConfig['detect'])) {
+            if (isset($partialConfig['detect']['subFolders'])) {
+                return $partialConfig['detect']['subFolders'];
             }
         }
         return array();
@@ -520,6 +531,22 @@ class Application extends BaseApplication
         return $return;
     }
 
+    protected function getConfigurationLoader()
+    {
+        if ($this->configurationLoader == null) {
+            $this->configurationLoader = new ConfigurationLoader(ArrayFunctions::mergeArrays($this->config, $this->initConfig));
+        }
+        return $this->configurationLoader;
+    }
+
+    protected function getPartialConfig()
+    {
+        if ($this->partialConfig == null) {
+            $this->partialConfig = $this->getConfigurationLoader()->getPartialConfig();
+        }
+        return $this->partialConfig;
+    }
+
     /**
      * @param array $initConfig
      *
@@ -531,11 +558,10 @@ class Application extends BaseApplication
             // Suppress DateTime warnings
             date_default_timezone_set(@date_default_timezone_get());
 
-            $configLoader = new ConfigurationLoader(ArrayFunctions::mergeArrays($this->config, $initConfig));
-            $this->partialConfig = $configLoader->getPartialConfig();
+            $this->initConfig = $initConfig;
             $this->detectMagento();
-            $configLoader->loadStageTwo($this->_magentoRootFolder);
-            $this->config = $configLoader->toArray();;
+            $this->getConfigurationLoader()->loadStageTwo($this->_magentoRootFolder);
+            $this->config = $this->getConfigurationLoader()->toArray();
             $this->dispatcher = new EventDispatcher();
             $this->setDispatcher($this->dispatcher);
             $this->registerEventSubscribers();
