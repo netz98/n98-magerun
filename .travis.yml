@@ -24,6 +24,7 @@ before_script:
   - export N98_MAGERUN_TEST_MAGENTO_ROOT="${INSTALL_FOLDER}"
   - mkdir subfolder && cd subfolder
   - ../bin/n98-magerun install --magentoVersionByName="${MAGENTO_VERSION}" --installationFolder="${INSTALL_FOLDER}" --dbHost=localhost --dbUser=root --dbPass='' --dbName="magento_travis" --installSampleData=yes --useDefaultConfigParams=yes --baseUrl="http://travis.magento.local/"
+  - cd ..
 
 script:
   - vendor/bin/phpunit
