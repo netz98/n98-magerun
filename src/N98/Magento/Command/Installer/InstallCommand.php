@@ -135,12 +135,17 @@ class InstallCommand extends AbstractMagentoCommand
     protected function chooseInstallationFolder(InputInterface $input, OutputInterface $output)
     {
         $validateInstallationFolder = function($folderName) {
+
+            $folderName = rtrim(trim($folderName, ' '), '/');
+            if (substr($folderName, 0, 1) == '.') {
+                $folderName = getcwd() . substr($folderName, 1);
+            }
+
             if (!is_dir($folderName)) {
                 if (!mkdir($folderName,0777, true)) {
                     throw new \InvalidArgumentException('Cannot create folder.');
                 }
-            } else {
-                $folderName = rtrim(trim($folderName, '. '), '/');
+
                 return $folderName;
             }
 
