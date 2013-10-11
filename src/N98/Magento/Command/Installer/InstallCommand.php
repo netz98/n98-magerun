@@ -173,6 +173,7 @@ class InstallCommand extends AbstractMagentoCommand
         }
 
         $this->config['installationFolder'] = realpath($installationFolder);
+        \chdir($this->config['installationFolder']);
     }
 
     protected function test($folderName) {
@@ -198,9 +199,12 @@ class InstallCommand extends AbstractMagentoCommand
                 $input,
                 $output,
                 $package,
-                $this->config['installationFolder'],
+                $this->config['installationFolder'] . '/_n98_magerun_download',
                 true
             );
+
+            $filesystem = new \Composer\Util\Filesystem();
+            $filesystem->copyThenRemove($this->config['installationFolder'] . '/_n98_magerun_download', $this->config['installationFolder']);
 
             if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
                 // Patch installer

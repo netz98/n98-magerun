@@ -127,6 +127,7 @@ class MagentoHelper extends AbstractHelper
                 ->ignoreDotFiles(false)
                 ->name('.basedir')
                 ->in($searchFolder);
+
             $count = $finder->count();
             if ($count > 0) {
                 $baseFolderContent = trim(file_get_contents($searchFolder . DIRECTORY_SEPARATOR . '.basedir'));
