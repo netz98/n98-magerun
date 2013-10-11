@@ -35,7 +35,7 @@ class EventSubscriber implements EventSubscriberInterface
             $magentoRootFolder = $command->getApplication()->getMagentoRootFolder();
             $configFile = $magentoRootFolder . '/composer.json';
             $composer = Factory::create($io, $configFile);
-            chdir($magentoRootFolder);
+            \chdir($magentoRootFolder);
             $command->setComposer($composer);
             $command->setIO($io);
         }

@@ -138,11 +138,19 @@ class InstallCommand extends AbstractMagentoCommand
 
             $folderName = rtrim(trim($folderName, ' '), '/');
             if (substr($folderName, 0, 1) == '.') {
-                $folderName = getcwd() . substr($folderName, 1);
+                $cwd = \getcwd() ;
+                if (empty($cwd) && isset($_SERVER['PWD'])) {
+                    $cwd = $_SERVER['PWD'];
+                }
+                $folderName = $cwd . substr($folderName, 1);
+            }
+
+            if (empty($folderName)) {
+                throw new \InvalidArgumentException('Installation folder cannot be empty');
             }
 
             if (!is_dir($folderName)) {
-                if (!mkdir($folderName,0777, true)) {
+                if (!@mkdir($folderName,0777, true)) {
                     throw new \InvalidArgumentException('Cannot create folder.');
                 }
 
@@ -549,7 +557,7 @@ class InstallCommand extends AbstractMagentoCommand
             }
         }
 
-        chdir($this->config['installationFolder']);
+        \chdir($this->config['installationFolder']);
         $output->writeln('<info>Reindex all after installation</info>');
         $this->getApplication()->run(new StringInput('index:reindex:all'), $output);
         $this->getApplication()->run(new StringInput('sys:check'), $output);
