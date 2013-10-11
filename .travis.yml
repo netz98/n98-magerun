@@ -21,8 +21,8 @@ before_script:
   - curl -s http://getcomposer.org/installer | php
   - php composer.phar install --dev --prefer-source
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `magento_travis`;'
-  - export N98_MAGERUN_TEST_MAGENTO_ROOT="./${INSTALL_FOLDER}"
-  - bin/n98-magerun install --magentoVersionByName="${MAGENTO_VERSION}" --installationFolder="./${INSTALL_FOLDER}" --dbHost=localhost --dbUser=root --dbPass='' --dbName="magento_travis" --installSampleData=yes --useDefaultConfigParams=yes --baseUrl="http://travis.magento.local/"
+  - export N98_MAGERUN_TEST_MAGENTO_ROOT="${INSTALL_FOLDER}"
+  - bin/n98-magerun install --magentoVersionByName="${MAGENTO_VERSION}" --installationFolder="${INSTALL_FOLDER}" --dbHost=localhost --dbUser=root --dbPass='' --dbName="magento_travis" --installSampleData=yes --useDefaultConfigParams=yes --baseUrl="http://travis.magento.local/"
 
 script:
   - vendor/bin/phpunit
