@@ -32,6 +32,70 @@ class ScriptCommand extends AbstractMagentoCommand
             ->addOption('define', 'd', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Defines a variable')
             ->setDescription('Runs multiple n98-magerun commands')
         ;
+
+        $help = <<<HELP
+Example:
+
+   # Set multiple config
+   config:set "web/cookie/cookie_domain" example.com
+
+   # Set with multiline values with "\n"
+   config:set "general/store_information/address" "First line\nSecond line\nThird line"
+
+   # This is a comment
+   cache:flush
+
+
+Optionally you can work with unix pipes.
+
+   \$ echo "cache:flush" | n98-magerun-dev script
+
+   \$ n98-magerun.phar script < filename
+
+It is even possible to create executable scripts:
+
+Create file `test.magerun` and make it executable (`chmod +x test.magerun`):
+
+   #!/usr/bin/env n98-magerun.phar script
+
+   config:set "web/cookie/cookie_domain" example.com
+   cache:flush
+
+   # Run a shell script with "!" as first char
+   ! ls -l
+
+   # Register your own variable (only key = value currently supported)
+   \${my.var}=bar
+
+   # Let magerun ask for variable value - add a question mark
+   \${my.var}=?
+
+   ! echo \${my.var}
+
+   # Use resolved variables from n98-magerun in shell commands
+   ! ls -l \${magento.root}/code/local
+
+Pre-defined variables:
+
+* \${magento.root}    -> Magento Root-Folder
+* \${magento.version} -> Magento Version i.e. 1.7.0.2
+* \${magento.edition} -> Magento Edition -> Community or Enterprise
+* \${magerun.version} -> Magerun version i.e. 1.66.0
+* \${php.version}     -> PHP Version
+* \${script.file}     -> Current script file path
+* \${script.dir}      -> Current script file dir
+
+Variables can be passed to a script with "--define (-d)" option.
+
+Example:
+
+   $ n98-magerun.phar script -d foo=bar filename
+
+   # This will register the variable \${foo} with value bar.
+
+It's possible to define multiple values by passing more than one option.
+HELP;
+        $this->setHelp($help);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

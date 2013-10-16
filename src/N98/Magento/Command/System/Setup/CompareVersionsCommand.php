@@ -15,6 +15,10 @@ class CompareVersionsCommand extends AbstractMagentoCommand
             ->setName('sys:setup:compare-versions')
             ->addOption('ignore-data', null, InputOption::VALUE_NONE, 'Ignore data updates')
             ->setDescription('Compare module version with core_resource table.');
+        $help = <<<HELP
+Compares module version with saved setup version in `core_resource` table and displays version mismatch.
+HELP;
+        $this->setHelp($help);
     }
 
     /**

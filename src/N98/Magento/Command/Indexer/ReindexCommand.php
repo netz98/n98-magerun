@@ -16,6 +16,23 @@ class ReindexCommand extends AbstractIndexerCommand
             ->addArgument('index_code', InputArgument::OPTIONAL, 'Code of indexer.')
             ->setDescription('Reindex a magento index by code')
         ;
+
+        $help = <<<HELP
+Index by indexer code. Code is optional. If you don't specify a code you can pick a indexer from a list.
+
+   $ n98-magerun.phar index:reindex [code]
+
+
+Since 1.75.0 it's possible to run mutiple indexers by seperating code with a comma.
+
+i.e.
+
+   $ n98-magerun.phar index:reindex catalog_product_attribute,tag_summary
+
+If no index is provided as argument you can select indexers from menu by "number" like "1,3" for first and third
+indexer.
+HELP;
+        $this->setHelp($help);
     }
 
     /**

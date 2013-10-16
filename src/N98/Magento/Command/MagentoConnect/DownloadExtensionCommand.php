@@ -14,6 +14,12 @@ class DownloadExtensionCommand extends AbstractConnectCommand
             ->addArgument('package', \Symfony\Component\Console\Input\InputArgument::REQUIRED, 'Package to download')
             ->setDescription('Download magento-connect package')
         ;
+
+        $help = <<<HELP
+* Requires Magento's `mage` shell script.
+* Does not work with Windows as operating system.
+HELP;
+        $this->setHelp($help);
     }
 
     /**

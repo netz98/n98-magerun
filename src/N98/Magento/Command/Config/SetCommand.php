@@ -29,6 +29,13 @@ class SetCommand extends AbstractConfigCommand
             ->addOption('scope-id', null, InputOption::VALUE_OPTIONAL, 'The config value\'s scope ID', '0')
             ->addOption('encrypt', null, InputOption::VALUE_NONE, 'The config value should be encrypted using local.xml\'s crypt key')
         ;
+
+        $help = <<<HELP
+Set a store config value by path.
+To set a value of a specify store view you must set the "scope" and "scope-id" option.
+
+HELP;
+        $this->setHelp($help);
     }
 
     /**

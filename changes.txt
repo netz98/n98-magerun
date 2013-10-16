@@ -9,6 +9,11 @@ RECENT CHANGES
 * Support for modules inside the vendor folder if app is not in phar mode
 * db:dump - Added two new table group for strip option (idx, ee_changelog)
 * Fixed problem with installer and target path "."
+* Added twig debug extension
+* dev:module:create command -> Replaced hard coded year with a dynamic version.
+* Added cast_to_array twig filter
+* Added help texts for most commands
+* #228 - Command "config:delete" does not support wildcard *
 
 ======
 1.79.0

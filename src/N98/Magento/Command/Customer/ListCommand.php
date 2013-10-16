@@ -16,6 +16,13 @@ class ListCommand extends AbstractCustomerCommand
             ->addArgument('search', InputArgument::OPTIONAL, 'Search query')
             ->setDescription('Lists customers')
         ;
+
+        $help = <<<HELP
+List customers. The output is limited to 1000 (can be changed by overriding config).
+If search parameter is given the customers are filtered (searchs in firstname, lastname and email).
+HELP;
+        $this->setHelp($help);
+
     }
 
     /**

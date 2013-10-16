@@ -18,6 +18,13 @@ class ImportCommand extends AbstractDatabaseCommand
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysql command. Do not execute')
             ->addOption('only-if-empty', null, InputOption::VALUE_NONE, 'Imports only if database is empty')
             ->setDescription('Imports database with mysql cli client according to database defined in local.xml');
+
+        $help = <<<HELP
+Imports an SQL file with mysql cli client into current configured database.
+
+You need to have MySQL client tools installed on your system.
+HELP;
+
     }
 
     /**

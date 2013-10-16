@@ -51,6 +51,22 @@ class InstallCommand extends AbstractMagentoCommand
             ->setDescription('Install magento')
         ;
 
+        $help = <<<HELP
+* Download Magento by a list of git repos and zip files (mageplus, magelte, official community packages).
+* Try to create database if it does not exist.
+* Installs Magento sample data if available (since version 1.2.0).
+* Starts Magento installer
+* Sets rewrite base in .htaccess file
+
+Example of an unattended Magento CE 1.7.0.2 installation:
+
+   $ n98-magerun.phar install --dbHost="localhost" --dbUser="mydbuser" --dbPass="mysecret" --dbName="magentodb" --installSampleData=yes --useDefaultConfigParams=yes --magentoVersionByName="magento-ce-1.7.0.2" --installationFolder="magento" --baseUrl="http://magento.localdomain/"
+
+See it in action: http://youtu.be/WU-CbJ86eQc
+
+HELP;
+        $this->setHelp($help);
+
         $this->notEmptyCallback = function($input)
         {
             if (empty($input)) {

@@ -23,6 +23,11 @@ class RunCommand extends AbstractCronCommand
             ->setName('sys:cron:run')
             ->addArgument('job', InputArgument::OPTIONAL, 'Job code')
             ->setDescription('Runs a cronjob by job code');
+        $help = <<<HELP
+If no `job` argument is passed you can select a job from a list.
+See it in action: http://www.youtube.com/watch?v=QkzkLgrfNaM
+HELP;
+        $this->setHelp($help);
     }
 
     /**

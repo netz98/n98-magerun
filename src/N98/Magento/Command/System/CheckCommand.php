@@ -25,6 +25,14 @@ class CheckCommand extends AbstractMagentoCommand
         $this
             ->setName('sys:check')
             ->setDescription('Checks Magento System');
+
+        $help = <<<HELP
+- Checks missing files and folders
+- Security
+- PHP Extensions (Required and Bytecode Cache)
+- MySQL InnoDB Engine
+HELP;
+        $this->setHelp($help);
     }
 
     /**

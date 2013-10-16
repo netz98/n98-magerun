@@ -31,14 +31,11 @@ EOT
             ->addOption('update-script', null, InputOption::VALUE_NONE, 'Output as update script lines')
             ->addOption('magerun-script', null, InputOption::VALUE_NONE, 'Output for usage with config:set')
         ;
-    }
 
-    /**
-     * @return \Mage_Core_Model_Abstract
-     */
-    protected function _getConfigDataModel()
-    {
-        return $this->_getModel('core/config_data', 'Mage_Core_Model_Config_Data');
+        $help = <<<HELP
+If path is not set, all available config items will be listed. path may contain wildcards (*)
+HELP;
+        $this->setHelp($help);
     }
 
     /**
@@ -54,7 +51,7 @@ EOT
             $collection = $this->_getConfigDataModel()->getCollection();
             $searchPath = $input->getArgument('path');
 
-            if(substr($input->getArgument('path'), -1, 1) === '/') {
+            if (substr($input->getArgument('path'), -1, 1) === '/') {
                 $searchPath .= '*';
             }
 

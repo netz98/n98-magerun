@@ -36,6 +36,49 @@ class DumpCommand extends AbstractDatabaseCommand
             ->addOption('strip', 's', InputOption::VALUE_OPTIONAL, 'Tables to strip (dump only structure of those tables)')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not prompt if all options are defined')
             ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml');
+
+        $help = <<<HELP
+Dumps configured magento database with `mysqldump`.
+You must have installed the MySQL client tools.
+
+On debian systems run `apt-get install mysql-client` to do that.
+
+The command reads app/etc/local.xml to find the correct settings.
+If you like to skip data of some tables you can use the --strip option.
+The strip option creates only the structure of the defined tables and
+forces `mysqldump` to skip the data.
+
+Dumps your database and excludes some tables. This is useful i.e. for development.
+
+Separate each table to strip by a space.
+You can use wildcards like * and ? in the table names to strip multiple tables.
+In addition you can specify pre-defined table groups, that start with an @
+Example: "dataflow_batch_export unimportant_module_* @log
+
+   $ n98-magerun.phar db:dump --strip="@stripped"
+
+Available Table Groups:
+
+* @log Log tables
+* @dataflowtemp Temporary tables of the dataflow import/export tool
+* @stripped Standard definition for a stripped dump (logs and dataflow)
+* @sales Sales data (orders, invoices, creditmemos etc)
+* @customers Customer data
+* @trade Current trade data (customers and orders). You usally do not want those in developer systems.
+* @development Removes logs and trade data so developers do not have to work with real customer data
+
+Extended: https://github.com/netz98/n98-magerun/wiki/Stripped-Database-Dumps
+
+See it in action: http://youtu.be/ttjZHY6vThs
+
+- If you like to prepend a timestamp to the dump name the --add-time option can be used.
+
+- The command comes with a compression function. Add i.e. `--compress=gz` to dump directly in
+ gzip compressed file.
+
+HELP;
+        $this->setHelp($help);
+
     }
 
     /**

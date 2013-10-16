@@ -36,7 +36,7 @@ HELP;
             ->addArgument('count', InputArgument::REQUIRED, 'Count')
             ->addArgument('locale', InputArgument::REQUIRED, 'Locale')
             ->addArgument('website', InputArgument::OPTIONAL, 'Website')
-            ->setDescription('Creates a dummy customers.')
+            ->setDescription('Generate dummy customers. You can specify a count and a locale.')
             ->setHelp($help)
         ;
     }

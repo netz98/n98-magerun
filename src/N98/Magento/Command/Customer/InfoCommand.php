@@ -22,7 +22,7 @@ class InfoCommand extends AbstractCustomerCommand
             ->setName('customer:info')
             ->addArgument('email', InputArgument::OPTIONAL, 'Email')
             ->addArgument('website', InputArgument::OPTIONAL, 'Website of the customer')
-            ->setDescription('Show infos about a customer');
+            ->setDescription('Loads basic customer info by email address.');
     }
 
     /**
