@@ -22,12 +22,17 @@ class DeleteCommand extends AbstractConfigCommand
     {
         $this
             ->setName('config:delete')
-            ->setDescription('Deletes a core config item')
+            ->setDescription('Deletes a store config item')
             ->addArgument('path', InputArgument::REQUIRED, 'The config path')
             ->addOption('scope', null, InputOption::VALUE_OPTIONAL, 'The config value\'s scope (default, websites, stores)', 'default')
             ->addOption('scope-id', null, InputOption::VALUE_OPTIONAL, 'The config value\'s scope ID', '0')
             ->addOption('all', null, InputOption::VALUE_NONE, 'Delete all entries by path')
         ;
+
+        $help = <<<HELP
+To delete all entries if a path you can set the option --all.
+HELP;
+        $this->setHelp($help);
     }
 
     /**
@@ -46,60 +51,34 @@ class DeleteCommand extends AbstractConfigCommand
 
             $deleted = array();
 
-            if ($input->getOption('all')) {
+            $path = $input->getArgument('path');
+            $pathArray = array();
+            if (strstr($path, '*')) {
+                /* @var $collection \Mage_Core_Model_Resource_Db_Collection_Abstract */
+                $collection = $this->_getConfigDataModel()->getCollection();
 
-                // Default
-                $config->deleteConfig(
-                    $input->getArgument('path'),
-                    'default',
-                    0
-                );
+                $searchPath = str_replace('*', '%', $path);
+                $collection->addFieldToFilter('path', array('like' => $searchPath));
 
-                $deleted[] = array(
-                    'path'    => $input->getArgument('path'),
-                    'scope'   => 'default',
-                    'scopeId' => 0,
-                );
-
-                // Delete websites
-                foreach (\Mage::app()->getWebsites() as $website) {
-                    $config->deleteConfig(
-                        $input->getArgument('path'),
-                        'websites',
-                        $website->getId()
-                    );
-                    $deleted[] = array(
-                        'path'    => $input->getArgument('path'),
-                        'scope'   => 'websites',
-                        'scopeId' => $website->getId(),
+                if ($scopeId = $input->getOption('scope')) {
+                    $collection->addFieldToFilter(
+                        'scope',
+                        array(
+                             'eq' => $scopeId
+                        )
                     );
                 }
+                $collection->addOrder('path', 'ASC');
 
-                // Delete stores
-                foreach (\Mage::app()->getStores() as $store) {
-                    $config->deleteConfig(
-                        $input->getArgument('path'),
-                        'stores',
-                        $store->getId()
-                    );
-                    $deleted[] = array(
-                        'path'    => $input->getArgument('path'),
-                        'scope'   => 'stores',
-                        'scopeId' => $store->getId(),
-                    );
+                foreach ($collection as $item) {
+                    $pathArray[] = $item->getPath();
                 }
             } else {
-                $config->deleteConfig(
-                    $input->getArgument('path'),
-                    $input->getOption('scope'),
-                    $scopeId
-                );
+                $pathArray[] = $path;
+            }
 
-                $deleted[] = array(
-                    'path'    => $input->getArgument('path'),
-                    'scope'   => $input->getOption('scope'),
-                    'scopeId' => $scopeId,
-                );
+            foreach ($pathArray as $pathToDelete) {
+                $deleted = array_merge($deleted, $this->_deletePath($input, $config, $pathToDelete, $scopeId));
             }
         }
 
@@ -109,5 +88,77 @@ class DeleteCommand extends AbstractConfigCommand
                 ->setRows($deleted)
                 ->render($output);
         }
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param                $config
+     * @param                $path
+     * @param                $scopeId
+     *
+     * @return array
+     */
+    protected function _deletePath(InputInterface $input, $config, $path, $scopeId)
+    {
+        $deleted = array();
+        if ($input->getOption('all')) {
+
+            // Default
+            $config->deleteConfig(
+                $path,
+                'default',
+                0
+            );
+
+            $deleted[] = array(
+                'path'    => $path,
+                'scope'   => 'default',
+                'scopeId' => 0,
+            );
+
+            // Delete websites
+            foreach (\Mage::app()->getWebsites() as $website) {
+                $config->deleteConfig(
+                    $path,
+                    'websites',
+                    $website->getId()
+                );
+                $deleted[] = array(
+                    'path'    => $path,
+                    'scope'   => 'websites',
+                    'scopeId' => $website->getId(),
+                );
+            }
+
+            // Delete stores
+            foreach (\Mage::app()->getStores() as $store) {
+                $config->deleteConfig(
+                    $path,
+                    'stores',
+                    $store->getId()
+                );
+                $deleted[] = array(
+                    'path'    => $path,
+                    'scope'   => 'stores',
+                    'scopeId' => $store->getId(),
+                );
+            }
+
+        } else {
+            $config->deleteConfig(
+                $path,
+                $input->getOption('scope'),
+                $scopeId
+            );
+
+            $deleted[] = array(
+                'path'    => $path,
+                'scope'   => $input->getOption('scope'),
+                'scopeId' => $scopeId,
+            );
+
+        }
+
+        return $deleted;
     }
 }

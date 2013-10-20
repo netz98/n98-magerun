@@ -16,6 +16,12 @@ class ListExtensionsCommand extends AbstractConnectCommand
             ->addArgument('search', InputArgument::OPTIONAL, 'Search string')
             ->setDescription('List magento connection extensions')
         ;
+
+        $help = <<<HELP
+* Requires Magento's `mage` shell script.
+* Does not work with Windows as operating system.
+HELP;
+        $this->setHelp($help);
     }
 
     /**

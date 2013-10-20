@@ -18,6 +18,14 @@ class ConflictsCommand extends AbstractRewriteCommand
             ->addOption('log-junit', null, InputOption::VALUE_REQUIRED, 'Log conflicts in JUnit XML format to defined file.')
             ->setDescription('Lists all magento rewrite conflicts')
         ;
+
+        $help = <<<HELP
+Lists all duplicated rewrites and tells you which class is loaded by Magento.
+The command checks class inheritance in order of your module dependencies.
+
+* If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
+HELP;
+        $this->setHelp($help);
     }
 
     /**

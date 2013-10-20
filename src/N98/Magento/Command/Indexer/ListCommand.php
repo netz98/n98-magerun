@@ -15,6 +15,11 @@ class ListCommand extends AbstractIndexerCommand
             ->setName('index:list')
             ->setDescription('Lists all magento indexes')
         ;
+
+        $help = <<<HELP
+Lists all Magento indexers of current installation.
+HELP;
+
     }
 
     /**

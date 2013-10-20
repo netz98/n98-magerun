@@ -127,6 +127,7 @@ class MagentoHelper extends AbstractHelper
                 ->ignoreDotFiles(false)
                 ->name('.basedir')
                 ->in($searchFolder);
+
             $count = $finder->count();
             if ($count > 0) {
                 $baseFolderContent = trim(file_get_contents($searchFolder . DIRECTORY_SEPARATOR . '.basedir'));
@@ -151,20 +152,20 @@ class MagentoHelper extends AbstractHelper
     {
         $finder = Finder::create();
         $finder
-            ->directories()
             ->ignoreUnreadableDirs(true)
             ->depth(0)
             ->followLinks()
             ->name('app')
             ->name('skin')
             ->name('lib')
+            ->name('index.php')
             ->in($searchFolder);
 
-        if ($finder->count() >= 2) {
+        if ($finder->count() >= 3) {
             $files = iterator_to_array($finder, false);
             /* @var $file \SplFileInfo */
 
-            if (count($files) == 2) {
+            if (count($files) == 3) {
                 // Magento 2 has no skin folder.
                 // @TODO find a better magento 2.x check
                 $this->_magentoMajorVersion = \N98\Magento\Application::MAGENTO_MAJOR_VERSION_2;

@@ -18,6 +18,12 @@ class ChangePasswordCommand extends AbstractCustomerCommand
             ->addArgument('website', InputArgument::OPTIONAL, 'Website of the customer')
             ->setDescription('Changes the password of a customer.')
         ;
+
+        $help = <<<HELP
+- Website parameter must only be given if more than one websites are available.
+HELP;
+        $this->setHelp($help);
+
     }
 
     /**

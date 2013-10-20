@@ -24,8 +24,13 @@ class DuplicatesCommand extends AbstractMagentoCommand
                 'base/default'
             )
             ->addOption('log-junit', null, InputOption::VALUE_REQUIRED, 'Log duplicates in JUnit XML format to defined file.')
-            ->setDescription('Find duplicate files in your theme')
+            ->setDescription('Find duplicate files (templates, layout, locale, etc.) between two themes.')
         ;
+
+        $help = <<<HELP
+* If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
+HELP;
+        $this->setHelp($help);
     }
 
     /**

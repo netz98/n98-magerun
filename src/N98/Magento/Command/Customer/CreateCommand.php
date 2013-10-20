@@ -18,7 +18,7 @@ class CreateCommand extends AbstractCustomerCommand
             ->addArgument('firstname', InputArgument::OPTIONAL, 'Firstname')
             ->addArgument('lastname', InputArgument::OPTIONAL, 'Lastname')
             ->addArgument('website', InputArgument::OPTIONAL, 'Website')
-            ->setDescription('Creates a customer.')
+            ->setDescription('Creates a new customer/user for shop frontend.')
         ;
     }
 

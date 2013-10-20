@@ -22,6 +22,15 @@ class GenerateCommand extends AbstractMagentoCommand
             ->addArgument('session-save', InputOption::VALUE_REQUIRED, 'Session storage adapter')
             ->addArgument('admin-frontname', InputOption::VALUE_REQUIRED, 'Admin front name')
         ;
+
+        $help = <<<HELP
+Generates the app/etc/local.xml.
+
+- The file "app/etc/local.xml.template" (bundles with Magento) must exist!
+- Currently the command does not validate anything you enter.
+- The command will not overwrite existing app/etc/local.xml files.
+HELP;
+        $this->setHelp($help);
     }
 
     /**

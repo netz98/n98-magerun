@@ -37,7 +37,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.79.0';
+    const APP_VERSION = '1.80.0';
 
     /**
      * @var string
@@ -531,7 +531,10 @@ class Application extends BaseApplication
             // Suppress DateTime warnings
             date_default_timezone_set(@date_default_timezone_get());
 
-            $configLoader = new ConfigurationLoader(ArrayFunctions::mergeArrays($this->config, $initConfig));
+            $configLoader = new ConfigurationLoader(
+                ArrayFunctions::mergeArrays($this->config, $initConfig),
+                $this->isPharMode()
+            );
             $this->partialConfig = $configLoader->getPartialConfig();
             $this->detectMagento();
             $configLoader->loadStageTwo($this->_magentoRootFolder);

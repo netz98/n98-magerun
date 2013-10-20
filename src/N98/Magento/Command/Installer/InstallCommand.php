@@ -51,6 +51,22 @@ class InstallCommand extends AbstractMagentoCommand
             ->setDescription('Install magento')
         ;
 
+        $help = <<<HELP
+* Download Magento by a list of git repos and zip files (mageplus, magelte, official community packages).
+* Try to create database if it does not exist.
+* Installs Magento sample data if available (since version 1.2.0).
+* Starts Magento installer
+* Sets rewrite base in .htaccess file
+
+Example of an unattended Magento CE 1.7.0.2 installation:
+
+   $ n98-magerun.phar install --dbHost="localhost" --dbUser="mydbuser" --dbPass="mysecret" --dbName="magentodb" --installSampleData=yes --useDefaultConfigParams=yes --magentoVersionByName="magento-ce-1.7.0.2" --installationFolder="magento" --baseUrl="http://magento.localdomain/"
+
+See it in action: http://youtu.be/WU-CbJ86eQc
+
+HELP;
+        $this->setHelp($help);
+
         $this->notEmptyCallback = function($input)
         {
             if (empty($input)) {
@@ -135,12 +151,25 @@ class InstallCommand extends AbstractMagentoCommand
     protected function chooseInstallationFolder(InputInterface $input, OutputInterface $output)
     {
         $validateInstallationFolder = function($folderName) {
+
+            $folderName = rtrim(trim($folderName, ' '), '/');
+            if (substr($folderName, 0, 1) == '.') {
+                $cwd = \getcwd() ;
+                if (empty($cwd) && isset($_SERVER['PWD'])) {
+                    $cwd = $_SERVER['PWD'];
+                }
+                $folderName = $cwd . substr($folderName, 1);
+            }
+
+            if (empty($folderName)) {
+                throw new \InvalidArgumentException('Installation folder cannot be empty');
+            }
+
             if (!is_dir($folderName)) {
-                if (!mkdir($folderName,0777, true)) {
+                if (!@mkdir($folderName,0777, true)) {
                     throw new \InvalidArgumentException('Cannot create folder.');
                 }
-            } else {
-                $folderName = rtrim(trim($folderName, '. '), '/');
+
                 return $folderName;
             }
 
@@ -160,6 +189,7 @@ class InstallCommand extends AbstractMagentoCommand
         }
 
         $this->config['installationFolder'] = realpath($installationFolder);
+        \chdir($this->config['installationFolder']);
     }
 
     protected function test($folderName) {
@@ -185,9 +215,12 @@ class InstallCommand extends AbstractMagentoCommand
                 $input,
                 $output,
                 $package,
-                $this->config['installationFolder'],
+                $this->config['installationFolder'] . '/_n98_magerun_download',
                 true
             );
+
+            $filesystem = new \Composer\Util\Filesystem();
+            $filesystem->copyThenRemove($this->config['installationFolder'] . '/_n98_magerun_download', $this->config['installationFolder']);
 
             if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
                 // Patch installer
@@ -544,7 +577,7 @@ class InstallCommand extends AbstractMagentoCommand
             }
         }
 
-        chdir($this->config['installationFolder']);
+        \chdir($this->config['installationFolder']);
         $output->writeln('<info>Reindex all after installation</info>');
         $this->getApplication()->run(new StringInput('index:reindex:all'), $output);
         $this->getApplication()->run(new StringInput('sys:check'), $output);

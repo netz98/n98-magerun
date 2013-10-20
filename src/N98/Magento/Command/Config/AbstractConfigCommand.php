@@ -16,6 +16,14 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     }
 
     /**
+     * @return \Mage_Core_Model_Abstract
+     */
+    protected function _getConfigDataModel()
+    {
+        return $this->_getModel('core/config_data', 'Mage_Core_Model_Config_Data');
+    }
+
+    /**
      * @param string $value
      * @param boolean $decryptionRequired
      * @return string

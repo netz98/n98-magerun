@@ -16,6 +16,28 @@ class DumpCommand extends AbstractConfigCommand
             ->addArgument('xpath', InputArgument::OPTIONAL, 'XPath to filter XML output', null)
             ->setDescription('Dump merged xml config')
         ;
+
+        $help = <<<HELP
+Dumps merged XML configuration to stdout. Useful to see all the XML.
+You can filter the XML with first argument.
+
+Examples:
+
+  Config of catalog module
+
+   $ n98-magerun.phar config:dump global/catalog
+
+   See module order in XML
+
+   $ n98-magerun.phar config:dump modules
+
+   Write output to file
+
+   $ n98-magerun.phar config:dump > extern_file.xml
+
+HELP;
+        $this->setHelp($help);
+
     }
 
     /**

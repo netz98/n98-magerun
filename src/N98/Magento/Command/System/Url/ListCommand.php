@@ -36,6 +36,21 @@ class ListCommand extends AbstractMagentoCommand
             ->addArgument('linetemplate', InputArgument::OPTIONAL, 'Line template', '{url}')
             ->setDescription('Get all urls.')
         ;
+
+        $help = <<<HELP
+Examples:
+
+- Create a list of product urls only:
+
+   $ n98-magerun.phar sys:url:list --add-products 4
+
+- Create a list of all products, categories and cms pages of store 4 and 5 separating host and path (e.g. to feed a jmeter csv sampler):
+
+   $ n98-magerun.phar sys:url:list --add-all 4,5 '{host},{path}' > urls.csv
+
+- The "linetemplate" can contain all parts "parse_url" return wrapped in '{}'. '{url}' always maps the complete url and is set by default
+HELP;
+        $this->setHelp($help);
     }
 
     /**

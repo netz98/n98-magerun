@@ -19,7 +19,7 @@ class HistoryCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:cron:history')
-            ->setDescription('Lists last executed jobs');
+            ->setDescription('Last executed cronjobs with status.');
     }
 
     /**

@@ -17,6 +17,20 @@ class ListCommand extends AbstractRepositoryCommand
             ->setName('script:repo:list')
             ->setDescription('Lists all scripts in repository')
         ;
+
+        $help = <<<HELP
+You can organize your scripts in a repository.
+Simply place a script in folder */usr/local/share/n98-magerun/scripts* or in your home dir
+in folder *<HOME>/.n98-magerun/scripts*.
+
+Scripts must have the file extension *.magerun*.
+
+After that you can list all scripts with the *script:repo:list* command.
+The first line of the script can contain a comment (line prefixed with #) which will be displayed as description.
+
+   $ n98-magerun.phar script:repo:list
+HELP;
+        $this->setHelp($help);
     }
 
     /**

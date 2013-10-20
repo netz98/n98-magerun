@@ -16,6 +16,13 @@ class DropCommand extends AbstractDatabaseCommand
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force')
             ->setDescription('Drop current database')
         ;
+
+        $help = <<<HELP
+The command prompts before dropping the database. If --force option is specified it
+directly drops the database.
+The configured user in app/etc/local.xml must have "DROP" privileges.
+HELP;
+        $this->setHelp($help);
     }
 
     /**
