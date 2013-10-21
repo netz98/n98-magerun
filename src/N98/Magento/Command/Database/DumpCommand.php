@@ -32,6 +32,7 @@ class DumpCommand extends AbstractDatabaseCommand
             ->addOption('print-only-filename', null, InputOption::VALUE_NONE, 'Execute and prints no output except the dump filename')
             ->addOption('no-single-transaction', null, InputOption::VALUE_NONE, 'Do not use single-transaction (not recommended, this is blocking)')
             ->addOption('human-readable', null, InputOption::VALUE_NONE, 'Use a single insert with column names per row. Useful to track database differences, but significantly slows down a later import')
+            ->addOption('add-routines', null, InputOption::VALUE_NONE, 'Include stored routines in dump (procedures & functions)')
             ->addOption('stdout', null, InputOption::VALUE_NONE, 'Dump to stdout')
             ->addOption('strip', 's', InputOption::VALUE_OPTIONAL, 'Tables to strip (dump only structure of those tables)')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not prompt if all options are defined')
@@ -195,6 +196,10 @@ HELP;
 
         if ($input->getOption('human-readable')) {
             $dumpOptions .= '--complete-insert --skip-extended-insert ';
+        }
+
+        if ($input->getOption('add-routines')) {
+            $dumpOptions .= '--routines ';
         }
         $execs = array();
 
