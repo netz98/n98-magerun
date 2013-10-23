@@ -8,6 +8,7 @@ RECENT CHANGES
 
 * script command: Do not prompt for variables, defined with "--define" option.
 * script command: Added support for choices
+* script command: Fixed resolution of other variables
 * Added --define option to script:repo:run command
 * Updated Symfony dependencies
 * Fix flush to use Enterprise_PageCache_Model_Cache only for 1.11 and up (by Jay Becker)
