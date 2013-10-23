@@ -3,6 +3,14 @@ RECENT CHANGES
 **************
 
 ======
+1.81.0
+======
+
+* script command: Do not prompt for variables, defined with "-d" option.
+* script command: Added support for choices
+* Updated Symfony dependencies
+
+======
 1.80.0
 ======
 
