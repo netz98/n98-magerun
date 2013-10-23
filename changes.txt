@@ -26,31 +26,6 @@ RECENT CHANGES
 * Added help texts for most commands
 * #228 - Command "config:delete" does not support wildcard *
 
-======
-1.79.0
-======
-
-* Added --all option to config:delete command
-* Added --magerun-script option to config:get command
-* Added --scope option to config:get command
-* Added support for multiline config:set values "with \n" replacement.
-* Added new --define option to script command
-* Fixed broken db:create command
-* Updated Symfony components to 2.3.5
-
-======
-1.78.4
-======
-
-* Fixed config merging of project specific configs
-* Fix for issue #202 (by David Alger)
-
-======
-1.79.0
-======
-
-* Added new option "config-script" to "config:get" command
-
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
 -----------------------------------------
