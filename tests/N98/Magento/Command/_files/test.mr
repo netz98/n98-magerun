@@ -3,7 +3,7 @@ cache:list
 
 ${foo}=foo.sql
 ${bar}=${foo}.gz
-! echo "BAR: {$bar}"
+! echo "BAR: ${bar}"
 
 # Another comment
 
