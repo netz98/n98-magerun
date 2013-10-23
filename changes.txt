@@ -6,8 +6,9 @@ RECENT CHANGES
 1.81.0
 ======
 
-* script command: Do not prompt for variables, defined with "-d" option.
+* script command: Do not prompt for variables, defined with "--define" option.
 * script command: Added support for choices
+* Added --define option to script:repo:run command
 * Updated Symfony dependencies
 
 ======
