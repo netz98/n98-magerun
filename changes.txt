@@ -13,6 +13,7 @@ RECENT CHANGES
 * Updated Symfony dependencies
 * Fix flush to use Enterprise_PageCache_Model_Cache only for 1.11 and up (by Jay Becker)
 * Added an '--add-routines' option to db:dump command. (by Pieter Hoste)
+* Issue 239 - Enable symlinks globally, with interactive (don't prompt if only one store view exists)
 
 ======
 1.80.0
