@@ -228,7 +228,7 @@ HELP;
                     );
                 }
             } else {
-                $this->scriptVars[$matches[1]] = $matches[2];
+                $this->scriptVars[$matches[1]] = $this->_replaceScriptVars($matches[2]);
             }
         }
     }
