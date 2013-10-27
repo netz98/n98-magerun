@@ -3,6 +3,19 @@ RECENT CHANGES
 **************
 
 ======
+1.81.0
+======
+
+* script command: Do not prompt for variables, defined with "--define" option.
+* script command: Added support for choices
+* script command: Fixed resolution of other variables
+* Added --define option to script:repo:run command
+* Updated Symfony dependencies
+* Fix flush to use Enterprise_PageCache_Model_Cache only for 1.11 and up (by Jay Becker)
+* Added an '--add-routines' option to db:dump command. (by Pieter Hoste)
+* #238 - Enable symlinks globally, with interactive
+
+======
 1.80.0
 ======
 
@@ -14,25 +27,6 @@ RECENT CHANGES
 * Added cast_to_array twig filter
 * Added help texts for most commands
 * #228 - Command "config:delete" does not support wildcard *
-
-======
-1.79.0
-======
-
-* Added --all option to config:delete command
-* Added --magerun-script option to config:get command
-* Added --scope option to config:get command
-* Added support for multiline config:set values "with \n" replacement.
-* Added new --define option to script command
-* Fixed broken db:create command
-* Updated Symfony components to 2.3.5
-
-======
-1.78.4
-======
-
-* Fixed config merging of project specific configs
-* Fix for issue #202 (by David Alger)
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H

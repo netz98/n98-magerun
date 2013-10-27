@@ -37,7 +37,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.80.0';
+    const APP_VERSION = '1.81.0';
 
     /**
      * @var string
@@ -541,9 +541,9 @@ class Application extends BaseApplication
             $this->config = $configLoader->toArray();;
             $this->dispatcher = new EventDispatcher();
             $this->setDispatcher($this->dispatcher);
-            $this->registerEventSubscribers();
             if ($this->autoloader) {
                 $this->registerCustomAutoloaders();
+                $this->registerEventSubscribers();
                 $this->registerCustomCommands();
             }
             $this->registerHelpers();
@@ -622,5 +622,13 @@ class Application extends BaseApplication
     {
         require_once $this->getMagentoRootFolder() . '/app/Mage.php';
         \Mage::app('admin');
+    }
+
+    /**
+     * @return \Symfony\Component\EventDispatcher\EventDispatcher
+     */
+    public function getDispatcher()
+    {
+        return $this->dispatcher;
     }
 }

@@ -1210,7 +1210,7 @@ If you want to execute a script from repository this can be done by *script:repo
 
 .. code-block:: sh
 
-   $ n98-magerun.phar script:repo:run [script]
+   $ n98-magerun.phar script:repo:run [-d|--define[="..."]] [script]
 
 Script argument is optional. If you don't specify any you can select one from a list.
 

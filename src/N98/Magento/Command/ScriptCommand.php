@@ -147,7 +147,15 @@ HELP;
         }
         if (count($defines) > 0) {
             foreach ($defines as $define) {
-                list($variable, $value) = String::trimExplodeEmpty('=', $define);
+                if (!strstr($define, '=')) {
+                    throw new \InvalidArgumentException('Invalid define');
+                }
+                $parts = String::trimExplodeEmpty('=', $define);
+                $variable = $parts[0];
+                $value = null;
+                if (isset($parts[1])) {
+                    $value = $parts[1];
+                }
                 $this->scriptVars['${' . $variable. '}'] = $value;
             }
         }
@@ -180,22 +188,47 @@ HELP;
     protected function registerVariable(OutputInterface $output, $commandString)
     {
         if (preg_match('/^(\$\{[a-zA-Z0-9-_.]+\})=(.+)/', $commandString, $matches)) {
-            if ($matches[2] == '?') {
-                $dialog = $this->getHelperSet()->get('dialog');
-                /* @var $dialog DialogHelper */
-                $this->scriptVars[$matches[1]] = $dialog->askAndValidate(
-                    $output,
-                    '<info>Please enter a value for <comment>' . $matches[1] . '</comment>:</info> ',
-                    function($value) {
-                        if ($value == '') {
-                            throw new \Exception('Please enter a value');
-                        }
+            if (isset($matches[2]) && $matches[2][0] == '?') {
 
-                        return $value;
+                // Variable is already defined
+                if (isset($this->scriptVars[$matches[1]])) {
+                    return $this->scriptVars[$matches[1]];
+                }
+
+                $dialog = $this->getHelperSet()->get('dialog'); /* @var $dialog DialogHelper */
+
+                /**
+                 * Check for select "?["
+                 */
+                if (isset($matches[2][1]) && $matches[2][1] == '[') {
+                    if (preg_match('/\[(.+)\]/', $matches[2], $choiceMatches)) {
+                        $choices = String::trimExplodeEmpty(',', $choiceMatches[1]);
+                        $selectedIndex = $dialog->select(
+                            $output,
+                            '<info>Please enter a value for <comment>' . $matches[1] . '</comment>:</info> ',
+                            $choices
+                        );
+                        $this->scriptVars[$matches[1]] = $choices[$selectedIndex];
+
+                    } else {
+                        throw new \RuntimeException('Invalid choices');
                     }
-                );
+                } else {
+                    // normal input
+                    $this->scriptVars[$matches[1]] = $dialog->askAndValidate(
+                        $output,
+                        '<info>Please enter a value for <comment>' . $matches[1] . '</comment>:</info> ',
+                        function($value) {
+                            if ($value == '') {
+                                throw new \Exception('Please enter a value');
+                            }
+
+                            return $value;
+                        }
+                    );
+                }
             } else {
-                $this->scriptVars[$matches[1]] = $matches[2];
+                $this->scriptVars[$matches[1]] = $this->_replaceScriptVars($matches[2]);
             }
         }
     }

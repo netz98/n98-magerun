@@ -39,7 +39,7 @@ class FlushCommand extends AbstractCacheCommand
             $output->writeln('<info>Cache cleared</info>');
 
             /* Since Magento 1.10 we have an own cache handler for FPC */
-            if ($this->_magentoEnterprise && version_compare(\Mage::getVersion(), '1.10.0.0', '>=')) {
+            if ($this->_magentoEnterprise && version_compare(\Mage::getVersion(), '1.11.0.0', '>=')) {
                 \Enterprise_PageCache_Model_Cache::getCacheInstance()->flush();
                 $output->writeln('<info>FPC cleared</info>');
             }
