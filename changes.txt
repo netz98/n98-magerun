@@ -8,6 +8,7 @@ RECENT CHANGES
 
 * script command: Do not prompt for variables, defined with "-d" option.
 * script command: Added support for choices
+* #238 - Enable symlinks globally, with interactive
 * Updated Symfony dependencies
 
 ======

@@ -64,6 +64,13 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
     protected $trueName = 'enabled';
 
     /**
+     * Add admin store to interactive prompt
+     *
+     * @var bool
+     */
+    protected $withAdminStore = false;
+
+    /**
      * @var string
      */
     protected $scope = self::SCOPE_STORE_VIEW;
@@ -148,7 +155,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      */
     protected function _initStore($input, $output)
     {
-        return $this->getHelperSet()->get('parameter')->askStore($input, $output);
+        return $this->getHelperSet()->get('parameter')->askStore($input, $output, 'store', $this->withAdminStore);
     }
 
     /**

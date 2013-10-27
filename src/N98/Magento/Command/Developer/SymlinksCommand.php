@@ -43,4 +43,11 @@ class SymlinksCommand extends AbstractMagentoStoreConfigCommand
      * @var string
      */
     protected $trueName = 'allowed';
+
+    /**
+     * Add admin store to interactive prompt
+     *
+     * @var bool
+     */
+    protected $withAdminStore = true;
 }
