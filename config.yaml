@@ -266,3 +266,37 @@ commands:
 
   N98\Magento\Command\Customer\ListCommand:
     limit: 1000
+
+  N98\Magento\Command\System\CheckCommand:
+    filesystem:
+      folders:
+        media: "Used for images and other media files."
+        var: "Used for caching, reports, etc."
+        var/cache: "Used for caching"
+        var/session: "Used as file based sesssion save"
+
+      files:
+        app/etc/local.xml: "Magento local configuration."
+        index.php.sample: "Used to generate staging websites in Magento enterprise edition"
+
+    php:
+      required-extensions:
+        - simplexml
+        - mcrypt
+        - hash
+        - gd
+        - dom
+        - iconv
+        - curl
+        - soap
+        - pdo
+        - pdo_mysql
+
+      bytecode-cache-extensions:
+        - apc
+        - eaccelerator
+        - xcache
+        - Zend Optimizer
+        - Zend OPcache
+
+
