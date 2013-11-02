@@ -310,7 +310,7 @@ HELP;
             $this->config['db_user'] = $input->getOption('dbUser') !== null ? $input->getOption('dbUser') : $dialog->askAndValidate($output, '<question>Please enter the database username:</question> ', $this->notEmptyCallback);
             $this->config['db_pass'] = $input->hasParameterOption('--dbPass=' . $input->getOption('dbPass')) ? $input->getOption('dbPass') : $dialog->ask($output, '<question>Please enter the database password:</question> ');
             $this->config['db_name'] = $input->getOption('dbName') !== null ? $input->getOption('dbName') : $dialog->askAndValidate($output, '<question>Please enter the database name:</question> ', $this->notEmptyCallback);
-            $db = $this->validateDatabaseSettings($output);
+            $db = $this->validateDatabaseSettings($output, $input);
         } while ($db === false);
 
         $this->config['db'] = $db;
@@ -324,7 +324,7 @@ HELP;
      * @param string $dbName
      * @return bool|PDO
      */
-    protected function validateDatabaseSettings(OutputInterface $output)
+    protected function validateDatabaseSettings(OutputInterface $output, InputInterface $input)
     {
         try {
             $db = new \PDO('mysql:host='. $this->config['db_host'], $this->config['db_user'], $this->config['db_pass']);
@@ -335,8 +335,10 @@ HELP;
                 return $db;
             }
 
-            $output->writeln("<error>Database {$this->config['db_name']} already exists.</error>");
-            return false;
+            if ($input->getOption('noDownload')) {
+                $output->writeln("<error>Database {$this->config['db_name']} already exists.</error>");
+                return false;
+            }
         } catch (\PDOException $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
