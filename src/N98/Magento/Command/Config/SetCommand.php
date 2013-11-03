@@ -53,7 +53,7 @@ HELP;
             $scopeId = $this->_convertScopeIdParam($input->getOption('scope'), $input->getOption('scope-id'));
 
             $value = str_replace(array('\n', '\r'), array("\n", "\r"), $input->getArgument('value'));
-            $value = $this->_formatValue($value, $input->getOption('encrypt'));
+            $value = $this->_formatValue($value, ($input->getOption('encrypt') ? 'encrypt' : false));
 
             $config->saveConfig(
                 $input->getArgument('path'),

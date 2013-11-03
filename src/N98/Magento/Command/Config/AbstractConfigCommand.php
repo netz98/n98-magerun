@@ -25,12 +25,14 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
 
     /**
      * @param string $value
-     * @param boolean $decryptionRequired
+     * @param string $encryptionType
      * @return string
      */
-    protected function _formatValue($value, $decryptionRequired)
+    protected function _formatValue($value, $encryptionType)
     {
-        if ($decryptionRequired) {
+        if ($encryptionType == 'encrypt') {
+            $value = $this->getEncryptionModel()->encrypt($value);
+        } else if ($encryptionType == 'decrypt') {
             $value = $this->getEncryptionModel()->decrypt($value);
         }
 
