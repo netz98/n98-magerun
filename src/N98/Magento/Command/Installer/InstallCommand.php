@@ -339,6 +339,8 @@ HELP;
                 $output->writeln("<error>Database {$this->config['db_name']} already exists.</error>");
                 return false;
             }
+
+            return $db;
         } catch (\PDOException $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
