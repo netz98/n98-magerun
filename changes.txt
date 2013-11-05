@@ -3,6 +3,15 @@ RECENT CHANGES
 **************
 
 ======
+1.82.0
+======
+
+* Moved sys:check command logic into dist config
+* Changed Magento detection (for future Magento 2 support)
+* Adds --noDownload option to InstallCommand (by Manuele Menozzi)
+* Fix: config:set fix --encrypt input option (by Robert Coleman)
+
+======
 1.81.0
 ======
 
@@ -14,19 +23,6 @@ RECENT CHANGES
 * Fix flush to use Enterprise_PageCache_Model_Cache only for 1.11 and up (by Jay Becker)
 * Added an '--add-routines' option to db:dump command. (by Pieter Hoste)
 * #238 - Enable symlinks globally, with interactive
-
-======
-1.80.0
-======
-
-* Support for modules inside the vendor folder if app is not in phar mode
-* db:dump - Added two new table group for strip option (idx, ee_changelog)
-* Fixed problem with installer and target path "."
-* Added twig debug extension
-* dev:module:create command -> Replaced hard coded year with a dynamic version.
-* Added cast_to_array twig filter
-* Added help texts for most commands
-* #228 - Command "config:delete" does not support wildcard *
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
