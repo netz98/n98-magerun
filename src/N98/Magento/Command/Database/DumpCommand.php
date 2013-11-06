@@ -190,8 +190,8 @@ HELP;
         }
 
         $dumpOptions = '';
-        if ($input->getOption('no-single-transaction')) {
-            $dumpOptions = '--single-transaction ';
+        if (!$input->getOption('no-single-transaction')) {
+            $dumpOptions = '--single-transaction --quick ';
         }
 
         if ($input->getOption('human-readable')) {
