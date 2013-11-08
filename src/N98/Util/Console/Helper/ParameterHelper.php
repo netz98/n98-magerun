@@ -189,6 +189,7 @@ class ParameterHelper extends AbstractHelper
     {
         $this->initValidator();
         $validator = $this->validator;
+        $errors = null;
 
         if (!empty($value)) {
             $errors = $validator->validateValue(array($name => $value), $constraints);
