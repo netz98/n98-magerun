@@ -273,7 +273,7 @@ HELP;
     /**
      * @param $output
      * @param $configPath
-     * @param Closure $check
+     * @param \Closure $check
      * @param $errorMessage
      * @param $checkType
      */
