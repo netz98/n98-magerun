@@ -10,6 +10,7 @@ RECENT CHANGES
 * Changed Magento detection (for future Magento 2 support)
 * Adds --noDownload option to InstallCommand (by Manuele Menozzi)
 * Fix: config:set fix --encrypt input option (by Robert Coleman)
+* Updated 3rd party dependencies
 
 ======
 1.81.0
