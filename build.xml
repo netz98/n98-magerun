@@ -25,16 +25,27 @@ Build phar with:
     </fileset>
     <fileset dir="vendor" id="vendor_folder">
         <include name="**/**" />
+
+        <!-- VCS -->
         <exclude name=".git/**" />
         <exclude name=".svn/**" />
-        <exclude name="**/Tests/**" />
-        <exclude name="**/tests/**" />
+
+        <!-- Docs -->
         <exclude name="**/doc/**" />
         <exclude name="**/docs/**" />
+
+        <!-- unused libs -->
         <exclude name="fzaninotto/faker/src/Faker/ORM" />
+
+        <!-- Tests -->
+        <exclude name="**/Tests/**" />
+        <exclude name="**/tests/**" />
         <exclude name="twig/twig/test/**" />
         <exclude name="twig/twig/ext/**" />
+
+        <!-- Test utils -->
         <exclude name="phpunit/**" />
+        <exclude name="mikey179/**" />
     </fileset>
 
     <target name="dist">
