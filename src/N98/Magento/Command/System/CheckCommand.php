@@ -20,6 +20,13 @@ class CheckCommand extends AbstractMagentoCommand
      */
     protected $_verificationTimeOut = 30;
 
+    /**
+     * Command config
+     *
+     * @var array
+     */
+    protected $_config;
+
     protected function configure()
     {
         $this
@@ -42,6 +49,7 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->_config = $this->getCommandConfig();
         $this->detectMagento($output);
         if ($this->initMagento($output)) {
 
@@ -69,37 +77,29 @@ HELP;
         /**
          * Check folders
          */
-        $folders = array(
-            array('media', 'Used for images and other media files.'),
-            array('var', 'Used for caching, reports, etc.'),
-            array('var/cache', 'Used for caching'),
-            array('var/session', 'Used as file based sesssion save'),
-        );
+        $folders = $this->_config['filesystem']['folders'];
 
-        foreach ($folders as $folder) {
-            if (file_exists($this->_magentoRootFolder . DIRECTORY_SEPARATOR . $folder[0])) {
-                $output->writeln("<info>Folder <comment>" . $folder[0] . "</comment> found.</info>");
-                if (!is_writeable($this->_magentoRootFolder . DIRECTORY_SEPARATOR . $folder[0])) {
-                    $output->writeln("<error>Folder " . $folder[0] . " is not writeable!</error><comment> Usage: " . $folder[1] . "</comment>");
+        foreach ($folders as $folder => $comment) {
+            if (file_exists($this->_magentoRootFolder . DIRECTORY_SEPARATOR . $folder)) {
+                $output->writeln("<info>Folder <comment>" . $folder . "</comment> found.</info>");
+                if (!is_writeable($this->_magentoRootFolder . DIRECTORY_SEPARATOR . $folder)) {
+                    $output->writeln("<error>Folder " . $folder . " is not writeable!</error><comment> Usage: " . $comment . "</comment>");
                 }
             } else {
-                $output->writeln("<error>Folder " . $folder[0] . " not found!</error><comment> Usage: " . $folder[1] . "</comment>");
+                $output->writeln("<error>Folder " . $folder . " not found!</error><comment> Usage: " . $comment . "</comment>");
             }
         }
 
         /**
          * Check files
          */
-        $files = array(
-            array('app/etc/local.xml', 'Magento local configuration.'),
-            array('index.php.sample', 'Used to generate staging websites in Magento enterprise edition'),
-        );
+        $files = $folders = $this->_config['filesystem']['files'];
 
-        foreach ($files as $file) {
-            if (file_exists($this->_magentoRootFolder . DIRECTORY_SEPARATOR . $file[0])) {
-                $output->writeln("<info>File <comment>" . $file[0] . "</comment> found.</info>");
+        foreach ($files as $file => $comment) {
+            if (file_exists($this->_magentoRootFolder . DIRECTORY_SEPARATOR . $file)) {
+                $output->writeln("<info>File <comment>" . $file . "</comment> found.</info>");
             } else {
-                $output->writeln("<error>File " . $file[0] . " not found!</error><comment> Usage: " . $file[1] . "</comment>");
+                $output->writeln("<error>File " . $file . " not found!</error><comment> Usage: " . $comment . "</comment>");
             }
         }
     }
@@ -113,18 +113,7 @@ HELP;
     {
         $this->writeSection($output, 'Check: PHP');
 
-        $requiredExtensions = array(
-            'simplexml',
-            'mcrypt',
-            'hash',
-            'gd',
-            'dom',
-            'iconv',
-            'curl',
-            'soap',
-            'pdo',
-            'pdo_mysql',
-        );
+        $requiredExtensions = $this->_config['php']['required-extensions'];
 
         foreach ($requiredExtensions as $ext) {
             if (extension_loaded($ext)) {
@@ -137,13 +126,7 @@ HELP;
         /**
          * Check Bytecode Cache
          */
-        $bytecopdeCacheExtensions = array(
-            'apc',
-            'eaccelerator',
-            'xcache',
-            'Zend Optimizer',
-            'Zend OPcache',
-        );
+        $bytecopdeCacheExtensions = $this->_config['php']['bytecode-cache-extensions'];
         $bytecodeCacheExtensionLoaded = false;
         $bytecodeCacheExtension = null;
         foreach ($bytecopdeCacheExtensions as $ext) {
@@ -290,7 +273,7 @@ HELP;
     /**
      * @param $output
      * @param $configPath
-     * @param Closure $check
+     * @param \Closure $check
      * @param $errorMessage
      * @param $checkType
      */

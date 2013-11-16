@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Installer;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\Database as DatabaseUtils;
 use N98\Util\Filesystem;
 use N98\Util\OperatingSystem;
@@ -48,6 +49,13 @@ class InstallCommand extends AbstractMagentoCommand
             ->addOption('useDefaultConfigParams', null, InputOption::VALUE_OPTIONAL, 'Use default installation parameters defined in the yaml file')
             ->addOption('baseUrl', null, InputOption::VALUE_OPTIONAL, 'Installation base url')
             ->addOption('replaceHtaccessFile', null, InputOption::VALUE_OPTIONAL, 'Generate htaccess file (for non vhost environment)')
+            ->addOption(
+                'noDownload',
+                null,
+                InputOption::VALUE_NONE,
+                'If set skips download step. Used when installationFolder is already a Magento installation that has ' .
+                'to be installed on the given database.'
+            )
             ->setDescription('Install magento')
         ;
 
@@ -61,6 +69,9 @@ class InstallCommand extends AbstractMagentoCommand
 Example of an unattended Magento CE 1.7.0.2 installation:
 
    $ n98-magerun.phar install --dbHost="localhost" --dbUser="mydbuser" --dbPass="mysecret" --dbName="magentodb" --installSampleData=yes --useDefaultConfigParams=yes --magentoVersionByName="magento-ce-1.7.0.2" --installationFolder="magento" --baseUrl="http://magento.localdomain/"
+
+Additionally, with --noDownload option you can install Magento working copy already stored in --installationFolder on
+the given database.
 
 See it in action: http://youtu.be/WU-CbJ86eQc
 
@@ -88,11 +99,22 @@ HELP;
         if (!extension_loaded('pdo_mysql')) {
             throw new \RuntimeException('PHP extension pdo_mysql is required to start installation');
         }
-        $this->selectMagentoVersion($input, $output);
+        if (!$input->getOption('noDownload')) {
+            $this->selectMagentoVersion($input, $output);
+        }
+
         $this->chooseInstallationFolder($input, $output);
-        $this->downloadMagento($input, $output);
+
+        if (!$input->getOption('noDownload')) {
+            $this->downloadMagento($input, $output);
+        }
+
         $this->createDatabase($input, $output);
-        $this->installSampleData($input, $output);
+
+        if (!$input->getOption('noDownload')) {
+            $this->installSampleData($input, $output);
+        }
+
         $this->removeEmptyFolders();
         $this->setDirectoryPermissions($output);
         $this->installMagento($input, $output, $this->config['installationFolder']);
@@ -150,7 +172,7 @@ HELP;
      */
     protected function chooseInstallationFolder(InputInterface $input, OutputInterface $output)
     {
-        $validateInstallationFolder = function($folderName) {
+        $validateInstallationFolder = function($folderName) use ($input) {
 
             $folderName = rtrim(trim($folderName, ' '), '/');
             if (substr($folderName, 0, 1) == '.') {
@@ -171,6 +193,31 @@ HELP;
                 }
 
                 return $folderName;
+            }
+
+            if ($input->getOption('noDownload')) {
+                /** @var MagentoHelper $magentoHelper */
+                $magentoHelper = new MagentoHelper();
+                $magentoHelper->detect($folderName);
+                if ($magentoHelper->getRootFolder() !== $folderName) {
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            'Folder %s is not a Magento working copy.',
+                            $folderName
+                        )
+                    );
+                }
+
+                $localXml = $folderName . '/app/etc/local.xml';
+                if (file_exists($localXml)) {
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            'Magento working copy in %s seems already installed. Please remove %s and retry.',
+                            $folderName,
+                            $localXml
+                        )
+                    );
+                }
             }
 
             return $folderName;
@@ -263,7 +310,7 @@ HELP;
             $this->config['db_user'] = $input->getOption('dbUser') !== null ? $input->getOption('dbUser') : $dialog->askAndValidate($output, '<question>Please enter the database username:</question> ', $this->notEmptyCallback);
             $this->config['db_pass'] = $input->hasParameterOption('--dbPass=' . $input->getOption('dbPass')) ? $input->getOption('dbPass') : $dialog->ask($output, '<question>Please enter the database password:</question> ');
             $this->config['db_name'] = $input->getOption('dbName') !== null ? $input->getOption('dbName') : $dialog->askAndValidate($output, '<question>Please enter the database name:</question> ', $this->notEmptyCallback);
-            $db = $this->validateDatabaseSettings($output);
+            $db = $this->validateDatabaseSettings($output, $input);
         } while ($db === false);
 
         $this->config['db'] = $db;
@@ -277,7 +324,7 @@ HELP;
      * @param string $dbName
      * @return bool|PDO
      */
-    protected function validateDatabaseSettings(OutputInterface $output)
+    protected function validateDatabaseSettings(OutputInterface $output, InputInterface $input)
     {
         try {
             $db = new \PDO('mysql:host='. $this->config['db_host'], $this->config['db_user'], $this->config['db_pass']);
@@ -285,6 +332,12 @@ HELP;
                 $db->query("CREATE DATABASE `" . $this->config['db_name'] . "`");
                 $output->writeln('<info>Created database ' . $this->config['db_name'] . '</info>');
                 $db->query('USE ' . $this->config['db_name']);
+                return $db;
+            }
+
+            if ($input->getOption('noDownload')) {
+                $output->writeln("<error>Database {$this->config['db_name']} already exists.</error>");
+                return false;
             }
 
             return $db;

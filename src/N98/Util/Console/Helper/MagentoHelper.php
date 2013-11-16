@@ -146,32 +146,36 @@ class MagentoHelper extends AbstractHelper
     }
 
     /**
-     * @param $searchFolder
+     * @param string $searchFolder
+     *
+     * @return bool
      */
     protected function _search($searchFolder)
     {
+        if (!is_dir($searchFolder . '/app')) {
+            return false;
+        }
+
         $finder = Finder::create();
         $finder
             ->ignoreUnreadableDirs(true)
             ->depth(0)
             ->followLinks()
-            ->name('app')
-            ->name('skin')
-            ->name('lib')
-            ->name('index.php')
-            ->in($searchFolder);
+            ->name('Mage.php')
+            ->name('bootstrap.php')
+            ->name('autoload.php')
+            ->in($searchFolder . '/app');
 
-        if ($finder->count() >= 3) {
+        if ($finder->count() > 0) {
             $files = iterator_to_array($finder, false);
             /* @var $file \SplFileInfo */
 
-            if (count($files) == 3) {
-                // Magento 2 has no skin folder.
-                // @TODO find a better magento 2.x check
+            if (count($files) == 2) {
+                // Magento 2 has bootstrap.php and autoload.php in app folder
                 $this->_magentoMajorVersion = \N98\Magento\Application::MAGENTO_MAJOR_VERSION_2;
             }
 
-            $this->_magentoRootFolder = dirname($files[0]->getRealPath());
+            $this->_magentoRootFolder = $searchFolder;
 
             if (is_callable(array('\Mage', 'getEdition'))) {
                 $this->_magentoEnterprise = (\Mage::getEdition() == 'Enterprise');
