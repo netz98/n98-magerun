@@ -56,6 +56,7 @@ class DatabaseHelper extends AbstractHelper
             }
 
             $this->dbSettings = (array) $config->global->resources->default_setup->connection;
+	    $this->dbSettings['prefix'] = (string)$config->global->resources->db->table_prefix;
             if (isset($this->dbSettings['comment'])) {
                 unset($this->dbSettings['comment']);
             }

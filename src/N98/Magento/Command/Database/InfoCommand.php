@@ -13,6 +13,7 @@ class InfoCommand extends AbstractDatabaseCommand
     {
         $this
             ->setName('db:info')
+       ->addArgument('setting', InputArgument::OPTIONAL, 'Only output value of named setting')
             ->addDeprecatedAlias('database:info', 'Please use db:info')
             ->setDescription('Dumps database informations')
         ;
@@ -32,7 +33,15 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $setting = $input->getArgument('setting');
         $this->detectDbSettings($output);
+        if( $setting )
+        {
+            if( !array_key_exists($setting, $this->dbSettings) )
+                throw new \InvalidArgumentException('Unknown setting: '.$setting);
+            $output->writeln((string)$this->dbSettings[$setting]);
+            return;
+        }
         foreach ($this->dbSettings as $key => $value) {
             $output->writeln(str_pad($key, 25, ' ') . ': ' . $value);
         }
