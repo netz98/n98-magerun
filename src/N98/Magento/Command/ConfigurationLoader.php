@@ -195,17 +195,19 @@ class ConfigurationLoader
              * Allow modules to be placed vendor folder if not in phar mode
              */
             if (!$this->_isPharMode) {
-                $finder = Finder::create();
-                $finder
-                    ->files()
-                    ->depth(2)
-                    ->followLinks()
-                    ->ignoreUnreadableDirs(true)
-                    ->name('n98-magerun.yaml')
-                    ->in($this->getVendorDir());
+                if (is_dir($this->getVendorDir())) {
+                    $finder = Finder::create();
+                    $finder
+                        ->files()
+                        ->depth(2)
+                        ->followLinks()
+                        ->ignoreUnreadableDirs(true)
+                        ->name('n98-magerun.yaml')
+                        ->in($this->getVendorDir());
 
-                foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
-                    $this->registerPluginConfigFile($magentoRootFolder, $file);
+                    foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                        $this->registerPluginConfigFile($magentoRootFolder, $file);
+                    }
                 }
             }
 
@@ -324,7 +326,19 @@ class ConfigurationLoader
      */
     public function getVendorDir()
     {
-        return $this->getConfigurationLoaderDir() . '/../../../../../../../vendor';
+        /* old vendor folder to give backward compatibility */
+        $vendorFolder = $this->getConfigurationLoaderDir() . '/../../../../vendor';
+        if (is_dir($vendorFolder)) {
+            return $vendorFolder;
+        }
+
+        /* correct vendor folder for composer installations */
+        $vendorFolder = $this->getConfigurationLoaderDir() . '/../../../../../../../vendor';
+        if (is_dir($vendorFolder)) {
+            return $vendorFolder;
+        }
+
+        return '';
     }
 
     /**
