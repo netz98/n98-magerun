@@ -5,6 +5,7 @@
     "support": {
         "issues": "https://github.com/netz98/n98-magerun/issues"
     },
+    "minimum-stability": "dev",
     "homepage": "http://netz98.github.com/n98-magerun/",
     "keywords": ["magento", "installer", "cli"],
     "require": {
@@ -15,7 +16,7 @@
         "symfony/yaml": "2.3.7",
         "symfony/process": "2.3.7",
         "symfony/validator": "2.3.7",
-        "n98/junit-xml": "dev-master",
+        "n98/junit-xml": "1.0.0",
         "fzaninotto/faker": "1.2.0",
         "composer/composer": "dev-master",
         "twig/twig": "1.*"
