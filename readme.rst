@@ -822,7 +822,7 @@ Show size of a log file:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:log:size [log_filename]
+   $ n98-magerun.phar dev:log:size [--human] [log_filename]
 
 Activate/Deactivate MySQL query logging via lib/Varien/Db/Adapter/Pdo/Mysql.php
 

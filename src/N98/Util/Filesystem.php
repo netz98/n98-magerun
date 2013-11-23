@@ -88,4 +88,20 @@ class Filesystem
             return true;
         }
     }
+
+    /**
+     * @param int $bytes
+     * @param int $decimals
+     *
+     * @see http://www.php.net/manual/en/function.filesize.php#106569
+     *
+     * @return string
+     */
+    public static function humandFilesize($bytes, $decimals = 2)
+    {
+        $sz = 'BKMGTP';
+        $factor = floor((strlen($bytes) - 1) / 3);
+
+        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
+    }
 }
