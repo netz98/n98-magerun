@@ -7,7 +7,7 @@
     },
     "minimum-stability": "dev",
     "homepage": "http://netz98.github.com/n98-magerun/",
-    "keywords": ["magento", "installer", "cli"],
+    "keywords": ["magento", "installer", "cli", "magerun"],
     "require": {
         "php": ">=5.3.3",
         "symfony/console": "2.3.7",

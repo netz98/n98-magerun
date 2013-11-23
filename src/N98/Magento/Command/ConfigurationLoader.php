@@ -93,29 +93,35 @@ class ConfigurationLoader
     }
 
     /**
+     * @param bool $loadExternalConfig
      * @return array
      */
-    public function getPartialConfig()
+    public function getPartialConfig($loadExternalConfig = true)
     {
         $config = $this->_initialConfig;
         $config = $this->loadDistConfig($config);
-        $config = $this->loadSystemConfig($config);
-        $config = $this->loadUserConfig($config);
+        if ($loadExternalConfig) {
+            $config = $this->loadSystemConfig($config);
+            $config = $this->loadUserConfig($config);
+        }
 
         return $config;
     }
 
     /**
      * @param string $magentoRootFolder
+     * @param bool   $loadExternalConfig
      */
-    public function loadStageTwo($magentoRootFolder)
+    public function loadStageTwo($magentoRootFolder, $loadExternalConfig = true)
     {
         $config = $this->_initialConfig;
         $config = $this->loadDistConfig($config);
-        $config = $this->loadPluginConfig($config, $magentoRootFolder);
-        $config = $this->loadSystemConfig($config);
-        $config = $this->loadUserConfig($config, $magentoRootFolder);
-        $config = $this->loadProjectConfig($magentoRootFolder, $config);
+        if ($loadExternalConfig) {
+            $config = $this->loadPluginConfig($config, $magentoRootFolder);
+            $config = $this->loadSystemConfig($config);
+            $config = $this->loadUserConfig($config, $magentoRootFolder);
+            $config = $this->loadProjectConfig($magentoRootFolder, $config);
+        }
         $this->_configArray = $config;
     }
 

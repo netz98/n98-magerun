@@ -135,6 +135,14 @@ class Application extends BaseApplication
         );
         $inputDefinition->addOption($rootDirOption);
 
+        $skipExternalConfig = new InputOption(
+            '--skip-config',
+            '',
+            InputOption::VALUE_OPTIONAL,
+            'Do not load any custom config.'
+        );
+        $inputDefinition->addOption($skipExternalConfig);
+
         return $inputDefinition;
     }
 
@@ -536,10 +544,11 @@ class Application extends BaseApplication
             // Suppress DateTime warnings
             date_default_timezone_set(@date_default_timezone_get());
 
+            $loadExternalConfig = !$this->_checkSkipConfigOption();
             $configLoader = $this->getConfigurationLoader($initConfig);
-            $this->partialConfig = $configLoader->getPartialConfig();
+            $this->partialConfig = $configLoader->getPartialConfig($loadExternalConfig);
             $this->detectMagento();
-            $configLoader->loadStageTwo($this->_magentoRootFolder);
+            $configLoader->loadStageTwo($this->_magentoRootFolder, $loadExternalConfig);
             $this->config = $configLoader->toArray();;
             $this->dispatcher = new EventDispatcher();
             $this->setDispatcher($this->dispatcher);
@@ -563,6 +572,16 @@ class Application extends BaseApplication
             $subscriber = new $subscriberClass();
             $this->dispatcher->addSubscriber($subscriber);
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function _checkSkipConfigOption()
+    {
+        $skipConfigOption = getopt('', array('skip-config'));
+
+        return count($skipConfigOption) > 0;
     }
 
     /**
