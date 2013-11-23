@@ -260,6 +260,10 @@ commands:
         description: Changelog tables of new indexer since EE 1.13
         tables: "*_cl"
 
+      - id: search
+        description: Search related tables
+        tables: "catalogsearch_*"
+
       - id: idx
         description: Tables with _idx suffix
         tables: "*_idx"
