@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command;
 
+use N98\Util\String;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
@@ -100,6 +101,7 @@ class ConfigurationLoader
         $config = $this->loadDistConfig($config);
         $config = $this->loadSystemConfig($config);
         $config = $this->loadUserConfig($config);
+
         return $config;
     }
 
@@ -118,6 +120,8 @@ class ConfigurationLoader
     }
 
     /**
+     * @throws \ErrorException
+     *
      * @return array
      */
     public function toArray()
@@ -125,6 +129,7 @@ class ConfigurationLoader
         if ($this->_configArray == null) {
             throw new \ErrorException('Configuration not yet fully loaded');
         }
+
         return $this->_configArray;
     }
 
@@ -197,7 +202,7 @@ class ConfigurationLoader
                     ->followLinks()
                     ->ignoreUnreadableDirs(true)
                     ->name('n98-magerun.yaml')
-                    ->in(realpath(__DIR__ . '/../../../../vendor'));
+                    ->in($this->getVendorDir());
 
                 foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
                     $this->registerPluginConfigFile($magentoRootFolder, $file);
@@ -303,10 +308,30 @@ class ConfigurationLoader
      */
     protected function registerPluginConfigFile($magentoRootFolder, $file)
     {
-        $localPluginConfig = \file_get_contents($file->getRealPath());
+        if (String::startsWith($file->getPathname(), 'vfs://')) {
+            $path = $file->getPathname();
+        } else {
+            $path = $file->getRealPath();
+        }
+        $localPluginConfig = \file_get_contents($path);
         $localPluginConfig = Yaml::parse($this->applyVariables($localPluginConfig, $magentoRootFolder, $file));
 
         $this->_pluginConfig = ArrayFunctions::mergeArrays($this->_pluginConfig, $localPluginConfig);
     }
 
+    /**
+     * @return string
+     */
+    public function getVendorDir()
+    {
+        return $this->getConfigurationLoaderDir() . '/../../../../../../../vendor';
+    }
+
+    /**
+     * @return string
+     */
+    public function getConfigurationLoaderDir()
+    {
+        return __DIR__;
+    }
 }
