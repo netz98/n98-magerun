@@ -196,7 +196,12 @@ Print database information
 
 .. code-block:: sh
 
-   $ n98-magerun.phar db:info
+   $ n98-magerun.phar db:info [setting]
+
+**Arguments**
+
+    setting               Only output value of named setting
+
 
 Dump database
 """""""""""""
