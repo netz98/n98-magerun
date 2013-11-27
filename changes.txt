@@ -9,6 +9,7 @@ RECENT CHANGES
 * Added --skip-config option to prohibit loading of external config files.
 * #251 Improve db:info with prefix and machine-readable output (by Melvyn Sopacua)
 * #255 ConfigurationLoader::loadPluginConfig() Bug? (Thanks to Cyrill Schumacher)
+* #257 Configuration value decryption fails when using Enterprise Edition (by @aedmonds)
 * #196 New table group for db:dump: --strip="@search" (by mystix)
 * #124 Feature Request: dev:log:size should support "human readable" flags. (by Alan Storm)
 * Updated dependencies (PHPUnit, Composer, Twig, JUnit-XML)
