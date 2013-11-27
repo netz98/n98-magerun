@@ -7,12 +7,15 @@ use N98\Magento\Command\AbstractMagentoCommand;
 abstract class AbstractConfigCommand extends AbstractMagentoCommand
 {
     /**
-     * @return \Mage_Core_Model_Abstract
+     * @return \Mage_Core_Model_Encryption
      */
     protected function getEncryptionModel()
     {
-        return $this->_getModel('core/encryption', 'Mage_Core_Model_Encryption')
-                    ->setHelper($this->getCoreHelper());
+        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
+            // @TODO Magento 2 support
+        } else {
+            return \Mage::helper('core')->getEncryptor();
+        }
     }
 
     /**
