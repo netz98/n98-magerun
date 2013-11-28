@@ -1315,3 +1315,9 @@ Thanks to
 * Symfony2 Team for the great console component.
 * Composer Team for the downloader backend and the self-update command.
 * Francois Zaninotto for great Faker library
+
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/netz98/n98-magerun/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+
