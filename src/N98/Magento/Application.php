@@ -113,7 +113,6 @@ class Application extends BaseApplication
 
     /**
      * @param \Composer\Autoload\ClassLoader $autoloader
-     * @param bool                           $isPharMode
      */
     public function __construct($autoloader = null)
     {
