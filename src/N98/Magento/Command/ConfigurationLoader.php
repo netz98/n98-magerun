@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command;
 
+use N98\Util\String;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
@@ -92,32 +93,41 @@ class ConfigurationLoader
     }
 
     /**
+     * @param bool $loadExternalConfig
      * @return array
      */
-    public function getPartialConfig()
+    public function getPartialConfig($loadExternalConfig = true)
     {
         $config = $this->_initialConfig;
         $config = $this->loadDistConfig($config);
-        $config = $this->loadSystemConfig($config);
-        $config = $this->loadUserConfig($config);
+        if ($loadExternalConfig) {
+            $config = $this->loadSystemConfig($config);
+            $config = $this->loadUserConfig($config);
+        }
+
         return $config;
     }
 
     /**
      * @param string $magentoRootFolder
+     * @param bool   $loadExternalConfig
      */
-    public function loadStageTwo($magentoRootFolder)
+    public function loadStageTwo($magentoRootFolder, $loadExternalConfig = true)
     {
         $config = $this->_initialConfig;
         $config = $this->loadDistConfig($config);
-        $config = $this->loadPluginConfig($config, $magentoRootFolder);
-        $config = $this->loadSystemConfig($config);
-        $config = $this->loadUserConfig($config, $magentoRootFolder);
-        $config = $this->loadProjectConfig($magentoRootFolder, $config);
+        if ($loadExternalConfig) {
+            $config = $this->loadPluginConfig($config, $magentoRootFolder);
+            $config = $this->loadSystemConfig($config);
+            $config = $this->loadUserConfig($config, $magentoRootFolder);
+            $config = $this->loadProjectConfig($magentoRootFolder, $config);
+        }
         $this->_configArray = $config;
     }
 
     /**
+     * @throws \ErrorException
+     *
      * @return array
      */
     public function toArray()
@@ -125,6 +135,7 @@ class ConfigurationLoader
         if ($this->_configArray == null) {
             throw new \ErrorException('Configuration not yet fully loaded');
         }
+
         return $this->_configArray;
     }
 
@@ -190,17 +201,19 @@ class ConfigurationLoader
              * Allow modules to be placed vendor folder if not in phar mode
              */
             if (!$this->_isPharMode) {
-                $finder = Finder::create();
-                $finder
-                    ->files()
-                    ->depth(2)
-                    ->followLinks()
-                    ->ignoreUnreadableDirs(true)
-                    ->name('n98-magerun.yaml')
-                    ->in(realpath(__DIR__ . '/../../../../vendor'));
+                if (is_dir($this->getVendorDir())) {
+                    $finder = Finder::create();
+                    $finder
+                        ->files()
+                        ->depth(2)
+                        ->followLinks()
+                        ->ignoreUnreadableDirs(true)
+                        ->name('n98-magerun.yaml')
+                        ->in($this->getVendorDir());
 
-                foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
-                    $this->registerPluginConfigFile($magentoRootFolder, $file);
+                    foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                        $this->registerPluginConfigFile($magentoRootFolder, $file);
+                    }
                 }
             }
 
@@ -303,10 +316,42 @@ class ConfigurationLoader
      */
     protected function registerPluginConfigFile($magentoRootFolder, $file)
     {
-        $localPluginConfig = \file_get_contents($file->getRealPath());
+        if (String::startsWith($file->getPathname(), 'vfs://')) {
+            $path = $file->getPathname();
+        } else {
+            $path = $file->getRealPath();
+        }
+        $localPluginConfig = \file_get_contents($path);
         $localPluginConfig = Yaml::parse($this->applyVariables($localPluginConfig, $magentoRootFolder, $file));
 
         $this->_pluginConfig = ArrayFunctions::mergeArrays($this->_pluginConfig, $localPluginConfig);
     }
 
+    /**
+     * @return string
+     */
+    public function getVendorDir()
+    {
+        /* old vendor folder to give backward compatibility */
+        $vendorFolder = $this->getConfigurationLoaderDir() . '/../../../../vendor';
+        if (is_dir($vendorFolder)) {
+            return $vendorFolder;
+        }
+
+        /* correct vendor folder for composer installations */
+        $vendorFolder = $this->getConfigurationLoaderDir() . '/../../../../../../../vendor';
+        if (is_dir($vendorFolder)) {
+            return $vendorFolder;
+        }
+
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getConfigurationLoaderDir()
+    {
+        return __DIR__;
+    }
 }

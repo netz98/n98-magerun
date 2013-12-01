@@ -28,6 +28,8 @@ class DatabaseHelper extends AbstractHelper
     /**
      * @param OutputInterface $output
      * @param bool            $silent
+     *
+     * @return void
      */
     public function detectDbSettings(OutputInterface $output, $silent = true)
     {
@@ -56,6 +58,7 @@ class DatabaseHelper extends AbstractHelper
             }
 
             $this->dbSettings = (array) $config->global->resources->default_setup->connection;
+	        $this->dbSettings['prefix'] = (string) $config->global->resources->db->table_prefix;
             if (isset($this->dbSettings['comment'])) {
                 unset($this->dbSettings['comment']);
             }
@@ -69,8 +72,9 @@ class DatabaseHelper extends AbstractHelper
     /**
      * Connects to the database without initializing magento
      *
-     * @return \PDO
+     * @param OutputInterface $output = null
      * @throws \Exception
+     * @return \PDO
      */
     public function getConnection(OutputInterface $output = null)
     {

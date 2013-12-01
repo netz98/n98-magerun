@@ -37,7 +37,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.82.0';
+    const APP_VERSION = '1.83.0';
 
     /**
      * @var string
@@ -58,6 +58,11 @@ class Application extends BaseApplication
      * @var array
      */
     protected $config = array();
+
+    /**
+     * @var ConfigurationLoader
+     */
+    protected $configurationLoader = null;
 
     /**
      * @var array
@@ -108,7 +113,6 @@ class Application extends BaseApplication
 
     /**
      * @param \Composer\Autoload\ClassLoader $autoloader
-     * @param bool                           $isPharMode
      */
     public function __construct($autoloader = null)
     {
@@ -129,6 +133,14 @@ class Application extends BaseApplication
             'Force magento root dir. No auto detection'
         );
         $inputDefinition->addOption($rootDirOption);
+
+        $skipExternalConfig = new InputOption(
+            '--skip-config',
+            '',
+            InputOption::VALUE_OPTIONAL,
+            'Do not load any custom config.'
+        );
+        $inputDefinition->addOption($skipExternalConfig);
 
         return $inputDefinition;
     }
@@ -531,13 +543,11 @@ class Application extends BaseApplication
             // Suppress DateTime warnings
             date_default_timezone_set(@date_default_timezone_get());
 
-            $configLoader = new ConfigurationLoader(
-                ArrayFunctions::mergeArrays($this->config, $initConfig),
-                $this->isPharMode()
-            );
-            $this->partialConfig = $configLoader->getPartialConfig();
+            $loadExternalConfig = !$this->_checkSkipConfigOption();
+            $configLoader = $this->getConfigurationLoader($initConfig);
+            $this->partialConfig = $configLoader->getPartialConfig($loadExternalConfig);
             $this->detectMagento();
-            $configLoader->loadStageTwo($this->_magentoRootFolder);
+            $configLoader->loadStageTwo($this->_magentoRootFolder, $loadExternalConfig);
             $this->config = $configLoader->toArray();;
             $this->dispatcher = new EventDispatcher();
             $this->setDispatcher($this->dispatcher);
@@ -561,6 +571,16 @@ class Application extends BaseApplication
             $subscriber = new $subscriberClass();
             $this->dispatcher->addSubscriber($subscriber);
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function _checkSkipConfigOption()
+    {
+        $skipConfigOption = getopt('', array('skip-config'));
+
+        return count($skipConfigOption) > 0;
     }
 
     /**
@@ -630,5 +650,33 @@ class Application extends BaseApplication
     public function getDispatcher()
     {
         return $this->dispatcher;
+    }
+
+    /**
+     * @param array $initConfig
+     * @return ConfigurationLoader
+     */
+    public function getConfigurationLoader($initConfig = array())
+    {
+        if ($this->configurationLoader === null) {
+            $this->configurationLoader = new ConfigurationLoader(
+                ArrayFunctions::mergeArrays($this->config, $initConfig),
+                $this->isPharMode()
+            );
+        }
+
+        return $this->configurationLoader;
+    }
+
+    /**
+     * @param \N98\Magento\Command\ConfigurationLoader $configurationLoader
+     *
+     * @return $this
+     */
+    public function setConfigurationLoader($configurationLoader)
+    {
+        $this->configurationLoader = $configurationLoader;
+
+        return $this;
     }
 }

@@ -13,6 +13,7 @@ class InfoCommand extends AbstractDatabaseCommand
     {
         $this
             ->setName('db:info')
+            ->addArgument('setting', InputArgument::OPTIONAL, 'Only output value of named setting')
             ->addDeprecatedAlias('database:info', 'Please use db:info')
             ->setDescription('Dumps database informations')
         ;
@@ -26,15 +27,18 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return int|void
+     * @throws \InvalidArgumentException
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectDbSettings($output);
+
+        $settings = array();
         foreach ($this->dbSettings as $key => $value) {
-            $output->writeln(str_pad($key, 25, ' ') . ': ' . $value);
+            $settings[$key] = (string) $value;
         }
 
         $pdoConnectionString = sprintf(
@@ -42,7 +46,7 @@ HELP;
             $this->dbSettings['host'],
             $this->dbSettings['dbname']
         );
-        $output->writeln(str_pad('PDO-Connection-String', 25, ' ') . ': ' . $pdoConnectionString);
+        $settings['PDO-Connection-String'] = $pdoConnectionString;
 
         $jdbcConnectionString = sprintf(
             'jdbc:mysql://%s/%s?username=%s&password=%s',
@@ -51,11 +55,27 @@ HELP;
             $this->dbSettings['username'],
             $this->dbSettings['password']
         );
-        $output->writeln(str_pad('JDBC-Connection-String', 25, ' ') . ': ' . $jdbcConnectionString);
+        $settings['JDBC-Connection-String'] = $jdbcConnectionString;
 
         $mysqlCliString = 'mysql ' . $this->getHelper('database')->getMysqlClientToolConnectionString();
+        $settings['MySQL-Cli-String'] = $mysqlCliString;
 
-        $output->writeln(str_pad('MySQL-Cli-String', 25, ' ') . ': ' . $mysqlCliString);
+        $rows = array();
+        foreach ($settings as $settingName => $settingValue) {
+            $rows[] = array($settingName, $settingValue);
+        }
+
+        if (($settingArgument = $input->getArgument('setting')) !== null) {
+            if (!isset($settings[$settingArgument])) {
+                throw new \InvalidArgumentException('Unknown setting: ' . $settingArgument);
+            }
+            $output->writeln((string) $settings[$settingArgument]);
+        } else {
+            $this->getHelper('table')
+                ->setHeaders(array('Name', 'Value'))
+                ->setRows($rows)
+                ->render($output);
+        }
     }
 
 }
