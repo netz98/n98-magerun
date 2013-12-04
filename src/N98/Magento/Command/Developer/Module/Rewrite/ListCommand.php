@@ -47,7 +47,7 @@ class ListCommand extends AbstractRewriteCommand
                     ->setRows($table)
                     ->render($output);
             } else {
-                $output->writeln('<info>No rewrites was found.</info>');
+                $output->writeln('<info>No rewrites were found.</info>');
             }
         }
     }
