@@ -470,7 +470,7 @@ class Application extends BaseApplication
         $this->dispatcher->dispatch('console.run.before', $event);
 
         $input = $this->checkConfigCommandAlias($input);
-        $this->checkVarDir($output);
+        $this->checkVarDir($output->getErrorOutput());
 
         if (OutputInterface::VERBOSITY_DEBUG <= $output->getVerbosity()) {
             $output->writeln('DEBUG');
