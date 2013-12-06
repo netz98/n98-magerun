@@ -42,7 +42,9 @@ commands:
     - N98\Magento\Command\Cache\EnableCommand 
     - N98\Magento\Command\Cache\FlushCommand 
     - N98\Magento\Command\Cache\ListCommand 
-    - N98\Magento\Command\Cms\Banner\ToggleCommand 
+    - N98\Magento\Command\Cache\ReportCommand
+    - N98\Magento\Command\Cache\ViewCommand
+    - N98\Magento\Command\Cms\Banner\ToggleCommand
     - N98\Magento\Command\Cms\Page\PublishCommand 
     - N98\Magento\Command\Config\DeleteCommand 
     - N98\Magento\Command\Config\DumpCommand 
