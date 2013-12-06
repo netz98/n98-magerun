@@ -296,22 +296,43 @@ HELP;
     }
 
     /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @throws \InvalidArgumentException
      */
     protected function createDatabase(InputInterface $input, OutputInterface $output)
     {
-        $dialog = $this->getHelperSet()->get('dialog');
+        $hasAllOptions = true;
+        foreach(array('dbHost', 'dbUser', 'dbPass', 'dbName') as $option) {
+            if($input->hasOption($option) === null) {
+                $hasAllOptions = false;
+                break;
+            }
+        }
 
-        /**
-         * Database
-         */
-        do {
-            $this->config['db_host'] = $input->getOption('dbHost') !== null ? $input->getOption('dbHost') : $dialog->askAndValidate($output, '<question>Please enter the database host:</question> <comment>[localhost]</comment>: ', $this->notEmptyCallback, false, 'localhost');
-            $this->config['db_user'] = $input->getOption('dbUser') !== null ? $input->getOption('dbUser') : $dialog->askAndValidate($output, '<question>Please enter the database username:</question> ', $this->notEmptyCallback);
-            $this->config['db_pass'] = $input->hasParameterOption('--dbPass=' . $input->getOption('dbPass')) ? $input->getOption('dbPass') : $dialog->ask($output, '<question>Please enter the database password:</question> ');
-            $this->config['db_name'] = $input->getOption('dbName') !== null ? $input->getOption('dbName') : $dialog->askAndValidate($output, '<question>Please enter the database name:</question> ', $this->notEmptyCallback);
+        //if all database options were passed in at cmd line
+        if($hasAllOptions) {
+            $this->config['db_host'] = $input->getOption('dbHost');
+            $this->config['db_user'] = $input->getOption('dbUser');
+            $this->config['db_pass'] = $input->getOption('dbPass');
+            $this->config['db_name'] = $input->getOption('dbName');
             $db = $this->validateDatabaseSettings($output, $input);
-        } while ($db === false);
+
+            if($db === false) {
+                throw new \InvalidArgumentException("Database configuration is invalid", null);
+            }
+
+        } else {
+
+            $dialog = $this->getHelperSet()->get('dialog');
+            do {
+                $this->config['db_host'] = $dialog->askAndValidate($output, '<question>Please enter the database host:</question> <comment>[localhost]</comment>: ', $this->notEmptyCallback, false, 'localhost');
+                $this->config['db_user'] = $dialog->askAndValidate($output, '<question>Please enter the database username:</question> ', $this->notEmptyCallback);
+                $this->config['db_pass'] = $dialog->ask($output, '<question>Please enter the database password:</question> ');
+                $this->config['db_name'] = $dialog->askAndValidate($output, '<question>Please enter the database name:</question> ', $this->notEmptyCallback);
+                $db = $this->validateDatabaseSettings($output, $input);
+            } while ($db === false);
+        }
 
         $this->config['db'] = $db;
     }
