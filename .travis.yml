@@ -5,6 +5,9 @@ branches:
     - master
     - develop
 
+matrix:
+  fast_finish: true
+
 env:
   - MAGENTO_VERSION="magento-mirror-1.4.2.0" DB=mysql
   - MAGENTO_VERSION="magento-mirror-1.5.1.0" DB=mysql
