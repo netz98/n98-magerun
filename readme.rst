@@ -553,15 +553,20 @@ Disable Magento cache
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:disable
+   $ n98-magerun.phar cache:disable [code]
+
+If no code is specified, all cache types will be disabled.
+Run `cache:list` command to see all codes.
 
 Enable Magento cache
 """"""""""""""""""""
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:enable
+   $ n98-magerun.phar cache:enable [code]
 
+If no code is specified, all cache types will be enabled.
+Run `cache:list` command to see all codes.
 
 Demo Notice
 """""""""""

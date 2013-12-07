@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Cache;
 
 use N98\Magento\Application;
+use N98\Util\String;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,6 +15,7 @@ class EnableCommand extends AbstractCacheCommand
     {
         $this
             ->setName('cache:enable')
+            ->addArgument('code', InputArgument::OPTIONAL, 'Code of cache (Multiple codes sperated by comma)')
             ->setDescription('Enables magento caches')
         ;
     }
@@ -32,14 +34,8 @@ class EnableCommand extends AbstractCacheCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            $cacheTypes = array_keys($this->getCoreHelper()->getCacheTypes());
-            $enable = array();
-            foreach ($cacheTypes as $type) {
-                $enable[$type] = 1;
-            }
-
-            \Mage::app()->saveUseCache($enable);
-            $this->_getCacheModel()->flush();
+            $codeArgument = String::trimExplodeEmpty(',', $input->getArgument('code'));
+            $this->saveCacheStatus($codeArgument, true);
 
             $output->writeln('<info>Caches enabled</info>');
         }

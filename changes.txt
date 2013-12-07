@@ -6,10 +6,11 @@ RECENT CHANGES
 1.84.0
 ======
 
+* New commands cache:report and cache:view to look inside the core cache
+* Support to enable/disable specific cache types
 * #261 Compatibility with environments that disable exec()
 * #264 Grammar correction and send warning to stderr (by Melvyn Sopacua)
 * #265 Features/install cmd fail invalid db config (by AydinHassan)
-* New commands cache:report and cache:view to look inside the core cache
 * Updated Symfony to 2.4
 
 ======
