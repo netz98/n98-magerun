@@ -21,4 +21,24 @@ class EnableCommandTest extends TestCase
             $this->assertRegExp('/Caches enabled/', $commandTester->getDisplay());
         }
     }
+
+    public function testExecuteMultipleCaches()
+    {
+        $application = $this->getApplication();
+        if ($application->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1) {
+            $application->add(new DisableCommand());
+
+            $command = $this->getApplication()->find('cache:enable');
+            $commandTester = new CommandTester($command);
+            $commandTester->execute(
+                array(
+                    'command' => $command->getName(),
+                    'code'    => 'eav,config'
+                )
+            );
+
+            $this->assertRegExp('/Cache config enabled/', $commandTester->getDisplay());
+            $this->assertRegExp('/Cache eav enabled/', $commandTester->getDisplay());
+        }
+    }
 }

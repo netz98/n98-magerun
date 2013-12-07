@@ -21,4 +21,24 @@ class DisableCommandTest extends TestCase
             $this->assertRegExp('/Caches disabled/', $commandTester->getDisplay());
         }
     }
+
+    public function testExecuteMultipleCaches()
+    {
+        $application = $this->getApplication();
+        if ($application->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1) {
+            $application->add(new DisableCommand());
+
+            $command = $this->getApplication()->find('cache:disable');
+            $commandTester = new CommandTester($command);
+            $commandTester->execute(
+                array(
+                    'command' => $command->getName(),
+                    'code'    => 'eav,config'
+                )
+            );
+
+            $this->assertRegExp('/Cache config disabled/', $commandTester->getDisplay());
+            $this->assertRegExp('/Cache eav disabled/', $commandTester->getDisplay());
+        }
+    }
 }

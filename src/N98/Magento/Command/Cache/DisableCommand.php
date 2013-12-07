@@ -45,7 +45,13 @@ class DisableCommand extends AbstractCacheCommand
                 }
             }
 
-            $output->writeln('<info>Caches disabled</info>');
+            if (count($codeArgument) > 0) {
+                foreach ($codeArgument as $code) {
+                    $output->writeln('<info>Cache <comment>' . $code . '</comment> disabled</info>');
+                }
+            } else {
+                $output->writeln('<info>Caches disabled</info>');
+            }
         }
     }
 }
