@@ -30,6 +30,14 @@ mysql cli tool will be returned.
 HELP;
         $this->setHelp($help);
     }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return function_exists('exec');
+    }
     
     /**
      * Returns the query string with escaped ' characters so it can be used

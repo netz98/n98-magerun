@@ -28,7 +28,7 @@ class ConflictsCommandTest extends TestCase
                 'command' => $command->getName(),
             )
         );
-        $this->assertContains('No rewrite conflicts was found', $commandTester->getDisplay());
+        $this->assertContains('No rewrite conflicts were found', $commandTester->getDisplay());
 
 
         /**

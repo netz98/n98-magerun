@@ -88,9 +88,18 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return int|void
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return function_exists('exec');
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @throws \RuntimeException
+     * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -121,8 +130,8 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @throws \InvalidArgumentException
      */
     protected function selectMagentoVersion(InputInterface $input, OutputInterface $output)
@@ -167,8 +176,8 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      */
     protected function chooseInstallationFolder(InputInterface $input, OutputInterface $output)
     {
@@ -239,16 +248,18 @@ HELP;
         \chdir($this->config['installationFolder']);
     }
 
-    protected function test($folderName) {
+    protected function test($folderName)
+    {
 
     }
 
     /**
-     * @param array $magentoVersionData
-     * @param string $installationFolder
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return bool
      */
-    public function downloadMagento(InputInterface $input, OutputInterface $output) {
+    public function downloadMagento(InputInterface $input, OutputInterface $output)
+    {
         try {
             $package = $this->createComposerPackageByConfig($this->config['magentoVersionData']);
             $this->config['magentoPackage'] = $package;
@@ -296,8 +307,8 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @throws \InvalidArgumentException
      */
     protected function createDatabase(InputInterface $input, OutputInterface $output)
@@ -339,11 +350,8 @@ HELP;
 
     /**
      * @param OutputInterface $output
-     * @param string $dbHost
-     * @param string $dbUser
-     * @param string $dbPass
-     * @param string $dbName
-     * @return bool|PDO
+     * @param InputInterface $input
+     * @return bool|\PDO
      */
     protected function validateDatabaseSettings(OutputInterface $output, InputInterface $input)
     {
@@ -370,8 +378,8 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      */
     protected function installSampleData(InputInterface $input, OutputInterface $output)
     {
@@ -480,8 +488,8 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return array
      */
     protected function installMagento(InputInterface $input, OutputInterface $output)
@@ -686,7 +694,7 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      */
     protected function setDirectoryPermissions($output)
     {

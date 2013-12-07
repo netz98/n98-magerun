@@ -69,7 +69,7 @@ HELP;
                         $output->write($table->render());
                         $output->writeln('<error>' . $conflictCounter . ' conflict' . ($conflictCounter > 1 ? 's' : '') . ' was found!</error>');
                     } else {
-                        $output->writeln('<info>No rewrite conflicts was found.</info>');
+                        $output->writeln('<info>No rewrite conflicts were found.</info>');
                     }
                 }
             }

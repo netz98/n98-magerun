@@ -45,7 +45,7 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
      */
     public function isEnabled()
     {
-        return !OperatingSystem::isWindows();
+        return function_exists('exec_exec') && !OperatingSystem::isWindows();
     }
 
     /**

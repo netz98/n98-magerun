@@ -98,6 +98,14 @@ HELP;
         $this->setHelp($help);
     }
 
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return function_exists('exec');
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->_scriptFilename = $input->getArgument('filename');
@@ -138,6 +146,7 @@ HELP;
 
     /**
      * @param InputInterface $input
+     * @throws \InvalidArgumentException
      */
     protected function _initDefines(InputInterface $input)
     {
@@ -162,7 +171,9 @@ HELP;
     }
 
     /**
-     * @param string $input
+     * @param string $filename
+     * @throws \RuntimeException
+     * @internal param string $input
      * @return string
      */
     protected function _getContent($filename)
@@ -182,7 +193,8 @@ HELP;
 
     /**
      * @param OutputInterface $output
-     * @param string          $commandString
+     * @param string $commandString
+     * @throws \RuntimeException
      * @return void
      */
     protected function registerVariable(OutputInterface $output, $commandString)
@@ -247,7 +259,8 @@ HELP;
     }
 
     /**
-     * @param $commandString
+     * @param string $commandString
+     * @return mixed|string
      */
     protected function _prepareShellCommand($commandString)
     {
@@ -282,8 +295,8 @@ HELP;
 
     /**
      * @param OutputInterface $output
-     * @param                 $commandString
-     * @param                 $returnValue
+     * @param string          $commandString
+     * @internal param $returnValue
      */
     protected function runShellCommand(OutputInterface $output, $commandString)
     {

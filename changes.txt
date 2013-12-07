@@ -3,6 +3,16 @@ RECENT CHANGES
 **************
 
 ======
+1.84.0
+======
+
+* #261 Compatibility with environments that disable exec()
+* #264 Grammar correction and send warning to stderr (by Melvyn Sopacua)
+* #265 Features/install cmd fail invalid db config (by AydinHassan)
+* New commands cache:report and cache:view to look inside the core cache
+* Updated Symfony to 2.4
+
+======
 1.83.0
 ======
 
@@ -23,19 +33,6 @@ RECENT CHANGES
 * Adds --noDownload option to InstallCommand (by Manuele Menozzi)
 * Fix: config:set fix --encrypt input option (by Robert Coleman)
 * Updated 3rd party dependencies
-
-======
-1.81.0
-======
-
-* script command: Do not prompt for variables, defined with "--define" option.
-* script command: Added support for choices
-* script command: Fixed resolution of other variables
-* Added --define option to script:repo:run command
-* Updated Symfony dependencies
-* Fix flush to use Enterprise_PageCache_Model_Cache only for 1.11 and up (by Jay Becker)
-* Added an '--add-routines' option to db:dump command. (by Pieter Hoste)
-* #238 - Enable symlinks globally, with interactive
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H

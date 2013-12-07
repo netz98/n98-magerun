@@ -4,6 +4,7 @@ namespace N98\Magento\Command\Installer;
 
 use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use org\bovigo\vfs\vfsStream;
 
 class InstallCommandTest extends TestCase
 {
@@ -60,7 +61,7 @@ class InstallCommandTest extends TestCase
      */
     public function tearDown()
     {
-        if(is_readable($this->installDir)) {
+        if (is_readable($this->installDir)) {
             @rmdir($this->installDir);
         }
     }

@@ -87,7 +87,7 @@ HELP;
      */
     public function isEnabled()
     {
-        return !OperatingSystem::isWindows();
+        return function_exists('exec') && !OperatingSystem::isWindows();
     }
 
     public function getTableDefinitions()
