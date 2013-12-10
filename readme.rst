@@ -288,6 +288,7 @@ Available Table Groups:
 * @sales Sales data (orders, invoices, creditmemos etc)
 * @customers Customer data
 * @trade Current trade data (customers and orders). You usally do not want those in developer systems.
+* @search Search related tables (catalogsearch_)
 * @development Removes logs and trade data so developers do not have to work with real customer data
 
 Extended: https://github.com/netz98/n98-magerun/wiki/Stripped-Database-Dumps

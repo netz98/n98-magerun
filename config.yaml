@@ -256,7 +256,7 @@ commands:
 
       - id: development
         description: Removes logs and trade data so developers do not have to work with real customer data
-        tables: @trade @stripped
+        tables: @trade @stripped @search
 
       - id: ee_changelog
         description: Changelog tables of new indexer since EE 1.13
