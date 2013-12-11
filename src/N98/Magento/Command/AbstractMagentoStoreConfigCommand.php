@@ -34,6 +34,27 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
     const SCOPE_STORE_VIEW_GLOBAL = 'store_view_global';
 
     /**
+     * Set 1/0 for on and off
+     */
+    const COMMAND_TYPE_TOGGLE = 1;
+
+    /**
+     * Set a value
+     */
+    const COMMAND_TYPE_VALUE = 2;
+
+    /**
+     * Set multiple values separated by comma and accept them using multiple 
+     * option values.
+     */
+    const COMMAND_TYPE_COMMA = 4;
+
+    /**
+     * Support clearing a value
+     */
+    const COMMAND_TYPE_SUPPORT_CLEAR = 4096;
+
+    /**
      * @var string
      */
     protected $commandName = '';
@@ -69,6 +90,35 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      * @var bool
      */
     protected $withAdminStore = false;
+
+    /**
+     * Type of command:
+     * - toggle: sets a setting true/false
+     * - value: sets a single value on the configuration
+     * - comma: sets a comma-separated value, accepted as multiple options
+     *
+     * TODO?
+     * - json: accepts and verifies a json string from stdin.
+     *   Fooman/Surcharge is one extension that stores it's configuration that 
+     *   way.
+     */
+    protected $commandType = self::COMMAND_TYPE_TOGGLE;
+
+    /**
+     * @deprecated
+     * @see deleteWithClear
+     *
+     * If set to 'off' delete key from core_config_data
+     */
+    protected $deleteWithOff = false;
+
+    /**
+     * If clearing is enabled, implement clearing by deleting the value.
+     *
+     * NOTE: this means the default for this setting has to be the empty 
+     * string or correspond to the 'off' setting.
+     */
+    protected $deleteWithClear = false;
 
     /**
      * @var string
