@@ -616,8 +616,9 @@ HELP;
         /**
          * Try to create session folder
          */
-        if ($sessionSave == 'files' && is_dir()) {
-            @mkdir($this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'var/session');
+        $defaultSessionFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'var/session';
+        if ($sessionSave == 'files' && !is_dir($defaultSessionFolder)) {
+            @mkdir($defaultSessionFolder);
         }
 
         $argv = array(
