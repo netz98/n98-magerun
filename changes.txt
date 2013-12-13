@@ -12,6 +12,7 @@ RECENT CHANGES
 * #261 Compatibility with environments that disable exec()
 * #264 Grammar correction and send warning to stderr (by Melvyn Sopacua)
 * #265 Features/install cmd fail invalid db config (by AydinHassan)
+* #268 Added @search database table group to readme (by Tegan Snyder)
 * Updated Symfony to 2.4
 
 ======

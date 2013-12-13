@@ -127,6 +127,14 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
+      - name: magento-ce-1.8.1.0
+        version: 1.8.1.0
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.8.1.0/magento-1.8.1.0.tar.gz
+          type: tar
+        extra:
+          sample-data: sample-data-1.6.1.0
+
       - name: magento-ce-1.8.0.0
         version: 1.8.0.0
         dist:
