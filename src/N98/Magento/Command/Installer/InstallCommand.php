@@ -31,6 +31,11 @@ class InstallCommand extends AbstractMagentoCommand
     /**
      * @var array
      */
+    protected $_argv;
+
+    /**
+     * @var array
+     */
     protected $commandConfig;
 
     protected $notEmptyCallback;
@@ -317,7 +322,7 @@ HELP;
         $dbOptions = array('--dbHost', '--dbUser', '--dbPass', '--dbName');
         $dbOptionsFound = 0;
         foreach ($dbOptions as $dbOption) {
-            foreach ($_SERVER['argv'] as $definedCliOption) {
+            foreach ($this->getCliArguments() as $definedCliOption) {
                 if (String::startsWith($definedCliOption, $dbOption)) {
                     $dbOptionsFound++;
                 }
@@ -745,5 +750,25 @@ HELP;
         } catch (\Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getCliArguments()
+    {
+        if ($this->_argv === null) {
+            $this->_argv = $_SERVER['argv'];
+        }
+
+        return $this->_argv;
+    }
+
+    /**
+     * @param array $args
+     */
+    public function setCliArguments($args)
+    {
+        $this->_argv = $args;
     }
 }

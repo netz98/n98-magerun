@@ -31,6 +31,14 @@ class InstallCommandTest extends TestCase
         $application = $this->getApplication();
         $application->add(new InstallCommand());
         $command = $this->getApplication()->find('install');
+        $command->setCliArguments(
+            array(
+                '--dbName=magento',
+                '--dbHost=hostWhichDoesntExist',
+                '--dbUser=user',
+                '--dbPass=pa$$w0rd',
+            )
+        );
 
         $commandTester = new CommandTester($command);
 
