@@ -7,6 +7,7 @@ use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\Database as DatabaseUtils;
 use N98\Util\Filesystem;
 use N98\Util\OperatingSystem;
+use N98\Util\String;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -313,15 +314,19 @@ HELP;
      */
     protected function createDatabase(InputInterface $input, OutputInterface $output)
     {
-        $hasAllOptions = true;
-        foreach (array('dbHost', 'dbUser', 'dbPass', 'dbName') as $option) {
-            if ($input->getOption($option) === null) {
-                $hasAllOptions = false;
-                break;
+        $dbOptions = array('--dbHost', '--dbUser', '--dbPass', '--dbName');
+        $dbOptionsFound = 0;
+        foreach ($dbOptions as $dbOption) {
+            foreach ($_SERVER['argv'] as $definedCliOption) {
+                if (String::startsWith($definedCliOption, $dbOption)) {
+                    $dbOptionsFound++;
+                }
             }
         }
 
-        //if all database options were passed in at cmd line
+        $hasAllOptions = $dbOptionsFound == 4;
+
+        // if all database options were passed in at cmd line
         if ($hasAllOptions) {
             $this->config['db_host'] = $input->getOption('dbHost');
             $this->config['db_user'] = $input->getOption('dbUser');
@@ -329,12 +334,11 @@ HELP;
             $this->config['db_name'] = $input->getOption('dbName');
             $db = $this->validateDatabaseSettings($output, $input);
 
-            if($db === false) {
+            if ($db === false) {
                 throw new \InvalidArgumentException("Database configuration is invalid", null);
             }
 
         } else {
-
             $dialog = $this->getHelperSet()->get('dialog');
             do {
                 $this->config['db_host'] = $dialog->askAndValidate($output, '<question>Please enter the database host:</question> <comment>[localhost]</comment>: ', $this->notEmptyCallback, false, 'localhost');
