@@ -8,6 +8,7 @@ RECENT CHANGES
 
 * New commands cache:report and cache:view to look inside the core cache
 * Support to enable/disable specific cache types
+* Added Magento CE 1.8.1.0 to installer
 * #152 Added local autoloader overwrites to dev:module:rewrite:list command.
 * #261 Compatibility with environments that disable exec()
 * #264 Grammar correction and send warning to stderr (by Melvyn Sopacua)
