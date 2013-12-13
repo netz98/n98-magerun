@@ -21,7 +21,7 @@ class ReindexAllCommandTest extends TestCase
                 'command' => $command->getName()
             )
         );
-    
+
         $this->assertContains('Successfully reindexed catalog_product_attribute', $commandTester->getDisplay());
         $this->assertContains('Successfully reindexed catalog_product_price', $commandTester->getDisplay());
         $this->assertContains('Successfully reindexed catalog_url', $commandTester->getDisplay());

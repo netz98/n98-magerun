@@ -314,15 +314,15 @@ HELP;
     protected function createDatabase(InputInterface $input, OutputInterface $output)
     {
         $hasAllOptions = true;
-        foreach(array('dbHost', 'dbUser', 'dbPass', 'dbName') as $option) {
-            if($input->hasOption($option) === null) {
+        foreach (array('dbHost', 'dbUser', 'dbPass', 'dbName') as $option) {
+            if ($input->getOption($option) === null) {
                 $hasAllOptions = false;
                 break;
             }
         }
 
         //if all database options were passed in at cmd line
-        if($hasAllOptions) {
+        if ($hasAllOptions) {
             $this->config['db_host'] = $input->getOption('dbHost');
             $this->config['db_user'] = $input->getOption('dbUser');
             $this->config['db_pass'] = $input->getOption('dbPass');
@@ -596,6 +596,20 @@ HELP;
             false
         );
         $baseUrl = rtrim($baseUrl, '/') . '/'; // normalize baseUrl
+
+        /**
+         * Correct session save (common mistake)
+         */
+        if ($sessionSave == 'file') {
+            $sessionSave = 'files';
+        }
+
+        /**
+         * Try to create session folder
+         */
+        if ($sessionSave == 'files' && is_dir()) {
+            @mkdir($this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'var/session');
+        }
 
         $argv = array(
             'license_agreement_accepted' => 'yes',
