@@ -7,6 +7,7 @@ use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\Database as DatabaseUtils;
 use N98\Util\Filesystem;
 use N98\Util\OperatingSystem;
+use N98\Util\String;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -26,6 +27,11 @@ class InstallCommand extends AbstractMagentoCommand
      * @var array
      */
     protected $config;
+
+    /**
+     * @var array
+     */
+    protected $_argv;
 
     /**
      * @var array
@@ -88,9 +94,18 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return int|void
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return function_exists('exec');
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @throws \RuntimeException
+     * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -121,8 +136,8 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @throws \InvalidArgumentException
      */
     protected function selectMagentoVersion(InputInterface $input, OutputInterface $output)
@@ -167,8 +182,8 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      */
     protected function chooseInstallationFolder(InputInterface $input, OutputInterface $output)
     {
@@ -239,16 +254,18 @@ HELP;
         \chdir($this->config['installationFolder']);
     }
 
-    protected function test($folderName) {
+    protected function test($folderName)
+    {
 
     }
 
     /**
-     * @param array $magentoVersionData
-     * @param string $installationFolder
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return bool
      */
-    public function downloadMagento(InputInterface $input, OutputInterface $output) {
+    public function downloadMagento(InputInterface $input, OutputInterface $output)
+    {
         try {
             $package = $this->createComposerPackageByConfig($this->config['magentoVersionData']);
             $this->config['magentoPackage'] = $package;
@@ -296,33 +313,54 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @throws \InvalidArgumentException
      */
     protected function createDatabase(InputInterface $input, OutputInterface $output)
     {
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dbOptions = array('--dbHost', '--dbUser', '--dbPass', '--dbName');
+        $dbOptionsFound = 0;
+        foreach ($dbOptions as $dbOption) {
+            foreach ($this->getCliArguments() as $definedCliOption) {
+                if (String::startsWith($definedCliOption, $dbOption)) {
+                    $dbOptionsFound++;
+                }
+            }
+        }
 
-        /**
-         * Database
-         */
-        do {
-            $this->config['db_host'] = $input->getOption('dbHost') !== null ? $input->getOption('dbHost') : $dialog->askAndValidate($output, '<question>Please enter the database host:</question> <comment>[localhost]</comment>: ', $this->notEmptyCallback, false, 'localhost');
-            $this->config['db_user'] = $input->getOption('dbUser') !== null ? $input->getOption('dbUser') : $dialog->askAndValidate($output, '<question>Please enter the database username:</question> ', $this->notEmptyCallback);
-            $this->config['db_pass'] = $input->hasParameterOption('--dbPass=' . $input->getOption('dbPass')) ? $input->getOption('dbPass') : $dialog->ask($output, '<question>Please enter the database password:</question> ');
-            $this->config['db_name'] = $input->getOption('dbName') !== null ? $input->getOption('dbName') : $dialog->askAndValidate($output, '<question>Please enter the database name:</question> ', $this->notEmptyCallback);
+        $hasAllOptions = $dbOptionsFound == 4;
+
+        // if all database options were passed in at cmd line
+        if ($hasAllOptions) {
+            $this->config['db_host'] = $input->getOption('dbHost');
+            $this->config['db_user'] = $input->getOption('dbUser');
+            $this->config['db_pass'] = $input->getOption('dbPass');
+            $this->config['db_name'] = $input->getOption('dbName');
             $db = $this->validateDatabaseSettings($output, $input);
-        } while ($db === false);
+
+            if ($db === false) {
+                throw new \InvalidArgumentException("Database configuration is invalid", null);
+            }
+
+        } else {
+            $dialog = $this->getHelperSet()->get('dialog');
+            do {
+                $this->config['db_host'] = $dialog->askAndValidate($output, '<question>Please enter the database host:</question> <comment>[localhost]</comment>: ', $this->notEmptyCallback, false, 'localhost');
+                $this->config['db_user'] = $dialog->askAndValidate($output, '<question>Please enter the database username:</question> ', $this->notEmptyCallback);
+                $this->config['db_pass'] = $dialog->ask($output, '<question>Please enter the database password:</question> ');
+                $this->config['db_name'] = $dialog->askAndValidate($output, '<question>Please enter the database name:</question> ', $this->notEmptyCallback);
+                $db = $this->validateDatabaseSettings($output, $input);
+            } while ($db === false);
+        }
 
         $this->config['db'] = $db;
     }
 
     /**
      * @param OutputInterface $output
-     * @param string $dbHost
-     * @param string $dbUser
-     * @param string $dbPass
-     * @param string $dbName
-     * @return bool|PDO
+     * @param InputInterface $input
+     * @return bool|\PDO
      */
     protected function validateDatabaseSettings(OutputInterface $output, InputInterface $input)
     {
@@ -349,8 +387,8 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      */
     protected function installSampleData(InputInterface $input, OutputInterface $output)
     {
@@ -459,8 +497,8 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return array
      */
     protected function installMagento(InputInterface $input, OutputInterface $output)
@@ -568,6 +606,21 @@ HELP;
         );
         $baseUrl = rtrim($baseUrl, '/') . '/'; // normalize baseUrl
 
+        /**
+         * Correct session save (common mistake)
+         */
+        if ($sessionSave == 'file') {
+            $sessionSave = 'files';
+        }
+
+        /**
+         * Try to create session folder
+         */
+        $defaultSessionFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'var/session';
+        if ($sessionSave == 'files' && !is_dir($defaultSessionFolder)) {
+            @mkdir($defaultSessionFolder);
+        }
+
         $argv = array(
             'license_agreement_accepted' => 'yes',
             'locale'                     => $locale,
@@ -665,7 +718,7 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      */
     protected function setDirectoryPermissions($output)
     {
@@ -698,5 +751,25 @@ HELP;
         } catch (\Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getCliArguments()
+    {
+        if ($this->_argv === null) {
+            $this->_argv = $_SERVER['argv'];
+        }
+
+        return $this->_argv;
+    }
+
+    /**
+     * @param array $args
+     */
+    public function setCliArguments($args)
+    {
+        $this->_argv = $args;
     }
 }

@@ -37,7 +37,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.83.0';
+    const APP_VERSION = '1.84.0';
 
     /**
      * @var string
@@ -168,10 +168,14 @@ class Application extends BaseApplication
     {
         if ($this->getMagentoRootFolder() === null) {
             $this->_checkRootDirOption();
-            if (OperatingSystem::isWindows()) {
-                $folder = exec('@echo %cd%'); // @TODO not currently tested!!!
+            if (function_exists('exec')) {
+                if (OperatingSystem::isWindows()) {
+                    $folder = exec('@echo %cd%'); // @TODO not currently tested!!!
+                } else {
+                    $folder = exec('pwd');
+                }
             } else {
-                $folder = exec('pwd');
+                $folder = getcwd();
             }
         } else {
             $folder = $this->getMagentoRootFolder();
@@ -317,49 +321,51 @@ class Application extends BaseApplication
      */
     public function checkVarDir(OutputInterface $output)
     {
-        $tempVarDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'magento' . DIRECTORY_SEPARATOR .  'var';
+        if (OutputInterface::VERBOSITY_NORMAL <= $output->getVerbosity()) {
+            $tempVarDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'magento' . DIRECTORY_SEPARATOR .  'var';
 
-        if (is_dir($tempVarDir)) {
-            $this->detectMagento();
-            /* If magento is not installed yet, don't check */
-            if ($this->_magentoRootFolder === null
-                || !file_exists($this->_magentoRootFolder . '/app/etc/local.xml')
-            ) {
-                return;
-            }
-
-            try {
-                $this->initMagento();
-            } catch (\Exception $e) {
-                $message = 'Cannot initialize Magento. Please check your configuration. '
-                         . 'Some n98-magerun command will not work. Got message: ';
-                if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $output->getVerbosity()) {
-                    $message .= $e->getTraceAsString();
-                } else {
-                    $message .= $e->getMessage();
+            if (is_dir($tempVarDir)) {
+                $this->detectMagento();
+                /* If magento is not installed yet, don't check */
+                if ($this->_magentoRootFolder === null
+                    || !file_exists($this->_magentoRootFolder . '/app/etc/local.xml')
+                ) {
+                    return;
                 }
-                $output->writeln($message);
 
-                return;
-            }
+                try {
+                    $this->initMagento();
+                } catch (\Exception $e) {
+                    $message = 'Cannot initialize Magento. Please check your configuration. '
+                             . 'Some n98-magerun command will not work. Got message: ';
+                    if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $output->getVerbosity()) {
+                        $message .= $e->getTraceAsString();
+                    } else {
+                        $message .= $e->getMessage();
+                    }
+                    $output->writeln($message);
 
-            $configOptions = new \Mage_Core_Model_Config_Options();
-            $currentVarDir = $configOptions->getVarDir();
+                    return;
+                }
 
-            if ($currentVarDir == $tempVarDir) {
-                $output->writeln(sprintf('<error>Fallback folder %s is used in n98-magerun</error>', $tempVarDir));
-                $output->writeln('');
-                $output->writeln('n98-magerun is using the fallback folder. If there is another folder configured for Magento, this can cause serious problems.');
-                $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
-                $output->writeln('');
-            } else {
-                $output->writeln(sprintf('<error>Folder %s found, but not used in n98-magerun</error>', $tempVarDir));
-                $output->writeln('');
-                $output->writeln(sprintf('This might cause serious problems. n98-magerun is using the configured var-folder <comment>%s</comment>', $currentVarDir));
-                $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
-                $output->writeln('');
+                $configOptions = new \Mage_Core_Model_Config_Options();
+                $currentVarDir = $configOptions->getVarDir();
 
-                return false;
+                if ($currentVarDir == $tempVarDir) {
+                    $output->writeln(sprintf('<error>Fallback folder %s is used in n98-magerun</error>', $tempVarDir));
+                    $output->writeln('');
+                    $output->writeln('n98-magerun is using the fallback folder. If there is another folder configured for Magento, this can cause serious problems.');
+                    $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
+                    $output->writeln('');
+                } else {
+                    $output->writeln(sprintf('<error>Folder %s found, but not used in n98-magerun</error>', $tempVarDir));
+                    $output->writeln('');
+                    $output->writeln(sprintf('This might cause serious problems. n98-magerun is using the configured var-folder <comment>%s</comment>', $currentVarDir));
+                    $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
+                    $output->writeln('');
+
+                    return false;
+                }
             }
         }
     }
@@ -470,7 +476,9 @@ class Application extends BaseApplication
         $this->dispatcher->dispatch('console.run.before', $event);
 
         $input = $this->checkConfigCommandAlias($input);
-        $this->checkVarDir($output);
+        if ($output instanceof ConsoleOutput) {
+            $this->checkVarDir($output->getErrorOutput());
+        }
 
         if (OutputInterface::VERBOSITY_DEBUG <= $output->getVerbosity()) {
             $output->writeln('DEBUG');

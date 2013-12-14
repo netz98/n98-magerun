@@ -20,8 +20,17 @@ class OpenBrowserCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return function_exists('exec');
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @throws \RuntimeException
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)

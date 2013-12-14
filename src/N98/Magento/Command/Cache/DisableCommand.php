@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Cache;
 
 use N98\Magento\Application;
+use N98\Util\String;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,6 +15,7 @@ class DisableCommand extends AbstractCacheCommand
     {
         $this
             ->setName('cache:disable')
+            ->addArgument('code', InputArgument::OPTIONAL, 'Code of cache (Multiple codes sperated by comma)')
             ->setDescription('Disables magento caches')
         ;
     }
@@ -32,19 +34,24 @@ class DisableCommand extends AbstractCacheCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            $allTypes = \Mage::app()->useCache();
-            $cacheTypes = array_keys($this->getCoreHelper()->getCacheTypes());
-            $enable = array();
-            foreach ($cacheTypes as $type) {
-                if (!empty($allTypes[$type])) {
-                    $enable[$type] = 0;
+            $codeArgument = String::trimExplodeEmpty(',', $input->getArgument('code'));
+            $this->saveCacheStatus($codeArgument, false);
+
+            if (empty($codeArgument)) {
+                $this->_getCacheModel()->flush();
+            } else {
+                foreach ($codeArgument as $type) {
+                    $this->_getCacheModel()->cleanType($type);
                 }
             }
 
-            \Mage::app()->saveUseCache($enable);
-            $this->_getCacheModel()->flush();
-
-            $output->writeln('<info>Caches disabled</info>');
+            if (count($codeArgument) > 0) {
+                foreach ($codeArgument as $code) {
+                    $output->writeln('<info>Cache <comment>' . $code . '</comment> disabled</info>');
+                }
+            } else {
+                $output->writeln('<info>Caches disabled</info>');
+            }
         }
     }
 }

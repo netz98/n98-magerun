@@ -14,7 +14,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class ToggleCommand
  *
- * @codeCoverageIgnore Only testable with closed source enterprise edition
+ * Only testable with closed source enterprise edition
+ *
+ * @codeCoverageIgnore
  * @package N98\Magento\Command\Cms\Banner
  */
 class ToggleCommand extends AbstractMagentoCommand

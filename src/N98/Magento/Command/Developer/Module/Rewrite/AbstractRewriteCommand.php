@@ -3,9 +3,16 @@
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Finder\Finder;
 
 abstract class AbstractRewriteCommand extends AbstractMagentoCommand
 {
+    protected $_rewriteTypes = array(
+        'blocks',
+        'helpers',
+        'models',
+    );
+
     /**
      * Return all rewrites
      *
@@ -39,12 +46,55 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
                 foreach ($rewriteElements as $element) {
                     foreach ($element->children() as $child) {
                         $type = \simplexml_import_dom(dom_import_simplexml($element)->parentNode->parentNode)->getName();
+                        if (!in_array($type, $this->_rewriteTypes)) {
+                            continue;
+                        }
                         $groupClassName = \simplexml_import_dom(dom_import_simplexml($element)->parentNode)->getName();
                         if (!isset($return[$type][$groupClassName . '/' . $child->getName()])) {
                             $return[$type][$groupClassName . '/' . $child->getName()] = array();
                         }
                         $return[$type][$groupClassName . '/' . $child->getName()][] = (string) $child;
                     }
+                }
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * Searches for all rewrites over autoloader in "app/code/local" of
+     * Mage, Enterprise Zend, Varien namespaces.
+     *
+     * @return array
+     */
+    protected function loadLocalAutoloaderRewrites()
+    {
+        $return = array();
+        $localCodeFolder = \Mage::getBaseDir('code') . '/local';
+
+        $folders = array(
+            'Mage'       => $localCodeFolder . '/Mage',
+            'Enterprise' => $localCodeFolder . '/Enterprise',
+            'Varien'     => $localCodeFolder . '/Varien',
+            'Zend'       => $localCodeFolder . '/Zend',
+        );
+
+        foreach ($folders as $vendorPrefix => $folder) {
+            if (is_dir($folder)) {
+                $finder = new Finder();
+                $finder
+                    ->files()
+                    ->ignoreUnreadableDirs(true)
+                    ->followLinks()
+                    ->in($folder);
+                foreach ($finder as $file) {
+                    $classFile = trim(str_replace($folder, '', $file->getPathname()), '/');
+                    $className = $vendorPrefix
+                               . '_'
+                               . str_replace(DIRECTORY_SEPARATOR, '_', $classFile);
+                    $className = substr($className, 0, -4); // replace .php extension
+                    $return['autoload: ' . $vendorPrefix][$className][] = $className;
                 }
             }
         }

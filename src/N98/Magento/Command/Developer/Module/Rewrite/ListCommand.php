@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Helper\TableHelper;
 
 class ListCommand extends AbstractRewriteCommand
 {
@@ -27,7 +28,8 @@ class ListCommand extends AbstractRewriteCommand
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
 
-            $rewrites = $this->loadRewrites();
+            $rewrites = array_merge($this->loadRewrites(), $this->loadLocalAutoloaderRewrites());
+
             $table = array();
             foreach ($rewrites as $type => $data) {
                 if (count($data) > 0) {
@@ -47,7 +49,7 @@ class ListCommand extends AbstractRewriteCommand
                     ->setRows($table)
                     ->render($output);
             } else {
-                $output->writeln('<info>No rewrites was found.</info>');
+                $output->writeln('<info>No rewrites were found.</info>');
             }
         }
     }

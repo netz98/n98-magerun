@@ -15,7 +15,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class PublishCommand
  *
- * @codeCoverageIgnore Only testable with closed source enterprise edition
+ * Only testable with closed source enterprise edition
+ *
+ * @codeCoverageIgnore
  * @package N98\Magento\Command\Cms\Page
  */
 class PublishCommand extends AbstractMagentoCommand

@@ -68,6 +68,24 @@ abstract class AbstractMagentoCommand extends Command
         $this->checkDeprecatedAliases($input, $output);
     }
 
+    /**
+     * @param array $codeArgument
+     * @param bool  $status
+     * @return bool
+     */
+    protected function saveCacheStatus($codeArgument, $status)
+    {
+        $cacheTypes = $this->_getCacheModel()->getTypes();
+        $enable = \Mage::app()->useCache();
+        foreach ($cacheTypes as $cacheCode => $cacheModel) {
+            if (empty($codeArgument) || in_array($cacheCode, $codeArgument)) {
+                $enable[$cacheCode] = $status ? 1 : 0;
+            }
+        }
+
+        \Mage::app()->saveUseCache($enable);
+    }
+
     private function _initWebsites()
     {
         $this->_websiteCodeMap = array();

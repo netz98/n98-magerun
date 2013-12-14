@@ -288,6 +288,7 @@ Available Table Groups:
 * @sales Sales data (orders, invoices, creditmemos etc)
 * @customers Customer data
 * @trade Current trade data (customers and orders). You usally do not want those in developer systems.
+* @search Search related tables (catalogsearch_)
 * @development Removes logs and trade data so developers do not have to work with real customer data
 
 Extended: https://github.com/netz98/n98-magerun/wiki/Stripped-Database-Dumps
@@ -553,15 +554,41 @@ Disable Magento cache
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:disable
+   $ n98-magerun.phar cache:disable [code]
+
+If no code is specified, all cache types will be disabled.
+Run `cache:list` command to see all codes.
 
 Enable Magento cache
 """"""""""""""""""""
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:enable
+   $ n98-magerun.phar cache:enable [code]
 
+If no code is specified, all cache types will be enabled.
+Run `cache:list` command to see all codes.
+
+Cache Report
+""""""""""""
+
+This command let you investigate what's stored inside your cache.
+It prints out a table with cache IDs.
+
+.. code-block:: sh
+
+   $ cache:report [-t|--tags] [-m|--mtime] [--filter-id[="..."]] [--filter-tag[="..."]] [--fpc]
+
+Cache View
+""""""""""
+
+Prints stored cache entry by ID.
+
+.. code-block:: sh
+
+   $ cache:view [--unserialize] [--fpc] id
+
+If value is serialized you can force a pretty output with --unserialize option.
 
 Demo Notice
 """""""""""
