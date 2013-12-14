@@ -25,4 +25,30 @@ class ViewCommandTest extends TestCase
 
         $this->assertRegExp('/TEST n98-magerun/', $commandTester->getDisplay());
     }
+
+    public function testExecuteUnserialize()
+    {
+        $application = $this->getApplication();
+        $application->add(new ListCommand());
+        $command = $this->getApplication()->find('cache:view');
+
+        $cacheData = array(
+            1,
+            2,
+            3,
+            'foo' => array('bar')
+        );
+        \Mage::app()->getCache()->save(serialize($cacheData), 'n98-magerun-unittest');
+
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command'       => $command->getName(),
+                'id'            => 'n98-magerun-unittest',
+                '--unserialize' => true,
+            )
+        );
+
+        $this->assertEquals(print_r($cacheData, true) . "\n", $commandTester->getDisplay());
+    }
 }

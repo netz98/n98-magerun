@@ -15,6 +15,7 @@ class ViewCommand extends AbstractCacheCommand
         $this
             ->setName('cache:view')
             ->addArgument('id', InputArgument::REQUIRED, 'Cache-ID')
+            ->addOption('unserialize', '', InputOption::VALUE_NONE, 'Unserialize output')
             ->setDescription('Prints a cache entry')
             ->addOption('fpc', null, InputOption::VALUE_NONE, 'Use full page cache instead of core cache (Enterprise only!)');
         ;
@@ -39,7 +40,13 @@ class ViewCommand extends AbstractCacheCommand
                 $cacheInstance = \Mage::app()->getCache();
             }
             /* @var $cacheInstance \Varien_Cache_Core */
-            $output->writeln($cacheInstance->load($input->getArgument('id')));
+            $cacheData = $cacheInstance->load($input->getArgument('id'));
+            if ($input->getOption('unserialize')) {
+                $cacheData = unserialize($cacheData);
+                $cacheData = print_r($cacheData, true);
+            }
+
+            $output->writeln($cacheData);
         }
     }
 }
