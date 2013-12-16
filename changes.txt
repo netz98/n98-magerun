@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.84.1
+======
+
+* #275 There are no commands defined in the "extension" namespace.
+
+======
 1.84.0
 ======
 
