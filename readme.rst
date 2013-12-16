@@ -739,6 +739,16 @@ This command is useful if you update your system with enabled maintenance mode.
 
    $ n98-magerun.phar sys:setup:run
 
+Run Setup Scripts Incrementally
+"""""""""""""""""
+
+Runs setup scripts incrementally. (no need to call frontend).
+This command runs each new setup script individually in order to increase the transparency of the setup resource system, and reduce the chances of a PHP failure creating an invalid database state.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:setup:incremental
+   
 Compare Setup Versions
 """"""""""""""""""""""
 
