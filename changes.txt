@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.84.2
+======
+
+* #260 --strip="@development" not working if hardcoded table does not exists
+
+======
 1.84.1
 ======
 

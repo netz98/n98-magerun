@@ -26,9 +26,15 @@ class DatabaseHelper extends AbstractHelper
     protected $_connection = null;
 
     /**
+     * @var array
+     */
+    protected $_tables;
+
+    /**
      * @param OutputInterface $output
      * @param bool            $silent
      *
+     * @throws \Exception
      * @return void
      */
     public function detectDbSettings(OutputInterface $output, $silent = true)
@@ -225,6 +231,10 @@ class DatabaseHelper extends AbstractHelper
      */
     public function resolveTables(array $list, array $definitions = array(), array $resolved = array())
     {
+        if ($this->_tables === null) {
+            $this->_tables = $this->getTables();
+        }
+
         $resolvedList = array();
         foreach ($list as $entry) {
             if (substr($entry, 0, 1) == '@') {
@@ -254,7 +264,9 @@ class DatabaseHelper extends AbstractHelper
                 continue;
             }
 
-            $resolvedList[] = $entry;
+            if (!in_array($entry, $this->_tables)) {
+                $resolvedList[] = $entry;
+            }
         }
 
         asort($resolvedList);

@@ -244,7 +244,7 @@ commands:
 
       - id: dataflowtemp
         description: Temporary tables of the dataflow import/export tool
-        tables: dataflow_batch_import dataflow_batch_export
+        tables: dataflow_*
 
       - id: stripped
         description: Standard definition for a stripped dump (logs and dataflow)
