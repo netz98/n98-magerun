@@ -264,7 +264,7 @@ class DatabaseHelper extends AbstractHelper
                 continue;
             }
 
-            if (!in_array($entry, $this->_tables)) {
+            if (in_array($entry, $this->_tables)) {
                 $resolvedList[] = $entry;
             }
         }
