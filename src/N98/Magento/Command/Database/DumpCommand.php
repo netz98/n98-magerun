@@ -319,10 +319,11 @@ HELP;
             }
         }
 
-        if (($fileName = $input->getArgument('filename')) === null && !$input->getOption('stdout')) {
+        if ((($fileName = $input->getArgument('filename')) === null || ($isDir = is_dir($fileName))) && !$input->getOption('stdout')) {
             /** @var DialogHelper $dialog */
             $dialog      = $this->getHelperSet()->get('dialog');
             $defaultName = $namePrefix . $this->dbSettings['dbname'] . $nameSuffix . $nameExtension;
+            if (isset($isDir) && $isDir) $defaultName = rtrim($fileName, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $defaultName;
             if (!$input->getOption('force')) {
                 $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question> [<comment>'
                     . $defaultName . '</comment>]', $defaultName
