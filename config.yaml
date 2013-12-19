@@ -111,6 +111,7 @@ commands:
     - N98\Magento\Command\System\MaintenanceCommand 
     - N98\Magento\Command\System\Setup\CompareVersionsCommand 
     - N98\Magento\Command\System\Setup\RunCommand 
+    - N98\Magento\Command\System\Setup\IncrementalCommand 
     - N98\Magento\Command\System\Store\Config\BaseUrlListCommand 
     - N98\Magento\Command\System\Store\ListCommand 
     - N98\Magento\Command\System\Url\ListCommand 
