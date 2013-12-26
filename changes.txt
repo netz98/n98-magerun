@@ -3,6 +3,14 @@ RECENT CHANGES
 **************
 
 ======
+1.85.0
+======
+
+* #273 Allow directory as argument for db:dump (by Rick Kuipers)
+* #274 Running Setup Resource Scripts Incrementally (by Alan Storm)
+* #279 Updated documentation to include a few undocumented parameters to config:get (by Tegan Snyder)
+
+======
 1.84.2
 ======
 

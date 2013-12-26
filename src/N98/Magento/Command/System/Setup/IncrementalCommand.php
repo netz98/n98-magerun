@@ -10,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class IncrementalCommand
+ *
  * @package N98\Magento\Command\System\Setup
  * @codeCoverageIgnore
  */
@@ -35,6 +36,38 @@ class IncrementalCommand extends AbstractMagentoCommand
 
     protected $_eventStash;
 
+    protected function configure()
+    {
+        $this
+            ->setName('sys:setup:incremental')
+            ->setDescription('<comment>(Experimental)</comment> List new setup scripts to run, then runs one script')
+            ->setHelp('Examines an un-cached configuration tree and determines which ' .
+                'structure and data setup resource scripts need to run, and then runs them.');
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     *
+     * @return int|null|void
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        //sets output so we can access it from all methods
+        $this->_setOutput($output);
+        if (!$this->_init()) {
+            return;
+        }
+
+        $needs_update = $this->_analyzeSetupResourceClasses();
+        if (count($needs_update) == 0) {
+            return;
+        }
+        $this->_listDetailedUpdateInformation($needs_update);
+        $this->_runAllStructureUpdates($needs_update);
+        $output->writeln('We have run all the setup resource scripts.');
+    }
+
     protected function _loadSecondConfig()
     {
         $config = new \Mage_Core_Model_Config;
@@ -46,7 +79,7 @@ class IncrementalCommand extends AbstractMagentoCommand
     {
         $config = $this->_secondConfig;
         $resources = $config->getNode('global/resources')->children();
-        $setup_resources = array();
+        $setupResources = array();
         foreach ($resources as $name => $resource) {
             if (!$resource->setup) {
                 continue;
@@ -56,11 +89,14 @@ class IncrementalCommand extends AbstractMagentoCommand
                 $className = $resource->setup->getClassName();
             }
 
-            $setup_resources[$name] = new $className($name);
+            $setupResources[$name] = new $className($name);
         }
-        return $setup_resources;
+        return $setupResources;
     }
 
+    /**
+     * @return \Mage_Core_Model_Resource
+     */
     protected function _getResource()
     {
         return \Mage::getResourceSingleton('core/resource');
@@ -79,8 +115,12 @@ class IncrementalCommand extends AbstractMagentoCommand
         if ($args[0] == \Mage_Core_Model_Resource_Setup::TYPE_DB_INSTALL) {
             $args[0] = \Mage_Core_Model_Resource_Setup::TYPE_DB_UPGRADE;
             $args[1] = $result[0]['toVersion'];
-            $result = array_merge($result, $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $setupResource, $args));
+            $result = array_merge(
+                $result,
+                $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $setupResource, $args)
+            );
         }
+
         return $result;
     }
 
@@ -95,8 +135,12 @@ class IncrementalCommand extends AbstractMagentoCommand
         if ($args[0] == \Mage_Core_Model_Resource_Setup::TYPE_DATA_INSTALL) {
             $args[0] = \Mage_Core_Model_Resource_Setup::TYPE_DATA_UPGRADE;
             $args[1] = $result[0]['toVersion'];
-            $result = array_merge($result, $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $setupResource, $args));
+            $result = array_merge(
+                $result,
+                $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $setupResource, $args)
+            );
         }
+
         return $result;
     }
 
@@ -276,13 +320,13 @@ class IncrementalCommand extends AbstractMagentoCommand
      * and then repopulates it with **only** the $name resource. Then it
      * calls the standard Magento `applyAllUpdates` method.
      *
-     * The benifit of this approach is we don't need to recreate the entire
-     * setup resource running logic ourselfs.  Yay for code reuse
+     * The benefit of this approach is we don't need to recreate the entire
+     * setup resource running logic ourselves.  Yay for code reuse
      *
      * The downside is we should probably exit quickly, as anything else that
      * uses the global/resources node is going to behave weird.
      *
-     * @todo Repopulate global config after running?  Non trival since setNode escapes strings
+     * @todo Repopulate global config after running?  Non trivial since setNode escapes strings
      *
      * @param string $name
      * @param bool $needsUpdate
@@ -392,7 +436,10 @@ class IncrementalCommand extends AbstractMagentoCommand
         $output->writeln("");
 
         if ($magentoExceptionOutput) {
-            $this->getHelper('dialog')->askAndValidate($output, '<question>Press Enter to view raw Magento error text:</question> ');
+            $this->getHelper('dialog')->askAndValidate(
+                $output,
+                '<question>Press Enter to view raw Magento error text:</question> '
+            );
             $output->writeln("Magento Exception Error Text:");
             echo $magentoExceptionOutput, "\n"; //echoing (vs. writeln) to avoid seg fault
         }
@@ -431,18 +478,6 @@ class IncrementalCommand extends AbstractMagentoCommand
         $output->writeln('Ran in ' . floor($time_ran * 1000) . 'ms');
     }
 
-    /**
-     * @return bool
-     */
-    protected function _checkMagentoVersion()
-    {
-        $version = \Mage::getVersion();
-        if (in_array($version, array('1.7.0.2', '1.8.1.0'))) {
-            return true;
-        }
-        $this->_output->writeln('<error>ERROR: Untested with ' . $version . '</error>');
-    }
-
     protected function _restoreEventContext()
     {
         $app = \Mage::app();
@@ -468,13 +503,6 @@ class IncrementalCommand extends AbstractMagentoCommand
         //don't run if cache is off.  If cache is off that means
         //setup resource will run automagically
         if (!$this->_checkCacheSettings()) {
-            return;
-        }
-
-        //only run for recent versions of Magento
-        //saves us the trouble of testing in < 1.7.0.1
-        //and encourages people to run a  modern version
-        if (!$this->_checkMagentoVersion()) {
             return;
         }
 
@@ -526,8 +554,8 @@ class IncrementalCommand extends AbstractMagentoCommand
         $c = 1;
         $total = count($needsUpdate);
         foreach ($needsUpdate as $key => $value) {
-            $to_update = $key;
-            $this->_runStructureOrDataScripts($to_update, $needsUpdate, self::TYPE_MIGRATION_STRUCTURE);
+            $toUpdate = $key;
+            $this->_runStructureOrDataScripts($toUpdate, $needsUpdate, self::TYPE_MIGRATION_STRUCTURE);
             $output->writeln("($c of $total)");
             $output->writeln('');
             $c++;
@@ -537,44 +565,11 @@ class IncrementalCommand extends AbstractMagentoCommand
         $c = 1;
         $total = count($needsUpdate);
         foreach ($needsUpdate as $key => $value) {
-            $to_update = $key;
-            $this->_runStructureOrDataScripts($to_update, $needsUpdate, self::TYPE_MIGRATION_DATA);
+            $toUpdate = $key;
+            $this->_runStructureOrDataScripts($toUpdate, $needsUpdate, self::TYPE_MIGRATION_DATA);
             $output->writeln("($c of $total)");
             $output->writeln('');
             $c++;
         }
-    }
-
-
-    protected function configure()
-    {
-        $this
-            ->setName('sys:setup:incremental')
-            ->setDescription('List new setup scripts to run, then runs one script')
-            ->setHelp('Examines an un-cached configuration tree and determines which ' .
-                'structure and data setup resource scripts need to run, and then runs them.');
-    }
-
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int|null|void
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        //sets output so we can access it from all methods
-        $this->_setOutput($output);
-        if (!$this->_init()) {
-            return;
-        }
-
-        $needs_update = $this->_analyzeSetupResourceClasses();
-        if (count($needs_update) == 0) {
-            return;
-        }
-        $this->_listDetailedUpdateInformation($needs_update);
-        $this->_runAllStructureUpdates($needs_update);
-        $output->writeln('We have run all the setup resource scripts.');
     }
 }
