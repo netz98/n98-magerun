@@ -479,12 +479,20 @@ Arguments:
     path        The config path
 
 Options:
-    --scope     The config value's scope (default, websites, stores)
-    --scope-id  The config value's scope ID
-    --decrypt   Decrypt the config value using local.xml's crypt key
+    --scope             The config value's scope (default, websites, stores)
+    --scope-id          The config value's scope ID
+    --decrypt           Decrypt the config value using local.xml's crypt key
+    --update-script     Output as update script lines
+    --magerun-script    Output for usage with config:set
 
 Help:
-    If path is not set, all available config items will be listed. path may contain wildcards (*)
+    If path is not set, all available config items will be listed. path may contain wildcards (*) 
+
+Example:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar config:get web/* --magerun-script
 
 Delete Config
 """""""""""""
