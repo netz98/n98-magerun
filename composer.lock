@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "bcb5e38bcbf9713733bd14e16ea4e48ca32fe248"
+                "reference": "4ae5c95c8d36b5b26e0990384dd2f478c66c314f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/bcb5e38bcbf9713733bd14e16ea4e48ca32fe248",
-                "reference": "bcb5e38bcbf9713733bd14e16ea4e48ca32fe248",
+                "url": "https://api.github.com/repos/composer/composer/zipball/4ae5c95c8d36b5b26e0990384dd2f478c66c314f",
+                "reference": "4ae5c95c8d36b5b26e0990384dd2f478c66c314f",
                 "shasum": ""
             },
             "require": {
@@ -72,7 +72,7 @@
                 "dependency",
                 "package"
             ],
-            "time": "2013-12-26 09:23:24"
+            "time": "2013-12-26 11:31:43"
         },
         {
             "name": "fzaninotto/faker",

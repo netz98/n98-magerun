@@ -46,8 +46,12 @@ class InfoCommand extends AbstractMagentoCommand
 
         $this->infos['Crypt Key'] = $config->getNode('global/crypt/key');
         $this->infos['Install Date'] = $config->getNode('global/install/date');
-        $this->findCoreOverwrites();
-        $this->findVendors();
+        try {
+            $this->findCoreOverwrites();
+            $this->findVendors();
+        } catch (\Exception $e) {
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
+        }
 
         $table = array();
         foreach ($this->infos as $key => $value) {

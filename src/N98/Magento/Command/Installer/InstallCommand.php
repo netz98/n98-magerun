@@ -23,6 +23,7 @@ use Symfony\Component\Finder\Finder;
  */
 class InstallCommand extends AbstractMagentoCommand
 {
+    const EXEC_STATUS_OK = 0;
     /**
      * @var array
      */
@@ -658,7 +659,15 @@ HELP;
             $installCommand = '/usr/bin/env php ' . $this->getInstallScriptPath() . ' ' . $installArgs;
         }
         $output->writeln('<comment>' . $installCommand . '</comment>');
-        exec($installCommand);
+        exec($installCommand, $installationOutput, $returnStatus);
+        $installationOutput = implode(PHP_EOL, $installationOutput);
+        if ($returnStatus !== self::EXEC_STATUS_OK) {
+            throw new \Exception('Installation failed.' . $installationOutput);
+        } else {
+            $output->writeln('<info>Successfully installed Magento</info>');
+            $encryptionKey = trim(substr($installationOutput, strpos($installationOutput, ':') + 1));
+            $output->writeln('<comment>Encryption Key:</comment> <info>' . $encryptionKey . '</info>');
+        }
 
         $dialog = $this->getHelperSet()->get('dialog');
 
