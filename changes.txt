@@ -6,6 +6,7 @@ RECENT CHANGES
 1.85.0
 ======
 
+* #18 New --format parameter to print data of tables in CSV, XML or JSON (for table helper based commands)
 * #270 script:repo:run and error handling (by Cyrill Schumacher)
 * #273 Allow directory as argument for db:dump (by Rick Kuipers)
 * #274 Running Setup Resource Scripts Incrementally (by Alan Storm)

@@ -20,8 +20,9 @@ class ListCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @throws \InvalidArgumentException
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)

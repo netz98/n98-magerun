@@ -5,7 +5,9 @@ namespace N98\Magento\Command\Config;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class GetCommand extends AbstractConfigCommand
 {
@@ -30,6 +32,12 @@ EOT
             ->addOption('decrypt', null, InputOption::VALUE_NONE, 'Decrypt the config value using local.xml\'s crypt key')
             ->addOption('update-script', null, InputOption::VALUE_NONE, 'Output as update script lines')
             ->addOption('magerun-script', null, InputOption::VALUE_NONE, 'Output for usage with config:set')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
         ;
 
         $help = <<<HELP
@@ -39,7 +47,7 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return int|void
      */
@@ -106,30 +114,31 @@ HELP;
             } elseif ($input->getOption('magerun-script')) {
                 $this->renderAsMagerunScript($output, $table);
             } else {
-                $this->renderAsTable($output, $table);
+                $this->renderAsTable($output, $table, $input->getOption('format'));
             }
         }
     }
 
     /**
      * @param OutputInterface $output
-     * @param array           $table
+     * @param array $table
+     * @param string $format
      */
-    protected function renderAsTable(OutputInterface $output, $table)
+    protected function renderAsTable(OutputInterface $output, $table, $format)
     {
         $formattedTable = array();
         foreach ($table as $row) {
             $formattedTable[] = array(
                 $row['path'],
-                str_pad($row['scope'], 8, ' ', STR_PAD_BOTH),
-                str_pad($row['scope_id'], 8, ' ', STR_PAD_BOTH),
-                substr($row['value'], 0, 50)
+                $row['scope'],
+                $row['scope_id'],
+                $row['value'],
             );
         }
         $this->getHelper('table')
             ->setHeaders(array('Path', 'Scope', 'Scope-ID', 'Value'))
             ->setRows($formattedTable)
-            ->render($output);
+            ->renderByFormat($output, $formattedTable, $format);
     }
 
     /**

@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class ListCommand extends AbstractMagentoCommand
 {
@@ -19,7 +20,14 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:website:list')
-            ->setDescription('Lists all websites');
+            ->setDescription('Lists all websites')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
+        ;
     }
 
     /**
@@ -31,7 +39,9 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
 
-        $this->writeSection($output, 'Magento Websites');
+        if ($input->getOption('format') === null) {
+            $this->writeSection($output, 'Magento Websites');
+        }
         $this->initMagento();
 
         foreach (\Mage::app()->getWebsites() as $store) {
@@ -44,7 +54,6 @@ class ListCommand extends AbstractMagentoCommand
         ksort($table);
         $this->getHelper('table')
             ->setHeaders(array('id', 'code'))
-            ->setRows($table)
-            ->render($output);
+            ->renderByFormat($output, $table, $input->getOption('format'));
     }
 }

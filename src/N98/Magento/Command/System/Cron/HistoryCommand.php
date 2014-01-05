@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class HistoryCommand extends AbstractMagentoCommand
 {
@@ -19,7 +20,14 @@ class HistoryCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:cron:history')
-            ->setDescription('Last executed cronjobs with status.');
+            ->setDescription('Last executed cronjobs with status.')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
+        ;
     }
 
     /**
@@ -31,7 +39,9 @@ class HistoryCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
 
-        $this->writeSection($output, 'Last executed jobs');
+        if ($input->getOption('format') === null) {
+            $this->writeSection($output, 'Last executed jobs');
+        }
         $this->initMagento();
 
         $collection = \Mage::getModel('cron/schedule')->getCollection();
@@ -49,7 +59,6 @@ class HistoryCommand extends AbstractMagentoCommand
 
         $this->getHelper('table')
             ->setHeaders(array('Job', 'Status', 'Finished'))
-            ->setRows($table)
-            ->render($output);
+            ->renderByFormat($output, $table, $input->getOption('format'));
     }
 }
