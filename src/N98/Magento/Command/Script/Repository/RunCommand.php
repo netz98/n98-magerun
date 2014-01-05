@@ -18,6 +18,7 @@ class RunCommand extends AbstractRepositoryCommand
             ->setName('script:repo:run')
             ->addArgument('script', InputArgument::OPTIONAL, 'Name of script in repository')
             ->addOption('define', 'd', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Defines a variable')
+            ->addOption('stop-on-error', null, InputOption::VALUE_NONE, 'Stops execution of script on error')
             ->setDescription('Run script from repository')
         ;
     }
@@ -60,6 +61,9 @@ class RunCommand extends AbstractRepositoryCommand
         );
         foreach ($input->getOption('define') as $define) {
             $scriptArray['--define'][] = $define;
+        }
+        if ($input->getOption('stop-on-error')) {
+            $scriptArray['--stop-on-error'] = true;
         }
         $input = new ArrayInput($scriptArray);
         $this->getApplication()->run($input, $output);

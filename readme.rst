@@ -1170,7 +1170,7 @@ Run multiple commands from a script file.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar [-d|--define[="..."]] [filename]
+   $ n98-magerun.phar [-d|--define[="..."]] [--stop-on-error] [filename]
 
 Example:
 
@@ -1263,7 +1263,7 @@ If you want to execute a script from repository this can be done by *script:repo
 
 .. code-block:: sh
 
-   $ n98-magerun.phar script:repo:run [-d|--define[="..."]] [script]
+   $ n98-magerun.phar script:repo:run [-d|--define[="..."]] [--stop-on-error] [script]
 
 Script argument is optional. If you don't specify any you can select one from a list.
 

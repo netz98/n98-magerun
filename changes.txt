@@ -6,6 +6,7 @@ RECENT CHANGES
 1.85.0
 ======
 
+* #270 script:repo:run and error handling (by Cyrill Schumacher)
 * #273 Allow directory as argument for db:dump (by Rick Kuipers)
 * #274 Running Setup Resource Scripts Incrementally (by Alan Storm)
 * #278 After magerun install I always see the Magento Installation Wizard
