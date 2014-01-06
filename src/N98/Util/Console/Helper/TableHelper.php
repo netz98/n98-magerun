@@ -5,7 +5,6 @@ namespace N98\Util\Console\Helper;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\Table\Renderer\RendererInterface;
 use Symfony\Component\Console\Helper\TableHelper as BaseTableHelper;
-use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 

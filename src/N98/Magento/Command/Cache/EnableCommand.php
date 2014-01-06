@@ -6,7 +6,6 @@ use N98\Magento\Application;
 use N98\Util\String;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class EnableCommand extends AbstractCacheCommand

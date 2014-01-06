@@ -2,7 +2,6 @@
 
 namespace N98\Magento\Command\Indexer;
 
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,7 +25,7 @@ class ListCommand extends AbstractIndexerCommand
         $help = <<<HELP
 Lists all Magento indexers of current installation.
 HELP;
-
+        $this->setHelp($help);
     }
 
     /**

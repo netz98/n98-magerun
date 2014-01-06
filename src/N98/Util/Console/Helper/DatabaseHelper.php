@@ -3,7 +3,6 @@
 namespace N98\Util\Console\Helper;
 
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
-use N98\Util\Console\Helper\MagentoHelper;
 use N98\Magento\Application;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
