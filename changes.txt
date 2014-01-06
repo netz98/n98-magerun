@@ -12,6 +12,7 @@ RECENT CHANGES
 * #274 Running Setup Resource Scripts Incrementally (by Alan Storm)
 * #278 After magerun install I always see the Magento Installation Wizard
 * #279 Updated documentation to include a few undocumented parameters to config:get (by Tegan Snyder)
+* #282 Global variable or function should never be used
 
 ======
 1.84.2
