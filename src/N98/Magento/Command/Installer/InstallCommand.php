@@ -114,9 +114,9 @@ HELP;
     {
         $this->commandConfig = $this->getCommandConfig();
         $this->writeSection($output, 'Magento Installation');
-        if (!extension_loaded('pdo_mysql')) {
-            throw new \RuntimeException('PHP extension pdo_mysql is required to start installation');
-        }
+
+        $this->precheckPhp();
+
         if (!$input->getOption('noDownload')) {
             $this->selectMagentoVersion($input, $output);
         }
@@ -136,6 +136,26 @@ HELP;
         $this->removeEmptyFolders();
         $this->setDirectoryPermissions($output);
         $this->installMagento($input, $output, $this->config['installationFolder']);
+    }
+
+    /**
+     * Check PHP environment agains minimal required settings modules
+     */
+    protected function precheckPhp()
+    {
+        $extensions = $this->commandConfig['installation']['pre-check']['php']['extensions'];
+        $missingExtensions = array();
+        foreach ($extensions as $extension) {
+            if (!extension_loaded($extension)) {
+                $missingExtensions[] = $extension;
+            }
+        }
+
+        if (count($missingExtensions) > 0) {
+            throw new \RuntimeException(
+                'The following PHP extensions are required to start installation: ' . implode(',', $missingExtensions)
+            );
+        }
     }
 
     /**

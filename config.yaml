@@ -223,6 +223,20 @@ commands:
           type: tar
 
     installation:
+      pre-check:
+        php:
+          extensions:
+            - pdo_mysql
+            - spl
+            - dom
+            - simplexml
+            - mcrypt
+            - hash
+            - curl
+            - iconv
+            - ctype
+            - gd
+
       defaults:
         currency: EUR
         locale: de_DE
