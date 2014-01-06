@@ -38,6 +38,9 @@ class InstallCommand extends AbstractMagentoCommand
      */
     protected $commandConfig;
 
+    /**
+     * @var \Closure
+     */
     protected $notEmptyCallback;
 
     protected function configure()
@@ -370,11 +373,13 @@ HELP;
                 $db->query("CREATE DATABASE `" . $this->config['db_name'] . "`");
                 $output->writeln('<info>Created database ' . $this->config['db_name'] . '</info>');
                 $db->query('USE ' . $this->config['db_name']);
+
                 return $db;
             }
 
             if ($input->getOption('noDownload')) {
                 $output->writeln("<error>Database {$this->config['db_name']} already exists.</error>");
+
                 return false;
             }
 
@@ -499,6 +504,7 @@ HELP;
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @throws \Exception
      * @return array
      */
     protected function installMagento(InputInterface $input, OutputInterface $output)
@@ -692,6 +698,7 @@ HELP;
         }
 
         \chdir($this->config['installationFolder']);
+        $this->getApplication()->reinit();
         $output->writeln('<info>Reindex all after installation</info>');
         $this->getApplication()->run(new StringInput('index:reindex:all'), $output);
         $this->getApplication()->run(new StringInput('sys:check'), $output);

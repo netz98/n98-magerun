@@ -13,6 +13,7 @@ RECENT CHANGES
 * #278 After magerun install I always see the Magento Installation Wizard
 * #279 Updated documentation to include a few undocumented parameters to config:get (by Tegan Snyder)
 * #282 Global variable or function should never be used
+* #284 Magento folder could not be detected - When using --noDownload
 
 ======
 1.84.2

@@ -49,7 +49,7 @@ HELP;
     {
         $this->_config = $this->getCommandConfig();
         $this->detectMagento($output);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
 
             if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
                 $output->writeln("<error>WARNING: Magento 2 requirements are not yet defined. Until then Magento 1 requirements are checked.</error>");

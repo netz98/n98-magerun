@@ -571,6 +571,15 @@ class Application extends BaseApplication
     }
 
     /**
+     * @param array $initConfig
+     */
+    public function reinit($initConfig = array())
+    {
+        $this->_isInitialized = false;
+        $this->init($initConfig);
+    }
+
+    /**
      * @return void
      */
     protected function registerEventSubscribers()
