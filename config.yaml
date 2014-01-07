@@ -242,6 +242,14 @@ commands:
         description: Standard definition for a stripped dump (logs and dataflow)
         tables: @stripped @log @dataflowtemp
 
+      - id: products
+        description: Skip all product tables
+        tables: catalog_category_product* catalog_compare_item catalog_product_* cataloginventory_stock_* catalogrule_affected_product catalogrule_product*
+
+      - id: categories
+        description: Skip all category tables
+        tables: catalog_category_*
+
       - id: sales
         description: Sales data (orders, invoices, creditmemos etc)
         tables: sales_order_aggregated* sales_order_tax* sales_flat* sales_recurring_* sales_refunded_* sales_payment_* enterprise_sales_* enterprise_customer_sales_* sales_bestsellers_*
