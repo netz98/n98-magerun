@@ -43,8 +43,8 @@ HELP;
         $dialog = $this->getHelperSet()->get('dialog');
         /* @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
 
-        $shouldUninstall = false;
-        if (!$input->getOption('force')) {
+        $shouldUninstall = $input->getOption('force');
+        if (!$shouldUninstall) {
             $shouldUninstall = $dialog->askConfirmation($output, '<question>Really uninstall ?</question> <comment>[n]</comment>: ', false);
         }
 
