@@ -14,6 +14,7 @@ env:
   - MAGENTO_VERSION="magento-ce-1.6.2.0" DB=mysql
   - MAGENTO_VERSION="magento-ce-1.7.0.2" DB=mysql
   - MAGENTO_VERSION="magento-ce-1.8.0.0" DB=mysql
+#  - MAGENTO_VERSION="magento-ce-1.8.1.0" DB=mysql
 
 php:
   - 5.3

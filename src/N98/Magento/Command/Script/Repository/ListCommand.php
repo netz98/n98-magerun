@@ -2,12 +2,10 @@
 
 namespace N98\Magento\Command\Script\Repository;
 
-use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Shell;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class ListCommand extends AbstractRepositoryCommand
 {
@@ -16,6 +14,12 @@ class ListCommand extends AbstractRepositoryCommand
         $this
             ->setName('script:repo:list')
             ->setDescription('Lists all scripts in repository')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
         ;
 
         $help = <<<HELP
@@ -51,12 +55,16 @@ HELP;
                     $file['description'],
                 );
             }
-            $this->getHelper('table')
-                ->setHeaders(array('Script', 'Location', 'Description'))
-                ->setRows($table)
-                ->render($output);
         } else {
+            $table = array();
+        }
+
+        if ($input->getOption('format') === null && count($table) === 0) {
             $output->writeln('<info>no script file found</info>');
         }
+
+        $this->getHelper('table')
+            ->setHeaders(array('Script', 'Location', 'Description'))
+            ->renderByFormat($output, $table, $input->getOption('format'));
     }
 }

@@ -33,7 +33,7 @@ class GetCommandTest extends TestCase
                  'path'    => 'n98_magerun/foo/bar',
             )
         );
-        $this->assertContains('| n98_magerun/foo/bar | default  |    0     | 1234  |', $commandTester->getDisplay());
+        $this->assertContains('| n98_magerun/foo/bar | default | 0        | 1234  |', $commandTester->getDisplay());
 
         $commandTester->execute(
             array(

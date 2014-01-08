@@ -3,9 +3,7 @@
 namespace N98\Magento\Command\System;
 
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckCommand extends AbstractMagentoCommand
@@ -51,7 +49,7 @@ HELP;
     {
         $this->_config = $this->getCommandConfig();
         $this->detectMagento($output);
-        if ($this->initMagento($output)) {
+        if ($this->initMagento()) {
 
             if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
                 $output->writeln("<error>WARNING: Magento 2 requirements are not yet defined. Until then Magento 1 requirements are checked.</error>");

@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 abstract class AbstractCommand extends AbstractMagentoCommand
 {
@@ -37,7 +38,14 @@ abstract class AbstractCommand extends AbstractMagentoCommand
         $this->setName(static::COMMAND_NAME)
             ->addArgument('moduleName', InputArgument::REQUIRED, 'Module to show dependencies')
             ->addOption('all', 'a', InputOption::VALUE_NONE, 'Show all dependencies (dependencies of dependencies)')
-            ->setDescription(static::COMMAND_DESCRIPTION);
+            ->setDescription(static::COMMAND_DESCRIPTION)
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
+        ;
     }
 
     /**
@@ -49,8 +57,9 @@ abstract class AbstractCommand extends AbstractMagentoCommand
     {
         $moduleName = $input->getArgument('moduleName');
         $recursive  = $input->getOption('all');
-        $this->writeSection($output, sprintf(static::COMMAND_SECTION_TITLE_TEXT, $moduleName));
-
+        if ($input->getOption('format') === null) {
+            $this->writeSection($output, sprintf(static::COMMAND_SECTION_TITLE_TEXT, $moduleName));
+        }
         $this->detectMagento($output, true);
         $this->initMagento();
 
@@ -60,9 +69,8 @@ abstract class AbstractCommand extends AbstractMagentoCommand
                 usort($dependencies, array($this, 'sortDependencies'));
                 $this->getHelper('table')
                     ->setHeaders(array('Name', 'Status', 'Current installed version', 'Code pool'))
-                    ->setRows($dependencies)
                     ->setPadType(STR_PAD_LEFT)
-                    ->render($output);
+                    ->renderByFormat($output, $dependencies, $input->getOption('format'));
             } else {
                 $output->writeln(sprintf(static::COMMAND_NO_RESULTS_TEXT, $moduleName));
             }

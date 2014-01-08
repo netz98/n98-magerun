@@ -24,6 +24,7 @@ Imports an SQL file with mysql cli client into current configured database.
 
 You need to have MySQL client tools installed on your system.
 HELP;
+        $this->setHelp($help);
 
     }
 

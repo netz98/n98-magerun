@@ -3,10 +3,10 @@
 namespace N98\Magento\Command\Developer\Module;
 
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class ListCommand extends AbstractMagentoCommand
 {
@@ -23,7 +23,14 @@ class ListCommand extends AbstractMagentoCommand
             ->addOption('status', null, InputOption::VALUE_OPTIONAL, 'Show modules with a specific status')
             ->addOption('vendor', null, InputOption::VALUE_OPTIONAL, 'Show modules of a specified vendor')
             ->setAliases(array('sys:modules:list')) // deprecated
-            ->setDescription('List all installed modules');
+            ->setDescription('List all installed modules')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
+        ;
     }
 
     /**
@@ -40,11 +47,10 @@ class ListCommand extends AbstractMagentoCommand
         $this->findInstalledModules();
         $this->filterModules($input);
 
-        if ( ! empty($this->infos)) {
+        if (!empty($this->infos)) {
             $this->getHelper('table')
                 ->setHeaders(array('codePool', 'Name', 'Version', 'Status'))
-                ->setRows($this->infos)
-                ->render($output);
+                ->renderByFormat($output, $this->infos, $input->getOption('format'));
         } else {
             $output->writeln("No modules match the specified criteria.");
         }

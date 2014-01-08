@@ -8,7 +8,6 @@ use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Shell;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -24,12 +23,18 @@ class ScriptCommand extends AbstractMagentoCommand
      */
     protected $_scriptFilename = '';
 
+    /**
+     * @var bool
+     */
+    protected $_stopOnError = false;
+
     protected function configure()
     {
         $this
             ->setName('script')
             ->addArgument('filename', InputArgument::OPTIONAL, 'Script file')
             ->addOption('define', 'd', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Defines a variable')
+            ->addOption('stop-on-error', null, InputOption::VALUE_NONE, 'Stops execution of script on error')
             ->setDescription('Runs multiple n98-magerun commands')
         ;
 
@@ -109,6 +114,7 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->_scriptFilename = $input->getArgument('filename');
+        $this->_stopOnError = $input->getOption('stop-on-error');
         $this->_initDefines($input);
         $script = $this->_getContent($this->_scriptFilename);
         $commands = explode("\n", $script);
@@ -246,16 +252,20 @@ HELP;
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
-     * @param                 $commandString
+     * @param $commandString
+     * @throws \RuntimeException
      */
     protected function runMagerunCommand(InputInterface $input, OutputInterface $output, $commandString)
     {
         $this->getApplication()->setAutoExit(false);
         $commandString = $this->_replaceScriptVars($commandString);
         $input = new StringInput($commandString);
-        $this->getApplication()->run($input, $output);
+        $exitCode = $this->getApplication()->run($input, $output);
+        if ($exitCode !== 0 && $this->_stopOnError) {
+            throw new \RuntimeException('Script stopped with errors');
+        }
     }
 
     /**

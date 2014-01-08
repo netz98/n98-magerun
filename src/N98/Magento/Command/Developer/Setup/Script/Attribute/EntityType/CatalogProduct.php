@@ -61,7 +61,6 @@ class CatalogProduct extends AbstractEntityType implements EntityType
 
         // unset items from model that we don't need and would be discarded by
         // resource script anyways
-        $attributeCode = $newData['attribute_code'];
         unset($newData['attribute_id']);
         unset($newData['attribute_code']);
         unset($newData['entity_type_id']);
@@ -85,7 +84,7 @@ TEXT;
         //get text for script
         $arrayCode = var_export($newData, true);
 
-//generate script using simple string concatenation, making
+        //generate script using simpnle string concatenation, making
         //a single tear fall down the cheek of a CS professor
         $script = "<?php
 \$setup = new Mage_Catalog_Model_Resource_Setup('core_setup');

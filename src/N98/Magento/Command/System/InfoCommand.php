@@ -3,9 +3,7 @@
 namespace N98\Magento\Command\System;
 
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
@@ -46,8 +44,12 @@ class InfoCommand extends AbstractMagentoCommand
 
         $this->infos['Crypt Key'] = $config->getNode('global/crypt/key');
         $this->infos['Install Date'] = $config->getNode('global/install/date');
-        $this->findCoreOverwrites();
-        $this->findVendors();
+        try {
+            $this->findCoreOverwrites();
+            $this->findVendors();
+        } catch (\Exception $e) {
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
+        }
 
         $table = array();
         foreach ($this->infos as $key => $value) {

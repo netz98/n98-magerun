@@ -2,11 +2,10 @@
 
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\TableHelper;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class ListCommand extends AbstractRewriteCommand
 {
@@ -15,6 +14,12 @@ class ListCommand extends AbstractRewriteCommand
         $this
             ->setName('dev:module:rewrite:list')
             ->setDescription('Lists all magento rewrites')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
         ;
     }
 
@@ -43,13 +48,16 @@ class ListCommand extends AbstractRewriteCommand
                 }
             }
 
-            if (count($table) > 0) {
+            if (count($table) === 0 && $input->getOption('format') === null) {
+                $output->writeln('<info>No rewrites were found.</info>');
+            } else {
+                if (count($table) == 0) {
+                    $table = array();
+                }
                 $this->getHelper('table')
                     ->setHeaders(array('Type', 'Class', 'Rewrite'))
                     ->setRows($table)
-                    ->render($output);
-            } else {
-                $output->writeln('<info>No rewrites were found.</info>');
+                    ->renderByFormat($output, $table, $input->getOption('format'));
             }
         }
     }

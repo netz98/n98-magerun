@@ -7,7 +7,7 @@ use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\Database as DatabaseUtils;
 use N98\Util\Filesystem;
 use N98\Util\OperatingSystem;
-use Symfony\Component\Console\Input\InputArgument;
+use N98\Util\String;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
@@ -22,6 +22,7 @@ use Symfony\Component\Finder\Finder;
  */
 class InstallCommand extends AbstractMagentoCommand
 {
+    const EXEC_STATUS_OK = 0;
     /**
      * @var array
      */
@@ -30,8 +31,16 @@ class InstallCommand extends AbstractMagentoCommand
     /**
      * @var array
      */
+    protected $_argv;
+
+    /**
+     * @var array
+     */
     protected $commandConfig;
 
+    /**
+     * @var \Closure
+     */
     protected $notEmptyCallback;
 
     protected function configure()
@@ -105,9 +114,9 @@ HELP;
     {
         $this->commandConfig = $this->getCommandConfig();
         $this->writeSection($output, 'Magento Installation');
-        if (!extension_loaded('pdo_mysql')) {
-            throw new \RuntimeException('PHP extension pdo_mysql is required to start installation');
-        }
+
+        $this->precheckPhp();
+
         if (!$input->getOption('noDownload')) {
             $this->selectMagentoVersion($input, $output);
         }
@@ -127,6 +136,26 @@ HELP;
         $this->removeEmptyFolders();
         $this->setDirectoryPermissions($output);
         $this->installMagento($input, $output, $this->config['installationFolder']);
+    }
+
+    /**
+     * Check PHP environment agains minimal required settings modules
+     */
+    protected function precheckPhp()
+    {
+        $extensions = $this->commandConfig['installation']['pre-check']['php']['extensions'];
+        $missingExtensions = array();
+        foreach ($extensions as $extension) {
+            if (!extension_loaded($extension)) {
+                $missingExtensions[] = $extension;
+            }
+        }
+
+        if (count($missingExtensions) > 0) {
+            throw new \RuntimeException(
+                'The following PHP extensions are required to start installation: ' . implode(',', $missingExtensions)
+            );
+        }
     }
 
     /**
@@ -313,28 +342,31 @@ HELP;
      */
     protected function createDatabase(InputInterface $input, OutputInterface $output)
     {
-        $hasAllOptions = true;
-        foreach(array('dbHost', 'dbUser', 'dbPass', 'dbName') as $option) {
-            if($input->hasOption($option) === null) {
-                $hasAllOptions = false;
-                break;
+        $dbOptions = array('--dbHost', '--dbUser', '--dbPass', '--dbName');
+        $dbOptionsFound = 0;
+        foreach ($dbOptions as $dbOption) {
+            foreach ($this->getCliArguments() as $definedCliOption) {
+                if (String::startsWith($definedCliOption, $dbOption)) {
+                    $dbOptionsFound++;
+                }
             }
         }
 
-        //if all database options were passed in at cmd line
-        if($hasAllOptions) {
+        $hasAllOptions = $dbOptionsFound == 4;
+
+        // if all database options were passed in at cmd line
+        if ($hasAllOptions) {
             $this->config['db_host'] = $input->getOption('dbHost');
             $this->config['db_user'] = $input->getOption('dbUser');
             $this->config['db_pass'] = $input->getOption('dbPass');
             $this->config['db_name'] = $input->getOption('dbName');
             $db = $this->validateDatabaseSettings($output, $input);
 
-            if($db === false) {
+            if ($db === false) {
                 throw new \InvalidArgumentException("Database configuration is invalid", null);
             }
 
         } else {
-
             $dialog = $this->getHelperSet()->get('dialog');
             do {
                 $this->config['db_host'] = $dialog->askAndValidate($output, '<question>Please enter the database host:</question> <comment>[localhost]</comment>: ', $this->notEmptyCallback, false, 'localhost');
@@ -361,11 +393,13 @@ HELP;
                 $db->query("CREATE DATABASE `" . $this->config['db_name'] . "`");
                 $output->writeln('<info>Created database ' . $this->config['db_name'] . '</info>');
                 $db->query('USE ' . $this->config['db_name']);
+
                 return $db;
             }
 
             if ($input->getOption('noDownload')) {
                 $output->writeln("<error>Database {$this->config['db_name']} already exists.</error>");
+
                 return false;
             }
 
@@ -490,6 +524,7 @@ HELP;
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @throws \Exception
      * @return array
      */
     protected function installMagento(InputInterface $input, OutputInterface $output)
@@ -597,6 +632,21 @@ HELP;
         );
         $baseUrl = rtrim($baseUrl, '/') . '/'; // normalize baseUrl
 
+        /**
+         * Correct session save (common mistake)
+         */
+        if ($sessionSave == 'file') {
+            $sessionSave = 'files';
+        }
+
+        /**
+         * Try to create session folder
+         */
+        $defaultSessionFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'var/session';
+        if ($sessionSave == 'files' && !is_dir($defaultSessionFolder)) {
+            @mkdir($defaultSessionFolder);
+        }
+
         $argv = array(
             'license_agreement_accepted' => 'yes',
             'locale'                     => $locale,
@@ -634,7 +684,15 @@ HELP;
             $installCommand = '/usr/bin/env php ' . $this->getInstallScriptPath() . ' ' . $installArgs;
         }
         $output->writeln('<comment>' . $installCommand . '</comment>');
-        exec($installCommand);
+        exec($installCommand, $installationOutput, $returnStatus);
+        $installationOutput = implode(PHP_EOL, $installationOutput);
+        if ($returnStatus !== self::EXEC_STATUS_OK) {
+            throw new \Exception('Installation failed.' . $installationOutput);
+        } else {
+            $output->writeln('<info>Successfully installed Magento</info>');
+            $encryptionKey = trim(substr($installationOutput, strpos($installationOutput, ':') + 1));
+            $output->writeln('<comment>Encryption Key:</comment> <info>' . $encryptionKey . '</info>');
+        }
 
         $dialog = $this->getHelperSet()->get('dialog');
 
@@ -660,6 +718,7 @@ HELP;
         }
 
         \chdir($this->config['installationFolder']);
+        $this->getApplication()->reinit();
         $output->writeln('<info>Reindex all after installation</info>');
         $this->getApplication()->run(new StringInput('index:reindex:all'), $output);
         $this->getApplication()->run(new StringInput('sys:check'), $output);
@@ -727,5 +786,25 @@ HELP;
         } catch (\Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getCliArguments()
+    {
+        if ($this->_argv === null) {
+            $this->_argv = $_SERVER['argv'];
+        }
+
+        return $this->_argv;
+    }
+
+    /**
+     * @param array $args
+     */
+    public function setCliArguments($args)
+    {
+        $this->_argv = $args;
     }
 }
