@@ -51,7 +51,7 @@ class InstallCommand extends AbstractMagentoCommand
             ->addOption('dbUser', null, InputOption::VALUE_OPTIONAL, 'Database user')
             ->addOption('dbPass', null, InputOption::VALUE_OPTIONAL, 'Database password')
             ->addOption('dbName', null, InputOption::VALUE_OPTIONAL, 'Database name')
-            ->addOption('dbPort', null, InputOption::VALUE_OPTIONAL, 'Database port', 3306)
+            ->addOption('dbPort', null, InputOption::VALUE_OPTIONAL, 'Database port - Only used when connecting via IP address and not a socket. MySQL will usually treat localhost as a socket', 3306)
             ->addOption('installSampleData', null, InputOption::VALUE_OPTIONAL, 'Install sample data')
             ->addOption('useDefaultConfigParams', null, InputOption::VALUE_OPTIONAL, 'Use default installation parameters defined in the yaml file')
             ->addOption('baseUrl', null, InputOption::VALUE_OPTIONAL, 'Installation base url')
