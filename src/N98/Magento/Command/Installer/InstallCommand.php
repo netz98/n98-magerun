@@ -446,6 +446,7 @@ HELP;
                                 . '-h' . escapeshellarg(strval($this->config['db_host']))
                                 . ' '
                                 . '-u' . escapeshellarg(strval($this->config['db_user']))
+                                . '-P' . escapeshellarg(strval($this->config['db_port']))
                                 . ' '
                                 . (!strval($this->config['db_pass'] == '') ? '-p' . escapeshellarg($this->config['db_pass']) . ' ' : '')
                                 . strval($this->config['db_name'])
@@ -629,7 +630,7 @@ HELP;
             'license_agreement_accepted' => 'yes',
             'locale'                     => $locale,
             'timezone'                   => $timezone,
-            'db_host'                    => $this->config['db_host'],
+            'db_host'                    => sprintf('%s:%s', $this->config['db_host'], $this->config['db_port']),
             'db_name'                    => $this->config['db_name'],
             'db_user'                    => $this->config['db_user'],
             'db_pass'                    => $this->config['db_pass'],
