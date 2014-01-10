@@ -446,10 +446,11 @@ HELP;
                                 . '-h' . escapeshellarg(strval($this->config['db_host']))
                                 . ' '
                                 . '-u' . escapeshellarg(strval($this->config['db_user']))
-                                . '-P' . escapeshellarg(strval($this->config['db_port']))
                                 . ' '
                                 . (!strval($this->config['db_pass'] == '') ? '-p' . escapeshellarg($this->config['db_pass']) . ' ' : '')
                                 . strval($this->config['db_name'])
+                                . ' '
+                                . '-P' . escapeshellarg(strval($this->config['db_port']))
                                 . ' < '
                                 . escapeshellarg($sampleDataSqlFile[0]);
                             $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with mysql cli client</info>');
