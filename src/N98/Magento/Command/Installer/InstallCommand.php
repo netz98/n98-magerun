@@ -51,6 +51,7 @@ class InstallCommand extends AbstractMagentoCommand
             ->addOption('dbUser', null, InputOption::VALUE_OPTIONAL, 'Database user')
             ->addOption('dbPass', null, InputOption::VALUE_OPTIONAL, 'Database password')
             ->addOption('dbName', null, InputOption::VALUE_OPTIONAL, 'Database name')
+            ->addOption('dbPort', null, InputOption::VALUE_OPTIONAL, 'Database port - Only used when connecting via IP address and not a socket. MySQL will usually treat localhost as a socket', 3306)
             ->addOption('installSampleData', null, InputOption::VALUE_OPTIONAL, 'Install sample data')
             ->addOption('useDefaultConfigParams', null, InputOption::VALUE_OPTIONAL, 'Use default installation parameters defined in the yaml file')
             ->addOption('baseUrl', null, InputOption::VALUE_OPTIONAL, 'Installation base url')
@@ -337,6 +338,7 @@ HELP;
             $this->config['db_user'] = $input->getOption('dbUser');
             $this->config['db_pass'] = $input->getOption('dbPass');
             $this->config['db_name'] = $input->getOption('dbName');
+            $this->config['db_port'] = $input->getOption('dbPort');
             $db = $this->validateDatabaseSettings($output, $input);
 
             if ($db === false) {
@@ -350,6 +352,7 @@ HELP;
                 $this->config['db_user'] = $dialog->askAndValidate($output, '<question>Please enter the database username:</question> ', $this->notEmptyCallback);
                 $this->config['db_pass'] = $dialog->ask($output, '<question>Please enter the database password:</question> ');
                 $this->config['db_name'] = $dialog->askAndValidate($output, '<question>Please enter the database name:</question> ', $this->notEmptyCallback);
+                $this->config['db_port'] = $dialog->askAndValidate($output, '<question>Please enter the database port:</question> <comment>[3306]</comment>: ', $this->notEmptyCallback, false, 3306);
                 $db = $this->validateDatabaseSettings($output, $input);
             } while ($db === false);
         }
@@ -365,7 +368,8 @@ HELP;
     protected function validateDatabaseSettings(OutputInterface $output, InputInterface $input)
     {
         try {
-            $db = new \PDO('mysql:host='. $this->config['db_host'], $this->config['db_user'], $this->config['db_pass']);
+            $dsn = sprintf("mysql:host=%s;port=%s", $this->config['db_host'], $this->config['db_port']);
+            $db = new \PDO($dsn, $this->config['db_user'], $this->config['db_pass']);
             if (!$db->query('USE ' . $this->config['db_name'])) {
                 $db->query("CREATE DATABASE `" . $this->config['db_name'] . "`");
                 $output->writeln('<info>Created database ' . $this->config['db_name'] . '</info>');
@@ -445,6 +449,8 @@ HELP;
                                 . ' '
                                 . (!strval($this->config['db_pass'] == '') ? '-p' . escapeshellarg($this->config['db_pass']) . ' ' : '')
                                 . strval($this->config['db_name'])
+                                . ' '
+                                . '-P' . escapeshellarg(strval($this->config['db_port']))
                                 . ' < '
                                 . escapeshellarg($sampleDataSqlFile[0]);
                             $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with mysql cli client</info>');
@@ -625,7 +631,7 @@ HELP;
             'license_agreement_accepted' => 'yes',
             'locale'                     => $locale,
             'timezone'                   => $timezone,
-            'db_host'                    => $this->config['db_host'],
+            'db_host'                    => sprintf('%s:%s', $this->config['db_host'], $this->config['db_port']),
             'db_name'                    => $this->config['db_name'],
             'db_user'                    => $this->config['db_user'],
             'db_pass'                    => $this->config['db_pass'],

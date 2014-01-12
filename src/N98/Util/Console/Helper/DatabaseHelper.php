@@ -28,6 +28,7 @@ class DatabaseHelper extends AbstractHelper
     /**
      * @param OutputInterface $output
      * @param bool            $silent
+     * @throws \Exception
      *
      * @return void
      */
@@ -59,6 +60,11 @@ class DatabaseHelper extends AbstractHelper
 
             $this->dbSettings = (array) $config->global->resources->default_setup->connection;
 	        $this->dbSettings['prefix'] = (string) $config->global->resources->db->table_prefix;
+
+            if(strpos($this->dbSettings['host'], ':') !== false) {
+                list($this->dbSettings['host'], $this->dbSettings['port']) = explode(':', $this->dbSettings['host']);
+            }
+
             if (isset($this->dbSettings['comment'])) {
                 unset($this->dbSettings['comment']);
             }
