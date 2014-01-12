@@ -56,6 +56,9 @@ class CreateCommand extends AbstractCustomerCommand
             $customer->setWebsiteId($website->getId());
             $customer->loadByEmail($email);
 
+            $outputPlain = $input->getOption('format') === null;
+
+            $table = array();
             if (!$customer->getId()) {
                 $customer->setWebsiteId($website->getId());
                 $customer->setEmail($email);
@@ -66,9 +69,23 @@ class CreateCommand extends AbstractCustomerCommand
                 $customer->save();
                 $customer->setConfirmation(null);
                 $customer->save();
-                $output->writeln('<info>Customer <comment>' . $email . '</comment> successfully created</info>');
+                if ($outputPlain) {
+                    $output->writeln('<info>Customer <comment>' . $email . '</comment> successfully created</info>');
+                } else {
+                    $table[] = array(
+                        $email, $password, $firstname, $lastname
+                    );
+                }
             } else {
-                $output->writeln('<error>Customer ' . $email . ' already exists</error>');
+                if ($outputPlain) {
+                    $output->writeln('<error>Customer ' . $email . ' already exists</error>');
+                }
+            }
+
+            if (!$outputPlain) {
+                $this->getHelper('table')
+                    ->setHeaders(array('email', 'password', 'firstname', 'lastname'))
+                    ->renderByFormat($output, $table, $input->getOption('format'));
             }
         }
     }

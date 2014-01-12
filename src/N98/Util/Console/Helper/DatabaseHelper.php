@@ -221,6 +221,39 @@ class DatabaseHelper extends AbstractHelper
     }
 
     /**
+     * @param $commandConfig
+     * @throws \Exception
+     * @internal param $config
+     * @return array $commandConfig
+     * @return array
+     */
+    public function getTableDefinitions($commandConfig)
+    {
+        $tableDefinitions = array();
+        if (isset($commandConfig['table-groups'])) {
+            $tableGroups = $commandConfig['table-groups'];
+            foreach ($tableGroups as $index=>$definition) {
+                $description = isset($definition['description']) ? $definition['description'] : '';
+                if (!isset($definition['id'])) {
+                    throw new \Exception('Invalid definition of table-groups (id missing) Index: ' . $index);
+                }
+                if (!isset($definition['id'])) {
+                    throw new \Exception('Invalid definition of table-groups (tables missing) Id: '
+                        . $definition['id']
+                    );
+                }
+
+                $tableDefinitions[$definition['id']] = array(
+                    'tables'      => $definition['tables'],
+                    'description' => $description,
+                );
+            }
+        };
+
+        return $tableDefinitions;
+    }
+
+    /**
      * @param array $list
      * @param array $definitions
      * @param array $resolved Which definitions where already resolved -> prevent endless loops

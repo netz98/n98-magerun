@@ -90,6 +90,11 @@ HELP;
         return function_exists('exec') && !OperatingSystem::isWindows();
     }
 
+    /**
+     * @return array
+     * @deprecated Use database helper
+     * @throws \Exception
+     */
     public function getTableDefinitions()
     {
         $this->commandConfig = $this->getCommandConfig();
