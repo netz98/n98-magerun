@@ -3,6 +3,7 @@
 namespace N98\Util\Console\Helper\Table\Renderer;
 
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\StreamOutput;
 
 class CsvRenderer implements RendererInterface
 {
@@ -12,10 +13,10 @@ class CsvRenderer implements RendererInterface
      */
     public function render(OutputInterface $output, array $rows)
     {
-        if ($output instanceof ConsoleOutput) {
+        if ($output instanceof StreamOutput) {
             $stream = $output->getStream();
         } else {
-            $stream = fopen('php://stdout', 'w');
+            $stream = \STDOUT;
         }
 
         $i = 0;
