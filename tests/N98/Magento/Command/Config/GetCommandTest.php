@@ -95,7 +95,7 @@ class GetCommandTest extends TestCase
                 '--format' => 'json',
             )
         );
-        $this->assertContains('"Value": "1234"', $commandTester->getDisplay());
+        $this->assertRegExp('/"Value":\s*"1234"/', $commandTester->getDisplay());
     }
 
 }
