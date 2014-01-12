@@ -15,6 +15,7 @@ RECENT CHANGES
 * #282 Global variable or function should never be used
 * #284 Magento folder could not be detected - When using --noDownload
 * #285 Uninstall force bug (by Aydin Hassan)
+* #289 Add Database port option (by Aydin Hassan)
 
 ======
 1.84.2
