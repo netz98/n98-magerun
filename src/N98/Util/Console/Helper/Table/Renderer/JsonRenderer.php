@@ -12,6 +12,11 @@ class JsonRenderer implements RendererInterface
      */
     public function render(OutputInterface $output, array $rows)
     {
-        $output->writeln(json_encode($rows, JSON_FORCE_OBJECT | JSON_PRETTY_PRINT));
+        $options = JSON_FORCE_OBJECT;
+        if (version_compare(PHP_VERSION, '5.4', '>=')) {
+            $options |= JSON_PRETTY_PRINT;
+        }
+
+        $output->writeln(json_encode($rows, $options));
     }
 }

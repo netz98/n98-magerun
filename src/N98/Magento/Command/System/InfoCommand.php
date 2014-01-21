@@ -4,8 +4,10 @@ namespace N98\Magento\Command\System;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class InfoCommand extends AbstractMagentoCommand
 {
@@ -18,7 +20,14 @@ class InfoCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:info')
-            ->setDescription('Prints infos about the current magento system.');
+            ->setDescription('Prints infos about the current magento system.')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
+        ;
     }
 
     /**
@@ -58,8 +67,7 @@ class InfoCommand extends AbstractMagentoCommand
 
         $this->getHelper('table')
             ->setHeaders(array('name', 'value'))
-            ->setRows($table)
-            ->render($output);
+            ->renderByFormat($output, $table, $input->getOption('format'));
     }
 
     protected function _addCacheInfos()
