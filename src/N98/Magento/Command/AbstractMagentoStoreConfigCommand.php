@@ -118,6 +118,13 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      */
     protected $deleteWithClear = false;
 
+    /*
+     * Name for the key of both value and comma command types. This can be set 
+     * to a symbolic name to shorten the path. For example --base-url=foo could 
+     * resolve to the base_url for the selected scope.
+     */
+    protected $keyName = 'key';
+
     /**
      * @var string
      */
@@ -125,12 +132,16 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 
     protected function configure()
     {
-        $this
-            ->setName($this->commandName)
-            ->addOption('on', null, InputOption::VALUE_NONE, 'Switch on')
-            ->addOption('off', null, InputOption::VALUE_NONE, 'Switch off')
-            ->setDescription($this->commandDescription)
-        ;
+        switch( $this->commandType )
+        {
+            case self::COMMAND_TYPE_TOGGLE :
+                $this->configure_toggle();
+                break;
+            case self::COMMAND_TYPE_VALUE :
+                $this->configure_value();
+            case self::COMMAND_TYPE_COMMA :
+                $this->configure_comma();
+        }
 
         if ($this->scope == self::SCOPE_STORE_VIEW_GLOBAL) {
             $this->addOption('global', null, InputOption::VALUE_NONE, 'Set value on default scope');
@@ -140,6 +151,30 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             $this->addArgument('store', InputArgument::OPTIONAL, 'Store code or ID');
         }
 
+    }
+
+    /**
+     * Configure the command for toggle functionality.
+     *
+     * @return void
+     */
+    private function configure_toggle()
+    {
+        $this
+            ->setName($this->commandName)
+            ->addOption('on', null, InputOption::VALUE_NONE, 'Switch on')
+            ->addOption('off', null, InputOption::VALUE_NONE, 'Switch off')
+            ->setDescription($this->commandDescription)
+        ;
+    }
+
+    protected function configure_value()
+    {
+        $this
+            ->setName($this->commandName)
+            ->addOption($this->keyName, InputOption::VALUE, 'Set '.$this->keyName)
+            ->setDescription($this->commandDescription)
+        ;
     }
 
     /**
