@@ -54,9 +54,9 @@ HELP;
                 throw new \InvalidArgumentException('xpath was not found');
             }
             $dom = new \DOMDocument();
-            $dom->loadXML($config->asXml());
             $dom->preserveWhiteSpace = false;
             $dom->formatOutput = true;
+            $dom->loadXML($config->asXml());
             $output->writeln($dom->saveXML());
         }
     }
