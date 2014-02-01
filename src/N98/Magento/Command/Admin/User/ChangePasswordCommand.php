@@ -55,7 +55,7 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
                 $user->setPassword($password);
                 $user->save();
                 $output->writeln('<info>Password successfully changed</info>');
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
             }
         }

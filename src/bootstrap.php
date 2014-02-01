@@ -11,14 +11,14 @@ if (!class_exists('N98_Magerun_Bootstrap')) {
         }
 
         /**
+         * @throws ErrorException
          * @return \Composer\Autoload\ClassLoader
-         * @throws RuntimeException
          */
         public static function getLoader()
         {
             if ((!$loader = \N98_Magerun_Bootstrap::includeIfExists(__DIR__.'/../vendor/autoload.php'))
                 && (!$loader = \N98_Magerun_Bootstrap::includeIfExists(__DIR__.'/../../../autoload.php'))) {
-                throw new \RuntimeException('You must set up the project dependencies, run the following commands:'.PHP_EOL.
+                throw new \ErrorException('You must set up the project dependencies, run the following commands:'.PHP_EOL.
                     'curl -s http://getcomposer.org/installer | php'.PHP_EOL.
                     'php composer.phar install'.PHP_EOL);
             }
