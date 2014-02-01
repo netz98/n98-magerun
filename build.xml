@@ -88,4 +88,8 @@ Build phar with:
         <exec command="vendor/bin/phpunit --debug" passthru="true" />
     </target>
 
+    <target name="apigen">
+        <apigen source="src" destination="doc/api" title="n98-magerun API" deprecated="true" todo="true" />
+    </target>
+
 </project>
