@@ -302,7 +302,7 @@ commands:
         media: "Used for images and other media files."
         var: "Used for caching, reports, etc."
         var/cache: "Used for caching"
-        var/session: "Used as file based sesssion save"
+        var/session: "Used as file based session save"
 
       files:
         app/etc/local.xml: "Magento local configuration."
