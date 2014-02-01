@@ -84,4 +84,8 @@ Build phar with:
         <exec command="sudo chmod a+x /usr/local/bin/n98-magerun.phar;" />
     </target>
 
+    <target name="test">
+        <exec command="vendor/bin/phpunit --debug" passthru="true" />
+    </target>
+
 </project>
