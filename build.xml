@@ -85,7 +85,7 @@ Build phar with:
     </target>
 
     <target name="test">
-        <exec command="vendor/bin/phpunit --debug" passthru="true" />
+        <exec command="vendor/bin/phpunit --debug --coverage-html ${project.basedir}/reports/coverage" passthru="true" />
     </target>
 
     <target name="apigen">
