@@ -12,21 +12,22 @@ _n98-magerun()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     cmd="${COMP_WORDS[0]}"
-    PHP='$ret = shell_exec($argv[1]);
 
-$ret = preg_replace("/^.*Available commands:\n/s", "", $ret);
-$ret = explode("\n", $ret);
+    # Load magerun help into help variable
+    help=$($cmd)
 
-$comps = array();
-foreach ($ret as $line) {
-    if (preg_match("@^  ([^ ]+) @", $line, $m)) {
-        $comps[] = $m[1];
-    }
-}
+    # Strip everything up to "Available commands:"
+    help=${help/*Available commands:/}
 
-echo implode("\n", $comps);
-'
-    possible=$($(which php) -r "$PHP" $COMP_WORDS);
+    # Iterate over lines
+    POSSIBLE=()
+    while read command help; do
+        # skip section headers
+        if [[ $command =~ ":" ]]; then
+                POSSIBLE+=($command)
+        fi
+    done <<< "$help"
+
     COMPREPLY=( $(compgen -W "${possible}" -- ${cur}) )
     return 0
 }
