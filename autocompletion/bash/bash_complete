@@ -32,4 +32,6 @@ echo implode("\n", $comps);
 }
 
 complete -F _n98-magerun n98-magerun.phar
+complete -F _n98-magerun n98-magerun
+complete -F _n98-magerun magerun
 COMP_WORDBREAKS=${COMP_WORDBREAKS//:}
