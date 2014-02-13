@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.87.0
+======
+
+* #294, #300, #301 New bash completion script (by Allard Hoeve)
+
+======
 1.86.0
 ======
 
