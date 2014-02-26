@@ -62,8 +62,9 @@ commands:
     - N98\Magento\Command\Database\DumpCommand 
     - N98\Magento\Command\Database\ImportCommand 
     - N98\Magento\Command\Database\InfoCommand 
-    - N98\Magento\Command\Database\QueryCommand 
-    - N98\Magento\Command\Design\DemoNoticeCommand 
+    - N98\Magento\Command\Database\QueryCommand
+    - N98\Magento\Command\Database\Maintain\CheckTablesCommand
+    - N98\Magento\Command\Design\DemoNoticeCommand
     - N98\Magento\Command\Developer\Ide\PhpStorm\MetaCommand 
     - N98\Magento\Command\Developer\Setup\Script\AttributeCommand 
     - N98\Magento\Command\Developer\ConsoleCommand 
@@ -302,7 +303,7 @@ commands:
         media: "Used for images and other media files."
         var: "Used for caching, reports, etc."
         var/cache: "Used for caching"
-        var/session: "Used as file based sesssion save"
+        var/session: "Used as file based session save"
 
       files:
         app/etc/local.xml: "Magento local configuration."

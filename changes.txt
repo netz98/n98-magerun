@@ -3,6 +3,24 @@ RECENT CHANGES
 **************
 
 ======
+1.87.0
+======
+
+* #294, #300, #301 New bash completion script (by Allard Hoeve)
+
+======
+1.86.0
+======
+
+* New db:maintain:check-tables command
+* #287 db:console closes connection on AWS
+* #288 Install command with --noDownload options fails if database exists
+* #290 Add force use database option for when installing with --noDownload (by Aydin Hassan)
+* #295 Fixed typo in config.yaml  (by Andrea De Pirro)
+* #296 loadXML must be called AFTER preserveWhiteSpace (by Volker Thiel)
+* #297 [Insight] Missing use statement should be avoided
+
+======
 1.85.0
 ======
 
@@ -16,32 +34,6 @@ RECENT CHANGES
 * #284 Magento folder could not be detected - When using --noDownload
 * #285 Uninstall force bug (by Aydin Hassan)
 * #289 Add Database port option (by Aydin Hassan)
-
-======
-1.84.2
-======
-
-* #260 --strip="@development" not working if hardcoded table does not exists
-
-======
-1.84.1
-======
-
-* #275 There are no commands defined in the "extension" namespace.
-
-======
-1.84.0
-======
-
-* New commands cache:report and cache:view to look inside the core cache
-* Support to enable/disable specific cache types
-* Added Magento CE 1.8.1.0 to installer
-* #152 Added local autoloader overwrites to dev:module:rewrite:list command.
-* #261 Compatibility with environments that disable exec()
-* #264 Grammar correction and send warning to stderr (by Melvyn Sopacua)
-* #265 Features/install cmd fail invalid db config (by AydinHassan)
-* #268 Added @search database table group to readme (by Tegan Snyder)
-* Updated Symfony to 2.4
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H

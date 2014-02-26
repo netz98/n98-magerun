@@ -34,6 +34,10 @@ class ConsoleCommand extends AbstractDatabaseCommand
         $exec = 'mysql ' . $this->getHelper('database')->getMysqlClientToolConnectionString();
 
         $pipes = array();
-        proc_open($exec, $descriptorSpec, $pipes);
+        $process = proc_open($exec, $descriptorSpec, $pipes);
+
+        if (is_resource($process)) {
+            proc_close($process);
+        }
     }
 }
