@@ -45,13 +45,14 @@ class ViewCommand extends AbstractMagentoCommand
             if (!$attribute) {
                 throw new \InvalidArgumentException('Attribute was not found.');
             }
+            var_dump($attribute->getAttributeModel());
 
             $table = array(
                 array('ID', $attribute->getId()),
                 array('Code', $attribute->getName()),
                 array('Attribute-Set-ID', $attribute->getAttributeSetId()),
                 array('Visible-On-Front', $attribute->getIsVisibleOnFront() ? 'yes' : 'no'),
-                array('Attribute-Model', $attribute->getAttributeModel() ? get_class($attribute->getAttributeModel()) : ''),
+                array('Attribute-Model', $attribute->getAttributeModel() ? $attribute->getAttributeModel() : ''),
                 array('Backend-Model', $attribute->getBackendModel() ? $attribute->getBackendModel() : ''),
                 array('Backend-Table', $attribute->getBackendTable() ? $attribute->getBackendTable() : ''),
                 array('Backend-Type', $attribute->getBackendType() ? $attribute->getBackendType() : ''),
