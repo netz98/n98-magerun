@@ -52,6 +52,7 @@ class ListCommand extends AbstractMagentoCommand
 
                 $row = array();
                 $row[] = $attribute->getAttributeCode();
+                $row[] = $attribute->getId();
                 $row[] = $entityType;
                 $row[] = $attribute->getFrontendLabel();
 
@@ -64,6 +65,7 @@ class ListCommand extends AbstractMagentoCommand
 
             $headers = array();
             $headers[] = 'code';
+            $headers[] = 'id';
             $headers[] = 'entity_type';
             $headers[] = 'label';
             if ($input->getOption('add-source'))  {
