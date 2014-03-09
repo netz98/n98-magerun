@@ -52,7 +52,7 @@ class ViewCommand extends AbstractMagentoCommand
                 array('Attribute-Set-ID', $attribute->getAttributeSetId()),
                 array('Visible-On-Front', $attribute->getIsVisibleOnFront() ? 'yes' : 'no'),
                 array('Attribute-Model', $attribute->getAttributeModel() ? get_class($attribute->getAttributeModel()) : ''),
-                array('Backend-Model', $attribute->getBackendModel() ? get_class($attribute->getBackendModel()) : ''),
+                array('Backend-Model', $attribute->getBackendModel() ? $attribute->getBackendModel() : ''),
                 array('Backend-Table', $attribute->getBackendTable() ? $attribute->getBackendTable() : ''),
                 array('Backend-Type', $attribute->getBackendType() ? $attribute->getBackendType() : ''),
                 array('Source-Model', $attribute->getSourceModel() ? $attribute->getSourceModel() : ''),
