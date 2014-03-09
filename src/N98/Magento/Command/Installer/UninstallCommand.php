@@ -22,7 +22,7 @@ class UninstallCommand extends AbstractMagentoCommand
         $this
             ->setName('uninstall')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force')
-            ->setDescription('Uninstall magento (drops database and empties current folder')
+            ->setDescription('Uninstall magento (drops database and empties current folder)')
         ;
 
         $help = <<<HELP
