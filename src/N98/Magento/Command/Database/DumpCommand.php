@@ -74,7 +74,7 @@ See it in action: http://youtu.be/ttjZHY6vThs
 
 - If you like to prepend a timestamp to the dump name the --add-time option can be used.
 
-- The command comes with a compression function. Add i.e. `--compress=gz` to dump directly in
+- The command comes with a compression function. Add i.e. `--compression=gz` to dump directly in
  gzip compressed file.
 
 HELP;
