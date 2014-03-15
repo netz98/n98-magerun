@@ -11,6 +11,7 @@ RECENT CHANGES
 * #302 Added task to compile n98-magerun for HHVM -> phing build script
 * #304 EAV Attribute Commands
 * #305 Fixed typo in uninstall command description. (by Matthias Zeis)
+* #307 Fix typo in db:dump help text (by Colin O'Dell)
 
 ======
 1.86.0
