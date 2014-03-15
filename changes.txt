@@ -12,6 +12,7 @@ RECENT CHANGES
 * #304 EAV Attribute Commands
 * #305 Fixed typo in uninstall command description. (by Matthias Zeis)
 * #307 Fix typo in db:dump help text (by Colin O'Dell)
+* Updated 3rd party dependencies
 
 ======
 1.86.0
