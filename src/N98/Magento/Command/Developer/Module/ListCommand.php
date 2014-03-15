@@ -42,7 +42,9 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
 
-        $this->writeSection($output, 'Magento Modules');
+        if ($input->getOption('format') === null) {
+            $this->writeSection($output, 'Magento Modules');
+        }
         $this->initMagento();
         $this->findInstalledModules();
         $this->filterModules($input);
