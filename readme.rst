@@ -893,6 +893,15 @@ i.e.
 
 Currently only *catalog_product* entity type is supported.
 
+EAV Attributes
+""""""""""""""
+
+List all EAV attributes:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar eav:attribute:list [--filter-type[="..."]] [--add-source] [--format[="..."]]
+
 Development IDE Support
 """""""""""""""""""""""
 

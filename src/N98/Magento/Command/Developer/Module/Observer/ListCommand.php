@@ -4,8 +4,10 @@ namespace N98\Magento\Command\Developer\Module\Observer;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class ListCommand extends AbstractMagentoCommand
 {
@@ -15,6 +17,12 @@ class ListCommand extends AbstractMagentoCommand
             ->setName('dev:module:observer:list')
             ->addArgument('type', InputArgument::OPTIONAL, 'Observer type (global, admin, frontend)')
             ->setDescription('Lists all registered observers')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
         ;
     }
 
@@ -54,21 +62,26 @@ class ListCommand extends AbstractMagentoCommand
                 throw new \InvalidArgumentException('Invalid type! Use one of: ' . implode(', ', $areas));
             }
 
-            $this->writeSection($output, 'Observers: ' . $type);
+            if ($input->getOption('format') === null) {
+                $this->writeSection($output, 'Observers: ' . $type);
+            }
             $frontendEvents = \Mage::getConfig()->getNode($type . '/events')->asArray();
-            $table = new \Zend_Text_Table(array('columnWidths' => array(80, 80)));
+            $table = array();
             foreach ($frontendEvents as $eventName => $eventData) {
                 $observerList = array();
                 foreach ($eventData['observers'] as $observer) {
                     $observerList[] = $observer['class'] . (isset($observer['method']) ? '::' . $observer['method'] : '');
                 }
-                $table->appendRow(array(
+                $table[] = array(
                     $eventName,
                     implode("\n", $observerList),
-                ));
+                );
             }
 
-            $output->write($table->render());
+            $this->getHelper('table')
+                ->setHeaders(array('Event', 'Observers'))
+                ->setRows($table)
+                ->renderByFormat($output, $table, $input->getOption('format'));
         }
     }
 }

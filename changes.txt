@@ -6,7 +6,13 @@ RECENT CHANGES
 1.87.0
 ======
 
+* #268 script:repo Handling of *.magerun files
 * #294, #300, #301 New bash completion script (by Allard Hoeve)
+* #302 Added task to compile n98-magerun for HHVM -> phing build script
+* #304 EAV Attribute Commands
+* #305 Fixed typo in uninstall command description. (by Matthias Zeis)
+* #307 Fix typo in db:dump help text (by Colin O'Dell)
+* Updated 3rd party dependencies
 
 ======
 1.86.0

@@ -39,7 +39,9 @@ class InfoCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
 
-        $this->writeSection($output, 'Magento System Information');
+        if ($input->getOption('format') == null) {
+            $this->writeSection($output, 'Magento System Information');
+        }
 
         $this->initMagento();
 

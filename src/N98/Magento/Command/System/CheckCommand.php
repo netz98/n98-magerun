@@ -269,11 +269,11 @@ HELP;
     }
 
     /**
-     * @param $output
-     * @param $configPath
-     * @param \Closure $check
-     * @param $errorMessage
-     * @param $checkType
+     * @param OutputInterface $output
+     * @param string $checkType
+     * @param string $configPath
+     * @param string $errorMessage
+     * @param callable $check
      */
     protected function _checkSetting($output, $checkType, $configPath, $errorMessage, \Closure $check)
     {
