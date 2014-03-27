@@ -124,6 +124,8 @@ class DatabaseHelper extends AbstractHelper
         } catch(\PDOException $e) {
         }
 
+        $this->_connection->query("SET NAMES utf8");
+
         $this->_connection->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
         $this->_connection->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 
