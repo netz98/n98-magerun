@@ -45,7 +45,6 @@ class TranslateExportCommand extends AbstractMagentoCommand
         $f = fopen($filename, 'w');
 
         foreach($result as $row) {
-            var_dump($row);
             fputcsv($f,array($row['string'],$row['translate']));
         }
 
