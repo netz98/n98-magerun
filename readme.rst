@@ -323,6 +323,12 @@ Use decompression (gzip cli tool has to be installed):
 
    $ n98-magerun.phar db:import --compression="gzip" [filename]
 
+Optimize "human readable" dump:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:import --optimize [filename]
+
 Database Console / MySQL Client
 """""""""""""""""""""""""""""""
 
