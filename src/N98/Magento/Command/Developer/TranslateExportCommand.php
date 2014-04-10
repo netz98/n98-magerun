@@ -17,7 +17,6 @@ class TranslateExportCommand extends AbstractMagentoCommand
             ->setDescription('Export inline translations')
             ->addArgument('locale', InputOption::VALUE_REQUIRED, 'Locale')
             ->addArgument('filename', InputArgument::OPTIONAL, 'Export filename')
-            ->addOption('store-view', 's', InputOption::VALUE_REQUIRED, 'Store View')
         ;
     }
 
@@ -37,11 +36,11 @@ class TranslateExportCommand extends AbstractMagentoCommand
         }
 
         $locale = $input->getArgument('locale');
-        $where = 'WHERE locale = "' .  $locale . '"';
         $output->writeln('Exporting to <info>' . $filename . '</info>');
 
-        $result = $db->query("SELECT * FROM core_translate $where");
-
+        $statement = $db->prepare("SELECT * FROM core_translate WHERE locale = :locale");
+        $statement->execute(array('locale' => $locale));
+        $result = $statement->fetchAll();
         $f = fopen($filename, 'w');
 
         foreach($result as $row) {
