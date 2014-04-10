@@ -40,12 +40,12 @@ HELP;
     /**
      * Optimize a dump by converting single INSERTs per line to INSERTs with multiple lines
      * @param $fileName
-     * @return string
+     * @return string temporary filename
      */
     protected function optimize($fileName)
     {
         $in = fopen($fileName,'r');
-        $result = tempnam(sys_get_temp_dir(),'dump');
+        $result = tempnam(sys_get_temp_dir(),'dump') . '.sql';
         $out = fopen($result, 'w');
 
         $current_table = '';
@@ -120,7 +120,7 @@ HELP;
             $this->doImport($output, $fileName, $exec);
         }
         if ($input->getOption('optimize')) {
-         //   unlink($fileName);
+            unlink($fileName);
         }
     }
 
