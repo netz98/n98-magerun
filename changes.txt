@@ -6,8 +6,9 @@ RECENT CHANGES
 1.88.0
 ======
 
-* #319 dev:module:rewrite:list does not list autoload rewrites in community folder
+* #310 Export inline translation to CSV (by Alexander Menk)
 * #316 db:import dump optimization (--optimize) - small fixes (by Alexander Menk)
+* #319 dev:module:rewrite:list does not list autoload rewrites in community folder
 
 ======
 1.87.0
