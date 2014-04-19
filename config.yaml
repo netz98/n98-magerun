@@ -101,6 +101,7 @@ commands:
     - N98\Magento\Command\MagentoConnect\InstallExtensionCommand
     - N98\Magento\Command\MagentoConnect\ListExtensionsCommand
     - N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand
+    - N98\Magento\Command\Media\DumpCommand
     - N98\Magento\Command\OpenBrowserCommand
     - N98\Magento\Command\ScriptCommand
     - N98\Magento\Command\Script\Repository\ListCommand
