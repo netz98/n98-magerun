@@ -381,6 +381,22 @@ Options:
 
    $ n98-magerun.phar db:query [--only-command] [query]
 
+
+Dump Media folder
+"""""""""""""""""
+
+Creates a ZIP archive with media folder content.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar media:dump [--strip] [filename]
+
+If strip option is set, the following folders are excluded:
+
+* js (combined js files)
+* css (combined css files)
+* catalog/product/cache
+
 List Indexes
 """"""""""""
 

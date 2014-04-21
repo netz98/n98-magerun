@@ -31,6 +31,8 @@ class DumpCommand extends AbstractMagentoCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $commandConfig = $this->getCommandConfig();
+
         $this->detectMagento($output);
         $finder = new Finder();
         $finder
@@ -38,7 +40,7 @@ class DumpCommand extends AbstractMagentoCommand
             ->followLinks(true)
             ->in($this->getApplication()->getMagentoRootFolder() . DIRECTORY_SEPARATOR . 'media');
         if ($input->getOption('strip')) {
-            $finder->exclude('catalog/product/cache');
+            $finder->exclude($commandConfig['strip']['folders']);
         }
 
         $filename = $input->getArgument('filename');
