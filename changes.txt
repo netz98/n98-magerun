@@ -6,6 +6,7 @@ RECENT CHANGES
 1.88.0
 ======
 
+* New command dev:translate:set
 * #149 Command for dumping media directory
 * #310 Export inline translation to CSV (by Alexander Menk)
 * #316 db:import dump optimization (--optimize) - small fixes (by Alexander Menk)

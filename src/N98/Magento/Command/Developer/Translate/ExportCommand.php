@@ -1,6 +1,6 @@
 <?php
 
-namespace N98\Magento\Command\Developer;
+namespace N98\Magento\Command\Developer\Translate;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -8,7 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class TranslateExportCommand extends AbstractMagentoCommand
+class ExportCommand extends AbstractMagentoCommand
 {
     protected function configure()
     {

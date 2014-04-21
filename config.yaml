@@ -86,9 +86,10 @@ commands:
     - N98\Magento\Command\Developer\TemplateHintsCommand
     - N98\Magento\Command\Developer\Theme\DuplicatesCommand
     - N98\Magento\Command\Developer\Theme\ListCommand
-    - N98\Magento\Command\Developer\TranslateInlineAdminCommand
-    - N98\Magento\Command\Developer\TranslateInlineShopCommand
-    - N98\Magento\Command\Developer\TranslateExportCommand
+    - N98\Magento\Command\Developer\Translate\InlineAdminCommand
+    - N98\Magento\Command\Developer\Translate\InlineShopCommand
+    - N98\Magento\Command\Developer\Translate\SetCommand
+    - N98\Magento\Command\Developer\Translate\ExportCommand
     - N98\Magento\Command\Eav\Attribute\ListCommand
     - N98\Magento\Command\Eav\Attribute\ViewCommand
     - N98\Magento\Command\Indexer\ListCommand
