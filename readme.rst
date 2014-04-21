@@ -868,6 +868,15 @@ Toggle for admin area:
 
    $ n98-magerun.phar dev:translate:admin
 
+Export Inline Translation
+"""""""""""""""""""""""""
+
+Exports saved database translation data into a file.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:translate:export [locale] [filename]
+
 Profiler
 """"""""
 
