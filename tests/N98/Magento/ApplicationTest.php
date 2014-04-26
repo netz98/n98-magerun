@@ -45,6 +45,11 @@ class ApplicationTest extends TestCase
                     )
                 ),
             ),
+            'init' => array(
+                'options' => array(
+                    'config_model' => 'N98MagerunTest\AlternativeConfigModel',
+                )
+            )
         );
 
         $application->setAutoExit(false);
@@ -66,6 +71,11 @@ class ApplicationTest extends TestCase
         );
         $this->assertContains('dummy', $commandTester->getDisplay());
         $this->assertTrue($application->getDefinition()->hasOption('root-dir'));
+
+        // Test alternative config model
+        $application->initMagento();
+        $this->assertInstanceOf('\N98MagerunTest\AlternativeConfigModel', \Mage::getConfig());
+
 
         // check alias
         $this->assertInstanceOf('\N98\Magento\Command\Cache\ListCommand', $application->find('cl'));

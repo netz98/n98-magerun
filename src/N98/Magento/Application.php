@@ -657,10 +657,11 @@ class Application extends BaseApplication
      */
     protected function _initMagento1()
     {
+        $initSettings = $this->config['init'];
         if (!class_exists('Mage')) {
             require_once $this->getMagentoRootFolder() . '/app/Mage.php';
         }
-        \Mage::app('admin');
+        \Mage::app($initSettings['code'], $initSettings['type'], $initSettings['options']);
     }
 
     /**
