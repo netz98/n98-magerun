@@ -74,7 +74,7 @@ class ApplicationTest extends TestCase
 
         // Test alternative config model
         $application->initMagento();
-        if (version_compare(\Mage::getVersion(), '1.6.0.0', '>=')) {
+        if (version_compare(\Mage::getVersion(), '1.7.0.2', '>=')) {
             // config_model option is only available in Magento CE >1.6
             $this->assertInstanceOf('\N98MagerunTest\AlternativeConfigModel', \Mage::getConfig());
         }
