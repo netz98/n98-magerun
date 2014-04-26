@@ -13,6 +13,7 @@ RECENT CHANGES
 * #316 db:import dump optimization (--optimize) - small fixes (by Alexander Menk)
 * #319 dev:module:rewrite:list does not list autoload rewrites in community folder
 * #320 Fixing minor grammatical error (by Chris Jones)
+* Updated 3rd party dependencies
 
 ======
 1.87.0
