@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.88.1
+======
+
+* Changed download URLs to raw.githubusercontent.com
+
+======
 1.88.0
 ======
 
@@ -26,18 +32,6 @@ RECENT CHANGES
 * #305 Fixed typo in uninstall command description. (by Matthias Zeis)
 * #307 Fix typo in db:dump help text (by Colin O'Dell)
 * Updated 3rd party dependencies
-
-======
-1.86.0
-======
-
-* New db:maintain:check-tables command
-* #287 db:console closes connection on AWS
-* #288 Install command with --noDownload options fails if database exists
-* #290 Add force use database option for when installing with --noDownload (by Aydin Hassan)
-* #295 Fixed typo in config.yaml  (by Andrea De Pirro)
-* #296 loadXML must be called AFTER preserveWhiteSpace (by Volker Thiel)
-* #297 [Insight] Missing use statement should be avoided
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
