@@ -3,10 +3,16 @@ RECENT CHANGES
 **************
 
 ======
-1.88.1
+1.89.0
 ======
 
+* #320 Fixing minor grammatical error (by Chris Jones)
+* #326 Encryption key parameter in install command (by Kristof Ringleff)
+* #327 Uninstall from specified folder (by Kristof Ringleff)
+* #328 added Magento CE install option (by Hans Kuijpers)
+* #329 Added Magento CE 1.9.0.0 to test script (by Hans Kuijpers)
 * Changed download URLs to raw.githubusercontent.com
+* Updated 3rd party dependencies
 
 ======
 1.88.0
@@ -19,18 +25,6 @@ RECENT CHANGES
 * #316 db:import dump optimization (--optimize) - small fixes (by Alexander Menk)
 * #319 dev:module:rewrite:list does not list autoload rewrites in community folder
 * #320 Fixing minor grammatical error (by Chris Jones)
-* Updated 3rd party dependencies
-
-======
-1.87.0
-======
-
-* #268 script:repo Handling of *.magerun files
-* #294, #300, #301 New bash completion script (by Allard Hoeve)
-* #302 Added task to compile n98-magerun for HHVM -> phing build script
-* #304 EAV Attribute Commands
-* #305 Fixed typo in uninstall command description. (by Matthias Zeis)
-* #307 Fix typo in db:dump help text (by Colin O'Dell)
 * Updated 3rd party dependencies
 
 -----------------------------------------
