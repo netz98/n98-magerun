@@ -676,6 +676,9 @@ HELP;
             'default_currency'           => $currency,
             'skip_url_validation'        => 'yes',
         );
+        if ($useDefaultConfigParams && strlen($defaults['encryption_key']) > 0) {
+            $argv['encryption_key '] = $defaults['encryption_key'];
+        }
         $installArgs = '';
         foreach ($argv as $argName => $argValue) {
             $installArgs .= '--' . $argName . ' ' . escapeshellarg($argValue) . ' ';
