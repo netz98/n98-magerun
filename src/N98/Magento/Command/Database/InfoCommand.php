@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class InfoCommand extends AbstractDatabaseCommand
 {
@@ -16,6 +17,12 @@ class InfoCommand extends AbstractDatabaseCommand
             ->addArgument('setting', InputArgument::OPTIONAL, 'Only output value of named setting')
             ->addDeprecatedAlias('database:info', 'Please use db:info')
             ->setDescription('Dumps database informations')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
         ;
 
         $help = <<<HELP
@@ -73,8 +80,7 @@ HELP;
         } else {
             $this->getHelper('table')
                 ->setHeaders(array('Name', 'Value'))
-                ->setRows($rows)
-                ->render($output);
+                ->renderByFormat($output, $rows, $input->getOption('format'));
         }
     }
 

@@ -5,8 +5,6 @@ namespace N98\Magento\Command\Installer;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Filesystem;
 use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,7 +22,7 @@ class UninstallCommand extends AbstractMagentoCommand
         $this
             ->setName('uninstall')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force')
-            ->setDescription('Uninstall magento (drops database and empties current folder')
+            ->setDescription('Uninstall magento (drops database and empties current folder)')
         ;
 
         $help = <<<HELP
@@ -45,8 +43,8 @@ HELP;
         $dialog = $this->getHelperSet()->get('dialog');
         /* @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
 
-        $shouldUninstall = false;
-        if (!$input->getOption('force')) {
+        $shouldUninstall = $input->getOption('force');
+        if (!$shouldUninstall) {
             $shouldUninstall = $dialog->askConfirmation($output, '<question>Really uninstall ?</question> <comment>[n]</comment>: ', false);
         }
 

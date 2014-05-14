@@ -1,20 +1,40 @@
 <?php
 
-if (!function_exists('includeIfExists')) {
-    function includeIfExists($file)
+if (!class_exists('N98_Magerun_Bootstrap')) {
+    class N98_Magerun_Bootstrap
     {
-        if (file_exists($file)) {
-            return include $file;
+        public static function includeIfExists($file)
+        {
+            if (file_exists($file)) {
+                return include $file;
+            }
+        }
+
+        /**
+         * @throws ErrorException
+         * @return \Composer\Autoload\ClassLoader
+         */
+        public static function getLoader()
+        {
+            if ((!$loader = \N98_Magerun_Bootstrap::includeIfExists(__DIR__.'/../vendor/autoload.php'))
+                && (!$loader = \N98_Magerun_Bootstrap::includeIfExists(__DIR__.'/../../../autoload.php'))) {
+                throw new \ErrorException('You must set up the project dependencies, run the following commands:'.PHP_EOL.
+                    'curl -s http://getcomposer.org/installer | php'.PHP_EOL.
+                    'php composer.phar install'.PHP_EOL);
+            }
+
+            return $loader;
         }
     }
 }
 
-if ((!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php')) && (!$loader = includeIfExists(__DIR__.'/../../../autoload.php'))) {
-    die('You must set up the project dependencies, run the following commands:'.PHP_EOL.
-        'curl -s http://getcomposer.org/installer | php'.PHP_EOL.
-        'php composer.phar install'.PHP_EOL);
+try {
+    $loader = \N98_Magerun_Bootstrap::getLoader();
+    $application = new \N98\Magento\Application($loader);
+
+    return $application;
+
+} catch (\Exception $e) {
+    echo $e->getMessage();
+    exit(1);
 }
-
-$application = new \N98\Magento\Application($loader);
-
-return $application;

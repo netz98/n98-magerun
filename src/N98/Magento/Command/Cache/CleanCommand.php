@@ -5,7 +5,6 @@ namespace N98\Magento\Command\Cache;
 use N98\Magento\Application;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CleanCommand extends AbstractCacheCommand

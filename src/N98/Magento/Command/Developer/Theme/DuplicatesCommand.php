@@ -65,7 +65,7 @@ HELP;
                 $this->logJUnit($input, $duplicates, $input->getOption('log-junit'), microtime($time) - $time);
             } else {
                 if (count($duplicates) === 0) {
-                    $output->writeln('<info>No duplicates was found</info>');
+                    $output->writeln('<info>No duplicates were found</info>');
                 } else {
                     $output->writeln($duplicates);
                 }

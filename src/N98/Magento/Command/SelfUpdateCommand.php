@@ -6,11 +6,9 @@ use Composer\Downloader\FilesystemException;
 use Composer\IO\ConsoleIO;
 use Composer\Util\RemoteFilesystem;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * @codeCoverageIgnore
@@ -95,9 +93,33 @@ EOT
                 @rename($tempFilename, $localFilename);
                 $output->writeln('<info>Successfully updated n98-magerun</info>');
 
-                $changeLogContent = $rfs->getContents('raw.github.com', 'https://raw.github.com/netz98/n98-magerun/master/changes.txt', false);
+                if ($loadUnstable) {
+                    $changeLogContent = $rfs->getContents(
+                        'raw.github.com',
+                        'https://raw.github.com/netz98/n98-magerun/develop/changes.txt',
+                        false
+                    );
+                } else {
+                    $changeLogContent = $rfs->getContents(
+                        'raw.github.com',
+                        'https://raw.github.com/netz98/n98-magerun/master/changes.txt',
+                        false
+                    );
+                }
+
                 if ($changeLogContent) {
                     $output->writeln($changeLogContent);
+                }
+
+                if ($loadUnstable) {
+                    $unstableFooterMessage = <<<UNSTABLE_FOOTER
+<comment>
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! DEVELOPMENT VERSION. DO NOT USE IN PRODUCTION !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+</comment>
+UNSTABLE_FOOTER;
+                    $output->writeln($unstableFooterMessage);
                 }
 
                 $this->_exit();

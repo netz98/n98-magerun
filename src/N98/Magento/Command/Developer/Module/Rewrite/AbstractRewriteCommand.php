@@ -63,15 +63,29 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
     }
 
     /**
-     * Searches for all rewrites over autoloader in "app/code/local" of
-     * Mage, Enterprise Zend, Varien namespaces.
+     * Check codepools for core overwrites.
      *
      * @return array
      */
-    protected function loadLocalAutoloaderRewrites()
+    protected function loadAutoloaderRewrites()
+    {
+        $return = $this->loadAutoloaderRewritesByCodepool('community');
+        $return = array_merge($return, $this->loadAutoloaderRewritesByCodepool('local'));
+
+        return $return;
+    }
+
+    /**
+     * Searches for all rewrites over autoloader in "app/code/<codepool>" of
+     * Mage, Enterprise Zend, Varien namespaces.
+     *
+     * @param string $codePool
+     * @return array
+     */
+    protected function loadAutoloaderRewritesByCodepool($codePool)
     {
         $return = array();
-        $localCodeFolder = \Mage::getBaseDir('code') . '/local';
+        $localCodeFolder = \Mage::getBaseDir('code') . '/' . $codePool;
 
         $folders = array(
             'Mage'       => $localCodeFolder . '/Mage',

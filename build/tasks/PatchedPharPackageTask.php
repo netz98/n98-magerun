@@ -271,9 +271,6 @@ class PatchedPharPackageTask
              * Delete old package, if exists.
              */
             if ($this->destinationFile->exists()) {
-                /**
-                 * TODO Check operation for errors...
-                 */
                 $this->destinationFile->delete();
             }
             $phar = $this->buildPhar();

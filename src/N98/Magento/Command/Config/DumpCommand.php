@@ -4,7 +4,6 @@ namespace N98\Magento\Command\Config;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class DumpCommand extends AbstractConfigCommand
@@ -55,9 +54,9 @@ HELP;
                 throw new \InvalidArgumentException('xpath was not found');
             }
             $dom = new \DOMDocument();
-            $dom->loadXML($config->asXml());
             $dom->preserveWhiteSpace = false;
             $dom->formatOutput = true;
+            $dom->loadXML($config->asXml());
             $output->writeln($dom->saveXML());
         }
     }

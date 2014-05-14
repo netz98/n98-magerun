@@ -37,7 +37,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.85.0';
+    const APP_VERSION = '1.88.0';
 
     /**
      * @var string
@@ -571,6 +571,15 @@ class Application extends BaseApplication
     }
 
     /**
+     * @param array $initConfig
+     */
+    public function reinit($initConfig = array())
+    {
+        $this->_isInitialized = false;
+        $this->init($initConfig);
+    }
+
+    /**
      * @return void
      */
     protected function registerEventSubscribers()
@@ -648,10 +657,11 @@ class Application extends BaseApplication
      */
     protected function _initMagento1()
     {
+        $initSettings = $this->config['init'];
         if (!class_exists('Mage')) {
             require_once $this->getMagentoRootFolder() . '/app/Mage.php';
         }
-        \Mage::app('admin');
+        \Mage::app($initSettings['code'], $initSettings['type'], $initSettings['options']);
     }
 
     /**

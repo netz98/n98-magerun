@@ -2,10 +2,10 @@
 
 namespace N98\Magento\Command\Cache;
 
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class ReportCommand extends AbstractCacheCommand
 {
@@ -18,7 +18,13 @@ class ReportCommand extends AbstractCacheCommand
             ->addOption('mtime', 'm', InputOption::VALUE_NONE, 'Output last modification time')
             ->addOption('filter-id', '', InputOption::VALUE_OPTIONAL, 'Filter output by ID (substring)')
             ->addOption('filter-tag', '', InputOption::VALUE_OPTIONAL, 'Filter output by TAG (seperate multiple tags by comma)')
-            ->addOption('fpc', null, InputOption::VALUE_NONE, 'Use full page cache instead of core cache (Enterprise only!)');
+            ->addOption('fpc', null, InputOption::VALUE_NONE, 'Use full page cache instead of core cache (Enterprise only!)')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
         ;
     }
 
@@ -81,7 +87,7 @@ class ReportCommand extends AbstractCacheCommand
 
             $this->getHelper('table')
                 ->setHeaders($headers)
-                ->setRows($table)->render($output);
+                ->renderByFormat($output, $table, $input->getOption('format'));
         }
     }
 }
