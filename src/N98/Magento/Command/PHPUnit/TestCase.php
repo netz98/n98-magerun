@@ -3,7 +3,7 @@
 namespace N98\Magento\Command\PHPUnit;
 
 use N98\Magento\Application;
-use Symfony\Component\Console\Tester\CommandTester;
+use PHPUnit_Framework_MockObject_MockObject;
 
 /**
  * Class TestCase
@@ -19,7 +19,8 @@ class TestCase extends \PHPUnit_Framework_TestCase
     private $application = null;
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\N98\Magento\Application
+     * @throws \RuntimeException
+     * @return PHPUnit_Framework_MockObject_MockObject|\N98\Magento\Application
      */
     public function getApplication()
     {

@@ -2,10 +2,10 @@
 
 namespace N98\Magento\Command\Admin\User;
 
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class ListCommand extends AbstractAdminUserCommand
 {
@@ -14,6 +14,12 @@ class ListCommand extends AbstractAdminUserCommand
         $this
             ->setName('admin:user:list')
             ->setDescription('List admin users.')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
         ;
     }
 
@@ -38,8 +44,7 @@ class ListCommand extends AbstractAdminUserCommand
             }
             $this->getHelper('table')
                 ->setHeaders(array('id', 'username', 'email', 'status'))
-                ->setRows($table)
-                ->render($output);
+                ->renderByFormat($output, $table, $input->getOption('format'));
         }
     }
 }

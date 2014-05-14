@@ -17,18 +17,25 @@ class CreateCommandTest extends TestCase
         $website = \Mage::app()->getWebsite();
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'email'     => $generatedEmail,
-                'password'  => 'password123',
-                'firstname' => 'John',
-                'lastname'  => 'Doe',
-                'website'   => $website->getCode(),
-            )
+        $options = array(
+            'command'   => $command->getName(),
+            'email'     => $generatedEmail,
+            'password'  => 'password123',
+            'firstname' => 'John',
+            'lastname'  => 'Doe',
+            'website'   => $website->getCode(),
         );
-    
+        $commandTester->execute($options);
         $this->assertRegExp('/Customer ' . $generatedEmail . ' successfully created/', $commandTester->getDisplay());
+
+        // Format option
+        $commandTester = new CommandTester($command);
+        $generatedEmail = uniqid() . '@example.com';
+        $options['email'] = $generatedEmail;
+        $options['--format'] = 'csv';
+        $this->assertEquals(0, $commandTester->execute($options));
+        $this->assertContains('email,password,firstname,lastname', $commandTester->getDisplay());
+        $this->assertContains($generatedEmail . ',password123,John,Doe', $commandTester->getDisplay());
     }
 
     public function testWithWrongPassword()
@@ -48,17 +55,15 @@ class CreateCommandTest extends TestCase
         // We override the standard helper with our mock
         $command->getHelperSet()->set($dialog, 'parameter');
 
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'email'     => $generatedEmail,
-                'password'  => 'pass',
-                'firstname' => 'John',
-                'lastname'  => 'Doe',
-            )
+        $options = array(
+            'command'   => $command->getName(),
+            'email'     => $generatedEmail,
+            'password'  => 'pass',
+            'firstname' => 'John',
+            'lastname'  => 'Doe',
         );
-
+        $commandTester = new CommandTester($command);
+        $commandTester->execute($options);
         $this->assertRegExp('/The password must have at least 6 characters. Leading or trailing spaces will be ignored./', $commandTester->getDisplay());
     }
 

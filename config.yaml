@@ -15,6 +15,11 @@ script:
   folders:
     - /usr/local/share/n98-magerun/scripts
 
+init:
+  code: admin
+  type: store
+  options: []
+
 detect:
   subFolders:
     - web
@@ -34,87 +39,93 @@ event:
 commands:
   customCommands:
     - N98\Magento\Command\Admin\DisableNotificationsCommand
-    - N98\Magento\Command\Admin\User\ChangePasswordCommand 
-    - N98\Magento\Command\Admin\User\CreateUserCommand 
-    - N98\Magento\Command\Admin\User\ListCommand 
-    - N98\Magento\Command\Cache\CleanCommand 
-    - N98\Magento\Command\Cache\DisableCommand 
-    - N98\Magento\Command\Cache\EnableCommand 
-    - N98\Magento\Command\Cache\FlushCommand 
-    - N98\Magento\Command\Cache\ListCommand 
+    - N98\Magento\Command\Admin\User\ChangePasswordCommand
+    - N98\Magento\Command\Admin\User\CreateUserCommand
+    - N98\Magento\Command\Admin\User\ListCommand
+    - N98\Magento\Command\Cache\CleanCommand
+    - N98\Magento\Command\Cache\DisableCommand
+    - N98\Magento\Command\Cache\EnableCommand
+    - N98\Magento\Command\Cache\FlushCommand
+    - N98\Magento\Command\Cache\ListCommand
     - N98\Magento\Command\Cache\ReportCommand
     - N98\Magento\Command\Cache\ViewCommand
     - N98\Magento\Command\Cms\Banner\ToggleCommand
-    - N98\Magento\Command\Cms\Page\PublishCommand 
-    - N98\Magento\Command\Config\DeleteCommand 
-    - N98\Magento\Command\Config\DumpCommand 
-    - N98\Magento\Command\Config\GetCommand 
-    - N98\Magento\Command\Config\SetCommand 
-    - N98\Magento\Command\Config\SearchCommand 
+    - N98\Magento\Command\Cms\Page\PublishCommand
+    - N98\Magento\Command\Config\DeleteCommand
+    - N98\Magento\Command\Config\DumpCommand
+    - N98\Magento\Command\Config\GetCommand
+    - N98\Magento\Command\Config\SetCommand
+    - N98\Magento\Command\Config\SearchCommand
     - N98\Magento\Command\Customer\ChangePasswordCommand
-    - N98\Magento\Command\Customer\CreateCommand 
-    - N98\Magento\Command\Customer\CreateDummyCommand 
-    - N98\Magento\Command\Customer\InfoCommand 
-    - N98\Magento\Command\Customer\ListCommand 
-    - N98\Magento\Command\Database\ConsoleCommand 
-    - N98\Magento\Command\Database\CreateCommand 
-    - N98\Magento\Command\Database\DropCommand 
-    - N98\Magento\Command\Database\DumpCommand 
-    - N98\Magento\Command\Database\ImportCommand 
-    - N98\Magento\Command\Database\InfoCommand 
-    - N98\Magento\Command\Database\QueryCommand 
-    - N98\Magento\Command\Design\DemoNoticeCommand 
-    - N98\Magento\Command\Developer\Ide\PhpStorm\MetaCommand 
-    - N98\Magento\Command\Developer\Setup\Script\AttributeCommand 
-    - N98\Magento\Command\Developer\ConsoleCommand 
-    - N98\Magento\Command\Developer\Log\DbCommand 
-    - N98\Magento\Command\Developer\Log\LogCommand 
-    - N98\Magento\Command\Developer\Log\SizeCommand 
-    - N98\Magento\Command\Developer\Module\CreateCommand 
-    - N98\Magento\Command\Developer\Module\ListCommand 
-    - N98\Magento\Command\Developer\Module\Observer\ListCommand 
-    - N98\Magento\Command\Developer\Module\Rewrite\ConflictsCommand 
-    - N98\Magento\Command\Developer\Module\Rewrite\ListCommand 
-    - N98\Magento\Command\Developer\Module\Dependencies\OnCommand 
-    - N98\Magento\Command\Developer\Module\Dependencies\FromCommand 
+    - N98\Magento\Command\Customer\CreateCommand
+    - N98\Magento\Command\Customer\CreateDummyCommand
+    - N98\Magento\Command\Customer\InfoCommand
+    - N98\Magento\Command\Customer\ListCommand
+    - N98\Magento\Command\Database\ConsoleCommand
+    - N98\Magento\Command\Database\CreateCommand
+    - N98\Magento\Command\Database\DropCommand
+    - N98\Magento\Command\Database\DumpCommand
+    - N98\Magento\Command\Database\ImportCommand
+    - N98\Magento\Command\Database\InfoCommand
+    - N98\Magento\Command\Database\QueryCommand
+    - N98\Magento\Command\Database\Maintain\CheckTablesCommand
+    - N98\Magento\Command\Design\DemoNoticeCommand
+    - N98\Magento\Command\Developer\Ide\PhpStorm\MetaCommand
+    - N98\Magento\Command\Developer\Setup\Script\AttributeCommand
+    - N98\Magento\Command\Developer\ConsoleCommand
+    - N98\Magento\Command\Developer\Log\DbCommand
+    - N98\Magento\Command\Developer\Log\LogCommand
+    - N98\Magento\Command\Developer\Log\SizeCommand
+    - N98\Magento\Command\Developer\Module\CreateCommand
+    - N98\Magento\Command\Developer\Module\ListCommand
+    - N98\Magento\Command\Developer\Module\Observer\ListCommand
+    - N98\Magento\Command\Developer\Module\Rewrite\ConflictsCommand
+    - N98\Magento\Command\Developer\Module\Rewrite\ListCommand
+    - N98\Magento\Command\Developer\Module\Dependencies\OnCommand
+    - N98\Magento\Command\Developer\Module\Dependencies\FromCommand
     - N98\Magento\Command\Developer\ProfilerCommand
-    - N98\Magento\Command\Developer\Report\CountCommand 
-    - N98\Magento\Command\Developer\ClassLookupCommand 
+    - N98\Magento\Command\Developer\Report\CountCommand
+    - N98\Magento\Command\Developer\ClassLookupCommand
     - N98\Magento\Command\Developer\SymlinksCommand
     - N98\Magento\Command\Developer\TemplateHintsBlocksCommand
     - N98\Magento\Command\Developer\TemplateHintsCommand
-    - N98\Magento\Command\Developer\Theme\DuplicatesCommand 
-    - N98\Magento\Command\Developer\Theme\ListCommand 
-    - N98\Magento\Command\Developer\TranslateInlineAdminCommand
-    - N98\Magento\Command\Developer\TranslateInlineShopCommand
-    - N98\Magento\Command\Indexer\ListCommand 
-    - N98\Magento\Command\Indexer\ReindexAllCommand 
-    - N98\Magento\Command\Indexer\ReindexCommand 
+    - N98\Magento\Command\Developer\Theme\DuplicatesCommand
+    - N98\Magento\Command\Developer\Theme\ListCommand
+    - N98\Magento\Command\Developer\Translate\InlineAdminCommand
+    - N98\Magento\Command\Developer\Translate\InlineShopCommand
+    - N98\Magento\Command\Developer\Translate\SetCommand
+    - N98\Magento\Command\Developer\Translate\ExportCommand
+    - N98\Magento\Command\Eav\Attribute\ListCommand
+    - N98\Magento\Command\Eav\Attribute\ViewCommand
+    - N98\Magento\Command\Indexer\ListCommand
+    - N98\Magento\Command\Indexer\ReindexAllCommand
+    - N98\Magento\Command\Indexer\ReindexCommand
     - N98\Magento\Command\Installer\InstallCommand
     - N98\Magento\Command\Installer\UninstallCommand
-    - N98\Magento\Command\LocalConfig\GenerateCommand 
-    - N98\Magento\Command\MagentoConnect\DownloadExtensionCommand 
-    - N98\Magento\Command\MagentoConnect\InstallExtensionCommand 
-    - N98\Magento\Command\MagentoConnect\ListExtensionsCommand 
-    - N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand 
+    - N98\Magento\Command\LocalConfig\GenerateCommand
+    - N98\Magento\Command\MagentoConnect\DownloadExtensionCommand
+    - N98\Magento\Command\MagentoConnect\InstallExtensionCommand
+    - N98\Magento\Command\MagentoConnect\ListExtensionsCommand
+    - N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand
+    - N98\Magento\Command\Media\DumpCommand
     - N98\Magento\Command\OpenBrowserCommand
     - N98\Magento\Command\ScriptCommand
     - N98\Magento\Command\Script\Repository\ListCommand
     - N98\Magento\Command\Script\Repository\RunCommand
     - N98\Magento\Command\SelfUpdateCommand
     - N98\Magento\Command\ShellCommand
-    - N98\Magento\Command\System\CheckCommand 
-    - N98\Magento\Command\System\Cron\HistoryCommand 
-    - N98\Magento\Command\System\Cron\ListCommand 
-    - N98\Magento\Command\System\Cron\RunCommand 
-    - N98\Magento\Command\System\InfoCommand 
-    - N98\Magento\Command\System\MaintenanceCommand 
-    - N98\Magento\Command\System\Setup\CompareVersionsCommand 
-    - N98\Magento\Command\System\Setup\RunCommand 
-    - N98\Magento\Command\System\Setup\IncrementalCommand 
-    - N98\Magento\Command\System\Store\Config\BaseUrlListCommand 
-    - N98\Magento\Command\System\Store\ListCommand 
-    - N98\Magento\Command\System\Url\ListCommand 
+    - N98\Magento\Command\System\CheckCommand
+    - N98\Magento\Command\System\Cron\HistoryCommand
+    - N98\Magento\Command\System\Cron\ListCommand
+    - N98\Magento\Command\System\Cron\RunCommand
+    - N98\Magento\Command\System\InfoCommand
+    - N98\Magento\Command\System\MaintenanceCommand
+    - N98\Magento\Command\System\Setup\CompareVersionsCommand
+    - N98\Magento\Command\System\Setup\RunCommand
+    - N98\Magento\Command\System\Setup\IncrementalCommand
+    - N98\Magento\Command\System\Store\Config\BaseUrlListCommand
+    - N98\Magento\Command\System\Store\ListCommand
+    - N98\Magento\Command\System\Url\ListCommand
     - N98\Magento\Command\System\Website\ListCommand
     - "composer:init": Composer\Command\InitCommand
     - "composer:install": Composer\Command\InstallCommand
@@ -223,6 +234,20 @@ commands:
           type: tar
 
     installation:
+      pre-check:
+        php:
+          extensions:
+            - pdo_mysql
+            - spl
+            - dom
+            - simplexml
+            - mcrypt
+            - hash
+            - curl
+            - iconv
+            - ctype
+            - gd
+
       defaults:
         currency: EUR
         locale: de_DE
@@ -288,7 +313,7 @@ commands:
         media: "Used for images and other media files."
         var: "Used for caching, reports, etc."
         var/cache: "Used for caching"
-        var/session: "Used as file based sesssion save"
+        var/session: "Used as file based session save"
 
       files:
         app/etc/local.xml: "Magento local configuration."
@@ -313,3 +338,10 @@ commands:
         - xcache
         - Zend Optimizer
         - Zend OPcache
+
+  N98\Magento\Command\Media\DumpCommand:
+    strip:
+      folders:
+        - catalog/product/cache
+        - css
+        - js

@@ -8,7 +8,6 @@ use N98\Util\Database as DatabaseUtils;
 use N98\Util\Filesystem;
 use N98\Util\OperatingSystem;
 use N98\Util\String;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
@@ -39,6 +38,9 @@ class InstallCommand extends AbstractMagentoCommand
      */
     protected $commandConfig;
 
+    /**
+     * @var \Closure
+     */
     protected $notEmptyCallback;
 
     protected function configure()
@@ -52,6 +54,7 @@ class InstallCommand extends AbstractMagentoCommand
             ->addOption('dbUser', null, InputOption::VALUE_OPTIONAL, 'Database user')
             ->addOption('dbPass', null, InputOption::VALUE_OPTIONAL, 'Database password')
             ->addOption('dbName', null, InputOption::VALUE_OPTIONAL, 'Database name')
+            ->addOption('dbPort', null, InputOption::VALUE_OPTIONAL, 'Database port', 3306)
             ->addOption('installSampleData', null, InputOption::VALUE_OPTIONAL, 'Install sample data')
             ->addOption('useDefaultConfigParams', null, InputOption::VALUE_OPTIONAL, 'Use default installation parameters defined in the yaml file')
             ->addOption('baseUrl', null, InputOption::VALUE_OPTIONAL, 'Installation base url')
@@ -63,6 +66,7 @@ class InstallCommand extends AbstractMagentoCommand
                 'If set skips download step. Used when installationFolder is already a Magento installation that has ' .
                 'to be installed on the given database.'
             )
+            ->addOption('forceUseDb', null, InputOption::VALUE_OPTIONAL, 'If --noDownload passed, force to use given database if it already exists.')
             ->setDescription('Install magento')
         ;
 
@@ -112,9 +116,9 @@ HELP;
     {
         $this->commandConfig = $this->getCommandConfig();
         $this->writeSection($output, 'Magento Installation');
-        if (!extension_loaded('pdo_mysql')) {
-            throw new \RuntimeException('PHP extension pdo_mysql is required to start installation');
-        }
+
+        $this->precheckPhp();
+
         if (!$input->getOption('noDownload')) {
             $this->selectMagentoVersion($input, $output);
         }
@@ -134,6 +138,26 @@ HELP;
         $this->removeEmptyFolders();
         $this->setDirectoryPermissions($output);
         $this->installMagento($input, $output, $this->config['installationFolder']);
+    }
+
+    /**
+     * Check PHP environment agains minimal required settings modules
+     */
+    protected function precheckPhp()
+    {
+        $extensions = $this->commandConfig['installation']['pre-check']['php']['extensions'];
+        $missingExtensions = array();
+        foreach ($extensions as $extension) {
+            if (!extension_loaded($extension)) {
+                $missingExtensions[] = $extension;
+            }
+        }
+
+        if (count($missingExtensions) > 0) {
+            throw new \RuntimeException(
+                'The following PHP extensions are required to start installation: ' . implode(',', $missingExtensions)
+            );
+        }
     }
 
     /**
@@ -265,6 +289,7 @@ HELP;
             $this->config['db_user'] = $input->getOption('dbUser');
             $this->config['db_pass'] = $input->getOption('dbPass');
             $this->config['db_name'] = $input->getOption('dbName');
+            $this->config['db_port'] = $input->getOption('dbPort');
             $db = $this->validateDatabaseSettings($output, $input);
 
             if ($db === false) {
@@ -278,6 +303,7 @@ HELP;
                 $this->config['db_user'] = $dialog->askAndValidate($output, '<question>Please enter the database username:</question> ', $this->notEmptyCallback);
                 $this->config['db_pass'] = $dialog->ask($output, '<question>Please enter the database password:</question> ');
                 $this->config['db_name'] = $dialog->askAndValidate($output, '<question>Please enter the database name:</question> ', $this->notEmptyCallback);
+                $this->config['db_port'] = $dialog->askAndValidate($output, '<question>Please enter the database port:</question> <comment>[3306]</comment>: ', $this->notEmptyCallback, false, 3306);
                 $db = $this->validateDatabaseSettings($output, $input);
             } while ($db === false);
         }
@@ -293,16 +319,19 @@ HELP;
     protected function validateDatabaseSettings(OutputInterface $output, InputInterface $input)
     {
         try {
-            $db = new \PDO('mysql:host='. $this->config['db_host'], $this->config['db_user'], $this->config['db_pass']);
+            $dsn = sprintf("mysql:host=%s;port=%s", $this->config['db_host'], $this->config['db_port']);
+            $db = new \PDO($dsn, $this->config['db_user'], $this->config['db_pass']);
             if (!$db->query('USE ' . $this->config['db_name'])) {
                 $db->query("CREATE DATABASE `" . $this->config['db_name'] . "`");
                 $output->writeln('<info>Created database ' . $this->config['db_name'] . '</info>');
                 $db->query('USE ' . $this->config['db_name']);
+
                 return $db;
             }
 
-            if ($input->getOption('noDownload')) {
+            if ($input->getOption('noDownload') && !$input->getOption('forceUseDb')) {
                 $output->writeln("<error>Database {$this->config['db_name']} already exists.</error>");
+
                 return false;
             }
 
@@ -427,6 +456,7 @@ HELP;
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @throws \Exception
      * @return array
      */
     protected function installMagento(InputInterface $input, OutputInterface $output)
@@ -620,6 +650,7 @@ HELP;
         }
 
         \chdir($this->config['installationFolder']);
+        $this->getApplication()->reinit();
         $output->writeln('<info>Reindex all after installation</info>');
         $this->getApplication()->run(new StringInput('index:reindex:all'), $output);
         $this->getApplication()->run(new StringInput('sys:check'), $output);

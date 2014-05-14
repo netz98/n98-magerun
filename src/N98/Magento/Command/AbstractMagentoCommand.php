@@ -241,7 +241,7 @@ abstract class AbstractMagentoCommand extends Command
     protected function createComposerPackageByConfig($config)
     {
         $packageLoader = new PackageLoader();
-        return $package = $packageLoader->load($config);
+        return $packageLoader->load($config);
     }
 
     /**
