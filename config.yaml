@@ -236,6 +236,7 @@ commands:
         admin_password: password123
         admin_frontname: admin
         admin_email: john.doe@example.com
+        encryption_key:
 
   N98\Magento\Command\Database\DumpCommand:
     table-groups:
@@ -313,3 +314,4 @@ commands:
         - xcache
         - Zend Optimizer
         - Zend OPcache
+
