@@ -340,11 +340,9 @@ commands:
         - Zend Optimizer
         - Zend OPcache
 
-
   N98\Magento\Command\Media\DumpCommand:
     strip:
       folders:
         - catalog/product/cache
         - css
         - js
-
