@@ -13,7 +13,6 @@
          stopOnFailure="false"
          stopOnIncomplete="false"
          stopOnSkipped="false"
-         testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
          strict="false">
     <testsuites>
         <testsuite name="n98-magerun Tests">
