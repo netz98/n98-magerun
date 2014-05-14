@@ -5,8 +5,10 @@ branches:
     - master
     - develop
 
-matrix:
-  fast_finish: true
+php:
+  - 5.3
+  - 5.4
+  - 5.5
 
 env:
   - MAGENTO_VERSION="magento-mirror-1.4.2.0" DB=mysql
@@ -16,10 +18,11 @@ env:
   - MAGENTO_VERSION="magento-ce-1.8.1.0" DB=mysql
   - MAGENTO_VERSION="magento-ce-1.9.0.0" DB=mysql
 
-php:
-  - 5.3
-  - 5.4
-  - 5.5
+matrix:
+  fast_finish: true
+  exclude:
+    - php: 5.3
+      env: MAGENTO_VERSION="magento-ce-1.9.0.0" DB=mysql
 
 before_script:
   - curl -s http://getcomposer.org/installer | php
