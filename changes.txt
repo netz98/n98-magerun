@@ -11,6 +11,7 @@ RECENT CHANGES
 * #327 Uninstall from specified folder (by Kristof Ringleff)
 * #328 added Magento CE install option (by Hans Kuijpers)
 * #329 Added Magento CE 1.9.0.0 to test script (by Hans Kuijpers)
+* #331 Keep dataflow profiles when stripping temp tables
 * Changed download URLs to raw.githubusercontent.com
 * Updated 3rd party dependencies
 
