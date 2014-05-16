@@ -206,79 +206,6 @@ HELP;
         $this->config['magentoVersionData'] = $this->commandConfig['magento-packages'][$type - 1];
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
-    protected function chooseInstallationFolder(InputInterface $input, OutputInterface $output)
-    {
-        $validateInstallationFolder = function($folderName) use ($input) {
-
-            $folderName = rtrim(trim($folderName, ' '), '/');
-            if (substr($folderName, 0, 1) == '.') {
-                $cwd = \getcwd() ;
-                if (empty($cwd) && isset($_SERVER['PWD'])) {
-                    $cwd = $_SERVER['PWD'];
-                }
-                $folderName = $cwd . substr($folderName, 1);
-            }
-
-            if (empty($folderName)) {
-                throw new \InvalidArgumentException('Installation folder cannot be empty');
-            }
-
-            if (!is_dir($folderName)) {
-                if (!@mkdir($folderName,0777, true)) {
-                    throw new \InvalidArgumentException('Cannot create folder.');
-                }
-
-                return $folderName;
-            }
-
-            if ($input->getOption('noDownload')) {
-                /** @var MagentoHelper $magentoHelper */
-                $magentoHelper = new MagentoHelper();
-                $magentoHelper->detect($folderName);
-                if ($magentoHelper->getRootFolder() !== $folderName) {
-                    throw new \InvalidArgumentException(
-                        sprintf(
-                            'Folder %s is not a Magento working copy.',
-                            $folderName
-                        )
-                    );
-                }
-
-                $localXml = $folderName . '/app/etc/local.xml';
-                if (file_exists($localXml)) {
-                    throw new \InvalidArgumentException(
-                        sprintf(
-                            'Magento working copy in %s seems already installed. Please remove %s and retry.',
-                            $folderName,
-                            $localXml
-                        )
-                    );
-                }
-            }
-
-            return $folderName;
-        };
-
-        if (($installationFolder = $input->getOption('installationFolder')) == null) {
-            $defaultFolder = './magento';
-            $question[] = "<question>Enter installation folder:</question> [<comment>" . $defaultFolder . "</comment>]";
-
-            $installationFolder = $this->getHelper('dialog')->askAndValidate($output, $question, $validateInstallationFolder, false, $defaultFolder);
-
-        } else {
-            // @Todo improve validation and bring it to 1 single function
-            $installationFolder = $validateInstallationFolder($installationFolder);
-
-        }
-
-        $this->config['installationFolder'] = realpath($installationFolder);
-        \chdir($this->config['installationFolder']);
-    }
-
     protected function test($folderName)
     {
 
@@ -676,6 +603,9 @@ HELP;
             'default_currency'           => $currency,
             'skip_url_validation'        => 'yes',
         );
+        if ($useDefaultConfigParams && strlen($defaults['encryption_key']) > 0) {
+            $argv['encryption_key '] = $defaults['encryption_key'];
+        }
         $installArgs = '';
         foreach ($argv as $argName => $argValue) {
             $installArgs .= '--' . $argName . ' ' . escapeshellarg($argValue) . ' ';

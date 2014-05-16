@@ -15,6 +15,11 @@ script:
   folders:
     - /usr/local/share/n98-magerun/scripts
 
+init:
+  code: admin
+  type: store
+  options: []
+
 detect:
   subFolders:
     - web
@@ -86,8 +91,10 @@ commands:
     - N98\Magento\Command\Developer\TemplateHintsCommand
     - N98\Magento\Command\Developer\Theme\DuplicatesCommand
     - N98\Magento\Command\Developer\Theme\ListCommand
-    - N98\Magento\Command\Developer\TranslateInlineAdminCommand
-    - N98\Magento\Command\Developer\TranslateInlineShopCommand
+    - N98\Magento\Command\Developer\Translate\InlineAdminCommand
+    - N98\Magento\Command\Developer\Translate\InlineShopCommand
+    - N98\Magento\Command\Developer\Translate\SetCommand
+    - N98\Magento\Command\Developer\Translate\ExportCommand
     - N98\Magento\Command\Eav\Attribute\ListCommand
     - N98\Magento\Command\Eav\Attribute\ViewCommand
     - N98\Magento\Command\Indexer\ListCommand
@@ -100,6 +107,7 @@ commands:
     - N98\Magento\Command\MagentoConnect\InstallExtensionCommand
     - N98\Magento\Command\MagentoConnect\ListExtensionsCommand
     - N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand
+    - N98\Magento\Command\Media\DumpCommand
     - N98\Magento\Command\OpenBrowserCommand
     - N98\Magento\Command\ScriptCommand
     - N98\Magento\Command\Script\Repository\ListCommand
@@ -131,6 +139,14 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
+      - name: magento-ce-1.9.0.1
+        version: 1.9.0.1
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.9.0.1/magento-1.9.0.1.tar.gz
+          type: tar
+        extra:
+          sample-data: sample-data-1.9.0.0
+          
       - name: magento-ce-1.8.1.0
         version: 1.8.1.0
         dist:
@@ -214,6 +230,11 @@ commands:
           reference: master
 
     demo-data-packages:
+      - name: sample-data-1.9.0.0
+        version: 1.9.0.0
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.9.0.0/magento-sample-data-1.9.0.0.tar.gz
+          type: tar
       - name: sample-data-1.6.1.0
         version: 1.6.1.0
         dist:
@@ -253,6 +274,7 @@ commands:
         admin_password: password123
         admin_frontname: admin
         admin_email: john.doe@example.com
+        encryption_key:
 
   N98\Magento\Command\Database\DumpCommand:
     table-groups:
@@ -262,7 +284,7 @@ commands:
 
       - id: dataflowtemp
         description: Temporary tables of the dataflow import/export tool
-        tables: dataflow_*
+        tables: dataflow_batch dataflow_batch_export dataflow_batch_import dataflow_import_data dataflow_session
 
       - id: stripped
         description: Standard definition for a stripped dump (logs and dataflow)
@@ -330,3 +352,10 @@ commands:
         - xcache
         - Zend Optimizer
         - Zend OPcache
+
+  N98\Magento\Command\Media\DumpCommand:
+    strip:
+      folders:
+        - catalog/product/cache
+        - css
+        - js

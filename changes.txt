@@ -3,43 +3,36 @@ RECENT CHANGES
 **************
 
 ======
-1.87.0
+1.89.1
 ======
 
-* #268 script:repo Handling of *.magerun files
-* #294, #300, #301 New bash completion script (by Allard Hoeve)
-* #302 Added task to compile n98-magerun for HHVM -> phing build script
-* #304 EAV Attribute Commands
-* #305 Fixed typo in uninstall command description. (by Matthias Zeis)
-* #307 Fix typo in db:dump help text (by Colin O'Dell)
+* Installer: Replaced Magento CE 1.9.0.0 with CE 1.9.0.1
+
+======
+1.89.0
+======
+
+* #320 Fixing minor grammatical error (by Chris Jones)
+* #326 Encryption key parameter in install command (by Kristof Ringleff)
+* #327 Uninstall from specified folder (by Kristof Ringleff)
+* #328 added Magento CE install option (by Hans Kuijpers)
+* #329 Added Magento CE 1.9.0.0 to test script (by Hans Kuijpers)
+* #331 Keep dataflow profiles when stripping temp tables
+* Changed download URLs to raw.githubusercontent.com
 * Updated 3rd party dependencies
 
 ======
-1.86.0
+1.88.0
 ======
 
-* New db:maintain:check-tables command
-* #287 db:console closes connection on AWS
-* #288 Install command with --noDownload options fails if database exists
-* #290 Add force use database option for when installing with --noDownload (by Aydin Hassan)
-* #295 Fixed typo in config.yaml  (by Andrea De Pirro)
-* #296 loadXML must be called AFTER preserveWhiteSpace (by Volker Thiel)
-* #297 [Insight] Missing use statement should be avoided
-
-======
-1.85.0
-======
-
-* #18 New --format parameter to print data of tables in CSV, XML or JSON (for table helper based commands)
-* #270 script:repo:run and error handling (by Cyrill Schumacher)
-* #273 Allow directory as argument for db:dump (by Rick Kuipers)
-* #274 Running Setup Resource Scripts Incrementally (by Alan Storm)
-* #278 After magerun install I always see the Magento Installation Wizard
-* #279 Updated documentation to include a few undocumented parameters to config:get (by Tegan Snyder)
-* #282 Global variable or function should never be used
-* #284 Magento folder could not be detected - When using --noDownload
-* #285 Uninstall force bug (by Aydin Hassan)
-* #289 Add Database port option (by Aydin Hassan)
+* New command dev:translate:set
+* #149 Command for dumping media directory
+* #309 N98\Magento\Application::_initMagento1()
+* #310 Export inline translation to CSV (by Alexander Menk)
+* #316 db:import dump optimization (--optimize) - small fixes (by Alexander Menk)
+* #319 dev:module:rewrite:list does not list autoload rewrites in community folder
+* #320 Fixing minor grammatical error (by Chris Jones)
+* Updated 3rd party dependencies
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H

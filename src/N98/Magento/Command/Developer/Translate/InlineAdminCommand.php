@@ -1,10 +1,10 @@
 <?php
 
-namespace N98\Magento\Command\Developer;
+namespace N98\Magento\Command\Developer\Translate;
 
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
 
-class TranslateInlineAdminCommand extends AbstractMagentoStoreConfigCommand
+class InlineAdminCommand extends AbstractMagentoStoreConfigCommand
 {
     /**
      * @var string

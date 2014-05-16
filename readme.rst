@@ -42,13 +42,13 @@ Download phar file
 
 .. code-block:: sh
 
-    wget https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar
+    wget https://raw.githubusercontent.com/netz98/n98-magerun/master/n98-magerun.phar
 
 or if you have problems with SSL certificate:
 
 .. code-block:: sh
 
-   curl -o n98-magerun.phar https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar
+   curl -o n98-magerun.phar https://raw.githubusercontent.com/netz98/n98-magerun/master/n98-magerun.phar
 
 You can make the .phar file executable.
 
@@ -323,6 +323,12 @@ Use decompression (gzip cli tool has to be installed):
 
    $ n98-magerun.phar db:import --compression="gzip" [filename]
 
+Optimize "human readable" dump:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:import --optimize [filename]
+
 Database Console / MySQL Client
 """""""""""""""""""""""""""""""
 
@@ -374,6 +380,22 @@ Options:
 .. code-block:: sh
 
    $ n98-magerun.phar db:query [--only-command] [query]
+
+
+Dump Media folder
+"""""""""""""""""
+
+Creates a ZIP archive with media folder content.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar media:dump [--strip] [filename]
+
+If strip option is set, the following folders are excluded:
+
+* js (combined js files)
+* css (combined css files)
+* catalog/product/cache
 
 List Indexes
 """"""""""""
@@ -845,6 +867,15 @@ Toggle for admin area:
 .. code-block:: sh
 
    $ n98-magerun.phar dev:translate:admin
+
+Export Inline Translation
+"""""""""""""""""""""""""
+
+Exports saved database translation data into a file.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:translate:export [locale] [filename]
 
 Profiler
 """"""""

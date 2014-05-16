@@ -7,6 +7,9 @@ use N98\Magento\Command\PHPUnit\TestCase;
 
 class CreateCommandTest extends TestCase
 {
+    /**
+     * @outputBuffering
+     */
     public function testExecute()
     {
         $command = $this->_getCommand();
