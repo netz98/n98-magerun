@@ -139,10 +139,10 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
-      - name: magento-ce-1.9.0.0
-        version: 1.9.0.0
+      - name: magento-ce-1.9.0.1
+        version: 1.9.0.1
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.0.0/magento-1.9.0.0.tar.gz
+          url: http://www.magentocommerce.com/downloads/assets/1.9.0.1/magento-1.9.0.1.tar.gz
           type: tar
         extra:
           sample-data: sample-data-1.9.0.0
