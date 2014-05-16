@@ -32,27 +32,6 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
     const SCOPE_STORE_VIEW_GLOBAL = 'store_view_global';
 
     /**
-     * Set 1/0 for on and off
-     */
-    const COMMAND_TYPE_TOGGLE = 1;
-
-    /**
-     * Set a value
-     */
-    const COMMAND_TYPE_VALUE = 2;
-
-    /**
-     * Set multiple values separated by comma and accept them using multiple 
-     * option values.
-     */
-    const COMMAND_TYPE_COMMA = 4;
-
-    /**
-     * Support clearing a value
-     */
-    const COMMAND_TYPE_SUPPORT_CLEAR = 4096;
-
-    /**
      * @var string
      */
     protected $commandName = '';
@@ -90,58 +69,18 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
     protected $withAdminStore = false;
 
     /**
-     * Type of command:
-     * - toggle: sets a setting true/false
-     * - value: sets a single value on the configuration
-     * - comma: sets a comma-separated value, accepted as multiple options
-     *
-     * TODO?
-     * - json: accepts and verifies a json string from stdin.
-     *   Fooman/Surcharge is one extension that stores it's configuration that 
-     *   way.
-     */
-    protected $commandType = self::COMMAND_TYPE_TOGGLE;
-
-    /**
-     * @deprecated
-     * @see deleteWithClear
-     *
-     * If set to 'off' delete key from core_config_data
-     */
-    protected $deleteWithOff = false;
-
-    /**
-     * If clearing is enabled, implement clearing by deleting the value.
-     *
-     * NOTE: this means the default for this setting has to be the empty 
-     * string or correspond to the 'off' setting.
-     */
-    protected $deleteWithClear = false;
-
-    /*
-     * Name for the key of both value and comma command types. This can be set 
-     * to a symbolic name to shorten the path. For example --base-url=foo could 
-     * resolve to the base_url for the selected scope.
-     */
-    protected $keyName = 'key';
-
-    /**
      * @var string
      */
     protected $scope = self::SCOPE_STORE_VIEW;
 
     protected function configure()
     {
-        switch( $this->commandType )
-        {
-            case self::COMMAND_TYPE_TOGGLE :
-                $this->configure_toggle();
-                break;
-            case self::COMMAND_TYPE_VALUE :
-                $this->configure_value();
-            case self::COMMAND_TYPE_COMMA :
-                $this->configure_comma();
-        }
+        $this
+            ->setName($this->commandName)
+            ->addOption('on', null, InputOption::VALUE_NONE, 'Switch on')
+            ->addOption('off', null, InputOption::VALUE_NONE, 'Switch off')
+            ->setDescription($this->commandDescription)
+        ;
 
         if ($this->scope == self::SCOPE_STORE_VIEW_GLOBAL) {
             $this->addOption('global', null, InputOption::VALUE_NONE, 'Set value on default scope');
@@ -151,30 +90,6 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             $this->addArgument('store', InputArgument::OPTIONAL, 'Store code or ID');
         }
 
-    }
-
-    /**
-     * Configure the command for toggle functionality.
-     *
-     * @return void
-     */
-    private function configure_toggle()
-    {
-        $this
-            ->setName($this->commandName)
-            ->addOption('on', null, InputOption::VALUE_NONE, 'Switch on')
-            ->addOption('off', null, InputOption::VALUE_NONE, 'Switch off')
-            ->setDescription($this->commandDescription)
-        ;
-    }
-
-    protected function configure_value()
-    {
-        $this
-            ->setName($this->commandName)
-            ->addOption($this->keyName, InputOption::VALUE, 'Set '.$this->keyName)
-            ->setDescription($this->commandDescription)
-        ;
     }
 
     /**
