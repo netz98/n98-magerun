@@ -299,8 +299,8 @@ abstract class AbstractMagentoCommand extends Command
                 escapeshellarg($targetFolder),
                 escapeshellarg($package->getSourceReference())
             );
-            $existingTags =  passthru($command, $returnValue);
-            if ($returnValue > 0) {
+            $existingTag =  shell_exec($command);
+            if ($existingTag === $package->getSourceReference()) {
                 $command = sprintf('cd %s && hg pull', escapeshellarg($targetFolder));
                 shell_exec($command);
             }
