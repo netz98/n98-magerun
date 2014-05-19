@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command;
 
+use N98\Util\Console\Helper\MagentoHelper;
 use Composer\Package\PackageInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -229,9 +230,7 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function getComposerDownloadManager($input, $output)
     {
-        $io = new ConsoleIO($input, $output, $this->getHelperSet());
-        $composer = ComposerFactory::create($io, array());
-        return $composer->getDownloadManager();
+        return $this->getComposer($input, $output)->getDownloadManager();
     }
 
     /**
@@ -261,8 +260,23 @@ abstract class AbstractMagentoCommand extends Command
         } else {
             $package = $config;
         }
-        $dm->download($package, $targetFolder, $preferSource);
+
+        $helper = new \N98\Util\Console\Helper\MagentoHelper();
+        $helper->detect($targetFolder);
+        if ($this->isSourceTypeRepository($package->getSourceType()) && $helper->getRootFolder() == $targetFolder) {
+            $package->setInstallationSource('source');
+            $dm->update($package, $package, $targetFolder);
+        } else {
+            $dm->download($package, $targetFolder, $preferSource);
+        }
+
         return $package;
+    }
+
+    protected function getComposer(InputInterface $input, OutputInterface $output)
+    {
+        $io = new ConsoleIO($input, $output, $this->getHelperSet());
+        return ComposerFactory::create($io, array());
     }
 
     /**
@@ -442,5 +456,10 @@ abstract class AbstractMagentoCommand extends Command
 
         $this->config['installationFolder'] = realpath($installationFolder);
         \chdir($this->config['installationFolder']);
+    }
+
+    protected function isSourceTypeRepository($type)
+    {
+        return in_array($type, array('git', 'hg'));
     }
 }
