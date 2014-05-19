@@ -265,6 +265,7 @@ abstract class AbstractMagentoCommand extends Command
         $helper->detect($targetFolder);
         if ($this->isSourceTypeRepository($package->getSourceType()) && $helper->getRootFolder() == $targetFolder) {
             $package->setInstallationSource('source');
+            $this->checkRepository($package, $targetFolder);
             $dm->update($package, $package, $targetFolder);
         } else {
             $dm->download($package, $targetFolder, $preferSource);
@@ -273,6 +274,47 @@ abstract class AbstractMagentoCommand extends Command
         return $package;
     }
 
+    /**
+     * brings locally cached repository up to date if it is missing the requested tag
+     *
+     * @param $package
+     * @param $targetFolder
+     */
+    protected function checkRepository($package, $targetFolder)
+    {
+        if ($package->getSourceType() == 'git') {
+            $command = sprintf(
+                'cd %s && git rev-parse refs/tags/%s',
+                escapeshellarg($targetFolder),
+                escapeshellarg($package->getSourceReference())
+            );
+            $existingTags = shell_exec($command);
+            if (!$existingTags) {
+                $command = sprintf('cd %s && git fetch', escapeshellarg($targetFolder));
+                shell_exec($command);
+            }
+        } elseif ($package->getSourceType() == 'hg') {
+            $command = sprintf(
+                'cd %s && hg log --template "{tags}" -r %s',
+                escapeshellarg($targetFolder),
+                escapeshellarg($package->getSourceReference())
+            );
+            $existingTags =  passthru($command, $returnValue);
+            if ($returnValue > 0) {
+                $command = sprintf('cd %s && hg pull', escapeshellarg($targetFolder));
+                shell_exec($command);
+            }
+        }
+    }
+
+    /**
+     * obtain composer
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return \Composer\Composer
+     */
     protected function getComposer(InputInterface $input, OutputInterface $output)
     {
         $io = new ConsoleIO($input, $output, $this->getHelperSet());
