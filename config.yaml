@@ -140,6 +140,14 @@ commands:
   N98\Magento\Command\Installer\InstallCommand:
     allow-database-snapshots: 0
     magento-packages:
+      - name: magento-ce-1.9.0.1
+        version: 1.9.0.1
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.9.0.1/magento-1.9.0.1.tar.gz
+          type: tar
+        extra:
+          sample-data: sample-data-1.9.0.0
+          
       - name: magento-ce-1.8.1.0
         version: 1.8.1.0
         dist:
@@ -223,6 +231,11 @@ commands:
           reference: master
 
     demo-data-packages:
+      - name: sample-data-1.9.0.0
+        version: 1.9.0.0
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.9.0.0/magento-sample-data-1.9.0.0.tar.gz
+          type: tar
       - name: sample-data-1.6.1.0
         version: 1.6.1.0
         dist:
@@ -262,6 +275,7 @@ commands:
         admin_password: password123
         admin_frontname: admin
         admin_email: john.doe@example.com
+        encryption_key:
 
   N98\Magento\Command\Database\DumpCommand:
     table-groups:
@@ -271,7 +285,7 @@ commands:
 
       - id: dataflowtemp
         description: Temporary tables of the dataflow import/export tool
-        tables: dataflow_*
+        tables: dataflow_batch dataflow_batch_export dataflow_batch_import dataflow_import_data dataflow_session
 
       - id: stripped
         description: Standard definition for a stripped dump (logs and dataflow)

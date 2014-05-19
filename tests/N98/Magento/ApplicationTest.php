@@ -25,6 +25,11 @@ class ApplicationTest extends TestCase
         $loader = $application->getAutoloader();
         $this->assertInstanceOf('\Composer\Autoload\ClassLoader', $loader);
 
+        /**
+         * Check version
+         */
+        $this->assertEquals(\N98\Magento\Application::APP_VERSION, trim(file_get_contents(__DIR__ . '/../../../version.txt')));
+
         /* @var $loader \Composer\Autoload\ClassLoader */
         $prefixes = $loader->getPrefixes();
         $this->assertArrayHasKey('N98', $prefixes);

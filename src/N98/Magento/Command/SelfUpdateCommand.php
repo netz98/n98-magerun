@@ -62,14 +62,14 @@ EOT
 
         $loadUnstable = $input->getOption('unstable');
         if ($loadUnstable) {
-            $versionTxtUrl = 'https://raw.github.com/netz98/n98-magerun/develop/version.txt';
-            $remoteFilename = 'https://raw.github.com/netz98/n98-magerun/develop/n98-magerun.phar';
+            $versionTxtUrl = 'https://raw.githubusercontent.com/netz98/n98-magerun/develop/version.txt';
+            $remoteFilename = 'https://raw.githubusercontent.com/netz98/n98-magerun/develop/n98-magerun.phar';
         } else {
-            $versionTxtUrl = 'https://raw.github.com/netz98/n98-magerun/master/version.txt';
-            $remoteFilename = 'https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar';
+            $versionTxtUrl = 'https://raw.githubusercontent.com/netz98/n98-magerun/master/version.txt';
+            $remoteFilename = 'https://raw.githubusercontent.com/netz98/n98-magerun/master/n98-magerun.phar';
         }
 
-        $latest = trim($rfs->getContents('raw.github.com', $versionTxtUrl, false));
+        $latest = trim($rfs->getContents('raw.githubusercontent.com', $versionTxtUrl, false));
 
         if ($this->getApplication()->getVersion() !== $latest || $loadUnstable) {
             $output->writeln(sprintf("Updating to version <info>%s</info>.", $latest));
