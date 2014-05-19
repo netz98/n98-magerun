@@ -158,7 +158,9 @@ HELP;
             );
             $this->getApplication()->run(new StringInput($localXmlCommand), $output);
 
-            //restore db
+            //drop and recreate the db
+            $this->getApplication()->run(new StringInput('db:drop -f'), $output);
+            $this->getApplication()->run(new StringInput('db:create'), $output);
             $localXmlCommand = sprintf('db:import --compression=gz %s/%s.sql.gz', $dbSnapshotFolder, $configMd5);
             $this->getApplication()->run(new StringInput($localXmlCommand), $output);
             $installedFromSnapShot = true;
