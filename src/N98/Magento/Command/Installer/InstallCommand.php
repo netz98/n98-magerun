@@ -131,13 +131,61 @@ HELP;
 
         $this->createDatabase($input, $output);
 
+        $preparedArgs = $this->prepareInstallArgs($input, $output);
+        $configMd5 = md5(json_encode($preparedArgs));
+        $dbSnapshotFolder = sprintf(
+            '%s/_n98_magerun_download/db_snapshots',
+            $this->getComposer($input, $output)->getConfig()->get('cache-dir')
+        );
+        $installedFromSnapShot = false;
+        if ($this->commandConfig['allow-database-snapshots']
+            && file_exists(
+                $dbSnapshotFolder .'/'. $configMd5 . '.sql.gz'
+            )
+        ) {
+            $output->writeln('<info>Restoring from previous DB snapshot</info>');
+
+            //restore local.xml
+            //TODO add encryption key once added to GenerateCommand
+            $localXmlCommand = sprintf(
+                'local-config:generate %s %s %s %s %s %s',
+                $preparedArgs['db_host'],
+                $preparedArgs['db_user'],
+                $preparedArgs['db_pass'],
+                $preparedArgs['db_name'],
+                $preparedArgs['session_save'],
+                $preparedArgs['admin_frontname']
+            );
+            $this->getApplication()->run(new StringInput($localXmlCommand), $output);
+
+            //restore db
+            $localXmlCommand = sprintf('db:import --compression=gz %s/%s.sql.gz', $dbSnapshotFolder, $configMd5);
+            $this->getApplication()->run(new StringInput($localXmlCommand), $output);
+            $installedFromSnapShot = true;
+        }
+
         if (!$input->getOption('noDownload')) {
-            $this->installSampleData($input, $output);
+            $this->installSampleData($input, $output, !$installedFromSnapShot);
         }
 
         $this->removeEmptyFolders();
         $this->setDirectoryPermissions($output);
-        $this->installMagento($input, $output, $this->config['installationFolder']);
+        if (!$installedFromSnapShot) {
+            $this->installMagento($input, $output, $preparedArgs);
+        } else {
+            $output->writeln('<info>Restored from previous DB snapshot</info>');
+            $this->getApplication()->run(new StringInput('sys:check'), $output);
+        }
+
+        if (!$installedFromSnapShot && $this->commandConfig['allow-database-snapshots']) {
+            \chdir($this->config['installationFolder']);
+            $this->getApplication()->reinit();
+            $output->writeln('<info>Taking datasbase snapshot</info>');
+            $filesystem = new \Composer\Util\Filesystem();
+            $filesystem->ensureDirectoryExists($dbSnapshotFolder);
+            $dbDumpCommand = sprintf('db:dump --compression=gz %s/%s.sql.gz', $dbSnapshotFolder, $configMd5);
+            $this->getApplication()->run(new StringInput($dbDumpCommand), $output);
+        }
     }
 
     /**
@@ -417,10 +465,13 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
+     * install Magento sample data, optionally only install media
+     *
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     * @param bool            $installDb
      */
-    protected function installSampleData(InputInterface $input, OutputInterface $output)
+    protected function installSampleData(InputInterface $input, OutputInterface $output, $installDb = true)
     {
         $magentoPackage = $this->config['magentoPackage']; /* @var $magentoPackage \Composer\Package\MemoryPackage */
         $extra  = $magentoPackage->getExtra();
@@ -464,27 +515,29 @@ HELP;
                     }
 
                     // Install sample data
-                    $sampleDataSqlFile = glob($this->config['installationFolder'] . '/_temp_demo_data/magento_*sample_data*sql');
-                    $db = $this->config['db']; /* @var $db \PDO */
-                    if (isset($sampleDataSqlFile[0])) {
-                        if (OperatingSystem::isProgramInstalled('mysql')) {
-                            $exec = 'mysql '
-                                . '-h' . escapeshellarg(strval($this->config['db_host']))
-                                . ' '
-                                . '-u' . escapeshellarg(strval($this->config['db_user']))
-                                . ' '
-                                . (!strval($this->config['db_pass'] == '') ? '-p' . escapeshellarg($this->config['db_pass']) . ' ' : '')
-                                . strval($this->config['db_name'])
-                                . ' < '
-                                . escapeshellarg($sampleDataSqlFile[0]);
-                            $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with mysql cli client</info>');
-                            exec($exec);
-                            @unlink($sampleDataSqlFile);
-                        } else {
-                            $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with PDO driver</info>');
-                            // Fallback -> Try to install dump file by PDO driver
-                            $dbUtils = new DatabaseUtils();
-                            $dbUtils->importSqlDump($db, $sampleDataSqlFile[0]);
+                    if ($installDb) {
+                        $sampleDataSqlFile = glob($this->config['installationFolder'] . '/_temp_demo_data/magento_*sample_data*sql');
+                        $db = $this->config['db']; /* @var $db \PDO */
+                        if (isset($sampleDataSqlFile[0])) {
+                            if (OperatingSystem::isProgramInstalled('mysql')) {
+                                $exec = 'mysql '
+                                    . '-h' . escapeshellarg(strval($this->config['db_host']))
+                                    . ' '
+                                    . '-u' . escapeshellarg(strval($this->config['db_user']))
+                                    . ' '
+                                    . (!strval($this->config['db_pass'] == '') ? '-p' . escapeshellarg($this->config['db_pass']) . ' ' : '')
+                                    . strval($this->config['db_name'])
+                                    . ' < '
+                                    . escapeshellarg($sampleDataSqlFile[0]);
+                                $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with mysql cli client</info>');
+                                exec($exec);
+                                @unlink($sampleDataSqlFile);
+                            } else {
+                                $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with PDO driver</info>');
+                                // Fallback -> Try to install dump file by PDO driver
+                                $dbUtils = new DatabaseUtils();
+                                $dbUtils->importSqlDump($db, $sampleDataSqlFile[0]);
+                            }
                         }
                     }
                 }
@@ -527,12 +580,79 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     * @param array           $arguments
+     *
      * @throws \Exception
      * @return array
      */
-    protected function installMagento(InputInterface $input, OutputInterface $output)
+    protected function installMagento(InputInterface $input, OutputInterface $output, $preparedArgs = array())
+    {
+
+        $installArgs = '';
+        foreach ($preparedArgs as $argName => $argValue) {
+            $installArgs .= '--' . $argName . ' ' . escapeshellarg($argValue) . ' ';
+        }
+
+        $output->writeln('<info>Start installation process.</info>');
+
+        if (OperatingSystem::isWindows()) {
+            $installCommand = 'php ' . $this->getInstallScriptPath() . ' ' . $installArgs;
+        } else {
+            $installCommand = '/usr/bin/env php ' . $this->getInstallScriptPath() . ' ' . $installArgs;
+        }
+        $output->writeln('<comment>' . $installCommand . '</comment>');
+        exec($installCommand, $installationOutput, $returnStatus);
+        $installationOutput = implode(PHP_EOL, $installationOutput);
+        if ($returnStatus !== self::EXEC_STATUS_OK) {
+            throw new \Exception('Installation failed.' . $installationOutput);
+        } else {
+            $output->writeln('<info>Successfully installed Magento</info>');
+            $encryptionKey = trim(substr($installationOutput, strpos($installationOutput, ':') + 1));
+            $output->writeln('<comment>Encryption Key:</comment> <info>' . $encryptionKey . '</info>');
+        }
+
+        $dialog = $this->getHelperSet()->get('dialog');
+
+        /**
+         * Htaccess file
+         */
+        if ($input->getOption('useDefaultConfigParams') == null || $input->getOption('replaceHtaccessFile') != null) {
+            $replaceHtaccessFile = false;
+
+            if ($this->_parseBoolOption($input->getOption('replaceHtaccessFile'))) {
+                $replaceHtaccessFile = true;
+            } elseif ($dialog->askConfirmation(
+                $output,
+                '<question>Write BaseURL to .htaccess file?</question> <comment>[n]</comment>: ',
+                false)
+            ) {
+                $replaceHtaccessFile = true;
+            }
+
+            if ($replaceHtaccessFile) {
+                $this->replaceHtaccessFile($preparedArgs['url']);
+            }
+        }
+
+        \chdir($this->config['installationFolder']);
+        $this->getApplication()->reinit();
+        $output->writeln('<info>Reindex all after installation</info>');
+        $this->getApplication()->run(new StringInput('index:reindex:all'), $output);
+        $this->getApplication()->run(new StringInput('sys:check'), $output);
+        $output->writeln('<info>Successfully installed magento</info>');
+    }
+
+    /**
+     * get required installation arguments from input and config
+     *
+     * @param $input
+     * @param $output
+     *
+     * @return array
+     */
+    protected function prepareInstallArgs($input, $output)
     {
         $this->getApplication()->setAutoExit(false);
         $dialog = $this->getHelperSet()->get('dialog');
@@ -540,7 +660,7 @@ HELP;
         $defaults = $this->commandConfig['installation']['defaults'];
 
         $useDefaultConfigParams = $this->_parseBoolOption($input->getOption('useDefaultConfigParams'));
-        
+
         $sessionSave = $useDefaultConfigParams ? $defaults['session_save'] : $dialog->ask(
             $output,
             '<question>Please enter the session save:</question> <comment>[' . $defaults['session_save'] . ']</comment>: ',
@@ -652,7 +772,7 @@ HELP;
             @mkdir($defaultSessionFolder);
         }
 
-        $argv = array(
+        return array(
             'license_agreement_accepted' => 'yes',
             'locale'                     => $locale,
             'timezone'                   => $timezone,
@@ -676,58 +796,7 @@ HELP;
             'default_currency'           => $currency,
             'skip_url_validation'        => 'yes',
         );
-        $installArgs = '';
-        foreach ($argv as $argName => $argValue) {
-            $installArgs .= '--' . $argName . ' ' . escapeshellarg($argValue) . ' ';
-        }
 
-        $output->writeln('<info>Start installation process.</info>');
-
-        if (OperatingSystem::isWindows()) {
-            $installCommand = 'php ' . $this->getInstallScriptPath() . ' ' . $installArgs;
-        } else {
-            $installCommand = '/usr/bin/env php ' . $this->getInstallScriptPath() . ' ' . $installArgs;
-        }
-        $output->writeln('<comment>' . $installCommand . '</comment>');
-        exec($installCommand, $installationOutput, $returnStatus);
-        $installationOutput = implode(PHP_EOL, $installationOutput);
-        if ($returnStatus !== self::EXEC_STATUS_OK) {
-            throw new \Exception('Installation failed.' . $installationOutput);
-        } else {
-            $output->writeln('<info>Successfully installed Magento</info>');
-            $encryptionKey = trim(substr($installationOutput, strpos($installationOutput, ':') + 1));
-            $output->writeln('<comment>Encryption Key:</comment> <info>' . $encryptionKey . '</info>');
-        }
-
-        $dialog = $this->getHelperSet()->get('dialog');
-
-        /**
-         * Htaccess file
-         */
-        if ($input->getOption('useDefaultConfigParams') == null || $input->getOption('replaceHtaccessFile') != null) {
-            $replaceHtaccessFile = false;
-
-            if ($this->_parseBoolOption($input->getOption('replaceHtaccessFile'))) {
-                $replaceHtaccessFile = true;
-            } elseif ($dialog->askConfirmation(
-                $output,
-                '<question>Write BaseURL to .htaccess file?</question> <comment>[n]</comment>: ',
-                false)
-            ) {
-                $replaceHtaccessFile = true;
-            }
-
-            if ($replaceHtaccessFile) {
-                $this->replaceHtaccessFile($baseUrl);
-            }
-        }
-
-        \chdir($this->config['installationFolder']);
-        $this->getApplication()->reinit();
-        $output->writeln('<info>Reindex all after installation</info>');
-        $this->getApplication()->run(new StringInput('index:reindex:all'), $output);
-        $this->getApplication()->run(new StringInput('sys:check'), $output);
-        $output->writeln('<info>Successfully installed magento</info>');
     }
 
     /**

@@ -138,6 +138,7 @@ commands:
   aliases: []
 
   N98\Magento\Command\Installer\InstallCommand:
+    allow-database-snapshots: 0
     magento-packages:
       - name: magento-ce-1.8.1.0
         version: 1.8.1.0
