@@ -227,16 +227,25 @@ HELP;
                 return false;
             }
 
+            $composer = $this->getComposer($input, $output);
+            $targetFolder = $this->getTargetFolderByType($composer, $package, $this->config['installationFolder']);
             $this->config['magentoPackage'] = $this->downloadByComposerConfig(
                 $input,
                 $output,
                 $package,
-                $this->config['installationFolder'] . '/_n98_magerun_download',
+                $targetFolder,
                 true
             );
 
-            $filesystem = new \Composer\Util\Filesystem();
-            $filesystem->copyThenRemove($this->config['installationFolder'] . '/_n98_magerun_download', $this->config['installationFolder']);
+            if ($this->isSourceTypeRepository($package->getSourceType())) {
+                $filesystem = new \N98\Util\Filesystem;
+                $filesystem->recursiveCopy($targetFolder, $this->config['installationFolder'], array('.git', '.hg'));
+            } else {
+                $filesystem = new \Composer\Util\Filesystem();
+                $filesystem->copyThenRemove(
+                    $this->config['installationFolder'] . '/_n98_magerun_download', $this->config['installationFolder']
+                );
+            }
 
             if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
                 // Patch installer
@@ -248,6 +257,36 @@ HELP;
         }
 
         return true;
+    }
+
+    /**
+     * construct a folder to where magerun will download the source to, cache git/hg repositories under COMPOSER_HOME
+     *
+     * @param $composer
+     * @param $package
+     * @param $installationFolder
+     *
+     * @return string
+     */
+    protected function getTargetFolderByType($composer, $package, $installationFolder)
+    {
+        $type = $package->getSourceType();
+        if ($this->isSourceTypeRepository($type)) {
+            $targetPath = sprintf(
+                '%s/%s/%s/%s',
+                $composer->getConfig()->get('cache-dir'),
+                '_n98_magerun_download',
+                $type,
+                preg_replace('{[^a-z0-9.]}i', '-', $package->getSourceUrl())
+            );
+        } else {
+            $targetPath = sprintf(
+                '%s/%s',
+                $installationFolder,
+                '_n98_magerun_download'
+            );
+        }
+        return $targetPath;
     }
 
     /**
