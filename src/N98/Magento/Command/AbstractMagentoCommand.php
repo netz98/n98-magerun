@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Factory as ComposerFactory;
 use Composer\IO\ConsoleIO;
+use N98\Util\Console\Helper\MagentoHelper;
 
 /**
  * Class AbstractMagentoCommand
