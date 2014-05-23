@@ -2,7 +2,6 @@
 
 namespace N98\Magento\Command;
 
-use N98\Util\Console\Helper\MagentoHelper;
 use Composer\Package\PackageInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
