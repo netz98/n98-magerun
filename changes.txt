@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.89.2
+======
+
+* #336 Install command broken with --noDownload option (by Manuele Menozzi)
+
+======
 1.89.1
 ======
 
@@ -19,19 +25,6 @@ RECENT CHANGES
 * #329 Added Magento CE 1.9.0.0 to test script (by Hans Kuijpers)
 * #331 Keep dataflow profiles when stripping temp tables
 * Changed download URLs to raw.githubusercontent.com
-* Updated 3rd party dependencies
-
-======
-1.88.0
-======
-
-* New command dev:translate:set
-* #149 Command for dumping media directory
-* #309 N98\Magento\Application::_initMagento1()
-* #310 Export inline translation to CSV (by Alexander Menk)
-* #316 db:import dump optimization (--optimize) - small fixes (by Alexander Menk)
-* #319 dev:module:rewrite:list does not list autoload rewrites in community folder
-* #320 Fixing minor grammatical error (by Chris Jones)
 * Updated 3rd party dependencies
 
 -----------------------------------------
