@@ -23,7 +23,7 @@ matrix:
   fast_finish: true
   exclude:
     - php: 5.3
-      env: MAGENTO_VERSION="magento-ce-1.9.0.1" DB=mysql
+      env: MAGENTO_VERSION="magento-ce-1.9.0.1" DB=mysql INSTALL_SAMPLE_DATA=no
 
 before_script:
   - curl -s http://getcomposer.org/installer | php
