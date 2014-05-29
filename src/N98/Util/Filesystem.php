@@ -8,6 +8,8 @@ class Filesystem
      * @param string $src
      * @param string $dst
      * @param array  $blacklist
+     *
+     * @return void
      */
     public function recursiveCopy($src, $dst, $blacklist = array())
     {
@@ -29,6 +31,8 @@ class Filesystem
      * @param string $directory
      * @param bool empty
      * @see http://lixlpixel.org/recursive_function/php/recursive_directory_delete/
+     *
+     * @return bool
      */
     public function recursiveRemoveDirectory($directory, $empty = false)
     {
@@ -83,5 +87,21 @@ class Filesystem
             // return success
             return true;
         }
+    }
+
+    /**
+     * @param int $bytes
+     * @param int $decimals
+     *
+     * @see http://www.php.net/manual/en/function.filesize.php#106569
+     *
+     * @return string
+     */
+    public static function humandFilesize($bytes, $decimals = 2)
+    {
+        $sz = 'BKMGTP';
+        $factor = floor((strlen($bytes) - 1) / 3);
+
+        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
     }
 }

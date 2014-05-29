@@ -2,13 +2,12 @@
 
 namespace N98\Magento\Command\System\Cron;
 
-use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
-class ListCommand extends AbstractMagentoCommand
+class ListCommand extends AbstractCronCommand
 {
     /**
      * @var array
@@ -19,7 +18,14 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:cron:list')
-            ->setDescription('Lists all cronjobs');
+            ->setDescription('Lists all cronjobs')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
+        ;
     }
 
     /**
@@ -31,36 +37,15 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
 
-        $this->writeSection($output, 'Cronjob List');
+        if ($input->getOption('format') === null) {
+            $this->writeSection($output, 'Cronjob List');
+        }
+
         $this->initMagento();
 
-        foreach (\Mage::getConfig()->getNode('crontab/jobs')->children() as $job) {
-            $table[(string) $job->getName()] = array('Job'  => (string) $job->getName()) + $this->getSchedule($job);
-        }
-
-        ksort($table);
-        $this->getHelper('table')->write($output, $table);
-    }
-
-    /**
-     * @param $job
-     * @return array
-     */
-    protected function getSchedule($job)
-    {
-        $expr = (string) $job->schedule->cron_expr;
-        if ($expr) {
-            $schedule = $this->_getModel('cron/schedule', 'Mage_Cron_Model_Schedule');
-            $schedule->setCronExpr($expr);
-            $array = $schedule->getCronExprArr();
-            return array(
-                'm'  => $array[0],
-                'h'  => $array[1],
-                'D'  => $array[2],
-                'M'  => $array[3],
-                'WD' => $array[4]
-            );
-        }
-        return array('m' => '  ', 'h' => '  ', 'D' => '  ', 'M' => '  ', 'WD' => '  ');
+        $table = $this->getJobs();
+        $this->getHelper('table')
+            ->setHeaders(array_keys(current($table)))
+            ->renderByFormat($output, $table, $input->getOption('format'));
     }
 }

@@ -1,51 +1,34 @@
-1.48.1
+**************
+RECENT CHANGES
+**************
 
-* Fix for issue #71: PHP warning in ConfigurationLoader.php Line 59 since update to 1.48.0
-
-1.48.0
+======
+1.89.2
 ======
 
-* New command "customer:info"
+* #336 Install command broken with --noDownload option (by Manuele Menozzi)
 
-1.47.0
+======
+1.89.1
 ======
 
-* New command "dev:theme:list": Lists all your frontend themes.
-* New command "dev:theme:duplicates": Lists all duplicated files in your theme.
+* Installer: Replaced Magento CE 1.9.0.0 with CE 1.9.0.1
 
---------------------------
-REMOVED DEPRECATED ALIASES
---------------------------
+======
+1.89.0
+======
 
-We have removed all deprecated aliases:
+* #320 Fixing minor grammatical error (by Chris Jones)
+* #326 Encryption key parameter in install command (by Kristof Ringleff)
+* #327 Uninstall from specified folder (by Kristof Ringleff)
+* #328 added Magento CE install option (by Hans Kuijpers)
+* #329 Added Magento CE 1.9.0.0 to test script (by Hans Kuijpers)
+* #331 Keep dataflow profiles when stripping temp tables
+* Changed download URLs to raw.githubusercontent.com
+* Updated 3rd party dependencies
 
-- cache:clear
-- database:console
-- database:dump
-- database:info
-- system:modules:list
-- system:cron:list
-- system:setup:compare-versions
-- sys:run-setup-scripts
-- system:run-setup-scripts
-- system:store:list
-- system:url:list
-- system:website:list
-- system:check
-- system:info
-- system:maintenance
+-----------------------------------------
+SEE FULL CHANGELOG: http://bit.ly/10IDU1H
+-----------------------------------------
 
-You can restore the old aliases by new "command alias feature" by adding
-some entries in your configuration.
-
-------------
-New Features
-------------
-
-* New feature: Global system config (/etc/n98-magerun.yaml)
-
-  https://github.com/netz98/n98-magerun/wiki/Config
-
-* Command Aliases by config
-
-  https://github.com/netz98/n98-magerun/wiki/Command-aliases
+Visit our new blog http://magerun.net

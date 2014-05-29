@@ -14,7 +14,7 @@ class DemoNoticeCommand extends AbstractMagentoStoreConfigCommand
     /**
      * @var string
      */
-    protected $toggleComment = 'demo notice';
+    protected $toggleComment = 'Demo Notice';
 
     /**
      * @var string
@@ -26,4 +26,5 @@ class DemoNoticeCommand extends AbstractMagentoStoreConfigCommand
      */
     protected $commandDescription = 'Toggles demo store notice for a store view';
 
+    protected $scope = self::SCOPE_STORE_VIEW_GLOBAL;
 }

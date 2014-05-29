@@ -2,10 +2,10 @@
 
 namespace N98\Magento\Command\Indexer;
 
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class ListCommand extends AbstractIndexerCommand
 {
@@ -14,7 +14,18 @@ class ListCommand extends AbstractIndexerCommand
         $this
             ->setName('index:list')
             ->setDescription('Lists all magento indexes')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
         ;
+
+        $help = <<<HELP
+Lists all Magento indexers of current installation.
+HELP;
+        $this->setHelp($help);
     }
 
     /**
@@ -25,18 +36,19 @@ class ListCommand extends AbstractIndexerCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        $this->writeSection($output, 'Index list');
         if ($this->initMagento()) {
             $table = array();
             foreach ($this->getIndexerList() as $index) {
                 $table[] = array(
-                    'code'   => $index['code'],
-                    'status' => $index['status'],
-                    'time'   => $index['last_runtime'],
+                    $index['code'],
+                    $index['status'],
+                    $index['last_runtime'],
                 );
             }
 
-            $this->getHelper('table')->write($output, $table);
+            $this->getHelper('table')
+                ->setHeaders(array('code', 'status', 'time'))
+                ->renderByFormat($output, $table, $input->getOption('format'));
         }
     }
 }

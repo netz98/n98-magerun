@@ -7,6 +7,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
+/**
+ * Class InfoCommand
+ * @codeCoverageIgnore Command is currently not implemented
+ * @package N98\Magento\Command\Developer\Theme
+ */
 class InfoCommand extends AbstractMagentoCommand
 {
     protected function configure()

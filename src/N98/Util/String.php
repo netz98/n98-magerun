@@ -21,4 +21,26 @@ class String
 
         return $array;
     }
+
+    /**
+     * @param string $haystack
+     * @param string $needle
+     *
+     * @return bool
+     */
+    public static function startsWith($haystack, $needle)
+    {
+        return $needle === '' || strpos($haystack, $needle) === 0;
+    }
+
+    /**
+     * @param string $haystack
+     * @param string $needle
+     *
+     * @return bool
+     */
+    function endsWith($haystack, $needle)
+    {
+        return $needle === '' || substr($haystack, -strlen($needle)) === $needle;
+    }
 }

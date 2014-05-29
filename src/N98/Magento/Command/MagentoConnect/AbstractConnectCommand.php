@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\MagentoConnect;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -16,6 +17,7 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
     /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @throws \Exception
      */
     private function findMageScript(InputInterface $input, OutputInterface $output)
     {
@@ -32,10 +34,18 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
                 }
             }
             if (!strstr(shell_exec($this->mageScript . ' list-channels'), 'community')) {
-                // no channels availble -> try to setup
+                // no channels available -> try to setup
                 shell_exec($this->mageScript . ' mage-setup');
             }
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return function_exists('shell_exec') && !OperatingSystem::isWindows();
     }
 
     /**
@@ -79,7 +89,7 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return string
      */
-    protected function askForAlternativePackage($alternatives, $input, $output)
+    protected function askForAlternativePackage($alternatives, InputInterface $input, OutputInterface $output)
     {
         foreach ($alternatives as $key => $package) {
             $question[] = '<comment>[' . ($key+1) . ']</comment> ' . $package . "\n";

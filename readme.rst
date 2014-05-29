@@ -4,12 +4,32 @@ netz98 magerun CLI tools
 
 The n98 magerun cli tools provides some handy tools to work with Magento from command line.
 
+
+Build Status
+------------
+
+**Latest Release**
+
+.. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=master
+   :target: https://travis-ci.org/netz98/n98-magerun
+
+.. image:: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5/badge.png
+   :target: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5
+
+.. image:: https://poser.pugx.org/n98/magerun/v/stable.png
+   :target: https://packagist.org/packages/n98/magerun
+
+**Development Branch**
+
+.. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=develop
+  :target: https://travis-ci.org/netz98/n98-magerun
+
 Compatibility
 -------------
-The tools are currently only tested with PHP 5.3.10 within Ubuntu 12.04 Linux and on Mac OS X.
-If you are a Windows user you can help us with a quick test.
+The tools will automatically be tested for multiple PHP versions (5.3, 5.4, 5.5). It's currently currently running in various Linux distributions and Mac OS X.
+Microsoft Windows is not fully supported (some Commands like `db:dump` or `install` are excluded).
 
-The tools should work with Magento 2 development branch.
+The tool partially works with Magento 2 development branch.
 
 
 Installation
@@ -22,7 +42,13 @@ Download phar file
 
 .. code-block:: sh
 
-    wget https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar
+    wget https://raw.githubusercontent.com/netz98/n98-magerun/master/n98-magerun.phar
+
+or if you have problems with SSL certificate:
+
+.. code-block:: sh
+
+   curl -o n98-magerun.phar https://raw.githubusercontent.com/netz98/n98-magerun/master/n98-magerun.phar
 
 You can make the .phar file executable.
 
@@ -45,6 +71,11 @@ Add this to your php.ini file:
 .. code-block:: ini
 
    suhosin.executor.include.whitelist="phar"
+
+
+**You don't like the filename?**
+
+Just rename it to whatever you want.
 
 Install with Composer
 """""""""""""""""""""
@@ -79,6 +110,14 @@ You can list all available commands by::
 If you don't have installed the .phar file system wide you can call it with the php cli interpreter::
 
    php n98-magerun.phar list
+
+
+Open Shop in Browser
+""""""""""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar open-browser [store]
 
 Customer Info
 """""""""""""
@@ -141,7 +180,7 @@ If search parameter is given the customers are filtered (searchs in firstname, l
 
 .. code-block:: sh
 
-   $ n98-magerun.phar  customer:list [search]
+   $ n98-magerun.phar  customer:list [--format[="..."]] [search]
 
 Change customer password
 """"""""""""""""""""""""
@@ -157,21 +196,53 @@ Print database information
 
 .. code-block:: sh
 
-   $ n98-magerun.phar db:info
+   $ n98-magerun.phar db:info [setting]
+
+**Arguments**
+
+    setting               Only output value of named setting
+
 
 Dump database
 """""""""""""
 
 Dumps configured magento database with `mysqldump`.
 
-Arguments:
+* Requires MySQL CLI tools
+
+**Arguments**
+
     filename        Dump filename
 
-Options:
-    --add-time      Adds time to filename
-    --only-command  Print only mysqldump command. Do not execute
-    --stdout        Dump to stdout
-    --strip         Tables to strip (dump only structure of those tables)
+**Options**
+
+  --add-time         
+        Adds time to filename (only if filename was not provided)
+
+  --compression (-c)
+        Compress the dump file using one of the supported algorithms
+
+  --only-command
+        Print only mysqldump command. Do not execute
+
+  --print-only-filename
+        Execute and prints not output except the dump filename
+
+  --no-single-transaction
+        Do not use single-transaction (not recommended, this is blocking)
+
+  --human-readable
+        Use a single insert with column names per row.
+
+  --stdout
+        Dump to stdout
+
+  --strip       
+        Tables to strip (dump only structure of those tables)
+
+  --force (-f)
+        Do not prompt if all options are defined
+
 
 .. code-block:: sh
 
@@ -188,6 +259,12 @@ Or directly to stdout:
 .. code-block:: sh
 
    $ n98-magerun.phar db:dump --stdout
+
+Use compression (gzip cli tool has to be installed):
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:dump --compression="gzip"
 
 Stripped Database Dump
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -211,6 +288,7 @@ Available Table Groups:
 * @sales Sales data (orders, invoices, creditmemos etc)
 * @customers Customer data
 * @trade Current trade data (customers and orders). You usally do not want those in developer systems.
+* @search Search related tables (catalogsearch_)
 * @development Removes logs and trade data so developers do not have to work with real customer data
 
 Extended: https://github.com/netz98/n98-magerun/wiki/Stripped-Database-Dumps
@@ -224,9 +302,32 @@ Imports an SQL file with mysql cli client into current configured database.
 
 * Requires MySQL CLI tools
 
+Arguments:
+    filename        Dump filename
+
+Options:
+     --compression (-c)       The compression of the specified file
+     --only-command           Print only mysql command. Do not execute
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:dump
+
 .. code-block:: sh
 
    $ n98-magerun.phar db:import [--only-command] [filename]
+
+Use decompression (gzip cli tool has to be installed):
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:import --compression="gzip" [filename]
+
+Optimize "human readable" dump:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:import --optimize [filename]
 
 Database Console / MySQL Client
 """""""""""""""""""""""""""""""
@@ -239,10 +340,19 @@ Opens the MySQL console client with your database settings from local.xml
 
    $ n98-magerun.phar db:console
 
+Database Create
+"""""""""""""""
+
+Create currently configured database
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:create
+
 Database Drop
 """""""""""""
 
-Opens the MySQL console client with your database settings from local.xml
+Drops the database configured in local.xml.
 
 * Requires MySQL CLI tools
 
@@ -250,12 +360,49 @@ Opens the MySQL console client with your database settings from local.xml
 
    $ n98-magerun.phar db:drop  [-f|--force]
 
+Database Query
+""""""""""""""
+
+Executes an SQL query on the current configured database. Wrap your SQL in
+single or double quotes.
+
+If your query produces a result (e.g. a SELECT statement), the output of the
+mysql cli tool will be returned.
+
+* Requires MySQL CLI tools
+
+Arguments:
+    query        SQL query
+
+Options:
+     --only-command           Print only mysql command. Do not execute
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:query [--only-command] [query]
+
+
+Dump Media folder
+"""""""""""""""""
+
+Creates a ZIP archive with media folder content.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar media:dump [--strip] [filename]
+
+If strip option is set, the following folders are excluded:
+
+* js (combined js files)
+* css (combined css files)
+* catalog/product/cache
+
 List Indexes
 """"""""""""
 
 .. code-block:: sh
 
-   $ n98-magerun.phar index:list
+   $ n98-magerun.phar index:list [--format[="..."]]
 
 Reindex a Index
 """""""""""""""
@@ -265,6 +412,18 @@ Index by indexer code. Code is optional. If you don't specify a code you can pic
 .. code-block:: sh
 
    $ n98-magerun.phar index:reindex [code]
+
+
+Since 1.75.0 it's possible to run mutiple indexers by seperating code with a comma.
+
+i.e.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar index:reindex catalog_product_attribute,tag_summary
+
+If no index is provided as argument you can select indexers from menu by "number" like "1,3" for first and third
+indexer.
 
 Reindex All
 """""""""""
@@ -320,31 +479,68 @@ Set Config
 
 .. code-block:: sh
 
-   $ n98-magerun.phar config:set [--scope[="..."]] [--scope-id[="..."]] path value
+   $ n98-magerun.phar config:set [--scope[="..."]] [--scope-id[="..."]] [--encrypt] path value
 
 Arguments:
     path        The config path
     value       The config value
 
 Options:
-    --scope     The config value's scope (default: "default")
+    --scope     The config value's scope (default: "default" | Can be "default", "websites", "stores")
     --scope-id  The config value's scope ID (default: "0")
+    --encrypt   Encrypt the config value using local.xml's crypt key
 
 Get Config
 """"""""""
 
 .. code-block:: sh
 
-   $ n98-magerun.phar config:get [--scope-id="..."] [path]
+   $ n98-magerun.phar config:get [--scope="..."] [--scope-id="..."] [--decrypt] [--format[="..."]] [path]
 
 Arguments:
     path        The config path
 
 Options:
-    --scope-id  The config value's scope ID
+    --scope             The config value's scope (default, websites, stores)
+    --scope-id          The config value's scope ID
+    --decrypt           Decrypt the config value using local.xml's crypt key
+    --update-script     Output as update script lines
+    --magerun-script    Output for usage with config:set
+    --format            Output as json, xml or csv
 
 Help:
-    If path is not set, all available config items will be listed. path may contain wildcards (*)
+    If path is not set, all available config items will be listed. path may contain wildcards (*) 
+
+Example:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar config:get web/* --magerun-script
+
+Delete Config
+"""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar config:delete [--scope[="..."]] [--scope-id[="..."]] [--all] path
+
+Arguments:
+    path        The config path
+
+Options:
+    --scope     The config scope (default, websites, stores)
+    --scope-id  The config value's scope ID
+    --all       Deletes all entries of a path (ignores --scope and --scope-id)
+
+Config Search
+"""""""""""""
+
+Search system configuration descriptions.
+
+ .. code-block:: sh
+
+   $ n98-magerun.phar text
+
 
 List Magento cache status
 """""""""""""""""""""""""
@@ -382,22 +578,48 @@ List Magento caches
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:list
+   $ n98-magerun.phar cache:list [--format[="..."]]
 
 Disable Magento cache
 """""""""""""""""""""
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:disable
+   $ n98-magerun.phar cache:disable [code]
+
+If no code is specified, all cache types will be disabled.
+Run `cache:list` command to see all codes.
 
 Enable Magento cache
 """"""""""""""""""""
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:enable
+   $ n98-magerun.phar cache:enable [code]
 
+If no code is specified, all cache types will be enabled.
+Run `cache:list` command to see all codes.
+
+Cache Report
+""""""""""""
+
+This command let you investigate what's stored inside your cache.
+It prints out a table with cache IDs.
+
+.. code-block:: sh
+
+   $ cache:report [-t|--tags] [-m|--mtime] [--filter-id[="..."]] [--filter-tag[="..."]] [--fpc]
+
+Cache View
+""""""""""
+
+Prints stored cache entry by ID.
+
+.. code-block:: sh
+
+   $ cache:view [--unserialize] [--fpc] id
+
+If value is serialized you can force a pretty output with --unserialize option.
 
 Demo Notice
 """""""""""
@@ -413,14 +635,14 @@ List admin users
 
 .. code-block:: sh
 
-   $ n98-magerun.phar admin:user:list
+   $ n98-magerun.phar admin:user:list [--format[="..."]]
 
 Create admin user
 """""""""""""""""
 
 .. code-block:: sh
 
-   $ n98-magerun.phar admin:user:create [username] [email] [password] [firstname] [lastname]
+   $ n98-magerun.phar admin:user:create [username] [email] [password] [firstname] [lastname] [role]
 
 
 Change admin user password
@@ -440,7 +662,7 @@ Toggle admin notifications.
    $ n98-magerun.phar admin:notifications
 
 Maintenance mode
-"""""""""""""""""""""""
+""""""""""""""""
 
 If no option is provided it toggles the mode on every call.
 
@@ -449,7 +671,7 @@ If no option is provided it toggles the mode on every call.
    $ n98-magerun.phar sys:maintenance [--on] [--off]
 
 Magento system info
-""""""""""""""""""""
+"""""""""""""""""""
 
 Provides info like the edition and version or the configured cache backends.
 
@@ -464,7 +686,7 @@ Lists all store views.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar sys:store:list
+   $ n98-magerun.phar sys:store:list [--format[="..."]]
 
 Magento Store Config - BaseURLs
 """""""""""""""""""""""""""""""
@@ -473,25 +695,46 @@ Lists base urls for each store.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar sys:store:config:base-url:list
+   $ n98-magerun.phar sys:store:config:base-url:list [--format[="..."]]
 
 Magento Websites
-""""""""""""""
+""""""""""""""""
 
 Lists all websites.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar sys:website:list
+   $ n98-magerun.phar sys:website:list [--format[="..."]]
 
-Magento Cronjobs
-""""""""""""""""
+List Cronjobs
+"""""""""""""
 
 Lists all cronjobs defined in config.xml files.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar sys:cron:list
+   $ n98-magerun.phar sys:cron:list [--format[="..."]]
+
+Run Cronjob
+"""""""""""
+
+Runs a cronjob by code.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:cron:run [job]
+
+If no `job` argument is passed you can select a job from a list.
+See it in action: http://www.youtube.com/watch?v=QkzkLgrfNaM
+
+Cronjob History
+"""""""""""""""
+
+Last executed cronjobs with status.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:cron:history [--format[="..."]]
 
 List URLs
 """""""""
@@ -527,6 +770,16 @@ This command is useful if you update your system with enabled maintenance mode.
 
    $ n98-magerun.phar sys:setup:run
 
+Run Setup Scripts Incrementally
+"""""""""""""""""""""""""""""""
+
+Runs setup scripts incrementally. (no need to call frontend).
+This command runs each new setup script individually in order to increase the transparency of the setup resource system, and reduce the chances of a PHP failure creating an invalid database state.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:setup:incremental
+   
 Compare Setup Versions
 """"""""""""""""""""""
 
@@ -568,9 +821,22 @@ Publishes a page by page id and revision.
 
 Useful to automatically publish a page by a cron job.
 
+Interactive Development Console
+"""""""""""""""""""""""""""""""
 
-Toggle Template Hints
-"""""""""""""""""""""
+Opens PHP interactive shell with initialized Magento Admin-Store.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:console
+
+See it in action: http://www.youtube.com/watch?v=zAWpRpawTGc
+
+The command is only available for PHP 5.4 users.
+
+
+Template Hints
+""""""""""""""
 
 Toggle debug template hints settings of a store
 
@@ -578,8 +844,8 @@ Toggle debug template hints settings of a store
 
    $ n98-magerun.phar dev:template-hints [store_code]
 
-Toggle Template Hints Blocks
-""""""""""""""""""""""""""""
+Template Hints Blocks
+"""""""""""""""""""""
 
 Toggle debug template hints blocks settings of a store
 
@@ -587,8 +853,8 @@ Toggle debug template hints blocks settings of a store
 
    $ n98-magerun.phar dev:template-hints-blocks [store_code]
 
-Toggle Inline Translation
-"""""""""""""""""""""""""
+Inline Translation
+""""""""""""""""""
 
 Toggle settings for shop frontend:
 
@@ -602,23 +868,104 @@ Toggle for admin area:
 
    $ n98-magerun.phar dev:translate:admin
 
-Toggle Profiler
-"""""""""""""""
+Export Inline Translation
+"""""""""""""""""""""""""
+
+Exports saved database translation data into a file.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:translate:export [locale] [filename]
+
+Profiler
+""""""""
 
 Toggle profiler for debugging a store:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:profiler [store_code]
+   $ n98-magerun.phar dev:profiler [--on] [--off] [--global] [store]
 
-Toggle Development Logs
-"""""""""""""""""""""""
+Development Logs
+""""""""""""""""
 
 Activate/Deactivate system.log and exception.log for a store:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:log [store_code]
+   $ n98-magerun.phar dev:log [--on] [--off] [--global] [store]
+
+Show size of a log file:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:log:size [--human] [log_filename]
+
+Activate/Deactivate MySQL query logging via lib/Varien/Db/Adapter/Pdo/Mysql.php
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:log:db [--on] [--off]
+
+Setup Script Generation
+"""""""""""""""""""""""
+
+Generate Script for attributes:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:setup:script:attribute entityType attributeCode
+
+i.e.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:setup:script:attribute catalog_product color
+
+Currently only *catalog_product* entity type is supported.
+
+EAV Attributes
+""""""""""""""
+
+List all EAV attributes:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar eav:attribute:list [--filter-type[="..."]] [--add-source] [--format[="..."]]
+
+Development IDE Support
+"""""""""""""""""""""""
+
+**PhpStorm Code Completion** -> Meta file generation.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:ide:phpstorm:meta [--stdout]
+
+
+Reports
+"""""""
+
+Prints count of reports in var/reports folder.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:report:count
+
+Resolve/Lookup Class Names
+""""""""""""""""""""""""""
+
+Resolves the given type and grouped class name to a class name, useful for debugging rewrites.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:class:lookup <block|model|helper> <name>
+   
+Example:   
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:resolve model catalog/product
 
 Toggle Symlinks
 """""""""""""""
@@ -627,7 +974,7 @@ Allow usage of symlinks for a store-view:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:symlinks <store_code>
+   $ n98-magerun.phar dev:symlinks [--on] [--off] [--global] [store_code]
 
 Global scope can be set by not permitting store_code parameter:
 
@@ -642,7 +989,7 @@ Creates an empty module and registers it in current magento shop:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:module:create [--add-blocks] [--add-helpers] [--add-models] [--add-all] [--modman] vendorNamespace moduleName [codePool]
+   $ n98-magerun.phar dev:module:create [--add-blocks] [--add-helpers] [--add-models] [--add-setup] [--add-all] [--modman] [--add-readme] [--add-composer] [--author-name[="..."]] [--author-email[="..."]] [--description[="..."]] vendorNamespace moduleName [codePool]
 
 Code-Pool defaults to `local`.
 
@@ -659,6 +1006,14 @@ Run this command inside your `.modman` folder.
 
 * --add-all option add blocks, helpers and models.
 
+* --add-readme Adds a readme.md file to your module.
+
+* --add-composer Adds a composer.json to your module.
+
+* --author-email Author email for composer.json file.
+
+* --author-name Author name for composer.json file.
+
 List Modules
 """"""""""""
 
@@ -666,14 +1021,16 @@ Lists all installed modules with codepool and version
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:module:list
+   $ n98-magerun.phar dev:module:list  [--codepool[="..."]] [--status[="..."]] [--vendor=[="..."]] [--format[="..."]]
 
 Rewrite List
 """"""""""""
 
-Lists all registered class rewrites::
+Lists all registered class rewrites.
 
-   $ n98-magerun.phar dev:module:rewrite:list
+.. code-blocks:: sh
+
+   $ n98-magerun.phar dev:module:rewrite:list [--format[="..."]]
 
 Rewrite Conflicts
 """""""""""""""""
@@ -686,6 +1043,21 @@ The command checks class inheritance in order of your module dependencies.
    $ n98-magerun.phar dev:module:rewrite:conflicts [--log-junit="..."]
 
 * If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
+
+Module Dependencies
+"""""""""""""""""""
+
+Show list of modules which given module depends on
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:module:dependencies:on [-a|--all] [--format[="..."]] moduleName
+
+Show list of modules which depend from module
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:module:dependencies:from [-a|--all] [--format[="..."]] moduleName
 
 Observer List
 """""""""""""
@@ -705,7 +1077,7 @@ Lists all frontend themes
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:theme:list
+   $ n98-magerun.phar dev:theme:list [--format[="..."]]
 
 
 Find Duplicates in your theme
@@ -715,7 +1087,7 @@ Find duplicate files (templates, layout, locale, etc.) between two themes.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:theme:duplicates theme [originalTheme]
+   $ n98-magerun.phar dev:theme:duplicates [--log-junit="..."] theme [originalTheme]
 
 * `originTheme` default is "base/default".
 
@@ -726,6 +1098,8 @@ Example:
    $ n98-magerun.phar dev:theme:duplicates default/default
 
 
+* If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
+
 List Extensions
 """""""""""""""
 
@@ -733,7 +1107,7 @@ List and find connect extensions by a optional search string:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar extension:list <search>
+   $ n98-magerun.phar extension:list [--format[="..."]] <search>
 
 * Requires Magento's `mage` shell script.
 * Does not work with Windows as operating system.
@@ -806,6 +1180,11 @@ Example of an unattended Magento CE 1.7.0.2 installation:
 
    $ n98-magerun.phar install --dbHost="localhost" --dbUser="mydbuser" --dbPass="mysecret" --dbName="magentodb" --installSampleData=yes --useDefaultConfigParams=yes --magentoVersionByName="magento-ce-1.7.0.2" --installationFolder="magento" --baseUrl="http://magento.localdomain/"
 
+Additionally, with --noDownload option you can install Magento working copy already stored in --installationFolder on
+the given database.
+
+See it in action: http://youtu.be/WU-CbJ86eQc
+
 
 Magento Uninstaller
 """""""""""""""""""
@@ -818,6 +1197,118 @@ Uninstalls Magento: Drops your database and recursive deletes installation folde
 
 **Please be careful: This removes all data from your installation.**
 
+n98-magerun Shell
+"""""""""""""""""
+
+If you need autocompletion for all n98-magerun commands you can start with "shell command".
+
+.. code-block:: sh
+
+   $ n98-magerun.phar shell
+
+n98-magerun Script
+""""""""""""""""""
+
+Run multiple commands from a script file.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar [-d|--define[="..."]] [--stop-on-error] [filename]
+
+Example:
+
+.. code-block::
+
+   # Set multiple config
+   config:set "web/cookie/cookie_domain" example.com
+
+   # Set with multiline values with "\n"
+   config:set "general/store_information/address" "First line\nSecond line\nThird line"
+
+   # This is a comment
+   cache:flush
+
+
+Optionally you can work with unix pipes.
+
+.. code-block:: sh
+
+   $ echo "cache:flush" | n98-magerun-dev script
+
+.. code-block:: sh
+
+   $ n98-magerun.phar script < filename
+
+It is even possible to create executable scripts:
+
+Create file `test.magerun` and make it executable (`chmod +x test.magerun`):
+
+.. code-block:: sh
+
+   #!/usr/bin/env n98-magerun.phar script
+
+   config:set "web/cookie/cookie_domain" example.com
+   cache:flush
+
+   # Run a shell script with "!" as first char
+   ! ls -l
+
+   # Register your own variable (only key = value currently supported)
+   ${my.var}=bar
+
+   # Let magerun ask for variable value - add a question mark
+   ${my.var}=?
+
+   ! echo ${my.var}
+
+   # Use resolved variables from n98-magerun in shell commands
+   ! ls -l ${magento.root}/code/local
+
+Pre-defined variables:
+
+* ${magento.root}    -> Magento Root-Folder
+* ${magento.version} -> Magento Version i.e. 1.7.0.2
+* ${magento.edition} -> Magento Edition -> Community or Enterprise
+* ${magerun.version} -> Magerun version i.e. 1.66.0
+* ${php.version}     -> PHP Version
+* ${script.file}     -> Current script file path
+* ${script.dir}      -> Current script file dir
+
+Variables can be passed to a script with "--define (-d)" option.
+
+Example:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar script -d foo=bar filename
+
+   # This will register the variable ${foo} with value bar.
+
+It's possible to define multiple values by passing more than one option.
+
+
+n98-magerun Script Repository
+"""""""""""""""""""""""""""""
+You can organize your scripts in a repository.
+Simply place a script in folder */usr/local/share/n98-magerun/scripts* or in your home dir
+in folder *<HOME>/.n98-magerun/scripts*.
+
+Scripts must have the file extension *.magerun*.
+
+After that you can list all scripts with the *script:repo:list* command.
+The first line of the script can contain a comment (line prefixed with #) which will be displayed as description.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar script:repo:list [--format[="..."]]
+
+If you want to execute a script from repository this can be done by *script:repo:run* command.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar script:repo:run [-d|--define[="..."]] [--stop-on-error] [script]
+
+Script argument is optional. If you don't specify any you can select one from a list.
 
 Autocompletion
 --------------
@@ -917,3 +1408,9 @@ Thanks to
 * Symfony2 Team for the great console component.
 * Composer Team for the downloader backend and the self-update command.
 * Francois Zaninotto for great Faker library
+
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/netz98/n98-magerun/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+

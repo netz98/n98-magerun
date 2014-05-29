@@ -3,16 +3,18 @@
 namespace N98\Magento\Command\Cms\Page;
 
 use N98\Magento\Command\AbstractMagentoCommand;
-
-use \Mage_Cms_Model_Page;
-use \Enterprise_Cms_Model_Page_Revision;
-
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
+/**
+ * Class PublishCommand
+ *
+ * Only testable with closed source enterprise edition
+ *
+ * @codeCoverageIgnore
+ * @package N98\Magento\Command\Cms\Page
+ */
 class PublishCommand extends AbstractMagentoCommand
 {
     protected function configure()
@@ -23,6 +25,14 @@ class PublishCommand extends AbstractMagentoCommand
             ->addArgument('revision_id', InputArgument::REQUIRED, 'Revision ID (the ID, not the sequential number)')
             ->setDescription('Publish a CMS page revision (Enterprise only)')
         ;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->getApplication()->isMagentoEnterprise();
     }
 
     /**
@@ -38,7 +48,7 @@ class PublishCommand extends AbstractMagentoCommand
      */
     protected function _getPageRevisionModel()
     {
-        return $this->_getModel('enterprise_cms/page_revision', 'Enterprise_Cms_Model_Page_Revision');
+        return $this->_getModel('enterprise_cms/page_revision', '\Enterprise_Cms_Model_Page_Revision');
     }
 
     /**

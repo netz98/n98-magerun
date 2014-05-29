@@ -2,23 +2,33 @@
     "name": "n98/magerun",
     "description": "Tools for managing Magento projects and installations",
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/netz98/n98-magerun/issues"
+    },
+    "minimum-stability": "dev",
+    "homepage": "http://netz98.github.com/n98-magerun/",
+    "keywords": ["magento", "installer", "cli", "magerun"],
     "require": {
         "php": ">=5.3.3",
-        "symfony/console": "2.1.2",
-        "symfony/finder": "2.1.2",
-        "symfony/yaml": "2.1.2",
-        "symfony/process": "2.1.2",
-        "symfony/validator": "2.1.2",
-        "justinrainbow/json-schema": "1.1.*",
-        "seld/jsonlint": "1.*",
-        "n98/junit-xml": "dev-master",
-        "fzaninotto/faker": "1.1.0"
+        "symfony/console": "2.4.4",
+        "symfony/event-dispatcher": "2.4.4",
+        "symfony/finder": "2.4.4",
+        "symfony/yaml": "2.4.4",
+        "symfony/process": "2.4.4",
+        "symfony/validator": "2.4.4",
+        "n98/junit-xml": "1.0.0",
+        "fzaninotto/faker": "1.3.0",
+        "composer/composer": "1.0.*@dev",
+        "twig/twig": "1.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.1.*",
+        "mikey179/vfsStream": "v1.2.0"
     },
     "autoload": {
         "psr-0": {
             "N98": "src",
-            "Composer": "src",
-            "Xanido": "src"
+            "Composer": "src"
         }
     },
     "authors": [

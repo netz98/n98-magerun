@@ -2,9 +2,7 @@
 
 namespace N98\Magento\Command\Database;
 
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ConsoleCommand extends AbstractDatabaseCommand
@@ -33,9 +31,13 @@ class ConsoleCommand extends AbstractDatabaseCommand
            2 => STDERR
         );
 
-        $exec = 'mysql ' . $this->getMysqlClientToolConnectionString();
+        $exec = 'mysql ' . $this->getHelper('database')->getMysqlClientToolConnectionString();
 
         $pipes = array();
-        proc_open($exec, $descriptorSpec, $pipes);
+        $process = proc_open($exec, $descriptorSpec, $pipes);
+
+        if (is_resource($process)) {
+            proc_close($process);
+        }
     }
 }

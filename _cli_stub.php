@@ -1,9 +1,10 @@
 #!/usr/bin/env php
 <?php
 
-$autoloader = require_once 'phar://' . __FILE__ . '/vendor/autoload.php';
+Phar::mapPhar('n98-magerun.phar');
 
-$application = new N98\Magento\Application($autoloader);
+$application = require_once 'phar://n98-magerun.phar/src/bootstrap.php';
+$application->setPharMode(true);
 $application->run();
 
 __HALT_COMPILER();

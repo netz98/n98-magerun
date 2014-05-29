@@ -4,7 +4,6 @@ namespace N98\Magento\Command\Admin\User;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ChangePasswordCommand extends AbstractAdminUserCommand
@@ -20,8 +19,9 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @throws \Exception
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -55,7 +55,7 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
                 $user->setPassword($password);
                 $user->save();
                 $output->writeln('<info>Password successfully changed</info>');
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
             }
         }

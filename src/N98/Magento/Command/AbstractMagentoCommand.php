@@ -2,13 +2,22 @@
 
 namespace N98\Magento\Command;
 
+use Composer\Package\PackageInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Factory as ComposerFactory;
 use Composer\IO\ConsoleIO;
+use N98\Util\Console\Helper\MagentoHelper;
 
+/**
+ * Class AbstractMagentoCommand
+ *
+ * @package N98\Magento\Command
+ *
+ * @method \N98\Magento\Application getApplication() getApplication()
+ */
 abstract class AbstractMagentoCommand extends Command
 {
     /**
@@ -60,9 +69,28 @@ abstract class AbstractMagentoCommand extends Command
         $this->checkDeprecatedAliases($input, $output);
     }
 
+    /**
+     * @param array $codeArgument
+     * @param bool  $status
+     * @return bool
+     */
+    protected function saveCacheStatus($codeArgument, $status)
+    {
+        $cacheTypes = $this->_getCacheModel()->getTypes();
+        $enable = \Mage::app()->useCache();
+        foreach ($cacheTypes as $cacheCode => $cacheModel) {
+            if (empty($codeArgument) || in_array($cacheCode, $codeArgument)) {
+                $enable[$cacheCode] = $status ? 1 : 0;
+            }
+        }
+
+        \Mage::app()->saveUseCache($enable);
+    }
+
     private function _initWebsites()
     {
         $this->_websiteCodeMap = array();
+        /** @var \Mage_Core_Model_Website[] $websites */
         $websites = \Mage::app()->getWebsites(false);
         foreach ($websites as $website) {
             $this->_websiteCodeMap[$website->getId()] = $website->getCode();
@@ -79,7 +107,11 @@ abstract class AbstractMagentoCommand extends Command
             $this->_initWebsites();
         }
 
-        return $this->_websiteCodeMap[$websiteId];
+        if (isset($this->_websiteCodeMap[$websiteId])) {
+            return $this->_websiteCodeMap[$websiteId];
+        }
+
+        return '';
     }
 
     /**
@@ -97,13 +129,17 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
+     * @param string|null $commandClass
      * @return array
      */
-    protected function getCommandConfig()
+    protected function getCommandConfig($commandClass = null)
     {
+        if ($commandClass == null) {
+            $commandClass = get_class($this);
+        }
         $configArray = $this->getApplication()->getConfig();
-        if (isset($configArray['commands'][get_class($this)])) {
-            return $configArray['commands'][get_class($this)];
+        if (isset($configArray['commands'][$commandClass])) {
+            return $configArray['commands'][$commandClass];
         }
 
         return null;
@@ -130,17 +166,12 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function initMagento()
     {
-        if ($this->_magentoRootFolder !== null) {
-            if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-                require_once $this->_magentoRootFolder . '/app/bootstrap.php';
-            } else {
-                require_once $this->_magentoRootFolder . '/app/Mage.php';
-            }
-            \Mage::app('admin');
-            return true;
+        $init = $this->getApplication()->initMagento();
+        if ($init) {
+            $this->_magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
         }
 
-        return false;
+        return $init;
     }
 
     /**
@@ -182,7 +213,7 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @return Mage_Core_Helper_Data
+     * @return \Mage_Core_Helper_Data
      */
     protected function getCoreHelper()
     {
@@ -193,44 +224,101 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @param Input Interface $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      * @return \Composer\Downloader\DownloadManager
      */
     protected function getComposerDownloadManager($input, $output)
     {
-        $io = new ConsoleIO($input, $output, $this->getHelperSet());
-        $composer = ComposerFactory::create($io, array());
-        return $composer->getDownloadManager();
+        return $this->getComposer($input, $output)->getDownloadManager();
     }
 
     /**
-     * @return \Composer\Package\MemoryPackage
+     * @param array|PackageInterface $config
+     * @return \Composer\Package\CompletePackage
      */
     protected function createComposerPackageByConfig($config)
     {
         $packageLoader = new PackageLoader();
-        return $package = $packageLoader->load($config);
+        return $packageLoader->load($config);
     }
 
     /**
-     * @param Input Interface $input
+     * @param InputInterface $input
      * @param OutputInterface $output
-     * @param array|\Composer\Package\PackageInterface $config
+     * @param array|PackageInterface $config
      * @param string $targetFolder
      * @param bool $preferSource
-     * @return \Composer\Package\MemoryPackage
+     * @return \Composer\Package\CompletePackage
      */
-    protected function downloadByComposerConfig($input, $output, $config, $targetFolder, $preferSource = true)
-    {
+    protected function downloadByComposerConfig(InputInterface $input, OutputInterface $output, $config, $targetFolder,
+        $preferSource = true
+    ) {
         $dm = $this->getComposerDownloadManager($input, $output);
-        if (! $config instanceof \Composer\Package\PackageInterface) {
+        if (! $config instanceof PackageInterface) {
             $package = $this->createComposerPackageByConfig($config);
         } else {
             $package = $config;
         }
-        $dm->download($package, $targetFolder, $preferSource);
+
+        $helper = new \N98\Util\Console\Helper\MagentoHelper();
+        $helper->detect($targetFolder);
+        if ($this->isSourceTypeRepository($package->getSourceType()) && $helper->getRootFolder() == $targetFolder) {
+            $package->setInstallationSource('source');
+            $this->checkRepository($package, $targetFolder);
+            $dm->update($package, $package, $targetFolder);
+        } else {
+            $dm->download($package, $targetFolder, $preferSource);
+        }
+
         return $package;
+    }
+
+    /**
+     * brings locally cached repository up to date if it is missing the requested tag
+     *
+     * @param $package
+     * @param $targetFolder
+     */
+    protected function checkRepository($package, $targetFolder)
+    {
+        if ($package->getSourceType() == 'git') {
+            $command = sprintf(
+                'cd %s && git rev-parse refs/tags/%s',
+                escapeshellarg($targetFolder),
+                escapeshellarg($package->getSourceReference())
+            );
+            $existingTags = shell_exec($command);
+            if (!$existingTags) {
+                $command = sprintf('cd %s && git fetch', escapeshellarg($targetFolder));
+                shell_exec($command);
+            }
+        } elseif ($package->getSourceType() == 'hg') {
+            $command = sprintf(
+                'cd %s && hg log --template "{tags}" -r %s',
+                escapeshellarg($targetFolder),
+                escapeshellarg($package->getSourceReference())
+            );
+            $existingTag =  shell_exec($command);
+            if ($existingTag === $package->getSourceReference()) {
+                $command = sprintf('cd %s && hg pull', escapeshellarg($targetFolder));
+                shell_exec($command);
+            }
+        }
+    }
+
+    /**
+     * obtain composer
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return \Composer\Composer
+     */
+    protected function getComposer(InputInterface $input, OutputInterface $output)
+    {
+        $io = new ConsoleIO($input, $output, $this->getHelperSet());
+        return ComposerFactory::create($io, array());
     }
 
     /**
@@ -259,8 +347,8 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * Magento 1 / 2 switches
      *
-     * @param $mage1code string Magento 1 class code
-     * @param $mage2class string Magento 2 class name
+     * @param string $mage1code Magento 1 class code
+     * @param string $mage2class Magento 2 class name
      * @return \Mage_Core_Model_Abstract
      */
     protected function _getModel($mage1code, $mage2class)
@@ -275,8 +363,8 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * Magento 1 / 2 switches
      *
-     * @param $mage1code string Magento 1 class code
-     * @param $mage2class string Magento 2 class name
+     * @param string $mage1code Magento 1 class code
+     * @param string $mage2class Magento 2 class name
      * @return \Mage_Core_Model_Abstract
      */
     protected function _getResourceModel($mage1code, $mage2class)
@@ -291,8 +379,8 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * Magento 1 / 2 switches
      *
-     * @param $mage1code string Magento 1 class code
-     * @param $mage2class string Magento 2 class name
+     * @param string $mage1code Magento 1 class code
+     * @param string $mage2class Magento 2 class name
      * @return \Mage_Core_Model_Abstract
      */
     protected function _getResourceSingleton($mage1code, $mage2class)
@@ -311,5 +399,109 @@ abstract class AbstractMagentoCommand extends Command
     protected function _parseBoolOption($value)
     {
         return in_array(strtolower($value), array('y', 'yes', 1, 'true'));
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    protected function formatActive($value)
+    {
+        if (in_array($value, array(1, 'true'))) {
+            return 'active';
+        }
+
+        return 'inactive';
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int
+     */
+    public function run(InputInterface $input, OutputInterface $output)
+    {
+        $this->getHelperSet()->setCommand($this);
+
+        return parent::run($input, $output);
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    protected function chooseInstallationFolder(InputInterface $input, OutputInterface $output)
+    {
+        $validateInstallationFolder = function($folderName) use ($input) {
+
+            $folderName = rtrim(trim($folderName, ' '), '/');
+            if (substr($folderName, 0, 1) == '.') {
+                $cwd = \getcwd() ;
+                if (empty($cwd) && isset($_SERVER['PWD'])) {
+                    $cwd = $_SERVER['PWD'];
+                }
+                $folderName = $cwd . substr($folderName, 1);
+            }
+
+            if (empty($folderName)) {
+                throw new \InvalidArgumentException('Installation folder cannot be empty');
+            }
+
+            if (!is_dir($folderName)) {
+                if (!@mkdir($folderName,0777, true)) {
+                    throw new \InvalidArgumentException('Cannot create folder.');
+                }
+
+                return $folderName;
+            }
+
+            if ($input->hasOption('noDownload') && $input->getOption('noDownload')) {
+                /** @var MagentoHelper $magentoHelper */
+                $magentoHelper = new MagentoHelper();
+                $magentoHelper->detect($folderName);
+                if ($magentoHelper->getRootFolder() !== $folderName) {
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            'Folder %s is not a Magento working copy.',
+                            $folderName
+                        )
+                    );
+                }
+
+                $localXml = $folderName . '/app/etc/local.xml';
+                if (file_exists($localXml)) {
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            'Magento working copy in %s seems already installed. Please remove %s and retry.',
+                            $folderName,
+                            $localXml
+                        )
+                    );
+                }
+            }
+
+            return $folderName;
+        };
+
+        if (($installationFolder = $input->getOption('installationFolder')) == null) {
+            $defaultFolder = './magento';
+            $question[] = "<question>Enter installation folder:</question> [<comment>" . $defaultFolder . "</comment>]";
+
+            $installationFolder = $this->getHelper('dialog')->askAndValidate($output, $question, $validateInstallationFolder, false, $defaultFolder);
+
+        } else {
+            // @Todo improve validation and bring it to 1 single function
+            $installationFolder = $validateInstallationFolder($installationFolder);
+
+        }
+
+        $this->config['installationFolder'] = realpath($installationFolder);
+        \chdir($this->config['installationFolder']);
+    }
+
+    protected function isSourceTypeRepository($type)
+    {
+        return in_array($type, array('git', 'hg'));
     }
 }

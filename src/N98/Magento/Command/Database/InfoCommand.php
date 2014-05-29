@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class InfoCommand extends AbstractDatabaseCommand
 {
@@ -13,21 +14,38 @@ class InfoCommand extends AbstractDatabaseCommand
     {
         $this
             ->setName('db:info')
+            ->addArgument('setting', InputArgument::OPTIONAL, 'Only output value of named setting')
             ->addDeprecatedAlias('database:info', 'Please use db:info')
             ->setDescription('Dumps database informations')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
         ;
+
+        $help = <<<HELP
+This command is useful to print all informations about the current configured database in app/etc/local.xml.
+It can print connection string for JDBC, PDO connections.
+HELP;
+        $this->setHelp($help);
+
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return int|void
+     * @throws \InvalidArgumentException
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectDbSettings($output);
+
+        $settings = array();
         foreach ($this->dbSettings as $key => $value) {
-            $output->writeln(str_pad($key, 25, ' ') . ': ' . $value);
+            $settings[$key] = (string) $value;
         }
 
         $pdoConnectionString = sprintf(
@@ -35,7 +53,7 @@ class InfoCommand extends AbstractDatabaseCommand
             $this->dbSettings['host'],
             $this->dbSettings['dbname']
         );
-        $output->writeln(str_pad('PDO-Connection-String', 25, ' ') . ': ' . $pdoConnectionString);
+        $settings['PDO-Connection-String'] = $pdoConnectionString;
 
         $jdbcConnectionString = sprintf(
             'jdbc:mysql://%s/%s?username=%s&password=%s',
@@ -44,11 +62,26 @@ class InfoCommand extends AbstractDatabaseCommand
             $this->dbSettings['username'],
             $this->dbSettings['password']
         );
-        $output->writeln(str_pad('JDBC-Connection-String', 25, ' ') . ': ' . $jdbcConnectionString);
+        $settings['JDBC-Connection-String'] = $jdbcConnectionString;
 
-        $mysqlCliString = 'mysql ' . $this->getMysqlClientToolConnectionString();
+        $mysqlCliString = 'mysql ' . $this->getHelper('database')->getMysqlClientToolConnectionString();
+        $settings['MySQL-Cli-String'] = $mysqlCliString;
 
-        $output->writeln(str_pad('MySQL-Cli-String', 25, ' ') . ': ' . $mysqlCliString);
+        $rows = array();
+        foreach ($settings as $settingName => $settingValue) {
+            $rows[] = array($settingName, $settingValue);
+        }
+
+        if (($settingArgument = $input->getArgument('setting')) !== null) {
+            if (!isset($settings[$settingArgument])) {
+                throw new \InvalidArgumentException('Unknown setting: ' . $settingArgument);
+            }
+            $output->writeln((string) $settings[$settingArgument]);
+        } else {
+            $this->getHelper('table')
+                ->setHeaders(array('Name', 'Value'))
+                ->renderByFormat($output, $rows, $input->getOption('format'));
+        }
     }
 
 }

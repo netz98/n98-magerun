@@ -1,0 +1,26 @@
+# Comment
+cache:list
+
+${foo}=foo.sql
+${bar}=${foo}.gz
+! echo "BAR: ${bar}"
+
+# Another comment
+
+# Shell exec with magerun script var
+! echo "magento.root: ${magento.root}"
+! echo "magento.edition: ${magento.edition}"
+! echo "magento.version: ${magento.version}"
+! echo "php.version: ${php.version}"
+! echo "magerun.version: ${magerun.version}"
+
+ # Ignore this line and trim whitespaces for next command
+      sys:website:list
+
+# magerun command with script var
+db:dump --print-only-filename ${foo}
+
+# Set a config var and change it to previous value in one "session"
+config:get web/secure/base_url
+config:get web/seo/use_rewrites
+config:set "web/seo/use_rewrites" 1

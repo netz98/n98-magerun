@@ -36,6 +36,21 @@ class ListCommand extends AbstractMagentoCommand
             ->addArgument('linetemplate', InputArgument::OPTIONAL, 'Line template', '{url}')
             ->setDescription('Get all urls.')
         ;
+
+        $help = <<<HELP
+Examples:
+
+- Create a list of product urls only:
+
+   $ n98-magerun.phar sys:url:list --add-products 4
+
+- Create a list of all products, categories and cms pages of store 4 and 5 separating host and path (e.g. to feed a jmeter csv sampler):
+
+   $ n98-magerun.phar sys:url:list --add-all 4,5 '{host},{path}' > urls.csv
+
+- The "linetemplate" can contain all parts "parse_url" return wrapped in '{}'. '{url}' always maps the complete url and is set by default
+HELP;
+        $this->setHelp($help);
     }
 
     /**
@@ -74,45 +89,52 @@ class ListCommand extends AbstractMagentoCommand
 
                 if ($input->getOption('add-categories')) {
                     $collection = \Mage::getResourceModel('sitemap/catalog_category')->getCollection($storeId);
-                    foreach ($collection as $item) { /* @var $item \Varien_Object */
-                        $urls[] = $linkBaseUrl . $item->getUrl();
+                    if ($collection) {
+                        foreach ($collection as $item) { /* @var $item \Varien_Object */
+                            $urls[] = $linkBaseUrl . $item->getUrl();
+                        }
+                        unset($collection);
                     }
-                    unset($collection);
                 }
 
                 if ($input->getOption('add-products')) {
                     $collection = \Mage::getResourceModel('sitemap/catalog_product')->getCollection($storeId);
-                    foreach ($collection as $item) { /* @var $item \Varien_Object */
-                        $urls[] = $linkBaseUrl . $item->getUrl();
+                    if ($collection) {
+                        foreach ($collection as $item) { /* @var $item \Varien_Object */
+                            $urls[] = $linkBaseUrl . $item->getUrl();
+                        }
+                        unset($collection);
                     }
-                    unset($collection);
                 }
 
                 if ($input->getOption('add-cmspages')) {
                     $collection = \Mage::getResourceModel('sitemap/cms_page')->getCollection($storeId);
-                    foreach ($collection as $item) { /* @var $item \Varien_Object */
-                        $urls[] = $linkBaseUrl . $item->getUrl();
+                    if ($collection) {
+                        foreach ($collection as $item) { /* @var $item \Varien_Object */
+                            $urls[] = $linkBaseUrl . $item->getUrl();
+                        }
+                        unset($collection);
                     }
-                    unset($collection);
                 }
 
             } // foreach ($stores as $storeId)
 
-            foreach ($urls as $url) {
+            if (count($urls) > 0) {
+                foreach ($urls as $url) {
 
-                // pre-process
-                $line = $input->getArgument('linetemplate');
-                $line = str_replace('{url}', $url, $line);
+                    // pre-process
+                    $line = $input->getArgument('linetemplate');
+                    $line = str_replace('{url}', $url, $line);
 
-                $parts = parse_url($url);
-                foreach ($parts as $key => $value) {
-                    $line = str_replace('{'.$key.'}', $value, $line);
+                    $parts = parse_url($url);
+                    foreach ($parts as $key => $value) {
+                        $line = str_replace('{'.$key.'}', $value, $line);
+                    }
+
+                    // ... and output
+                    $output->writeln($line);
                 }
-
-                // ... and output
-                $output->writeln($line);
             }
-
         }
     }
 }

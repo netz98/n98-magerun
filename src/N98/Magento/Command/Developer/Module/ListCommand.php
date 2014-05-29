@@ -3,10 +3,10 @@
 namespace N98\Magento\Command\Developer\Module;
 
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class ListCommand extends AbstractMagentoCommand
 {
@@ -19,8 +19,18 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('dev:module:list')
+            ->addOption('codepool', null, InputOption::VALUE_OPTIONAL, 'Show modules in a specific codepool')
+            ->addOption('status', null, InputOption::VALUE_OPTIONAL, 'Show modules with a specific status')
+            ->addOption('vendor', null, InputOption::VALUE_OPTIONAL, 'Show modules of a specified vendor')
             ->setAliases(array('sys:modules:list')) // deprecated
-            ->setDescription('List all installed modules');
+            ->setDescription('List all installed modules')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
+        ;
     }
 
     /**
@@ -32,12 +42,20 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
 
-        $this->writeSection($output, 'Magento Modules');
+        if ($input->getOption('format') === null) {
+            $this->writeSection($output, 'Magento Modules');
+        }
         $this->initMagento();
         $this->findInstalledModules();
+        $this->filterModules($input);
 
-        ksort($this->infos);
-        $this->getHelper('table')->write($output, $this->infos);
+        if (!empty($this->infos)) {
+            $this->getHelper('table')
+                ->setHeaders(array('codePool', 'Name', 'Version', 'Status'))
+                ->renderByFormat($output, $this->infos, $input->getOption('format'));
+        } else {
+            $output->writeln("No modules match the specified criteria.");
+        }
     }
 
     protected function findInstalledModules()
@@ -45,24 +63,57 @@ class ListCommand extends AbstractMagentoCommand
         $modules = \Mage::app()->getConfig()->getNode('modules')->asArray();
         foreach ($modules as $moduleName => $moduleInfo) {
             $this->infos[] = array(
-                'codePool' => $moduleInfo['codePool'],
-                'Name'     => $moduleName,
-                'Version'  => $moduleInfo['version'],
-                'Status'   => $this->formatActive($moduleInfo['active']),
+                $moduleInfo['codePool'],
+                $moduleName,
+                isset($moduleInfo['version']) ? $moduleInfo['version'] : '',
+                $this->formatActive($moduleInfo['active']),
             );
         }
     }
 
     /**
-     * @param string $value
-     * @return string
+     * Filter modules by codepool, status and vendor if such options were inputted by user
+     *
+     * @param InputInterface $input
      */
-    private function formatActive($value)
+    protected function filterModules(InputInterface $input)
     {
-        if (in_array($value, array(1, 'true'))) {
-            return 'active';
+        if ($input->getOption('codepool')) {
+            $this->filterByField("codePool", $input->getOption('codepool'));
         }
 
-        return 'inactive';
+        if ($input->getOption('status')) {
+            $this->filterByField('Status', $input->getOption('status'));
+        }
+
+        if ($input->getOption('vendor')) {
+            $this->filterByFieldStartsWith('Name', $input->getOption('vendor'));
+        }
+    }
+
+    /**
+     * @param string $field
+     * @param string $value
+     */
+    protected function filterByField($field, $value)
+    {
+        foreach ($this->infos as $k => $info) {
+            if ($info[$field] != $value) {
+                unset($this->infos[$k]);
+            }
+        }
+    }
+
+    /**
+     * @param string $field
+     * @param string $value
+     */
+    protected function filterByFieldStartsWith($field, $value)
+    {
+        foreach ($this->infos as $k => $info) {
+            if (strncmp($info[$field], $value, strlen($value))) {
+                unset($this->infos[$k]);
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class CreateCommand extends AbstractCustomerCommand
 {
@@ -18,14 +19,20 @@ class CreateCommand extends AbstractCustomerCommand
             ->addArgument('firstname', InputArgument::OPTIONAL, 'Firstname')
             ->addArgument('lastname', InputArgument::OPTIONAL, 'Lastname')
             ->addArgument('website', InputArgument::OPTIONAL, 'Website')
-            ->setDescription('Creates a customer.')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
+            ->setDescription('Creates a new customer/user for shop frontend.')
         ;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return int|void
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -38,7 +45,7 @@ class CreateCommand extends AbstractCustomerCommand
             $email = $this->getHelperSet()->get('parameter')->askEmail($input, $output);
 
             // Password
-            $password = $this->getHelperSet()->get('parameter')->askPassword($input, $output);
+            $password = $this->getHelperSet()->get('parameter')->askPassword($input, $output, 'password', false);
 
             // Firstname
             if (($firstname = $input->getArgument('firstname')) == null) {
@@ -57,6 +64,9 @@ class CreateCommand extends AbstractCustomerCommand
             $customer->setWebsiteId($website->getId());
             $customer->loadByEmail($email);
 
+            $outputPlain = $input->getOption('format') === null;
+
+            $table = array();
             if (!$customer->getId()) {
                 $customer->setWebsiteId($website->getId());
                 $customer->setEmail($email);
@@ -67,9 +77,23 @@ class CreateCommand extends AbstractCustomerCommand
                 $customer->save();
                 $customer->setConfirmation(null);
                 $customer->save();
-                $output->writeln('<info>Customer <comment>' . $email . '</comment> successfully created</info>');
+                if ($outputPlain) {
+                    $output->writeln('<info>Customer <comment>' . $email . '</comment> successfully created</info>');
+                } else {
+                    $table[] = array(
+                        $email, $password, $firstname, $lastname
+                    );
+                }
             } else {
-                $output->writeln('<error>Customer ' . $email . ' already exists</error>');
+                if ($outputPlain) {
+                    $output->writeln('<error>Customer ' . $email . ' already exists</error>');
+                }
+            }
+
+            if (!$outputPlain) {
+                $this->getHelper('table')
+                    ->setHeaders(array('email', 'password', 'firstname', 'lastname'))
+                    ->renderByFormat($output, $table, $input->getOption('format'));
             }
         }
     }

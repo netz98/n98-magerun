@@ -7,7 +7,7 @@ use N98\Magento\Command\AbstractMagentoCommand;
 class AbstractCacheCommand extends AbstractMagentoCommand
 {
     /**
-     * @return Mage_Core_Model_Abstract
+     * @return Mage_Core_Model_Cache
      */
     protected function _getCacheModel()
     {

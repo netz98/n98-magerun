@@ -14,6 +14,12 @@ class UpgradeExtensionCommand extends AbstractConnectCommand
             ->addArgument('package', \Symfony\Component\Console\Input\InputArgument::REQUIRED, 'Package to upgrade')
             ->setDescription('Upgrade magento-connect package')
         ;
+
+        $help = <<<HELP
+* Requires Magento's `mage` shell script.
+* Does not work with Windows as operating system.
+HELP;
+        $this->setHelp($help);
     }
 
     /**
@@ -21,7 +27,7 @@ class UpgradeExtensionCommand extends AbstractConnectCommand
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param string $package
      */
-    protected function doAction($input, $output, $package)
+    protected function doAction(InputInterface $input, OutputInterface $output, $package)
     {
         $output->writeln($this->callMageScript($input, $output, 'upgrade community ' . $package));
     }
