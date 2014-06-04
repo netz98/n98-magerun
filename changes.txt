@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.90.0
+======
+
+* #338 db:drop should have an option to drop all tables instead of dropping the database (by Fabrizio Branca)
+
+======
 1.89.2
 ======
 
