@@ -13,12 +13,12 @@ class ValidateExtensionCommandTest extends TestCase
         $commandTester->execute(
             array(
                 'command'           => $command->getName(),
+                'package'           => 'Mage_All_Latest',
                 '--include-default' => true
             )
         );
         
         $output = $commandTester->getDisplay();
-
         $this->assertContains('Mage_All_Latest', $output);
     }
 }
