@@ -217,6 +217,25 @@ class ConfigurationLoader
                 }
             }
 
+            /**
+             * Allow modules to be placed in vendor folder of current execution context
+             */
+            if (is_dir('vendor')) {
+                $finder = Finder::create();
+                $finder
+                    ->files()
+                    ->depth(2)
+                    ->followLinks()
+                    ->ignoreUnreadableDirs(true)
+                    ->name('n98-magerun.yaml')
+                    ->in('vendor');
+
+                foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                    $this->registerPluginConfigFile($magentoRootFolder, $file);
+                }
+                
+            }
+
             if (count($moduleBaseFolders) > 0) {
                 // Glob plugin folders
                 $finder = Finder::create();
