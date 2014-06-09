@@ -146,15 +146,18 @@ HELP;
             $output->writeln('<info>Restoring from previous DB snapshot</info>');
 
             //restore local.xml
-            //TODO add encryption key once added to GenerateCommand
+            if (!(isset($preparedArgs['encryption_key']))) {
+                $preparedArgs['encryption_key'] = md5(uniqid());
+            }
             $localXmlCommand = sprintf(
-                'local-config:generate %s %s %s %s %s %s',
+                'local-config:generate %s %s %s %s %s %s %s',
                 $preparedArgs['db_host'],
                 $preparedArgs['db_user'],
                 $preparedArgs['db_pass'],
                 $preparedArgs['db_name'],
                 $preparedArgs['session_save'],
-                $preparedArgs['admin_frontname']
+                $preparedArgs['admin_frontname'],
+                $preparedArgs['encryption_key']
             );
             $this->getApplication()->run(new StringInput($localXmlCommand), $output);
 
