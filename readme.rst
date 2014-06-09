@@ -1183,6 +1183,14 @@ Example of an unattended Magento CE 1.7.0.2 installation:
 Additionally, with --noDownload option you can install Magento working copy already stored in --installationFolder on
 the given database.
 
+The following setting in your **config.yaml** will take a database dump after installation and indexing into Composer's cache directory to allow speedier installations when the same settings are reused.
+
+.. code-block:: yaml
+
+    commands:
+        N98\Magento\Command\Installer\InstallCommand:
+            allow-database-snapshots: 1
+
 See it in action: http://youtu.be/WU-CbJ86eQc
 
 
