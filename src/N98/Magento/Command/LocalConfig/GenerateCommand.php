@@ -20,6 +20,7 @@ class GenerateCommand extends AbstractMagentoCommand
             ->addArgument('db-name', InputOption::VALUE_REQUIRED, 'Database name')
             ->addArgument('session-save', InputOption::VALUE_REQUIRED, 'Session storage adapter')
             ->addArgument('admin-frontname', InputOption::VALUE_REQUIRED, 'Admin front name')
+            ->addArgument('encryption-key', InputOption::VALUE_OPTIONAL, 'Encryption Key')
         ;
 
         $help = <<<HELP
@@ -56,10 +57,11 @@ HELP;
             }
 
             $content = file_get_contents($configFileTemplate);
+            $key = $input->getArgument('encryption-key') ? $this->_wrapCData($input->getArgument('encryption-key')): md5(uniqid());
 
             $replace = array(
                 '{{date}}'               => date(\DateTime::RFC2822),
-                '{{key}}'                => md5(uniqid()),
+                '{{key}}'                => $key,
                 '{{db_prefix}}'          => '',
                 '{{db_host}}'            => $this->_wrapCData($input->getArgument('db-host')),
                 '{{db_user}}'            => $this->_wrapCData($input->getArgument('db-user')),
