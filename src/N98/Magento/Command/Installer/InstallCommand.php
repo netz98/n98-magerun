@@ -150,7 +150,7 @@ HELP;
                 $preparedArgs['encryption_key'] = md5(uniqid());
             }
             $localXmlCommand = sprintf(
-                'local-config:generate %s %s %s %s %s %s %s',
+                "local-config:generate '%s' '%s' '%s' '%s' '%s' '%s' '%s'",
                 $preparedArgs['db_host'],
                 $preparedArgs['db_user'],
                 $preparedArgs['db_pass'],
