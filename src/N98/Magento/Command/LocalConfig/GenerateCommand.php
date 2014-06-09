@@ -57,7 +57,10 @@ HELP;
             }
 
             $content = file_get_contents($configFileTemplate);
-            $key = $input->getArgument('encryption-key') ? $this->_wrapCData($input->getArgument('encryption-key')): md5(uniqid());
+            $key = $input->getArgument('encryption-key') ? $input->getArgument('encryption-key') : md5(uniqid());
+            if (is_array($key)) {
+                $key = $key[0];
+            }
 
             $replace = array(
                 '{{date}}'               => date(\DateTime::RFC2822),
