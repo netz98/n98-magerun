@@ -11,8 +11,10 @@ class DbCommand extends AbstractLogCommand
     protected function configure()
     {
         $this->setName('dev:log:db')
-             ->addOption('on', null, InputOption::VALUE_NONE, 'Force logging')
+             ->addOption('on', null, InputOption::VALUE_NONE, 'Force logging. Additionally run \'git assume unchanged\'
+                 ,in case if git repository detected')
              ->addOption('off', null, InputOption::VALUE_NONE, 'Disable logging')
+             ->addOption('ignore-git', null, InputOption::VALUE_NONE, 'Do not run \'git assume unchanged\'')
              ->setDescription('Turn on/off database query logging');
     }
 
@@ -38,6 +40,10 @@ class DbCommand extends AbstractLogCommand
 
         $this->_replaceVariable($input, $output, '$_debug');
         $this->_replaceVariable($input, $output, '$_logAllQueries');
+
+        if (!$input->getOption('ignore-git')) {
+            $this->assumeUnchanged($input, $output, $this->_getVarienAdapterPhpFile());
+        }
 
         $output->writeln("<info>Done. You can tail <comment>" . $this->_getDebugLogFilename() . "</comment></info>");
     }
@@ -82,5 +88,35 @@ class DbCommand extends AbstractLogCommand
 
         $contents = preg_replace($debugLinePattern, "protected " . $variable . " = " . $newValue, $contents);
         file_put_contents($varienAdapterPhpFile, $contents);
+
+    }
+
+    /**
+     * @retun boolean
+     */
+    protected function _isGitDetected()
+    {
+        $gitPath = $this->_magentoRootFolder.'/.git';
+        if (file_exists($gitPath) && is_dir($gitPath)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface  $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param string $path
+     * @return void
+     */
+    protected function assumeUnchanged($input, $output, $path)
+    {
+        $path = preg_replace('/^' . preg_quote($this->_magentoRootFolder.'/','/') . '/', '', $path);
+        if ($this->_isGitDetected()) {
+            $cmd = 'git update-index --assume-unchanged '.$path;
+            exec($cmd);
+            $output->writeln("<info>".$cmd."</info>");
+        }
     }
 }
