@@ -22,7 +22,7 @@ class ListCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('eav/entity_attribute_source_table', $commandTester->getDisplay());
+        $this->assertContains('eav/entity_attribute_source_boolean', $commandTester->getDisplay());
         $this->assertContains('sku', $commandTester->getDisplay());
         $this->assertContains('catalog_product', $commandTester->getDisplay());
     }

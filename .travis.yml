@@ -11,25 +11,26 @@ php:
   - 5.5
 
 env:
-  - MAGENTO_VERSION="magento-mirror-1.4.2.0" DB=mysql
-  - MAGENTO_VERSION="magento-mirror-1.5.1.0" DB=mysql
-  - MAGENTO_VERSION="magento-ce-1.6.2.0" DB=mysql
-  - MAGENTO_VERSION="magento-ce-1.7.0.2" DB=mysql
-  - MAGENTO_VERSION="magento-ce-1.8.1.0" DB=mysql
-  - MAGENTO_VERSION="magento-ce-1.9.0.1" DB=mysql
+  - MAGENTO_VERSION="magento-mirror-1.4.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes
+  - MAGENTO_VERSION="magento-mirror-1.5.1.0" DB=mysql INSTALL_SAMPLE_DATA=yes
+  - MAGENTO_VERSION="magento-ce-1.6.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes
+  - MAGENTO_VERSION="magento-ce-1.7.0.2" DB=mysql INSTALL_SAMPLE_DATA=yes
+  - MAGENTO_VERSION="magento-ce-1.8.1.0" DB=mysql INSTALL_SAMPLE_DATA=yes
+  # Do not download sample data of 1.9 -> The file is too big
+  - MAGENTO_VERSION="magento-ce-1.9.0.1" DB=mysql INSTALL_SAMPLE_DATA=no
 
 matrix:
   fast_finish: true
   exclude:
     - php: 5.3
-      env: MAGENTO_VERSION="magento-ce-1.9.0.1" DB=mysql
+      env: MAGENTO_VERSION="magento-ce-1.9.0.1" DB=mysql INSTALL_SAMPLE_DATA=no
 
 before_script:
   - curl -s http://getcomposer.org/installer | php
   - php composer.phar install --dev --prefer-source
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `magento_travis`;'
   - export N98_MAGERUN_TEST_MAGENTO_ROOT="./${MAGENTO_VERSION}"
-  - bin/n98-magerun install --magentoVersionByName="${MAGENTO_VERSION}" --installationFolder="./${MAGENTO_VERSION}" --dbHost=localhost --dbUser=root --dbPass='' --dbName="magento_travis" --installSampleData=yes --useDefaultConfigParams=yes --baseUrl="http://travis.magento.local/"
+  - bin/n98-magerun install --magentoVersionByName="${MAGENTO_VERSION}" --installationFolder="./${MAGENTO_VERSION}" --dbHost=localhost --dbUser=root --dbPass='' --dbName="magento_travis" --installSampleData=${INSTALL_SAMPLE_DATA} --useDefaultConfigParams=yes --baseUrl="http://travis.magento.local/"
 
 script:
   - vendor/bin/phpunit

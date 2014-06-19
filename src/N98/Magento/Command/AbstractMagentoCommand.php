@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Factory as ComposerFactory;
 use Composer\IO\ConsoleIO;
+use N98\Util\Console\Helper\MagentoHelper;
 
 /**
  * Class AbstractMagentoCommand
@@ -229,9 +230,7 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function getComposerDownloadManager($input, $output)
     {
-        $io = new ConsoleIO($input, $output, $this->getHelperSet());
-        $composer = ComposerFactory::create($io, array());
-        return $composer->getDownloadManager();
+        return $this->getComposer($input, $output)->getDownloadManager();
     }
 
     /**
@@ -261,8 +260,65 @@ abstract class AbstractMagentoCommand extends Command
         } else {
             $package = $config;
         }
-        $dm->download($package, $targetFolder, $preferSource);
+
+        $helper = new \N98\Util\Console\Helper\MagentoHelper();
+        $helper->detect($targetFolder);
+        if ($this->isSourceTypeRepository($package->getSourceType()) && $helper->getRootFolder() == $targetFolder) {
+            $package->setInstallationSource('source');
+            $this->checkRepository($package, $targetFolder);
+            $dm->update($package, $package, $targetFolder);
+        } else {
+            $dm->download($package, $targetFolder, $preferSource);
+        }
+
         return $package;
+    }
+
+    /**
+     * brings locally cached repository up to date if it is missing the requested tag
+     *
+     * @param $package
+     * @param $targetFolder
+     */
+    protected function checkRepository($package, $targetFolder)
+    {
+        if ($package->getSourceType() == 'git') {
+            $command = sprintf(
+                'cd %s && git rev-parse refs/tags/%s',
+                escapeshellarg($targetFolder),
+                escapeshellarg($package->getSourceReference())
+            );
+            $existingTags = shell_exec($command);
+            if (!$existingTags) {
+                $command = sprintf('cd %s && git fetch', escapeshellarg($targetFolder));
+                shell_exec($command);
+            }
+        } elseif ($package->getSourceType() == 'hg') {
+            $command = sprintf(
+                'cd %s && hg log --template "{tags}" -r %s',
+                escapeshellarg($targetFolder),
+                escapeshellarg($package->getSourceReference())
+            );
+            $existingTag =  shell_exec($command);
+            if ($existingTag === $package->getSourceReference()) {
+                $command = sprintf('cd %s && hg pull', escapeshellarg($targetFolder));
+                shell_exec($command);
+            }
+        }
+    }
+
+    /**
+     * obtain composer
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return \Composer\Composer
+     */
+    protected function getComposer(InputInterface $input, OutputInterface $output)
+    {
+        $io = new ConsoleIO($input, $output, $this->getHelperSet());
+        return ComposerFactory::create($io, array());
     }
 
     /**
@@ -442,5 +498,10 @@ abstract class AbstractMagentoCommand extends Command
 
         $this->config['installationFolder'] = realpath($installationFolder);
         \chdir($this->config['installationFolder']);
+    }
+
+    protected function isSourceTypeRepository($type)
+    {
+        return in_array($type, array('git', 'hg'));
     }
 }
