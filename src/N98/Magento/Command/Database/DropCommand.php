@@ -34,6 +34,7 @@ HELP;
     {
         $this->detectDbSettings($output);
         $dialog = $this->getHelperSet()->get('dialog');
+        $dbHelper = $this->getHelper('database');
 
         if ($input->getOption('force')) {
             $shouldDrop = true;
@@ -42,23 +43,11 @@ HELP;
         }
 
         if ($shouldDrop) {
-            $db = $this->getHelper('database')->getConnection(); /* @var $db \PDO */
             if ($input->getOption('tables')) {
-                $result = $db->query("SHOW TABLES");
-                $query = 'SET FOREIGN_KEY_CHECKS = 0; ';
-                $count = 0;
-                while ($row = $result->fetch(\PDO::FETCH_NUM)) {
-                    $query .= 'DROP TABLE IF EXISTS `'.$row[0].'`; ';
-                    $count++;
-                }
-                $query .= 'SET FOREIGN_KEY_CHECKS = 1;';
-                $db->query($query);
-                $output->writeln('<info>Dropped database tables</info> <comment>' . $count . ' tables dropped</comment>');
+                $dbHelper->dropTables($output);
             } else {
-                $db->query("DROP DATABASE `" . $this->dbSettings['dbname'] . "`");
-                $output->writeln('<info>Dropped database</info> <comment>' . $this->dbSettings['dbname'] . '</comment>');
+                $dbHelper->dropDatabase($output);
             }
         }
     }
-
 }
