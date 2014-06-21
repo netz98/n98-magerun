@@ -2,11 +2,20 @@
 
 namespace N98\Util\Console\Helper;
 
+use N98\Util\String;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputAwareInterface;
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
 
 class MagentoHelper extends AbstractHelper
 {
+    const MODMAN_MAGERUN_MARKER = 'n98-magerun::';
     /**
      * @var string
      */
@@ -23,6 +32,16 @@ class MagentoHelper extends AbstractHelper
     protected $_magentoEnterprise = false;
 
     /**
+     * @var InputInterface
+     */
+    protected $input;
+
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
+
+    /**
      * Returns the canonical name of this helper.
      *
      * @return string The canonical name
@@ -32,6 +51,24 @@ class MagentoHelper extends AbstractHelper
     public function getName()
     {
         return 'magento';
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    public function __construct(InputInterface $input = null, OutputInterface $output = null)
+    {
+        if (null === $input) {
+            $input = new ArgvInput();
+        }
+
+        if (null === $output) {
+            $output = new ConsoleOutput();
+        }
+
+        $this->input = $input;
+        $this->output = $output;
     }
 
     /**
@@ -87,7 +124,7 @@ class MagentoHelper extends AbstractHelper
     }
 
     /**
-     * @param $folder
+     * @param string $folder
      *
      * @return array
      */
@@ -102,20 +139,28 @@ class MagentoHelper extends AbstractHelper
                 $folders[] = $explodedFolder;
             }
         }
+
         return $folders;
     }
 
     /**
      * Check for modman file and .basedir
      *
-     * @param $folders
+     * @param array $folders
      *
      * @return array
      */
     protected function checkModman($folders)
     {
         foreach (array_reverse($folders) as $searchFolder) {
+            if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
+                $this->output->writeln('<debug>Search for Magento in folder <info>' . $searchFolder . '</info></debug>');
+            }
+
             if (!is_readable($searchFolder)) {
+                if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
+                    $this->output->writeln('<debug>Folder <info>' . $searchFolder . '</info> is not readable. Skip.</debug>');
+                }
                 continue;
             }            
             $finder = Finder::create();
@@ -131,13 +176,24 @@ class MagentoHelper extends AbstractHelper
             $count = $finder->count();
             if ($count > 0) {
                 $baseFolderContent = trim(file_get_contents($searchFolder . DIRECTORY_SEPARATOR . '.basedir'));
-                if (!empty($baseFolderContent)) {
+                if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
+                    $this->output->writeln('<debug>Found modman .basedir file with content <info>' . $baseFolderContent . '</info></debug>');
+                }
+
+                if (String::startsWith($baseFolderContent, self::MODMAN_MAGERUN_MARKER)) {
                     $modmanBaseFolder = $searchFolder
-                        . DIRECTORY_SEPARATOR
-                        . '..'
-                        . DIRECTORY_SEPARATOR
-                        . trim($baseFolderContent);
+                                      . DIRECTORY_SEPARATOR
+                                      . substr($baseFolderContent, strlen(self::MODMAN_MAGERUN_MARKER));
                     array_push($folders, $modmanBaseFolder);
+                } else {
+                    if (!empty($baseFolderContent)) {
+                        $modmanBaseFolder = $searchFolder
+                            . DIRECTORY_SEPARATOR
+                            . '..'
+                            . DIRECTORY_SEPARATOR
+                            . $baseFolderContent;
+                        array_push($folders, $modmanBaseFolder);
+                    }
                 }
             }
         }
