@@ -534,7 +534,9 @@ class Application extends BaseApplication
             $output = new ConsoleOutput();
         }
         $this->_addOutputStyles($output);
-        $this->_addOutputStyles($output->getErrorOutput());
+        if ($output instanceof ConsoleOutput) {
+            $this->_addOutputStyles($output->getErrorOutput());
+        }
 
         $this->configureIO($input, $output);
 
@@ -677,19 +679,21 @@ class Application extends BaseApplication
     protected function _initMagento1()
     {
         $initSettings = $this->config['init'];
+
         if (!class_exists('Mage')) {
             $autoloaders = spl_autoload_functions();
             require_once $this->getMagentoRootFolder() . '/app/Mage.php';
             // Restore autoloaders that might be removed by extensions that overwrite Varien/Autoload
-            $this->_restore_autoloaders($autoloaders);
+            $this->_restoreAutoloaders($autoloaders);
         }
+
         \Mage::app($initSettings['code'], $initSettings['type'], $initSettings['options']);
     }
 
     /**
      * @return void
      */
-    function _restore_autoloaders($loaders) {
+    protected function _restoreAutoloaders($loaders) {
         $current_loaders = spl_autoload_functions();
         foreach ($loaders as $function) {
             if (!in_array($function, $current_loaders)) {
