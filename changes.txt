@@ -9,6 +9,7 @@ RECENT CHANGES
 * #338 db:drop should have an option to drop all tables instead of dropping the database (by Fabrizio Branca)
 * #343 Adds Command for External Magento Connect Validation (by Alan Storm)
 * #346 Fix for "extension on GitHub" markdown. (by Andrea De Pirro)
+* #354 Restore autoloaders after loading Magento (by Maarten van Schaik and Melvyn Sopacua)
 
 ======
 1.89.2
