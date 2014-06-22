@@ -8,6 +8,11 @@ class ValidateExtensionCommandTest extends TestCase
 {
     public function testSetup()
     {
+        $this->getApplication()->initMagento();
+        if (version_compare(\Mage::getVersion(), '1.4.2.0', '<=')) {
+            $this->markTestSkipped('Skip Test - mage cli script does not exist.');
+        }
+
         $application = $this->getApplication();
         $commandMock = $this->getMockBuilder('N98\Magento\Command\MagentoConnect\ValidateExtensionCommand')
             ->setMockClassName('ValidateExtensionCommandMock')
