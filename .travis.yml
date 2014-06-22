@@ -11,7 +11,7 @@ php:
   - 5.5
 
 env:
-  - MAGENTO_VERSION="magento-mirror-1.4.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes COVERAGE=64
+  - MAGENTO_VERSION="magento-mirror-1.4.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes COVERAGE=63
   - MAGENTO_VERSION="magento-mirror-1.5.1.0" DB=mysql INSTALL_SAMPLE_DATA=yes COVERAGE=65
   - MAGENTO_VERSION="magento-ce-1.6.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes COVERAGE=65
   - MAGENTO_VERSION="magento-ce-1.7.0.2" DB=mysql INSTALL_SAMPLE_DATA=yes COVERAGE=65
