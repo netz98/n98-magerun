@@ -64,7 +64,7 @@ class DatabaseHelper extends AbstractHelper
             }
 
             $this->dbSettings = (array) $config->global->resources->default_setup->connection;
-	        $this->dbSettings['prefix'] = (string) $config->global->resources->db->table_prefix;
+            $this->dbSettings['prefix'] = (string) $config->global->resources->db->table_prefix;
 
             if(strpos($this->dbSettings['host'], ':') !== false) {
                 list($this->dbSettings['host'], $this->dbSettings['port']) = explode(':', $this->dbSettings['host']);
@@ -358,6 +358,10 @@ class DatabaseHelper extends AbstractHelper
         return 'database';
     }
 
+    /**
+     * @param OutputInterface $output
+     * @throws \Exception
+     */
     public function dropDatabase($output)
     {
         $this->detectDbSettings($output);
@@ -366,6 +370,10 @@ class DatabaseHelper extends AbstractHelper
         $output->writeln('<info>Dropped database</info> <comment>' . $this->dbSettings['dbname'] . '</comment>');
     }
 
+    /**
+     * @param OutputInterface $output
+     * @throws \Exception
+     */
     public function dropTables($output)
     {
         $db = $this->getConnection();
@@ -381,6 +389,10 @@ class DatabaseHelper extends AbstractHelper
         $output->writeln('<info>Dropped database tables</info> <comment>' . $count . ' tables dropped</comment>');
     }
 
+    /**
+     * @param OutputInterface $output
+     * @throws \Exception
+     */
     public function createDatabase($output)
     {
         $this->detectDbSettings($output);
