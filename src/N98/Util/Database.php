@@ -5,7 +5,7 @@ namespace N98\Util;
 class Database
 {
     /**
-     * @param PDO $pdo
+     * @param \PDO $pdo
      * @param string $file
      * @param string $delimiter
      * @return bool
