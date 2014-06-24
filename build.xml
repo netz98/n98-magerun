@@ -69,7 +69,7 @@ Build phar with:
     </target>
 
     <target name="dist_unix">
-        <patched-pharpackage basedir="./" stub="_cli_stub.php" signature="sha512" compression="${compression}" destfile="./n98-magerun.phar">
+        <patched-pharpackage basedir="./" stub="build/_cli_stub.php" signature="sha512" compression="${compression}" destfile="./n98-magerun.phar">
             <metadata>
                 <element name="version" value="1.0.0" />
                 <element name="authors">
