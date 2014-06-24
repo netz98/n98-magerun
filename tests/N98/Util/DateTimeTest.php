@@ -13,7 +13,8 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
      */
     public function getDifferenceAsString(\DateTime $time1, \DateTime $time2, $expected)
     {
-        $this->assertEquals($expected, DateTime::getDifferenceAsString($time1, $time2));
+        $dateTime = new DateTime();
+        $this->assertEquals($expected, $dateTime->getDifferenceAsString($time1, $time2));
     }
 
     /**
