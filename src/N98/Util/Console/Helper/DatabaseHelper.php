@@ -295,7 +295,7 @@ class DatabaseHelper extends AbstractHelper
                 $connection = $this->getConnection();
                 $sth = $connection->prepare('SHOW TABLES LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
                 $sth->execute(
-                    array(':like' => str_replace('*', '%', $entry))
+                    array(':like' => str_replace('*', '%', $this->dbSettings['prefix'] . $entry))
                 );
                 $rows = $sth->fetchAll();
                 foreach ($rows as $row) {
@@ -305,7 +305,7 @@ class DatabaseHelper extends AbstractHelper
             }
 
             if (in_array($entry, $this->_tables)) {
-                $resolvedList[] = $entry;
+                $resolvedList[] = $this->dbSettings['prefix'] . $entry;
             }
         }
 

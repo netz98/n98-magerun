@@ -229,7 +229,7 @@ HELP;
 
             $ignore = '';
             foreach ($stripTables as $stripTable) {
-                $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $this->dbSettings['prefix'] . $stripTable . ' ';
+                $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $stripTable . ' ';
             }
 
             // dump data for all other tables
