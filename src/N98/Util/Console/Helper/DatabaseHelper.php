@@ -272,7 +272,7 @@ class DatabaseHelper extends AbstractHelper
     public function resolveTables(array $list, array $definitions = array(), array $resolved = array())
     {
         if ($this->_tables === null) {
-            $this->_tables = $this->getTables();
+            $this->_tables = $this->getTables(true);
         }
 
         $resolvedList = array();
@@ -295,7 +295,7 @@ class DatabaseHelper extends AbstractHelper
                 $connection = $this->getConnection();
                 $sth = $connection->prepare('SHOW TABLES LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
                 $sth->execute(
-                    array(':like' => str_replace('*', '%', $entry))
+                    array(':like' => str_replace('*', '%', $this->dbSettings['prefix'] . $entry))
                 );
                 $rows = $sth->fetchAll();
                 foreach ($rows as $row) {
@@ -305,7 +305,7 @@ class DatabaseHelper extends AbstractHelper
             }
 
             if (in_array($entry, $this->_tables)) {
-                $resolvedList[] = $entry;
+                $resolvedList[] = $this->dbSettings['prefix'] . $entry;
             }
         }
 
@@ -320,11 +320,18 @@ class DatabaseHelper extends AbstractHelper
      *
      * @return array
      */
-    public function getTables()
+    public function getTables($withoutPrefix = false)
     {
         $statement = $this->getConnection()->query('SHOW TABLES');
         if ($statement) {
-            return $statement->fetchAll(\PDO::FETCH_COLUMN);
+            $result = $statement->fetchAll(\PDO::FETCH_COLUMN);
+            if ($withoutPrefix === false) {
+                return $result;
+            }
+            $prefix = $this->dbSettings['prefix'];
+            return array_map(function($tableName) use ($prefix){
+                    return str_replace($prefix, '', $tableName);
+                },$result);
         }
 
         return array();
