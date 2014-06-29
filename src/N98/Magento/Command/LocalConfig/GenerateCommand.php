@@ -3,8 +3,8 @@
 namespace N98\Magento\Command\LocalConfig;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateCommand extends AbstractMagentoCommand
@@ -14,13 +14,13 @@ class GenerateCommand extends AbstractMagentoCommand
         $this
             ->setName('local-config:generate')
             ->setDescription('Generates local.xml config')
-            ->addArgument('db-host', InputOption::VALUE_REQUIRED, 'Database host')
-            ->addArgument('db-user', InputOption::VALUE_REQUIRED, 'Database user')
-            ->addArgument('db-pass', InputOption::VALUE_REQUIRED, 'Database password')
-            ->addArgument('db-name', InputOption::VALUE_REQUIRED, 'Database name')
-            ->addArgument('session-save', InputOption::VALUE_REQUIRED, 'Session storage adapter')
-            ->addArgument('admin-frontname', InputOption::VALUE_REQUIRED, 'Admin front name')
-            ->addArgument('encryption-key', InputOption::VALUE_OPTIONAL, 'Encryption Key')
+            ->addArgument('db-host', InputArgument::OPTIONAL, 'Database host')
+            ->addArgument('db-user', InputArgument::OPTIONAL, 'Database user')
+            ->addArgument('db-pass', InputArgument::OPTIONAL, 'Database password')
+            ->addArgument('db-name', InputArgument::OPTIONAL, 'Database name')
+            ->addArgument('session-save', InputArgument::OPTIONAL, 'Session storage adapter')
+            ->addArgument('admin-frontname', InputArgument::OPTIONAL, 'Admin front name')
+            ->addArgument('encryption-key', InputArgument::OPTIONAL, 'Encryption Key')
         ;
 
         $help = <<<HELP

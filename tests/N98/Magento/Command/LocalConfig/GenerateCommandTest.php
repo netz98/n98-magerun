@@ -29,17 +29,20 @@ class GenerateCommandTest extends TestCase
                 'db-name'         => 'my_db_name',
                 'session-save'    => 'my_session_save',
                 'admin-frontname' => 'my_admin_frontname',
+                'admin-frontname' => 'my_admin_frontname',
+                'encryption-key'  => 'key123456789'
             )
         );
 
         $this->assertFileExists($testConfigFile);
         $fileContent = \file_get_contents($testConfigFile);
-        $this->assertContains('<![CDATA[my_db_host]]>', $fileContent);
-        $this->assertContains('<![CDATA[my_db_user]]>', $fileContent);
-        $this->assertContains('<![CDATA[my_db_pass]]>', $fileContent);
-        $this->assertContains('<![CDATA[my_db_name]]>', $fileContent);
-        $this->assertContains('<![CDATA[my_session_save]]>', $fileContent);
-        $this->assertContains('<![CDATA[my_admin_frontname]]>', $fileContent);
+        $this->assertContains('<host><![CDATA[my_db_host]]></host>', $fileContent);
+        $this->assertContains('<username><![CDATA[my_db_user]]></username>', $fileContent);
+        $this->assertContains('<password><![CDATA[my_db_pass]]></password>', $fileContent);
+        $this->assertContains('<dbname><![CDATA[my_db_name]]></dbname>', $fileContent);
+        $this->assertContains('<session_save><![CDATA[my_session_save]]></session_save>', $fileContent);
+        $this->assertContains('<frontName><![CDATA[my_admin_frontname]]></frontName>', $fileContent);
+        $this->assertContains('<key>key123456789</key>', $fileContent);
 
         $xml = \simplexml_load_file($testConfigFile);
         $this->assertNotInternalType('bool', $xml);
