@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\System\Check\Settings;
 
 use N98\Magento\Command\System\Check\StoreCheck;
+use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 
 class UnsecureCookieDomainCheck implements StoreCheck
@@ -19,13 +20,16 @@ class UnsecureCookieDomainCheck implements StoreCheck
         $cookieDomain = \Mage::getStoreConfig('web/cookie/cookie_domain', $store);
 
         if (!empty($cookieDomain)) {
-            $result->setIsValid(strpos(parse_url($cookieDomain, PHP_URL_HOST), $cookieDomain));
-        }
+            $isValid = strpos(parse_url($cookieDomain, PHP_URL_HOST), $cookieDomain);
+            $result->setStatus($isValid ? Result::OK : Result::ERROR);
 
-        if ($result->isValid()) {
-            $result->setMessage('<info>Cookie Domain (unsecure) of Store: <comment>' . $store->getCode() . '</comment> OK');
+            if ($result->isValid()) {
+                $result->setMessage('<info>Cookie Domain (unsecure) of Store: <comment>' . $store->getCode() . '</comment> OK');
+            } else {
+                $result->setMessage('<error>Cookie Domain (unsecure) <comment>Store: ' . $store->getCode() . '</comment> ' . $errorMessage . '</error>');
+            }
         } else {
-            $result->setMessage('<error>Cookie Domain (unsecure) <comment>Store: ' . $store->getCode() . '</comment> ' . $errorMessage . '</error>');
+            $result->setMessage('<info>Cookie Domain (unsecure) of Store: <comment>' . $store->getCode() . '</comment> OK - No domain set');
         }
     }
 }

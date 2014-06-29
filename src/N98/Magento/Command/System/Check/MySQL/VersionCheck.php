@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System\Check\MySQL;
 
+use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Magento\Command\System\Check\SimpleCheck;
 
@@ -20,9 +21,10 @@ class VersionCheck implements SimpleCheck
          */
         $mysqlVersion = $dbAdapter->fetchOne('SELECT VERSION()');
         if (version_compare($mysqlVersion, '4.1.20', '>=')) {
+            $result->setStatus(Result::OK);
             $result->setMessage("<info>MySQL Version <comment>$mysqlVersion</comment> found.</info>");
         } else {
-            $result->setIsValid(false);
+            $result->setStatus(Result::ERROR);
             $result->setMessage("<error>MySQL Version $mysqlVersion found. Upgrade your MySQL Version.</error>");
         }
     }

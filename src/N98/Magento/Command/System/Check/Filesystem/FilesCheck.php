@@ -4,6 +4,7 @@ namespace N98\Magento\Command\System\Check\Filesystem;
 
 use N98\Magento\Command\CommandAware;
 use N98\Magento\Command\CommandConfigAware;
+use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Magento\Command\System\Check\SimpleCheck;
 use N98\Magento\Command\System\CheckCommand;
@@ -33,11 +34,11 @@ class FilesCheck implements SimpleCheck, CommandAware, CommandConfigAware
             $result = $results->createResult();
 
             if (file_exists($magentoRoot . DIRECTORY_SEPARATOR . $file)) {
-                $result->setIsValid(true);
+                $result->setStatus(Result::OK);
                 $result->setMessage("<info>File <comment>" . $file . "</comment> found.</info>");
             } else {
 
-                $result->setIsValid(false);
+                $result->setStatus(Result::ERROR);
                 $result->setMessage("<error>File " . $file . " not found!</error><comment> Usage: " . $comment . "</comment>");
             }
 

@@ -5,9 +5,24 @@ namespace N98\Magento\Command\System\Check;
 class Result
 {
     /**
+     * @type string
+     */
+    const OK = 'ok';
+
+    /**
+     * @type string
+     */
+    const ERROR = 'error';
+
+    /**
+     * @type string
+     */
+    const WARNING = 'warning';
+
+    /**
      * @var bool
      */
-    protected $_isValid;
+    protected $_status;
 
     /**
      * @var array[string]
@@ -19,9 +34,9 @@ class Result
      */
     protected $_resultGroup;
 
-    public function __construct($isValid = true, $message = '', $resultGroup = '')
+    public function __construct($status = self::OK, $message = '', $resultGroup = '')
     {
-        $this->_isValid = $isValid;
+        $this->_status = $status;
         $this->_message = $message;
         $this->_resultGroup = $resultGroup;
     }
@@ -31,18 +46,30 @@ class Result
      */
     public function isValid()
     {
-        return $this->_isValid;
+        return $this->_status === self::OK;
     }
 
     /**
-     * @param boolean $isValid
+     * @param boolean $status
      * @return $this
      */
-    public function setIsValid($isValid)
+    public function setStatus($status)
     {
-        $this->_isValid = $isValid;
+        if (!in_array($status, array(self::OK, self::ERROR, self::WARNING))) {
+            throw new \LogicException('Wrong status was given. Use constants: Result::OK, Result::ERROR, Result::WARNING');
+        }
+
+        $this->_status = $status;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->_status;
     }
 
     /**

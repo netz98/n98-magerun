@@ -4,6 +4,7 @@ namespace N98\Magento\Command\System\Check\Filesystem;
 
 use N98\Magento\Command\CommandAware;
 use N98\Magento\Command\CommandConfigAware;
+use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Magento\Command\System\Check\SimpleCheck;
 use N98\Magento\Command\System\CheckCommand;
@@ -32,14 +33,14 @@ class FoldersCheck implements SimpleCheck, CommandAware, CommandConfigAware
         foreach ($folders as $folder => $comment) {
             $result = $results->createResult();
             if (file_exists($magentoRoot . DIRECTORY_SEPARATOR . $folder)) {
-                $result->setIsValid(true);
+                $result->setStatus(Result::OK);
                 $result->setMessage("<info>Folder <comment>" . $folder . "</comment> found.</info>");
                 if (!is_writeable($magentoRoot . DIRECTORY_SEPARATOR . $folder)) {
-                    $result->setIsValid(false);
+                    $result->setStatus(Result::ERROR);
                     $result->setMessage("<error>Folder " . $folder . " is not writeable!</error><comment> Usage: " . $comment . "</comment>");
                 }
             } else {
-                $result->setIsValid(false);
+                $result->setStatus(Result::ERROR);
                 $result->setMessage("<error>Folder " . $folder . " not found!</error><comment> Usage: " . $comment . "</comment>");
             }
         }

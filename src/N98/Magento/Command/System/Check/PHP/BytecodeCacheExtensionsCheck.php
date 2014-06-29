@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\System\Check\PHP;
 
 use N98\Magento\Command\CommandConfigAware;
+use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Magento\Command\System\Check\SimpleCheck;
 
@@ -30,7 +31,7 @@ class BytecodeCacheExtensionsCheck implements SimpleCheck, CommandConfigAware
                 break;
             }
         }
-        $result->setIsValid($bytecodeCacheExtensionLoaded);
+        $result->setStatus($bytecodeCacheExtensionLoaded ? Result::OK : Result::WARNING);
         if ($result->isValid()) {
             $result->setMessage("<info>Bytecode Cache <comment>$bytecodeCacheExtension</comment> found.</info>");
         } else {

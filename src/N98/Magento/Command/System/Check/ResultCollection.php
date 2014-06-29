@@ -26,13 +26,13 @@ class ResultCollection implements \IteratorAggregate
     }
 
     /**
-     * @param bool $isValid
+     * @param string $status
      * @param string $message
      * @return Result
      */
-    public function createResult($isValid = true, $message = '')
+    public function createResult($status = Result::OK, $message = '')
     {
-        $result = new Result($isValid, $message);
+        $result = new Result($status, $message);
         $result->setResultGroup($this->_resultGroup);
         $this->addResult($result);
 

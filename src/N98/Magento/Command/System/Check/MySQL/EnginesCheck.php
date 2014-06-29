@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\System\Check\MySQL;
 
 use N98\Magento\Command\System\Check\SimpleCheck;
+use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 
 class EnginesCheck implements SimpleCheck
@@ -24,7 +25,7 @@ class EnginesCheck implements SimpleCheck
             }
         }
 
-        $result->setIsValid($innodbFound);
+        $result->setStatus($innodbFound ? Result::OK : Result::ERROR);
 
         if ($innodbFound) {
             $result->setMessage("<info>Required MySQL Storage Engine <comment>InnoDB</comment> found.</info>");

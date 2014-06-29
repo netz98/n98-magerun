@@ -370,7 +370,7 @@ commands:
         - eaccelerator
         - xcache
         - Zend Optimizer
-        - Zend OPcache
+        #- Zend OPcache
 
   N98\Magento\Command\Media\DumpCommand:
     strip:

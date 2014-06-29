@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\System\Check\PHP;
 
 use N98\Magento\Command\CommandConfigAware;
+use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Magento\Command\System\Check\SimpleCheck;
 
@@ -22,7 +23,7 @@ class ExtensionsCheck implements SimpleCheck, CommandConfigAware
 
         foreach ($requiredExtensions as $ext) {
             $result = $results->createResult();
-            $result->setIsValid(extension_loaded($ext));
+            $result->setStatus(extension_loaded($ext) ? Result::OK : Result::ERROR);
             if ($result->isValid()) {
                 $result->setMessage("<info>Required PHP Module <comment>$ext</comment> found.</info>");
             } else {

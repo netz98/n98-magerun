@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System\Check\Settings;
 
+use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Magento\Command\System\Check\StoreCheck;
 
@@ -19,7 +20,7 @@ class UnsecureBaseUrlCheck implements StoreCheck
         $configValue = \Mage::getStoreConfig('web/unsecure/base_url', $store);
         $host = parse_url($configValue, PHP_URL_HOST);;
         $isValid = strstr($host, '.');
-        $result->setIsValid($isValid);
+        $result->setStatus($isValid ? Result::OK : Result::ERROR);
         if (!$isValid) {
             $result->setMessage('<error>Invalid Unsecure BaseURL <comment>Store: ' . $store->getCode() . '</comment> ' . $errorMessage . '</error>');
         } else {

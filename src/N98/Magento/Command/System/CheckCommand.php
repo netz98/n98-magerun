@@ -112,10 +112,16 @@ HELP;
                 $this->writeSection($output, str_pad(strtoupper($result->getResultGroup()), 60, ' ', STR_PAD_BOTH));
             }
             if ($result->getMessage()) {
-                if ($result->isValid()) {
-                    $output->write('<info>' . \N98\Util\Unicode\Charset::convertInteger(self::UNICODE_CHECKMARK_CHAR) . '</info> ');
-                } else {
-                    $output->write('<error>' . \N98\Util\Unicode\Charset::convertInteger(self::UNICODE_CROSS_CHAR) . '</error> ');
+                switch ($result->getStatus()) {
+                    case Result::WARNING:
+                    case Result::ERROR:
+                        $output->write('<error>' . \N98\Util\Unicode\Charset::convertInteger(self::UNICODE_CROSS_CHAR) . '</error> ');
+                        break;
+
+                    default:
+                    case Result::OK:
+                        $output->write('<info>' . \N98\Util\Unicode\Charset::convertInteger(self::UNICODE_CHECKMARK_CHAR) . '</info> ');
+                        break;
                 }
                 $output->writeln($result->getMessage());
             }
@@ -136,8 +142,8 @@ HELP;
             /* @var $result Result */
             $table[] = array(
                 $result->getResultGroup(),
-                    strip_tags($result->getMessage()),
-                $result->isValid() ? 'OK' : 'Error',
+                strip_tags($result->getMessage()),
+                $result->getStatus()
             );
         }
 
