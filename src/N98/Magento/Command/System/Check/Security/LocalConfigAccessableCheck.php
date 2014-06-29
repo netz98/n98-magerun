@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\System\Check\Security;
 
 use N98\Magento\Command\System\Check\SimpleCheck;
+use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 
 class LocalConfigAccessableCheck implements SimpleCheck
@@ -29,10 +30,10 @@ class LocalConfigAccessableCheck implements SimpleCheck
         $http->close();
 
         if ($responseCode === 200) {
-            $result->setIsValid(false);
+            $result->setStatus(Result::ERROR);
             $result->setMessage("<error>$filePath can be accessed from outside!</error>");
         } else {
-            $result->setIsValid(true);
+            $result->setStatus(Result::OK);
             $result->setMessage("<info><comment>$filePath</comment> cannot be accessed from outside.</info>");
         }
     }
