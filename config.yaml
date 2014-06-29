@@ -96,6 +96,7 @@ commands:
     - N98\Magento\Command\Developer\Translate\SetCommand
     - N98\Magento\Command\Developer\Translate\ExportCommand
     - N98\Magento\Command\Eav\Attribute\ListCommand
+    - N98\Magento\Command\Eav\Attribute\RemoveCommand
     - N98\Magento\Command\Eav\Attribute\ViewCommand
     - N98\Magento\Command\Indexer\ListCommand
     - N98\Magento\Command\Indexer\ReindexAllCommand

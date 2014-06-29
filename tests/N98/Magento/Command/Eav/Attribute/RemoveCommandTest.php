@@ -1,18 +1,18 @@
 <?php
 
-namespace N98\Magento\Command\Developer;
+namespace N98\Magento\Command\Eav\Attribute;
 
 use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
 
-class AttributeRemoveCommandTest extends TestCase
+class RemoveCommandTest extends TestCase
 {
     public function testCommandThrowsExceptionIfInvalidEntityTypeFormat()
     {
         $application = $this->getApplication();
-        $application->add(new AttributeRemoveCommand());
+        $application->add(new RemoveCommand());
         $application->setAutoExit(false);
-        $command = $this->getApplication()->find('dev:attribute-remove');
+        $command = $this->getApplication()->find('eav:attribute:remove');
 
         $this->setExpectedException('InvalidArgumentException', 'Entity type: "notavalidtype" is invalid');
 
@@ -29,9 +29,9 @@ class AttributeRemoveCommandTest extends TestCase
     public function testCommandThrowsExceptionIfInvalidEntityType()
     {
         $application = $this->getApplication();
-        $application->add(new AttributeRemoveCommand());
+        $application->add(new RemoveCommand());
         $application->setAutoExit(false);
-        $command = $this->getApplication()->find('dev:attribute-remove');
+        $command = $this->getApplication()->find('eav:attribute:remove');
 
         $this->setExpectedException('Mage_Core_Exception', 'Invalid entity_type specified: not_a_valid_type');
 
@@ -48,9 +48,9 @@ class AttributeRemoveCommandTest extends TestCase
     public function testCommandThrowsExceptionIfAttributeNotExist()
     {
         $application = $this->getApplication();
-        $application->add(new AttributeRemoveCommand());
+        $application->add(new RemoveCommand());
         $application->setAutoExit(false);
-        $command = $this->getApplication()->find('dev:attribute-remove');
+        $command = $this->getApplication()->find('eav:attribute:remove');
 
         $this->setExpectedException(
             'InvalidArgumentException',
@@ -70,9 +70,9 @@ class AttributeRemoveCommandTest extends TestCase
     public function testAttributeIsSuccessfullyRemoved()
     {
         $application = $this->getApplication();
-        $application->add(new AttributeRemoveCommand());
+        $application->add(new RemoveCommand());
         $application->setAutoExit(false);
-        $command = $this->getApplication()->find('dev:attribute-remove');
+        $command = $this->getApplication()->find('eav:attribute:remove');
 
         $entityType     = 'catalog_product';
         $attributeCode  = 'crazyCoolAttribute';
