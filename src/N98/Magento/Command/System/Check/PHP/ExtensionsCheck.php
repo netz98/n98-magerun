@@ -23,7 +23,7 @@ class ExtensionsCheck implements SimpleCheck, CommandConfigAware
 
         foreach ($requiredExtensions as $ext) {
             $result = $results->createResult();
-            $result->setStatus(extension_loaded($ext) ? Result::OK : Result::ERROR);
+            $result->setStatus(extension_loaded($ext) ? Result::STATUS_OK : Result::STATUS_ERROR);
             if ($result->isValid()) {
                 $result->setMessage("<info>Required PHP Module <comment>$ext</comment> found.</info>");
             } else {

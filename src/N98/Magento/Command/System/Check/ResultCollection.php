@@ -30,7 +30,7 @@ class ResultCollection implements \IteratorAggregate
      * @param string $message
      * @return Result
      */
-    public function createResult($status = Result::OK, $message = '')
+    public function createResult($status = Result::STATUS_OK, $message = '')
     {
         $result = new Result($status, $message);
         $result->setResultGroup($this->_resultGroup);

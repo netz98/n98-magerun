@@ -33,14 +33,14 @@ class FoldersCheck implements SimpleCheck, CommandAware, CommandConfigAware
         foreach ($folders as $folder => $comment) {
             $result = $results->createResult();
             if (file_exists($magentoRoot . DIRECTORY_SEPARATOR . $folder)) {
-                $result->setStatus(Result::OK);
+                $result->setStatus(Result::STATUS_OK);
                 $result->setMessage("<info>Folder <comment>" . $folder . "</comment> found.</info>");
                 if (!is_writeable($magentoRoot . DIRECTORY_SEPARATOR . $folder)) {
-                    $result->setStatus(Result::ERROR);
+                    $result->setStatus(Result::STATUS_ERROR);
                     $result->setMessage("<error>Folder " . $folder . " is not writeable!</error><comment> Usage: " . $comment . "</comment>");
                 }
             } else {
-                $result->setStatus(Result::ERROR);
+                $result->setStatus(Result::STATUS_ERROR);
                 $result->setMessage("<error>Folder " . $folder . " not found!</error><comment> Usage: " . $comment . "</comment>");
             }
         }

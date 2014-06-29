@@ -21,10 +21,10 @@ class VersionCheck implements SimpleCheck
          */
         $mysqlVersion = $dbAdapter->fetchOne('SELECT VERSION()');
         if (version_compare($mysqlVersion, '4.1.20', '>=')) {
-            $result->setStatus(Result::OK);
+            $result->setStatus(Result::STATUS_OK);
             $result->setMessage("<info>MySQL Version <comment>$mysqlVersion</comment> found.</info>");
         } else {
-            $result->setStatus(Result::ERROR);
+            $result->setStatus(Result::STATUS_ERROR);
             $result->setMessage("<error>MySQL Version $mysqlVersion found. Upgrade your MySQL Version.</error>");
         }
     }

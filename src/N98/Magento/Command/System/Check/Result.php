@@ -7,17 +7,17 @@ class Result
     /**
      * @type string
      */
-    const OK = 'ok';
+    const STATUS_OK = 'ok';
 
     /**
      * @type string
      */
-    const ERROR = 'error';
+    const STATUS_ERROR = 'error';
 
     /**
      * @type string
      */
-    const WARNING = 'warning';
+    const STATUS_WARNING = 'warning';
 
     /**
      * @var bool
@@ -34,7 +34,7 @@ class Result
      */
     protected $_resultGroup;
 
-    public function __construct($status = self::OK, $message = '', $resultGroup = '')
+    public function __construct($status = self::STATUS_OK, $message = '', $resultGroup = '')
     {
         $this->_status = $status;
         $this->_message = $message;
@@ -46,7 +46,7 @@ class Result
      */
     public function isValid()
     {
-        return $this->_status === self::OK;
+        return $this->_status === self::STATUS_OK;
     }
 
     /**
@@ -55,7 +55,7 @@ class Result
      */
     public function setStatus($status)
     {
-        if (!in_array($status, array(self::OK, self::ERROR, self::WARNING))) {
+        if (!in_array($status, array(self::STATUS_OK, self::STATUS_ERROR, self::STATUS_WARNING))) {
             throw new \LogicException('Wrong status was given. Use constants: Result::OK, Result::ERROR, Result::WARNING');
         }
 

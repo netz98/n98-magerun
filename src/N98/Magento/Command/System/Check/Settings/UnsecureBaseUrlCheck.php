@@ -20,7 +20,7 @@ class UnsecureBaseUrlCheck implements StoreCheck
         $configValue = \Mage::getStoreConfig('web/unsecure/base_url', $store);
         $host = parse_url($configValue, PHP_URL_HOST);;
         $isValid = strstr($host, '.');
-        $result->setStatus($isValid ? Result::OK : Result::ERROR);
+        $result->setStatus($isValid ? Result::STATUS_OK : Result::STATUS_ERROR);
         if (!$isValid) {
             $result->setMessage('<error>Invalid Unsecure BaseURL <comment>Store: ' . $store->getCode() . '</comment> ' . $errorMessage . '</error>');
         } else {

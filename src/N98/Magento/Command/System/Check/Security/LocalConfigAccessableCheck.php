@@ -30,10 +30,10 @@ class LocalConfigAccessableCheck implements SimpleCheck
         $http->close();
 
         if ($responseCode === 200) {
-            $result->setStatus(Result::ERROR);
+            $result->setStatus(Result::STATUS_ERROR);
             $result->setMessage("<error>$filePath can be accessed from outside!</error>");
         } else {
-            $result->setStatus(Result::OK);
+            $result->setStatus(Result::STATUS_OK);
             $result->setMessage("<info><comment>$filePath</comment> cannot be accessed from outside.</info>");
         }
     }

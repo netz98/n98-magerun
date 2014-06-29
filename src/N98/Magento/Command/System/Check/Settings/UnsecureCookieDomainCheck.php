@@ -21,7 +21,7 @@ class UnsecureCookieDomainCheck implements StoreCheck
 
         if (!empty($cookieDomain)) {
             $isValid = strpos(parse_url($cookieDomain, PHP_URL_HOST), $cookieDomain);
-            $result->setStatus($isValid ? Result::OK : Result::ERROR);
+            $result->setStatus($isValid ? Result::STATUS_OK : Result::STATUS_ERROR);
 
             if ($result->isValid()) {
                 $result->setMessage('<info>Cookie Domain (unsecure) of Store: <comment>' . $store->getCode() . '</comment> OK');

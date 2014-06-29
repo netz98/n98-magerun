@@ -31,7 +31,7 @@ class BytecodeCacheExtensionsCheck implements SimpleCheck, CommandConfigAware
                 break;
             }
         }
-        $result->setStatus($bytecodeCacheExtensionLoaded ? Result::OK : Result::WARNING);
+        $result->setStatus($bytecodeCacheExtensionLoaded ? Result::STATUS_OK : Result::STATUS_WARNING);
         if ($result->isValid()) {
             $result->setMessage("<info>Bytecode Cache <comment>$bytecodeCacheExtension</comment> found.</info>");
         } else {

@@ -113,13 +113,13 @@ HELP;
             }
             if ($result->getMessage()) {
                 switch ($result->getStatus()) {
-                    case Result::WARNING:
-                    case Result::ERROR:
+                    case Result::STATUS_WARNING:
+                    case Result::STATUS_ERROR:
                         $output->write('<error>' . \N98\Util\Unicode\Charset::convertInteger(self::UNICODE_CROSS_CHAR) . '</error> ');
                         break;
 
                     default:
-                    case Result::OK:
+                    case Result::STATUS_OK:
                         $output->write('<info>' . \N98\Util\Unicode\Charset::convertInteger(self::UNICODE_CHECKMARK_CHAR) . '</info> ');
                         break;
                 }
