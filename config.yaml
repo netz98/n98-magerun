@@ -323,6 +323,24 @@ commands:
     limit: 1000
 
   N98\Magento\Command\System\CheckCommand:
+    checks:
+      settings:
+        - N98\Magento\Command\System\Check\Settings\SecureBaseUrlCheck
+        - N98\Magento\Command\System\Check\Settings\UnsecureBaseUrlCheck
+        - N98\Magento\Command\System\Check\Settings\SecureCookieDomainCheck
+        - N98\Magento\Command\System\Check\Settings\UnsecureCookieDomainCheck
+      filesystem:
+        - N98\Magento\Command\System\Check\Filesystem\FoldersCheck
+        - N98\Magento\Command\System\Check\Filesystem\FilesCheck
+      php:
+        - N98\Magento\Command\System\Check\PHP\ExtensionsCheck
+        - N98\Magento\Command\System\Check\PHP\BytecodeCacheExtensionsCheck
+      security:
+        - N98\Magento\Command\System\Check\Security\LocalConfigAccessableCheck
+      mysql:
+        - N98\Magento\Command\System\Check\MySQL\VersionCheck
+        - N98\Magento\Command\System\Check\MySQL\EnginesCheck
+
     filesystem:
       folders:
         media: "Used for images and other media files."

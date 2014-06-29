@@ -14,6 +14,7 @@ RECENT CHANGES
 * #354 Restore autoloaders after loading Magento (by Maarten van Schaik and Melvyn Sopacua)
 * #355 Implement drop support for db:import (by Melvyn Sopacua)
 * Added --log-junit option to sys:setup:compare-versions command (by Christian Münch)
+* Complete rewrite of sys:check command (by Christian Münch)
 
 ======
 1.89.2
@@ -26,19 +27,6 @@ RECENT CHANGES
 ======
 
 * Installer: Replaced Magento CE 1.9.0.0 with CE 1.9.0.1
-
-======
-1.89.0
-======
-
-* #320 Fixing minor grammatical error (by Chris Jones)
-* #326 Encryption key parameter in install command (by Kristof Ringleff)
-* #327 Uninstall from specified folder (by Kristof Ringleff)
-* #328 added Magento CE install option (by Hans Kuijpers)
-* #329 Added Magento CE 1.9.0.0 to test script (by Hans Kuijpers)
-* #331 Keep dataflow profiles when stripping temp tables
-* Changed download URLs to raw.githubusercontent.com
-* Updated 3rd party dependencies
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
