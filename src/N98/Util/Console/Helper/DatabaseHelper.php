@@ -318,17 +318,28 @@ class DatabaseHelper extends AbstractHelper
     /**
      * Get list of db tables
      *
+     * @param bool $withoutPrefix
      * @return array
      */
     public function getTables($withoutPrefix = false)
     {
-        $statement = $this->getConnection()->query('SHOW TABLES');
+        $db = $this->getConnection();
+        $prefix = $this->dbSettings['prefix'];
+        if (strlen($prefix) > 0) {
+            $statement = $db->prepare('SHOW TABLES LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+            $statement->execute(
+                array(':like' => $prefix . '%')
+            );
+        } else {
+            $statement = $db->query('SHOW TABLES');
+        }
+
         if ($statement) {
             $result = $statement->fetchAll(\PDO::FETCH_COLUMN);
             if ($withoutPrefix === false) {
                 return $result;
             }
-            $prefix = $this->dbSettings['prefix'];
+
             return array_map(function($tableName) use ($prefix){
                     return str_replace($prefix, '', $tableName);
                 },$result);
@@ -383,16 +394,15 @@ class DatabaseHelper extends AbstractHelper
      */
     public function dropTables($output)
     {
-        $db = $this->getConnection();
-        $result = $db->query("SHOW TABLES");
+        $result = $this->getTables();
         $query = 'SET FOREIGN_KEY_CHECKS = 0; ';
         $count = 0;
-        while ($row = $result->fetch(\PDO::FETCH_NUM)) {
-            $query .= 'DROP TABLE IF EXISTS `'.$row[0].'`; ';
+        foreach ($result as $tableName) {
+            $query .= 'DROP TABLE IF EXISTS `'.$tableName.'`; ';
             $count++;
         }
         $query .= 'SET FOREIGN_KEY_CHECKS = 1;';
-        $db->query($query);
+        $this->getConnection()->query($query);
         $output->writeln('<info>Dropped database tables</info> <comment>' . $count . ' tables dropped</comment>');
     }
 
