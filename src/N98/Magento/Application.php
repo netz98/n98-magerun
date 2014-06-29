@@ -17,6 +17,7 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -571,7 +572,10 @@ class Application extends BaseApplication
             date_default_timezone_set(@date_default_timezone_get());
 
             $loadExternalConfig = !$this->_checkSkipConfigOption();
-            $configLoader = $this->getConfigurationLoader($initConfig);
+            if ($output === null) {
+                $output = new NullOutput();
+            }
+            $configLoader = $this->getConfigurationLoader($initConfig, $output);
             $this->partialConfig = $configLoader->getPartialConfig($loadExternalConfig);
             $this->detectMagento($input, $output);
             $configLoader->loadStageTwo($this->_magentoRootFolder, $loadExternalConfig);
@@ -712,14 +716,16 @@ class Application extends BaseApplication
 
     /**
      * @param array $initConfig
+     * @param OutputInterface $output
      * @return ConfigurationLoader
      */
-    public function getConfigurationLoader($initConfig = array())
+    public function getConfigurationLoader($initConfig = array(), OutputInterface $output)
     {
         if ($this->configurationLoader === null) {
             $this->configurationLoader = new ConfigurationLoader(
                 ArrayFunctions::mergeArrays($this->config, $initConfig),
-                $this->isPharMode()
+                $this->isPharMode(),
+                $output
             );
         }
 

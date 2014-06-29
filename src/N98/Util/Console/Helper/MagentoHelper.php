@@ -22,7 +22,7 @@ class MagentoHelper extends AbstractHelper
     protected $_magentoRootFolder = null;
 
     /**
-     * @var
+     * @var string
      */
     protected $_magentoMajorVersion = \N98\Magento\Application::MAGENTO_MAJOR_VERSION_1;
 
@@ -80,6 +80,7 @@ class MagentoHelper extends AbstractHelper
     public function detect($folder, $subFolders = array())
     {
         $folders = $this->splitPathFolders($folder);
+        $folders = $this->checkMagerunFile($folders);
         $folders = $this->checkModman($folders);
         $folders = array_merge($folders, $subFolders);
 
@@ -153,16 +154,12 @@ class MagentoHelper extends AbstractHelper
     protected function checkModman($folders)
     {
         foreach (array_reverse($folders) as $searchFolder) {
-            if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
-                $this->output->writeln('<debug>Search for Magento in folder <info>' . $searchFolder . '</info></debug>');
-            }
-
             if (!is_readable($searchFolder)) {
                 if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
                     $this->output->writeln('<debug>Folder <info>' . $searchFolder . '</info> is not readable. Skip.</debug>');
                 }
                 continue;
-            }            
+            }
             $finder = Finder::create();
             $finder
                 ->files()
@@ -180,21 +177,57 @@ class MagentoHelper extends AbstractHelper
                     $this->output->writeln('<debug>Found modman .basedir file with content <info>' . $baseFolderContent . '</info></debug>');
                 }
 
-                if (String::startsWith($baseFolderContent, self::MODMAN_MAGERUN_MARKER)) {
+                if (!empty($baseFolderContent)) {
                     $modmanBaseFolder = $searchFolder
                                       . DIRECTORY_SEPARATOR
-                                      . substr($baseFolderContent, strlen(self::MODMAN_MAGERUN_MARKER));
+                                      . '..'
+                                      . DIRECTORY_SEPARATOR
+                                      . $baseFolderContent;
                     array_push($folders, $modmanBaseFolder);
-                } else {
-                    if (!empty($baseFolderContent)) {
-                        $modmanBaseFolder = $searchFolder
-                            . DIRECTORY_SEPARATOR
-                            . '..'
-                            . DIRECTORY_SEPARATOR
-                            . $baseFolderContent;
-                        array_push($folders, $modmanBaseFolder);
-                    }
                 }
+            }
+        }
+
+        return $folders;
+    }
+
+    /**
+     * Check for .n98-magerun file
+     *
+     * @param array $folders
+     *
+     * @return array
+     */
+    protected function checkMagerunFile($folders)
+    {
+        foreach (array_reverse($folders) as $searchFolder) {
+            if (!is_readable($searchFolder)) {
+                if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
+                    $this->output->writeln('<debug>Folder <info>' . $searchFolder . '</info> is not readable. Skip.</debug>');
+                }
+                continue;
+            }
+            $finder = Finder::create();
+            $finder
+                ->files()
+                ->ignoreUnreadableDirs(true)
+                ->depth(0)
+                ->followLinks()
+                ->ignoreDotFiles(false)
+                ->name('.n98-magerun')
+                ->in($searchFolder);
+
+            $count = $finder->count();
+            if ($count > 0) {
+                $magerunFileContent = trim(file_get_contents($searchFolder . DIRECTORY_SEPARATOR . '.n98-magerun'));
+                if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
+                    $this->output->writeln('<debug>Found .n98-magerun file with content <info>' . $magerunFileContent . '</info></debug>');
+                }
+
+                $modmanBaseFolder = $searchFolder
+                                  . DIRECTORY_SEPARATOR
+                                  . $magerunFileContent;
+                array_push($folders, $modmanBaseFolder);
             }
         }
 
@@ -208,6 +241,10 @@ class MagentoHelper extends AbstractHelper
      */
     protected function _search($searchFolder)
     {
+        if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
+            $this->output->writeln('<debug>Search for Magento in folder <info>' . $searchFolder . '</info></debug>');
+        }
+
         if (!is_dir($searchFolder . '/app')) {
             return false;
         }
@@ -237,6 +274,10 @@ class MagentoHelper extends AbstractHelper
                 $this->_magentoEnterprise = (\Mage::getEdition() == 'Enterprise');
             } else {
                 $this->_magentoEnterprise = is_dir($this->_magentoRootFolder . '/app/code/core/Enterprise');
+            }
+
+            if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
+                $this->output->writeln('<debug>Found Magento in folder <info>' . $this->_magentoRootFolder . '</info></debug>');
             }
 
             return true;
