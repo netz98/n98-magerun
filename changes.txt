@@ -15,6 +15,7 @@ RECENT CHANGES
 * #355 Implement drop support for db:import (by Melvyn Sopacua)
 * Added --log-junit option to sys:setup:compare-versions command (by Christian Münch)
 * Complete rewrite of sys:check command (by Christian Münch)
+* Updated 3rd party components (Symfony, Faker, PHPUnit)
 
 ======
 1.89.2
