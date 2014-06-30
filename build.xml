@@ -49,7 +49,7 @@ Build phar with:
     </fileset>
 
     <target name="dist">
-        <exec command="composer.phar install" dir="${project.basedir}" passthru="true" />
+        <exec command="composer.phar install --no-dev" dir="${project.basedir}" passthru="true" />
         <phingcall target="dist_unix">
             <property name="compression" value="bzip2" />
         </phingcall>
