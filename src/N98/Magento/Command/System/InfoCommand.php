@@ -58,6 +58,10 @@ class InfoCommand extends AbstractMagentoCommand
         try {
             $this->findCoreOverwrites();
             $this->findVendors();
+            $this->attributeCount();
+            $this->customerCount();
+            $this->categoryCount();
+            $this->productCount();
         } catch (\Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
@@ -143,5 +147,25 @@ class InfoCommand extends AbstractMagentoCommand
 
             $this->infos['Vendors (' . $codePool . ')'] = implode(', ', $vendors);
         }
+    }
+
+    protected function categoryCount()
+    {
+        $this->infos['Category Count'] = \Mage::getModel('catalog/category')->getCollection()->getSize();
+    }
+
+    protected function productCount()
+    {
+        $this->infos['Product Count'] = \Mage::getModel('catalog/product')->getCollection()->getSize();
+    }
+
+    protected function customerCount()
+    {
+        $this->infos['Customer Count'] = \Mage::getModel('customer/customer')->getCollection()->getSize();
+    }
+
+    protected function attributeCount()
+    {
+        $this->infos['Attribute Count'] = \Mage::getModel('eav/entity_attribute')->getCollection()->getSize();
     }
 }
