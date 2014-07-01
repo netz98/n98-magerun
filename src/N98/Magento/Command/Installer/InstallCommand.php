@@ -730,7 +730,7 @@ HELP;
         );
 
         if ($useDefaultConfigParams && strlen($defaults['encryption_key']) > 0) {
-            $argv['encryption_key '] = $defaults['encryption_key'];
+            $argv['encryption_key'] = $defaults['encryption_key'];
         }
         return $argv;
     }
