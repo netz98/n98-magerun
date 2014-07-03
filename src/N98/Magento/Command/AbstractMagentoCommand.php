@@ -323,20 +323,6 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * obtain composer
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return \Composer\Composer
-     */
-    protected function getComposer(InputInterface $input, OutputInterface $output)
-    {
-        $io = new ConsoleIO($input, $output, $this->getHelperSet());
-        return ComposerFactory::create($io, array());
-    }
-
-    /**
      * @param string $alias
      * @param string $message
      * @return AbstractMagentoCommand
