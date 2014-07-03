@@ -787,7 +787,9 @@ Compares module version with saved setup version in `core_resource` table and di
 
 .. code-block:: sh
 
-   $ n98-magerun.phar sys:setup:compare-versions [--ignore-data]
+   $ n98-magerun.phar sys:setup:compare-versions [--ignore-data] [--log-junit="..."] [--format[="..."]]
+
+* If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
 
 System Check
 """"""""""""

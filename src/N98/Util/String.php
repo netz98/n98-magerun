@@ -39,7 +39,7 @@ class String
      *
      * @return bool
      */
-    function endsWith($haystack, $needle)
+    public static function endsWith($haystack, $needle)
     {
         return $needle === '' || substr($haystack, -strlen($needle)) === $needle;
     }

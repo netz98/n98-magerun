@@ -96,17 +96,19 @@ commands:
     - N98\Magento\Command\Developer\Translate\SetCommand
     - N98\Magento\Command\Developer\Translate\ExportCommand
     - N98\Magento\Command\Eav\Attribute\ListCommand
+    - N98\Magento\Command\Eav\Attribute\RemoveCommand
     - N98\Magento\Command\Eav\Attribute\ViewCommand
     - N98\Magento\Command\Indexer\ListCommand
     - N98\Magento\Command\Indexer\ReindexAllCommand
     - N98\Magento\Command\Indexer\ReindexCommand
     - N98\Magento\Command\Installer\InstallCommand
     - N98\Magento\Command\Installer\UninstallCommand
-    - N98\Magento\Command\LocalConfig\GenerateCommand
-    - N98\Magento\Command\MagentoConnect\DownloadExtensionCommand
-    - N98\Magento\Command\MagentoConnect\InstallExtensionCommand
-    - N98\Magento\Command\MagentoConnect\ListExtensionsCommand
-    - N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand
+    - N98\Magento\Command\LocalConfig\GenerateCommand 
+    - N98\Magento\Command\MagentoConnect\DownloadExtensionCommand 
+    - N98\Magento\Command\MagentoConnect\InstallExtensionCommand 
+    - N98\Magento\Command\MagentoConnect\ListExtensionsCommand 
+    - N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand 
+    - N98\Magento\Command\MagentoConnect\ValidateExtensionCommand
     - N98\Magento\Command\Media\DumpCommand
     - N98\Magento\Command\OpenBrowserCommand
     - N98\Magento\Command\ScriptCommand
@@ -323,6 +325,24 @@ commands:
     limit: 1000
 
   N98\Magento\Command\System\CheckCommand:
+    checks:
+      settings:
+        - N98\Magento\Command\System\Check\Settings\SecureBaseUrlCheck
+        - N98\Magento\Command\System\Check\Settings\UnsecureBaseUrlCheck
+        - N98\Magento\Command\System\Check\Settings\SecureCookieDomainCheck
+        - N98\Magento\Command\System\Check\Settings\UnsecureCookieDomainCheck
+      filesystem:
+        - N98\Magento\Command\System\Check\Filesystem\FoldersCheck
+        - N98\Magento\Command\System\Check\Filesystem\FilesCheck
+      php:
+        - N98\Magento\Command\System\Check\PHP\ExtensionsCheck
+        - N98\Magento\Command\System\Check\PHP\BytecodeCacheExtensionsCheck
+      security:
+        - N98\Magento\Command\System\Check\Security\LocalConfigAccessableCheck
+      mysql:
+        - N98\Magento\Command\System\Check\MySQL\VersionCheck
+        - N98\Magento\Command\System\Check\MySQL\EnginesCheck
+
     filesystem:
       folders:
         media: "Used for images and other media files."

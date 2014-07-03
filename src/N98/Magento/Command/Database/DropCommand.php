@@ -12,6 +12,7 @@ class DropCommand extends AbstractDatabaseCommand
     {
         $this
             ->setName('db:drop')
+            ->addOption('tables', 't', InputOption::VALUE_NONE, 'Drop all tables instead of dropping the database')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force')
             ->setDescription('Drop current database')
         ;
@@ -33,6 +34,7 @@ HELP;
     {
         $this->detectDbSettings($output);
         $dialog = $this->getHelperSet()->get('dialog');
+        $dbHelper = $this->getHelper('database');
 
         if ($input->getOption('force')) {
             $shouldDrop = true;
@@ -41,10 +43,11 @@ HELP;
         }
 
         if ($shouldDrop) {
-            $db = $this->getHelper('database')->getConnection();
-            $db->query("DROP DATABASE `" . $this->dbSettings['dbname'] . "`");
-            $output->writeln('<info>Dropped database</info> <comment>' . $this->dbSettings['dbname'] . '</comment>');
+            if ($input->getOption('tables')) {
+                $dbHelper->dropTables($output);
+            } else {
+                $dbHelper->dropDatabase($output);
+            }
         }
     }
-
 }

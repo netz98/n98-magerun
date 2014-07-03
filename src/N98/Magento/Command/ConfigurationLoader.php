@@ -2,7 +2,10 @@
 
 namespace N98\Magento\Command;
 
+use FSHL\Output;
 use N98\Util\String;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
@@ -80,16 +83,23 @@ class ConfigurationLoader
     protected $_isPharMode = true;
 
     /**
+     * @var OutputInterface
+     */
+    protected $_output;
+
+    /**
      * Load config
      * If $magentoRootFolder is null, only non-project config is loaded
      *
      * @param array $config
-     * @param bool  $isPharMode
+     * @param bool $isPharMode
+     * @param OutputInterface $output
      */
-    public function __construct($config, $isPharMode)
+    public function __construct($config, $isPharMode, OutputInterface $output)
     {
         $this->_initialConfig = $config;
         $this->_isPharMode = $isPharMode;
+        $this->_output = $output;
     }
 
     /**
@@ -149,6 +159,9 @@ class ConfigurationLoader
         if ($this->_distConfig == null) {
             $this->_distConfig = Yaml::parse(__DIR__ . '/../../../../config.yaml');
         }
+        if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
+            $this->_output->writeln('<debug>Load dist config</debug>');
+        }
         $config = ArrayFunctions::mergeArrays($this->_distConfig, $initConfig);
 
         return $config;
@@ -166,6 +179,9 @@ class ConfigurationLoader
         if ($this->_systemConfig == null) {
             $systemWideConfigFile = '/etc/' . $this->_customConfigFilename;
             if ($systemWideConfigFile && file_exists($systemWideConfigFile)) {
+                if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
+                    $this->_output->writeln('<debug>Load system config <comment>' . $systemWideConfigFile . '</comment></debug>');
+                }
                 $this->_systemConfig = Yaml::parse($systemWideConfigFile);
             } else {
                 $this->_systemConfig = array();
@@ -321,6 +337,11 @@ class ConfigurationLoader
         } else {
             $path = $file->getRealPath();
         }
+
+        if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
+            $this->_output->writeln('<debug>Load plugin config <comment>' . $path . '</comment></debug>');
+        }
+
         $localPluginConfig = \file_get_contents($path);
         $localPluginConfig = Yaml::parse($this->applyVariables($localPluginConfig, $magentoRootFolder, $file));
 
