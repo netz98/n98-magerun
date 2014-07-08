@@ -24,17 +24,30 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface   $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface   $input
+     * @param OutputInterface $output
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->getApplication()->setAutoExit(false);
         $this->detectMagento($output);
         if ($this->initMagento()) {
-
             try {
+                /**
+                 * Get events before cache flush command is called.
+                 */
+                $reflectionApp = new \ReflectionObject(\Mage::app());
+                $appEventReflectionProperty = $reflectionApp->getProperty('_events');
+                $appEventReflectionProperty->setAccessible(true);
+                $eventsBeforeCacheFlush = $appEventReflectionProperty->getValue(\Mage::app());
+
                 $this->getApplication()->run(new StringInput('cache:flush'), new NullOutput());
+
+                /**
+                 * Restore initially loaded events which was reset during setup script run
+                 */
+                $appEventReflectionProperty->setValue(\Mage::app(), $eventsBeforeCacheFlush);
+
                 /**
                  * Put output in buffer. \Mage_Core_Model_Resource_Setup::_modifyResourceDb should print any error
                  * directly to stdout. Use execption which will be thrown to show error
