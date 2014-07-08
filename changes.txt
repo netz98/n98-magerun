@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.91.0
+======
+
+* sys:info command: Added row count for main entities (by Christian Münch)
+
+======
 1.90.0
 ======
 
@@ -26,11 +32,6 @@ RECENT CHANGES
 
 * #336 Install command broken with --noDownload option (by Manuele Menozzi)
 
-======
-1.89.1
-======
-
-* Installer: Replaced Magento CE 1.9.0.0 with CE 1.9.0.1
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
