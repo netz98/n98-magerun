@@ -7,6 +7,8 @@ RECENT CHANGES
 ======
 
 * sys:info command: Added row count for main entities (by Christian Münch)
+* #315 sys:setup:run on enterprise requires admin session. (by Thorsten Essig and Christian Münch)
+* #367 Exclude sessions from @stripped (and therefore @development) (by Aaron Brady)
 
 ======
 1.90.0
