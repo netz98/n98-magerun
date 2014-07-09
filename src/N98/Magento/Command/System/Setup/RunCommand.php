@@ -3,7 +3,6 @@
 namespace N98\Magento\Command\System\Setup;
 
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,6 +25,7 @@ HELP;
     /**
      * @param InputInterface   $input
      * @param OutputInterface $output
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -64,8 +64,12 @@ HELP;
                 $this->printException($output, $e);
                 $this->printStackTrace($output, $e->getTrace());
                 $this->printFile($output, $e);
+
+                return 1; // exit with error status
             }
         }
+
+        return 0;
     }
 
     /**
