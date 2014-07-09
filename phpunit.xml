@@ -8,15 +8,12 @@
          convertWarningsToExceptions="true"
          forceCoversAnnotation="false"
          mapTestClassNameToCoveredClassName="false"
-         printerClass="PHPUnit_TextUI_ResultPrinter"
          processIsolation="false"
          stopOnError="false"
          stopOnFailure="false"
          stopOnIncomplete="false"
          stopOnSkipped="false"
-         testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
-         strict="false"
-         verbose="true">
+         strict="false">
     <testsuites>
         <testsuite name="n98-magerun Tests">
             <directory>./tests</directory>
@@ -25,6 +22,9 @@
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
+            <exclude>
+                <file>src/bootstrap.php</file>
+            </exclude>
         </whitelist>
     </filter>
     <logging>

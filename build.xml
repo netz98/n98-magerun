@@ -49,15 +49,27 @@ Build phar with:
     </fileset>
 
     <target name="dist">
+        <exec command="composer.phar install --no-dev" dir="${project.basedir}" passthru="true" />
+        <phingcall target="dist_unix">
+            <property name="compression" value="bzip2" />
+        </phingcall>
+
+        <!-- Revert dev settings -->
+        <exec command="composer.phar install --dev" dir="${project.basedir}" passthru="true" />
+    </target>
+
+    <target name="dist_hhvm">
         <exec command="composer.phar install" dir="${project.basedir}" passthru="true" />
-        <phingcall target="dist_unix" />
+        <phingcall target="dist_unix">
+            <property name="compression" value="none" />
+        </phingcall>
 
         <!-- Revert dev settings -->
         <exec command="composer.phar install --dev" dir="${project.basedir}" passthru="true" />
     </target>
 
     <target name="dist_unix">
-        <patched-pharpackage basedir="./" stub="_cli_stub.php" signature="sha512" compression="bzip2" destfile="./n98-magerun.phar">
+        <patched-pharpackage basedir="./" stub="build/_cli_stub.php" signature="sha512" compression="${compression}" destfile="./n98-magerun.phar">
             <metadata>
                 <element name="version" value="1.0.0" />
                 <element name="authors">
@@ -82,6 +94,14 @@ Build phar with:
     <target name="install">
         <exec command="sudo cp ${project.basedir}/n98-magerun.phar /usr/local/bin/n98-magerun.phar;" />
         <exec command="sudo chmod a+x /usr/local/bin/n98-magerun.phar;" />
+    </target>
+
+    <target name="test">
+        <exec command="vendor/bin/phpunit --debug --coverage-html ${project.basedir}/reports/coverage" passthru="true" />
+    </target>
+
+    <target name="apigen">
+        <apigen source="src" destination="doc/api" title="n98-magerun API" deprecated="true" todo="true" />
     </target>
 
 </project>

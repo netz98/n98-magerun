@@ -3,11 +3,11 @@
 namespace N98\Magento\Command\System;
 
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class InfoCommand extends AbstractMagentoCommand
 {
@@ -20,7 +20,14 @@ class InfoCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:info')
-            ->setDescription('Prints infos about the current magento system.');
+            ->setDescription('Prints infos about the current magento system.')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
+        ;
     }
 
     /**
@@ -32,7 +39,9 @@ class InfoCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
 
-        $this->writeSection($output, 'Magento System Information');
+        if ($input->getOption('format') == null) {
+            $this->writeSection($output, 'Magento System Information');
+        }
 
         $this->initMagento();
 
@@ -46,8 +55,16 @@ class InfoCommand extends AbstractMagentoCommand
 
         $this->infos['Crypt Key'] = $config->getNode('global/crypt/key');
         $this->infos['Install Date'] = $config->getNode('global/install/date');
-        $this->findCoreOverwrites();
-        $this->findVendors();
+        try {
+            $this->findCoreOverwrites();
+            $this->findVendors();
+            $this->attributeCount();
+            $this->customerCount();
+            $this->categoryCount();
+            $this->productCount();
+        } catch (\Exception $e) {
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
+        }
 
         $table = array();
         foreach ($this->infos as $key => $value) {
@@ -56,8 +73,7 @@ class InfoCommand extends AbstractMagentoCommand
 
         $this->getHelper('table')
             ->setHeaders(array('name', 'value'))
-            ->setRows($table)
-            ->render($output);
+            ->renderByFormat($output, $table, $input->getOption('format'));
     }
 
     protected function _addCacheInfos()
@@ -131,5 +147,25 @@ class InfoCommand extends AbstractMagentoCommand
 
             $this->infos['Vendors (' . $codePool . ')'] = implode(', ', $vendors);
         }
+    }
+
+    protected function categoryCount()
+    {
+        $this->infos['Category Count'] = \Mage::getModel('catalog/category')->getCollection()->getSize();
+    }
+
+    protected function productCount()
+    {
+        $this->infos['Product Count'] = \Mage::getModel('catalog/product')->getCollection()->getSize();
+    }
+
+    protected function customerCount()
+    {
+        $this->infos['Customer Count'] = \Mage::getModel('customer/customer')->getCollection()->getSize();
+    }
+
+    protected function attributeCount()
+    {
+        $this->infos['Attribute Count'] = \Mage::getModel('eav/entity_attribute')->getCollection()->getSize();
     }
 }

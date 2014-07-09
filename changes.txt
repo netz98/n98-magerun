@@ -3,40 +3,38 @@ RECENT CHANGES
 **************
 
 ======
-1.84.0
+1.91.0
 ======
 
-* New commands cache:report and cache:view to look inside the core cache
-* Support to enable/disable specific cache types
-* Added Magento CE 1.8.1.0 to installer
-* #152 Added local autoloader overwrites to dev:module:rewrite:list command.
-* #261 Compatibility with environments that disable exec()
-* #264 Grammar correction and send warning to stderr (by Melvyn Sopacua)
-* #265 Features/install cmd fail invalid db config (by AydinHassan)
-* #268 Added @search database table group to readme (by Tegan Snyder)
-* Updated Symfony to 2.4
+* sys:info command: Added row count for main entities (by Christian Münch)
+* #315 sys:setup:run on enterprise requires admin session. (by Thorsten Essig and Christian Münch)
+* #367 Exclude sessions from @stripped (and therefore @development) (by Aaron Brady)
+* sys:setup returns exit status code "1" if setup fails (by Christian Münch)
 
 ======
-1.83.0
+1.90.0
 ======
 
-* Added --skip-config option to prohibit loading of external config files.
-* #251 Improve db:info with prefix and machine-readable output (by Melvyn Sopacua)
-* #255 ConfigurationLoader::loadPluginConfig() Bug? (Thanks to Cyrill Schumacher)
-* #257 Configuration value decryption fails when using Enterprise Edition (by @aedmonds)
-* #196 New table group for db:dump: --strip="@search" (by mystix)
-* #124 Feature Request: dev:log:size should support "human readable" flags. (by Alan Storm)
-* Updated dependencies (PHPUnit, Composer, Twig, JUnit-XML)
+* #293 Some support magento table prefix Issue (by Alexandr Vronskiy)
+* #338 db:drop should have an option to drop all tables instead of dropping the database (by Fabrizio Branca)
+* #343 Adds Command for External Magento Connect Validation (by Alan Storm)
+* #346 Fix for "extension on GitHub" markdown. (by Andrea De Pirro)
+* #348 Add encryption key to generate command (by Kristof Fooman)
+* #349 sys:compare-versions minor mods (by Aydin Hassan)
+* #350 New command to remove attributes (by Aydin Hassan)
+* #354 Restore autoloaders after loading Magento (by Maarten van Schaik and Melvyn Sopacua)
+* #355 Implement drop support for db:import (by Melvyn Sopacua)
+* Added --log-junit option to sys:setup:compare-versions command (by Christian Münch)
+* Complete rewrite of sys:check command (by Christian Münch)
+* More debug messages if -vvv option is set.
+* Updated 3rd party components (Symfony, Faker, PHPUnit)
 
 ======
-1.82.0
+1.89.2
 ======
 
-* Moved sys:check command logic into dist config
-* Changed Magento detection (for future Magento 2 support)
-* Adds --noDownload option to InstallCommand (by Manuele Menozzi)
-* Fix: config:set fix --encrypt input option (by Robert Coleman)
-* Updated 3rd party dependencies
+* #336 Install command broken with --noDownload option (by Manuele Menozzi)
+
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H

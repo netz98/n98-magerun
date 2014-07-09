@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class CreateDummyCommand extends AbstractCustomerCommand
 {
@@ -37,13 +38,19 @@ HELP;
             ->addArgument('locale', InputArgument::REQUIRED, 'Locale')
             ->addArgument('website', InputArgument::OPTIONAL, 'Website')
             ->setDescription('Generate dummy customers. You can specify a count and a locale.')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
             ->setHelp($help)
         ;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -59,7 +66,11 @@ HELP;
             $website = $this->getHelperSet()->get('parameter')->askWebsite($input, $output);
 
             $res->beginTransaction();
-            for ($i = 0; $i < $input->getArgument('count'); $i++) {
+            $count = $input->getArgument('count');
+            $outputPlain = $input->getOption('format') === null;
+
+            $table = array();
+            for ($i = 0; $i < $count; $i++) {
                 $customer = $this->getCustomerModel();
 
                 $email = $faker->safeEmail;
@@ -78,9 +89,18 @@ HELP;
                     $customer->save();
                     $customer->setConfirmation(null);
                     $customer->save();
-                    $output->writeln('<info>Customer <comment>' . $email . '</comment> with password <comment>' . $password .  '</comment> successfully created</info>');
+
+                    if ($outputPlain) {
+                        $output->writeln('<info>Customer <comment>' . $email . '</comment> with password <comment>' . $password .  '</comment> successfully created</info>');
+                    } else {
+                        $table[] = array(
+                            $email, $password, $customer->getFirstname(), $customer->getLastname(),
+                        );
+                    }
                 } else {
-                    $output->writeln('<error>Customer ' . $email . ' already exists</error>');
+                    if ($outputPlain) {
+                        $output->writeln('<error>Customer ' . $email . ' already exists</error>');
+                    }
                 }
                 if ($i % 1000 == 0) {
                     $res->commit();
@@ -88,6 +108,12 @@ HELP;
                 }
             }
             $res->commit();
+
+            if (!$outputPlain) {
+                $this->getHelper('table')
+                    ->setHeaders(array('email', 'password', 'firstname', 'lastname'))
+                    ->renderByFormat($output, $table, $input->getOption('format'));
+            }
 
         }
     }

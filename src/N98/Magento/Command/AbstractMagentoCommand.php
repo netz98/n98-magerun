@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Factory as ComposerFactory;
 use Composer\IO\ConsoleIO;
+use N98\Util\Console\Helper\MagentoHelper;
 
 /**
  * Class AbstractMagentoCommand
@@ -229,9 +230,7 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function getComposerDownloadManager($input, $output)
     {
-        $io = new ConsoleIO($input, $output, $this->getHelperSet());
-        $composer = ComposerFactory::create($io, array());
-        return $composer->getDownloadManager();
+        return $this->getComposer($input, $output)->getDownloadManager();
     }
 
     /**
@@ -241,7 +240,7 @@ abstract class AbstractMagentoCommand extends Command
     protected function createComposerPackageByConfig($config)
     {
         $packageLoader = new PackageLoader();
-        return $package = $packageLoader->load($config);
+        return $packageLoader->load($config);
     }
 
     /**
@@ -261,8 +260,65 @@ abstract class AbstractMagentoCommand extends Command
         } else {
             $package = $config;
         }
-        $dm->download($package, $targetFolder, $preferSource);
+
+        $helper = new \N98\Util\Console\Helper\MagentoHelper();
+        $helper->detect($targetFolder);
+        if ($this->isSourceTypeRepository($package->getSourceType()) && $helper->getRootFolder() == $targetFolder) {
+            $package->setInstallationSource('source');
+            $this->checkRepository($package, $targetFolder);
+            $dm->update($package, $package, $targetFolder);
+        } else {
+            $dm->download($package, $targetFolder, $preferSource);
+        }
+
         return $package;
+    }
+
+    /**
+     * brings locally cached repository up to date if it is missing the requested tag
+     *
+     * @param $package
+     * @param $targetFolder
+     */
+    protected function checkRepository($package, $targetFolder)
+    {
+        if ($package->getSourceType() == 'git') {
+            $command = sprintf(
+                'cd %s && git rev-parse refs/tags/%s',
+                escapeshellarg($targetFolder),
+                escapeshellarg($package->getSourceReference())
+            );
+            $existingTags = shell_exec($command);
+            if (!$existingTags) {
+                $command = sprintf('cd %s && git fetch', escapeshellarg($targetFolder));
+                shell_exec($command);
+            }
+        } elseif ($package->getSourceType() == 'hg') {
+            $command = sprintf(
+                'cd %s && hg log --template "{tags}" -r %s',
+                escapeshellarg($targetFolder),
+                escapeshellarg($package->getSourceReference())
+            );
+            $existingTag =  shell_exec($command);
+            if ($existingTag === $package->getSourceReference()) {
+                $command = sprintf('cd %s && hg pull', escapeshellarg($targetFolder));
+                shell_exec($command);
+            }
+        }
+    }
+
+    /**
+     * obtain composer
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return \Composer\Composer
+     */
+    protected function getComposer(InputInterface $input, OutputInterface $output)
+    {
+        $io = new ConsoleIO($input, $output, $this->getHelperSet());
+        return ComposerFactory::create($io, array());
     }
 
     /**
@@ -369,5 +425,83 @@ abstract class AbstractMagentoCommand extends Command
         $this->getHelperSet()->setCommand($this);
 
         return parent::run($input, $output);
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    protected function chooseInstallationFolder(InputInterface $input, OutputInterface $output)
+    {
+        $validateInstallationFolder = function($folderName) use ($input) {
+
+            $folderName = rtrim(trim($folderName, ' '), '/');
+            if (substr($folderName, 0, 1) == '.') {
+                $cwd = \getcwd() ;
+                if (empty($cwd) && isset($_SERVER['PWD'])) {
+                    $cwd = $_SERVER['PWD'];
+                }
+                $folderName = $cwd . substr($folderName, 1);
+            }
+
+            if (empty($folderName)) {
+                throw new \InvalidArgumentException('Installation folder cannot be empty');
+            }
+
+            if (!is_dir($folderName)) {
+                if (!@mkdir($folderName,0777, true)) {
+                    throw new \InvalidArgumentException('Cannot create folder.');
+                }
+
+                return $folderName;
+            }
+
+            if ($input->hasOption('noDownload') && $input->getOption('noDownload')) {
+                /** @var MagentoHelper $magentoHelper */
+                $magentoHelper = new MagentoHelper();
+                $magentoHelper->detect($folderName);
+                if ($magentoHelper->getRootFolder() !== $folderName) {
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            'Folder %s is not a Magento working copy.',
+                            $folderName
+                        )
+                    );
+                }
+
+                $localXml = $folderName . '/app/etc/local.xml';
+                if (file_exists($localXml)) {
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            'Magento working copy in %s seems already installed. Please remove %s and retry.',
+                            $folderName,
+                            $localXml
+                        )
+                    );
+                }
+            }
+
+            return $folderName;
+        };
+
+        if (($installationFolder = $input->getOption('installationFolder')) == null) {
+            $defaultFolder = './magento';
+            $question[] = "<question>Enter installation folder:</question> [<comment>" . $defaultFolder . "</comment>]";
+
+            $installationFolder = $this->getHelper('dialog')->askAndValidate($output, $question, $validateInstallationFolder, false, $defaultFolder);
+
+        } else {
+            // @Todo improve validation and bring it to 1 single function
+            $installationFolder = $validateInstallationFolder($installationFolder);
+
+        }
+
+        $this->config['installationFolder'] = realpath($installationFolder);
+        \chdir($this->config['installationFolder']);
+    }
+
+    protected function isSourceTypeRepository($type)
+    {
+        return in_array($type, array('git', 'hg'));
     }
 }

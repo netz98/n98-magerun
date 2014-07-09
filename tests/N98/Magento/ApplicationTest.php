@@ -25,6 +25,11 @@ class ApplicationTest extends TestCase
         $loader = $application->getAutoloader();
         $this->assertInstanceOf('\Composer\Autoload\ClassLoader', $loader);
 
+        /**
+         * Check version
+         */
+        $this->assertEquals(\N98\Magento\Application::APP_VERSION, trim(file_get_contents(__DIR__ . '/../../../version.txt')));
+
         /* @var $loader \Composer\Autoload\ClassLoader */
         $prefixes = $loader->getPrefixes();
         $this->assertArrayHasKey('N98', $prefixes);
@@ -45,6 +50,11 @@ class ApplicationTest extends TestCase
                     )
                 ),
             ),
+            'init' => array(
+                'options' => array(
+                    'config_model' => 'N98MagerunTest\AlternativeConfigModel',
+                )
+            )
         );
 
         $application->setAutoExit(false);
@@ -66,6 +76,14 @@ class ApplicationTest extends TestCase
         );
         $this->assertContains('dummy', $commandTester->getDisplay());
         $this->assertTrue($application->getDefinition()->hasOption('root-dir'));
+
+        // Test alternative config model
+        $application->initMagento();
+        if (version_compare(\Mage::getVersion(), '1.7.0.2', '>=')) {
+            // config_model option is only available in Magento CE >1.6
+            $this->assertInstanceOf('\N98MagerunTest\AlternativeConfigModel', \Mage::getConfig());
+        }
+
 
         // check alias
         $this->assertInstanceOf('\N98\Magento\Command\Cache\ListCommand', $application->find('cl'));
@@ -134,7 +152,7 @@ class ApplicationTest extends TestCase
         $configurationLoader = $this->getMock(
             '\N98\Magento\Command\ConfigurationLoader',
             array('getConfigurationLoaderDir'),
-            array(array(), false)
+            array(array(), false, new NullOutput())
         );
         $configurationLoader
             ->expects($this->any())

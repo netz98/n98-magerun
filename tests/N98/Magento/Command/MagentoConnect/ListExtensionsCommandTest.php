@@ -9,6 +9,11 @@ class ListExtensionsCommandTest extends TestCase
 {
     public function testExecute()
     {
+        $this->getApplication()->initMagento();
+        if (version_compare(\Mage::getVersion(), '1.4.2.0', '<=')) {
+            $this->markTestSkipped('Skip Test - mage cli script does not exist.');
+        }
+
         $application = $this->getApplication();
         $application->add(new ListExtensionsCommand());
         $command = $this->getApplication()->find('extension:list');

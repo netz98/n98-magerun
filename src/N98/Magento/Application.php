@@ -12,10 +12,12 @@ use N98\Util\String;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleEvent;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -37,7 +39,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.84.0';
+    const APP_VERSION = '1.91.0';
 
     /**
      * @var string
@@ -162,9 +164,11 @@ class Application extends BaseApplication
     /**
      * Search for magento root folder
      *
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return void
      */
-    public function detectMagento()
+    public function detectMagento(InputInterface $input = null, OutputInterface $output = null)
     {
         if ($this->getMagentoRootFolder() === null) {
             $this->_checkRootDirOption();
@@ -181,7 +185,7 @@ class Application extends BaseApplication
             $folder = $this->getMagentoRootFolder();
         }
 
-        $this->getHelperSet()->set(new MagentoHelper(), 'magento');
+        $this->getHelperSet()->set(new MagentoHelper($input, $output), 'magento');
         $magentoHelper = $this->getHelperSet()->get('magento'); /* @var $magentoHelper MagentoHelper */
         if (!$this->_directRootDir) {
             $subFolders = $this->getDetectSubFolders();
@@ -325,7 +329,7 @@ class Application extends BaseApplication
             $tempVarDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'magento' . DIRECTORY_SEPARATOR .  'var';
 
             if (is_dir($tempVarDir)) {
-                $this->detectMagento();
+                $this->detectMagento(null, $output);
                 /* If magento is not installed yet, don't check */
                 if ($this->_magentoRootFolder === null
                     || !file_exists($this->_magentoRootFolder . '/app/etc/local.xml')
@@ -352,13 +356,13 @@ class Application extends BaseApplication
                 $currentVarDir = $configOptions->getVarDir();
 
                 if ($currentVarDir == $tempVarDir) {
-                    $output->writeln(sprintf('<error>Fallback folder %s is used in n98-magerun</error>', $tempVarDir));
+                    $output->writeln(sprintf('<warning>Fallback folder %s is used in n98-magerun</warning>', $tempVarDir));
                     $output->writeln('');
                     $output->writeln('n98-magerun is using the fallback folder. If there is another folder configured for Magento, this can cause serious problems.');
                     $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
                     $output->writeln('');
                 } else {
-                    $output->writeln(sprintf('<error>Folder %s found, but not used in n98-magerun</error>', $tempVarDir));
+                    $output->writeln(sprintf('<warning>Folder %s found, but not used in n98-magerun</warning>', $tempVarDir));
                     $output->writeln('');
                     $output->writeln(sprintf('This might cause serious problems. n98-magerun is using the configured var-folder <comment>%s</comment>', $currentVarDir));
                     $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
@@ -523,8 +527,22 @@ class Application extends BaseApplication
      */
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
+        if (null === $input) {
+            $input = new ArgvInput();
+        }
+
+        if (null === $output) {
+            $output = new ConsoleOutput();
+        }
+        $this->_addOutputStyles($output);
+        if ($output instanceof ConsoleOutput) {
+            $this->_addOutputStyles($output->getErrorOutput());
+        }
+
+        $this->configureIO($input, $output);
+
         try {
-            $this->init();
+            $this->init(array(), $input, $output);
         } catch (\Exception $e) {
             $output = new ConsoleOutput();
             $this->renderException($e, $output);
@@ -542,19 +560,24 @@ class Application extends BaseApplication
 
     /**
      * @param array $initConfig
+     * @param InputInterface $input
+     * @param OutputInterface $output
      *
      * @return void
      */
-    public function init($initConfig = array())
+    public function init($initConfig = array(), InputInterface $input = null, OutputInterface $output = null)
     {
         if (!$this->_isInitialized) {
             // Suppress DateTime warnings
             date_default_timezone_set(@date_default_timezone_get());
 
             $loadExternalConfig = !$this->_checkSkipConfigOption();
-            $configLoader = $this->getConfigurationLoader($initConfig);
+            if ($output === null) {
+                $output = new NullOutput();
+            }
+            $configLoader = $this->getConfigurationLoader($initConfig, $output);
             $this->partialConfig = $configLoader->getPartialConfig($loadExternalConfig);
-            $this->detectMagento();
+            $this->detectMagento($input, $output);
             $configLoader->loadStageTwo($this->_magentoRootFolder, $loadExternalConfig);
             $this->config = $configLoader->toArray();;
             $this->dispatcher = new EventDispatcher();
@@ -568,6 +591,17 @@ class Application extends BaseApplication
 
             $this->_isInitialized = true;
         }
+    }
+
+    /**
+     * @param array $initConfig
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    public function reinit($initConfig = array(), InputInterface $input = null, OutputInterface $output = null)
+    {
+        $this->_isInitialized = false;
+        $this->init($initConfig, $input, $output);
     }
 
     /**
@@ -648,8 +682,28 @@ class Application extends BaseApplication
      */
     protected function _initMagento1()
     {
-        require_once $this->getMagentoRootFolder() . '/app/Mage.php';
-        \Mage::app('admin');
+        $initSettings = $this->config['init'];
+
+        if (!class_exists('Mage')) {
+            $autoloaders = spl_autoload_functions();
+            require_once $this->getMagentoRootFolder() . '/app/Mage.php';
+            // Restore autoloaders that might be removed by extensions that overwrite Varien/Autoload
+            $this->_restoreAutoloaders($autoloaders);
+        }
+
+        \Mage::app($initSettings['code'], $initSettings['type'], $initSettings['options']);
+    }
+
+    /**
+     * @return void
+     */
+    protected function _restoreAutoloaders($loaders) {
+        $current_loaders = spl_autoload_functions();
+        foreach ($loaders as $function) {
+            if (!in_array($function, $current_loaders)) {
+                spl_autoload_register($function);
+            }
+        }
     }
 
     /**
@@ -662,14 +716,16 @@ class Application extends BaseApplication
 
     /**
      * @param array $initConfig
+     * @param OutputInterface $output
      * @return ConfigurationLoader
      */
-    public function getConfigurationLoader($initConfig = array())
+    public function getConfigurationLoader($initConfig = array(), OutputInterface $output)
     {
         if ($this->configurationLoader === null) {
             $this->configurationLoader = new ConfigurationLoader(
                 ArrayFunctions::mergeArrays($this->config, $initConfig),
-                $this->isPharMode()
+                $this->isPharMode(),
+                $output
             );
         }
 
@@ -686,5 +742,14 @@ class Application extends BaseApplication
         $this->configurationLoader = $configurationLoader;
 
         return $this;
+    }
+
+    /**
+     * @param OutputInterface $output
+     */
+    protected function _addOutputStyles(OutputInterface $output)
+    {
+        $output->getFormatter()->setStyle('debug', new OutputFormatterStyle('magenta', 'white'));
+        $output->getFormatter()->setStyle('warning', new OutputFormatterStyle('red', 'yellow', array('bold')));
     }
 }

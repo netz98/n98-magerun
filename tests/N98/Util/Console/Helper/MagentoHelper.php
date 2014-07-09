@@ -14,7 +14,10 @@ class MagentoHelperTest extends TestCase
      */
     protected function getHelper()
     {
-        return new MagentoHelper();
+        $inputMock = $this->getMock('Symfony\Component\Console\Input\InputInterface');
+        $outputMock = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+
+        return new MagentoHelper($inputMock, $outputMock);
     }
 
     /**

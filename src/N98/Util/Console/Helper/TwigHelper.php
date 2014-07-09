@@ -32,7 +32,8 @@ class TwigHelper extends Helper
      * Renders a twig template file
      *
      * @param string $template
-     * @param array  $variables
+     * @param array $variables
+     * @return mixed
      */
     public function render($template, $variables = array())
     {
