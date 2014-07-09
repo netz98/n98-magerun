@@ -36,6 +36,16 @@ class IncrementalCommand extends AbstractMagentoCommand
 
     protected $_eventStash;
 
+    protected function configure()
+    {
+        $this
+            ->setName('sys:setup:incremental')
+            ->setDescription('List new setup scripts to run, then runs one script')
+            ->addOption('skip-version-check','Skips the "are you updating to the latest version"/"un-tested" check.')
+            ->setHelp('Examines an un-cached configuration tree and determines which ' .
+                'structure and data setup resource scripts need to run, and then runs them.');
+    }
+
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
@@ -46,6 +56,7 @@ class IncrementalCommand extends AbstractMagentoCommand
     {
         //sets output so we can access it from all methods
         $this->_setOutput($output);
+        $this->_setInput($output);
         if (!$this->_init()) {
             return;
         }
@@ -250,7 +261,10 @@ class IncrementalCommand extends AbstractMagentoCommand
         $this->_input = $input;
     }
     
-    protected function _outputUpdateInformation($needs_update)
+    /**
+     * @param bool $needsUpdate
+     */
+    protected function _outputUpdateInformation($needsUpdate)
     {
         $output = $this->_output;
         foreach ($needsUpdate as $name => $setupResource) {
@@ -467,8 +481,8 @@ class IncrementalCommand extends AbstractMagentoCommand
         $this->_runNamedSetupResource($toUpdate, $needsUpdate, $type);
         $time_ran = microtime(true) - $start;
         $output->writeln('');
-        $output->writeln(ucwords($type) . ' update <info>' . $to_update . '</info> complete.');
-        $output->writeln('Ran in ' . floor($time_ran * 1000) . 'ms');                     
+        $output->writeln(ucwords($type) . ' update <info>' . $toUpdate . '</info> complete.');
+        $output->writeln('Ran in ' . floor($time_ran * 1000) . 'ms');
     }
     
     protected function _getTestedVersions()
@@ -584,33 +598,7 @@ class IncrementalCommand extends AbstractMagentoCommand
             $this->_runStructureOrDataScripts($toUpdate, $needsUpdate, self::TYPE_MIGRATION_DATA);
             $output->writeln("($c of $total)");
             $output->writeln('');
-            $c++;            
-        }        
+            $c++;
+        }
     }
-
-    
-    protected function configure()
-    {
-        $this
-            ->setName('sys:setup:incremental')
-            ->setDescription('List new setup scripts to run, then runs one script')
-            ->addOption('skip-version-check','Skips the "are you updating to the latest version"/"un-tested" check.')
-            ->setHelp('Examines an un-cached configuration tree and determines which ' .
-            'structure and data setup resource scripts need to run, and then runs them.');
-    }
-    
-    /**
-     * @param \Symfony\Component\Console\Input\InputInterface   $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     */
-//     protected function execute(InputInterface $input, OutputInterface $output)
-//     {
-//         //sets input and output so we can access it from all methods
-//         $this->_setOutput($output);                
-//         $this->_setInput($input);                
-//         if(!$this->_init())
-//         {
-//             return;
-//         }
-//     }
 }
