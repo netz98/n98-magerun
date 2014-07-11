@@ -64,7 +64,7 @@ class DatabaseHelper extends AbstractHelper
             }
 
             $this->dbSettings = (array) $config->global->resources->default_setup->connection;
-	        $this->dbSettings['prefix'] = (string) $config->global->resources->db->table_prefix;
+            $this->dbSettings['prefix'] = (string) $config->global->resources->db->table_prefix;
 
             if(strpos($this->dbSettings['host'], ':') !== false) {
                 list($this->dbSettings['host'], $this->dbSettings['port']) = explode(':', $this->dbSettings['host']);
@@ -272,7 +272,7 @@ class DatabaseHelper extends AbstractHelper
     public function resolveTables(array $list, array $definitions = array(), array $resolved = array())
     {
         if ($this->_tables === null) {
-            $this->_tables = $this->getTables();
+            $this->_tables = $this->getTables(true);
         }
 
         $resolvedList = array();
@@ -295,7 +295,7 @@ class DatabaseHelper extends AbstractHelper
                 $connection = $this->getConnection();
                 $sth = $connection->prepare('SHOW TABLES LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
                 $sth->execute(
-                    array(':like' => str_replace('*', '%', $entry))
+                    array(':like' => str_replace('*', '%', $this->dbSettings['prefix'] . $entry))
                 );
                 $rows = $sth->fetchAll();
                 foreach ($rows as $row) {
@@ -305,7 +305,7 @@ class DatabaseHelper extends AbstractHelper
             }
 
             if (in_array($entry, $this->_tables)) {
-                $resolvedList[] = $entry;
+                $resolvedList[] = $this->dbSettings['prefix'] . $entry;
             }
         }
 
@@ -318,13 +318,31 @@ class DatabaseHelper extends AbstractHelper
     /**
      * Get list of db tables
      *
+     * @param bool $withoutPrefix
      * @return array
      */
-    public function getTables()
+    public function getTables($withoutPrefix = false)
     {
-        $statement = $this->getConnection()->query('SHOW TABLES');
+        $db = $this->getConnection();
+        $prefix = $this->dbSettings['prefix'];
+        if (strlen($prefix) > 0) {
+            $statement = $db->prepare('SHOW TABLES LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+            $statement->execute(
+                array(':like' => $prefix . '%')
+            );
+        } else {
+            $statement = $db->query('SHOW TABLES');
+        }
+
         if ($statement) {
-            return $statement->fetchAll(\PDO::FETCH_COLUMN);
+            $result = $statement->fetchAll(\PDO::FETCH_COLUMN);
+            if ($withoutPrefix === false) {
+                return $result;
+            }
+
+            return array_map(function($tableName) use ($prefix){
+                    return str_replace($prefix, '', $tableName);
+                },$result);
         }
 
         return array();
@@ -358,6 +376,10 @@ class DatabaseHelper extends AbstractHelper
         return 'database';
     }
 
+    /**
+     * @param OutputInterface $output
+     * @throws \Exception
+     */
     public function dropDatabase($output)
     {
         $this->detectDbSettings($output);
@@ -366,21 +388,28 @@ class DatabaseHelper extends AbstractHelper
         $output->writeln('<info>Dropped database</info> <comment>' . $this->dbSettings['dbname'] . '</comment>');
     }
 
+    /**
+     * @param OutputInterface $output
+     * @throws \Exception
+     */
     public function dropTables($output)
     {
-        $db = $this->getConnection();
-        $result = $db->query("SHOW TABLES");
+        $result = $this->getTables();
         $query = 'SET FOREIGN_KEY_CHECKS = 0; ';
         $count = 0;
-        while ($row = $result->fetch(\PDO::FETCH_NUM)) {
-            $query .= 'DROP TABLE IF EXISTS `'.$row[0].'`; ';
+        foreach ($result as $tableName) {
+            $query .= 'DROP TABLE IF EXISTS `'.$tableName.'`; ';
             $count++;
         }
         $query .= 'SET FOREIGN_KEY_CHECKS = 1;';
-        $db->query($query);
+        $this->getConnection()->query($query);
         $output->writeln('<info>Dropped database tables</info> <comment>' . $count . ' tables dropped</comment>');
     }
 
+    /**
+     * @param OutputInterface $output
+     * @throws \Exception
+     */
     public function createDatabase($output)
     {
         $this->detectDbSettings($output);

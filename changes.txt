@@ -3,12 +3,31 @@ RECENT CHANGES
 **************
 
 ======
+1.91.0
+======
+
+* sys:info command: Added row count for main entities (by Christian Münch)
+* #315 sys:setup:run on enterprise requires admin session. (by Thorsten Essig and Christian Münch)
+* #367 Exclude sessions from @stripped (and therefore @development) (by Aaron Brady)
+* sys:setup returns exit status code "1" if setup fails (by Christian Münch)
+
+======
 1.90.0
 ======
 
+* #293 Some support magento table prefix Issue (by Alexandr Vronskiy)
 * #338 db:drop should have an option to drop all tables instead of dropping the database (by Fabrizio Branca)
 * #343 Adds Command for External Magento Connect Validation (by Alan Storm)
 * #346 Fix for "extension on GitHub" markdown. (by Andrea De Pirro)
+* #348 Add encryption key to generate command (by Kristof Fooman)
+* #349 sys:compare-versions minor mods (by Aydin Hassan)
+* #350 New command to remove attributes (by Aydin Hassan)
+* #354 Restore autoloaders after loading Magento (by Maarten van Schaik and Melvyn Sopacua)
+* #355 Implement drop support for db:import (by Melvyn Sopacua)
+* Added --log-junit option to sys:setup:compare-versions command (by Christian Münch)
+* Complete rewrite of sys:check command (by Christian Münch)
+* More debug messages if -vvv option is set.
+* Updated 3rd party components (Symfony, Faker, PHPUnit)
 
 ======
 1.89.2
@@ -16,24 +35,6 @@ RECENT CHANGES
 
 * #336 Install command broken with --noDownload option (by Manuele Menozzi)
 
-======
-1.89.1
-======
-
-* Installer: Replaced Magento CE 1.9.0.0 with CE 1.9.0.1
-
-======
-1.89.0
-======
-
-* #320 Fixing minor grammatical error (by Chris Jones)
-* #326 Encryption key parameter in install command (by Kristof Ringleff)
-* #327 Uninstall from specified folder (by Kristof Ringleff)
-* #328 added Magento CE install option (by Hans Kuijpers)
-* #329 Added Magento CE 1.9.0.0 to test script (by Hans Kuijpers)
-* #331 Keep dataflow profiles when stripping temp tables
-* Changed download URLs to raw.githubusercontent.com
-* Updated 3rd party dependencies
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H

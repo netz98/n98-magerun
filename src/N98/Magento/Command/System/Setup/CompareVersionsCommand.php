@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\System\Setup;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\JUnitXml\Document as JUnitXmlDocument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,6 +17,7 @@ class CompareVersionsCommand extends AbstractMagentoCommand
         $this
             ->setName('sys:setup:compare-versions')
             ->addOption('ignore-data', null, InputOption::VALUE_NONE, 'Ignore data updates')
+            ->addOption('log-junit', null, InputOption::VALUE_REQUIRED, 'Log output to a JUnit xml file.')
             ->addOption(
                 'format',
                 null,
@@ -38,6 +40,7 @@ HELP;
     {
         $this->detectMagento($output);
         if ($this->initMagento()) {
+            $time = microtime(true);
             $modules            = \Mage::getConfig()->getNode('modules');
             $resourceModel      = $this->_getResourceSingleton('core/resource', 'Mage_Core_Model_Resource_Resource');
             $setups             = \Mage::getConfig()->getNode('global/resources')->children();
@@ -100,27 +103,64 @@ HELP;
                 });
             }
 
-            $this->getHelper('table')
-                ->setHeaders($headers)
-                ->renderByFormat($output, $table, $input->getOption('format'));
+            if ($input->getOption('log-junit')) {
+                $this->logJUnit($table, $input->getOption('log-junit'), microtime($time) - $time);
+            } else {
+                $this->getHelper('table')
+                    ->setHeaders($headers)
+                    ->renderByFormat($output, $table, $input->getOption('format'));
 
-            //if no output format specified - output summary line
-            if (!$input->getOption('format')) {
-                if ($errorCounter > 0) {
-                    $this->writeSection(
-                        $output,
-                        sprintf(
-                            '%s error%s %s found!',
-                            $errorCounter,
-                            $errorCounter === 1 ? '' : 's',
-                            $errorCounter === 1 ? 'was' : 'were'
-                        ),
-                        'error'
-                    );
-                } else {
-                    $this->writeSection($output, 'No setup problems were found.', 'info');
+                //if no output format specified - output summary line
+                if (!$input->getOption('format')) {
+                    if ($errorCounter > 0) {
+                        $this->writeSection(
+                            $output,
+                            sprintf(
+                                '%s error%s %s found!',
+                                $errorCounter,
+                                $errorCounter === 1 ? '' : 's',
+                                $errorCounter === 1 ? 'was' : 'were'
+                            ),
+                            'error'
+                        );
+                    } else {
+                        $this->writeSection($output, 'No setup problems were found.', 'info');
+                    }
                 }
             }
         }
+    }
+
+    /**
+     * @param array $data
+     * @param string $filename
+     * @param float $duration
+     */
+    protected function logJUnit(array $data, $filename, $duration)
+    {
+        $document = new JUnitXmlDocument();
+        $suite = $document->addTestSuite();
+        $suite->setName('n98-magerun: ' . $this->getName());
+        $suite->setTimestamp(new \DateTime());
+        $suite->setTime($duration);
+
+        $testCase = $suite->addTestCase();
+        $testCase->setName('Magento Setup Version Test');
+        $testCase->setClassname('CompareVersionsCommand');
+        if (count($data) > 0) {
+            foreach ($data as $moduleSetup) {
+                if (stristr($moduleSetup['Status'], 'error')) {
+                    $testCase->addFailure(
+                        sprintf(
+                            'Setup Script Error: [Setup %s]',
+                            $moduleSetup['Setup']
+                        ),
+                        'MagentoSetupScriptVersionException'
+                    );
+                }
+            }
+        }
+
+        $document->save($filename);
     }
 }
