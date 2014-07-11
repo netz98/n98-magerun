@@ -29,11 +29,7 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->detectDbSettings($output);
-
-        $db = $this->getHelper('database')->getConnection();
-        $db->query('CREATE DATABASE IF NOT EXISTS `' . $this->dbSettings['dbname'] . '`');
-        $output->writeln('<info>Created database</info> <comment>' . $this->dbSettings['dbname'] . '</comment>');
+        $this->getHelper('database')->createDatabase($output);
     }
 
 }

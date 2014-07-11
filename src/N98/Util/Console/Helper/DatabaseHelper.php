@@ -357,4 +357,35 @@ class DatabaseHelper extends AbstractHelper
     {
         return 'database';
     }
+
+    public function dropDatabase($output)
+    {
+        $this->detectDbSettings($output);
+        $db = $this->getConnection();
+        $db->query('DROP DATABASE `' . $this->dbSettings['dbname'] . '`');
+        $output->writeln('<info>Dropped database</info> <comment>' . $this->dbSettings['dbname'] . '</comment>');
+    }
+
+    public function dropTables($output)
+    {
+        $db = $this->getConnection();
+        $result = $db->query("SHOW TABLES");
+        $query = 'SET FOREIGN_KEY_CHECKS = 0; ';
+        $count = 0;
+        while ($row = $result->fetch(\PDO::FETCH_NUM)) {
+            $query .= 'DROP TABLE IF EXISTS `'.$row[0].'`; ';
+            $count++;
+        }
+        $query .= 'SET FOREIGN_KEY_CHECKS = 1;';
+        $db->query($query);
+        $output->writeln('<info>Dropped database tables</info> <comment>' . $count . ' tables dropped</comment>');
+    }
+
+    public function createDatabase($output)
+    {
+        $this->detectDbSettings($output);
+        $db = $this->getConnection();
+        $db->query('CREATE DATABASE IF NOT EXISTS `' .  $this->dbSettings['dbname'] . '`');
+        $output->writeln('<info>Created database</info> <comment>' . $this->dbSettings['dbname'] . '</comment>');
+    }
 }

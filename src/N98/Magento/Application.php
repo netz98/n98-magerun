@@ -659,9 +659,24 @@ class Application extends BaseApplication
     {
         $initSettings = $this->config['init'];
         if (!class_exists('Mage')) {
+            $autoloaders = spl_autoload_functions();
             require_once $this->getMagentoRootFolder() . '/app/Mage.php';
+            // Restore autoloaders that might be removed by extensions that overwrite Varien/Autoload
+            $this->_restore_autoloaders($autoloaders);
         }
         \Mage::app($initSettings['code'], $initSettings['type'], $initSettings['options']);
+    }
+
+    /**
+     * @return void
+     */
+    function _restore_autoloaders($loaders) {
+        $current_loaders = spl_autoload_functions();
+        foreach ($loaders as $function) {
+            if (!in_array($function, $current_loaders)) {
+                spl_autoload_register($function);
+            }
+        }
     }
 
     /**

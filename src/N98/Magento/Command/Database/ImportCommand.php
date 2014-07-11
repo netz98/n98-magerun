@@ -18,6 +18,8 @@ class ImportCommand extends AbstractDatabaseCommand
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysql command. Do not execute')
             ->addOption('only-if-empty', null, InputOption::VALUE_NONE, 'Imports only if database is empty')
             ->addOption('optimize', null, InputOption::VALUE_NONE, 'Convert verbose INSERTs to short ones before import (not working with compression)')
+	    ->addOption('drop', null, InputOption::VALUE_NONE, 'Drop and recreate database before import')
+	    ->addOption('drop-tables', null, InputOption::VALUE_NONE, 'Drop tables before import')
             ->setDescription('Imports database with mysql cli client according to database defined in local.xml');
 
         $help = <<<HELP
@@ -87,6 +89,7 @@ HELP;
     {
         $this->detectDbSettings($output);
         $this->writeSection($output, 'Import MySQL Database');
+        $dbHelper = $this->getHelper('database');
 
         $fileName = $this->checkFilename($input);
 
@@ -98,11 +101,19 @@ HELP;
             $fileName = $this->optimize($fileName);
         }
 
+        if( $input->getOption('drop') ) {
+            $dbHelper->dropDatabase($output);
+            $dbHelper->createDatabase($output);
+        }
+        if( $input->getOption('drop-tables') ) {
+            $dbHelper->dropTables($output);
+        }
+
         $compressor = $this->getCompressor($input->getOption('compression'));
 
         // create import command
         $exec = $compressor->getDecompressingCommand(
-            'mysql ' . $this->getHelper('database')->getMysqlClientToolConnectionString(),
+            'mysql ' . $dbHelper->getMysqlClientToolConnectionString(),
             $fileName
         );
 
@@ -110,7 +121,7 @@ HELP;
             $output->writeln($exec);
         } else {
             if ($input->getOption('only-if-empty')
-                && count($this->getHelper('database')->getTables()) > 0
+                && count($dbHelper->getTables()) > 0
             ) {
                 $output->writeln('<comment>Skip import. Database is not empty</comment>');
 
