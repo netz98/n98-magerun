@@ -642,8 +642,16 @@ HELP;
             'default_currency'           => $currency,
             'skip_url_validation'        => 'yes',
         );
-        if ($useDefaultConfigParams && strlen($defaults['encryption_key']) > 0) {
-            $argv['encryption_key'] = $defaults['encryption_key'];
+        if ($useDefaultConfigParams) {
+            if (strlen($defaults['encryption_key']) > 0) {
+                $argv['encryption_key'] = $defaults['encryption_key'];
+            }
+            if (strlen($defaults['use_secure']) > 0) {
+                $argv['use_secure'] = $defaults['use_secure'];
+            }
+            if (strlen($defaults['use_rewrites']) > 0) {
+                $argv['use_rewrites'] = $defaults['use_rewrites'];
+            }
         }
         $installArgs = '';
         foreach ($argv as $argName => $argValue) {
