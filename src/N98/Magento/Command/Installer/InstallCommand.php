@@ -648,7 +648,7 @@ HELP;
             }
             if (strlen($defaults['use_secure']) > 0) {
                 $argv['use_secure'] = $defaults['use_secure'];
-                $argv['secure_base_url'] = str_replace('http://', 'https://', $validateBaseUrl);
+                $argv['secure_base_url'] = str_replace('http://', 'https://', $baseUrl);
             }
             if (strlen($defaults['use_rewrites']) > 0) {
                 $argv['use_rewrites'] = $defaults['use_rewrites'];
