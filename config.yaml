@@ -42,6 +42,7 @@ commands:
     - N98\Magento\Command\Admin\User\ChangePasswordCommand
     - N98\Magento\Command\Admin\User\CreateUserCommand
     - N98\Magento\Command\Admin\User\ListCommand
+    - N98\Magento\Command\Admin\User\DeleteUserCommand
     - N98\Magento\Command\Cache\CleanCommand
     - N98\Magento\Command\Cache\DisableCommand
     - N98\Magento\Command\Cache\EnableCommand
