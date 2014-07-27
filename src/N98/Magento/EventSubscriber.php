@@ -32,7 +32,7 @@ class EventSubscriber implements EventSubscriberInterface
      */
     public function checkRunningAsRootUser(ConsoleEvent $event)
     {
-        $output = $event->getOutput();
+        $output = $event->getOutput()->getErrorOutput();
         if (OperatingSystem::isLinux() || OperatingSystem::isMacOs()) {
             if (function_exists('posix_getuid')) {
                 if (posix_getuid() === 0) {

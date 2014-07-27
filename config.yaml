@@ -42,6 +42,7 @@ commands:
     - N98\Magento\Command\Admin\User\ChangePasswordCommand
     - N98\Magento\Command\Admin\User\CreateUserCommand
     - N98\Magento\Command\Admin\User\ListCommand
+    - N98\Magento\Command\Admin\User\DeleteUserCommand
     - N98\Magento\Command\Cache\CleanCommand
     - N98\Magento\Command\Cache\DisableCommand
     - N98\Magento\Command\Cache\EnableCommand
@@ -288,9 +289,13 @@ commands:
         description: Temporary tables of the dataflow import/export tool
         tables: dataflow_batch dataflow_batch_export dataflow_batch_import dataflow_import_data dataflow_session
 
+      - id: sessions
+        description: Database session tables
+        tables: core_session
+
       - id: stripped
         description: Standard definition for a stripped dump (logs and dataflow)
-        tables: @stripped @log @dataflowtemp
+        tables: @stripped @log @dataflowtemp @sessions
 
       - id: sales
         description: Sales data (orders, invoices, creditmemos etc)
