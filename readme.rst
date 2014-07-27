@@ -778,7 +778,7 @@ This command runs each new setup script individually in order to increase the tr
 
 .. code-block:: sh
 
-   $ n98-magerun.phar sys:setup:incremental
+   $ n98-magerun.phar sys:setup:incremental [--stop-on-error]
    
 Compare Setup Versions
 """"""""""""""""""""""
