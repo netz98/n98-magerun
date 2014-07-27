@@ -206,11 +206,6 @@ HELP;
         $this->config['magentoVersionData'] = $this->commandConfig['magento-packages'][$type - 1];
     }
 
-    protected function test($folderName)
-    {
-
-    }
-
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
