@@ -4,6 +4,7 @@ namespace N98\Magento\Command\System\Setup;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,12 +37,17 @@ class IncrementalCommand extends AbstractMagentoCommand
 
     protected $_eventStash;
 
+    /**
+     * @var array
+     */
+    protected $_config;
+
     protected function configure()
     {
         $this
             ->setName('sys:setup:incremental')
             ->setDescription('List new setup scripts to run, then runs one script')
-            ->addOption('skip-version-check','Skips the "are you updating to the latest version"/"un-tested" check.')
+            ->addOption('stop-on-error', null, InputOption::VALUE_NONE, 'Stops execution of script on error')
             ->setHelp('Examines an un-cached configuration tree and determines which ' .
                 'structure and data setup resource scripts need to run, and then runs them.');
     }
@@ -54,6 +60,8 @@ class IncrementalCommand extends AbstractMagentoCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->_config = $this->getCommandConfig();
+
         //sets output so we can access it from all methods
         $this->_setOutput($output);
         $this->_setInput($output);
@@ -77,6 +85,9 @@ class IncrementalCommand extends AbstractMagentoCommand
         $this->_secondConfig = \Mage::getConfig()->loadModulesConfiguration('config.xml', $config);
     }
 
+    /**
+     * @return array
+     */
     protected function _getAllSetupResourceObjects()
     {
         $config = $this->_secondConfig;
@@ -367,21 +378,20 @@ class IncrementalCommand extends AbstractMagentoCommand
         //allows for theoretical multiple runs
         $setupResource = $needsUpdate[$name];
         $setupResourceConfig = $this->_secondConfig->getNode('global/resources/' . $name);
-        $module_name = $setupResourceConfig->setup->module;
-        $class_name = $setupResourceConfig->setup->class;
+        $moduleName = $setupResourceConfig->setup->module;
+        $className = $setupResourceConfig->setup->class;
 
         $specificResource = $realConfig->getNode('global/resources/' . $name);
         $setup = $specificResource->addChild('setup');
-        if ($module_name) {
-            $setup->addChild('module', $module_name);
+        if ($moduleName) {
+            $setup->addChild('module', $moduleName);
         } else {
-            $output->writeln('<error>No module node configured for ' . $name . ', possible configuration error </error');
+            $output->writeln('<error>No module node configured for ' . $name . ', possible configuration error </error>');
         }
 
-        if ($class_name) {
-            $setup->addChild('class', $class_name);
+        if ($className) {
+            $setup->addChild('class', $className);
         }
-
 
         //and finally, RUN THE UPDATES
         try {
@@ -394,11 +404,13 @@ class IncrementalCommand extends AbstractMagentoCommand
                 \Mage_Core_Model_Resource_Setup::applyAllDataUpdates();
             }
             $exceptionOutput = ob_get_clean();
-            print $exceptionOutput;
+            $this->_output->writeln($exceptionOutput);
         } catch (\Exception $e) {
             $exceptionOutput = ob_get_clean();
             $this->_processExceptionDuringUpdate($e, $name, $setupResource, $exceptionOutput);
-            return;
+            if ($this->_input->getOption('stop-on-error')) {
+                throw new \RuntimeException('Setup stopped with errors');
+            }
         }
     }
 
@@ -470,6 +482,12 @@ class IncrementalCommand extends AbstractMagentoCommand
         return true;
     }
 
+    /**
+     * @param string $toUpdate
+     * @param bool $needsUpdate
+     * @param string $type
+     * @throws \Exception
+     */
     protected function _runStructureOrDataScripts($toUpdate, $needsUpdate, $type)
     {
         $output = $this->_output;
@@ -484,29 +502,15 @@ class IncrementalCommand extends AbstractMagentoCommand
         $output->writeln(ucwords($type) . ' update <info>' . $toUpdate . '</info> complete.');
         $output->writeln('Ran in ' . floor($time_ran * 1000) . 'ms');
     }
-    
+
+    /**
+     * @return array
+     */
     protected function _getTestedVersions()
     {
-        return array('1.7.0.2','1.8.1.0', '1.9.0.1');
+        return $this->_config['tested-versions'];
     }
     
-    protected function _checkMagentoVersion()
-    {
-        $version = \Mage::getVersion();
-        if(in_array($version, $this->_getTestedVersions()))
-        {
-            return true;
-        }
-        
-        if($this->_input->getOption('skip-version-check'))
-        {
-            return true;
-        }
-
-        $this->_output->writeln('<error>ERROR: Untested with '.$version.'. Try --skip-version-check if you\'re sure. </error>');    
-        return false;
-    }
-
     protected function _restoreEventContext()
     {
         $app = \Mage::app();
