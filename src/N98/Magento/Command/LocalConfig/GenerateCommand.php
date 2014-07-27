@@ -63,17 +63,17 @@ HELP;
             }
 
             $replace = array(
-                '{{date}}'               => date(\DateTime::RFC2822),
-                '{{key}}'                => $key,
-                '{{db_prefix}}'          => '',
+                '{{date}}'               => $this->_wrapCData(date(\DateTime::RFC2822)),
+                '{{key}}'                => $this->_wrapCData($key),
+                '{{db_prefix}}'          => $this->_wrapCData(''),
                 '{{db_host}}'            => $this->_wrapCData($input->getArgument('db-host')),
                 '{{db_user}}'            => $this->_wrapCData($input->getArgument('db-user')),
                 '{{db_pass}}'            => $this->_wrapCData($input->getArgument('db-pass')),
                 '{{db_name}}'            => $this->_wrapCData($input->getArgument('db-name')),
-                '{{db_init_statemants}}' => 'SET NAMES utf8', // this is right -> magento has a little typo bug "statemants".
-                '{{db_model}}'           => 'mysql4',
-                '{{db_type}}'            => 'pdo_mysql',
-                '{{db_pdo_type}}'        => '',
+                '{{db_init_statemants}}' => $this->_wrapCData('SET NAMES utf8'), // this is right -> magento has a little typo bug "statemants".
+                '{{db_model}}'           => $this->_wrapCData('mysql4'),
+                '{{db_type}}'            => $this->_wrapCData('pdo_mysql'),
+                '{{db_pdo_type}}'        => $this->_wrapCData(''),
                 '{{session_save}}'       => $this->_wrapCData($input->getArgument('session-save')),
                 '{{admin_frontname}}'    => $this->_wrapCData($input->getArgument('admin-frontname')),
             );

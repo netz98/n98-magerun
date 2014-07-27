@@ -22,13 +22,12 @@ class GenerateCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
-                'command'           => $command->getName(),
+                'command'         => $command->getName(),
                 'db-host'         => 'my_db_host',
                 'db-user'         => 'my_db_user',
                 'db-pass'         => 'my_db_pass',
                 'db-name'         => 'my_db_name',
                 'session-save'    => 'my_session_save',
-                'admin-frontname' => 'my_admin_frontname',
                 'admin-frontname' => 'my_admin_frontname',
                 'encryption-key'  => 'key123456789'
             )
@@ -42,7 +41,7 @@ class GenerateCommandTest extends TestCase
         $this->assertContains('<dbname><![CDATA[my_db_name]]></dbname>', $fileContent);
         $this->assertContains('<session_save><![CDATA[my_session_save]]></session_save>', $fileContent);
         $this->assertContains('<frontName><![CDATA[my_admin_frontname]]></frontName>', $fileContent);
-        $this->assertContains('<key>key123456789</key>', $fileContent);
+        $this->assertContains('<key><![CDATA[key123456789]]></key>', $fileContent);
 
         $xml = \simplexml_load_file($testConfigFile);
         $this->assertNotInternalType('bool', $xml);
