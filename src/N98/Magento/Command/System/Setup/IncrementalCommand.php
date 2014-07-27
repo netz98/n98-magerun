@@ -40,7 +40,8 @@ class IncrementalCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:setup:incremental')
-            ->setDescription('<comment>(Experimental)</comment> List new setup scripts to run, then runs one script')
+            ->setDescription('List new setup scripts to run, then runs one script')
+            ->addOption('skip-version-check','Skips the "are you updating to the latest version"/"un-tested" check.')
             ->setHelp('Examines an un-cached configuration tree and determines which ' .
                 'structure and data setup resource scripts need to run, and then runs them.');
     }
@@ -55,6 +56,7 @@ class IncrementalCommand extends AbstractMagentoCommand
     {
         //sets output so we can access it from all methods
         $this->_setOutput($output);
+        $this->_setInput($output);
         if (!$this->_init()) {
             return;
         }
@@ -253,7 +255,12 @@ class IncrementalCommand extends AbstractMagentoCommand
     {
         $this->_output = $output;
     }
-
+    
+    protected function _setInput($input)
+    {
+        $this->_input = $input;
+    }
+    
     /**
      * @param bool $needsUpdate
      */
@@ -476,6 +483,28 @@ class IncrementalCommand extends AbstractMagentoCommand
         $output->writeln('');
         $output->writeln(ucwords($type) . ' update <info>' . $toUpdate . '</info> complete.');
         $output->writeln('Ran in ' . floor($time_ran * 1000) . 'ms');
+    }
+    
+    protected function _getTestedVersions()
+    {
+        return array('1.7.0.2','1.8.1.0', '1.9.0.1');
+    }
+    
+    protected function _checkMagentoVersion()
+    {
+        $version = \Mage::getVersion();
+        if(in_array($version, $this->_getTestedVersions()))
+        {
+            return true;
+        }
+        
+        if($this->_input->getOption('skip-version-check'))
+        {
+            return true;
+        }
+
+        $this->_output->writeln('<error>ERROR: Untested with '.$version.'. Try --skip-version-check if you\'re sure. </error>');    
+        return false;
     }
 
     protected function _restoreEventContext()
