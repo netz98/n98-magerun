@@ -6,9 +6,16 @@ RECENT CHANGES
 1.91.0
 ======
 
-* sys:info command: Added row count for main entities (by Christian Münch)
 * #315 sys:setup:run on enterprise requires admin session. (by Thorsten Essig and Christian Münch)
 * #367 Exclude sessions from @stripped (and therefore @development) (by Aaron Brady)
+* #368 Skip sys:setup:incremental's Version Check (by Alan Storm)
+* #369 get use_rewrites/use_secure from config (Kristof Fooman)
+* #352 Added --stop-on-error option. Must be tested in real update environment. (by Christian Münch)
+* #370 Remove Admin Users (by Aydin Hassan)
+* #372 print root warning to std_error (by Edward Rowley)
+* #373 Refactored local-config:generate command (by Rouven Rieker)
+* #374 System-wide configuration for windows (by Christian Münch)
+* sys:info command: Added row count for main entities (by Christian Münch)
 * sys:setup returns exit status code "1" if setup fails (by Christian Münch)
 
 ======
