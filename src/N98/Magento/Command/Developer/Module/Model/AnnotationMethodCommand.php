@@ -102,8 +102,8 @@ class AnnotationmethodCommand extends AbstractMagentoCommand
         $modelClassName = get_class($this->_mageModel);
         $getterSetter   = array();
         foreach ($this->_tableColumns as $colName => $colProp) {
-            $getterSetter[] = sprintf(' * @method %s set%s(%s $value)', $modelClassName, $this->camelize($colName), $this->getColumnType($colProp['Type']));
             $getterSetter[] = sprintf(' * @method %s get%s()', $this->getColumnType($colProp['Type']), $this->camelize($colName));
+            $getterSetter[] = sprintf(' * @method %s set%s(%s $value)', $modelClassName, $this->camelize($colName), $this->getColumnType($colProp['Type']));
         }
         return $getterSetter;
     }
