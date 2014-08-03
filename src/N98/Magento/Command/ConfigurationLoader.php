@@ -212,6 +212,7 @@ class ConfigurationLoader
             $this->_pluginConfig = array();
             $moduleBaseFolders = array();
             if (OperatingSystem::isWindows()) {
+                $config['plugin']['folders'][] = getenv('WINDIR') . '/n98-magerun/modules';
                 $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/n98-magerun/modules';
             } else {
                 $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/.n98-magerun/modules';
