@@ -636,7 +636,7 @@ class Application extends BaseApplication
             if (isset($specialGlobalOptions['root-dir'][0])
                 && $specialGlobalOptions['root-dir'][0] == '~'
             ) {
-                $specialGlobalOptions['root-dir'] = getenv('HOME') . substr($specialGlobalOptions['root-dir'], 1);
+                $specialGlobalOptions['root-dir'] = OperatingSystem::getHomeDir() . substr($specialGlobalOptions['root-dir'], 1);
             }
             $folder = realpath($specialGlobalOptions['root-dir']);
             $this->_directRootDir = true;
