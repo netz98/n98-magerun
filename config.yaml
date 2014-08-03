@@ -83,6 +83,7 @@ commands:
     - N98\Magento\Command\Developer\Module\Rewrite\ListCommand
     - N98\Magento\Command\Developer\Module\Dependencies\OnCommand
     - N98\Magento\Command\Developer\Module\Dependencies\FromCommand
+    - N98\Magento\Command\Developer\Module\Model\AnnotationMethodCommand
     - N98\Magento\Command\Developer\ProfilerCommand
     - N98\Magento\Command\Developer\Report\CountCommand
     - N98\Magento\Command\Developer\ClassLookupCommand
@@ -103,11 +104,11 @@ commands:
     - N98\Magento\Command\Indexer\ReindexCommand
     - N98\Magento\Command\Installer\InstallCommand
     - N98\Magento\Command\Installer\UninstallCommand
-    - N98\Magento\Command\LocalConfig\GenerateCommand 
-    - N98\Magento\Command\MagentoConnect\DownloadExtensionCommand 
-    - N98\Magento\Command\MagentoConnect\InstallExtensionCommand 
-    - N98\Magento\Command\MagentoConnect\ListExtensionsCommand 
-    - N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand 
+    - N98\Magento\Command\LocalConfig\GenerateCommand
+    - N98\Magento\Command\MagentoConnect\DownloadExtensionCommand
+    - N98\Magento\Command\MagentoConnect\InstallExtensionCommand
+    - N98\Magento\Command\MagentoConnect\ListExtensionsCommand
+    - N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand
     - N98\Magento\Command\MagentoConnect\ValidateExtensionCommand
     - N98\Magento\Command\Media\DumpCommand
     - N98\Magento\Command\OpenBrowserCommand
@@ -148,7 +149,7 @@ commands:
           type: tar
         extra:
           sample-data: sample-data-1.9.0.0
-          
+
       - name: magento-ce-1.8.1.0
         version: 1.8.1.0
         dist:
