@@ -72,6 +72,7 @@ commands:
     - N98\Magento\Command\Design\DemoNoticeCommand
     - N98\Magento\Command\Developer\Ide\PhpStorm\MetaCommand
     - N98\Magento\Command\Developer\Setup\Script\AttributeCommand
+    - N98\Magento\Command\Developer\Code\Model\MethodCommand
     - N98\Magento\Command\Developer\ConsoleCommand
     - N98\Magento\Command\Developer\Log\DbCommand
     - N98\Magento\Command\Developer\Log\LogCommand
@@ -83,7 +84,6 @@ commands:
     - N98\Magento\Command\Developer\Module\Rewrite\ListCommand
     - N98\Magento\Command\Developer\Module\Dependencies\OnCommand
     - N98\Magento\Command\Developer\Module\Dependencies\FromCommand
-    - N98\Magento\Command\Developer\Module\Model\AnnotationMethodCommand
     - N98\Magento\Command\Developer\ProfilerCommand
     - N98\Magento\Command\Developer\Report\CountCommand
     - N98\Magento\Command\Developer\ClassLookupCommand

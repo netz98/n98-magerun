@@ -1,6 +1,6 @@
 <?php
 
-namespace N98\Magento\Command\Developer\Module\Model;
+namespace N98\Magento\Command\Developer\Code\Model;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
-class AnnotationmethodCommand extends AbstractMagentoCommand
+class MethodCommand extends AbstractMagentoCommand
 {
     /**
      * @var InputInterface
@@ -43,7 +43,7 @@ class AnnotationmethodCommand extends AbstractMagentoCommand
     protected function configure()
     {
         $this
-            ->setName('dev:module:model:method')
+            ->setName('dev:code:model:method')
             ->addArgument('modelName', InputOption::VALUE_REQUIRED, 'Model Name namespace/modelName')
             ->setDescription('Code annotations: Reads the columns from a table and writes the getter and setter methods into the class file for @methods.');
     }
