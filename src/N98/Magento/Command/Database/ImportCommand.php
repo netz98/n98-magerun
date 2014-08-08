@@ -51,20 +51,25 @@ HELP;
         $out = fopen($result, 'w');
 
         $current_table = '';
+        $maxlen = 8 * 1024 * 1024; // 8 MB
+        $len = 0;
         while($line = fgets($in)) {
             if (strtolower(substr($line, 0, 11)) == 'insert into') {
                 preg_match('/^insert into `(.*)` \(.*\) values (.*);/i', $line, $m);
                 $table = $m[1];
                 $values = $m[2];
 
-                if ($table != $current_table) {
+                if ($table != $current_table or ($len > $maxlen - 1000)) {
                     if ($current_table != '') {
                         fwrite($out, ";\n\n");
                     }
                     $current_table = $table;
-                    fwrite($out, 'INSERT INTO `' . $table . '` VALUES ' . $values);
+                    $insert = 'INSERT INTO `' . $table . '` VALUES ' . $values;
+                    fwrite($out, $insert);
+                    $len = strlen($insert);
                 } else {
                     fwrite($out, ',' . $values);
+                    $len += strlen($values) + 1;
                 }
             } else {
                 if ($current_table != '') {
