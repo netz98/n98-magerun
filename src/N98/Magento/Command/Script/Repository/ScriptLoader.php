@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Script\Repository;
 
+use N98\Util\OperatingSystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -34,7 +35,12 @@ class ScriptLoader
     public function __construct(array $scriptFolders, $magentoRootFolder = null)
     {
         $this->_magentoRootFolder = $magentoRootFolder;
-        $this->_homeScriptFolder = getenv('HOME') . '/.n98-magerun/scripts';
+        if (OperatingSystem::isWindows()) {
+            $this->_homeScriptFolder = OperatingSystem::getHomeDir() . '/n98-magerun/scripts';
+        } else {
+            $this->_homeScriptFolder = OperatingSystem::getHomeDir() . '/.n98-magerun/scripts';
+        }
+
         $this->_scriptFolders = $scriptFolders;
         $this->_scriptFolders[] = $this->_homeScriptFolder;
         foreach ($this->_scriptFolders as $key => $scriptFolder) {

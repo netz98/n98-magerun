@@ -15,7 +15,6 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class MagentoHelper extends AbstractHelper
 {
-    const MODMAN_MAGERUN_MARKER = 'n98-magerun::';
     /**
      * @var string
      */
@@ -76,7 +75,7 @@ class MagentoHelper extends AbstractHelper
      *
      * @param string $folder
      * @param array $subFolders Sub-folders to check
-    */
+     */
     public function detect($folder, $subFolders = array())
     {
         $folders = $this->splitPathFolders($folder);
@@ -160,6 +159,7 @@ class MagentoHelper extends AbstractHelper
                 }
                 continue;
             }
+
             $finder = Finder::create();
             $finder
                 ->files()
@@ -225,8 +225,8 @@ class MagentoHelper extends AbstractHelper
                 }
 
                 $modmanBaseFolder = $searchFolder
-                                  . DIRECTORY_SEPARATOR
-                                  . $magerunFileContent;
+                    . DIRECTORY_SEPARATOR
+                    . $magerunFileContent;
                 array_push($folders, $modmanBaseFolder);
             }
         }

@@ -4,6 +4,7 @@ namespace N98\Magento;
 
 use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Event\ConsoleEvent;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class EventSubscriber implements EventSubscriberInterface
@@ -33,12 +34,15 @@ class EventSubscriber implements EventSubscriberInterface
     public function checkRunningAsRootUser(ConsoleEvent $event)
     {
         $output = $event->getOutput();
-        if (OperatingSystem::isLinux() || OperatingSystem::isMacOs()) {
-            if (function_exists('posix_getuid')) {
-                if (posix_getuid() === 0) {
-                    $output->writeln('');
-                    $output->writeln(self::WARNING_ROOT_USER);
-                    $output->writeln('');
+        if ($output instanceof ConsoleOutput) {
+            $errorOutput = $output->getErrorOutput();
+            if (OperatingSystem::isLinux() || OperatingSystem::isMacOs()) {
+                if (function_exists('posix_getuid')) {
+                    if (posix_getuid() === 0) {
+                        $errorOutput->writeln('');
+                        $errorOutput->writeln(self::WARNING_ROOT_USER);
+                        $errorOutput->writeln('');
+                    }
                 }
             }
         }
