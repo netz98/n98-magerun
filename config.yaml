@@ -71,6 +71,7 @@ commands:
     - N98\Magento\Command\Database\QueryCommand
     - N98\Magento\Command\Database\Maintain\CheckTablesCommand
     - N98\Magento\Command\Design\DemoNoticeCommand
+    - N98\Magento\Command\Developer\Code\Model\MethodCommand
     - N98\Magento\Command\Developer\Ide\PhpStorm\MetaCommand
     - N98\Magento\Command\Developer\Setup\Script\AttributeCommand
     - N98\Magento\Command\Developer\ConsoleCommand
@@ -104,11 +105,11 @@ commands:
     - N98\Magento\Command\Indexer\ReindexCommand
     - N98\Magento\Command\Installer\InstallCommand
     - N98\Magento\Command\Installer\UninstallCommand
-    - N98\Magento\Command\LocalConfig\GenerateCommand 
-    - N98\Magento\Command\MagentoConnect\DownloadExtensionCommand 
-    - N98\Magento\Command\MagentoConnect\InstallExtensionCommand 
-    - N98\Magento\Command\MagentoConnect\ListExtensionsCommand 
-    - N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand 
+    - N98\Magento\Command\LocalConfig\GenerateCommand
+    - N98\Magento\Command\MagentoConnect\DownloadExtensionCommand
+    - N98\Magento\Command\MagentoConnect\InstallExtensionCommand
+    - N98\Magento\Command\MagentoConnect\ListExtensionsCommand
+    - N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand
     - N98\Magento\Command\MagentoConnect\ValidateExtensionCommand
     - N98\Magento\Command\Media\DumpCommand
     - N98\Magento\Command\OpenBrowserCommand
@@ -149,7 +150,7 @@ commands:
           type: tar
         extra:
           sample-data: sample-data-1.9.0.0
-          
+
       - name: magento-ce-1.8.1.0
         version: 1.8.1.0
         dist:
