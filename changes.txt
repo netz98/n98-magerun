@@ -17,11 +17,11 @@ RECENT CHANGES
 * #372 print root warning to std_error (by Edward Rowley)
 * #373 Refactored local-config:generate command (by Rouven Rieker)
 * #374 System-wide configuration for Microsoft Windows (by Christian Münch)
+* #376 New command dev:code:model:method (by Cyrill Schumacher)
 * #380 Customer delete command (by Michael Woodward)
 * #382 Change module version command (by Michael Woodward)
 * sys:info command: Added row count for main entities (by Christian Münch)
 * sys:setup returns exit status code "1" if setup fails (by Christian Münch)
-* New command dev:module:model:method (by Cyrill Schumacher)
 * Updated 3rd party components (Symfony, PHPUnit, Twig)
 
 ======

@@ -1046,6 +1046,11 @@ Run this command inside your `.modman` folder.
 
 * --author-name Author name for composer.json file.
 
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:code:model:method [modelName]
+
 List Modules
 """"""""""""
 
