@@ -13,7 +13,7 @@ use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
  * Class ChangeVersionCommand
  * @package N98\Magento\Command\System\Setup
  */
-class VersionCommand extends AbstractMagentoCommand
+class ChangeVersionCommand extends AbstractMagentoCommand
 {
     /**
      * Set up CLI options
@@ -21,7 +21,7 @@ class VersionCommand extends AbstractMagentoCommand
     protected function configure()
     {
         $this
-            ->setName('sys:setup:version')
+            ->setName('sys:setup:change-version')
             ->addArgument('module', InputArgument::REQUIRED, 'Module name')
             ->addArgument('version', InputArgument::REQUIRED, 'New version value')
             ->addArgument('setup', InputArgument::OPTIONAL, 'Setup code to update', 'all')
