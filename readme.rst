@@ -144,6 +144,24 @@ Example:
 
   $ n98-magerun.phar customer:create foo@example.com password123 John Doe base
 
+Delete Customers
+""""""""""""""""
+
+This will delete a customer by a given Id/Email, delete all customers or delete all customers in a range of Ids.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar delete [-a|--all] [-f|--force] [-r|--range] [id]
+
+Examples:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar customer:delete 1                   # Will delete customer with Id 1
+   $ n98-magerun.phar customer:delete mike@example.com    # Will delete customer with that email
+   $ n98-magerun.phar customer:delete --all               # Will delete all customers
+   $ n98-magerun.phar customer:delete --range             # Will prompt for start and end Ids for batch deletion
+
 Generate Dummy Customers
 """"""""""""""""""""""""
 
@@ -790,6 +808,18 @@ Compares module version with saved setup version in `core_resource` table and di
    $ n98-magerun.phar sys:setup:compare-versions [--ignore-data] [--log-junit="..."] [--format[="..."]]
 
 * If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
+
+Change Setup Version
+""""""""""""""""""""
+
+Changes the version of one or all module resource setups.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:setup:change-version module version [setup]
+
+Setup argument default is "all resources".
+
 
 System Check
 """"""""""""

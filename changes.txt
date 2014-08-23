@@ -6,17 +6,23 @@ RECENT CHANGES
 1.91.0
 ======
 
+* #299 Removed header if format parameter is passed (by Christian Münch)
 * #315 sys:setup:run on enterprise requires admin session. (by Thorsten Essig and Christian Münch)
+* #362 db:import --optimize: Cut line in 8MB pieces (by Alexander Menk)
 * #367 Exclude sessions from @stripped (and therefore @development) (by Aaron Brady)
 * #368 Skip sys:setup:incremental's Version Check (by Alan Storm)
-* #369 get use_rewrites/use_secure from config (Kristof Fooman)
-* #352 Added --stop-on-error option. Must be tested in real update environment. (by Christian Münch)
+* #369 get use_rewrites/use_secure from config (Kristof Ringleff)
+* #352 Added --stop-on-error option. (by Christian Münch)
 * #370 Remove Admin Users (by Aydin Hassan)
 * #372 print root warning to std_error (by Edward Rowley)
 * #373 Refactored local-config:generate command (by Rouven Rieker)
-* #374 System-wide configuration for windows (by Christian Münch)
+* #374 System-wide configuration for Microsoft Windows (by Christian Münch)
+* #380 Customer delete command (by Michael Woodward)
+* #382 Change module version command (by Michael Woodward)
 * sys:info command: Added row count for main entities (by Christian Münch)
 * sys:setup returns exit status code "1" if setup fails (by Christian Münch)
+* New command dev:module:model:method (by Cyrill Schumacher)
+* Updated 3rd party components (Symfony, PHPUnit, Twig)
 
 ======
 1.90.0
