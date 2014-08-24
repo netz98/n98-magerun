@@ -136,7 +136,7 @@ class ChangeVersionCommandTest extends TestCase
     public function testModuleDoesNotExist()
     {
         $application = $this->getApplication();
-        $application->add(new VersionCommand());
+        $application->add(new ChangeVersionCommand());
         $command = $this->getApplication()->find('sys:setup:change-version');
 
         $commandTester = new CommandTester($command);
