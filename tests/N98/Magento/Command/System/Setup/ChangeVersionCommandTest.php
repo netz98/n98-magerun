@@ -14,7 +14,7 @@ class ChangeVersionCommandTest extends TestCase
     }
     public function testChangeVersion()
     {
-        $command = $this->getMockBuilder('\N98\Magento\Command\System\Setup\VersionCommand')
+        $command = $this->getMockBuilder('\N98\Magento\Command\System\Setup\ChangeVersionCommand')
             ->setMethods(array('_getResourceSingleton'))
             ->getMock();
         
@@ -40,7 +40,7 @@ class ChangeVersionCommandTest extends TestCase
 
         $application = $this->getApplication();
         $application->add($command);
-        $command = $this->getApplication()->find('sys:setup:version');
+        $command = $this->getApplication()->find('sys:setup:change-version');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(array(
@@ -57,7 +57,7 @@ class ChangeVersionCommandTest extends TestCase
 
     public function testUpdateBySetupName()
     {
-        $command = $this->getMockBuilder('\N98\Magento\Command\System\Setup\VersionCommand')
+        $command = $this->getMockBuilder('\N98\Magento\Command\System\Setup\ChangeVersionCommand')
             ->setMethods(array('_getResourceSingleton'))
             ->getMock();
 
@@ -83,7 +83,7 @@ class ChangeVersionCommandTest extends TestCase
 
         $application = $this->getApplication();
         $application->add($command);
-        $command = $this->getApplication()->find('sys:setup:version');
+        $command = $this->getApplication()->find('sys:setup:change-version');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(array(
@@ -101,7 +101,7 @@ class ChangeVersionCommandTest extends TestCase
 
     public function testSetupNameNotFound()
     {
-        $command = $this->getMockBuilder('\N98\Magento\Command\System\Setup\VersionCommand')
+        $command = $this->getMockBuilder('\N98\Magento\Command\System\Setup\ChangeVersionCommand')
             ->setMethods(array('_getResourceSingleton'))
             ->getMock();
 
@@ -117,7 +117,7 @@ class ChangeVersionCommandTest extends TestCase
 
         $application = $this->getApplication();
         $application->add($command);
-        $command = $this->getApplication()->find('sys:setup:version');
+        $command = $this->getApplication()->find('sys:setup:change-version');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(array(
@@ -137,7 +137,7 @@ class ChangeVersionCommandTest extends TestCase
     {
         $application = $this->getApplication();
         $application->add(new VersionCommand());
-        $command = $this->getApplication()->find('sys:setup:version');
+        $command = $this->getApplication()->find('sys:setup:change-version');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(array(
