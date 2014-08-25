@@ -7,6 +7,7 @@ RECENT CHANGES
 ======
 
 * #299 Removed header if format parameter is passed (by Christian Münch)
+* #303 Please warn instead of blocking input (by Christian Münch)
 * #315 sys:setup:run on enterprise requires admin session. (by Thorsten Essig and Christian Münch)
 * #362 db:import --optimize: Cut line in 8MB pieces (by Alexander Menk)
 * #367 Exclude sessions from @stripped (and therefore @development) (by Aaron Brady)

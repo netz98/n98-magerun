@@ -584,7 +584,7 @@ HELP;
             if (!preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $input)) {
                 throw new \InvalidArgumentException('Please enter a valid URL');
             }
-            if (strstr($input, 'localhost')) {
+            if (parse_url($input, \PHP_URL_HOST) ==  'localhost') {
                 throw new \InvalidArgumentException('localhost cause problems! Please use 127.0.0.1 or another hostname');
             }
             return $input;
