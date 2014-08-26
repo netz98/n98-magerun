@@ -5,26 +5,13 @@ namespace N98\Magento\Command\Eav\Attribute;
 use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
 
+/**
+ * Class RemoveCommandTest
+ * @package N98\Magento\Command\Eav\Attribute
+ * @author Aydin Hassan <aydin@hotmail.co.uk>
+ */
 class RemoveCommandTest extends TestCase
 {
-    public function testCommandThrowsExceptionIfInvalidEntityTypeFormat()
-    {
-        $application = $this->getApplication();
-        $application->add(new RemoveCommand());
-        $application->setAutoExit(false);
-        $command = $this->getApplication()->find('eav:attribute:remove');
-
-        $this->setExpectedException('InvalidArgumentException', 'Entity type: "notavalidtype" is invalid');
-
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(
-            array(
-                'command'       => $command->getName(),
-                'entityType'    => 'notavalidtype',
-                'attributeCode' => 'someAttribute',
-            )
-        );
-    }
 
     public function testCommandThrowsExceptionIfInvalidEntityType()
     {
@@ -33,7 +20,7 @@ class RemoveCommandTest extends TestCase
         $application->setAutoExit(false);
         $command = $this->getApplication()->find('eav:attribute:remove');
 
-        $this->setExpectedException('Mage_Core_Exception', 'Invalid entity_type specified: not_a_valid_type');
+        $this->setExpectedException('\InvalidArgumentException', 'Invalid entity_type specified: not_a_valid_type');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -82,6 +69,7 @@ class RemoveCommandTest extends TestCase
             'label' =>'Test Attribute',
         ));
 
+        $this->assertTrue($this->attributeExists($entityType, $attributeCode));
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
@@ -91,8 +79,55 @@ class RemoveCommandTest extends TestCase
             )
         );
 
-        $attribute = \Mage::getModel('eav/config')->getAttribute($entityType, $attributeCode);
-        $this->assertNull($attribute->getId());
+        $this->assertFalse($this->attributeExists($entityType, $attributeCode));
+    }
+
+    /**
+     * @param string $entityTypeCode
+     * @dataProvider entityTypeProvider
+     */
+    public function testOrderAttributeIsSuccessfullyRemoved($entityTypeCode)
+    {
+        $application = $this->getApplication();
+        $application->add(new RemoveCommand());
+        $application->setAutoExit(false);
+        $command = $this->getApplication()->find('eav:attribute:remove');
+
+        $attributeCode  = 'crazyCoolAttribute';
+        $this->createAttribute($entityTypeCode, $attributeCode, array(
+            'type'  =>'text',
+            'input' =>'text',
+            'label' =>'Test Attribute',
+        ));
+
+        $this->assertTrue($this->attributeExists($entityTypeCode, $attributeCode));
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command'       => $command->getName(),
+                'entityType'    => $entityTypeCode,
+                'attributeCode' => $attributeCode,
+            )
+        );
+
+        $this->assertFalse($this->attributeExists($entityTypeCode, $attributeCode));
+    }
+
+    /**
+     * @return array
+     */
+    public static function entityTypeProvider()
+    {
+        return array(
+            array('catalog_category'),
+            array('catalog_product'),
+            array('creditmemo'),
+            array('customer'),
+            array('customer_address'),
+            array('invoice'),
+            array('order'),
+            array('shipment'),
+        );
     }
 
     /**
@@ -102,7 +137,18 @@ class RemoveCommandTest extends TestCase
      */
     protected function createAttribute($entityType, $attributeCode, $data)
     {
-        $setup = \Mage::getModel('eav/entity_setup','core_setup');
+        $setup = \Mage::getModel('eav/entity_setup', 'core_setup');
         $setup->addAttribute($entityType, $attributeCode, $data);
+    }
+
+    /**
+     * @param string $entityType
+     * @param string $attributeCode
+     * @return bool
+     */
+    protected function attributeExists($entityType, $attributeCode)
+    {
+        $codes = \Mage::getModel('eav/config')->getEntityAttributeCodes($entityType);
+        return in_array($attributeCode, $codes);
     }
 }
