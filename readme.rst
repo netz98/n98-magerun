@@ -670,6 +670,17 @@ Change admin user password
 
    $ n98-magerun.phar admin:user:change-password [username] [password]
 
+Delete admin user
+"""""""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar admin:user:delete [email|username] [-f]
+
+ID can be e-mail or username. The command will attempt to find the user by username first and if it cannot be found it
+will attempt to find the user by e-mail. If ID is omitted you will be prompted for it. If the force parameter "-f" is
+omitted you will be prompted for confirmation.
+
 Disable admin notifications
 """""""""""""""""""""""""""
 
@@ -965,6 +976,19 @@ List all EAV attributes:
 
    $ n98-magerun.phar eav:attribute:list [--filter-type[="..."]] [--add-source] [--format[="..."]]
 
+View the data for a particular attribute:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar eav:attribute:view [--format[="..."]] entityType attributeCode
+
+Remove an attribute:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar eav:attribute:remove entityType attributeCode
+
+
 Development IDE Support
 """""""""""""""""""""""
 
@@ -1233,6 +1257,18 @@ Uninstalls Magento: Drops your database and recursive deletes installation folde
    $ n98-magerun.phar uninstall [-f|--force] [--installationFolder[="..."]]
 
 **Please be careful: This removes all data from your installation.**
+
+--installationFolder is required and if you do not enter it you will be prompted for it. This should be your project
+root, not the Magento root. For example, If your project root is /var/www/site and Magento src is located at
+/var/www/site/htdocs, you should pass /var/www/site to the command, or if you are currently in that particular directory
+you can just pass "." Eg:
+
+.. code-block:: sh
+
+   $ cd /var/www/site
+   $ n98-magerun.phar uninstall --installationFolder "." -f
+
+If you omit the -f, you will be prompted for confirmation.
 
 n98-magerun Shell
 """""""""""""""""
