@@ -63,10 +63,10 @@ class ListCommand extends AbstractMagentoCommand
         $modules = \Mage::app()->getConfig()->getNode('modules')->asArray();
         foreach ($modules as $moduleName => $moduleInfo) {
             $this->infos[] = array(
-                $moduleInfo['codePool'],
-                $moduleName,
-                isset($moduleInfo['version']) ? $moduleInfo['version'] : '',
-                $this->formatActive($moduleInfo['active']),
+                'codePool' => $moduleInfo['codePool'],
+                'Name' => $moduleName,
+                'Version' => isset($moduleInfo['version']) ? $moduleInfo['version'] : '',
+                'Status' => $this->formatActive($moduleInfo['active']),
             );
         }
     }
