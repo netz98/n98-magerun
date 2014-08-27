@@ -823,14 +823,27 @@ Compares module version with saved setup version in `core_resource` table and di
 Change Setup Version
 """"""""""""""""""""
 
-Changes the version of one or all module resource setups.
+Changes the version of one or all module resource setups. This command is useful if you want to re-run an upgrade
+script again possibly due to debugging. Alternatively you would have to alter the row in the database manually.
+
 
 .. code-block:: sh
 
    $ n98-magerun.phar sys:setup:change-version module version [setup]
 
-Setup argument default is "all resources".
+Setup argument default is "all resources" for the given module.
 
+Remove Setup Version
+""""""""""""""""""""
+
+Removes the entry for one or all module resource setups. This command is useful if you want to re-run an install
+script again possibly due to debugging. Alternatively you would have to remove the row from the database manually.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:setup:remove module [setup]
+
+Setup argument default is "all resources" for the given module.
 
 System Check
 """"""""""""

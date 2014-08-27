@@ -127,6 +127,7 @@ commands:
     - N98\Magento\Command\System\MaintenanceCommand
     - N98\Magento\Command\System\Setup\CompareVersionsCommand
     - N98\Magento\Command\System\Setup\ChangeVersionCommand
+    - N98\Magento\Command\System\Setup\RemoveCommand
     - N98\Magento\Command\System\Setup\RunCommand
     - N98\Magento\Command\System\Setup\IncrementalCommand
     - N98\Magento\Command\System\Store\Config\BaseUrlListCommand
