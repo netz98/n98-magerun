@@ -1,3 +1,6 @@
+application:
+  check-root-user: true
+
 twig:
   baseDirs:
 

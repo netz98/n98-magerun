@@ -112,6 +112,15 @@ If you don't have installed the .phar file system wide you can call it with the 
    php n98-magerun.phar list
 
 
+Global config parameters:
+
+  --root-dir
+      Force magento root dir. No auto detection
+  --skip-config
+      Do not load any custom config.
+  --skip-root-check
+      Do not check if n98-magerun runs as root
+
 Open Shop in Browser
 """"""""""""""""""""
 
