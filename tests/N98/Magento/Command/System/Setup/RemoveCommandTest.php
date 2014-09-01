@@ -15,10 +15,14 @@ class RemoveCommandTest extends TestCase
 
     public function testRemoveModule()
     {
-        $mockAdapter = $this->getMock('\Varien_Db_Adapter_Interface');
+        $mockAdapter = $this->getMockBuilder('\Varien_Db_Adapter_Pdo_Mysql')
+            ->disableOriginalConstructor()
+            ->setMethods(array('delete'))
+            ->getMock();
+
         $mockAdapter->expects($this->once())
             ->method('delete')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(1));
 
         $coreResource = $this->getMock('\Mage_Core_Model_Resource');
         $coreResource->expects($this->once())
@@ -26,11 +30,11 @@ class RemoveCommandTest extends TestCase
             ->will($this->returnValue($mockAdapter));
 
         $command = $this->getMockBuilder('\N98\Magento\Command\System\Setup\RemoveCommand')
-            ->setMethods(array('_getResourceSingleton'))
+            ->setMethods(array('_getModel'))
             ->getMock();
 
         $command->expects($this->once())
-            ->method('_getResourceSingleton')
+            ->method('_getModel')
             ->with('core/resource', 'Mage_Core_Model_Resource')
             ->will($this->returnValue($coreResource));
 
@@ -53,10 +57,14 @@ class RemoveCommandTest extends TestCase
     public function testRemoveBySetupName()
     {
 
-        $mockAdapter = $this->getMock('\Varien_Db_Adapter_Interface');
+        $mockAdapter = $this->getMockBuilder('\Varien_Db_Adapter_Pdo_Mysql')
+            ->disableOriginalConstructor()
+            ->setMethods(array('delete'))
+            ->getMock();
+
         $mockAdapter->expects($this->once())
             ->method('delete')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(1));
 
         $coreResource = $this->getMock('\Mage_Core_Model_Resource');
         $coreResource->expects($this->once())
@@ -64,11 +72,11 @@ class RemoveCommandTest extends TestCase
             ->will($this->returnValue($mockAdapter));
 
         $command = $this->getMockBuilder('\N98\Magento\Command\System\Setup\RemoveCommand')
-            ->setMethods(array('_getResourceSingleton'))
+            ->setMethods(array('_getModel'))
             ->getMock();
 
         $command->expects($this->once())
-            ->method('_getResourceSingleton')
+            ->method('_getModel')
             ->with('core/resource', 'Mage_Core_Model_Resource')
             ->will($this->returnValue($coreResource));
 
@@ -92,10 +100,14 @@ class RemoveCommandTest extends TestCase
     public function testRemoveBySetupNameFailure()
     {
 
-        $mockAdapter = $this->getMock('\Varien_Db_Adapter_Interface');
+        $mockAdapter = $this->getMockBuilder('\Varien_Db_Adapter_Pdo_Mysql')
+            ->disableOriginalConstructor()
+            ->setMethods(array('delete'))
+            ->getMock();
+
         $mockAdapter->expects($this->once())
             ->method('delete')
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(0));
 
         $coreResource = $this->getMock('\Mage_Core_Model_Resource');
         $coreResource->expects($this->once())
@@ -108,11 +120,11 @@ class RemoveCommandTest extends TestCase
             ->will($this->returnValue('core_resource'));
 
         $command = $this->getMockBuilder('\N98\Magento\Command\System\Setup\RemoveCommand')
-            ->setMethods(array('_getResourceSingleton'))
+            ->setMethods(array('_getModel'))
             ->getMock();
 
         $command->expects($this->once())
-            ->method('_getResourceSingleton')
+            ->method('_getModel')
             ->with('core/resource', 'Mage_Core_Model_Resource')
             ->will($this->returnValue($coreResource));
 
@@ -128,7 +140,7 @@ class RemoveCommandTest extends TestCase
         ));
 
         $this->assertContains(
-            'Could not remove setup resource: "weee_setup" from module: "Mage_Weee"',
+            'No entry was found for setup resource: "weee_setup" in module: "Mage_Weee"',
             $commandTester->getDisplay()
         );
     }

@@ -67,11 +67,11 @@ class RemoveCommand extends AbstractSetupCommand
      */
     public function removeSetupResource($moduleName, $setupResource, OutputInterface $output)
     {
-        $resource       = $this->_getResourceSingleton('core/resource', 'Mage_Core_Model_Resource');
-        $table          = $resource->getTableName('core_resource');
-        $writeAdapter   = $resource->getConnection('core_write');
+        $model          = $this->_getModel('core/resource', 'Mage_Core_Model_Resource');
+        $table          = $model->getTableName('core_resource');
+        $writeAdapter   = $model->getConnection('core_write');
 
-        if ($writeAdapter->delete($table, array('code = ?' => $setupResource))) {
+        if ($writeAdapter->delete($table, array('code = ?' => $setupResource)) > 0) {
             $output->writeln(
                 sprintf(
                     '<info>Successfully removed setup resource: "%s" from module: "%s" </info>',
@@ -82,7 +82,7 @@ class RemoveCommand extends AbstractSetupCommand
         } else {
             $output->writeln(
                 sprintf(
-                    '<error>Could not remove setup resource: "%s" from module: "%s" </error>',
+                    '<error>No entry was found for setup resource: "%s" in module: "%s" </error>',
                     $setupResource,
                     $moduleName
                 )
