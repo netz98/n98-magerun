@@ -27,30 +27,30 @@ class RemoveCommandTest extends TestCase
             array(
                  'command'       => $command->getName(),
                  'entityType'    => 'not_a_valid_type',
-                 'attributeCode' => 'someAttribute',
+                 'attributeCode' => array('someAttribute'),
             )
         );
     }
 
-    public function testCommandThrowsExceptionIfAttributeNotExist()
+    public function testCommandPrintsErrorIfAttributeNotExists()
     {
         $application = $this->getApplication();
         $application->add(new RemoveCommand());
         $application->setAutoExit(false);
         $command = $this->getApplication()->find('eav:attribute:remove');
 
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Attribute: "not_an_attribute" does not exist for entity type: "catalog_product"'
-        );
-
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
                 'command'       => $command->getName(),
                 'entityType'    => 'catalog_product',
-                'attributeCode' => 'not_an_attribute',
+                'attributeCode' => array('not_an_attribute'),
             )
+        );
+
+        $this->assertContains(
+            'Attribute: "not_an_attribute" does not exist for entity type: "catalog_product"',
+            $commandTester->getDisplay()
         );
     }
 
@@ -75,7 +75,7 @@ class RemoveCommandTest extends TestCase
             array(
                 'command'       => $command->getName(),
                 'entityType'    => $entityType,
-                'attributeCode' => $attributeCode,
+                'attributeCode' => array($attributeCode),
             )
         );
 
@@ -106,11 +106,97 @@ class RemoveCommandTest extends TestCase
             array(
                 'command'       => $command->getName(),
                 'entityType'    => $entityTypeCode,
-                'attributeCode' => $attributeCode,
+                'attributeCode' => array($attributeCode),
             )
         );
 
         $this->assertFalse($this->attributeExists($entityTypeCode, $attributeCode));
+    }
+
+    public function testCanRemoveMultipleAttributes()
+    {
+        $application = $this->getApplication();
+        $application->add(new RemoveCommand());
+        $application->setAutoExit(false);
+        $command = $this->getApplication()->find('eav:attribute:remove');
+
+        $attributeCode1  = 'crazyCoolAttribute1';
+        $attributeCode2  = 'crazyCoolAttribute2';
+        $this->createAttribute('catalog_product', $attributeCode1, array(
+            'type'  =>'text',
+            'input' =>'text',
+            'label' =>'Test Attribute 1',
+        ));
+
+        $this->createAttribute('catalog_product', $attributeCode2, array(
+            'type'  =>'text',
+            'input' =>'text',
+            'label' =>'Test Attribute 2',
+        ));
+
+        $this->assertTrue($this->attributeExists('catalog_product', $attributeCode1));
+        $this->assertTrue($this->attributeExists('catalog_product', $attributeCode2));
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command'       => $command->getName(),
+                'entityType'    => 'catalog_product',
+                'attributeCode' => array($attributeCode1, $attributeCode2),
+            )
+        );
+
+        $this->assertFalse($this->attributeExists('catalog_product', $attributeCode1));
+        $this->assertFalse($this->attributeExists('catalog_product', $attributeCode2));
+
+        $this->assertContains(
+            'Successfully removed attribute: "crazyCoolAttribute1" from entity type: "catalog_product"',
+            $commandTester->getDisplay()
+        );
+
+        $this->assertContains(
+            'Successfully removed attribute: "crazyCoolAttribute2" from entity type: "catalog_product"',
+            $commandTester->getDisplay()
+        );
+    }
+
+    public function testCanRemoveMultipleAttributesIfSomeNotExist()
+    {
+        $application = $this->getApplication();
+        $application->add(new RemoveCommand());
+        $application->setAutoExit(false);
+        $command = $this->getApplication()->find('eav:attribute:remove');
+
+        $attributeCode1  = 'crazyCoolAttribute1';
+        $attributeCode2  = 'crazyCoolAttribute2';
+        $this->createAttribute('catalog_product', $attributeCode1, array(
+            'type'  =>'text',
+            'input' =>'text',
+            'label' =>'Test Attribute 1',
+        ));
+
+        $this->assertTrue($this->attributeExists('catalog_product', $attributeCode1));
+        $this->assertFalse($this->attributeExists('catalog_product', $attributeCode2));
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command'       => $command->getName(),
+                'entityType'    => 'catalog_product',
+                'attributeCode' => array($attributeCode1, $attributeCode2),
+            )
+        );
+
+        $this->assertFalse($this->attributeExists('catalog_product', $attributeCode1));
+        $this->assertFalse($this->attributeExists('catalog_product', $attributeCode2));
+
+        $this->assertContains(
+            'Attribute: "crazyCoolAttribute2" does not exist for entity type: "catalog_product"',
+            $commandTester->getDisplay()
+        );
+
+        $this->assertContains(
+            'Successfully removed attribute: "crazyCoolAttribute1" from entity type: "catalog_product"',
+            $commandTester->getDisplay()
+        );
     }
 
     /**

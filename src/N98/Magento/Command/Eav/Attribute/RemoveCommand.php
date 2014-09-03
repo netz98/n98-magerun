@@ -19,7 +19,7 @@ class RemoveCommand extends AbstractMagentoCommand
         $this
             ->setName('eav:attribute:remove')
             ->addArgument('entityType', InputArgument::REQUIRED, 'Entity Type Code like catalog_product')
-            ->addArgument('attributeCode', InputArgument::REQUIRED, 'Attribute Code')
+            ->addArgument('attributeCode', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Attribute Code')
             ->setDescription('Removes attribute for a given attribute code');
     }
 
@@ -32,8 +32,7 @@ class RemoveCommand extends AbstractMagentoCommand
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
 
-            $entityType     = $input->getArgument('entityType');
-            $attributeCode  = $input->getArgument('attributeCode');
+            $entityType = $input->getArgument('entityType');
 
             try {
                 $attributes = \Mage::getModel('eav/config')->getEntityAttributeCodes($entityType);
@@ -41,21 +40,27 @@ class RemoveCommand extends AbstractMagentoCommand
                 throw new \InvalidArgumentException($e->getMessage());
             }
 
-            if (!in_array($attributeCode, $attributes)) {
-                $message = sprintf('Attribute: "%s" does not exist for entity type: "%s"', $attributeCode, $entityType);
-                throw new \InvalidArgumentException($message);
-            }
-
             $setup = new \Mage_Eav_Model_Entity_Setup('core_setup');
-            $setup->removeAttribute($entityType, $attributeCode);
+            foreach ($input->getArgument('attributeCode') as $attributeCode) {
+                if (!in_array($attributeCode, $attributes)) {
+                    $message = sprintf(
+                        'Attribute: "%s" does not exist for entity type: "%s"',
+                        $attributeCode,
+                        $entityType
+                    );
+                    $output->writeln(sprintf('<comment>%s</comment>', $message));
+                } else {
+                    $setup->removeAttribute($entityType, $attributeCode);
 
-            $output->writeln(
-                sprintf(
-                    '<info>Successfully removed attribute: "%s" from entity type: "%s"</info>',
-                    $attributeCode,
-                    $entityType
-                )
-            );
+                    $output->writeln(
+                        sprintf(
+                            '<info>Successfully removed attribute: "%s" from entity type: "%s"</info>',
+                            $attributeCode,
+                            $entityType
+                        )
+                    );
+                }
+            }
         }
     }
 }

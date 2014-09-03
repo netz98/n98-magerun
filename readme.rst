@@ -1010,6 +1010,12 @@ Remove an attribute:
 
    $ n98-magerun.phar eav:attribute:remove entityType attributeCode
 
+You can also remove multiple attributes in one go if they are of the same type
+
+.. code-block:: sh
+
+   $ n98-magerun.phar eav:attribute:remove entityType attributeCode1 attributeCode2 ... attributeCode10
+
 
 Development IDE Support
 """""""""""""""""""""""
