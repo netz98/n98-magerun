@@ -37,6 +37,7 @@ HELP;
             ->addArgument('count', InputArgument::REQUIRED, 'Count')
             ->addArgument('locale', InputArgument::REQUIRED, 'Locale')
             ->addArgument('website', InputArgument::OPTIONAL, 'Website')
+            ->addOption('with-addresses', null, InputOption::VALUE_NONE, 'Create dummy billing/shipping addresses for each customers')
             ->setDescription('Generate dummy customers. You can specify a count and a locale.')
             ->addOption(
                 'format',
@@ -86,6 +87,11 @@ HELP;
                     $customer->setLastname($faker->lastName);
                     $customer->setPassword($password);
 
+                    if ($input->hasOption('with-addresses')) {
+                        $address = $this->createAddress($faker);
+                        $customer->addAddress($address);
+                    }
+
                     $customer->save();
                     $customer->setConfirmation(null);
                     $customer->save();
@@ -116,5 +122,34 @@ HELP;
             }
 
         }
+    }
+
+    private function createAddress($faker)
+    {
+        $country = $this->getCountryCollection()
+            ->addCountryCodeFilter($faker->countryCode, 'iso2')
+            ->getFirstItem();
+
+        $regions = $country->getRegions()->getData();
+        $region = $regions[array_rand($regions)];
+
+        $address = $this->getAddressModel();
+        $address->setFirstname($faker->firstName);
+        $address->setLastname($faker->lastName);
+        $address->setCity($faker->city);
+        $address->setCountryId($country->getId());
+        if ($region) {
+            $address->setRegionId($region['region_id']);
+        }
+
+        $address->setStreet($faker->streetAddress);
+        $address->setPostcode($faker->postcode);
+        $address->setTelephone($faker->phoneNumber);
+        $address->setIsSubscribed($faker->boolean());
+
+        $address->setIsDefaultShipping(true);
+        $address->setIsDefaultBilling(true);
+
+        return $address;
     }
 }
