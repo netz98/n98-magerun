@@ -42,10 +42,12 @@ HELP;
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
+            \Mage::app()->loadAreaPart('adminhtml', 'events');
             $allTypes = \Mage::app()->useCache();
             foreach(array_keys($allTypes) as $type) {
                 if ($input->getArgument('type') == '' || $input->getArgument('type') == $type) {
                     \Mage::app()->getCacheInstance()->cleanType($type);
+                    \Mage::dispatchEvent('adminhtml_cache_refresh_type', array('type' => $type));
                     $output->writeln('<info>' . $type . ' cache cleaned</info>');
                 }
             }
