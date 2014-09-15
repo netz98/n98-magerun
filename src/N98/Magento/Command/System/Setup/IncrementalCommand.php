@@ -47,8 +47,6 @@ class IncrementalCommand extends AbstractMagentoCommand
      */
     protected $_config;
 
-    protected $_noInteraction = false;
-
     protected function configure()
     {
         $this
@@ -365,13 +363,13 @@ class IncrementalCommand extends AbstractMagentoCommand
      * @todo     Repopulate global config after running?  Non trivial since setNode escapes strings
      *
      * @param string $name
-     * @param bool   $needsUpdate
+     * @param array  $needsUpdate
      * @param string $type
      *
      * @throws \Exception
      * @internal param $string
      */
-    protected function _runNamedSetupResource($name, $needsUpdate, $type)
+    protected function _runNamedSetupResource($name, array $needsUpdate, $type)
     {
         $output = $this->_output;
         if (!in_array($type, array(self::TYPE_MIGRATION_STRUCTURE, self::TYPE_MIGRATION_DATA))) {
@@ -395,7 +393,6 @@ class IncrementalCommand extends AbstractMagentoCommand
         }
         //recreate our specific node in <global><resources></resource></global>
         //allows for theoretical multiple runs
-        $setupResource       = $needsUpdate[$name];
         $setupResourceConfig = $this->_secondConfig->getNode('global/resources/' . $name);
         $moduleName          = $setupResourceConfig->setup->module;
         $className           = $setupResourceConfig->setup->class;
@@ -426,7 +423,7 @@ class IncrementalCommand extends AbstractMagentoCommand
             $this->_output->writeln($exceptionOutput);
         } catch (\Exception $e) {
             $exceptionOutput = ob_get_clean();
-            $this->_processExceptionDuringUpdate($e, $name, $setupResource, $exceptionOutput);
+            $this->_processExceptionDuringUpdate($e, $name, $exceptionOutput);
             if ($this->_input->getOption('stop-on-error')) {
                 throw new \RuntimeException('Setup stopped with errors');
             }
@@ -434,15 +431,13 @@ class IncrementalCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Exception                $e
-     * @param string                    $name
-     * @param \Mage_Core_Resource_Setup $setupResource
-     * @param string                    $magentoExceptionOutput
+     * @param \Exception                      $e
+     * @param string                          $name
+     * @param string                          $magentoExceptionOutput
      */
     protected function _processExceptionDuringUpdate(
-        $e,
+        \Exception $e,
         $name,
-        $setupResource,
         $magentoExceptionOutput
     )
     {
@@ -503,12 +498,12 @@ class IncrementalCommand extends AbstractMagentoCommand
 
     /**
      * @param string $toUpdate
-     * @param bool   $needsUpdate
+     * @param array  $needsUpdate
      * @param string $type
      *
      * @throws \Exception
      */
-    protected function _runStructureOrDataScripts($toUpdate, $needsUpdate, $type)
+    protected function _runStructureOrDataScripts($toUpdate, array $needsUpdate, $type)
     {
         $output = $this->_output;
         $output->writeln('The next ' . $type . ' update to run is <info>' . $toUpdate . '</info>');
@@ -564,7 +559,6 @@ class IncrementalCommand extends AbstractMagentoCommand
 
         //load a second, not cached, config.xml tree
         $this->_loadSecondConfig();
-        $this->_noInteraction = $this->_input->getOption('no-interaction');
         return true;
     }
 
