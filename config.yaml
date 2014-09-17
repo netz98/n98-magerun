@@ -301,8 +301,8 @@ commands:
         tables: core_session
 
       - id: stripped
-        description: Standard definition for a stripped dump (logs and dataflow)
-        tables: @stripped @log @dataflowtemp @sessions
+        description: Standard definition for a stripped dump (logs, sessions and dataflow)
+        tables: @log @dataflowtemp @sessions
 
       - id: sales
         description: Sales data (orders, invoices, creditmemos etc)
