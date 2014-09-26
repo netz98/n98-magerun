@@ -80,6 +80,7 @@ commands:
     - N98\Magento\Command\Developer\Log\LogCommand
     - N98\Magento\Command\Developer\Log\SizeCommand
     - N98\Magento\Command\Developer\Module\CreateCommand
+    - N98\Magento\Command\Developer\Module\UpdateCommand
     - N98\Magento\Command\Developer\Module\ListCommand
     - N98\Magento\Command\Developer\Module\Observer\ListCommand
     - N98\Magento\Command\Developer\Module\Rewrite\ConflictsCommand
