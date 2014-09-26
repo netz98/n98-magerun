@@ -47,7 +47,7 @@ class SizeCommand extends AbstractLogCommand
             }
 
             if ($input->getOption('human')) {
-                $output->writeln(\N98\Util\Filesystem::humandFilesize($size));
+                $output->writeln(\N98\Util\Filesystem::humanFileSize($size));
             } else {
                 $output->writeln("$size");
             }

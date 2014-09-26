@@ -9,10 +9,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 /**
- * Class ChangeVersionCommand
+ * Class RemoveCommand
  * @package N98\Magento\Command\System\Setup
+ * @author Aydin Hassan <aydin@hotmail.co.uk>
  */
-class ChangeVersionCommand extends AbstractSetupCommand
+class RemoveCommand extends AbstractSetupCommand
 {
     /**
      * Set up CLI options
@@ -20,11 +21,11 @@ class ChangeVersionCommand extends AbstractSetupCommand
     protected function configure()
     {
         $this
-            ->setName('sys:setup:change-version')
+            ->setName('sys:setup:remove')
             ->addArgument('module', InputArgument::REQUIRED, 'Module name')
-            ->addArgument('version', InputArgument::REQUIRED, 'New version value')
-            ->addArgument('setup', InputArgument::OPTIONAL, 'Setup code to update', 'all')
-            ->setDescription('Change module setup resource version');
+            ->addArgument('setup', InputArgument::OPTIONAL, 'Setup code to remove', 'all')
+            ->setDescription('Remove module setup resource entry');
+
     }
 
     /**
@@ -37,8 +38,6 @@ class ChangeVersionCommand extends AbstractSetupCommand
         $this->detectMagento($output, true);
 
         if ($this->initMagento()) {
-
-            $moduleVersion  = $input->getArgument('version');
             $moduleName     = $this->getModule($input);
             $setupName      = $input->getArgument('setup');
             $moduleSetups   = $this->getModuleSetupResources($moduleName);
@@ -50,10 +49,10 @@ class ChangeVersionCommand extends AbstractSetupCommand
 
             if ($setupName === 'all') {
                 foreach ($moduleSetups as $setupCode => $setup) {
-                    $this->updateSetupResource($moduleName, $setupCode, $moduleVersion, $output);
+                    $this->removeSetupResource($moduleName, $setupCode, $output);
                 }
             } elseif (array_key_exists($setupName, $moduleSetups)) {
-                $this->updateSetupResource($moduleName, $setupName, $moduleVersion, $output);
+                $this->removeSetupResource($moduleName, $setupName, $output);
             } else {
                 throw new \InvalidArgumentException(sprintf('Error no setup found with the name: "%s"', $setupName));
             }
@@ -63,24 +62,31 @@ class ChangeVersionCommand extends AbstractSetupCommand
     /**
      * @param string $moduleName
      * @param string $setupResource
-     * @param $version
      * @param OutputInterface $output
      * @return mixed
      */
-    public function updateSetupResource($moduleName, $setupResource, $version, OutputInterface $output)
+    public function removeSetupResource($moduleName, $setupResource, OutputInterface $output)
     {
-        $resourceModel = $this->_getResourceSingleton('core/resource', 'Mage_Core_Model_Resource_Resource');
+        $model          = $this->_getModel('core/resource', 'Mage_Core_Model_Resource');
+        $table          = $model->getTableName('core_resource');
+        $writeAdapter   = $model->getConnection('core_write');
 
-        $resourceModel->setDbVersion($setupResource, $version);
-        $resourceModel->setDataVersion($setupResource, $version);
-
-        $output->writeln(
-            sprintf(
-                '<info>Successfully updated: "%s" - "%s" to version: "%s"</info>',
-                $moduleName,
-                $setupResource,
-                $version
-            )
-        );
+        if ($writeAdapter->delete($table, array('code = ?' => $setupResource)) > 0) {
+            $output->writeln(
+                sprintf(
+                    '<info>Successfully removed setup resource: "%s" from module: "%s" </info>',
+                    $setupResource,
+                    $moduleName
+                )
+            );
+        } else {
+            $output->writeln(
+                sprintf(
+                    '<error>No entry was found for setup resource: "%s" in module: "%s" </error>',
+                    $setupResource,
+                    $moduleName
+                )
+            );
+        }
     }
 }

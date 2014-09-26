@@ -56,6 +56,16 @@ HELP;
         while($line = fgets($in)) {
             if (strtolower(substr($line, 0, 11)) == 'insert into') {
                 preg_match('/^insert into `(.*)` \(.*\) values (.*);/i', $line, $m);
+
+                if (count($m) < 3) { // fallback for very long lines or other cases where the preg_match fails
+                    if ($current_table != '') {
+                        fwrite($out, ";\n");
+                    }
+                    fwrite($out, $line);
+                    $current_table = '';
+                    continue;
+                }
+
                 $table = $m[1];
                 $values = $m[2];
 
@@ -176,7 +186,7 @@ HELP;
             . $this->dbSettings['dbname'] . '</info>'
         );
         exec($exec, $commandOutput, $returnValue);
-        if ($returnValue > 0) {
+        if ($returnValue <> 0) {
             $output->writeln('<error>' . implode(PHP_EOL, $commandOutput) . '</error>');
         }
         $output->writeln('<info>Finished</info>');
