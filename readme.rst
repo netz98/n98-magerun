@@ -112,6 +112,15 @@ If you don't have installed the .phar file system wide you can call it with the 
    php n98-magerun.phar list
 
 
+Global config parameters:
+
+  --root-dir
+      Force magento root dir. No auto detection
+  --skip-config
+      Do not load any custom config.
+  --skip-root-check
+      Do not check if n98-magerun runs as root
+
 Open Shop in Browser
 """"""""""""""""""""
 
@@ -823,14 +832,27 @@ Compares module version with saved setup version in `core_resource` table and di
 Change Setup Version
 """"""""""""""""""""
 
-Changes the version of one or all module resource setups.
+Changes the version of one or all module resource setups. This command is useful if you want to re-run an upgrade
+script again possibly due to debugging. Alternatively you would have to alter the row in the database manually.
+
 
 .. code-block:: sh
 
    $ n98-magerun.phar sys:setup:change-version module version [setup]
 
-Setup argument default is "all resources".
+Setup argument default is "all resources" for the given module.
 
+Remove Setup Version
+""""""""""""""""""""
+
+Removes the entry for one or all module resource setups. This command is useful if you want to re-run an install
+script again possibly due to debugging. Alternatively you would have to remove the row from the database manually.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:setup:remove module [setup]
+
+Setup argument default is "all resources" for the given module.
 
 System Check
 """"""""""""
@@ -987,6 +1009,12 @@ Remove an attribute:
 .. code-block:: sh
 
    $ n98-magerun.phar eav:attribute:remove entityType attributeCode
+
+You can also remove multiple attributes in one go if they are of the same type
+
+.. code-block:: sh
+
+   $ n98-magerun.phar eav:attribute:remove entityType attributeCode1 attributeCode2 ... attributeCode10
 
 
 Development IDE Support

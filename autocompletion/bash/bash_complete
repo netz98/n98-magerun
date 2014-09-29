@@ -14,7 +14,7 @@ _n98-magerun()
     cmd="${COMP_WORDS[0]}"
 
     # Load magerun help into help variable
-    help=$($cmd)
+    help=$($cmd --no-ansi list)
 
     # Strip everything up to "Available commands:"
     help=${help/*Available commands:/}

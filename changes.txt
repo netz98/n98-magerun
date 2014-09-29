@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.92.0
+======
+
+* #332 make WARNING_ROOT_USER configurable/optional (by Christian Münch)
+
+======
 1.91.0
 ======
 
@@ -24,30 +30,6 @@ RECENT CHANGES
 * sys:info command: Added row count for main entities (by Christian Münch)
 * sys:setup returns exit status code "1" if setup fails (by Christian Münch)
 * Updated 3rd party components (Symfony, PHPUnit, Twig)
-
-======
-1.90.0
-======
-
-* #293 Some support magento table prefix Issue (by Alexandr Vronskiy)
-* #338 db:drop should have an option to drop all tables instead of dropping the database (by Fabrizio Branca)
-* #343 Adds Command for External Magento Connect Validation (by Alan Storm)
-* #346 Fix for "extension on GitHub" markdown. (by Andrea De Pirro)
-* #348 Add encryption key to generate command (by Kristof Fooman)
-* #349 sys:compare-versions minor mods (by Aydin Hassan)
-* #350 New command to remove attributes (by Aydin Hassan)
-* #354 Restore autoloaders after loading Magento (by Maarten van Schaik and Melvyn Sopacua)
-* #355 Implement drop support for db:import (by Melvyn Sopacua)
-* Added --log-junit option to sys:setup:compare-versions command (by Christian Münch)
-* Complete rewrite of sys:check command (by Christian Münch)
-* More debug messages if -vvv option is set.
-* Updated 3rd party components (Symfony, Faker, PHPUnit)
-
-======
-1.89.2
-======
-
-* #336 Install command broken with --noDownload option (by Manuele Menozzi)
 
 
 -----------------------------------------
