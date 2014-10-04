@@ -7,6 +7,14 @@ RECENT CHANGES
 ======
 
 * #332 make WARNING_ROOT_USER configurable/optional (by Christian Münch)
+* #387 Unlink sym-linked folders instead of recursively removing (by Aydin Hassan)
+* #390 Some documentation updates (by Aydin Hassan)
+* #391 Fixed broken filters in dev:module:list command (by Tjerk Ameel)
+* #392 Add remove setup resource command (by Aydin Hassan)
+* #397 Added option to create dummy customer with an address (by Gilles Doge)
+* #400 Added adminhtml_cache_refresh_type event (by Marc Päpper)
+* #403 Sys setup incremental tiny fixes (by Cyrill Schumacher)
+* #407 Check for Enterprise_PageCache presence before using it (by Vinai Kopp)
 
 ======
 1.91.0
