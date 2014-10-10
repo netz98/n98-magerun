@@ -22,6 +22,12 @@ class ListCommand extends AbstractMagentoCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            )
+            ->addOption(
+                'sort',
+                null,
+                InputOption::VALUE_NONE,
+                'Sort by event name ascending'
             );
     }
 
@@ -67,7 +73,11 @@ class ListCommand extends AbstractMagentoCommand
                 $this->writeSection($output, 'Observers: ' . $type);
             }
             $frontendEvents = \Mage::getConfig()->getNode($type . '/events')->asArray();
-            $table          = array();
+            if (true === $input->getOption('sort')) {
+                // sorting for Observers is a bad idea because the order in which observers will be called is important.
+                ksort($frontendEvents);
+            }
+            $table = array();
             foreach ($frontendEvents as $eventName => $eventData) {
                 $observerList = array();
                 foreach ($eventData['observers'] as $observer) {
