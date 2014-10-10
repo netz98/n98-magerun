@@ -15,7 +15,7 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('dev:module:observer:list')
-            ->addArgument('type', InputArgument::OPTIONAL, 'Observer type (global, admin, frontend)')
+            ->addArgument('type', InputArgument::OPTIONAL, 'Observer type (global, admin, frontend, crontab)')
             ->setDescription('Lists all registered observers')
             ->addOption(
                 'format',
@@ -42,6 +42,7 @@ class ListCommand extends AbstractMagentoCommand
                 'global',
                 'adminhtml',
                 'frontend',
+                'crontab',
             );
 
             if ($type === null) {
