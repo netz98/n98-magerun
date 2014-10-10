@@ -55,7 +55,7 @@ class ListCommand extends AbstractMagentoCommand
                 foreach ($areas as $key => $area) {
                     $question[] = '<comment>[' . ($key + 1) . ']</comment> ' . $area . "\n";
                 }
-                $question[] = '<question>Please select a area:</question>';
+                $question[] = '<question>Please select an area:</question>';
 
                 $type = $this->getHelper('dialog')->askAndValidate($output, $question, function ($typeInput) use ($areas) {
                     if (!in_array($typeInput, range(1, count($areas)))) {
