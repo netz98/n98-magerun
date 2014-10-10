@@ -13,16 +13,22 @@ class CleanCommand extends AbstractCacheCommand
     {
         $this
             ->setName('cache:clean')
-            ->addArgument('type', InputArgument::OPTIONAL, 'Cache type code like "config"')
+            ->addArgument('type', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Cache type code like "config"')
             ->setDescription('Clean magento cache')
         ;
 
         $help = <<<HELP
 Cleans expired cache entries.
-If you like to remove all entries use `cache:flush`
-Or only one cache type like i.e. full_page cache:
+
+If you would like to clean only one cache type use like:
 
    $ n98-magerun.phar cache:clean full_page
+
+If you would like to clean multiple cache types at once use like:
+
+   $ n98-magerun.phar cache:clean full_page block_html
+
+If you would like to remove all cache entries use `cache:flush`
 
 HELP;
         $this->setHelp($help);
@@ -44,8 +50,10 @@ HELP;
         if ($this->initMagento()) {
             \Mage::app()->loadAreaPart('adminhtml', 'events');
             $allTypes = \Mage::app()->useCache();
+            $typesToClean = $input->getArgument('type');
+
             foreach(array_keys($allTypes) as $type) {
-                if ($input->getArgument('type') == '' || $input->getArgument('type') == $type) {
+                if (count($typesToClean) == 0 || in_array($type, $typesToClean)) {
                     \Mage::app()->getCacheInstance()->cleanType($type);
                     \Mage::dispatchEvent('adminhtml_cache_refresh_type', array('type' => $type));
                     $output->writeln('<info>' . $type . ' cache cleaned</info>');

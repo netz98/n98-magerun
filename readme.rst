@@ -580,18 +580,22 @@ Clean Magento cache
 """""""""""""""""""
 
 Cleans expired cache entries.
-If you like to remove all entries use `cache:flush`
+
+If you would like to clean only one cache type:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:clean
+   $ n98-magerun.phar cache:clean [code]
 
-Or only one cache type like i.e. full_page cache:
+If you would like to clean multiple cache types at once:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:clean full_page
+   $ n98-magerun.phar cache:clean [code] [code] ...
 
+If you would like to remove all cache entries use `cache:flush`
+
+Run `cache:list` command to see all codes.
 
 Remove all cache entries
 """"""""""""""""""""""""
