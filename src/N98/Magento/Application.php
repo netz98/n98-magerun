@@ -39,7 +39,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.91.0';
+    const APP_VERSION = '1.92.0';
 
     /**
      * @var string
@@ -141,6 +141,14 @@ class Application extends BaseApplication
             '',
             InputOption::VALUE_OPTIONAL,
             'Do not load any custom config.'
+        );
+        $inputDefinition->addOption($skipExternalConfig);
+
+        $skipExternalConfig = new InputOption(
+            '--skip-root-check',
+            '',
+            InputOption::VALUE_OPTIONAL,
+            'Do not check if n98-magerun runs as root'
         );
         $inputDefinition->addOption($skipExternalConfig);
 
@@ -476,6 +484,12 @@ class Application extends BaseApplication
      */
     public function doRun(InputInterface $input, OutputInterface $output)
     {
+        $event = new Application\Console\Event($this, $input, $output);
+        $this->dispatcher->dispatch('n98-magerun.application.console.run.before', $event);
+
+        /**
+         * only for compatibility to old versions.
+         */
         $event = new ConsoleEvent(new Command('dummy'), $input, $output);
         $this->dispatcher->dispatch('console.run.before', $event);
 

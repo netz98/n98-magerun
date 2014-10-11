@@ -15,7 +15,7 @@ class ListCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('dev:module:observer:list')
-            ->addArgument('type', InputArgument::OPTIONAL, 'Observer type (global, admin, frontend)')
+            ->addArgument('type', InputArgument::OPTIONAL, 'Observer type (global, admin, frontend, crontab)')
             ->setDescription('Lists all registered observers')
             ->addOption(
                 'format',
@@ -23,12 +23,18 @@ class ListCommand extends AbstractMagentoCommand
                 InputOption::VALUE_OPTIONAL,
                 'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
             )
-        ;
+            ->addOption(
+                'sort',
+                null,
+                InputOption::VALUE_NONE,
+                'Sort by event name ascending'
+            );
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @throws \InvalidArgumentException
      * @return int|void
      */
@@ -42,15 +48,16 @@ class ListCommand extends AbstractMagentoCommand
                 'global',
                 'adminhtml',
                 'frontend',
+                'crontab',
             );
 
             if ($type === null) {
                 foreach ($areas as $key => $area) {
                     $question[] = '<comment>[' . ($key + 1) . ']</comment> ' . $area . "\n";
                 }
-                $question[] = '<question>Please select a area:</question>';
+                $question[] = '<question>Please select an area:</question>';
 
-                $type = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($areas) {
+                $type = $this->getHelper('dialog')->askAndValidate($output, $question, function ($typeInput) use ($areas) {
                     if (!in_array($typeInput, range(1, count($areas)))) {
                         throw new \InvalidArgumentException('Invalid area');
                     }
@@ -66,11 +73,16 @@ class ListCommand extends AbstractMagentoCommand
                 $this->writeSection($output, 'Observers: ' . $type);
             }
             $frontendEvents = \Mage::getConfig()->getNode($type . '/events')->asArray();
+            if (true === $input->getOption('sort')) {
+                // sorting for Observers is a bad idea because the order in which observers will be called is important.
+                ksort($frontendEvents);
+            }
             $table = array();
             foreach ($frontendEvents as $eventName => $eventData) {
                 $observerList = array();
                 foreach ($eventData['observers'] as $observer) {
-                    $observerList[] = $observer['class'] . (isset($observer['method']) ? '::' . $observer['method'] : '');
+                    $observerType   = $this->getObserverType($observer, $type);
+                    $observerList[] = $observerType . $observer['class'] . (isset($observer['method']) ? '::' . $observer['method'] : '');
                 }
                 $table[] = array(
                     $eventName,
@@ -83,5 +95,27 @@ class ListCommand extends AbstractMagentoCommand
                 ->setRows($table)
                 ->renderByFormat($output, $table, $input->getOption('format'));
         }
+    }
+
+    /**
+     * @param array  $observer
+     * @param string $area
+     *
+     * @return string
+     */
+    protected function getObserverType(array $observer, $area)
+    {
+        // singleton is the default type Mage_Core_Model_App::dispatchEvent
+        $type = 'singleton';
+        if ('crontab' === $area) {
+            // direct model name is the default type Mage_Core_Model_Config::loadEventObservers in crontab area
+            // '' means that no Mage::get___() will be used
+            $type = '';
+        }
+        if (isset($observer['type'])) {
+            $type = $observer['type'];
+        }
+        $type = str_pad($type, 11, ' ', STR_PAD_RIGHT);
+        return $type;
     }
 }

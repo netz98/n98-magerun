@@ -112,6 +112,15 @@ If you don't have installed the .phar file system wide you can call it with the 
    php n98-magerun.phar list
 
 
+Global config parameters:
+
+  --root-dir
+      Force magento root dir. No auto detection
+  --skip-config
+      Do not load any custom config.
+  --skip-root-check
+      Do not check if n98-magerun runs as root
+
 Open Shop in Browser
 """"""""""""""""""""
 
@@ -571,18 +580,22 @@ Clean Magento cache
 """""""""""""""""""
 
 Cleans expired cache entries.
-If you like to remove all entries use `cache:flush`
+
+If you would like to clean only one cache type:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:clean
+   $ n98-magerun.phar cache:clean [code]
 
-Or only one cache type like i.e. full_page cache:
+If you would like to clean multiple cache types at once:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:clean full_page
+   $ n98-magerun.phar cache:clean [code] [code] ...
 
+If you would like to remove all cache entries use `cache:flush`
+
+Run `cache:list` command to see all codes.
 
 Remove all cache entries
 """"""""""""""""""""""""
@@ -669,6 +682,17 @@ Change admin user password
 .. code-block:: sh
 
    $ n98-magerun.phar admin:user:change-password [username] [password]
+
+Delete admin user
+"""""""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar admin:user:delete [email|username] [-f]
+
+ID can be e-mail or username. The command will attempt to find the user by username first and if it cannot be found it
+will attempt to find the user by e-mail. If ID is omitted you will be prompted for it. If the force parameter "-f" is
+omitted you will be prompted for confirmation.
 
 Disable admin notifications
 """""""""""""""""""""""""""
@@ -812,14 +836,27 @@ Compares module version with saved setup version in `core_resource` table and di
 Change Setup Version
 """"""""""""""""""""
 
-Changes the version of one or all module resource setups.
+Changes the version of one or all module resource setups. This command is useful if you want to re-run an upgrade
+script again possibly due to debugging. Alternatively you would have to alter the row in the database manually.
+
 
 .. code-block:: sh
 
    $ n98-magerun.phar sys:setup:change-version module version [setup]
 
-Setup argument default is "all resources".
+Setup argument default is "all resources" for the given module.
 
+Remove Setup Version
+""""""""""""""""""""
+
+Removes the entry for one or all module resource setups. This command is useful if you want to re-run an install
+script again possibly due to debugging. Alternatively you would have to remove the row from the database manually.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:setup:remove module [setup]
+
+Setup argument default is "all resources" for the given module.
 
 System Check
 """"""""""""
@@ -964,6 +1001,25 @@ List all EAV attributes:
 .. code-block:: sh
 
    $ n98-magerun.phar eav:attribute:list [--filter-type[="..."]] [--add-source] [--format[="..."]]
+
+View the data for a particular attribute:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar eav:attribute:view [--format[="..."]] entityType attributeCode
+
+Remove an attribute:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar eav:attribute:remove entityType attributeCode
+
+You can also remove multiple attributes in one go if they are of the same type
+
+.. code-block:: sh
+
+   $ n98-magerun.phar eav:attribute:remove entityType attributeCode1 attributeCode2 ... attributeCode10
+
 
 Development IDE Support
 """""""""""""""""""""""
@@ -1233,6 +1289,18 @@ Uninstalls Magento: Drops your database and recursive deletes installation folde
    $ n98-magerun.phar uninstall [-f|--force] [--installationFolder[="..."]]
 
 **Please be careful: This removes all data from your installation.**
+
+--installationFolder is required and if you do not enter it you will be prompted for it. This should be your project
+root, not the Magento root. For example, If your project root is /var/www/site and Magento src is located at
+/var/www/site/htdocs, you should pass /var/www/site to the command, or if you are currently in that particular directory
+you can just pass "." Eg:
+
+.. code-block:: sh
+
+   $ cd /var/www/site
+   $ n98-magerun.phar uninstall --installationFolder "." -f
+
+If you omit the -f, you will be prompted for confirmation.
 
 n98-magerun Shell
 """""""""""""""""

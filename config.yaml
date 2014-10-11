@@ -1,3 +1,6 @@
+application:
+  check-root-user: true
+
 twig:
   baseDirs:
 
@@ -127,6 +130,7 @@ commands:
     - N98\Magento\Command\System\MaintenanceCommand
     - N98\Magento\Command\System\Setup\CompareVersionsCommand
     - N98\Magento\Command\System\Setup\ChangeVersionCommand
+    - N98\Magento\Command\System\Setup\RemoveCommand
     - N98\Magento\Command\System\Setup\RunCommand
     - N98\Magento\Command\System\Setup\IncrementalCommand
     - N98\Magento\Command\System\Store\Config\BaseUrlListCommand
@@ -297,8 +301,8 @@ commands:
         tables: core_session
 
       - id: stripped
-        description: Standard definition for a stripped dump (logs and dataflow)
-        tables: @stripped @log @dataflowtemp @sessions
+        description: Standard definition for a stripped dump (logs, sessions and dataflow)
+        tables: @log @dataflowtemp @sessions
 
       - id: sales
         description: Sales data (orders, invoices, creditmemos etc)
