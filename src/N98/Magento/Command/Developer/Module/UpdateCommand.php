@@ -106,10 +106,6 @@ class UpdateCommand extends AbstractMagentoCommand
         $this->vendorNamespace = ucfirst($input->getArgument('vendorNamespace'));
         $this->moduleName = ucfirst($input->getArgument('moduleName'));
         $this->codePool = $this->determineModuleCodePool();
-
-        if (!in_array($this->codePool, array('local', 'community'))) {
-            throw new \InvalidArgumentException('Code pool must be either "community" or "local"');
-        }
     }
 
     /**
