@@ -18,8 +18,8 @@ class ImportCommand extends AbstractDatabaseCommand
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysql command. Do not execute')
             ->addOption('only-if-empty', null, InputOption::VALUE_NONE, 'Imports only if database is empty')
             ->addOption('optimize', null, InputOption::VALUE_NONE, 'Convert verbose INSERTs to short ones before import (not working with compression)')
-	    ->addOption('drop', null, InputOption::VALUE_NONE, 'Drop and recreate database before import')
-	    ->addOption('drop-tables', null, InputOption::VALUE_NONE, 'Drop tables before import')
+            ->addOption('drop', null, InputOption::VALUE_NONE, 'Drop and recreate database before import')
+            ->addOption('drop-tables', null, InputOption::VALUE_NONE, 'Drop tables before import')
             ->setDescription('Imports database with mysql cli client according to database defined in local.xml');
 
         $help = <<<HELP
@@ -47,33 +47,33 @@ HELP;
     protected function optimize($fileName)
     {
         $in = fopen($fileName,'r');
-        $result = tempnam(sys_get_temp_dir(),'dump') . '.sql';
+        $result = tempnam(sys_get_temp_dir(), 'dump') . '.sql';
         $out = fopen($result, 'w');
 
-        $current_table = '';
+        $currentTable = '';
         $maxlen = 8 * 1024 * 1024; // 8 MB
         $len = 0;
-        while($line = fgets($in)) {
+        while ($line = fgets($in)) {
             if (strtolower(substr($line, 0, 11)) == 'insert into') {
                 preg_match('/^insert into `(.*)` \(.*\) values (.*);/i', $line, $m);
 
                 if (count($m) < 3) { // fallback for very long lines or other cases where the preg_match fails
-                    if ($current_table != '') {
+                    if ($currentTable != '') {
                         fwrite($out, ";\n");
                     }
                     fwrite($out, $line);
-                    $current_table = '';
+                    $currentTable = '';
                     continue;
                 }
 
                 $table = $m[1];
                 $values = $m[2];
 
-                if ($table != $current_table or ($len > $maxlen - 1000)) {
-                    if ($current_table != '') {
+                if ($table != $currentTable or ($len > $maxlen - 1000)) {
+                    if ($currentTable != '') {
                         fwrite($out, ";\n\n");
                     }
-                    $current_table = $table;
+                    $currentTable = $table;
                     $insert = 'INSERT INTO `' . $table . '` VALUES ' . $values;
                     fwrite($out, $insert);
                     $len = strlen($insert);
@@ -82,9 +82,9 @@ HELP;
                     $len += strlen($values) + 1;
                 }
             } else {
-                if ($current_table != '') {
+                if ($currentTable != '') {
                     fwrite($out, ";\n");
-                    $current_table = '';
+                    $currentTable = '';
                 }
                 fwrite($out, $line);
             }
@@ -92,6 +92,7 @@ HELP;
         }
         fclose($in);
         fclose($out);
+
         return $result;
 
     }
