@@ -9,8 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Update a magento module
- * @todo set flag to use enterprise or community module namespace
+ *  Update a magento module
  */
 class UpdateCommand extends AbstractMagentoCommand
 {
@@ -51,7 +50,6 @@ class UpdateCommand extends AbstractMagentoCommand
             ->setName('dev:module:update')
             ->addArgument('vendorNamespace', InputArgument::REQUIRED, 'Namespace (your company prefix)')
             ->addArgument('moduleName', InputArgument::REQUIRED, 'Name of your module.')
-            ->addArgument('codePool', InputArgument::OPTIONAL, 'Codepool (local,community)', 'local')
             ->addOption('set-version', null, InputOption::VALUE_NONE, 'Set module version in config.xml')
             ->addOption('add-blocks', null, InputOption::VALUE_NONE, 'Adds blocks class to config.xml')
             ->addOption('add-helpers', null, InputOption::VALUE_NONE, 'Adds helpers class to config.xml')
@@ -107,11 +105,28 @@ class UpdateCommand extends AbstractMagentoCommand
     {
         $this->vendorNamespace = ucfirst($input->getArgument('vendorNamespace'));
         $this->moduleName = ucfirst($input->getArgument('moduleName'));
-        $this->codePool = $input->getArgument('codePool');
+        $this->codePool = $this->determineModuleCodePool();
 
         if (!in_array($this->codePool, array('local', 'community'))) {
-            throw new \InvalidArgumentException('Code pool must "community" or "local"');
+            throw new \InvalidArgumentException('Code pool must be either "community" or "local"');
         }
+    }
+
+    /**
+     * Find module codepool from module directory
+     *
+     * @return bool|string
+     */
+    protected function determineModuleCodePool()
+    {
+        $moduleDir = $this->getModuleDir();
+        $codePool  = false;
+        if (preg_match('/community/', $moduleDir))
+            $codePool = 'community';
+        if (preg_match('/local/', $moduleDir))
+            $codePool = 'local';
+
+        return $codePool;
     }
 
     /**
@@ -120,7 +135,6 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function setModuleDirectory($moduleDir)
     {
-
         if (!file_exists($moduleDir)) {
             throw new \RuntimeException('Module does not exist. Use dev:module:create to create it before updating. Stop.');
         }
@@ -166,7 +180,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * @param OutputInterface $output
      * @param SimpleXMLElement $configXml
      */
-    protected function setVersion(InputInterface $input, OutputInterface $output, SimpleXMLElement $configXml)
+    protected function setVersion(InputInterface $input, OutputInterface $output, \SimpleXMLElement $configXml)
     {
         if ($this->shouldSetVersion($input)) {
             $modulesNode = $configXml->modules->{$this->getModuleNamespace()};
@@ -183,7 +197,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param SimpleXMLElement $configXml
      */
-    protected function setGlobalNode(InputInterface $input, OutputInterface $output, SimpleXMLElement $configXml)
+    protected function setGlobalNode(InputInterface $input, OutputInterface $output, \SimpleXMLElement $configXml)
     {
         if ($this->shouldAddAll($input)) {
             $this->addGlobalNode($configXml, 'blocks', '_Block');
@@ -208,7 +222,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * @param OutputInterface $output
      * @param SimpleXMLElement $configXml
      */
-    protected function addResourceModelNodeIfConfirmed(OutputInterface $output, SimpleXMLElement $configXml)
+    protected function addResourceModelNodeIfConfirmed(OutputInterface $output, \SimpleXMLElement $configXml)
     {
         $dialog = $this->getDialog();
         if ($dialog->askConfirmation($output,
@@ -226,7 +240,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * @param InputInterface $input
      * @param SimpleXMLElement $configXml
      */
-    protected function setResourceModelNode(InputInterface $input, SimpleXMLElement $configXml)
+    protected function setResourceModelNode(InputInterface $input, \SimpleXMLElement $configXml)
     {
         if ($this->hasAddResourceModelOption($input))
             $this->addResourceModel($configXml);
@@ -236,7 +250,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * @param InputInterface $input
      * @param SimpleXMLElement $configXml
      */
-    protected function setRoutersNode(InputInterface $input, SimpleXMLElement $configXml)
+    protected function setRoutersNode(InputInterface $input, \SimpleXMLElement $configXml)
     {
         if ($this->hasAddRoutersOption($input))
             $this->addRouter($configXml, $this->configNodes['router_area']);
@@ -246,7 +260,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * @param InputInterface $input
      * @param SimpleXMLElement $configXml
      */
-    protected function setEventsNode(InputInterface $input, SimpleXMLElement $configXml)
+    protected function setEventsNode(InputInterface $input, \SimpleXMLElement $configXml)
     {
         if ($this->hasAddEventsOption($input))
             $this->addEvent($configXml, $this->configNodes['events_area'], $this->configNodes['event_name']);
@@ -256,7 +270,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * @param InputInterface $input
      * @param SimpleXMLElement $configXml
      */
-    protected function setLayoutUpdatesNode(InputInterface $input, SimpleXMLElement $configXml)
+    protected function setLayoutUpdatesNode(InputInterface $input, \SimpleXMLElement $configXml)
     {
         if ($this->hasAddLayoutUpdatesOptions($input))
             $this->addLayoutUpdate($configXml, $this->configNodes['layout_updates_area'], $this->configNodes['layout_update_module']);
@@ -266,7 +280,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * @param InputInterface $input
      * @param SimpleXMLElement $configXml
      */
-    protected function setTranslateNode(InputInterface $input, SimpleXMLElement $configXml)
+    protected function setTranslateNode(InputInterface $input, \SimpleXMLElement $configXml)
     {
         if ($this->hasAddTranslateOption($input))
             $this->addTranslate($configXml, $this->configNodes['translate_area'], $this->configNodes['translate_module']);
@@ -276,7 +290,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * @param InputInterface $input
      * @param SimpleXMLElement $configXml
      */
-    protected function setDefaultNode(InputInterface $input, SimpleXMLElement $configXml)
+    protected function setDefaultNode(InputInterface $input, \SimpleXMLElement $configXml)
     {
         if ($this->hasAddDefaultOption($input))
             $this->addDefault($configXml);
@@ -310,13 +324,7 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function getModuleDir()
     {
-        $moduleDir = $this->_magentoRootFolder
-            . '/app/code/'
-            . $this->codePool
-            . '/' . $this->vendorNamespace
-            . '/' . $this->moduleName;
-
-        return $moduleDir;
+        return \Mage::getModuleDir(false, $this->getModuleNamespace());
     }
 
     /**
@@ -530,7 +538,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * @param $type e.g. blocks
      * @param $classSuffix e.g. _Block
      */
-    protected function addGlobalNode(SimpleXMLElement $configXml, $type, $classSuffix)
+    protected function addGlobalNode(\SimpleXMLElement $configXml, $type, $classSuffix)
     {
         $this->removeChildNodeIfNotNull($configXml->global, $type);
         $global = $configXml->global ? $configXml->global : $configXml->addChild('global');
@@ -543,7 +551,7 @@ class UpdateCommand extends AbstractMagentoCommand
     /**
      * @param SimpleXMLElement $simpleXml
      */
-    protected function addResourceModel(SimpleXMLElement $simpleXml)
+    protected function addResourceModel(\SimpleXMLElement $simpleXml)
     {
         if (is_null($simpleXml->global->models))
             throw new \RuntimeException('Global models node is not set. Run --add-models before --add-resource-model command.');
@@ -573,7 +581,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * @param SimpleXMLElement $simpleXml
      * @param $area
      */
-    protected function addRouter(SimpleXMLElement $simpleXml, $area)
+    protected function addRouter(\SimpleXMLElement $simpleXml, $area)
     {
         $this->removeChildNodeIfNotNull($simpleXml->{$area}, 'routers');
         $areaNode = $simpleXml->{$area} ? $simpleXml->{$area} : $simpleXml->addChild($area);
@@ -590,7 +598,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * @param $area
      * @param $event
      */
-    protected function addEvent(SimpleXMLElement $simpleXml, $area, $event)
+    protected function addEvent(\SimpleXMLElement $simpleXml, $area, $event)
     {
         $areaNode = $simpleXml->{$area} ? $simpleXml->{$area} : $simpleXml->addChild($area);
         $eventsNode = $areaNode->events ? $areaNode->events : $areaNode->addChild('events');
@@ -607,7 +615,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * @param $area
      * @param $module
      */
-    protected function addLayoutUpdate(SimpleXMLElement $simpleXml, $area, $module)
+    protected function addLayoutUpdate(\SimpleXMLElement $simpleXml, $area, $module)
     {
         $areaNode    = $simpleXml->{$area} ? $simpleXml->{$area} : $simpleXml->addChild($area);
         $layoutNode  = $areaNode->layout ? $areaNode->layout : $areaNode->addChild('layout');
@@ -622,7 +630,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * @param $area
      * @param $module
      */
-    protected function addTranslate(SimpleXMLElement $simpleXml, $area, $module)
+    protected function addTranslate(\SimpleXMLElement $simpleXml, $area, $module)
     {
         $areaNode      = $simpleXml->{$area} ? $simpleXml->{$area} : $simpleXml->addChild($area);
         $translateNode = $areaNode->translate ? $areaNode->translate : $areaNode->addChild('translate');
@@ -636,7 +644,7 @@ class UpdateCommand extends AbstractMagentoCommand
     /**
      * @param SimpleXMLElement $simpleXml
      */
-    protected function addDefault(SimpleXMLElement $simpleXml)
+    protected function addDefault(\SimpleXMLElement $simpleXml)
     {
         $defaultNode = $simpleXml->default ? $simpleXml->default : $simpleXml->addChild('default');
         $sectionNode = $defaultNode->{$this->configNodes['default_section_name']} ?
@@ -659,7 +667,7 @@ class UpdateCommand extends AbstractMagentoCommand
     /**
      * @param SimpleXMLElement $configXml
      */
-    protected function putConfigXml(SimpleXMLElement $configXml)
+    protected function putConfigXml(\SimpleXMLElement $configXml)
     {
         $outFile = $this->getOutFile();
         file_put_contents($outFile, $this->asPrettyXml($configXml->asXML()));
