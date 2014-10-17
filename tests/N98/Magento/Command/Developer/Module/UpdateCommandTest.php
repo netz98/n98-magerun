@@ -82,6 +82,8 @@ class UpdateCommandTest extends TestCase
     protected function _deleteOldModule($root)
     {
         // delete old module
+        $filesystem = false;
+        
         if (is_dir($root . '/N98Magerun_UnitTest')) {
             $filesystem = new Filesystem();
             $filesystem->recursiveRemoveDirectory($root . '/N98Magerun_UnitTest');
