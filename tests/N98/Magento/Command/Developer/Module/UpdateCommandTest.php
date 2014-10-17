@@ -14,12 +14,8 @@ class UpdateCommandTest extends TestCase
         $application->add(new ListCommand());
         $createCommand = $this->getApplication()->find('dev:module:create');
         $updateCommand = $this->getApplication()->find('dev:module:update');
-
-        $root = getenv('N98_MAGERUN_TEST_MAGENTO_ROOT');
-
-        if (!$root)
-            $root = getcwd();
-
+        $updateCommand->setTestMode(true);
+        $root = getcwd();
         $this->_deleteOldModule($root);
 
         $commandTester = new CommandTester($createCommand);
@@ -28,6 +24,7 @@ class UpdateCommandTest extends TestCase
             array(
                 'command'   => $createCommand->getName(),
                 '--add-all'       => true,
+                '--modman'        => true,
                 '--description'   => 'Unit Test Description',
                 '--author-name'   => 'Unit Test',
                 '--author-email'  => 'n98-magerun@example.com',
@@ -38,7 +35,7 @@ class UpdateCommandTest extends TestCase
         $commandTester = new CommandTester($updateCommand);
 
         $dialog = $updateCommand->getHelper('dialog');
-        $dialog->setInputStream($this->getInputStream("2.0.0"));
+        $dialog->setInputStream($this->getInputStream("2.0.0\n"));
 
         $commandTester->execute(
             array(
@@ -49,10 +46,31 @@ class UpdateCommandTest extends TestCase
             )
         );
 
-        $moduleBaseFolder = $root . '/app/code/local/N98Magerun/UnitTest/';
+        $moduleBaseFolder = $root . '/N98Magerun_UnitTest/src/app/code/local/N98Magerun/UnitTest/';
         $this->assertFileExists($moduleBaseFolder . 'etc/config.xml');
-        $configXmlContent = file_get_contents($moduleBaseFolder . 'etc/config.xml');
+
+        // assert for --set-version option
+        $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
         $this->assertContains('<version>2.0.0</version>', $configXmlContent);
+
+        $dialog->setInputStream($this->getInputStream("admin\nstandard\nn98magerun\n"));
+        $commandTester->execute(
+            array(
+                'command'   => $updateCommand->getName(),
+                '--add-routers'   => true,
+                'vendorNamespace' => 'N98Magerun',
+                'moduleName'      => 'UnitTest'
+            )
+        );
+        // assert for --add-routers option
+        $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
+        $this->assertContains('<admin>', $configXmlContent);
+        $this->assertContains('<routers>', $configXmlContent);
+        $this->assertContains('<n98magerun_unittest>', $configXmlContent);
+        $this->assertContains('<args>', $configXmlContent);
+        $this->assertContains('<use>standard</use>', $configXmlContent);
+        $this->assertContains('<module>n98magerun_unittest</module>', $configXmlContent);
+        $this->assertContains('<frontName>n98magerun</frontName>', $configXmlContent);
 
         $this->_deleteOldModule($root);
     }
@@ -63,13 +81,6 @@ class UpdateCommandTest extends TestCase
      */
     protected function _deleteOldModule($root)
     {
-        // delete old module
-        $filesystem = false;
-        if (is_dir($root . '/app/code/local/N98Magerun')) {
-            $filesystem = new Filesystem();
-            $filesystem->recursiveRemoveDirectory($root . '/app/code/local/N98Magerun');
-            clearstatcache();
-        }
         // delete old module
         if (is_dir($root . '/N98Magerun_UnitTest')) {
             $filesystem = new Filesystem();
@@ -86,6 +97,15 @@ class UpdateCommandTest extends TestCase
 
         rewind($stream);
         return $stream;
+    }
+
+    /**
+     * @param $moduleBaseFolder
+     * @return string
+     */
+    protected function _getConfigXmlContents($moduleBaseFolder)
+    {
+        return file_get_contents($moduleBaseFolder . 'etc/config.xml');
     }
 
 }

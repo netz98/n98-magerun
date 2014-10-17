@@ -43,6 +43,26 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected $configNodes = array();
 
+    /**
+     * @var bool
+     */
+    protected $testMode = false;
+
+    /**
+     * @param boolean $testMode
+     */
+    public function setTestMode($testMode)
+    {
+        $this->testMode = $testMode;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getTestMode()
+    {
+        return $this->testMode;
+    }
 
     protected function configure()
     {
@@ -72,6 +92,7 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->initMagento();
         $this->initArguments($input);
 
         if ($this->hasAddResourceModelOption($input))
@@ -92,7 +113,6 @@ class UpdateCommand extends AbstractMagentoCommand
         if ($this->hasAddDefaultOption($input))
             $this->askDefaultOptions($output);
 
-        $this->initMagento();
         $this->setModuleDirectory($this->getModuleDir());
         $this->writeModuleConfig($input, $output);
     }
@@ -105,24 +125,35 @@ class UpdateCommand extends AbstractMagentoCommand
     {
         $this->vendorNamespace = ucfirst($input->getArgument('vendorNamespace'));
         $this->moduleName = ucfirst($input->getArgument('moduleName'));
-        $this->codePool = $this->determineModuleCodePool();
+        $this->determineModuleCodePool($input);
     }
 
     /**
      * Find module codepool from module directory
      *
+     * @param \Symfony\Component\Console\Input\InputInterface $input
      * @return bool|string
      */
-    protected function determineModuleCodePool()
+    protected function determineModuleCodePool(InputInterface $input)
     {
-        $moduleDir = $this->getModuleDir();
-        $codePool  = false;
-        if (preg_match('/community/', $moduleDir))
-            $codePool = 'community';
-        if (preg_match('/local/', $moduleDir))
-            $codePool = 'local';
+        if ($this->testMode === true) {
+            $this->codePool = 'local';
+            $this->_magentoRootFolder = './' . $this->getModuleNamespace() . '/src';
+            $this->moduleDirectory = $this->_magentoRootFolder
+                . '/app/code/'
+                . $this->codePool
+                . '/' . $this->vendorNamespace
+                . '/' . $this->moduleName;
+        }
+        else
+            $this->moduleDirectory = $this->getModuleDir();
 
-        return $codePool;
+        if (preg_match('/community/', $this->moduleDirectory))
+            $this->codePool = 'community';
+        if (preg_match('/local/', $this->moduleDirectory))
+            $this->codePool = 'local';
+
+        return $this->codePool;
     }
 
     /**
@@ -320,7 +351,7 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function getModuleDir()
     {
-        return \Mage::getModuleDir(false, $this->getModuleNamespace());
+        return isset($this->moduleDirectory) ? $this->moduleDirectory : \Mage::getModuleDir(false, $this->getModuleNamespace());
     }
 
     /**
