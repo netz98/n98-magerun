@@ -17,7 +17,7 @@ RECENT CHANGES
 * #403 Sys setup incremental tiny fixes (by Cyrill Schumacher)
 * #407 Check for Enterprise_PageCache presence before using it (by Vinai Kopp)
 * Changed db:dump strip settings (by Alexander Menk)
-
+* Updated 3rd party components (Symfony, PHPUnit, Twig)
 
 ======
 1.91.0
