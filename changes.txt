@@ -11,10 +11,13 @@ RECENT CHANGES
 * #390 Some documentation updates (by Aydin Hassan)
 * #391 Fixed broken filters in dev:module:list command (by Tjerk Ameel)
 * #392 Add remove setup resource command (by Aydin Hassan)
+* #393 Optimize failing on long lines (by Alexander Menk)
 * #397 Added option to create dummy customer with an address (by Gilles Doge)
 * #400 Added adminhtml_cache_refresh_type event (by Marc Päpper)
 * #403 Sys setup incremental tiny fixes (by Cyrill Schumacher)
 * #407 Check for Enterprise_PageCache presence before using it (by Vinai Kopp)
+* Changed db:dump strip settings (by Alexander Menk)
+
 
 ======
 1.91.0
