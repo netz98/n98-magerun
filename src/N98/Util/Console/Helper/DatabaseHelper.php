@@ -32,6 +32,7 @@ class DatabaseHelper extends AbstractHelper
     /**
      * @param OutputInterface $output
      * @param bool            $silent
+     *
      * @throws \Exception
      *
      * @throws \Exception
@@ -44,7 +45,8 @@ class DatabaseHelper extends AbstractHelper
             if ($command == null) {
                 $application = new Application();
             } else {
-                $application = $command->getApplication(); /* @var $application Application */
+                $application = $command->getApplication();
+                /* @var $application Application */
             }
             $application->detectMagento();
 
@@ -63,10 +65,10 @@ class DatabaseHelper extends AbstractHelper
                 throw new \Exception('Cannot find default_setup config in app/etc/local.xml');
             }
 
-            $this->dbSettings = (array) $config->global->resources->default_setup->connection;
-            $this->dbSettings['prefix'] = (string) $config->global->resources->db->table_prefix;
+            $this->dbSettings           = (array)$config->global->resources->default_setup->connection;
+            $this->dbSettings['prefix'] = (string)$config->global->resources->db->table_prefix;
 
-            if(strpos($this->dbSettings['host'], ':') !== false) {
+            if (strpos($this->dbSettings['host'], ':') !== false) {
                 list($this->dbSettings['host'], $this->dbSettings['port']) = explode(':', $this->dbSettings['host']);
             }
 
@@ -84,6 +86,7 @@ class DatabaseHelper extends AbstractHelper
      * Connects to the database without initializing magento
      *
      * @param OutputInterface $output = null
+     *
      * @throws \Exception
      * @return \PDO
      */
@@ -120,8 +123,8 @@ class DatabaseHelper extends AbstractHelper
         $this->_connection->query("SET SQL_MODE=''");
 
         try {
-            $this->_connection->query('USE `'.$this->dbSettings['dbname'].'`');
-        } catch(\PDOException $e) {
+            $this->_connection->query('USE `' . $this->dbSettings['dbname'] . '`');
+        } catch (\PDOException $e) {
         }
 
         $this->_connection->query("SET NAMES utf8");
@@ -170,6 +173,7 @@ class DatabaseHelper extends AbstractHelper
      * Check whether current mysql user has $privilege privilege
      *
      * @param string $privilege
+     *
      * @return bool
      */
     public function mysqlUserHasPrivilege($privilege)
@@ -178,7 +182,7 @@ class DatabaseHelper extends AbstractHelper
 
         $result = $statement->fetchAll(\PDO::FETCH_COLUMN);
         foreach ($result as $row) {
-            if (preg_match('/^GRANT(.*)' . strtoupper($privilege) .'/', $row)
+            if (preg_match('/^GRANT(.*)' . strtoupper($privilege) . '/', $row)
                 || preg_match('/^GRANT(.*)ALL/', $row)
             ) {
                 return true;
@@ -215,12 +219,13 @@ class DatabaseHelper extends AbstractHelper
      * Get mysql variable value
      *
      * @param string $variable
+     *
      * @return bool|string
      */
     public function getMysqlVariableValue($variable)
     {
         $statement = $this->getConnection()->query("SELECT @@{$variable};");
-        $result = $statement->fetch(\PDO::FETCH_ASSOC);
+        $result    = $statement->fetch(\PDO::FETCH_ASSOC);
         if ($result) {
             return $result;
         }
@@ -230,6 +235,7 @@ class DatabaseHelper extends AbstractHelper
 
     /**
      * @param $commandConfig
+     *
      * @throws \Exception
      * @internal param $config
      * @return array $commandConfig
@@ -240,7 +246,7 @@ class DatabaseHelper extends AbstractHelper
         $tableDefinitions = array();
         if (isset($commandConfig['table-groups'])) {
             $tableGroups = $commandConfig['table-groups'];
-            foreach ($tableGroups as $index=>$definition) {
+            foreach ($tableGroups as $index => $definition) {
                 $description = isset($definition['description']) ? $definition['description'] : '';
                 if (!isset($definition['id'])) {
                     throw new \Exception('Invalid definition of table-groups (id missing) Index: ' . $index);
@@ -280,12 +286,12 @@ class DatabaseHelper extends AbstractHelper
             if (substr($entry, 0, 1) == '@') {
                 $code = substr($entry, 1);
                 if (!isset($definitions[$code])) {
-                    throw new \Exception('Table-groups could not be resolved: '.$entry);
+                    throw new \Exception('Table-groups could not be resolved: ' . $entry);
                 }
                 if (!isset($resolved[$code])) {
                     $resolved[$code] = true;
-                    $tables = $this->resolveTables(explode(' ', $definitions[$code]['tables']), $definitions, $resolved);
-                    $resolvedList = array_merge($resolvedList, $tables);
+                    $tables          = $this->resolveTables(explode(' ', $definitions[$code]['tables']), $definitions, $resolved);
+                    $resolvedList    = array_merge($resolvedList, $tables);
                 }
                 continue;
             }
@@ -293,7 +299,7 @@ class DatabaseHelper extends AbstractHelper
             // resolve wildcards
             if (strpos($entry, '*') !== false) {
                 $connection = $this->getConnection();
-                $sth = $connection->prepare('SHOW TABLES LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+                $sth        = $connection->prepare('SHOW TABLES LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
                 $sth->execute(
                     array(':like' => str_replace('*', '%', $this->dbSettings['prefix'] . $entry))
                 );
@@ -319,11 +325,12 @@ class DatabaseHelper extends AbstractHelper
      * Get list of db tables
      *
      * @param bool $withoutPrefix
+     *
      * @return array
      */
     public function getTables($withoutPrefix = false)
     {
-        $db = $this->getConnection();
+        $db     = $this->getConnection();
         $prefix = $this->dbSettings['prefix'];
         if (strlen($prefix) > 0) {
             $statement = $db->prepare('SHOW TABLES LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
@@ -340,9 +347,44 @@ class DatabaseHelper extends AbstractHelper
                 return $result;
             }
 
-            return array_map(function($tableName) use ($prefix){
-                    return str_replace($prefix, '', $tableName);
-                },$result);
+            return array_map(function ($tableName) use ($prefix) {
+                return str_replace($prefix, '', $tableName);
+            }, $result);
+        }
+
+        return array();
+    }
+
+    /**
+     * Get list of db tables status
+     *
+     * @param bool $withoutPrefix
+     *
+     * @return array
+     */
+    public function getTablesStatus($withoutPrefix = false)
+    {
+        $db     = $this->getConnection();
+        $prefix = $this->dbSettings['prefix'];
+        if (strlen($prefix) > 0) {
+            $statement = $db->prepare('SHOW TABLE STATUS LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+            $statement->execute(
+                array(':like' => $prefix . '%')
+            );
+        } else {
+            $statement = $db->query('SHOW TABLE STATUS');
+        }
+
+        if ($statement) {
+            $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+            $return = array();
+            foreach ($result as $table) {
+                if (true === $withoutPrefix) {
+                    $table['Name'] = str_replace($prefix, '', $table['Name']);
+                }
+                $return[$table['Name']] = $table;
+            }
+            return $return;
         }
 
         return array();
@@ -378,6 +420,7 @@ class DatabaseHelper extends AbstractHelper
 
     /**
      * @param OutputInterface $output
+     *
      * @throws \Exception
      */
     public function dropDatabase($output)
@@ -390,15 +433,16 @@ class DatabaseHelper extends AbstractHelper
 
     /**
      * @param OutputInterface $output
+     *
      * @throws \Exception
      */
     public function dropTables($output)
     {
         $result = $this->getTables();
-        $query = 'SET FOREIGN_KEY_CHECKS = 0; ';
-        $count = 0;
+        $query  = 'SET FOREIGN_KEY_CHECKS = 0; ';
+        $count  = 0;
         foreach ($result as $tableName) {
-            $query .= 'DROP TABLE IF EXISTS `'.$tableName.'`; ';
+            $query .= 'DROP TABLE IF EXISTS `' . $tableName . '`; ';
             $count++;
         }
         $query .= 'SET FOREIGN_KEY_CHECKS = 1;';
@@ -408,13 +452,14 @@ class DatabaseHelper extends AbstractHelper
 
     /**
      * @param OutputInterface $output
+     *
      * @throws \Exception
      */
     public function createDatabase($output)
     {
         $this->detectDbSettings($output);
         $db = $this->getConnection();
-        $db->query('CREATE DATABASE IF NOT EXISTS `' .  $this->dbSettings['dbname'] . '`');
+        $db->query('CREATE DATABASE IF NOT EXISTS `' . $this->dbSettings['dbname'] . '`');
         $output->writeln('<info>Created database</info> <comment>' . $this->dbSettings['dbname'] . '</comment>');
     }
 }
