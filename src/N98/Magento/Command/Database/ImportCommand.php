@@ -116,7 +116,6 @@ HELP;
             'mysql ' . $dbHelper->getMysqlClientToolConnectionString(),
             $fileName
         );
-
         if ($input->getOption('only-command')) {
             $output->writeln($exec);
 
