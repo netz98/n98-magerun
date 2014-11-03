@@ -46,7 +46,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
     {
         $this
             ->addArgument(
-                'vars',
+                'search',
                 InputArgument::OPTIONAL,
                 'Only output variables of specified name. The wildcard % is supported!'
             )
@@ -88,9 +88,9 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
     {
         $this->_input  = $input;
         $this->_output = $output;
-        $this->initVariables($this->_input->getArgument('vars'));
+        $this->initVariables($this->_input->getArgument('search'));
         $outputVars = $this->_allVariables;
-        if (null === $this->_input->getArgument('vars')) {
+        if (null === $this->_input->getArgument('search')) {
             $outputVars = array_intersect_key($this->_allVariables, $this->_importantVars);
         }
 
