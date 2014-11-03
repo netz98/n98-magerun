@@ -60,14 +60,8 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
                 'rounding',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Amount of decimals to display',
+                'Amount of decimals to display. If -1 then disabled',
                 0
-            )
-            ->addOption(
-                'no-rounding',
-                null,
-                InputOption::VALUE_NONE,
-                'Disable rounding and humanized output'
             )
             ->addOption(
                 'no-description',
@@ -171,10 +165,11 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
      */
     protected function formatVariables(array $vars)
     {
-        if (false === $this->_input->getOption('no-rounding')) {
+        $rounding = (int)$this->_input->getOption('rounding');
+        if ($rounding > -1) {
             foreach ($vars as $k => &$v) {
                 if (true === $this->allowRounding($k)) {
-                    $v = Filesystem::humanFileSize($v, (int)$this->_input->getOption('rounding'));
+                    $v = Filesystem::humanFileSize($v, $rounding);
                 }
                 if (isset($this->_specialFormat[$k])) {
                     $v = $this->{$this->_specialFormat[$k]}($v);
