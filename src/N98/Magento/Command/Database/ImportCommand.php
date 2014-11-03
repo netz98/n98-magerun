@@ -109,6 +109,27 @@ HELP;
 
         $fileName = $this->checkFilename($input);
 
+        $compressor = $this->getCompressor($input->getOption('compression'));
+
+        // create import command
+        $exec = $compressor->getDecompressingCommand(
+            'mysql ' . $dbHelper->getMysqlClientToolConnectionString(),
+            $fileName
+        );
+        if ($input->getOption('only-command')) {
+            $output->writeln($exec);
+
+            return;
+        } else {
+            if ($input->getOption('only-if-empty')
+                && count($dbHelper->getTables()) > 0
+            ) {
+                $output->writeln('<comment>Skip import. Database is not empty</comment>');
+
+                return;
+            }
+        }
+
         if ($input->getOption('optimize')) {
             if ($input->getOption('compression')) {
                 throw new \Exception('Options --compression and --optimize are not compatible');
@@ -125,27 +146,11 @@ HELP;
             $dbHelper->dropTables($output);
         }
 
-        $compressor = $this->getCompressor($input->getOption('compression'));
 
-        // create import command
-        $exec = $compressor->getDecompressingCommand(
-            'mysql ' . $dbHelper->getMysqlClientToolConnectionString(),
-            $fileName
-        );
 
-        if ($input->getOption('only-command')) {
-            $output->writeln($exec);
-        } else {
-            if ($input->getOption('only-if-empty')
-                && count($dbHelper->getTables()) > 0
-            ) {
-                $output->writeln('<comment>Skip import. Database is not empty</comment>');
-
-                return;
-            }
 
             $this->doImport($output, $fileName, $exec);
-        }
+
         if ($input->getOption('optimize')) {
             unlink($fileName);
         }
