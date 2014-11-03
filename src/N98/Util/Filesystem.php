@@ -99,7 +99,7 @@ class Filesystem
      */
     public static function humanFileSize($bytes, $decimals = 2)
     {
-        $units = array('B', 'K', 'M', 'G', 'T', 'P');
+        $units = array('B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y');
         $factor = floor((strlen($bytes) - 1) / 3);
         return sprintf("%.{$decimals}f%s", $bytes / pow(1024, $factor), $units[$factor]);
     }

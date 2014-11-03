@@ -462,4 +462,60 @@ class DatabaseHelper extends AbstractHelper
         $db->query('CREATE DATABASE IF NOT EXISTS `' . $this->dbSettings['dbname'] . '`');
         $output->writeln('<info>Created database</info> <comment>' . $this->dbSettings['dbname'] . '</comment>');
     }
+
+    /**
+     * @param string      $command
+     * @param string|null $variable
+     *
+     * @return array
+     * @throws \Exception
+     */
+    private function runShowCommand($command, $variable = null)
+    {
+        $db = $this->getConnection();
+
+        if (null !== $variable) {
+            $statement = $db->prepare(
+                'SHOW /*!50000 GLOBAL */ ' . $command . ' LIKE :like',
+                array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY)
+            );
+            $statement->execute(
+                array(':like' => $variable)
+            );
+        } else {
+            $statement = $db->query('SHOW /*!50000 GLOBAL */ ' . $command);
+        }
+
+        if ($statement) {
+            $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+            $return = array();
+            foreach ($result as $row) {
+                $return[$row['Variable_name']] = $row['Value'];
+            }
+            return $return;
+        }
+        return array();
+    }
+
+    /**
+     * @param string|null $variable
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function getGlobalVariables($variable = null)
+    {
+        return $this->runShowCommand('VARIABLES', $variable);
+    }
+
+    /**
+     * @param string|null $variable
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function getGlobalStatus($variable = null)
+    {
+        return $this->runShowCommand('STATUS', $variable);
+    }
 }

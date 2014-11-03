@@ -7,26 +7,50 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Filesystem;
 
-class VariablesCommand extends AbstractDatabaseCommand
+class VariablesCommand extends AbstractShowCommand
 {
+
     /**
-     * http://www.digiwig.com/blog/how-to-speed-up-magento <- variables
-     * http://aadant.com/blog/2013/09/30/poor-mans-online-optimize-in-5-6/
+     * variable name => recommended size (but this value must be calculated depending on the server size
+     * @see https://launchpadlibrarian.net/78745738/tuning-primer.sh convert that to PHP ... ?
+     *      http://www.slideshare.net/shinguz/mysql-configuration-the-most-important-variables GERMAN
+     * @var array
      */
+    protected $_importantVars = array(
+        'have_query_cache'                => '',
+        'innodb_additional_mem_pool_size' => '',
+        'innodb_buffer_pool_size'         => '',
+        'innodb_log_buffer_size'          => '',
+        'innodb_log_file_size'            => '',
+        'innodb_thread_concurrency'       => '',
+        'join_buffer_size'                => '',
+        'key_buffer_size'                 => '',
+        'max_allowed_packet'              => '',
+        'max_connections'                 => '',
+        'max_heap_table_size'             => '',
+        'open_files_limit'                => '',
+        'query_cache_size'                => '',
+        'query_cache_type'                => '',
+        'read_rnd_buffer_size'            => '',
+        'read_buffer_size'                => '',
+        'sort_buffer_size'                => '',
+        'table_definition_cache'          => '',
+        'table_open_cache'                => '',
+        'thread_cache_size'               => '',
+        'tmp_table_size'                  => array(
+            'desc' => '', // @todo add description everywhere
+            'opt'  => ''  // @todo calculate somehow the optimal values depending on the MySQL server environment
+        ),
+    );
 
     protected function configure()
     {
+        parent::configure();
         $this
             ->setName('db:variables')
-            ->addArgument('vars', InputArgument::OPTIONAL, 'Only output variables of specified name. Wildcards supported')
-            ->setDescription('Dumps database for important variables')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            );
+            ->setDescription('Shows important variables or custom selected');
 
         $help = <<<HELP
 This command is useful to print all important variables about the current database.
@@ -35,28 +59,21 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface   $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param string $name
      *
-     * @throws \InvalidArgumentException
-     * @return void
+     * @return bool
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function allowRounding($name)
     {
-//        $this->detectDbSettings($output);
+        $toHuman = array(
+            'max_length_for_sort_data' => 1,
+            'max_allowed_packet'       => 1,
+            'max_seeks_for_key'        => 1,
+            'max_write_lock_count'     => 1,
+            'slave_max_allowed_packet' => 1,
+        );
+        $isSize  = false !== strpos($name, '_size');
 
-//        $settings = array();
-//        foreach ($this->dbSettings as $key => $value) {
-//            $settings[$key] = (string)$value;
-//        }
-//
-//        $rows = array();
-//        foreach ($settings as $settingName => $settingValue) {
-//            $rows[] = array($settingName, $settingValue);
-//        }
-//
-//        $this->getHelper('table')
-//            ->setHeaders(array('Name', 'Value'))
-//            ->renderByFormat($output, $rows, $input->getOption('format'));
+        return $isSize || isset($toHuman[$name]);
     }
 }
