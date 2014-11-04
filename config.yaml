@@ -73,6 +73,8 @@ commands:
     - N98\Magento\Command\Database\ImportCommand
     - N98\Magento\Command\Database\InfoCommand
     - N98\Magento\Command\Database\QueryCommand
+    - N98\Magento\Command\Database\VariablesCommand
+    - N98\Magento\Command\Database\StatusCommand
     - N98\Magento\Command\Database\Maintain\CheckTablesCommand
     - N98\Magento\Command\Design\DemoNoticeCommand
     - N98\Magento\Command\Developer\Code\Model\MethodCommand
