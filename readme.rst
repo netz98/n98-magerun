@@ -1107,6 +1107,23 @@ Run this command inside your `.modman` folder.
 
    $ n98-magerun.phar dev:code:model:method [modelName]
 
+Enable/Disable Module in Declaration
+""""""""""""""""""
+
+Enable or disable a module in `app/etc/modules/*.xml` by name or codePool:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:module:enable [--codepool="..."] moduleName
+   $ n98-magerun.phar dev:module:disable [--codepool="..."] moduleName
+
+Examples:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:module:disable MyVendor_MyModule
+   $ n98-magerun.phar dev:module:disable --codepool="community"
+
 List Modules
 """"""""""""
 
