@@ -85,6 +85,7 @@ commands:
     - N98\Magento\Command\Developer\Module\CreateCommand
     - N98\Magento\Command\Developer\Module\Disableenable\DisableCommand
     - N98\Magento\Command\Developer\Module\Disableenable\EnableCommand
+    - N98\Magento\Command\Developer\Module\UpdateCommand
     - N98\Magento\Command\Developer\Module\ListCommand
     - N98\Magento\Command\Developer\Module\Observer\ListCommand
     - N98\Magento\Command\Developer\Module\Rewrite\ConflictsCommand
