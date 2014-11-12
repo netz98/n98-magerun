@@ -690,6 +690,15 @@ ID can be e-mail or username. The command will attempt to find the user by usern
 will attempt to find the user by e-mail. If ID is omitted you will be prompted for it. If the force parameter "-f" is
 omitted you will be prompted for confirmation.
 
+Unlock admin user
+"""""""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar admin:user:unlock [username]
+
+Releases the password lock on an admin (leave blank to unlock all admins)
+
 Disable admin notifications
 """""""""""""""""""""""""""
 
