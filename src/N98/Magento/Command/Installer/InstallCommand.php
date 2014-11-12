@@ -460,15 +460,16 @@ HELP;
     protected function _fixComposerExtractionBug()
     {
         $filesystem = new Filesystem();
-
-        $mediaFolder = $this->config['installationFolder'] . '/media';
-        $wrongFolder = $this->config['installationFolder'] . '/_temp_demo_data/media';
-        if (is_dir($wrongFolder)) {
-            $filesystem->recursiveCopy(
-                $wrongFolder,
-                $mediaFolder
-            );
-            $filesystem->recursiveRemoveDirectory($wrongFolder);
+        foreach (array('/_temp_demo_data/media' => '/media', '/_temp_demo_data/skin' => '/skin') as $wrong => $right) {
+            $wrongFolder = $this->config['installationFolder'] . $wrong;
+            $rightFolder = $this->config['installationFolder'] . $right;
+            if (is_dir($wrongFolder)) {
+                $filesystem->recursiveCopy(
+                    $wrongFolder,
+                    $rightFolder
+                );
+                $filesystem->recursiveRemoveDirectory($wrongFolder);
+            }
         }
     }
 
