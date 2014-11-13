@@ -120,7 +120,29 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
             }
             $i++;
         }
+        // when searching no every variable has a description so fill the missing ones with blanks
+        if (false === $hasDescription) {
+            return $rows;
+        }
+        foreach ($rows as $k => $r) {
+            if (2 === count($r)) {
+                $rows[$k] = $this->getVariableDescription($r);
+            }
+        }
         return $rows;
+    }
+
+    /**
+     * Extend or modify this method to add descriptions to other variables
+     *
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function getVariableDescription(array $row)
+    {
+        $row[] = '';
+        return $row;
     }
 
     /**
