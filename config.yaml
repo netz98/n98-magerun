@@ -73,6 +73,8 @@ commands:
     - N98\Magento\Command\Database\ImportCommand
     - N98\Magento\Command\Database\InfoCommand
     - N98\Magento\Command\Database\QueryCommand
+    - N98\Magento\Command\Database\VariablesCommand
+    - N98\Magento\Command\Database\StatusCommand
     - N98\Magento\Command\Database\Maintain\CheckTablesCommand
     - N98\Magento\Command\Design\DemoNoticeCommand
     - N98\Magento\Command\Developer\Code\Model\MethodCommand
@@ -83,6 +85,9 @@ commands:
     - N98\Magento\Command\Developer\Log\LogCommand
     - N98\Magento\Command\Developer\Log\SizeCommand
     - N98\Magento\Command\Developer\Module\CreateCommand
+    - N98\Magento\Command\Developer\Module\Disableenable\DisableCommand
+    - N98\Magento\Command\Developer\Module\Disableenable\EnableCommand
+    - N98\Magento\Command\Developer\Module\UpdateCommand
     - N98\Magento\Command\Developer\Module\ListCommand
     - N98\Magento\Command\Developer\Module\Observer\ListCommand
     - N98\Magento\Command\Developer\Module\Rewrite\ConflictsCommand

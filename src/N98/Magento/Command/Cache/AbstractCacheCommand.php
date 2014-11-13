@@ -11,6 +11,11 @@ class AbstractCacheCommand extends AbstractMagentoCommand
      */
     protected function _getCacheModel()
     {
-        return $this->_getModel('core/cache', 'Mage_Core_Model_Cache');
+        if ($this->_magentoMajorVersion == AbstractMagentoCommand::MAGENTO_MAJOR_VERSION_2) {
+            throw new \Exception('There global Mage class was removed from Magento 2. What should we do here?');
+            return \Mage::getModel('Mage_Core_Model_Cache');
+        } else {
+            return \Mage::app()->getCacheInstance();
+        }
     }
 }
