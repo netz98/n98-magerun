@@ -23,7 +23,7 @@ _n98-magerun()
     POSSIBLE=()
     while read command help; do
         # skip section headers
-        if [[ $command =~ ":" ]]; then
+        if [[ $command == *:* ]]; then
                 POSSIBLE+=("$command")
         fi
     done <<< "$help"
