@@ -22,6 +22,14 @@ class UnlockCommand extends AbstractAdminUserCommand
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->getApplication()->isMagentoEnterprise();
+    }
+
+    /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return void
@@ -30,10 +38,6 @@ class UnlockCommand extends AbstractAdminUserCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            if (\Mage::getEdition() != \Mage::EDITION_ENTERPRISE) {
-                $output->writeln('<info>This command is only available with <comment>Magento Enterprise Edition</comment></info>');
-                return;
-            }
             if ($username = $input->getArgument('username')) {
                 $user = \Mage::getModel('admin/user')->loadByUsername($username);
                 if (!$user || !$user->getId()) {
