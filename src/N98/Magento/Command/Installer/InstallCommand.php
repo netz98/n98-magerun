@@ -614,11 +614,16 @@ HELP;
             @mkdir($defaultSessionFolder);
         }
 
+        $dbHost = $this->config['db_host'];
+        if ($this->config['db_port'] != 3306) {
+            $dbHost .= ':' . $this->config['db_port'];
+        }
+
         $argv = array(
             'license_agreement_accepted' => 'yes',
             'locale'                     => $locale,
             'timezone'                   => $timezone,
-            'db_host'                    => $this->config['db_host'],
+            'db_host'                    => $dbHost,
             'db_name'                    => $this->config['db_name'],
             'db_user'                    => $this->config['db_user'],
             'db_pass'                    => $this->config['db_pass'],
