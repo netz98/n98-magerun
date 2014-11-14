@@ -434,6 +434,7 @@ HELP;
                                 . ' '
                                 . '-u' . escapeshellarg(strval($this->config['db_user']))
                                 . ' '
+                                . ($this->config['db_port'] != '3306' ? '-P' . escapeshellarg($this->config['db_port']) . ' ' : '')
                                 . (!strval($this->config['db_pass'] == '') ? '-p' . escapeshellarg($this->config['db_pass']) . ' ' : '')
                                 . strval($this->config['db_name'])
                                 . ' < '
