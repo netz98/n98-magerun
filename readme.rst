@@ -26,7 +26,7 @@ Build Status
 
 Compatibility
 -------------
-The tools will automatically be tested for multiple PHP versions (5.3, 5.4, 5.5). It's currently currently running in various Linux distributions and Mac OS X.
+The tools will automatically be tested for multiple PHP versions (5.3, 5.4, 5.5). It's currently running in various Linux distributions and Mac OS X.
 Microsoft Windows is not fully supported (some Commands like `db:dump` or `install` are excluded).
 
 The tool partially works with Magento 2 development branch.
@@ -56,7 +56,7 @@ You can make the .phar file executable.
 
     chmod +x ./n98-magerun.phar
 
-If you want to use command system wide you can copy it to `/usr/local/bin`.
+If you want to use the command system wide you can copy it to `/usr/local/bin`.
 
 .. code-block:: sh
 
@@ -64,7 +64,7 @@ If you want to use command system wide you can copy it to `/usr/local/bin`.
 
 **Debian / suhosin:**
 
-On some debian systems with compiled in suhosin the phar extension must be added to a whitelist.
+On some Debian systems with compiled in suhosin the phar extension must be added to a whitelist.
 
 Add this to your php.ini file:
 
@@ -97,7 +97,7 @@ Usage / Commands
 ----------------
 
 All commands try to detect the current Magento root directory.
-If you have multiple Magento installation you must change your working directory to
+If you have multiple Magento installations you must change your working directory to
 the preferred installation.
 
 https://github.com/netz98/n98-magerun/wiki/Commands
@@ -107,7 +107,7 @@ You can list all available commands by::
    $ n98-magerun.phar list
 
 
-If you don't have installed the .phar file system wide you can call it with the php cli interpreter::
+If you don't have the .phar file installed system wide you can call it with the PHP CLI interpreter::
 
    php n98-magerun.phar list
 
@@ -115,11 +115,11 @@ If you don't have installed the .phar file system wide you can call it with the 
 Global config parameters:
 
   --root-dir
-      Force magento root dir. No auto detection
+      Force Magento root dir. No auto detection.
   --skip-config
       Do not load any custom config.
   --skip-root-check
-      Do not check if n98-magerun runs as root
+      Do not check if n98-magerun runs as root.
 
 Open Shop in Browser
 """"""""""""""""""""
@@ -233,7 +233,7 @@ Print database information
 Dump database
 """""""""""""
 
-Dumps configured magento database with `mysqldump`.
+Dumps configured Magento database with `mysqldump`.
 
 * Requires MySQL CLI tools
 
@@ -243,7 +243,7 @@ Dumps configured magento database with `mysqldump`.
 
 **Options**
 
-  --add-time         
+  --add-time
         Adds time to filename (only if filename was not provided)
 
   --compression (-c)
@@ -264,7 +264,7 @@ Dumps configured magento database with `mysqldump`.
   --stdout
         Dump to stdout
 
-  --strip       
+  --strip
         Tables to strip (dump only structure of those tables)
 
   --force (-f)
@@ -455,7 +455,7 @@ indexer.
 Reindex All
 """""""""""
 
-Loops all magento indexes and triggers reindex.
+Loops all Magento indexes and triggers reindex.
 
 .. code-block:: sh
 
@@ -536,7 +536,7 @@ Options:
     --format            Output as json, xml or csv
 
 Help:
-    If path is not set, all available config items will be listed. path may contain wildcards (*) 
+    If path is not set, all available config items will be listed. path may contain wildcards (*)
 
 Example:
 
@@ -821,7 +821,7 @@ This command runs each new setup script individually in order to increase the tr
 .. code-block:: sh
 
    $ n98-magerun.phar sys:setup:incremental [--stop-on-error]
-   
+
 Compare Setup Versions
 """"""""""""""""""""""
 
@@ -1048,8 +1048,8 @@ Resolves the given type and grouped class name to a class name, useful for debug
 .. code-block:: sh
 
    $ n98-magerun.phar dev:class:lookup <block|model|helper> <name>
-   
-Example:   
+
+Example:
 
 .. code-block:: sh
 
@@ -1073,7 +1073,7 @@ Global scope can be set by not permitting store_code parameter:
 Create Module Skel
 """"""""""""""""""
 
-Creates an empty module and registers it in current magento shop:
+Creates an empty module and registers it in current Magento shop:
 
 .. code-block:: sh
 
@@ -1266,8 +1266,8 @@ Magento Installer
 
 Since version 1.1.0 we deliver a Magento installer which does the following:
 
-* Download Magento by a list of git repos and zip files (mageplus, magelte, official community packages).
-* Try to create database if it does not exist.
+* Downloads Magento by a list of git repos and zip files (mageplus, magelte, official community packages).
+* Tries to create database if it does not exist.
 * Installs Magento sample data if available (since version 1.2.0).
 * Starts Magento installer
 * Sets rewrite base in .htaccess file
@@ -1424,7 +1424,7 @@ The first line of the script can contain a comment (line prefixed with #) which 
 
    $ n98-magerun.phar script:repo:list [--format[="..."]]
 
-If you want to execute a script from repository this can be done by *script:repo:run* command.
+If you want to execute a script from the repository this can be done by *script:repo:run* command.
 
 .. code-block:: sh
 
@@ -1438,7 +1438,7 @@ Autocompletion
 Bash
 """"
 
-Copy the file **bash_complete** as **n98-magerun.phar** in your bash autocomplete folder.
+Copy the file **bash_complete** to **n98-magerun.phar** in your bash autocomplete folder.
 In my Ubuntu system this can be done with the following command:
 
 .. code-block:: sh
@@ -1449,8 +1449,8 @@ In my Ubuntu system this can be done with the following command:
 PHPStorm
 """"""""
 
-An commandline tool autocompletion XML file for PHPStorm exists in subfolder **autocompletion/phpstorm**.
-Copy **n98_magerun.xml** in your phpstorm config folder.
+A commandline tool autocompletion XML file for PHPStorm exists in subfolder **autocompletion/phpstorm**.
+Copy **n98_magerun.xml** into your phpstorm config folder.
 
 Linux: ~/.WebIde50/config/commandlinetools
 
@@ -1493,7 +1493,7 @@ Add own Magento repositories
 Create the yaml config file **~/.n98-magerun.yaml**.
 Now you can define overwrites. The original config file is **config.yaml** in the source root folder.
 
-Add you repo. The keys in the config file following the composer package structure.
+Add your repo. The keys in the config file follow the composer package structure.
 
 Example::
 
@@ -1520,8 +1520,8 @@ Example::
 How can you help?
 -----------------
 
-* Add new commands
-* Send me some proposals if you miss anything
+* Add new commands.
+* Send me some proposals if you miss anything.
 * Create issues if you find a bug or missing a feature.
 
 Thanks to
@@ -1529,10 +1529,9 @@ Thanks to
 
 * Symfony2 Team for the great console component.
 * Composer Team for the downloader backend and the self-update command.
-* Francois Zaninotto for great Faker library
+* Francois Zaninotto for great Faker library.
 
 
 .. image:: https://d2weczhvl823v0.cloudfront.net/netz98/n98-magerun/trend.png
    :alt: Bitdeli badge
    :target: https://bitdeli.com/free
-
