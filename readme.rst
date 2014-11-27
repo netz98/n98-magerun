@@ -424,6 +424,15 @@ If strip option is set, the following folders are excluded:
 * css (combined css files)
 * catalog/product/cache
 
+Create a Giftcard
+"""""""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar giftcard:create [--website[="..."]] amount
+
+You may specify a website ID or use the default
+
 List Indexes
 """"""""""""
 

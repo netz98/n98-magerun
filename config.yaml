@@ -104,6 +104,7 @@ commands:
     - N98\Magento\Command\Eav\Attribute\ListCommand
     - N98\Magento\Command\Eav\Attribute\RemoveCommand
     - N98\Magento\Command\Eav\Attribute\ViewCommand
+    - N98\Magento\Command\GiftCard\CreateCommand
     - N98\Magento\Command\Indexer\ListCommand
     - N98\Magento\Command\Indexer\ReindexAllCommand
     - N98\Magento\Command\Indexer\ReindexCommand
