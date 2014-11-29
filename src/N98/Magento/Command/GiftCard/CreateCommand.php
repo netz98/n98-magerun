@@ -55,27 +55,7 @@ class CreateCommand extends AbstractMagentoCommand
             $code = \Mage::getModel('enterprise_giftcardaccount/giftcardaccount')
                 ->load($id)
                 ->getCode();
-
             $output->writeln('<info>Gift card <comment>' . $code . '</comment> was created</info>');
-
-            /*
-            if ($amount = $input->getArgument('amount')) {
-                $user = \Mage::getModel('admin/user')->loadByUsername($username);
-                if (!$user || !$user->getId()) {
-                     $output->writeln('<error>Couldn\'t find admin ' . $username . '</error>');
-                     return;
-                }
-                \Mage::getResourceModel('enterprise_pci/admin_user')->unlock($user->getId());
-                $output->writeln('<info><comment>' . $username . '</comment> unlocked</info>');
-                return;
-            }
-            \Mage::getResourceModel('enterprise_pci/admin_user')->unlock(
-                \Mage::getModel('admin/user')
-                    ->getCollection()
-                    ->getAllIds()
-            );
-            $output->writeln('<info><comment>All admins</comment> unlocked</info>');
-            */
         }
     }
 }
