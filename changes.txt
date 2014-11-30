@@ -18,6 +18,8 @@ RECENT CHANGES
 * Minor documentation corrections (by  Jaik Dean)
 * Refactored db:maintain:check-tables to allow InnoDB and Memory tables to be optimized. (by Cyrill Schumacher)
 * Bash completion - change regexp condition to string contains. (by Paweł Bogut)
+* Updated Symfony components to V2.6
+* Updated locked phpunit version.
 
 ======
 1.92.0
