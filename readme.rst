@@ -409,6 +409,24 @@ Options:
    $ n98-magerun.phar db:query [--only-command] [query]
 
 
+Database Variables
+""""""""""""""""""
+
+See the most important MySQL variables of your Magento instance.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar db:variables [--format[="..."]] [--rounding[="..."]] [--no-description] [search]
+
+Database Status
+"""""""""""""""
+
+This command is useful to print important server status information about the current database.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar [--format[="..."]] [--rounding[="..."]] [--no-description] [search]
+
 Dump Media folder
 """""""""""""""""
 
@@ -1117,7 +1135,7 @@ Run this command inside your `.modman` folder.
    $ n98-magerun.phar dev:code:model:method [modelName]
 
 Enable/Disable Module in Declaration
-""""""""""""""""""
+""""""""""""""""""""""""""""""""""""
 
 Enable or disable a module in `app/etc/modules/*.xml` by name or codePool:
 
@@ -1132,6 +1150,9 @@ Examples:
 
    $ n98-magerun.phar dev:module:disable MyVendor_MyModule
    $ n98-magerun.phar dev:module:disable --codepool="community"
+
+
+.. note:: If `--codepool` option is specified all modules in the codepool are affected.
 
 List Modules
 """"""""""""
