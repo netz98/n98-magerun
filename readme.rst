@@ -1152,7 +1152,9 @@ Examples:
    $ n98-magerun.phar dev:module:disable --codepool="community"
 
 
-.. note:: If `--codepool` option is specified all modules in the codepool are affected.
+.. hint::
+
+   If `--codepool` option is specified all modules in the codepool are affected.
 
 List Modules
 """"""""""""
