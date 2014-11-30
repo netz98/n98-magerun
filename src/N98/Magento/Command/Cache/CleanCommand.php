@@ -51,8 +51,9 @@ HELP;
             \Mage::app()->loadAreaPart('adminhtml', 'events');
             $allTypes = \Mage::app()->useCache();
             $typesToClean = $input->getArgument('type');
+            $typeKeys = array_keys($allTypes);
 
-            foreach(array_keys($allTypes) as $type) {
+            foreach ($typeKeys as $type) {
                 if (count($typesToClean) == 0 || in_array($type, $typesToClean)) {
                     \Mage::app()->getCacheInstance()->cleanType($type);
                     \Mage::dispatchEvent('adminhtml_cache_refresh_type', array('type' => $type));
