@@ -23,11 +23,25 @@ env:
 matrix:
   fast_finish: true
   exclude:
+    # Newer Magento versions uses newer PHP versions
     - php: 5.3
-      env: MAGENTO_VERSION="magento-ce-1.9.0.1" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=65
+      env: MAGENTO_VERSION="magento-ce-1.9.0.1" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=66
 
     - php: 5.3
-      env: MAGENTO_VERSION="magento-ce-1.9.1.0" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=65
+      env: MAGENTO_VERSION="magento-ce-1.9.1.0" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=66
+
+    # Old Magneto Versions are not officially supported to run with PHP 5.5
+    - php: 5.5
+      env: MAGENTO_VERSION="magento-ce-1.4.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes COVERAGE=65
+
+    - php: 5.5
+      env: MAGENTO_VERSION="magento-ce-1.5.1.0" DB=mysql INSTALL_SAMPLE_DATA=yes COVERAGE=66
+
+    - php: 5.5
+      env: MAGENTO_VERSION="magento-ce-1.6.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes COVERAGE=66
+
+    - php: 5.5
+      env: MAGENTO_VERSION="magento-ce-1.7.0.2" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=66
 
 before_script:
   - curl -s http://getcomposer.org/installer | php
