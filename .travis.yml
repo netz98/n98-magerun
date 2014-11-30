@@ -26,6 +26,9 @@ matrix:
     - php: 5.3
       env: MAGENTO_VERSION="magento-ce-1.9.0.1" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=65
 
+    - php: 5.3
+      env: MAGENTO_VERSION="magento-ce-1.9.1.0" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=65
+
 before_script:
   - curl -s http://getcomposer.org/installer | php
   - php composer.phar install --dev --prefer-source
