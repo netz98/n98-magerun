@@ -2,12 +2,11 @@
 
 namespace N98\Magento\Command\GiftCard;
 
-use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-class CreateCommand extends AbstractMagentoCommand
+class CreateCommand extends AbstractGiftCardCommand
 {
     /**
      * Setup
@@ -24,14 +23,6 @@ class CreateCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return $this->getApplication()->isMagentoEnterprise();
-    }
-
-    /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return void
@@ -39,23 +30,24 @@ class CreateCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
-            $data = array(
-                'status'        => 1,
-                'is_redeemable' => 1,
-                'website_id'    => $input->getOption('website')
-                    ? $input->getOption('website')
-                    : \Mage::app()->getStore(true)->getWebsiteId(),
-                'balance'       => $input->getArgument('amount')
-            );
-            $id = \Mage::getModel('enterprise_giftcardaccount/api')->create($data);
-            if (!$id) {
-                $output->writeln('<error>Failed to create gift card</error>');
-            }
-            $code = \Mage::getModel('enterprise_giftcardaccount/giftcardaccount')
-                ->load($id)
-                ->getCode();
-            $output->writeln('<info>Gift card <comment>' . $code . '</comment> was created</info>');
+        if (!$this->initMagento()) {
+            return;
         }
+        $data = array(
+            'status'        => 1,
+            'is_redeemable' => 1,
+            'website_id'    => $input->getOption('website')
+                ? $input->getOption('website')
+                : \Mage::app()->getStore(true)->getWebsiteId(),
+            'balance'       => $input->getArgument('amount')
+        );
+        $id = \Mage::getModel('enterprise_giftcardaccount/api')->create($data);
+        if (!$id) {
+            $output->writeln('<error>Failed to create gift card</error>');
+        }
+        $code = \Mage::getModel('enterprise_giftcardaccount/giftcardaccount')
+            ->load($id)
+            ->getCode();
+        $output->writeln('<info>Gift card <comment>' . $code . '</comment> was created</info>');
     }
 }
