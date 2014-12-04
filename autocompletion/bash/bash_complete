@@ -1,39 +1,34 @@
-#!bash
+#!/bin/bash
+# Installation:
+#  Copy to /etc/bash_completion.d/n98-magerun
+# or
+#  Append to ~/.bash_completion
 #
-# bash completion support for symfony2 console
-#
-# Copyright (C) 2011 Matthieu Bontemps <matthieu@knplabs.com>
-# Distributed under the GNU General Public License, version 2.0.
 
 _n98-magerun()
 {
-    local cur prev opts cmd
+    local cur opts cmd commandlist
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
-    prev="${COMP_WORDS[COMP_CWORD-1]}"
     cmd="${COMP_WORDS[0]}"
+    
+    # gets the word-to-complete without (-n) considering ":" as word breaks
+    _get_comp_words_by_ref -n : cur
+    
+    # workaround for php bug
+    commandlist=$(echo "" | "$cmd" --raw --no-ansi list)
+    
+    # regex to remove command help, wrtie everything on one line with space separated
+    opts=$(echo "$commandlist" | sed "s/\s.*//g" | paste -sd " ")
 
-    # Load magerun help into help variable
-    help=$($cmd --no-ansi list)
-
-    # Strip everything up to "Available commands:"
-    help=${help/*Available commands:/}
-
-    # Iterate over lines
-    POSSIBLE=()
-    while read command help; do
-        # skip section headers
-        if [[ $command =~ ":" ]]; then
-                POSSIBLE+=("$command")
-        fi
-    done <<< "$help"
-
-    possible=${POSSIBLE[@]}
-    COMPREPLY=( $(compgen -W "${possible}" -- ${cur}) )
+    COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+    
+    # removes colon containing prefix from COMPREPLY items 
+    __ltrim_colon_completions "$cur"
     return 0
 }
+
 
 complete -F _n98-magerun n98-magerun.phar
 complete -F _n98-magerun n98-magerun
 complete -F _n98-magerun magerun
-COMP_WORDBREAKS=${COMP_WORDBREAKS//:}
