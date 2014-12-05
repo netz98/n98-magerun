@@ -1,9 +1,9 @@
 #!/bin/bash
 # Installation:
-#  Copy to /etc/bash_completion.d/n98-magerun
+#  Copy to /etc/bash_completion.d/n98-magerun.phar
 # or
 #  Append to ~/.bash_completion
-#
+# open new or restart existing shell session
 
 _n98-magerun()
 {
