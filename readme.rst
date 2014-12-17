@@ -803,7 +803,7 @@ Last executed cronjobs with status.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar sys:cron:history [--format[="..."]]
+   $ n98-magerun.phar sys:cron:history [--format[="..."]] [--timezone[="..."]]
 
 List URLs
 """""""""

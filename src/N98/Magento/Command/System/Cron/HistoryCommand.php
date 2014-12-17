@@ -21,6 +21,12 @@ class HistoryCommand extends AbstractMagentoCommand
             ->setName('sys:cron:history')
             ->setDescription('Last executed cronjobs with status.')
             ->addOption(
+                'timezone',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Timezone to show finished at in'
+            )
+            ->addOption(
                 'format',
                 null,
                 InputOption::VALUE_OPTIONAL,
@@ -43,6 +49,14 @@ class HistoryCommand extends AbstractMagentoCommand
         }
         $this->initMagento();
 
+        $timezone = $input->getOption('timezone')
+            ? $input->getOption('timezone') :
+            \Mage::app()->getStore()->getConfig('general/locale/timezone');
+
+        $output->writeln('<info>Times shown in <comment>' . $timezone . '</comment></info>');
+
+        $date       = \Mage::getSingleton('core/date');
+        $offset     = $date->calculateOffset($timezone);
         $collection = \Mage::getModel('cron/schedule')->getCollection();
         $collection->addFieldToFilter('status', array('neq' => \Mage_Cron_Model_Schedule::STATUS_PENDING))
                    ->addOrder('finished_at', \Varien_Data_Collection_Db::SORT_ORDER_DESC);
@@ -52,10 +66,9 @@ class HistoryCommand extends AbstractMagentoCommand
             $table[] = array(
                 $job->getJobCode(),
                 $job->getStatus(),
-                $job->getFinishedAt(),
+                $job->getFinishedAt() ? $date->gmtDate(null, $date->timestamp($job->getFinishedAt()) + $offset) : '',
             );
         }
-
         $this->getHelper('table')
             ->setHeaders(array('Job', 'Status', 'Finished'))
             ->renderByFormat($output, $table, $input->getOption('format'));
