@@ -154,6 +154,9 @@ commands:
     - "composer:search": Composer\Command\SearchCommand
     - "composer:diagnose": Composer\Command\DiagnoseCommand
 
+  disabled:
+    - dummy
+
   aliases: []
 
   N98\Magento\Command\Installer\InstallCommand:

@@ -22,22 +22,10 @@ RECENT CHANGES
 * Updated locked phpunit version.
 
 ======
-1.92.0
+1.94.0
 ======
 
-* #332 make WARNING_ROOT_USER configurable/optional (by Christian Münch)
-* #387 Unlink sym-linked folders instead of recursively removing (by Aydin Hassan)
-* #390 Some documentation updates (by Aydin Hassan)
-* #391 Fixed broken filters in dev:module:list command (by Tjerk Ameel)
-* #392 Add remove setup resource command (by Aydin Hassan)
-* #393 Optimize failing on long lines (by Alexander Menk)
-* #397 Added option to create dummy customer with an address (by Gilles Doge)
-* #400 Added adminhtml_cache_refresh_type event (by Marc Päpper)
-* #403 Sys setup incremental tiny fixes (by Cyrill Schumacher)
-* #407 Check for Enterprise_PageCache presence before using it (by Vinai Kopp)
-* #413 Enhanced dev:module:observer:list (by Cyrill Schumacher)
-* Changed db:dump strip settings (by Alexander Menk)
-* Updated 3rd party components (Symfony, PHPUnit, Twig)
+* Disable command by configuration (by Christian Münch)
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H

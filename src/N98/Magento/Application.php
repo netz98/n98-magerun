@@ -28,18 +28,16 @@ class Application extends BaseApplication
      * @var int
      */
     const MAGENTO_MAJOR_VERSION_1 = 1;
-    /**
-     * @var int
-     */
-    const MAGENTO_MAJOR_VERSION_2 = 2;
+
     /**
      * @var string
      */
+
     const APP_NAME = 'n98-magerun';
     /**
      * @var string
      */
-    const APP_VERSION = '1.93.0';
+    const APP_VERSION = '1.94.0';
 
     /**
      * @var string
@@ -254,14 +252,30 @@ class Application extends BaseApplication
             foreach ($this->config['commands']['customCommands'] as $commandClass) {
                 if (is_array($commandClass)) { // Support for key => value (name -> class)
                     $resolvedCommandClass = current($commandClass);
+                    if ($this->isCommandDisabled($resolvedCommandClass)) {
+                        continue;
+                    }
                     $command = new $resolvedCommandClass();
                     $command->setName(key($commandClass));
                 } else {
+                    if ($this->isCommandDisabled($commandClass)) {
+                        continue;
+                    }
                     $command = new $commandClass();
                 }
+
                 $this->add($command);
             }
         }
+    }
+
+    /**
+     * @param string $class
+     * @return bool
+     */
+    protected function isCommandDisabled($class)
+    {
+        return in_array($class, $this->config['commands']['disabled']);
     }
 
     /**
@@ -385,11 +399,7 @@ class Application extends BaseApplication
     public function initMagento()
     {
         if ($this->getMagentoRootFolder() !== null) {
-            if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-                $this->_initMagento2();
-            } else {
-                $this->_initMagento1();
-            }
+            $this->_initMagento1();
 
             return true;
         }
@@ -658,35 +668,6 @@ class Application extends BaseApplication
                 \chdir($folder);
 
                 return;
-            }
-        }
-    }
-
-    /**
-     * @return void
-     */
-    protected function _initMagento2()
-    {
-        if ($this->_magento2EntryPoint === null) {
-            require_once $this->getMagentoRootFolder() . '/app/bootstrap.php';
-
-            if (version_compare(\Mage::getVersion(), '2.0.0.0-dev42') >= 0) {
-                $params = array(
-                    \Mage::PARAM_RUN_CODE => 'admin',
-                    \Mage::PARAM_RUN_TYPE => 'store',
-                    'entryPoint'          => basename(__FILE__),
-                );
-                try {
-                    $this->_magento2EntryPoint = new MagerunEntryPoint(BP, $params);
-                } catch (\Exception $e) {
-                    // @TODO problem with objectmanager during tests. Find a better soluttion to reset object manager
-                }
-            } else {
-                if (version_compare(\Mage::getVersion(), '2.0.0.0-dev41') >= 0) {
-                    \Mage::app(array('MAGE_RUN_CODE' => 'admin'));
-                } else {
-                    \Mage::app('admin');
-                }
             }
         }
     }
