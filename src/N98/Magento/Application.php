@@ -30,6 +30,10 @@ class Application extends BaseApplication
     const MAGENTO_MAJOR_VERSION_1 = 1;
 
     /**
+     * @var int
+     */
+    const MAGENTO_MAJOR_VERSION_2 = 2;
+    /**
      * @var string
      */
 
@@ -399,7 +403,11 @@ class Application extends BaseApplication
     public function initMagento()
     {
         if ($this->getMagentoRootFolder() !== null) {
-            $this->_initMagento1();
+            if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
+                $this->_initMagento2();
+            } else {
+                $this->_initMagento1();
+            }
 
             return true;
         }
@@ -687,6 +695,38 @@ class Application extends BaseApplication
         }
 
         \Mage::app($initSettings['code'], $initSettings['type'], $initSettings['options']);
+    }
+
+    protected function _initMagento2()
+    {
+        $magento2Hint = <<<'MAGENTO2HINT'
+You are running a Magento 2 instance. This version of n98-magerun is not compatible
+with Magento 2. Please use n98-magerun2 for this shop.
+
+A current version of the software can be downloaded on github.
+
+<info>Download with curl
+------------------</info>
+
+    <comment>curl -o n98-magerun2.phar https://raw.githubusercontent.com/netz98/n98-magerun2/master/n98-magerun2.phar</comment>
+
+<info>Download with wget
+------------------</info>
+
+    <comment>curl -o n98-magerun2.phar https://raw.githubusercontent.com/netz98/n98-magerun2/master/n98-magerun2.phar</comment>
+
+MAGENTO2HINT;
+
+        $output = new ConsoleOutput();
+
+        $output->writeln(array(
+            '',
+            $this->getHelperSet()->get('formatter')->formatBlock('Compatibility Notice', 'bg=blue;fg=white', true),
+            ''
+        ));
+
+        $output->writeln($magento2Hint);
+        exit;
     }
 
     /**
