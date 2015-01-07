@@ -117,7 +117,7 @@ class MagentoHelper extends AbstractHelper
         foreach (array_reverse($folders) as $searchFolder) {
             if (!is_readable($searchFolder)) {
                 continue;
-            }            
+            }
             $finder = Finder::create();
             $finder
                 ->files()
@@ -187,5 +187,20 @@ class MagentoHelper extends AbstractHelper
         }
 
         return false;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function includeVendorDir()
+    {
+        /* old vendor folder to give backward compatibility */
+        $vendorFolder = $this->getRootFolder() . '/vendor';
+        if (is_dir($vendorFolder) && file_exists($vendorFolder.'/autoload.php')) {
+            require_once $vendorFolder.'/autoload.php';
+        }
+
+        return '';
     }
 }

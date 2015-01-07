@@ -189,6 +189,7 @@ class Application extends BaseApplication
             $subFolders = array();
         }
         $magentoHelper->detect($folder, $subFolders);
+        $magentoHelper->includeVendorDir();
         $this->_magentoRootFolder = $magentoHelper->getRootFolder();
         $this->_magentoEnterprise = $magentoHelper->isEnterpriseEdition();
         $this->_magentoMajorVersion = $magentoHelper->getMajorVersion();
