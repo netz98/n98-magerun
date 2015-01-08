@@ -65,7 +65,7 @@ HELP;
                     throw new \Exception('Invalid model/method definition, expecting "model/class::method".');
                 }
                 if (!($model = \Mage::getModel($run[1])) || !method_exists($model, $run[2])) {
-                    throw new \Exception('Invalid callback: %s::%s does not exist', $run[1], $run[2]);
+                    throw new \Exception(sprintf('Invalid callback: %s::%s does not exist', $run[1], $run[2]));
                 }
                 $callback = array($model, $run[2]);
 
