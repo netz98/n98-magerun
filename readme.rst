@@ -442,8 +442,17 @@ If strip option is set, the following folders are excluded:
 * css (combined css files)
 * catalog/product/cache
 
+Create Gift Card Pool
+"""""""""""""""""""""
+
+Creates a new giftcard pool
+
+.. code-block:: sh
+
+   $ n98-magerun.phar giftcard:pool:generate
+
 Create a Gift Card
-"""""""""""""""""
+""""""""""""""""""
 
 .. code-block:: sh
 
@@ -452,14 +461,14 @@ Create a Gift Card
 You may specify a website ID or use the default
 
 View Gift Card Information
-"""""""""""""""""
+""""""""""""""""""""""""""
 
 .. code-block:: sh
 
    $ n98-magerun.phar giftcard:info [--format[="..."]] code
 
 Remove a Gift Card
-"""""""""""""""""
+""""""""""""""""""
 
 .. code-block:: sh
 
