@@ -340,13 +340,17 @@ commands:
         description: Customer data - Should not be used without @sales
         tables: customer_address* customer_entity*
 
+      - id: newsletter
+        description: Newsletter subscriber data
+        tables: newsletter_*
+
       - id: trade
         description: Current trade data (customers and orders). You usally do not want those in developer systems.
         tables: @customers @sales
 
       - id: development
         description: Removes logs and trade data so developers do not have to work with real customer data
-        tables: @trade @stripped @search
+        tables: @trade @stripped @search @newsletter
 
       - id: ee_changelog
         description: Changelog tables of new indexer since EE 1.13
