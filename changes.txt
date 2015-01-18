@@ -7,6 +7,7 @@ RECENT CHANGES
 ======
 
 * #416 Converts times to local or specified timezone (by Steve Robbin)
+* #441 config:dump produces invalid xml (Andrew Stayart)
 * #453 Add store parameter to template hints commands (by Hadrien Collongues)
 * #462 dbHost not respected #462 (by Achim Rosenhagen)
 * #463 Fixed missing sprintf when creating Exception in sys:cron:run command (by Tim Eydamos)
