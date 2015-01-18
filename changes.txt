@@ -17,6 +17,7 @@ RECENT CHANGES
 * #464 SampleData in Version 1.9 are not downloading (by Rafael Corrêa Gomes)
 * Disable command by config.
 * Removed Magento 2 bootstrapping -> Moved into n98-magerun2
+* Updated 3rd party components
 
 ======
 1.93.0
