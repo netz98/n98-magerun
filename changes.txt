@@ -3,6 +3,18 @@ RECENT CHANGES
 **************
 
 ======
+1.94.0
+======
+
+* #416 Converts times to local or specified timezone (by Steve Robbin)
+* #453 Add store parameter to template hints commands (by Hadrien Collongues)
+* #462 dbHost not respected #462 (by Achim Rosenhagen)
+* #463 Fixed missing sprintf when creating Exception in sys:cron:run command (by Tim Eydamos)
+* #464 SampleData in Version 1.9 are not downloading (by Rafael Corrêa Gomes)
+* Disable command by config.
+* Removed Magento 2 bootstrapping -> Moved into n98-magerun2
+
+======
 1.93.0
 ======
 
