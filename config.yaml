@@ -164,7 +164,7 @@ commands:
       - name: magento-ce-1.9.1.0
         version: 1.9.1.0
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.1.0/magento-1.9.1.0.tar.gz
+          url: http://www.magentocommerce.com/downloads/assets/1.9.1.0/magento-sample-data-1.9.1.0.tar.gz
           type: tar
         extra:
           sample-data: sample-data-1.9.0.0
