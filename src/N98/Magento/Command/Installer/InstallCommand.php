@@ -333,11 +333,20 @@ HELP;
         } else {
             $dialog = $this->getHelperSet()->get('dialog');
             do {
-                $this->config['db_host'] = $dialog->askAndValidate($output, '<question>Please enter the database host:</question> <comment>[localhost]</comment>: ', $this->notEmptyCallback, false, 'localhost');
-                $this->config['db_user'] = $dialog->askAndValidate($output, '<question>Please enter the database username:</question> ', $this->notEmptyCallback);
-                $this->config['db_pass'] = $dialog->ask($output, '<question>Please enter the database password:</question> ');
-                $this->config['db_name'] = $dialog->askAndValidate($output, '<question>Please enter the database name:</question> ', $this->notEmptyCallback);
-                $this->config['db_port'] = $dialog->askAndValidate($output, '<question>Please enter the database port:</question> <comment>[3306]</comment>: ', $this->notEmptyCallback, false, 3306);
+                $dbHostDefault = $input->getOption('dbHost') ? $input->getOption('dbHost') : 'localhost';
+                $this->config['db_host'] = $dialog->askAndValidate($output, '<question>Please enter the database host</question> <comment>[' . $dbHostDefault . ']</comment>: ', $this->notEmptyCallback, false, $dbHostDefault);
+
+                $dbUserDefault = $input->getOption('dbUser') ? $input->getOption('dbUser') : 'root';
+                $this->config['db_user'] = $dialog->askAndValidate($output, '<question>Please enter the database username</question> <comment>[' . $dbUserDefault . ']</comment>: ', $this->notEmptyCallback, false, $dbUserDefault);
+
+                $dbPassDefault = $input->getOption('dbPass') ? $input->getOption('dbPass') : '';
+                $this->config['db_pass'] = $dialog->ask($output, '<question>Please enter the database password</question> <comment>[' . $dbPassDefault . ']</comment>: ', $dbPassDefault);
+
+                $dbNameDefault = $input->getOption('dbName') ? $input->getOption('dbName') : 'magento';
+                $this->config['db_name'] = $dialog->askAndValidate($output, '<question>Please enter the database name</question> <comment>[' . $dbNameDefault . ']</comment>: ', $this->notEmptyCallback, false, $dbNameDefault);
+
+                $dbPortDefault = $input->getOption('dbPort') ? $input->getOption('dbPort') : 3306;
+                $this->config['db_port'] = $dialog->askAndValidate($output, '<question>Please enter the database port </question> <comment>[' . $dbPortDefault . ']</comment>: ', $this->notEmptyCallback, false, $dbPortDefault);
                 $db = $this->validateDatabaseSettings($output, $input);
             } while ($db === false);
         }
