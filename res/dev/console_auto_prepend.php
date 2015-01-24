@@ -1,6 +1,7 @@
 <?php
 
 $application = require_once __DIR__ . '/../../src/bootstrap.php';
+$application->init();
 $application->detectMagento();
 if ($application->initMagento()) {
     echo <<<WELCOME

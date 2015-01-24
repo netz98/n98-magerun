@@ -28,6 +28,7 @@ class Application extends BaseApplication
      * @var int
      */
     const MAGENTO_MAJOR_VERSION_1 = 1;
+
     /**
      * @var int
      */
@@ -35,11 +36,12 @@ class Application extends BaseApplication
     /**
      * @var string
      */
+
     const APP_NAME = 'n98-magerun';
     /**
      * @var string
      */
-    const APP_VERSION = '1.91.0';
+    const APP_VERSION = '1.94.0';
 
     /**
      * @var string
@@ -141,6 +143,14 @@ class Application extends BaseApplication
             '',
             InputOption::VALUE_OPTIONAL,
             'Do not load any custom config.'
+        );
+        $inputDefinition->addOption($skipExternalConfig);
+
+        $skipExternalConfig = new InputOption(
+            '--skip-root-check',
+            '',
+            InputOption::VALUE_OPTIONAL,
+            'Do not check if n98-magerun runs as root'
         );
         $inputDefinition->addOption($skipExternalConfig);
 
@@ -246,14 +256,30 @@ class Application extends BaseApplication
             foreach ($this->config['commands']['customCommands'] as $commandClass) {
                 if (is_array($commandClass)) { // Support for key => value (name -> class)
                     $resolvedCommandClass = current($commandClass);
+                    if ($this->isCommandDisabled($resolvedCommandClass)) {
+                        continue;
+                    }
                     $command = new $resolvedCommandClass();
                     $command->setName(key($commandClass));
                 } else {
+                    if ($this->isCommandDisabled($commandClass)) {
+                        continue;
+                    }
                     $command = new $commandClass();
                 }
+
                 $this->add($command);
             }
         }
+    }
+
+    /**
+     * @param string $class
+     * @return bool
+     */
+    protected function isCommandDisabled($class)
+    {
+        return in_array($class, $this->config['commands']['disabled']);
     }
 
     /**
@@ -476,6 +502,12 @@ class Application extends BaseApplication
      */
     public function doRun(InputInterface $input, OutputInterface $output)
     {
+        $event = new Application\Console\Event($this, $input, $output);
+        $this->dispatcher->dispatch('n98-magerun.application.console.run.before', $event);
+
+        /**
+         * only for compatibility to old versions.
+         */
         $event = new ConsoleEvent(new Command('dummy'), $input, $output);
         $this->dispatcher->dispatch('console.run.before', $event);
 
@@ -636,7 +668,7 @@ class Application extends BaseApplication
             if (isset($specialGlobalOptions['root-dir'][0])
                 && $specialGlobalOptions['root-dir'][0] == '~'
             ) {
-                $specialGlobalOptions['root-dir'] = getenv('HOME') . substr($specialGlobalOptions['root-dir'], 1);
+                $specialGlobalOptions['root-dir'] = OperatingSystem::getHomeDir() . substr($specialGlobalOptions['root-dir'], 1);
             }
             $folder = realpath($specialGlobalOptions['root-dir']);
             $this->_directRootDir = true;
@@ -644,35 +676,6 @@ class Application extends BaseApplication
                 \chdir($folder);
 
                 return;
-            }
-        }
-    }
-
-    /**
-     * @return void
-     */
-    protected function _initMagento2()
-    {
-        if ($this->_magento2EntryPoint === null) {
-            require_once $this->getMagentoRootFolder() . '/app/bootstrap.php';
-
-            if (version_compare(\Mage::getVersion(), '2.0.0.0-dev42') >= 0) {
-                $params = array(
-                    \Mage::PARAM_RUN_CODE => 'admin',
-                    \Mage::PARAM_RUN_TYPE => 'store',
-                    'entryPoint'          => basename(__FILE__),
-                );
-                try {
-                    $this->_magento2EntryPoint = new MagerunEntryPoint(BP, $params);
-                } catch (\Exception $e) {
-                    // @TODO problem with objectmanager during tests. Find a better soluttion to reset object manager
-                }
-            } else {
-                if (version_compare(\Mage::getVersion(), '2.0.0.0-dev41') >= 0) {
-                    \Mage::app(array('MAGE_RUN_CODE' => 'admin'));
-                } else {
-                    \Mage::app('admin');
-                }
             }
         }
     }
@@ -692,6 +695,38 @@ class Application extends BaseApplication
         }
 
         \Mage::app($initSettings['code'], $initSettings['type'], $initSettings['options']);
+    }
+
+    protected function _initMagento2()
+    {
+        $magento2Hint = <<<'MAGENTO2HINT'
+You are running a Magento 2 instance. This version of n98-magerun is not compatible
+with Magento 2. Please use n98-magerun2 for this shop.
+
+A current version of the software can be downloaded on github.
+
+<info>Download with curl
+------------------</info>
+
+    <comment>curl -o n98-magerun2.phar https://raw.githubusercontent.com/netz98/n98-magerun2/master/n98-magerun2.phar</comment>
+
+<info>Download with wget
+------------------</info>
+
+    <comment>curl -o n98-magerun2.phar https://raw.githubusercontent.com/netz98/n98-magerun2/master/n98-magerun2.phar</comment>
+
+MAGENTO2HINT;
+
+        $output = new ConsoleOutput();
+
+        $output->writeln(array(
+            '',
+            $this->getHelperSet()->get('formatter')->formatBlock('Compatibility Notice', 'bg=blue;fg=white', true),
+            ''
+        ));
+
+        $output->writeln($magento2Hint);
+        exit;
     }
 
     /**

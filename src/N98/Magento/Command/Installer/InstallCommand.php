@@ -206,11 +206,6 @@ HELP;
         $this->config['magentoVersionData'] = $this->commandConfig['magento-packages'][$type - 1];
     }
 
-    protected function test($folderName)
-    {
-
-    }
-
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
@@ -338,11 +333,20 @@ HELP;
         } else {
             $dialog = $this->getHelperSet()->get('dialog');
             do {
-                $this->config['db_host'] = $dialog->askAndValidate($output, '<question>Please enter the database host:</question> <comment>[localhost]</comment>: ', $this->notEmptyCallback, false, 'localhost');
-                $this->config['db_user'] = $dialog->askAndValidate($output, '<question>Please enter the database username:</question> ', $this->notEmptyCallback);
-                $this->config['db_pass'] = $dialog->ask($output, '<question>Please enter the database password:</question> ');
-                $this->config['db_name'] = $dialog->askAndValidate($output, '<question>Please enter the database name:</question> ', $this->notEmptyCallback);
-                $this->config['db_port'] = $dialog->askAndValidate($output, '<question>Please enter the database port:</question> <comment>[3306]</comment>: ', $this->notEmptyCallback, false, 3306);
+                $dbHostDefault = $input->getOption('dbHost') ? $input->getOption('dbHost') : 'localhost';
+                $this->config['db_host'] = $dialog->askAndValidate($output, '<question>Please enter the database host</question> <comment>[' . $dbHostDefault . ']</comment>: ', $this->notEmptyCallback, false, $dbHostDefault);
+
+                $dbUserDefault = $input->getOption('dbUser') ? $input->getOption('dbUser') : 'root';
+                $this->config['db_user'] = $dialog->askAndValidate($output, '<question>Please enter the database username</question> <comment>[' . $dbUserDefault . ']</comment>: ', $this->notEmptyCallback, false, $dbUserDefault);
+
+                $dbPassDefault = $input->getOption('dbPass') ? $input->getOption('dbPass') : '';
+                $this->config['db_pass'] = $dialog->ask($output, '<question>Please enter the database password</question> <comment>[' . $dbPassDefault . ']</comment>: ', $dbPassDefault);
+
+                $dbNameDefault = $input->getOption('dbName') ? $input->getOption('dbName') : 'magento';
+                $this->config['db_name'] = $dialog->askAndValidate($output, '<question>Please enter the database name</question> <comment>[' . $dbNameDefault . ']</comment>: ', $this->notEmptyCallback, false, $dbNameDefault);
+
+                $dbPortDefault = $input->getOption('dbPort') ? $input->getOption('dbPort') : 3306;
+                $this->config['db_port'] = $dialog->askAndValidate($output, '<question>Please enter the database port </question> <comment>[' . $dbPortDefault . ']</comment>: ', $this->notEmptyCallback, false, $dbPortDefault);
                 $db = $this->validateDatabaseSettings($output, $input);
             } while ($db === false);
         }
@@ -439,6 +443,7 @@ HELP;
                                 . ' '
                                 . '-u' . escapeshellarg(strval($this->config['db_user']))
                                 . ' '
+                                . ($this->config['db_port'] != '3306' ? '-P' . escapeshellarg($this->config['db_port']) . ' ' : '')
                                 . (!strval($this->config['db_pass'] == '') ? '-p' . escapeshellarg($this->config['db_pass']) . ' ' : '')
                                 . strval($this->config['db_name'])
                                 . ' < '
@@ -465,15 +470,16 @@ HELP;
     protected function _fixComposerExtractionBug()
     {
         $filesystem = new Filesystem();
-
-        $mediaFolder = $this->config['installationFolder'] . '/media';
-        $wrongFolder = $this->config['installationFolder'] . '/_temp_demo_data/media';
-        if (is_dir($wrongFolder)) {
-            $filesystem->recursiveCopy(
-                $wrongFolder,
-                $mediaFolder
-            );
-            $filesystem->recursiveRemoveDirectory($wrongFolder);
+        foreach (array('/_temp_demo_data/media' => '/media', '/_temp_demo_data/skin' => '/skin') as $wrong => $right) {
+            $wrongFolder = $this->config['installationFolder'] . $wrong;
+            $rightFolder = $this->config['installationFolder'] . $right;
+            if (is_dir($wrongFolder)) {
+                $filesystem->recursiveCopy(
+                    $wrongFolder,
+                    $rightFolder
+                );
+                $filesystem->recursiveRemoveDirectory($wrongFolder);
+            }
         }
     }
 
@@ -589,7 +595,7 @@ HELP;
             if (!preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $input)) {
                 throw new \InvalidArgumentException('Please enter a valid URL');
             }
-            if (strstr($input, 'localhost')) {
+            if (parse_url($input, \PHP_URL_HOST) ==  'localhost') {
                 throw new \InvalidArgumentException('localhost cause problems! Please use 127.0.0.1 or another hostname');
             }
             return $input;
@@ -618,11 +624,16 @@ HELP;
             @mkdir($defaultSessionFolder);
         }
 
+        $dbHost = $this->config['db_host'];
+        if ($this->config['db_port'] != 3306) {
+            $dbHost .= ':' . $this->config['db_port'];
+        }
+
         $argv = array(
             'license_agreement_accepted' => 'yes',
             'locale'                     => $locale,
             'timezone'                   => $timezone,
-            'db_host'                    => $this->config['db_host'],
+            'db_host'                    => $dbHost,
             'db_name'                    => $this->config['db_name'],
             'db_user'                    => $this->config['db_user'],
             'db_pass'                    => $this->config['db_pass'],
@@ -642,8 +653,17 @@ HELP;
             'default_currency'           => $currency,
             'skip_url_validation'        => 'yes',
         );
-        if ($useDefaultConfigParams && strlen($defaults['encryption_key']) > 0) {
-            $argv['encryption_key'] = $defaults['encryption_key'];
+        if ($useDefaultConfigParams) {
+            if (strlen($defaults['encryption_key']) > 0) {
+                $argv['encryption_key'] = $defaults['encryption_key'];
+            }
+            if (strlen($defaults['use_secure']) > 0) {
+                $argv['use_secure'] = $defaults['use_secure'];
+                $argv['secure_base_url'] = str_replace('http://', 'https://', $baseUrl);
+            }
+            if (strlen($defaults['use_rewrites']) > 0) {
+                $argv['use_rewrites'] = $defaults['use_rewrites'];
+            }
         }
         $installArgs = '';
         foreach ($argv as $argName => $argValue) {

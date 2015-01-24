@@ -1,3 +1,6 @@
+application:
+  check-root-user: true
+
 twig:
   baseDirs:
 
@@ -42,6 +45,8 @@ commands:
     - N98\Magento\Command\Admin\User\ChangePasswordCommand
     - N98\Magento\Command\Admin\User\CreateUserCommand
     - N98\Magento\Command\Admin\User\ListCommand
+    - N98\Magento\Command\Admin\User\DeleteUserCommand
+    - N98\Magento\Command\Admin\User\UnlockCommand
     - N98\Magento\Command\Cache\CleanCommand
     - N98\Magento\Command\Cache\DisableCommand
     - N98\Magento\Command\Cache\EnableCommand
@@ -61,6 +66,7 @@ commands:
     - N98\Magento\Command\Customer\CreateDummyCommand
     - N98\Magento\Command\Customer\InfoCommand
     - N98\Magento\Command\Customer\ListCommand
+    - N98\Magento\Command\Customer\DeleteCommand
     - N98\Magento\Command\Database\ConsoleCommand
     - N98\Magento\Command\Database\CreateCommand
     - N98\Magento\Command\Database\DropCommand
@@ -68,8 +74,11 @@ commands:
     - N98\Magento\Command\Database\ImportCommand
     - N98\Magento\Command\Database\InfoCommand
     - N98\Magento\Command\Database\QueryCommand
+    - N98\Magento\Command\Database\VariablesCommand
+    - N98\Magento\Command\Database\StatusCommand
     - N98\Magento\Command\Database\Maintain\CheckTablesCommand
     - N98\Magento\Command\Design\DemoNoticeCommand
+    - N98\Magento\Command\Developer\Code\Model\MethodCommand
     - N98\Magento\Command\Developer\Ide\PhpStorm\MetaCommand
     - N98\Magento\Command\Developer\Setup\Script\AttributeCommand
     - N98\Magento\Command\Developer\ConsoleCommand
@@ -77,6 +86,9 @@ commands:
     - N98\Magento\Command\Developer\Log\LogCommand
     - N98\Magento\Command\Developer\Log\SizeCommand
     - N98\Magento\Command\Developer\Module\CreateCommand
+    - N98\Magento\Command\Developer\Module\Disableenable\DisableCommand
+    - N98\Magento\Command\Developer\Module\Disableenable\EnableCommand
+    - N98\Magento\Command\Developer\Module\UpdateCommand
     - N98\Magento\Command\Developer\Module\ListCommand
     - N98\Magento\Command\Developer\Module\Observer\ListCommand
     - N98\Magento\Command\Developer\Module\Rewrite\ConflictsCommand
@@ -98,16 +110,20 @@ commands:
     - N98\Magento\Command\Eav\Attribute\ListCommand
     - N98\Magento\Command\Eav\Attribute\RemoveCommand
     - N98\Magento\Command\Eav\Attribute\ViewCommand
+    - N98\Magento\Command\GiftCard\CreateCommand
+    - N98\Magento\Command\GiftCard\InfoCommand
+    - N98\Magento\Command\GiftCard\RemoveCommand
+    - N98\Magento\Command\GiftCard\Pool\GenerateCommand
     - N98\Magento\Command\Indexer\ListCommand
     - N98\Magento\Command\Indexer\ReindexAllCommand
     - N98\Magento\Command\Indexer\ReindexCommand
     - N98\Magento\Command\Installer\InstallCommand
     - N98\Magento\Command\Installer\UninstallCommand
-    - N98\Magento\Command\LocalConfig\GenerateCommand 
-    - N98\Magento\Command\MagentoConnect\DownloadExtensionCommand 
-    - N98\Magento\Command\MagentoConnect\InstallExtensionCommand 
-    - N98\Magento\Command\MagentoConnect\ListExtensionsCommand 
-    - N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand 
+    - N98\Magento\Command\LocalConfig\GenerateCommand
+    - N98\Magento\Command\MagentoConnect\DownloadExtensionCommand
+    - N98\Magento\Command\MagentoConnect\InstallExtensionCommand
+    - N98\Magento\Command\MagentoConnect\ListExtensionsCommand
+    - N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand
     - N98\Magento\Command\MagentoConnect\ValidateExtensionCommand
     - N98\Magento\Command\Media\DumpCommand
     - N98\Magento\Command\OpenBrowserCommand
@@ -123,6 +139,8 @@ commands:
     - N98\Magento\Command\System\InfoCommand
     - N98\Magento\Command\System\MaintenanceCommand
     - N98\Magento\Command\System\Setup\CompareVersionsCommand
+    - N98\Magento\Command\System\Setup\ChangeVersionCommand
+    - N98\Magento\Command\System\Setup\RemoveCommand
     - N98\Magento\Command\System\Setup\RunCommand
     - N98\Magento\Command\System\Setup\IncrementalCommand
     - N98\Magento\Command\System\Store\Config\BaseUrlListCommand
@@ -137,10 +155,21 @@ commands:
     - "composer:search": Composer\Command\SearchCommand
     - "composer:diagnose": Composer\Command\DiagnoseCommand
 
+  disabled:
+    - dummy
+
   aliases: []
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
+      - name: magento-ce-1.9.1.0
+        version: 1.9.1.0
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.9.1.0/magento-1.9.1.0.tar.gz
+          type: tar
+        extra:
+          sample-data: sample-data-1.9.1.0
+
       - name: magento-ce-1.9.0.1
         version: 1.9.0.1
         dist:
@@ -148,7 +177,7 @@ commands:
           type: tar
         extra:
           sample-data: sample-data-1.9.0.0
-          
+
       - name: magento-ce-1.8.1.0
         version: 1.8.1.0
         dist:
@@ -232,16 +261,24 @@ commands:
           reference: master
 
     demo-data-packages:
+      - name: sample-data-1.9.1.0
+        version: 1.9.1.0
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.9.1.0/magento-sample-data-1.9.1.0.tar.gz
+          type: tar
+
       - name: sample-data-1.9.0.0
         version: 1.9.0.0
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.9.0.0/magento-sample-data-1.9.0.0.tar.gz
           type: tar
+
       - name: sample-data-1.6.1.0
         version: 1.6.1.0
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.6.1.0/magento-sample-data-1.6.1.0.tar.gz
           type: tar
+
       - name: sample-data-1.1.2
         version: 1.1.2
         dist:
@@ -293,8 +330,8 @@ commands:
         tables: core_session
 
       - id: stripped
-        description: Standard definition for a stripped dump (logs and dataflow)
-        tables: @stripped @log @dataflowtemp @sessions
+        description: Standard definition for a stripped dump (logs, sessions and dataflow)
+        tables: @log @dataflowtemp @sessions
 
       - id: sales
         description: Sales data (orders, invoices, creditmemos etc)
@@ -304,13 +341,17 @@ commands:
         description: Customer data - Should not be used without @sales
         tables: customer_address* customer_entity*
 
+      - id: newsletter
+        description: Newsletter subscriber data
+        tables: newsletter_*
+
       - id: trade
         description: Current trade data (customers and orders). You usally do not want those in developer systems.
         tables: @customers @sales
 
       - id: development
         description: Removes logs and trade data so developers do not have to work with real customer data
-        tables: @trade @stripped @search
+        tables: @trade @stripped @search @newsletter
 
       - id: ee_changelog
         description: Changelog tables of new indexer since EE 1.13

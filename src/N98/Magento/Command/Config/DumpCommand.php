@@ -57,7 +57,7 @@ HELP;
             $dom->preserveWhiteSpace = false;
             $dom->formatOutput = true;
             $dom->loadXML($config->asXml());
-            $output->writeln($dom->saveXML());
+            $output->writeln($dom->saveXML(), OutputInterface::OUTPUT_RAW);
         }
     }
 }

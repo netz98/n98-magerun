@@ -18,8 +18,8 @@ class ImportCommand extends AbstractDatabaseCommand
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysql command. Do not execute')
             ->addOption('only-if-empty', null, InputOption::VALUE_NONE, 'Imports only if database is empty')
             ->addOption('optimize', null, InputOption::VALUE_NONE, 'Convert verbose INSERTs to short ones before import (not working with compression)')
-	    ->addOption('drop', null, InputOption::VALUE_NONE, 'Drop and recreate database before import')
-	    ->addOption('drop-tables', null, InputOption::VALUE_NONE, 'Drop tables before import')
+            ->addOption('drop', null, InputOption::VALUE_NONE, 'Drop and recreate database before import')
+            ->addOption('drop-tables', null, InputOption::VALUE_NONE, 'Drop tables before import')
             ->setDescription('Imports database with mysql cli client according to database defined in local.xml');
 
         $help = <<<HELP
@@ -47,29 +47,44 @@ HELP;
     protected function optimize($fileName)
     {
         $in = fopen($fileName,'r');
-        $result = tempnam(sys_get_temp_dir(),'dump') . '.sql';
+        $result = tempnam(sys_get_temp_dir(), 'dump') . '.sql';
         $out = fopen($result, 'w');
 
-        $current_table = '';
-        while($line = fgets($in)) {
+        $currentTable = '';
+        $maxlen = 8 * 1024 * 1024; // 8 MB
+        $len = 0;
+        while ($line = fgets($in)) {
             if (strtolower(substr($line, 0, 11)) == 'insert into') {
                 preg_match('/^insert into `(.*)` \(.*\) values (.*);/i', $line, $m);
+
+                if (count($m) < 3) { // fallback for very long lines or other cases where the preg_match fails
+                    if ($currentTable != '') {
+                        fwrite($out, ";\n");
+                    }
+                    fwrite($out, $line);
+                    $currentTable = '';
+                    continue;
+                }
+
                 $table = $m[1];
                 $values = $m[2];
 
-                if ($table != $current_table) {
-                    if ($current_table != '') {
+                if ($table != $currentTable or ($len > $maxlen - 1000)) {
+                    if ($currentTable != '') {
                         fwrite($out, ";\n\n");
                     }
-                    $current_table = $table;
-                    fwrite($out, 'INSERT INTO `' . $table . '` VALUES ' . $values);
+                    $currentTable = $table;
+                    $insert = 'INSERT INTO `' . $table . '` VALUES ' . $values;
+                    fwrite($out, $insert);
+                    $len = strlen($insert);
                 } else {
                     fwrite($out, ',' . $values);
+                    $len += strlen($values) + 1;
                 }
             } else {
-                if ($current_table != '') {
+                if ($currentTable != '') {
                     fwrite($out, ";\n");
-                    $current_table = '';
+                    $currentTable = '';
                 }
                 fwrite($out, $line);
             }
@@ -77,6 +92,7 @@ HELP;
         }
         fclose($in);
         fclose($out);
+
         return $result;
 
     }
@@ -92,6 +108,27 @@ HELP;
         $dbHelper = $this->getHelper('database');
 
         $fileName = $this->checkFilename($input);
+
+        $compressor = $this->getCompressor($input->getOption('compression'));
+
+        // create import command
+        $exec = $compressor->getDecompressingCommand(
+            'mysql ' . $dbHelper->getMysqlClientToolConnectionString(),
+            $fileName
+        );
+        if ($input->getOption('only-command')) {
+            $output->writeln($exec);
+
+            return;
+        } else {
+            if ($input->getOption('only-if-empty')
+                && count($dbHelper->getTables()) > 0
+            ) {
+                $output->writeln('<comment>Skip import. Database is not empty</comment>');
+
+                return;
+            }
+        }
 
         if ($input->getOption('optimize')) {
             if ($input->getOption('compression')) {
@@ -109,27 +146,11 @@ HELP;
             $dbHelper->dropTables($output);
         }
 
-        $compressor = $this->getCompressor($input->getOption('compression'));
 
-        // create import command
-        $exec = $compressor->getDecompressingCommand(
-            'mysql ' . $dbHelper->getMysqlClientToolConnectionString(),
-            $fileName
-        );
 
-        if ($input->getOption('only-command')) {
-            $output->writeln($exec);
-        } else {
-            if ($input->getOption('only-if-empty')
-                && count($dbHelper->getTables()) > 0
-            ) {
-                $output->writeln('<comment>Skip import. Database is not empty</comment>');
-
-                return;
-            }
 
             $this->doImport($output, $fileName, $exec);
-        }
+
         if ($input->getOption('optimize')) {
             unlink($fileName);
         }
@@ -171,7 +192,7 @@ HELP;
             . $this->dbSettings['dbname'] . '</info>'
         );
         exec($exec, $commandOutput, $returnValue);
-        if ($returnValue > 0) {
+        if ($returnValue <> 0) {
             $output->writeln('<error>' . implode(PHP_EOL, $commandOutput) . '</error>');
         }
         $output->writeln('<info>Finished</info>');

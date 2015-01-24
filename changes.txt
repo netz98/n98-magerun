@@ -3,38 +3,40 @@ RECENT CHANGES
 **************
 
 ======
-1.91.0
+1.94.0
 ======
 
-* sys:info command: Added row count for main entities (by Christian Münch)
-* #315 sys:setup:run on enterprise requires admin session. (by Thorsten Essig and Christian Münch)
-* #367 Exclude sessions from @stripped (and therefore @development) (by Aaron Brady)
-* sys:setup returns exit status code "1" if setup fails (by Christian Münch)
+* #416 Converts times to local or specified timezone (by Steve Robbin)
+* #428 Add newsletter table group for db:dump command (by Christoph Aßmann)
+* #441 config:dump produces invalid xml (Andrew Stayart)
+* #443 Create, view, and remove gift cards (by Steve Robbins)
+* #452 Added .DS_Store to .gitignore (by Hervé Guétin)
+* #453 Add store parameter to template hints commands (by Hadrien Collongues)
+* #462 dbHost not respected #462 (by Achim Rosenhagen)
+* #463 Fixed missing sprintf when creating Exception in sys:cron:run command (by Tim Eydamos)
+* #464 SampleData in Version 1.9 are not downloading (by Rafael Corrêa Gomes)
+* Disable command by config.
+* Removed Magento 2 bootstrapping -> Moved into n98-magerun2
+* Updated 3rd party components
 
 ======
-1.90.0
+1.93.0
 ======
 
-* #293 Some support magento table prefix Issue (by Alexandr Vronskiy)
-* #338 db:drop should have an option to drop all tables instead of dropping the database (by Fabrizio Branca)
-* #343 Adds Command for External Magento Connect Validation (by Alan Storm)
-* #346 Fix for "extension on GitHub" markdown. (by Andrea De Pirro)
-* #348 Add encryption key to generate command (by Kristof Fooman)
-* #349 sys:compare-versions minor mods (by Aydin Hassan)
-* #350 New command to remove attributes (by Aydin Hassan)
-* #354 Restore autoloaders after loading Magento (by Maarten van Schaik and Melvyn Sopacua)
-* #355 Implement drop support for db:import (by Melvyn Sopacua)
-* Added --log-junit option to sys:setup:compare-versions command (by Christian Münch)
-* Complete rewrite of sys:check command (by Christian Münch)
-* More debug messages if -vvv option is set.
-* Updated 3rd party components (Symfony, Faker, PHPUnit)
-
-======
-1.89.2
-======
-
-* #336 Install command broken with --noDownload option (by Manuele Menozzi)
-
+* #399 Admin user unlock [EE only] (by Steve Robbins)
+* #415 Clean multiple caches at once (by Michael Barrett)
+* #418 Use already instantiated cache object. (by Alan Storm)
+* #421 enable or disable a module based on name or codepool (by Steve Robbins)
+* #423 db:import --drop does not take into account the "only-command" option (by Michael Lühr)
+* #429 Install command ignores skin folder of 1.9.0.0 sample data (by Vinai Kopp)
+* #435 New db:status and db:variable commands (by Cyrill Schumacher)
+* #436 Alternative Installation Port is not respected (by Christian Münch)
+* #440 Added Magento CE 1.9.1.0 to installer (by Rouven Rieker)
+* Minor documentation corrections (by  Jaik Dean)
+* Refactored db:maintain:check-tables to allow InnoDB and Memory tables to be optimized. (by Cyrill Schumacher)
+* Bash completion - change regexp condition to string contains. (by Paweł Bogut)
+* Updated Symfony components to V2.6
+* Updated locked phpunit version.
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H

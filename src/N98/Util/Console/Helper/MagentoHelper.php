@@ -15,7 +15,6 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class MagentoHelper extends AbstractHelper
 {
-    const MODMAN_MAGERUN_MARKER = 'n98-magerun::';
     /**
      * @var string
      */
@@ -76,7 +75,7 @@ class MagentoHelper extends AbstractHelper
      *
      * @param string $folder
      * @param array $subFolders Sub-folders to check
-    */
+     */
     public function detect($folder, $subFolders = array())
     {
         $folders = $this->splitPathFolders($folder);
@@ -160,6 +159,7 @@ class MagentoHelper extends AbstractHelper
                 }
                 continue;
             }
+
             $finder = Finder::create();
             $finder
                 ->files()
@@ -225,8 +225,8 @@ class MagentoHelper extends AbstractHelper
                 }
 
                 $modmanBaseFolder = $searchFolder
-                                  . DIRECTORY_SEPARATOR
-                                  . $magerunFileContent;
+                    . DIRECTORY_SEPARATOR
+                    . $magerunFileContent;
                 array_push($folders, $modmanBaseFolder);
             }
         }
@@ -262,13 +262,21 @@ class MagentoHelper extends AbstractHelper
         if ($finder->count() > 0) {
             $files = iterator_to_array($finder, false);
             /* @var $file \SplFileInfo */
-
-            if (count($files) == 2) {
-                // Magento 2 has bootstrap.php and autoload.php in app folder
-                $this->_magentoMajorVersion = \N98\Magento\Application::MAGENTO_MAJOR_VERSION_2;
+            
+            $hasMageFile = false;
+            foreach ($files as $file) {
+                if ($file->getFilename() == 'Mage.php') {
+                    $hasMageFile = true;
+                }
             }
-
+            
             $this->_magentoRootFolder = $searchFolder;
+
+            // Magento 2 does not have a god class and thus if this file is not there it is version 2
+            if ($hasMageFile == false) {
+                $this->_magentoMajorVersion = \N98\Magento\Application::MAGENTO_MAJOR_VERSION_2;
+                return true;    // the rest of this does not matter since we are simply exiting with a notice
+            }
 
             if (is_callable(array('\Mage', 'getEdition'))) {
                 $this->_magentoEnterprise = (\Mage::getEdition() == 'Enterprise');

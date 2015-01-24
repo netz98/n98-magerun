@@ -62,7 +62,10 @@ class Filesystem
                     $path = $directory . '/' . $item;
 
                     // if the new path is a directory
-                    if (is_dir($path)) {
+                    // don't recursively delete symlinks - just remove the actual link
+                    // this is helpful for extensions sym-linked from vendor directory
+                    // previous behaviour would wipe out the files in the vendor directory
+                    if (!is_link($path) && is_dir($path)) {
                         // we call this function with the new path
                         $this->recursiveRemoveDirectory($path);
 
@@ -79,10 +82,7 @@ class Filesystem
             // if the option to empty is not set to true
             if ($empty == false) {
                 // try to delete the now empty directory
-                if (!rmdir($directory)) {
-                    // return false if not possible
-                    return false;
-                }
+                return rmdir($directory);
             }
             // return success
             return true;
@@ -97,11 +97,10 @@ class Filesystem
      *
      * @return string
      */
-    public static function humandFilesize($bytes, $decimals = 2)
+    public static function humanFileSize($bytes, $decimals = 2)
     {
-        $sz = 'BKMGTP';
+        $units = array('B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y');
         $factor = floor((strlen($bytes) - 1) / 3);
-
-        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
+        return sprintf("%.{$decimals}f%s", $bytes / pow(1024, $factor), $units[$factor]);
     }
 }

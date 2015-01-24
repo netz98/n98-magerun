@@ -68,4 +68,16 @@ class OperatingSystem
     {
         return PHP_OS;
     }
+
+    /**
+     * @return string
+     */
+    public static function getHomeDir()
+    {
+        if (self::isWindows()) {
+            return getenv('USERPROFILE');
+        } else {
+            return getenv('HOME');
+        }
+    }
 }

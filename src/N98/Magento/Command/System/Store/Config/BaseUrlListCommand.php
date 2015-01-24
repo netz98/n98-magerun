@@ -33,7 +33,9 @@ class BaseUrlListCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
 
-        $this->writeSection($output, 'Magento Stores - Base URLs');
+        if (!$input->getOption('format')) {
+            $this->writeSection($output, 'Magento Stores - Base URLs');
+        }
         $this->initMagento();
 
         foreach (\Mage::app()->getStores() as $store) {
