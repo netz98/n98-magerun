@@ -325,13 +325,17 @@ commands:
         description: Temporary tables of the dataflow import/export tool
         tables: dataflow_batch dataflow_batch_export dataflow_batch_import dataflow_import_data dataflow_session
 
+      - id: importexporttemp
+        description: Temporary tables of the Import/Export module
+        tables: importexport_importdata
+
       - id: sessions
         description: Database session tables
         tables: core_session
 
       - id: stripped
         description: Standard definition for a stripped dump (logs, sessions and dataflow)
-        tables: @log @dataflowtemp @sessions
+        tables: @log @dataflowtemp @importexporttemp @sessions
 
       - id: sales
         description: Sales data (orders, invoices, creditmemos etc)
