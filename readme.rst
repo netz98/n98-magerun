@@ -311,8 +311,7 @@ Available Table Groups:
 
 * @log Log tables
 * @dataflowtemp Temporary tables of the dataflow import/export tool
-* @importexporttemp Temporary tables of the Import/Export module
-* @stripped Standard definition for a stripped dump (logs, sessions, dataflow and importexport)
+* @stripped Standard definition for a stripped dump (logs, sessions and dataflow)
 * @sales Sales data (orders, invoices, creditmemos etc)
 * @customers Customer data
 * @trade Current trade data (customers and orders). You usally do not want those in developer systems.
