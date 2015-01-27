@@ -366,8 +366,8 @@ commands:
         tables: "catalogsearch_*"
 
       - id: idx
-        description: Tables with _idx suffix
-        tables: "*_idx"
+        description: Tables with _idx suffix and index event tables
+        tables: "*_idx index_event index_process_event"
 
   N98\Magento\Command\Customer\ListCommand:
     limit: 1000
