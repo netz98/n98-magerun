@@ -243,6 +243,12 @@ class Application extends BaseApplication
                 $this->autoloader->add($prefix, $path);
             }
         }
+
+        if (isset($this->config['autoloaders_psr4']) && is_array($this->config['autoloaders_psr4'])) {
+            foreach ($this->config['autoloaders_psr4'] as $prefix => $path) {
+                $this->autoloader->addPsr4($prefix, $path);
+            }
+        }
     }
 
     /**
