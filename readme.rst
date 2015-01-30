@@ -311,12 +311,14 @@ Available Table Groups:
 
 * @log Log tables
 * @dataflowtemp Temporary tables of the dataflow import/export tool
-* @stripped Standard definition for a stripped dump (logs, sessions and dataflow)
+* @importexporttemp Temporary tables of the Import/Export module
+* @stripped Standard definition for a stripped dump (logs, sessions, dataflow and importexport)
 * @sales Sales data (orders, invoices, creditmemos etc)
 * @customers Customer data
 * @trade Current trade data (customers and orders). You usally do not want those in developer systems.
 * @search Search related tables (catalogsearch_)
 * @development Removes logs, sessions and trade data so developers do not have to work with real customer data
+* @idx Tables with _idx suffix and index event tables
 
 Extended: https://github.com/netz98/n98-magerun/wiki/Stripped-Database-Dumps
 

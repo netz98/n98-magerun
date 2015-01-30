@@ -14,10 +14,12 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
         $table = array();
 
         foreach (\Mage::getConfig()->getNode('crontab/jobs')->children() as $job) {
-            $table[(string) $job->getName()] = array('Job'  => (string) $job->getName()) + $this->getSchedule($job);
+            $table[] = array('Job'  => (string) $job->getName()) + $this->getSchedule($job);
         }
 
-        ksort($table);
+        usort($table, function($a, $b) {
+            return strcmp($a['Job'], $b['Job']);
+        });
 
         return $table;
     }
