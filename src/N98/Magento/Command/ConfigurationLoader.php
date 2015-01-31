@@ -236,7 +236,7 @@ class ConfigurationLoader
                         ->depth(2)
                         ->followLinks()
                         ->ignoreUnreadableDirs(true)
-                        ->name('n98-magerun.yaml')
+                        ->name($this->_customConfigFilename)
                         ->in($this->getVendorDir());
 
                     foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
@@ -253,7 +253,7 @@ class ConfigurationLoader
                     ->depth(1)
                     ->followLinks()
                     ->ignoreUnreadableDirs(true)
-                    ->name('n98-magerun.yaml')
+                    ->name($this->_customConfigFilename)
                     ->in($moduleBaseFolders);
 
                 foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
@@ -342,7 +342,7 @@ class ConfigurationLoader
                 $this->_projectConfig = Yaml::parse($projectConfig);
             }
 
-            $stopFileConfigFile = $magerunStopFileFolder . DIRECTORY_SEPARATOR . '.n98-magerun.yaml';
+            $stopFileConfigFile = $magerunStopFileFolder . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
             if (!empty($magerunStopFileFolder) && file_exists($stopFileConfigFile)) {
                 $projectConfig = $this->applyVariables(\file_get_contents($stopFileConfigFile), $magentoRootFolder, null);
                 $this->_projectConfig = ArrayFunctions::mergeArrays($this->_projectConfig, Yaml::parse($projectConfig));
