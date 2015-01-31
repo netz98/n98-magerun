@@ -333,6 +333,11 @@ class ConfigurationLoader
 
             $projectConfigFile = $magentoRootFolder . DIRECTORY_SEPARATOR . 'app/etc/' . $this->_customConfigFilename;
             if ($projectConfigFile && file_exists($projectConfigFile)) {
+
+                if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
+                    $this->_output->writeln('<debug>Load project config <comment>' . $projectConfigFile . '</comment></debug>');
+                }
+
                 $projectConfig = $this->applyVariables(\file_get_contents($projectConfigFile), $magentoRootFolder, null);
                 $this->_projectConfig = Yaml::parse($projectConfig);
             }
@@ -341,6 +346,10 @@ class ConfigurationLoader
             if (!empty($magerunStopFileFolder) && file_exists($stopFileConfigFile)) {
                 $projectConfig = $this->applyVariables(\file_get_contents($stopFileConfigFile), $magentoRootFolder, null);
                 $this->_projectConfig = ArrayFunctions::mergeArrays($this->_projectConfig, Yaml::parse($projectConfig));
+
+                if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
+                    $this->_output->writeln('<debug>Load project config <comment>' . $stopFileConfigFile . '</comment></debug>');
+                }
             }
 
             $config = ArrayFunctions::mergeArrays($config, $this->_projectConfig);
