@@ -122,8 +122,9 @@ class ConfigurationLoader
     /**
      * @param string $magentoRootFolder
      * @param bool   $loadExternalConfig
+     * @param string $magerunStopFileFolder
      */
-    public function loadStageTwo($magentoRootFolder, $loadExternalConfig = true)
+    public function loadStageTwo($magentoRootFolder, $loadExternalConfig = true, $magerunStopFileFolder = '')
     {
         $config = $this->_initialConfig;
         $config = $this->loadDistConfig($config);
@@ -131,7 +132,7 @@ class ConfigurationLoader
             $config = $this->loadPluginConfig($config, $magentoRootFolder);
             $config = $this->loadSystemConfig($config);
             $config = $this->loadUserConfig($config, $magentoRootFolder);
-            $config = $this->loadProjectConfig($magentoRootFolder, $config);
+            $config = $this->loadProjectConfig($magentoRootFolder, $magerunStopFileFolder, $config);
         }
         $this->_configArray = $config;
     }
@@ -320,18 +321,26 @@ class ConfigurationLoader
      * MAGENTO_ROOT/app/etc/n98-magerun.yaml
      *
      * @param string $magentoRootFolder
+     * @param string $magerunStopFileFolder
      * @param array $config
      *
      * @return array
      */
-    public function loadProjectConfig($magentoRootFolder, $config)
+    public function loadProjectConfig($magentoRootFolder, $magerunStopFileFolder, $config)
     {
         if ($this->_projectConfig == null) {
             $this->_projectConfig = array();
+
             $projectConfigFile = $magentoRootFolder . DIRECTORY_SEPARATOR . 'app/etc/' . $this->_customConfigFilename;
             if ($projectConfigFile && file_exists($projectConfigFile)) {
                 $projectConfig = $this->applyVariables(\file_get_contents($projectConfigFile), $magentoRootFolder, null);
                 $this->_projectConfig = Yaml::parse($projectConfig);
+            }
+
+            $stopFileConfigFile = $magerunStopFileFolder . DIRECTORY_SEPARATOR . '.n98-magerun.yaml';
+            if (!empty($magerunStopFileFolder) && file_exists($stopFileConfigFile)) {
+                $projectConfig = $this->applyVariables(\file_get_contents($stopFileConfigFile), $magentoRootFolder, null);
+                $this->_projectConfig = ArrayFunctions::mergeArrays($this->_projectConfig, Yaml::parse($projectConfig));
             }
 
             $config = ArrayFunctions::mergeArrays($config, $this->_projectConfig);

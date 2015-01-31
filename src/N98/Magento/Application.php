@@ -101,6 +101,16 @@ class Application extends BaseApplication
     /**
      * @var bool
      */
+    protected $_magerunStopFileFound = false;
+
+    /**
+     * @var string
+     */
+    protected $_magerunStopFileFolder = null;
+
+    /**
+     * @var bool
+     */
     protected $_isInitialized = false;
 
     /**
@@ -206,6 +216,8 @@ class Application extends BaseApplication
         $this->_magentoRootFolder = $magentoHelper->getRootFolder();
         $this->_magentoEnterprise = $magentoHelper->isEnterpriseEdition();
         $this->_magentoMajorVersion = $magentoHelper->getMajorVersion();
+        $this->_magerunStopFileFound = $magentoHelper->isMagerunStopFileFound();
+        $this->_magerunStopFileFolder = $magentoHelper->getMagerunStopFileFolder();
     }
 
     /**
@@ -499,6 +511,14 @@ class Application extends BaseApplication
     }
 
     /**
+     * @return boolean
+     */
+    public function isMagerunStopFileFound()
+    {
+        return $this->_magerunStopFileFound;
+    }
+
+    /**
      * Runs the current application with possible command aliases
      *
      * @param InputInterface $input  An Input instance
@@ -616,7 +636,7 @@ class Application extends BaseApplication
             $configLoader = $this->getConfigurationLoader($initConfig, $output);
             $this->partialConfig = $configLoader->getPartialConfig($loadExternalConfig);
             $this->detectMagento($input, $output);
-            $configLoader->loadStageTwo($this->_magentoRootFolder, $loadExternalConfig);
+            $configLoader->loadStageTwo($this->_magentoRootFolder, $loadExternalConfig, $this->_magerunStopFileFolder);
             $this->config = $configLoader->toArray();;
             $this->dispatcher = new EventDispatcher();
             $this->setDispatcher($this->dispatcher);

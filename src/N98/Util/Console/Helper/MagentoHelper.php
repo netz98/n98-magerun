@@ -31,6 +31,16 @@ class MagentoHelper extends AbstractHelper
     protected $_magentoEnterprise = false;
 
     /**
+     * @var bool
+     */
+    protected $_magerunStopFileFound = false;
+
+    /**
+     * @var string
+     */
+    protected $_magerunStopFileFolder = null;
+
+    /**
      * @var InputInterface
      */
     protected $input;
@@ -121,6 +131,22 @@ class MagentoHelper extends AbstractHelper
     public function getMajorVersion()
     {
         return $this->_magentoMajorVersion;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMagerunStopFileFound()
+    {
+        return $this->_magerunStopFileFound;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMagerunStopFileFolder()
+    {
+        return $this->_magerunStopFileFolder;
     }
 
     /**
@@ -219,6 +245,8 @@ class MagentoHelper extends AbstractHelper
 
             $count = $finder->count();
             if ($count > 0) {
+                $this->_magerunStopFileFound = true;
+                $this->_magerunStopFileFolder = $searchFolder;
                 $magerunFileContent = trim(file_get_contents($searchFolder . DIRECTORY_SEPARATOR . '.n98-magerun'));
                 if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
                     $this->output->writeln('<debug>Found .n98-magerun file with content <info>' . $magerunFileContent . '</info></debug>');
