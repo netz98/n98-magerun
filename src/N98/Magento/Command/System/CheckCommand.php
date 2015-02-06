@@ -74,8 +74,9 @@ HELP;
     }
 
     /**
-     * @param ResultCollection $resultCollection
-     * @param $checkGroupClass
+     * @param ResultCollection $results
+     * @param mixed $checkGroupClass
+     * @internal param ResultCollection $resultCollection
      */
     protected function _invokeCheckClass(ResultCollection $results, $checkGroupClass)
     {
