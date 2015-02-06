@@ -2,12 +2,8 @@
 
 namespace N98\Util\Console\Helper;
 
-use N98\Util\String;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputAwareInterface;
-use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -297,7 +293,7 @@ class MagentoHelper extends AbstractHelper
                     $hasMageFile = true;
                 }
             }
-            
+
             $this->_magentoRootFolder = $searchFolder;
 
             // Magento 2 does not have a god class and thus if this file is not there it is version 2
