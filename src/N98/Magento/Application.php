@@ -223,13 +223,12 @@ class Application extends BaseApplication
             $subFolders = array();
         }
 
-        $magentoHelper->detect($folder, $subFolders);
+        $this->_magentoDetected = $magentoHelper->detect($folder, $subFolders);
         $this->_magentoRootFolder = $magentoHelper->getRootFolder();
         $this->_magentoEnterprise = $magentoHelper->isEnterpriseEdition();
         $this->_magentoMajorVersion = $magentoHelper->getMajorVersion();
         $this->_magerunStopFileFound = $magentoHelper->isMagerunStopFileFound();
         $this->_magerunStopFileFolder = $magentoHelper->getMagerunStopFileFolder();
-        $this->_magentoDetected = true;
     }
 
     /**

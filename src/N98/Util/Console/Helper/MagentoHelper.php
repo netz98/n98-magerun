@@ -81,6 +81,7 @@ class MagentoHelper extends AbstractHelper
      *
      * @param string $folder
      * @param array $subFolders Sub-folders to check
+     * @return bool
      */
     public function detect($folder, $subFolders = array())
     {
@@ -93,10 +94,14 @@ class MagentoHelper extends AbstractHelper
             if (!is_dir($searchFolder) || !is_readable($searchFolder)) {
                 continue;
             }
-            if ($this->_search($searchFolder)) {
-                break;
+
+            $found = $this->_search($searchFolder);
+            if ($found) {
+                return true;
             }
         }
+
+        return false;
     }
 
 
