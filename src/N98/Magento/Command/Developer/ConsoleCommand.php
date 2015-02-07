@@ -4,6 +4,10 @@ namespace N98\Magento\Command\Developer;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\OperatingSystem;
+use Psy\Command\ListCommand;
+use Psy\Configuration;
+use N98\Magento\Command\Developer\Console\Psy\Shell;
+use Psy\Output\ShellOutput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -39,27 +43,16 @@ class ConsoleCommand extends AbstractMagentoCommand
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return int|void
+     * @throws RuntimeException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $descriptorSpec = array(
-            0 => STDIN,
-            1 => STDOUT,
-            2 => STDERR
-        );
+        $this->detectMagento($output);
+        $this->initMagento();
 
-        $prependFile = __DIR__ . '/../../../../../res/dev/console_auto_prepend.php';
-        if ($this->getApplication()->isPharMode()) {
-            $pharFile = $_SERVER['argv'][0];
-            $prependFile = 'phar://' . $pharFile . '/res/dev/console_auto_prepend.php';
-        }
-
-        $exec = '/usr/bin/env php -d auto_prepend_file=' . escapeshellarg($prependFile) . ' -a';
-
-        $pipes = array();
-        $process = proc_open($exec, $descriptorSpec, $pipes);
-        if (!is_resource($process)) {
-            throw new RuntimeException('Cannot init interactive shell');
-        }
+        $consoleOutput = new ShellOutput();
+        $config = new Configuration();
+        $shell = new Shell($config);
+        $shell->run($input, $consoleOutput);
     }
 }
