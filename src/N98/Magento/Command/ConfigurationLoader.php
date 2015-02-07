@@ -2,10 +2,8 @@
 
 namespace N98\Magento\Command;
 
-use FSHL\Output;
 use N98\Util\String;
 use N98\Util\OperatingSystem;
-use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
