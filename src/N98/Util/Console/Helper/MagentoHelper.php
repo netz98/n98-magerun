@@ -47,6 +47,11 @@ class MagentoHelper extends AbstractHelper
     protected $output;
 
     /**
+     * @var string
+     */
+    protected $_customConfigFilename = 'n98-magerun.yaml';
+
+    /**
      * Returns the canonical name of this helper.
      *
      * @return string The canonical name
@@ -241,7 +246,7 @@ class MagentoHelper extends AbstractHelper
                 ->depth(0)
                 ->followLinks()
                 ->ignoreDotFiles(false)
-                ->name('.n98-magerun')
+                ->name('.' . $this->_customConfigFilename)
                 ->in($searchFolder);
 
             $count = $finder->count();
