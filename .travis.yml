@@ -51,5 +51,5 @@ before_script:
   - bin/n98-magerun install --magentoVersionByName="${MAGENTO_VERSION}" --installationFolder="./${MAGENTO_VERSION}" --dbHost=localhost --dbUser=root --dbPass='' --dbName="magento_travis" --installSampleData=${INSTALL_SAMPLE_DATA} --useDefaultConfigParams=yes --baseUrl="http://travis.magento.local/"
 
 script:
-  - vendor/bin/phpunit
+  - vendor/bin/phpunit --debug --stop-on-error --stop-on-failure
   - php tests/check-coverage.php clover.xml ${COVERAGE}
