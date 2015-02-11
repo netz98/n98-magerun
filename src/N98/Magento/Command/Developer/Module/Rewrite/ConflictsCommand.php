@@ -68,8 +68,10 @@ HELP;
                         array_map(array($table, 'appendRow'), $tableData);
                         $output->write($table->render());
                         $output->writeln('<error>' . $conflictCounter . ' conflict' . ($conflictCounter > 1 ? 's' : '') . ' was found!</error>');
+                        return 1;
                     } else {
                         $output->writeln('<info>No rewrite conflicts were found.</info>');
+                        return 0;
                     }
                 }
             }
