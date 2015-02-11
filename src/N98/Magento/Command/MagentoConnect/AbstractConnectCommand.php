@@ -135,7 +135,7 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
         if ($found) {
             $this->doAction($input, $output, $searchPackage);
         } else {
-            $output->writeln('<comment>Could not found package.</comment>');
+            $output->writeln('<comment>Could not find package.</comment>');
             if (count($alternatives) > 0) {
                 $this->doAction(
                     $input,
