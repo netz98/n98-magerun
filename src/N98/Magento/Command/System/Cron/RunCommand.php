@@ -85,7 +85,7 @@ HELP;
                         ->setStatus(\Mage_Cron_Model_Schedule::STATUS_SUCCESS)
                         ->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
                         ->save();
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $schedule
                         ->setStatus(\Mage_Cron_Model_Schedule::STATUS_ERROR)
                         ->setMessages($e->getMessage())
