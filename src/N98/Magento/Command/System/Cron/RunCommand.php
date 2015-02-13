@@ -96,7 +96,7 @@ HELP;
                 $output->writeln('<info>done</info>');
             }
             if (empty($callback)) {
-                Mage::throwException(Mage::helper('cron')->__('No callbacks found'));
+                \Mage::throwException(Mage::helper('cron')->__('No callbacks found'));
             }
         }
     }
