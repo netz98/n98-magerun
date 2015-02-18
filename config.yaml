@@ -253,13 +253,6 @@ commands:
         extra:
           sample-data: sample-data-1.6.1.0
 
-      - name: magento-ce-2.0.0.0-dev (experimental)
-        version: 2.0.0.0-dev
-        source:
-          url: https://github.com/magento/magento2.git
-          type: git
-          reference: master
-
     demo-data-packages:
       - name: sample-data-1.9.1.0
         version: 1.9.1.0
