@@ -1518,7 +1518,7 @@ PHPStorm
 A commandline tool autocompletion XML file for PHPStorm exists in subfolder **autocompletion/phpstorm**.
 Copy **n98_magerun.xml** into your phpstorm config folder.
 
-Linux: ~/.WebIde50/config/commandlinetools
+Linux: ~/.WebIde80/config/componentVersions
 
 You can also add the XML content over settings menu.
 For further instructions read this blog post: http://blog.jetbrains.com/webide/2012/10/integrating-composer-command-line-tool-with-phpstorm/
