@@ -27,6 +27,10 @@ class AbstractCacheCommand extends AbstractMagentoCommand
      */
     protected function banUseCache()
     {
+        if (!is_callable('\Mage_Core_Model_App', 'baseInit')) {
+            return;
+        }
+
         $config = $this->getApplication()->getConfig();
         if (empty($config['init']['options'])) {
             $config['init']['options'] = array('global_ban_use_cache' => true);
@@ -36,6 +40,10 @@ class AbstractCacheCommand extends AbstractMagentoCommand
 
     protected function reinitCache()
     {
+        if (!is_callable('\Mage_Core_Model_App', 'baseInit')) {
+            return;
+        }
+
         \Mage::getConfig()->getOptions()->setData('global_ban_use_cache', false);
         \Mage::app()->baseInit(array()); // Re-init cache
         \Mage::getConfig()->loadModules()->loadDb()->saveCache();
