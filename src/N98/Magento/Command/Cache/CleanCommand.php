@@ -46,6 +46,7 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->banUseCache();
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
             \Mage::app()->loadAreaPart('adminhtml', 'events');
@@ -60,6 +61,8 @@ HELP;
                     $output->writeln('<info>' . $type . ' cache cleaned</info>');
                 }
             }
+
+            $this->reinitCache();
         }
     }
 }
