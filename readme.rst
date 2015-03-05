@@ -746,6 +746,17 @@ ID can be e-mail or username. The command will attempt to find the user by usern
 will attempt to find the user by e-mail. If ID is omitted you will be prompted for it. If the force parameter "-f" is
 omitted you will be prompted for confirmation.
 
+Toggle admin user active state
+""""""""""""""""""""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar admin:user:toggle-active [email|username]
+
+Toggles the active status of an adminhtml user. ID can be e-mail or username. The command will attempt to find the
+user by username first and if it cannot be found it will attempt to find the user by e-mail. If ID is omitted you
+will be prompted for it.
+
 Unlock admin user
 """""""""""""""""
 
