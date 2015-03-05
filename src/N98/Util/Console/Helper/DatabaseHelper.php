@@ -79,6 +79,13 @@ class DatabaseHelper extends AbstractHelper
             if (isset($this->dbSettings['unix_socket'])) {
                 $this->isSocketConnect = true;
             }
+
+            // @see Varien_Db_Adapter_Pdo_Mysql->_connect()
+            if ( strpos($this->dbSettings['host'], '/') !== false ) {
+                $this->isSocketConnect = true;
+                $this->dbSettings['unix_socket'] = $this->dbSettings['host'];
+                unset($this->dbSettings['host']);
+            }
         }
     }
 

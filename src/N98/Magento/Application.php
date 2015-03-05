@@ -101,6 +101,16 @@ class Application extends BaseApplication
     /**
      * @var bool
      */
+    protected $_magerunStopFileFound = false;
+
+    /**
+     * @var string
+     */
+    protected $_magerunStopFileFolder = null;
+
+    /**
+     * @var bool
+     */
     protected $_isInitialized = false;
 
     /**
@@ -114,6 +124,11 @@ class Application extends BaseApplication
      * @var bool
      */
     protected $_directRootDir = false;
+
+    /**
+     * @var bool
+     */
+    protected $_magentoDetected = false;
 
     /**
      * @param \Composer\Autoload\ClassLoader $autoloader
@@ -180,6 +195,11 @@ class Application extends BaseApplication
      */
     public function detectMagento(InputInterface $input = null, OutputInterface $output = null)
     {
+        // do not detect magento twice
+        if ($this->_magentoDetected) {
+            return;
+        }
+
         if ($this->getMagentoRootFolder() === null) {
             $this->_checkRootDirOption();
             if (function_exists('exec')) {
@@ -202,10 +222,13 @@ class Application extends BaseApplication
         } else {
             $subFolders = array();
         }
-        $magentoHelper->detect($folder, $subFolders);
+
+        $this->_magentoDetected = $magentoHelper->detect($folder, $subFolders);
         $this->_magentoRootFolder = $magentoHelper->getRootFolder();
         $this->_magentoEnterprise = $magentoHelper->isEnterpriseEdition();
         $this->_magentoMajorVersion = $magentoHelper->getMajorVersion();
+        $this->_magerunStopFileFound = $magentoHelper->isMagerunStopFileFound();
+        $this->_magerunStopFileFolder = $magentoHelper->getMagerunStopFileFolder();
     }
 
     /**
@@ -241,6 +264,12 @@ class Application extends BaseApplication
         if (isset($this->config['autoloaders']) && is_array($this->config['autoloaders'])) {
             foreach ($this->config['autoloaders'] as $prefix => $path) {
                 $this->autoloader->add($prefix, $path);
+            }
+        }
+
+        if (isset($this->config['autoloaders_psr4']) && is_array($this->config['autoloaders_psr4'])) {
+            foreach ($this->config['autoloaders_psr4'] as $prefix => $path) {
+                $this->autoloader->addPsr4($prefix, $path);
             }
         }
     }
@@ -493,6 +522,14 @@ class Application extends BaseApplication
     }
 
     /**
+     * @return boolean
+     */
+    public function isMagerunStopFileFound()
+    {
+        return $this->_magerunStopFileFound;
+    }
+
+    /**
      * Runs the current application with possible command aliases
      *
      * @param InputInterface $input  An Input instance
@@ -610,7 +647,7 @@ class Application extends BaseApplication
             $configLoader = $this->getConfigurationLoader($initConfig, $output);
             $this->partialConfig = $configLoader->getPartialConfig($loadExternalConfig);
             $this->detectMagento($input, $output);
-            $configLoader->loadStageTwo($this->_magentoRootFolder, $loadExternalConfig);
+            $configLoader->loadStageTwo($this->_magentoRootFolder, $loadExternalConfig, $this->_magerunStopFileFolder);
             $this->config = $configLoader->toArray();;
             $this->dispatcher = new EventDispatcher();
             $this->setDispatcher($this->dispatcher);

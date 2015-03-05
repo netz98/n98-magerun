@@ -14,10 +14,13 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
         $table = array();
 
         foreach (\Mage::getConfig()->getNode('crontab/jobs')->children() as $job) {
-            $table[(string) $job->getName()] = array('Job'  => (string) $job->getName()) + $this->getSchedule($job);
+            /* @var $job \Mage_Core_Model_Config_Element */
+            $table[] = array('Job'  => (string) $job->getName()) + $this->getSchedule($job);
         }
 
-        ksort($table);
+        usort($table, function($a, $b) {
+            return strcmp($a['Job'], $b['Job']);
+        });
 
         return $table;
     }
@@ -28,7 +31,12 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
      */
     protected function getSchedule($job)
     {
-        $expr = (string) $job->schedule->cron_expr;
+        if (isset($job->schedule->config_path)) {
+            $expr = (string) \Mage::getStoreConfig($job->schedule->config_path);
+        } else {
+            $expr = (string) $job->schedule->cron_expr;
+        }
+
         if ($expr) {
             if ($expr == 'always') {
                 return array('m' => '*', 'h' => '*', 'D' => '*', 'M' => '*', 'WD' => '*');

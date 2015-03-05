@@ -29,12 +29,17 @@ class FlushCommand extends AbstractCacheCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
+
+        $this->banUseCache();
+
         if ($this->initMagento()) {
 
             \Mage::app()->loadAreaPart('adminhtml', 'events');
             \Mage::dispatchEvent('adminhtml_cache_flush_all', array('output' => $output));
             \Mage::app()->getCacheInstance()->flush();
             $output->writeln('<info>Cache cleared</info>');
+
+            $this->reinitCache();
 
             /* Since Magento 1.10 we have an own cache handler for FPC */
             if ($this->isEnterpriseFullPageCachePresent()) {

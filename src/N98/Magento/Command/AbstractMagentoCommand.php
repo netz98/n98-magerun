@@ -188,6 +188,7 @@ abstract class AbstractMagentoCommand extends Command
         $this->_magentoEnterprise = $this->getApplication()->isMagentoEnterprise();
         $this->_magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
         $this->_magentoMajorVersion = $this->getApplication()->getMagentoMajorVersion();
+        $this->_magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
 
         if (!$silent) {
             $editionString = ($this->_magentoEnterprise ? ' (Enterprise Edition) ' : '');
