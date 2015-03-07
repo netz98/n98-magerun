@@ -1059,7 +1059,7 @@ List all EAV attributes:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar eav:attribute:list [--filter-type[="..."]] [--add-source] [--format[="..."]]
+   $ n98-magerun.phar eav:attribute:list [--filter-type[="..."]] [--add-source] [--add-backend] [--format[="..."]]
 
 View the data for a particular attribute:
 
