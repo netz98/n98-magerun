@@ -34,7 +34,7 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
         $expr = null;
 
         if (isset($job->schedule->config_path)) {
-            $expr = (string) \Mage::getStoreConfig($job->schedule->config_path);
+            $expr = \Mage::getStoreConfig((string) $job->schedule->config_path);
         } elseif (isset($job->schedule->cron_expr)) {
             $expr = (string) $job->schedule->cron_expr;
         }
