@@ -3,40 +3,26 @@ RECENT CHANGES
 **************
 
 ======
-1.94.0
+1.95.0
 ======
 
-* #416 Converts times to local or specified timezone (by Steve Robbin)
-* #428 Add newsletter table group for db:dump command (by Christoph Aßmann)
-* #441 config:dump produces invalid xml (Andrew Stayart)
-* #443 Create, view, and remove gift cards (by Steve Robbins)
-* #452 Added .DS_Store to .gitignore (by Hervé Guétin)
-* #453 Add store parameter to template hints commands (by Hadrien Collongues)
-* #462 dbHost not respected #462 (by Achim Rosenhagen)
-* #463 Fixed missing sprintf when creating Exception in sys:cron:run command (by Tim Eydamos)
-* #464 SampleData in Version 1.9 are not downloading (by Rafael Corrêa Gomes)
-* Disable command by config.
-* Removed Magento 2 bootstrapping -> Moved into n98-magerun2
-* Updated 3rd party components
-
-======
-1.93.0
-======
-
-* #399 Admin user unlock [EE only] (by Steve Robbins)
-* #415 Clean multiple caches at once (by Michael Barrett)
-* #418 Use already instantiated cache object. (by Alan Storm)
-* #421 enable or disable a module based on name or codepool (by Steve Robbins)
-* #423 db:import --drop does not take into account the "only-command" option (by Michael Lühr)
-* #429 Install command ignores skin folder of 1.9.0.0 sample data (by Vinai Kopp)
-* #435 New db:status and db:variable commands (by Cyrill Schumacher)
-* #436 Alternative Installation Port is not respected (by Christian Münch)
-* #440 Added Magento CE 1.9.1.0 to installer (by Rouven Rieker)
-* Minor documentation corrections (by  Jaik Dean)
-* Refactored db:maintain:check-tables to allow InnoDB and Memory tables to be optimized. (by Cyrill Schumacher)
-* Bash completion - change regexp condition to string contains. (by Paweł Bogut)
-* Updated Symfony components to V2.6
-* Updated locked phpunit version.
+- #444 Added support to place .n98-magerun.yaml file in the same folder as "n98-magerun" stop file. (by Christian Münch)
+- #465 checking for presence of Mage.php file in list of files searched for since Magento 2 no longer has a god class (by David Alger)
+- #466 Configuration loader fatal error (by Tom Klingenberg)
+- #472 Allow setting unix socket in host component (by Melvyn Sopacua)
+- #474 Add index event tables to @ids table group of the db:dump command (by Aad Mathijssen)
+- #475 Add importexporttemp table group for db:dump command (by Aad Mathijssen)
+- #478 Improve sys:cron:run input handling (by Aad Mathijssen)
+- #482 Infinite loop on n98-magerun script:repo:run --no-interaction (by Tom Klingenberg)
+- #483 Cache clean "race" condition (by Jason Potkanski)
+- #488 Fix wording (by will-b)
+- #496 Upgrade PhpStorm (by Rafael Corrêa Gomes)
+- #506 backend_type in eav:attribute:list (by Steve Robbins)
+- Added support for PSR-4 autoloading. (by Christian Münch)
+- Added debug logging if project config file is loaded. (by Christian Münch)
+- Added new Psy\Console. Replaced dev:console command. (by Christian Münch)
+- Fixed magento detection. Try every command if Magento was found. (by Christian Münch)
+- Removed Magento 2 installation source. (by Christian Münch)
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
