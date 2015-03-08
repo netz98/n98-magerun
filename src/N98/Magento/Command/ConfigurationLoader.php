@@ -158,10 +158,12 @@ class ConfigurationLoader
     {
         if ($this->_distConfig == null) {
             $this->_distConfig = Yaml::parse(__DIR__ . '/../../../../config.yaml');
+
+            if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
+                $this->_output->writeln('<debug>Load dist config</debug>');
+            }
         }
-        if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
-            $this->_output->writeln('<debug>Load dist config</debug>');
-        }
+
         $config = ArrayFunctions::mergeArrays($this->_distConfig, $initConfig);
 
         return $config;
@@ -306,6 +308,10 @@ class ConfigurationLoader
                 $userConfig = $this->applyVariables(\file_get_contents($personalConfigFile), $magentoRootFolder, null);
                 $this->_userConfig = Yaml::parse($userConfig);
 
+                if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
+                    $this->_output->writeln('<debug>Load user config <comment>' . $personalConfigFile . '</comment></debug>');
+                }
+
                 return $config;
             }
         }
@@ -340,7 +346,7 @@ class ConfigurationLoader
                 $this->_projectConfig = Yaml::parse($projectConfig);
             }
 
-            $stopFileConfigFile = $magerunStopFileFolder . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
+            $stopFileConfigFile = $magerunStopFileFolder . DIRECTORY_SEPARATOR . $this->_customConfigFilename;
             if (!empty($magerunStopFileFolder) && file_exists($stopFileConfigFile)) {
                 $projectConfig = $this->applyVariables(\file_get_contents($stopFileConfigFile), $magentoRootFolder, null);
                 $this->_projectConfig = ArrayFunctions::mergeArrays($this->_projectConfig, Yaml::parse($projectConfig));
