@@ -450,7 +450,7 @@ HELP;
                                 . escapeshellarg($sampleDataSqlFile[0]);
                             $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with mysql cli client</info>');
                             exec($exec);
-                            @unlink($sampleDataSqlFile);
+                            @unlink($sampleDataSqlFile[0]);
                         } else {
                             $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with PDO driver</info>');
                             // Fallback -> Try to install dump file by PDO driver
@@ -673,9 +673,9 @@ HELP;
         $output->writeln('<info>Start installation process.</info>');
 
         if (OperatingSystem::isWindows()) {
-            $installCommand = 'php ' . $this->getInstallScriptPath() . ' ' . $installArgs;
+            $installCommand = 'php -f ' . escapeshellarg($this->getInstallScriptPath()) . ' -- ' . $installArgs;
         } else {
-            $installCommand = '/usr/bin/env php ' . $this->getInstallScriptPath() . ' ' . $installArgs;
+            $installCommand = '/usr/bin/env php -f ' . escapeshellarg($this->getInstallScriptPath()) . ' -- ' . $installArgs;
         }
         $output->writeln('<comment>' . $installCommand . '</comment>');
         exec($installCommand, $installationOutput, $returnStatus);
