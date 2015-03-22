@@ -57,8 +57,9 @@ HELP;
             );
         } else {
             $pdoConnectionString = sprintf(
-                'mysql:host=%s;dbname=%s',
+                'mysql:host=%s;port=%s;dbname=%s',
                 $this->dbSettings['host'],
+                isset($this->dbSettings['port']) ? $this->dbSettings['port'] : 3306,
                 $this->dbSettings['dbname']
             );
         }
@@ -70,8 +71,9 @@ HELP;
             $jdbcConnectionString = 'Connecting using JDBC through a unix socket isn\'t supported!';
         } else {
             $jdbcConnectionString = sprintf(
-                'jdbc:mysql://%s/%s?username=%s&password=%s',
+                'jdbc:mysql://%s:%s/%s?username=%s&password=%s',
                 $this->dbSettings['host'],
+                isset($this->dbSettings['port']) ? $this->dbSettings['port'] : 3306,
                 $this->dbSettings['dbname'],
                 $this->dbSettings['username'],
                 $this->dbSettings['password']

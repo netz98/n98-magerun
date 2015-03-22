@@ -113,10 +113,6 @@ class DatabaseHelper extends AbstractHelper
             throw new \Exception('pdo_mysql extension is not installed');
         }
 
-        if (!$this->isSocketConnect && strpos($this->dbSettings['host'], ':') !== false) {
-            list($this->dbSettings['host'], $this->dbSettings['port']) = explode(':', $this->dbSettings['host']);
-        }
-
         $this->_connection = new \PDO(
             $this->dsn(),
             $this->dbSettings['username'],
