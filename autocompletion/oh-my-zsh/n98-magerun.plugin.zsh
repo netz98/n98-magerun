@@ -1,6 +1,7 @@
 # Installation:
 #  Copy to ~/.oh-my-zsh/custom/plugins/n98-magerun/n98-magerun.plugin.zsh
-#  and add "n98-magerun" to the plugins in .zshrc to be loaded the next time a shell session is started
+#  Add it in the .zshrc e.g. "plugins=(git n98-magerun)"
+#  it will load the next time a shell session is started
 #  This plugin assumes that "n98-magerun.phar" is in your path
 
 _n98_magerun_get_command_list () {
