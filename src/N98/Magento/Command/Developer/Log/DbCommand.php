@@ -40,6 +40,7 @@ class DbCommand extends AbstractLogCommand
 
         $this->_replaceVariable($input, $output, '$_debug');
         $this->_replaceVariable($input, $output, '$_logAllQueries');
+        $this->_replaceVariable($input, $output, '$_logCallStack');
 
         if (!$input->getOption('ignore-git')) {
             $this->assumeUnchanged($input, $output, $this->_getVarienAdapterPhpFile());
