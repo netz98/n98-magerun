@@ -833,7 +833,7 @@ List URLs
 
 .. code-block:: sh
 
-   $ sys:url:list [--add-categories] [--add-products] [--add-cmspages] [--add-all] [stores] [linetemplate]
+   $ n98-magerun.phar sys:url:list [--add-categories] [--add-products] [--add-cmspages] [--add-all] [stores] [linetemplate]
 
 Examples:
 
