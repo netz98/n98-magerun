@@ -11,8 +11,19 @@ $newPharSource = 'https://github.com/netz98/n98-magerun/raw/4d6e10111f69a05fadb1
 echo 'Depricated notice: Please update your integration to download from the new source instead: ' . $newPharSource . PHP_EOL;
 echo 'Self updating...' . PHP_EOL;
 
+// Get the new phar file
+$contents = file_get_contents($newPharSource);
+
+if ($contents === false) {
+    echo 'Self update failed (download failed).  Please update n98-magerun.phar manually';
+    exit(1);
+}
+
 // Save the contents from the new source to this file
-file_put_contents(__FILE__, file_get_contents($newPharSource));
+if (file_put_contents(__FILE__, $contents) === false) {
+    echo 'Self update failed (save failed).  Please update n98-magerun.phar manually';
+    exit(1);
+};
 
 // Run this file with the updated contents
 include __FILE__;
