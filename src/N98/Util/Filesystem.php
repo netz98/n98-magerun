@@ -2,6 +2,8 @@
 
 namespace N98\Util;
 
+use Psy\Exception\RuntimeException;
+
 class Filesystem
 {
     /**
@@ -14,7 +16,14 @@ class Filesystem
     public function recursiveCopy($src, $dst, $blacklist = array())
     {
         $dir = opendir($src);
-        @mkdir($dst);
+        if (!is_dir($dst)) {
+            @mkdir($dst);
+        }
+
+        if (!is_dir($dst)) {
+            throw new RuntimeException(sprintf('Destination directory <%s> error', $dst));
+        }
+
         while (false !== ($file = readdir($dir))) {
             if (($file != '.') && ($file != '..') && !in_array($file, $blacklist)) {
                 if (is_dir($src . '/' . $file)) {

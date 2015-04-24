@@ -55,6 +55,7 @@ class InstallCommand extends AbstractMagentoCommand
             ->addOption('dbPass', null, InputOption::VALUE_OPTIONAL, 'Database password')
             ->addOption('dbName', null, InputOption::VALUE_OPTIONAL, 'Database name')
             ->addOption('dbPort', null, InputOption::VALUE_OPTIONAL, 'Database port', 3306)
+            ->addOption('dbPrefix', null, InputOption::VALUE_OPTIONAL, 'Table prefix', '')
             ->addOption('installSampleData', null, InputOption::VALUE_OPTIONAL, 'Install sample data')
             ->addOption('useDefaultConfigParams', null, InputOption::VALUE_OPTIONAL, 'Use default installation parameters defined in the yaml file')
             ->addOption('baseUrl', null, InputOption::VALUE_OPTIONAL, 'Installation base url')
@@ -324,6 +325,7 @@ HELP;
             $this->config['db_pass'] = $input->getOption('dbPass');
             $this->config['db_name'] = $input->getOption('dbName');
             $this->config['db_port'] = $input->getOption('dbPort');
+            $this->config['db_prefix'] = $input->getOption('dbPrefix');
             $db = $this->validateDatabaseSettings($output, $input);
 
             if ($db === false) {
@@ -347,6 +349,9 @@ HELP;
 
                 $dbPortDefault = $input->getOption('dbPort') ? $input->getOption('dbPort') : 3306;
                 $this->config['db_port'] = $dialog->askAndValidate($output, '<question>Please enter the database port </question> <comment>[' . $dbPortDefault . ']</comment>: ', $this->notEmptyCallback, false, $dbPortDefault);
+
+                $dbPrefixDefault = $input->getOption('dbPrefix') ? $input->getOption('dbPrefix') : '';
+                $this->config['db_prefix'] = $dialog->ask($output, '<question>Please enter the table prefix</question> <comment>['. $dbPrefixDefault .']</comment>:', $dbPrefixDefault);
                 $db = $this->validateDatabaseSettings($output, $input);
             } while ($db === false);
         }
@@ -450,7 +455,7 @@ HELP;
                                 . escapeshellarg($sampleDataSqlFile[0]);
                             $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with mysql cli client</info>');
                             exec($exec);
-                            @unlink($sampleDataSqlFile);
+                            @unlink($sampleDataSqlFile[0]);
                         } else {
                             $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with PDO driver</info>');
                             // Fallback -> Try to install dump file by PDO driver
@@ -637,6 +642,7 @@ HELP;
             'db_name'                    => $this->config['db_name'],
             'db_user'                    => $this->config['db_user'],
             'db_pass'                    => $this->config['db_pass'],
+            'db_prefix'                  => $this->config['db_prefix'],
             'url'                        => $baseUrl,
             'use_rewrites'               => 'yes',
             'use_secure'                 => 'no',
@@ -673,9 +679,9 @@ HELP;
         $output->writeln('<info>Start installation process.</info>');
 
         if (OperatingSystem::isWindows()) {
-            $installCommand = 'php ' . $this->getInstallScriptPath() . ' ' . $installArgs;
+            $installCommand = 'php -f ' . escapeshellarg($this->getInstallScriptPath()) . ' -- ' . $installArgs;
         } else {
-            $installCommand = '/usr/bin/env php ' . $this->getInstallScriptPath() . ' ' . $installArgs;
+            $installCommand = '/usr/bin/env php -f ' . escapeshellarg($this->getInstallScriptPath()) . ' -- ' . $installArgs;
         }
         $output->writeln('<comment>' . $installCommand . '</comment>');
         exec($installCommand, $installationOutput, $returnStatus);
