@@ -681,7 +681,8 @@ HELP;
         exec($installCommand, $installationOutput, $returnStatus);
         $installationOutput = implode(PHP_EOL, $installationOutput);
         if ($returnStatus !== self::EXEC_STATUS_OK) {
-            throw new \Exception('Installation failed.' . $installationOutput);
+            $this->getApplication()->setAutoExit(true);
+            throw new \RuntimeException('Installation failed.' . $installationOutput, 1);
         } else {
             $output->writeln('<info>Successfully installed Magento</info>');
             $encryptionKey = trim(substr($installationOutput, strpos($installationOutput, ':') + 1));
