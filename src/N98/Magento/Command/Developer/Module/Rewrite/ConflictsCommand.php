@@ -155,7 +155,8 @@ HELP;
                 if (class_exists($classes[$i])
                     && class_exists($classes[$i + 1])
                 ) {
-                    if (!($classes[$i] instanceof $classes[$i + 1])) {
+                    $class = new $classes[$i];
+                    if (!($class instanceof $classes[$i + 1])) {
                         return true;
                     }
                 }
