@@ -150,7 +150,8 @@ HELP;
     protected function _isInheritanceConflict(array $classes)
     {
         $classes = array_reverse($classes);
-        for ($i = 0; $i < count($classes) - 1; $i++) {
+        $count   = count($classes) - 1;
+        for ($i = 0; $i < $count; $i++) {
             try {
                 if (class_exists($classes[$i])
                     && class_exists($classes[$i + 1])
@@ -175,7 +176,7 @@ HELP;
      * @param  object|string  $classB
      * @return boolean
      */
-    protected function _isClassInstanceOf($classA, $classB)
+    private function _isClassInstanceOf($classA, $classB)
     {
         if (is_string($classA)) {
             $classA = new $classA;
