@@ -67,7 +67,12 @@ HELP;
                     if ($conflictCounter > 0) {
                         array_map(array($table, 'appendRow'), $tableData);
                         $output->write($table->render());
-                        $output->writeln('<error>' . sprintf($conflictCounter > 1 ? '%d conflicts were' : '%d conflict was', $conflictCounter) . ' found!</error>');
+                        $message = sprintf(
+                            '%d %s found!',
+                            $conflictCounter,  
+                            $conflictCounter == 1 ? 'conflict was' : 'conflicts were'
+                        );
+                        $output->writeln('<error>' . $message . '</error>');
                     } else {
                         $output->writeln('<info>No rewrite conflicts were found.</info>');
                     }
