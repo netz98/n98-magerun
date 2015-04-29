@@ -122,7 +122,7 @@ HELP;
                 throw new \InvalidArgumentException('Options --only-command and --optimize are not compatible');
             }
             if ($input->getOption('compression')) {
-                throw new \Exception('Options --compression and --optimize are not compatible');
+                throw new \InvalidArgumentException('Options --compression and --optimize are not compatible');
             }
             $output->writeln('<comment>Optimizing <info>' . $fileName . '</info> to temporary file');
             $fileName = $this->optimize($fileName);
