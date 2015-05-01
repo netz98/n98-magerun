@@ -1,19 +1,3 @@
-sudo: required
-before_install:
-  - sudo rm /etc/apt/sources.list.d/mysql.list
-  - sudo service mysql stop
-  - sudo rm -rf /var/lib/mysql
-  - sudo apt-get remove apparmor
-  - sudo apt-get remove --purge mysql-common mysql-community-server mysql-community-client mysql-client libmysqlclient18 libmysqlclient-dev mysql-server
-  - sudo apt-get autoremove
-  - sudo apt-get autoclean
-  - sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install libmysqlclient-dev libmysqlclient18 mysql-client mysql-server
-  - mysql -u root -e "CREATE USER 'travis'@'%' IDENTIFIED BY ''"
-  - mysql -u root -e "CREATE USER 'travis'@'localhost' IDENTIFIED BY ''"
-  - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'%'"
-  - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost'"
-
-
 language: php
 
 branches:
@@ -60,9 +44,9 @@ matrix:
       env: MAGENTO_VERSION="magento-ce-1.7.0.2" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=66
 
 before_script:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS `magento_travis`;'
   - curl -s http://getcomposer.org/installer | php
   - composer install --prefer-source
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS `magento_travis`;'
   - export N98_MAGERUN_TEST_MAGENTO_ROOT="./${MAGENTO_VERSION}"
   - bin/n98-magerun install --magentoVersionByName="${MAGENTO_VERSION}" --installationFolder="./${MAGENTO_VERSION}" --dbHost=127.0.0.1 --dbUser=root --dbPass='' --dbName="magento_travis" --installSampleData=${INSTALL_SAMPLE_DATA} --useDefaultConfigParams=yes --baseUrl="http://travis.magento.local/"
 
