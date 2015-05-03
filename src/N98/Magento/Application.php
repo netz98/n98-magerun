@@ -14,6 +14,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -210,8 +211,16 @@ class Application extends BaseApplication
             return;
         }
 
+        if (null === $input) {
+            $input = new ArgvInput();
+        }
+
+        if (null === $output) {
+            $output = new ConsoleOutput();
+        }
+
         if ($this->getMagentoRootFolder() === null) {
-            $this->_checkRootDirOption();
+            $this->_checkRootDirOption($input);
             if (function_exists('exec')) {
                 if (OperatingSystem::isWindows()) {
                     $folder = exec('@echo %cd%'); // @TODO not currently tested!!!
@@ -650,7 +659,7 @@ class Application extends BaseApplication
             // Suppress DateTime warnings
             date_default_timezone_set(@date_default_timezone_get());
 
-            $loadExternalConfig = !$this->_checkSkipConfigOption();
+            $loadExternalConfig = !$this->_checkSkipConfigOption($input);
             if ($output === null) {
                 $output = new NullOutput();
             }
@@ -695,29 +704,28 @@ class Application extends BaseApplication
     }
 
     /**
+     * @param InputInterface $input
      * @return bool
      */
-    protected function _checkSkipConfigOption()
+    protected function _checkSkipConfigOption(InputInterface $input)
     {
-        $skipConfigOption = getopt('', array('skip-config'));
-
-        return count($skipConfigOption) > 0;
+        return $input->hasParameterOption('--skip-config');
     }
 
     /**
+     * @param InputInterface $input
      * @return string
      */
-    protected function _checkRootDirOption()
+    protected function _checkRootDirOption(InputInterface $input)
     {
-        $specialGlobalOptions = getopt('', array('root-dir:'));
+        $definedRootDir = $input->getParameterOption('--root-dir');
 
-        if (count($specialGlobalOptions) > 0) {
-            if (isset($specialGlobalOptions['root-dir'][0])
-                && $specialGlobalOptions['root-dir'][0] == '~'
-            ) {
-                $specialGlobalOptions['root-dir'] = OperatingSystem::getHomeDir() . substr($specialGlobalOptions['root-dir'], 1);
+        if (!empty($definedRootDir)) {
+            if ($definedRootDir[0] == '~') {
+                $definedRootDir = OperatingSystem::getHomeDir() . substr($definedRootDir, 1);
             }
-            $folder = realpath($specialGlobalOptions['root-dir']);
+
+            $folder = realpath($definedRootDir);
             $this->_directRootDir = true;
             if (is_dir($folder)) {
                 \chdir($folder);
