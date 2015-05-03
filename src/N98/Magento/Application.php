@@ -659,6 +659,10 @@ class Application extends BaseApplication
             // Suppress DateTime warnings
             date_default_timezone_set(@date_default_timezone_get());
 
+            if (null === $input) {
+                $input = new ArgvInput();
+            }
+
             $loadExternalConfig = !$this->_checkSkipConfigOption($input);
             if ($output === null) {
                 $output = new NullOutput();
