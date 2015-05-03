@@ -145,6 +145,10 @@ class Application extends BaseApplication
     protected function getDefaultInputDefinition()
     {
         $inputDefinition = parent::getDefaultInputDefinition();
+
+        /**
+         * Root dir
+         */
         $rootDirOption = new InputOption(
             '--root-dir',
             '',
@@ -153,6 +157,9 @@ class Application extends BaseApplication
         );
         $inputDefinition->addOption($rootDirOption);
 
+        /**
+         * Skip config
+         */
         $skipExternalConfig = new InputOption(
             '--skip-config',
             '',
@@ -161,6 +168,9 @@ class Application extends BaseApplication
         );
         $inputDefinition->addOption($skipExternalConfig);
 
+        /**
+         * Skip root check
+         */
         $skipExternalConfig = new InputOption(
             '--skip-root-check',
             '',
