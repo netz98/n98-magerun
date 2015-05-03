@@ -18,6 +18,7 @@ RECENT CHANGES
 * #532 Optimization fixes and improvements (by Alexander Menk)
 * #533 Unattended install fail when unable to access database, but still produce clean exit code. (by Simon Bräuer)
 * #535 Added display current design settings on particular store (by Lucas Olucha)
+* #537 Fixing plurality language in rewrite conflict detection (by Steve Robbins)
 * #538 dev:console disappeared (by Christian Münch)
 * #542 Add tests for some of the admin:user commands. (by Peter O'Callaghan)
 * #544 Fixing travis integration (by Steve Robbins)
