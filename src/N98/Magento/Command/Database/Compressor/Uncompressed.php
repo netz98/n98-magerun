@@ -42,7 +42,7 @@ class Uncompressed extends AbstractCompressor
      */
     public function getFileName($fileName, $pipe = true)
     {
-        if (substr($fileName, -4, 4) !== '.sql') {
+        if (substr($fileName, -4, 4) !== '.sql' && substr($fileName, -4, 4) !== '.xml') {
             $fileName .= '.sql';
         }
 

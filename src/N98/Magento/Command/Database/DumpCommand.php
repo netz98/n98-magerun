@@ -28,6 +28,7 @@ class DumpCommand extends AbstractDatabaseCommand
             ->addArgument('filename', InputArgument::OPTIONAL, 'Dump filename')
             ->addOption('add-time', 't', InputOption::VALUE_OPTIONAL, 'Adds time to filename (only if filename was not provided)')
             ->addOption('compression', 'c', InputOption::VALUE_REQUIRED, 'Compress the dump file using one of the supported algorithms')
+            ->addOption('xml', null, InputOption::VALUE_NONE, 'Dump database in xml format')
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysqldump command. Do not execute')
             ->addOption('print-only-filename', null, InputOption::VALUE_NONE, 'Execute and prints no output except the dump filename')
             ->addOption('no-single-transaction', null, InputOption::VALUE_NONE, 'Do not use single-transaction (not recommended, this is blocking)')
@@ -207,6 +208,11 @@ HELP;
         if ($input->getOption('add-routines')) {
             $dumpOptions .= '--routines ';
         }
+
+        if($input->getOption('xml')) {
+            $dumpOptions .= '--xml ';
+        }
+
         $execs = array();
 
         if (!$stripTables) {
@@ -313,7 +319,12 @@ HELP;
     ) {
         $namePrefix    = '';
         $nameSuffix    = '';
-        $nameExtension = '.sql';
+        if($input->getOption('xml')) {
+            $nameExtension = '.xml';
+        } else {
+            $nameExtension = '.sql';
+        }
+
 
         if ($input->getOption('add-time') !== false) {
             $timeStamp = date('Y-m-d_His');
