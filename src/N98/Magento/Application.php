@@ -190,10 +190,9 @@ class Application extends BaseApplication
      */
     public function getDetectSubFolders()
     {
-        if (isset($this->partialConfig['detect'])) {
-            if (isset($this->partialConfig['detect']['subFolders'])) {
-                return $this->partialConfig['detect']['subFolders'];
-            }
+        if (isset($this->partialConfig['detect']) && isset($this->partialConfig['detect']['subFolders'])) {
+            return $this->partialConfig['detect']['subFolders'];
+
         }
         return array();
     }
@@ -236,7 +235,8 @@ class Application extends BaseApplication
         }
 
         $this->getHelperSet()->set(new MagentoHelper($input, $output), 'magento');
-        $magentoHelper = $this->getHelperSet()->get('magento'); /* @var $magentoHelper MagentoHelper */
+        $magentoHelper = $this->getHelperSet()->get('magento');
+        /* @var $magentoHelper MagentoHelper */
         if (!$this->_directRootDir) {
             $subFolders = $this->getDetectSubFolders();
         } else {
@@ -401,7 +401,7 @@ class Application extends BaseApplication
     public function checkVarDir(OutputInterface $output)
     {
         if (OutputInterface::VERBOSITY_NORMAL <= $output->getVerbosity()) {
-            $tempVarDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'magento' . DIRECTORY_SEPARATOR .  'var';
+            $tempVarDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'magento' . DIRECTORY_SEPARATOR . 'var';
 
             if (is_dir($tempVarDir)) {
                 $this->detectMagento(null, $output);
@@ -416,7 +416,7 @@ class Application extends BaseApplication
                     $this->initMagento();
                 } catch (\Exception $e) {
                     $message = 'Cannot initialize Magento. Please check your configuration. '
-                             . 'Some n98-magerun command will not work. Got message: ';
+                        . 'Some n98-magerun command will not work. Got message: ';
                     if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $output->getVerbosity()) {
                         $message .= $e->getTraceAsString();
                     } else {
@@ -552,7 +552,7 @@ class Application extends BaseApplication
     /**
      * Runs the current application with possible command aliases
      *
-     * @param InputInterface $input  An Input instance
+     * @param InputInterface $input An Input instance
      * @param OutputInterface $output An Output instance
      *
      * @return integer 0 if everything went fine, or an error code
@@ -792,7 +792,8 @@ MAGENTO2HINT;
     /**
      * @return void
      */
-    protected function _restoreAutoloaders($loaders) {
+    protected function _restoreAutoloaders($loaders)
+    {
         $current_loaders = spl_autoload_functions();
         foreach ($loaders as $function) {
             if (!in_array($function, $current_loaders)) {

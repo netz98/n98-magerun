@@ -71,7 +71,7 @@ HELP;
                 $table = $m[1];
                 $values = $m[2];
 
-                if ($table != $currentTable or ($len > $maxlen - 1000)) {
+                if ($table != $currentTable || ($len > $maxlen - 1000)) {
                     if ($currentTable != '') {
                         fwrite($out, ";\n");
                     }

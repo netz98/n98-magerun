@@ -38,7 +38,7 @@ class DatabaseHelper extends AbstractHelper
      * @throws \Exception
      * @return void
      */
-    public function detectDbSettings(OutputInterface $output, $silent = true)
+    public function detectDbSettings(OutputInterface $output)
     {
         if ($this->dbSettings == null) {
             $command = $this->getHelperSet()->getCommand();
@@ -262,7 +262,7 @@ class DatabaseHelper extends AbstractHelper
                     'description' => $description,
                 );
             }
-        };
+        }
 
         return $tableDefinitions;
     }

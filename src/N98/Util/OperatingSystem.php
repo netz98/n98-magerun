@@ -4,6 +4,13 @@ namespace N98\Util;
 
 class OperatingSystem
 {
+
+
+    /**
+     * @var int
+     */
+    const UID_ROOT = 0;
+
     /**
      * Returns true if operating system is
      * based on GNU linux.
@@ -83,5 +90,20 @@ class OperatingSystem
         } else {
             return getenv('HOME');
         }
+    }
+
+
+    /**
+     * @return bool
+     */
+    public static function hasShell() {
+        return OperatingSystem::isLinux() || OperatingSystem::isMacOs();
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isRoot() {
+        return  self::hasShell() && function_exists('posix_getuid') && posix_getuid() === self::UID_ROOT;
     }
 }
