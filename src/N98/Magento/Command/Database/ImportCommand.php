@@ -196,9 +196,19 @@ HELP;
             '<comment>Importing SQL dump <info>' . $fileName . '</info> to database <info>'
             . $this->dbSettings['dbname'] . '</info>'
         );
+
+        //redirect stderr to stdout
+        $exec .= ' 2>&1';
         exec($exec, $commandOutput, $returnValue);
+
+        $commandOutput = implode(PHP_EOL, $commandOutput);
+
+        if($returnValue !== 0) {
+            throw new \RuntimeException($commandOutput);
+        }
+
         if ($returnValue <> 0) {
-            $output->writeln('<error>' . implode(PHP_EOL, $commandOutput) . '</error>');
+            $output->writeln('<error>' . $commandOutput . '</error>');
         }
         $output->writeln('<info>Finished</info>');
     }
