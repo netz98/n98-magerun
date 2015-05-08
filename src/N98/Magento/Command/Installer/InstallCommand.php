@@ -13,6 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
+use N98\Util\Exec;
 
 /**
  * Class InstallCommand
@@ -464,7 +465,7 @@ HELP;
                                 . ' < '
                                 . escapeshellarg($sampleDataSqlFile[0]);
                             $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with mysql cli client</info>');
-                            exec($exec);
+                            Exec::run($exec);
                             @unlink($sampleDataSqlFile[0]);
                         } else {
                             $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with PDO driver</info>');
@@ -694,7 +695,7 @@ HELP;
             $installCommand = '/usr/bin/env php -f ' . escapeshellarg($this->getInstallScriptPath()) . ' -- ' . $installArgs;
         }
         $output->writeln('<comment>' . $installCommand . '</comment>');
-        exec($installCommand, $installationOutput, $returnStatus);
+        Exec::run($installCommand, $installationOutput, $returnStatus);
         $installationOutput = implode(PHP_EOL, $installationOutput);
         if ($returnStatus !== self::EXEC_STATUS_OK) {
             $this->getApplication()->setAutoExit(true);
