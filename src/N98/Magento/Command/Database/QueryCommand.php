@@ -80,7 +80,7 @@ HELP;
             Exec::run($exec, $commandOutput, $returnValue);
             $output->writeln($commandOutput);
             if ($returnValue > 0) {
-                $output->writeln('<error>' . implode(PHP_EOL, $commandOutput) . '</error>');
+                $output->writeln('<error>' . $commandOutput . '</error>');
             }
         }        
     }

@@ -282,7 +282,7 @@ HELP;
                     Exec::run($exec, $commandOutput, $returnValue);
                 }
                 if ($returnValue > 0) {
-                    $output->writeln('<error>' . implode(PHP_EOL, $commandOutput) . '</error>');
+                    $output->writeln('<error>' . $commandOutput . '</error>');
                     $output->writeln('<error>Return Code: ' . $returnValue . '. ABORTED.</error>');
 
                     return;

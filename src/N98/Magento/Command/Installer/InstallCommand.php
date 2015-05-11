@@ -696,7 +696,6 @@ HELP;
         }
         $output->writeln('<comment>' . $installCommand . '</comment>');
         Exec::run($installCommand, $installationOutput, $returnStatus);
-        $installationOutput = implode(PHP_EOL, $installationOutput);
         if ($returnStatus !== self::EXEC_STATUS_OK) {
             $this->getApplication()->setAutoExit(true);
             throw new \RuntimeException('Installation failed.' . $installationOutput, 1);
