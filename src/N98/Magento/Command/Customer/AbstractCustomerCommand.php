@@ -45,4 +45,13 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
     {
         return $this->_getResourceModel('directory/country_collection', 'Mage_Directory_Model_Resource_Country_Collection');
     }
+
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return function_exists('exec');
+    }
 }

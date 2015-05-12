@@ -18,6 +18,10 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         $this->fileSystem = new Filesystem();
     }
 
+
+    /**
+     * @expectedException RuntimeException
+     */
     public function testRecursiveCopy()
     {
         $tmp        = sys_get_temp_dir();
@@ -49,6 +53,9 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         rmdir($dest . "/folder1");
         rmdir($dest . "/folder2");
         rmdir($dest);
+
+        $this->fileSystem->recursiveCopy('/tmp/', '/NOT_A_FOLDER');
+
     }
 
     public function testRecursiveCopyWithBlacklist()
