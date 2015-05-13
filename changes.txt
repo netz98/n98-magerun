@@ -6,7 +6,7 @@ RECENT CHANGES
 1.96.0
 ======
 
-* #505 new command admin:user:toggle-active (by Cristian Quiroz)
+* #505 new command admin:user:status (by Cristian Quiroz)
 * #514 Some small database connection & db:info improvements (by Pieter Hoste)
 * #515 Autocompletion for oh-my-zsh (by Johannes Klein)
 * #517 Update ordering of compare-versions so that output is alphabetised (by Luke Rodgers)
@@ -22,6 +22,7 @@ RECENT CHANGES
 * #538 dev:console disappeared (by Christian Münch)
 * #542 Add tests for some of the admin:user commands. (by Peter O'Callaghan)
 * #544 Fixing travis integration (by Steve Robbins)
+* #553 Add option to dump binary columns using hexadecimal notation (by David Moises Paz Reyes)
 * Added windows system utilities (by Tom Klingenberg)
 * Support for git bash (by Tom Klingenberg)
 * Added Magento 1.9.1.1 to installer (by Christian Münch)

@@ -751,7 +751,7 @@ Toggle admin user active state
 
 .. code-block:: sh
 
-   $ n98-magerun.phar admin:user:toggle-active [email|username]
+   $ n98-magerun.phar admin:user:change-status [--activate] [--deactivate] [email|username]
 
 Toggles the active status of an backend user. ID can be e-mail or username. The command will attempt to find the
 user by username first and if it cannot be found it will attempt to find the user by e-mail. If ID is omitted you

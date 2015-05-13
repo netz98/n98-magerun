@@ -8,11 +8,11 @@ use Symfony\Component\Console\Tester\CommandTester;
 /**
  * Class ToggleActiveCommandTest
  */
-class ToggleActiveCommandTest extends TestCase
+class ChangeStatusCommandTest extends TestCase
 {
     protected $command;
     protected $userModel;
-    protected $commandName = 'admin:user:toggle-active';
+    protected $commandName = 'admin:user:change-status';
 
     public function setUp()
     {

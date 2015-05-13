@@ -4,16 +4,19 @@ namespace N98\Magento\Command\Admin\User;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ToggleActiveCommand extends AbstractAdminUserCommand
+class ChangeStatusCommand extends AbstractAdminUserCommand
 {
     protected function configure()
     {
         $this
-            ->setName('admin:user:toggle-active')
+            ->setName('admin:user:change-status')
             ->addArgument('id', InputArgument::OPTIONAL, 'Username or Email')
-            ->setDescription('Toggles active status of an adminhtml user.')
+            ->addOption('activate', null, InputOption::VALUE_NONE, 'Activate user')
+            ->addOption('deactivate', null, InputOption::VALUE_NONE, 'Deactivate user')
+            ->setDescription('Set active status of an adminhtml user. If no option is set the status will be toggled.')
         ;
     }
 
@@ -46,16 +49,24 @@ class ToggleActiveCommand extends AbstractAdminUserCommand
 
             try {
                 $result = $user->validate();
+
                 if (is_array($result)) {
                     throw new \Exception(implode(PHP_EOL, $result));
                 }
 
-                // toggle is_active
-                if ($user->getIsActive() == 1) {
-                    $user->setIsActive(0);
-                } else {
+                if ($input->getOption('activate')) {
                     $user->setIsActive(1);
                 }
+
+                if ($input->getOption('deactivate')) {
+                    $user->setIsActive(0);
+                }
+
+                // toggle is_active
+                if (!$input->getOption('activate') && !$input->getOption('deactivate')) {
+                    $user->setIsActive(!$user->getIsActive()); // toggle
+                }
+
                 $user->save();
 
                 if ($user->getIsActive() == 1) {
