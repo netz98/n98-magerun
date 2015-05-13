@@ -6,7 +6,7 @@ use N98\Magento\Command\PHPUnit\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Class ToggleActiveCommandTest
+ * Class ChangeStatusCommandTest
  */
 class ChangeStatusCommandTest extends TestCase
 {
@@ -16,7 +16,7 @@ class ChangeStatusCommandTest extends TestCase
 
     public function setUp()
     {
-        $this->command = $this->getMockBuilder('\N98\Magento\Command\Admin\User\ToggleActiveCommand')
+        $this->command = $this->getMockBuilder('\N98\Magento\Command\Admin\User\ChangeStatusCommand')
             ->setMethods(array('getUserModel'))
             ->getMock();
 
