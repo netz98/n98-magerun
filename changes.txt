@@ -27,6 +27,7 @@ RECENT CHANGES
 * Support for git bash (by Tom Klingenberg)
 * Added Magento 1.9.1.1 to installer (by Christian Münch)
 * Added --only-download option to Magento installer
+* Updated 3rd party compontents.
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
