@@ -91,6 +91,8 @@ class ApplicationTest extends TestCase
 
     public function testPlugins()
     {
+        $this->getApplication(); // bootstrap implicit
+
         /**
          * Check autoloading
          */

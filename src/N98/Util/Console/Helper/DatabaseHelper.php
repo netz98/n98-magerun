@@ -68,7 +68,7 @@ class DatabaseHelper extends AbstractHelper
             $this->dbSettings           = (array)$config->global->resources->default_setup->connection;
             $this->dbSettings['prefix'] = (string)$config->global->resources->db->table_prefix;
 
-            if (strpos($this->dbSettings['host'], ':') !== false) {
+            if (isset($this->dbSettings['host']) && strpos($this->dbSettings['host'], ':') !== false) {
                 list($this->dbSettings['host'], $this->dbSettings['port']) = explode(':', $this->dbSettings['host']);
             }
 
@@ -81,7 +81,7 @@ class DatabaseHelper extends AbstractHelper
             }
 
             // @see Varien_Db_Adapter_Pdo_Mysql->_connect()
-            if ( strpos($this->dbSettings['host'], '/') !== false ) {
+            if (isset($this->dbSettings['host']) && strpos($this->dbSettings['host'], '/') !== false ) {
                 $this->isSocketConnect = true;
                 $this->dbSettings['unix_socket'] = $this->dbSettings['host'];
                 unset($this->dbSettings['host']);
@@ -111,13 +111,6 @@ class DatabaseHelper extends AbstractHelper
 
         if (!extension_loaded('pdo_mysql')) {
             throw new \Exception('pdo_mysql extension is not installed');
-        }
-
-        if (strpos($this->dbSettings['host'], '/') !== false) {
-            $this->dbSettings['unix_socket'] = $this->dbSettings['host'];
-            unset($this->dbSettings['host']);
-        } else if (strpos($this->dbSettings['host'], ':') !== false) {
-            list($this->dbSettings['host'], $this->dbSettings['port']) = explode(':', $this->dbSettings['host']);
         }
 
         $this->_connection = new \PDO(

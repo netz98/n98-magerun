@@ -746,6 +746,17 @@ ID can be e-mail or username. The command will attempt to find the user by usern
 will attempt to find the user by e-mail. If ID is omitted you will be prompted for it. If the force parameter "-f" is
 omitted you will be prompted for confirmation.
 
+Toggle admin user active state
+""""""""""""""""""""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar admin:user:change-status [--activate] [--deactivate] [email|username]
+
+Toggles the active status of an backend user. ID can be e-mail or username. The command will attempt to find the
+user by username first and if it cannot be found it will attempt to find the user by e-mail. If ID is omitted you
+will be prompted for it.
+
 Unlock admin user
 """""""""""""""""
 
@@ -844,7 +855,7 @@ List URLs
 
 .. code-block:: sh
 
-   $ sys:url:list [--add-categories] [--add-products] [--add-cmspages] [--add-all] [stores] [linetemplate]
+   $ n98-magerun.phar sys:url:list [--add-categories] [--add-products] [--add-cmspages] [--add-all] [stores] [linetemplate]
 
 Examples:
 
@@ -1518,7 +1529,7 @@ PHPStorm 8.0.*
 A commandline tool autocompletion XML file for PHPStorm exists in subfolder **autocompletion/phpstorm**.
 Copy **n98_magerun.xml** into your phpstorm config folder.
 
-Linux: ~/.WebIde80/config/componentVersions
+Linux and Mac: ~/.WebIde80/config/componentVersions
 
 You can also add the XML content over settings menu.
 For further instructions read this blog post: http://blog.jetbrains.com/webide/2012/10/integrating-composer-command-line-tool-with-phpstorm/

@@ -48,20 +48,37 @@ HELP;
             $settings[$key] = (string) $value;
         }
 
-        $pdoConnectionString = sprintf(
-            'mysql:host=%s;dbname=%s',
-            $this->dbSettings['host'],
-            $this->dbSettings['dbname']
-        );
+        $pdoConnectionString = '';
+        if ($this->isSocketConnect) {
+            $pdoConnectionString = sprintf(
+                'mysql:unix_socket=%s;dbname=%s',
+                $this->dbSettings['unix_socket'],
+                $this->dbSettings['dbname']
+            );
+        } else {
+            $pdoConnectionString = sprintf(
+                'mysql:host=%s;port=%s;dbname=%s',
+                $this->dbSettings['host'],
+                isset($this->dbSettings['port']) ? $this->dbSettings['port'] : 3306,
+                $this->dbSettings['dbname']
+            );
+        }
         $settings['PDO-Connection-String'] = $pdoConnectionString;
 
-        $jdbcConnectionString = sprintf(
-            'jdbc:mysql://%s/%s?username=%s&password=%s',
-            $this->dbSettings['host'],
-            $this->dbSettings['dbname'],
-            $this->dbSettings['username'],
-            $this->dbSettings['password']
-        );
+        $jdbcConnectionString = '';
+        if ($this->isSocketConnect) {
+            // isn't supported according to this post: http://stackoverflow.com/a/18493673/145829
+            $jdbcConnectionString = 'Connecting using JDBC through a unix socket isn\'t supported!';
+        } else {
+            $jdbcConnectionString = sprintf(
+                'jdbc:mysql://%s:%s/%s?username=%s&password=%s',
+                $this->dbSettings['host'],
+                isset($this->dbSettings['port']) ? $this->dbSettings['port'] : 3306,
+                $this->dbSettings['dbname'],
+                $this->dbSettings['username'],
+                $this->dbSettings['password']
+            );
+        }
         $settings['JDBC-Connection-String'] = $jdbcConnectionString;
 
         $mysqlCliString = 'mysql ' . $this->getHelper('database')->getMysqlClientToolConnectionString();

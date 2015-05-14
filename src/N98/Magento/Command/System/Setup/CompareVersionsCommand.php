@@ -87,7 +87,13 @@ HELP;
             if (!$input->getOption('format')) {
 
                 usort($table, function($a, $b) {
-                    return $a['Status'] !== 'OK';
+                    if ($a['Status'] !== 'OK' && $b['Status'] === 'OK') {
+                        return 1;
+                    }
+                    if ($a['Status'] === 'OK' && $b['Status'] !== 'OK') {
+                        return -1;
+                    }
+                    return strcmp($a['Setup'], $b['Setup']);
                 });
 
                 array_walk($table, function (&$row) {

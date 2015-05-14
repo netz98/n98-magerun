@@ -54,6 +54,10 @@ class OperatingSystem
      */
     public static function isProgramInstalled($program)
     {
+        if (self::isWindows()) {
+            return WindowsSystem::isProgramInstalled($program);
+        }
+
         $out = null;
         $return = null;
         @exec('which ' . $program, $out, $return);

@@ -286,12 +286,12 @@ abstract class AbstractMagentoCommand extends Command
         if ($package->getSourceType() == 'git') {
             $command = sprintf(
                 'cd %s && git rev-parse refs/tags/%s',
-                escapeshellarg($targetFolder),
+                escapeshellarg($this->normalizePath($targetFolder)),
                 escapeshellarg($package->getSourceReference())
             );
             $existingTags = shell_exec($command);
             if (!$existingTags) {
-                $command = sprintf('cd %s && git fetch', escapeshellarg($targetFolder));
+                $command = sprintf('cd %s && git fetch', escapeshellarg($this->normalizePath($targetFolder)));
                 shell_exec($command);
             }
         } elseif ($package->getSourceType() == 'hg') {
@@ -306,6 +306,23 @@ abstract class AbstractMagentoCommand extends Command
                 shell_exec($command);
             }
         }
+    }
+
+    /**
+     * normalize paths on windows / cygwin / msysgit
+     *
+     * when using a path value that has been created in a cygwin shell but then PHP uses it inside a cmd shell it needs
+     * to be filtered.
+
+     * @param $path
+     * @return string
+     */
+    protected function normalizePath($path)
+    {
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+            $path = strtr($path, '/', '\\');
+        }
+        return $path;
     }
 
     /**
