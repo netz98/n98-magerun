@@ -40,6 +40,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
             $loader = require __DIR__ . '/../../../../../vendor/autoload.php';
             $this->application->setAutoloader($loader);
             $this->application->expects($this->any())->method('getMagentoRootFolder')->will($this->returnValue($root));
+
+            spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
+
             $this->application->init();
             $this->application->initMagento();
             if ($this->application->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1) {
