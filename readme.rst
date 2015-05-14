@@ -1523,7 +1523,7 @@ In my Ubuntu system this can be done with the following command:
    $ sudo cp autocompletion/bash/bash_complete /etc/bash_completion.d/n98-magerun.phar
 
 
-PHPStorm
+PHPStorm 8.0.*
 """"""""
 
 A commandline tool autocompletion XML file for PHPStorm exists in subfolder **autocompletion/phpstorm**.
