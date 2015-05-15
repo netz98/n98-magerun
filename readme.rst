@@ -704,6 +704,17 @@ Prints stored cache entry by ID.
 
 If value is serialized you can force a pretty output with --unserialize option.
 
+Toggle CMS Block
+"""""""""""
+
+Toggle "is_active" on a cms block
+
+.. code-block:: sh
+
+   $ n98-magerun.phar cms:block:toggle [block_id]
+
+"block_id" can be an entity id or an "identifier"
+
 Demo Notice
 """""""""""
 
