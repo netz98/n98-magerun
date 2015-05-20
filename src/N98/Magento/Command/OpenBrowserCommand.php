@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use N98\Util\OperatingSystem;
+use N98\Util\Exec;
 
 class OpenBrowserCommand extends AbstractMagentoCommand
 {
@@ -65,7 +66,7 @@ class OpenBrowserCommand extends AbstractMagentoCommand
                 $url = $store->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK) . '?___store=' . $store->getCode();
             }
             $output->writeln('Opening URL <comment>' . $url . '</comment> in browser');
-            exec(escapeshellcmd($opener . ' ' . $url));
+            Exec::run(escapeshellcmd($opener . ' ' . $url));
         }
     }
 
