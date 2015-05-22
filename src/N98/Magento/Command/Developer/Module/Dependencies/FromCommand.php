@@ -30,28 +30,33 @@ class FromCommand extends AbstractCommand
             $this->modules = \Mage::app()->getConfig()->getNode('modules')->asArray();
         }
 
-        if (isset($this->modules[$moduleName])) {
-            $dependencies = array();
-            foreach ($this->modules as $dependencyName => $module) {
-                if (isset($module['depends'][$moduleName])) {
-                    $dependencies[$dependencyName] = array(
-                        $dependencyName,
-                        isset($module['active']) ? $this->formatActive($module['active']) : '-',
-                        isset($module['version']) ? $module['version'] : '-',
-                        isset($module['codePool']) ? $module['codePool'] : '-',
-                    );
-                    if ($recursive) {
-                        $dependencies = array_merge(
-                            $dependencies,
-                            $this->findModuleDependencies($dependencyName, $recursive)
-                        );
-                    }
-                }
-            }
-
-            return $dependencies;
-        } else {
+        if (!isset($this->modules[$moduleName])) {
             throw new \InvalidArgumentException(sprintf("Module %s was not found", $moduleName));
         }
+
+        $dependencies = array();
+        foreach ($this->modules as $dependencyName => $module) {
+
+            if (!isset($module['depends'][$moduleName])) {
+                continue;
+            }
+
+            $dependencies[$dependencyName] = array(
+                $dependencyName,
+                isset($module['active']) ? $this->formatActive($module['active']) : '-',
+                isset($module['version']) ? $module['version'] : '-',
+                isset($module['codePool']) ? $module['codePool'] : '-',
+            );
+
+            if ($recursive) {
+                $dependencies = array_merge(
+                    $dependencies,
+                    $this->findModuleDependencies($dependencyName, $recursive)
+                );
+            }
+
+        }
+
+        return $dependencies;
     }
 }

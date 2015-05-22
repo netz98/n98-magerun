@@ -33,14 +33,6 @@ HELP;
     }
 
     /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return function_exists('exec');
-    }
-
-    /**
      * Optimize a dump by converting single INSERTs per line to INSERTs with multiple lines
      * @param $fileName
      * @return string temporary filename
@@ -71,7 +63,7 @@ HELP;
                 $table = $m[1];
                 $values = $m[2];
 
-                if ($table != $currentTable or ($len > $maxlen - 1000)) {
+                if ($table != $currentTable || ($len > $maxlen - 1000)) {
                     if ($currentTable != '') {
                         fwrite($out, ";\n");
                     }

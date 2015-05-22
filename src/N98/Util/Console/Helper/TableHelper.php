@@ -99,7 +99,7 @@ class TableHelper extends BaseTableHelper
      * @param  int             $crop    Maximum column width
      * @param  boolean         $rowKeys Display the keys as first column
      */
-    public function write(OutputInterface $output, $table, $crop = null, $rowKeys = false)
+    public function write(OutputInterface $output, $table)
     {
         $this->setHeaders(array_keys($table[0]));
         $this->setRows($table);

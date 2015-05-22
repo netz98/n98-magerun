@@ -8,6 +8,7 @@ use N98\Magento\Command\CommandConfigAware;
 use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Unicode\Charset;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -116,12 +117,12 @@ HELP;
                 switch ($result->getStatus()) {
                     case Result::STATUS_WARNING:
                     case Result::STATUS_ERROR:
-                        $output->write('<error>' . \N98\Util\Unicode\Charset::convertInteger(self::UNICODE_CROSS_CHAR) . '</error> ');
+                        $output->write('<error>' . \N98\Util\Unicode\Charset::convertInteger(Charset::UNICODE_CROSS_CHAR) . '</error> ');
                         break;
 
                     default:
                     case Result::STATUS_OK:
-                        $output->write('<info>' . \N98\Util\Unicode\Charset::convertInteger(self::UNICODE_CHECKMARK_CHAR) . '</info> ');
+                        $output->write('<info>' . \N98\Util\Unicode\Charset::convertInteger(Charset::UNICODE_CHECKMARK_CHAR) . '</info> ');
                         break;
                 }
                 $output->writeln($result->getMessage());

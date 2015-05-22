@@ -192,10 +192,9 @@ class Application extends BaseApplication
      */
     public function getDetectSubFolders()
     {
-        if (isset($this->partialConfig['detect'])) {
-            if (isset($this->partialConfig['detect']['subFolders'])) {
-                return $this->partialConfig['detect']['subFolders'];
-            }
+        if (isset($this->partialConfig['detect']) && isset($this->partialConfig['detect']['subFolders'])) {
+            return $this->partialConfig['detect']['subFolders'];
+
         }
         return array();
     }
@@ -238,7 +237,8 @@ class Application extends BaseApplication
         }
 
         $this->getHelperSet()->set(new MagentoHelper($input, $output), 'magento');
-        $magentoHelper = $this->getHelperSet()->get('magento'); /* @var $magentoHelper MagentoHelper */
+        $magentoHelper = $this->getHelperSet()->get('magento');
+        /* @var $magentoHelper MagentoHelper */
         if (!$this->_directRootDir) {
             $subFolders = $this->getDetectSubFolders();
         } else {
@@ -297,30 +297,36 @@ class Application extends BaseApplication
     }
 
     /**
+     * @return bool
+     */
+    protected function hasCustomCommands() {
+        return isset($this->config['commands']['customCommands'])
+        && is_array($this->config['commands']['customCommands']);
+    }
+
+    /**
      * @return void
      */
     protected function registerCustomCommands()
     {
-        if (isset($this->config['commands']['customCommands'])
-            && is_array($this->config['commands']['customCommands'])
-        ) {
-            foreach ($this->config['commands']['customCommands'] as $commandClass) {
-                if (is_array($commandClass)) { // Support for key => value (name -> class)
-                    $resolvedCommandClass = current($commandClass);
-                    if ($this->isCommandDisabled($resolvedCommandClass)) {
-                        continue;
-                    }
-                    $command = new $resolvedCommandClass();
-                    $command->setName(key($commandClass));
-                } else {
-                    if ($this->isCommandDisabled($commandClass)) {
-                        continue;
-                    }
-                    $command = new $commandClass();
-                }
+        if (!$this->hasCustomCommands()) {
+            return;
+        }
 
-                $this->add($command);
+        foreach ($this->config['commands']['customCommands'] as $commandClass) {
+            if (is_array($commandClass)) { // Support for key => value (name -> class)
+                $resolvedCommandClass = current($commandClass);
+                if ($this->isCommandDisabled($resolvedCommandClass)) {
+                    continue;
+                }
+                $command = new $resolvedCommandClass();
+                $command->setName(key($commandClass));
+            } elseif ($this->isCommandDisabled($commandClass)) {
+                continue;
+            } else {
+                $command = new $commandClass();
             }
+            $this->add($command);
         }
     }
 
@@ -402,53 +408,54 @@ class Application extends BaseApplication
      */
     public function checkVarDir(OutputInterface $output)
     {
-        if (OutputInterface::VERBOSITY_NORMAL <= $output->getVerbosity()) {
-            $tempVarDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'magento' . DIRECTORY_SEPARATOR .  'var';
-
-            if (is_dir($tempVarDir)) {
-                $this->detectMagento(null, $output);
-                /* If magento is not installed yet, don't check */
-                if ($this->_magentoRootFolder === null
-                    || !file_exists($this->_magentoRootFolder . '/app/etc/local.xml')
-                ) {
-                    return;
-                }
-
-                try {
-                    $this->initMagento();
-                } catch (\Exception $e) {
-                    $message = 'Cannot initialize Magento. Please check your configuration. '
-                             . 'Some n98-magerun command will not work. Got message: ';
-                    if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $output->getVerbosity()) {
-                        $message .= $e->getTraceAsString();
-                    } else {
-                        $message .= $e->getMessage();
-                    }
-                    $output->writeln($message);
-
-                    return;
-                }
-
-                $configOptions = new \Mage_Core_Model_Config_Options();
-                $currentVarDir = $configOptions->getVarDir();
-
-                if ($currentVarDir == $tempVarDir) {
-                    $output->writeln(sprintf('<warning>Fallback folder %s is used in n98-magerun</warning>', $tempVarDir));
-                    $output->writeln('');
-                    $output->writeln('n98-magerun is using the fallback folder. If there is another folder configured for Magento, this can cause serious problems.');
-                    $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
-                    $output->writeln('');
-                } else {
-                    $output->writeln(sprintf('<warning>Folder %s found, but not used in n98-magerun</warning>', $tempVarDir));
-                    $output->writeln('');
-                    $output->writeln(sprintf('This might cause serious problems. n98-magerun is using the configured var-folder <comment>%s</comment>', $currentVarDir));
-                    $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
-                    $output->writeln('');
-
-                    return false;
-                }
-            }
+        $tempVarDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'magento' . DIRECTORY_SEPARATOR . 'var';
+        if (!OutputInterface::VERBOSITY_NORMAL <= $output->getVerbosity() && !is_dir($tempVarDir)) {
+            return;
         }
+
+        $this->detectMagento(null, $output);
+        /* If magento is not installed yet, don't check */
+        if ($this->_magentoRootFolder === null
+            || !file_exists($this->_magentoRootFolder . '/app/etc/local.xml')
+        ) {
+            return;
+        }
+
+        try {
+            $this->initMagento();
+        } catch (\Exception $e) {
+            $message = 'Cannot initialize Magento. Please check your configuration. '
+                . 'Some n98-magerun command will not work. Got message: ';
+            if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $output->getVerbosity()) {
+                $message .= $e->getTraceAsString();
+            } else {
+                $message .= $e->getMessage();
+            }
+            $output->writeln($message);
+
+            return;
+        }
+
+        $configOptions = new \Mage_Core_Model_Config_Options();
+        $currentVarDir = $configOptions->getVarDir();
+
+        if ($currentVarDir == $tempVarDir) {
+            $output->writeln(sprintf('<warning>Fallback folder %s is used in n98-magerun</warning>', $tempVarDir));
+            $output->writeln('');
+            $output->writeln('n98-magerun is using the fallback folder. If there is another folder configured for Magento, this can cause serious problems.');
+            $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
+            $output->writeln('');
+        } else {
+            $output->writeln(sprintf('<warning>Folder %s found, but not used in n98-magerun</warning>', $tempVarDir));
+            $output->writeln('');
+            $output->writeln(sprintf('This might cause serious problems. n98-magerun is using the configured var-folder <comment>%s</comment>', $currentVarDir));
+            $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
+            $output->writeln('');
+
+            return false;
+        }
+
+
     }
 
     public function initMagento()
@@ -554,7 +561,7 @@ class Application extends BaseApplication
     /**
      * Runs the current application with possible command aliases
      *
-     * @param InputInterface $input  An Input instance
+     * @param InputInterface $input An Input instance
      * @param OutputInterface $output An Output instance
      *
      * @return integer 0 if everything went fine, or an error code
@@ -674,7 +681,7 @@ class Application extends BaseApplication
             $this->partialConfig = $configLoader->getPartialConfig($loadExternalConfig);
             $this->detectMagento($input, $output);
             $configLoader->loadStageTwo($this->_magentoRootFolder, $loadExternalConfig, $this->_magerunStopFileFolder);
-            $this->config = $configLoader->toArray();;
+            $this->config = $configLoader->toArray();
             $this->dispatcher = new EventDispatcher();
             $this->setDispatcher($this->dispatcher);
             if ($this->autoloader) {
@@ -792,12 +799,13 @@ MAGENTO2HINT;
     }
 
     /**
-     * @return void
+     * @param $loaders
      */
-    protected function _restoreAutoloaders($loaders) {
-        $current_loaders = spl_autoload_functions();
+    protected function _restoreAutoloaders($loaders)
+    {
+        $currentLoaders = spl_autoload_functions();
         foreach ($loaders as $function) {
-            if (!in_array($function, $current_loaders)) {
+            if (!in_array($function, $currentLoaders)) {
                 spl_autoload_register($function);
             }
         }

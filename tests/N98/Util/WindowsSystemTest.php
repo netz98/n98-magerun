@@ -9,6 +9,7 @@ namespace N98\Util;
  * Class WindowsSystemTest
  *
  * @package N98\Util
+ * @requires OS win
  */
 class WindowsSystemTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,9 +18,6 @@ class WindowsSystemTest extends \PHPUnit_Framework_TestCase
      */
     public function isProgramInstalled()
     {
-        if (!OperatingSystem::isWindows()) {
-            $this->markTestSkipped('Only tested on windows');
-        }
 
         $this->assertTrue(WindowsSystem::isProgramInstalled("notepad"));
 
@@ -55,10 +53,6 @@ class WindowsSystemTest extends \PHPUnit_Framework_TestCase
      */
     public function isExecutableName($name, $expected)
     {
-        if (!OperatingSystem::isWindows()) {
-            $this->markTestSkipped('Only tested on windows');
-        }
-
         $this->assertSame($expected, WindowsSystem::isExecutableName($name), $name);
     }
 }

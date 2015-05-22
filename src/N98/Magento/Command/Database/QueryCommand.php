@@ -33,14 +33,6 @@ HELP;
     }
 
     /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return function_exists('exec');
-    }
-    
-    /**
      * Returns the query string with escaped ' characters so it can be used
      * within the mysql -e argument.
      * 
@@ -64,13 +56,10 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectDbSettings($output);
-        
-        if (($query = $input->getArgument('query')) === null) {
-            $dialog = $this->getHelperSet()->get('dialog');
-            $query = $dialog->ask($output, '<question>SQL Query:</question>');
-        }
-        
-        $query = $this->getEscapedSql($query);        
+
+        $query = $this->getOrAskForArgument('query', $input, $output, 'SQL Query');
+
+        $query = $this->getEscapedSql($query);
         
         $exec = 'mysql ' . $this->getMysqlClientToolConnectionString() . " -e '" . $query . "'";
 

@@ -4,6 +4,17 @@ namespace N98\Util\Unicode;
 
 class Charset
 {
+
+    /**
+     * @var int
+     */
+    const UNICODE_CHECKMARK_CHAR = 10004;
+
+    /**
+     * @var int
+     */
+    const UNICODE_CROSS_CHAR = 10006;
+
     /**
      * @param int|array $codes
      * @return string

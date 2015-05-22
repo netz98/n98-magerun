@@ -2,7 +2,6 @@
 
 namespace N98\Magento\Command\Cache;
 
-use N98\Magento\Application;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,11 +31,6 @@ If you would like to remove all cache entries use `cache:flush`
 
 HELP;
         $this->setHelp($help);
-    }
-
-    public function isEnabled()
-    {
-        return $this->getApplication()->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1;
     }
 
     /**

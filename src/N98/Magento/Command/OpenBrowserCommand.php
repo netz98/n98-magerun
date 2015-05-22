@@ -21,14 +21,6 @@ class OpenBrowserCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return function_exists('exec');
-    }
-
-    /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @throws \RuntimeException

@@ -4,6 +4,13 @@ namespace N98\Util;
 
 class OperatingSystem
 {
+
+
+    /**
+     * @var int
+     */
+    const UID_ROOT = 0;
+
     /**
      * Returns true if operating system is
      * based on GNU linux.
@@ -12,7 +19,7 @@ class OperatingSystem
      */
     public static function isLinux()
     {
-        return stristr(self::_getOs(), 'linux');
+        return (bool)stristr(self::_getOs(), 'linux');
     }
 
     /**
@@ -23,7 +30,7 @@ class OperatingSystem
      */
     public static function isWindows()
     {
-        return strtolower(substr(self::_getOs(), 0, 3)) === 'win';
+        return (bool)strtolower(substr(self::_getOs(), 0, 3)) === 'win';
     }
 
     /**
@@ -34,7 +41,7 @@ class OperatingSystem
      */
     public static function isNetware()
     {
-        return stristr(self::_getOs(), 'netware');
+        return (bool)stristr(self::_getOs(), 'netware');
     }
 
     /**
@@ -45,7 +52,7 @@ class OperatingSystem
      */
     public static function isMacOs()
     {
-        return stristr(self::_getOs(), 'darwin') || stristr(self::_getOs(), 'mac');
+        return (bool)stristr(self::_getOs(), 'darwin') || stristr(self::_getOs(), 'mac');
     }
 
     /**
@@ -80,8 +87,25 @@ class OperatingSystem
     {
         if (self::isWindows()) {
             return getenv('USERPROFILE');
-        } else {
-            return getenv('HOME');
         }
+        return getenv('HOME');
+    }
+
+
+    /**
+     * @return bool
+     */
+    public static function hasShell()
+    {
+        return OperatingSystem::isLinux() || OperatingSystem::isMacOs();
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isRoot()
+    {
+        return self::hasShell() && function_exists('posix_getuid') && posix_getuid() === self::UID_ROOT;
     }
 }
+
