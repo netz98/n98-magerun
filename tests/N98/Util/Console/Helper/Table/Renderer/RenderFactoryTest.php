@@ -4,13 +4,6 @@ namespace N98\Util\Console\Helper\Table\Renderer;
 
 class RenderFactoryTest extends \PHPUnit_Framework_TestCase
 {
-
-    protected static $formats = array(
-        'N98\Util\Console\Helper\Table\Renderer\CsvRenderer',
-        'N98\Util\Console\Helper\Table\Renderer\JsonRenderer',
-        'N98\Util\Console\Helper\Table\Renderer\XmlRenderer',
-    );
-
     /**
      * @covers \N98\Util\Console\Helper\Table\Renderer\RendererFactory::getFormats
      */
@@ -29,7 +22,7 @@ class RenderFactoryTest extends \PHPUnit_Framework_TestCase
 
         $invalidFormat = $renderFactory->create('invalid_format');
         $this->assertFalse($invalidFormat);
-
    }
 
 }
+

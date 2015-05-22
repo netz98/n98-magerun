@@ -108,3 +108,4 @@ class OperatingSystem
         return self::hasShell() && function_exists('posix_getuid') && posix_getuid() === self::UID_ROOT;
     }
 }
+
