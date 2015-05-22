@@ -42,13 +42,13 @@ Download phar file
 
 .. code-block:: sh
 
-    wget https://raw.githubusercontent.com/netz98/n98-magerun/master/n98-magerun.phar
+   wget http://files.magerun.net/n98-magerun-latest.phar -O n98-magerun.phar 
 
 or if you have problems with SSL certificate:
 
 .. code-block:: sh
 
-   curl -o n98-magerun.phar https://raw.githubusercontent.com/netz98/n98-magerun/master/n98-magerun.phar
+   curl -sS http://files.magerun.net/n98-magerun-latest.phar -o n98-magerun.phar 
 
 You can make the .phar file executable.
 
