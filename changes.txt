@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.96.1
+======
+
+* Changed self-update URLs to new download page: http://files.magerun.net
+
+======
 1.96.0
 ======
 
