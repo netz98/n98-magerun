@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Exec;
 
 class DumpCommand extends AbstractDatabaseCommand
 {
@@ -283,10 +284,10 @@ HELP;
                 if ($input->getOption('stdout')) {
                     passthru($exec, $returnValue);
                 } else {
-                    exec($exec, $commandOutput, $returnValue);
+                    Exec::run($exec, $commandOutput, $returnValue);
                 }
                 if ($returnValue > 0) {
-                    $output->writeln('<error>' . implode(PHP_EOL, $commandOutput) . '</error>');
+                    $output->writeln('<error>' . $commandOutput . '</error>');
                     $output->writeln('<error>Return Code: ' . $returnValue . '. ABORTED.</error>');
 
                     return;

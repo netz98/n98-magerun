@@ -22,6 +22,7 @@ use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use N98\Util\Exec;
 
 class Application extends BaseApplication
 {
@@ -223,9 +224,9 @@ class Application extends BaseApplication
             $this->_checkRootDirOption($input);
             if (function_exists('exec')) {
                 if (OperatingSystem::isWindows()) {
-                    $folder = exec('@echo %cd%'); // @TODO not currently tested!!!
+                    $folder = Exec::run('@echo %cd%'); // @TODO not currently tested!!!
                 } else {
-                    $folder = exec('pwd');
+                    $folder = Exec::run('pwd');
                 }
             } else {
                 $folder = getcwd();

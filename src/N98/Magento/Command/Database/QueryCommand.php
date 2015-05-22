@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Exec;
 
 class QueryCommand extends AbstractDatabaseCommand
 {
@@ -76,10 +77,10 @@ HELP;
         if ($input->getOption('only-command')) {
             $output->writeln($exec);
         } else {
-            exec($exec, $commandOutput, $returnValue);
+            Exec::run($exec, $commandOutput, $returnValue);
             $output->writeln($commandOutput);
             if ($returnValue > 0) {
-                $output->writeln('<error>' . implode(PHP_EOL, $commandOutput) . '</error>');
+                $output->writeln('<error>' . $commandOutput . '</error>');
             }
         }        
     }
