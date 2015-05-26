@@ -22,7 +22,7 @@ Build Status
 .. image:: https://poser.pugx.org/n98/magerun/v/stable.png
    :target: https://packagist.org/packages/n98/magerun
 
-.. image: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=master
+.. image:: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=master
    :target: https://scrutinizer-ci.com/g/netz98/n98-magerun/
 
 **Development Branch**
@@ -30,7 +30,7 @@ Build Status
 .. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=develop
    :target: https://travis-ci.org/netz98/n98-magerun
 
-.. image: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=develop
+.. image:: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=develop
    :target: https://scrutinizer-ci.com/g/netz98/n98-magerun/?branch=develop
 
 Compatibility
