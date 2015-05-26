@@ -7,6 +7,11 @@ class OperatingSystem
 
 
     /**
+     * @var string
+     */
+    public static $magerunFolder = '/.n98-magerun/';
+
+    /**
      * @var int
      */
     const UID_ROOT = 0;
