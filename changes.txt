@@ -3,37 +3,17 @@ RECENT CHANGES
 **************
 
 ======
+1.97.0
+======
+
+* #564 Print only magento version -> sys:info command (by Christian Münch)
+
+
+======
 1.96.1
 ======
 
 * Changed self-update URLs to new download page: http://files.magerun.net
-
-======
-1.96.0
-======
-
-* #505 new command admin:user:status (by Cristian Quiroz)
-* #514 Some small database connection & db:info improvements (by Pieter Hoste)
-* #515 Autocompletion for oh-my-zsh (by Johannes Klein)
-* #517 Update ordering of compare-versions so that output is alphabetised (by Luke Rodgers)
-* #518 PhpStorm autocompletion / Mac folde (by Rafael Correa Gomes)
-* #522 Add db_prefix support to installer command. (by Peter O'Callaghan)
-* #524 Update readme.rst (by Mehdi Chaouch)
-* #526 Hide password when creating admin account. (by Peter O'Callaghan)
-* #527 Fix global options swallowing arguments. (by Peter O'Callaghan)
-* #532 Optimization fixes and improvements (by Alexander Menk)
-* #533 Unattended install fail when unable to access database, but still produce clean exit code. (by Simon Bräuer)
-* #535 Added display current design settings on particular store (by Lucas Olucha)
-* #537 Fixing plurality language in rewrite conflict detection (by Steve Robbins)
-* #538 dev:console disappeared (by Christian Münch)
-* #542 Add tests for some of the admin:user commands. (by Peter O'Callaghan)
-* #544 Fixing travis integration (by Steve Robbins)
-* #553 Add option to dump binary columns using hexadecimal notation (by David Moises Paz Reyes)
-* Added windows system utilities (by Tom Klingenberg)
-* Support for git bash (by Tom Klingenberg)
-* Added Magento 1.9.1.1 to installer (by Christian Münch)
-* Added --only-download option to Magento installer
-* Updated 3rd party compontents.
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
