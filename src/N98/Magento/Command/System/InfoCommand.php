@@ -39,7 +39,7 @@ class InfoCommand extends AbstractMagentoCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->detectMagento($output, true);
+        $this->detectMagento($output);
 
         if ($input->getOption('format') == null && $input->getArgument('key') == null) {
             $this->writeSection($output, 'Magento System Information');
@@ -51,7 +51,7 @@ class InfoCommand extends AbstractMagentoCommand
         $this->infos['Edition'] = ($this->_magentoEnterprise ? 'Enterprise' : 'Community');
 
         $config = \Mage::app()->getConfig();
-        $this->_addCacheInfos();
+        $this->addCacheInfos();
 
         $this->infos['Session'] = $config->getNode('global/session_save');
 
@@ -87,7 +87,7 @@ class InfoCommand extends AbstractMagentoCommand
         }
     }
 
-    protected function _addCacheInfos()
+    protected function addCacheInfos()
     {
         $this->infos['Cache Backend'] = get_class(\Mage::app()->getCache()->getBackend());
 
