@@ -2,7 +2,6 @@
 
 namespace N98\Magento\Command\Cache;
 
-use N98\Magento\Application;
 use N98\Util\String;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,11 +16,6 @@ class EnableCommand extends AbstractCacheCommand
             ->addArgument('code', InputArgument::OPTIONAL, 'Code of cache (Multiple codes sperated by comma)')
             ->setDescription('Enables magento caches')
         ;
-    }
-
-    public function isEnabled()
-    {
-        return $this->getApplication()->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1;
     }
 
     /**

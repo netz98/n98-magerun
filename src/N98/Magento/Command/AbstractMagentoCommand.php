@@ -522,4 +522,39 @@ abstract class AbstractMagentoCommand extends Command
     {
         return in_array($type, array('git', 'hg'));
     }
+
+    /**
+     * @param $argument
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @param null $message
+     * @return mixed
+     */
+    protected function getOrAskForArgument($argument, InputInterface $input, OutputInterface $output, $message = null)
+    {
+        $inputArgument = $input->getArgument($argument);
+        if ($inputArgument === null) {
+
+            $message = $this->getArgumentMessage($argument, $message);
+
+            $dialog = $this->getHelperSet()->get('dialog');
+            return $dialog->ask($output, $message);
+        }
+
+        return $inputArgument;
+    }
+
+    /**
+     * @param $argument
+     * @param null $message
+     * @return string
+     */
+    protected function getArgumentMessage($argument, $message = null)
+    {
+        $question = '<question>%s:</question>';
+        if ($message !== null) {
+            return sprintf($question, $message);
+        }
+        return sprintf($message, ucfirst($argument));
+    }
 }
