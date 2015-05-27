@@ -805,7 +805,13 @@ Provides info like the edition and version or the configured cache backends.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar sys:info
+   $ n98-magerun.phar sys:info [key]
+
+Print only one value like the version.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:info version
 
 Magento Stores
 """"""""""""""

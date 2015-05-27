@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\System;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,6 +21,7 @@ class InfoCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:info')
+            ->addArgument('key', InputArgument::OPTIONAL, 'Only output value of named param like "version". Key is case insensitive.')
             ->setDescription('Prints infos about the current magento system.')
             ->addOption(
                 'format',
@@ -39,7 +41,7 @@ class InfoCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
 
-        if ($input->getOption('format') == null) {
+        if ($input->getOption('format') == null && $input->getArgument('key') == null) {
             $this->writeSection($output, 'Magento System Information');
         }
 
@@ -71,9 +73,18 @@ class InfoCommand extends AbstractMagentoCommand
             $table[] = array($key, $value);
         }
 
-        $this->getHelper('table')
-            ->setHeaders(array('name', 'value'))
-            ->renderByFormat($output, $table, $input->getOption('format'));
+        if (($settingArgument = $input->getArgument('key')) !== null) {
+            $settingArgument = strtolower($settingArgument);
+            $this->infos = array_change_key_case($this->infos, CASE_LOWER);
+            if (!isset($this->infos[$settingArgument])) {
+                throw new \InvalidArgumentException('Unknown key: ' . $settingArgument);
+            }
+            $output->writeln((string) $this->infos[$settingArgument]);
+        } else {
+            $this->getHelper('table')
+                ->setHeaders(array('name', 'value'))
+                ->renderByFormat($output, $table, $input->getOption('format'));
+        }
     }
 
     protected function _addCacheInfos()
