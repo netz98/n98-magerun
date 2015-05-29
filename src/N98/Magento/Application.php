@@ -663,36 +663,45 @@ class Application extends BaseApplication
      *
      * @return void
      */
-    public function init($initConfig = array(), InputInterface $input = null, OutputInterface $output = null)
+    public function init(array $initConfig = array(), InputInterface $input = null, OutputInterface $output = null)
     {
-        if (!$this->_isInitialized) {
-            // Suppress DateTime warnings
-            date_default_timezone_set(@date_default_timezone_get());
-
-            if (null === $input) {
-                $input = new ArgvInput();
-            }
-
-            $loadExternalConfig = !$this->_checkSkipConfigOption($input);
-            if ($output === null) {
-                $output = new NullOutput();
-            }
-            $configLoader = $this->getConfigurationLoader($initConfig, $output);
-            $this->partialConfig = $configLoader->getPartialConfig($loadExternalConfig);
-            $this->detectMagento($input, $output);
-            $configLoader->loadStageTwo($this->_magentoRootFolder, $loadExternalConfig, $this->_magerunStopFileFolder);
-            $this->config = $configLoader->toArray();
-            $this->dispatcher = new EventDispatcher();
-            $this->setDispatcher($this->dispatcher);
-            if ($this->autoloader) {
-                $this->registerCustomAutoloaders();
-                $this->registerEventSubscribers();
-                $this->registerCustomCommands();
-            }
-            $this->registerHelpers();
-
-            $this->_isInitialized = true;
+        if ($this->_isInitialized) {
+            return;
         }
+
+        // Suppress DateTime warnings
+        date_default_timezone_set(@date_default_timezone_get());
+
+        // Initialize EventDispatcher early
+        $this->dispatcher = new EventDispatcher();
+        $this->setDispatcher($this->dispatcher);
+
+        if (null === $input) {
+            $input = new ArgvInput();
+        }
+
+        if ($output === null) {
+            $output = new NullOutput();
+        }
+
+        // initialize config
+        $configLoader        = $this->getConfigurationLoader($initConfig, $output);
+        $loadExternalConfig  = !$this->_checkSkipConfigOption($input);
+        $this->partialConfig = $configLoader->getPartialConfig($loadExternalConfig);
+        $this->detectMagento($input, $output);
+        $configLoader->loadStageTwo($this->_magentoRootFolder, $loadExternalConfig, $this->_magerunStopFileFolder);
+
+        $this->config = $configLoader->toArray();
+
+        if ($this->autoloader) {
+            $this->registerCustomAutoloaders();
+            $this->registerEventSubscribers();
+            $this->registerCustomCommands();
+        }
+
+        $this->registerHelpers();
+
+        $this->_isInitialized = true;
     }
 
     /**
@@ -824,7 +833,7 @@ MAGENTO2HINT;
      * @param OutputInterface $output
      * @return ConfigurationLoader
      */
-    public function getConfigurationLoader($initConfig = array(), OutputInterface $output)
+    public function getConfigurationLoader(array $initConfig = array(), OutputInterface $output)
     {
         if ($this->configurationLoader === null) {
             $this->configurationLoader = new ConfigurationLoader(
