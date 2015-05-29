@@ -27,9 +27,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
         if ($this->application === null) {
             $root = getenv('N98_MAGERUN_TEST_MAGENTO_ROOT');
             if (empty($root)) {
-                throw new \RuntimeException(
-                    'Please specify environment variable N98_MAGERUN_TEST_MAGENTO_ROOT with path to your test
-                    magento installation!'
+                $this->markTestSkipped(
+                    'Please specify environment variable N98_MAGERUN_TEST_MAGENTO_ROOT with path to your test ' .
+                    'magento installation!'
                 );
             }
 
