@@ -1,23 +1,31 @@
 <?php
+/*
+ * this file is part of magerun
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
+ */
 
 namespace N98\Util;
 
-use N98\Util\Filesystem;
+use RuntimeException;
 
 /**
  * Class FilesystemTest
  * @package N98\Util
  * @author Aydin Hassan <aydin@hotmail.co.uk>
+ * @covers N98\Util\Filesystem
  */
 class FilesystemTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var Filesystem
+     */
     protected $fileSystem;
 
     public function setUp()
     {
         $this->fileSystem = new Filesystem();
     }
-
 
     /**
      * @expectedException RuntimeException
@@ -54,8 +62,14 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         rmdir($dest . "/folder2");
         rmdir($dest);
 
-        $this->fileSystem->recursiveCopy('/tmp/', '/NOT_A_FOLDER');
+        $this->assertFileNotExists($dest . "/folder1/file1.txt");
+        $this->assertFileNotExists($dest);
 
+        is_dir($tmp . '/a') || mkdir($tmp . '/a');
+        touch($tmp . '/file1.txt');
+        $this->fileSystem->recursiveCopy($tmp . '/a', $tmp . '/file1.txt');
+        unlink($tmp . '/file1.txt');
+        rmdir($tmp . '/a');
     }
 
     public function testRecursiveCopyWithBlacklist()
@@ -93,6 +107,9 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         rmdir($dest);
     }
 
+    /**
+     * @requires function symlink
+     */
     public function testRecursiveDirectoryRemoveUnLinksSymLinks()
     {
         $tmp            = sys_get_temp_dir();
@@ -158,12 +175,9 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
     public function testFalseIsReturnedIfDirectoryNotReadable()
     {
         $tmp        = sys_get_temp_dir();
-        $basePath   = $tmp . "/n98_testdir";
-        @mkdir($basePath, 0000, true);
+        $basePath   = $tmp . "/n98_testdir-never-existed";
 
         $this->assertFalse($this->fileSystem->recursiveRemoveDirectory($basePath));
-        //cleanup
-        rmdir($basePath);
     }
 
     public function testParentIsNotRemovedIfEmptyIsTrue()
