@@ -267,6 +267,8 @@ class PatchedPharPackageTask
                 Project::MSG_INFO
             );
 
+            $baseDirectory = realpath($this->baseDirectory->getPath());
+
             /**
              * Delete old package, if exists.
              */
@@ -274,28 +276,48 @@ class PatchedPharPackageTask
                 $this->destinationFile->delete();
             }
             $phar = $this->buildPhar();
-            $phar->startBuffering();
 
-            $baseDirectory = realpath($this->baseDirectory->getPath());
-
-            foreach ($this->filesets as $fileset) {
-                $this->log(
-                    'Adding specified files in ' . $fileset->getDir($this->project) . ' to package',
-                    Project::MSG_VERBOSE
-                );
-
-                if (Phar::NONE != $this->compression) {
-                    foreach ($fileset as $file) {
-                        $localName = substr($file, strlen($baseDirectory) + 1);
-                        $phar->addFile($file, $localName);
-                        $phar[$localName]->compress(Phar::GZ);
-                    }
-                } else {
+            try {
+                foreach ($this->filesets as $fileset) {
+                    $this->log("Fileset " . $fileset->getDir($this->project) . " ... ", Project::MSG_VERBOSE);
                     $phar->buildFromIterator($fileset, $baseDirectory);
                 }
-            }
 
-            $phar->stopBuffering();
+                if (Phar::NONE != $this->compression) {
+                    $phar->compressFiles($this->compression);
+                }
+            } catch (\RuntimeException $e) {
+                $this->log('Most likely compression failed (known bug): ' . $e->getMessage());
+
+                /**
+                 * Delete old package, if exists.
+                 */
+                if ($this->destinationFile->exists()) {
+                    $this->destinationFile->delete();
+                }
+                $phar = $this->buildPhar();
+                $phar->startBuffering();
+
+                foreach ($this->filesets as $fileset) {
+                    $this->log(
+                        'Adding specified files in ' . $fileset->getDir($this->project) . ' to package',
+                        Project::MSG_VERBOSE
+                    );
+
+                    if (Phar::NONE != $this->compression) {
+                        foreach ($fileset as $file) {
+                            $localName = substr($file, strlen($baseDirectory) + 1);
+                            $this->log($localName . "... ", Project::MSG_VERBOSE);
+                            $phar->addFile($file, $localName);
+                            $phar[$localName]->compress($this->compression);
+                        }
+                    } else {
+                        $phar->buildFromIterator($fileset, $baseDirectory);
+                    }
+                }
+
+                $phar->stopBuffering();
+            }
 
             /**
              * File compression, if needed.
