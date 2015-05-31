@@ -2,27 +2,44 @@
 
 namespace N98\Util;
 
-use N98\Util\Exec;
+use Exception;
+use RuntimeException;
 
-class ExecTest extends \PHPUnit_Framework_TestCase{
+/**
+ * Class ExecTest
+ *
+ * @package N98\Util
+ */
+class ExecTest extends \PHPUnit_Framework_TestCase
+{
+    /**
+     * @test
+     */
+    public function commandOnly()
+    {
+        Exec::run('echo test');
 
+        $this->addToAssertionCount(1);
+    }
 
     /**
-     * @expectedException \RuntimeException
+     * @test
      */
-    public function testRun() {
-
-        $commandOutput = null;
-        $returnCode = null;
-
+    public function fullParameters()
+    {
         Exec::run('echo test', $commandOutput, $returnCode);
 
         $this->assertEquals(Exec::CODE_CLEAN_EXIT, $returnCode);
         $this->assertStringStartsWith('test', $commandOutput);
+    }
 
-
-        Exec::run('foobar', $commandOutput, $returnCode);
-
-        $this->fail('An expected Exception has not been thrown.');
+    /**
+     * @test
+     *
+     * @expectedException RuntimeException
+     */
+    public function exception()
+    {
+        Exec::run('foobar');
     }
 }
