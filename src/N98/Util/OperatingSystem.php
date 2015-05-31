@@ -103,5 +103,18 @@ class OperatingSystem
     {
         return function_exists('posix_getuid') && posix_getuid() === self::UID_ROOT;
     }
-}
 
+    /**
+     * get current working directory
+     */
+    public static function getCwd()
+    {
+        if (!Exec::allowed() || OperatingSystem::isWindows()) {
+            return getcwd();
+        }
+
+        Exec::run('pwd', $folder);
+
+        return $folder;
+    }
+}

@@ -3,7 +3,13 @@
 namespace N98\Magento\Command\Customer;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\Exec;
 
+/**
+ * Class AbstractCustomerCommand
+ *
+ * @package N98\Magento\Command\Customer
+ */
 abstract class AbstractCustomerCommand extends AbstractMagentoCommand
 {
     /**
@@ -52,6 +58,6 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
      */
     public function isEnabled()
     {
-        return function_exists('exec');
+        return Exec::allowed();
     }
 }

@@ -223,15 +223,7 @@ class Application extends BaseApplication
 
         if ($this->getMagentoRootFolder() === null) {
             $this->_checkRootDirOption($input);
-            if (function_exists('exec')) {
-                if (OperatingSystem::isWindows()) {
-                    $folder = Exec::run('@echo %cd%'); // @TODO not currently tested!!!
-                } else {
-                    $folder = Exec::run('pwd');
-                }
-            } else {
-                $folder = getcwd();
-            }
+            $folder = OperatingSystem::getCwd();
         } else {
             $folder = $this->getMagentoRootFolder();
         }

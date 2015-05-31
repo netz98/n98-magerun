@@ -70,4 +70,13 @@ class OperatingSystemTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(OperatingSystem::isWindows());
         $this->assertFalse(OperatingSystem::isMacOs());
     }
+
+    /**
+     * @test
+     */
+    public function getCwd()
+    {
+        $expected = getcwd();
+        $this->assertEquals($expected, OperatingSystem::getCwd());
+    }
 }
