@@ -1,6 +1,12 @@
+# Composer
+vendor/
+
+# Phpunit
+phpunit.xml
+
+# Miscellaneous (Kraut und Rueben)
 .DS_Store
 .idea
-vendor
 example-magento
 clover.xml
 clover

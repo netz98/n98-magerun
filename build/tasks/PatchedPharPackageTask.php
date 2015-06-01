@@ -1,27 +1,12 @@
 <?php
 /*
- * $Id: 4029e35dba5245e473565b713b86648f31fd972a $
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * @author Tom Klingenberg <https://github.com/ktomk>
+ * @license LGPL-3.0 <https://spdx.org/licenses/LGPL-3.0.html>
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information please see
  * <http://phing.info>.
  */
-
-require_once 'phing/tasks/system/MatchingTask.php';
-require_once 'phing/types/IterableFileSet.php';
-require_once 'phing/tasks/ext/phar/PharMetadata.php';
 
 /**
  * Package task for {@link http://www.php.net/manual/en/book.phar.php Phar technology}.
@@ -29,6 +14,7 @@ require_once 'phing/tasks/ext/phar/PharMetadata.php';
  * @package phing.tasks.ext
  * @author Alexey Shockov <alexey@shockov.com>
  * @since 2.4.0
+ * @see PharPackageTask
  */
 class PatchedPharPackageTask
     extends MatchingTask
@@ -112,8 +98,9 @@ class PatchedPharPackageTask
      */
     public function createFileSet()
     {
-        $this->fileset      = new IterableFileSet();
-        $this->filesets[]   = $this->fileset;
+        $this->fileset = new IterableFileSet();
+        $this->filesets[] = $this->fileset;
+
         return $this->fileset;
     }
 
@@ -263,49 +250,21 @@ class PatchedPharPackageTask
 
         try {
             $this->log(
-                'Building package: '.$this->destinationFile->__toString(),
+                'Building package: ' . $this->destinationFile->__toString(),
                 Project::MSG_INFO
             );
 
-            /**
-             * Delete old package, if exists.
-             */
-            if ($this->destinationFile->exists()) {
-                $this->destinationFile->delete();
-            }
-            $phar = $this->buildPhar();
-            $phar->startBuffering();
-
             $baseDirectory = realpath($this->baseDirectory->getPath());
 
-            foreach ($this->filesets as $fileset) {
-                $this->log(
-                    'Adding specified files in ' . $fileset->getDir($this->project) . ' to package',
-                    Project::MSG_VERBOSE
-                );
-
-                if (Phar::NONE != $this->compression) {
-                    foreach ($fileset as $file) {
-                        $localName = substr($file, strlen($baseDirectory) + 1);
-                        $phar->addFile($file, $localName);
-                        $phar[$localName]->compress(Phar::GZ);
-                    }
-                } else {
-                    $phar->buildFromIterator($fileset, $baseDirectory);
-                }
+            try {
+                $this->compressAllFiles($this->initPhar(), $baseDirectory);
+            } catch (\RuntimeException $e) {
+                $this->log('Most likely compression failed (known bug): ' . $e->getMessage());
+                $this->compressEachFile($this->initPhar(), $baseDirectory);
             }
-
-            $phar->stopBuffering();
-
-            /**
-             * File compression, if needed.
-             */
-            /*if (Phar::NONE != $this->compression) {
-                $phar->compressFiles($this->compression);
-            }*/
         } catch (Exception $e) {
             throw new BuildException(
-                'Problem creating package: '.$e->getMessage(),
+                'Problem creating package: ' . $e->getMessage(),
                 $e,
                 $this->getLocation()
             );
@@ -336,13 +295,15 @@ class PatchedPharPackageTask
         }
         if (!is_null($this->baseDirectory)) {
             if (!$this->baseDirectory->exists()) {
-                throw new BuildException("basedir '" . (string) $this->baseDirectory . "' does not exist!", $this->getLocation());
+                throw new BuildException("basedir '" . (string) $this->baseDirectory . "' does not exist!", $this->getLocation(
+                    ));
             }
         }
         if ($this->signatureAlgorithm == Phar::OPENSSL) {
 
             if (!extension_loaded('openssl')) {
-                throw new BuildException("PHP OpenSSL extension is required for OpenSSL signing of Phars!", $this->getLocation());
+                throw new BuildException("PHP OpenSSL extension is required for OpenSSL signing of Phars!", $this->getLocation(
+                ));
             }
 
             if (is_null($this->key)) {
@@ -413,10 +374,76 @@ class PatchedPharPackageTask
             $phar->setMetadata($metadata);
         }
 
-        if(!empty($this->alias)){
+        if (!empty($this->alias)) {
             $phar->setAlias($this->alias);
         }
 
         return $phar;
+    }
+
+    /**
+     * @return Phar
+     */
+    private function initPhar()
+    {
+        /**
+         * Delete old package, if exists.
+         */
+        if ($this->destinationFile->exists()) {
+            $this->destinationFile->delete();
+        }
+        $phar = $this->buildPhar();
+
+        return $phar;
+    }
+
+    /**
+     * @param $phar
+     * @param $baseDirectory
+     */
+    private function compressEachFile($phar, $baseDirectory)
+    {
+        $phar->startBuffering();
+
+        foreach ($this->filesets as $fileset) {
+            $this->log(
+                'Adding specified files in ' . $fileset->getDir($this->project) . ' to package',
+                Project::MSG_VERBOSE
+            );
+
+            if (Phar::NONE != $this->compression) {
+                foreach ($fileset as $file) {
+                    $localName = substr($file, strlen($baseDirectory) + 1);
+                    $this->log($localName . "... ", Project::MSG_VERBOSE);
+                    $phar->addFile($file, $localName);
+                    $phar[$localName]->compress($this->compression);
+                }
+            } else {
+                $phar->buildFromIterator($fileset, $baseDirectory);
+            }
+        }
+
+        $phar->stopBuffering();
+    }
+
+    /**
+     * @param $phar
+     * @param $baseDirectory
+     */
+    private function compressAllFiles($phar, $baseDirectory)
+    {
+        $phar->startBuffering();
+
+        foreach ($this->filesets as $fileset) {
+            $this->log("Fileset " . $fileset->getDir($this->project) . " ... ", Project::MSG_VERBOSE);
+            $phar->buildFromIterator($fileset, $baseDirectory);
+        }
+
+        $phar->stopBuffering();
+
+        if (Phar::NONE != $this->compression) {
+            $this->log("Compressing files (" . $this->compression . ") ... ", Project::MSG_VERBOSE);
+            $phar->compressFiles($this->compression);
+        }
     }
 }
