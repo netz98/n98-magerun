@@ -41,66 +41,77 @@ class ListCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
-            $type = $input->getArgument('type');
-
-            $areas = array(
-                'global',
-                'adminhtml',
-                'frontend',
-                'crontab',
-            );
-
-            if ($type === null) {
-                foreach ($areas as $key => $area) {
-                    $question[] = '<comment>[' . ($key + 1) . ']</comment> ' . $area . "\n";
-                }
-                $question[] = '<question>Please select an area:</question>';
-
-                $type = $this->getHelper('dialog')->askAndValidate($output, $question, function ($typeInput) use ($areas) {
-                    if (!in_array($typeInput, range(1, count($areas)))) {
-                        throw new \InvalidArgumentException('Invalid area');
-                    }
-                    return $areas[$typeInput - 1];
-                });
-            }
-
-            if (!in_array($type, $areas)) {
-                throw new \InvalidArgumentException('Invalid type! Use one of: ' . implode(', ', $areas));
-            }
-
-            if ($input->getOption('format') === null) {
-                $this->writeSection($output, 'Observers: ' . $type);
-            }
-            $frontendEvents = \Mage::getConfig()->getNode($type . '/events')->asArray();
-            if (true === $input->getOption('sort')) {
-                // sorting for Observers is a bad idea because the order in which observers will be called is important.
-                ksort($frontendEvents);
-            }
-            $table = array();
-            foreach ($frontendEvents as $eventName => $eventData) {
-                $observerList = array();
-                foreach ($eventData['observers'] as $observer) {
-                    $observerType   = $this->getObserverType($observer, $type);
-                    $class = '';
-                    if (isset($observer['class'])) {
-                        $class = $observer['class'];
-                    } elseif (isset($observer['model'])) {
-                        $class = $observer['model'];
-                    }
-                    $observerList[] = $observerType . $class . (isset($observer['method']) ? '::' . $observer['method'] : '');
-                }
-                $table[] = array(
-                    $eventName,
-                    implode("\n", $observerList),
-                );
-            }
-
-            $this->getHelper('table')
-                ->setHeaders(array('Event', 'Observers'))
-                ->setRows($table)
-                ->renderByFormat($output, $table, $input->getOption('format'));
+        if (!$this->initMagento()) {
+            return;
         }
+
+        $type = $input->getArgument('type');
+
+        $areas = array(
+            'global',
+            'adminhtml',
+            'frontend',
+            'crontab',
+        );
+
+        if ($type === null) {
+            $type = $this->askForArrayEntry($areas, $output, 'Please select an area:');
+        }
+
+        if (!in_array($type, $areas)) {
+            throw new \InvalidArgumentException('Invalid type! Use one of: ' . implode(', ', $areas));
+        }
+
+        if ($input->getOption('format') === null) {
+            $this->writeSection($output, 'Observers: ' . $type);
+        }
+        $frontendEvents = \Mage::getConfig()->getNode($type . '/events')->asArray();
+        if (true === $input->getOption('sort')) {
+            // sorting for Observers is a bad idea because the order in which observers will be called is important.
+            ksort($frontendEvents);
+        }
+        $table = array();
+        foreach ($frontendEvents as $eventName => $eventData) {
+            $observerList = array();
+            foreach ($eventData['observers'] as $observer) {
+                $observerList[] = $this->getObserver($observer, $type);
+            }
+            $table[] = array(
+                $eventName,
+                implode("\n", $observerList),
+            );
+        }
+
+        $this->getHelper('table')
+            ->setHeaders(array('Event', 'Observers'))
+            ->setRows($table)
+            ->renderByFormat($output, $table, $input->getOption('format'));
+    }
+
+    /**
+     * get observer string (list entry)
+     *
+     * @param array  $observer
+     * @param string $area
+     *
+     * @return string
+     */
+    protected function getObserver(array $observer, $area)
+    {
+        $type = $this->getObserverType($observer, $area);
+
+        $class = '';
+        if (isset($observer['class'])) {
+            $class = $observer['class'];
+        } elseif (isset($observer['model'])) {
+            $class = $observer['model'];
+        }
+
+        $method = isset($observer['method']) ? '::' . $observer['method'] : '';
+
+        $observer = $type . $class . $method;
+
+        return $observer;
     }
 
     /**
@@ -109,7 +120,7 @@ class ListCommand extends AbstractMagentoCommand
      *
      * @return string
      */
-    protected function getObserverType(array $observer, $area)
+    private function getObserverType(array $observer, $area)
     {
         // singleton is the default type Mage_Core_Model_App::dispatchEvent
         $type = 'singleton';
@@ -122,6 +133,7 @@ class ListCommand extends AbstractMagentoCommand
             $type = $observer['type'];
         }
         $type = str_pad($type, 11, ' ', STR_PAD_RIGHT);
+
         return $type;
     }
 }

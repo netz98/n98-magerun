@@ -5,6 +5,7 @@ namespace N98\Magento\Command;
 use Composer\Package\PackageInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Factory as ComposerFactory;
@@ -543,6 +544,29 @@ abstract class AbstractMagentoCommand extends Command
         }
 
         return $inputArgument;
+    }
+
+    /**
+     * @param array           $entries zero-indexed array of entries (represented by strings) to select from
+     * @param OutputInterface $output
+     * @param string          $question
+     */
+    protected function askForArrayEntry(array $entries, OutputInterface $output, $question)
+    {
+        foreach ($entries as $key => $entry) {
+            $question[] = '<comment>[' . ($key + 1) . ']</comment> ' . $entry . "\n";
+        }
+        $question[] = "<question>{$question}</question> ";
+
+        $selected = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($entries) {
+            if (!in_array($typeInput, range(1, count($entries)))) {
+                throw new \InvalidArgumentException('Invalid type');
+            }
+
+            return $typeInput;
+        });
+
+        return $entries[$selected - 1];
     }
 
     /**
