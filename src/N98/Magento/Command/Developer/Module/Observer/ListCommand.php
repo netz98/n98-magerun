@@ -82,7 +82,13 @@ class ListCommand extends AbstractMagentoCommand
                 $observerList = array();
                 foreach ($eventData['observers'] as $observer) {
                     $observerType   = $this->getObserverType($observer, $type);
-                    $observerList[] = $observerType . $observer['class'] . (isset($observer['method']) ? '::' . $observer['method'] : '');
+                    $class = '';
+                    if (isset($observer['class'])) {
+                        $class = $observer['class'];
+                    } elseif (isset($observer['model'])) {
+                        $class = $observer['model'];
+                    }
+                    $observerList[] = $observerType . $class . (isset($observer['method']) ? '::' . $observer['method'] : '');
                 }
                 $table[] = array(
                     $eventName,
