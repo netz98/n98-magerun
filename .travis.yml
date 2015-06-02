@@ -4,6 +4,8 @@ branches:
   only:
     - master
     - develop
+    - /^(bugfix|feature)\/.*$/
+    - interop
 
 php:
   - 5.3

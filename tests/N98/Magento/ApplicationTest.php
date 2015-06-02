@@ -17,10 +17,19 @@ class ApplicationTest extends TestCase
         /**
          * Check autoloading
          */
-        $application = require __DIR__ . '/../../../src/bootstrap.php';
-        $application->setMagentoRootFolder(getenv('N98_MAGERUN_TEST_MAGENTO_ROOT'));
 
         /* @var $application Application */
+        $application = require __DIR__ . '/../../../src/bootstrap.php';
+        $magentoRootFolder = getenv('N98_MAGERUN_TEST_MAGENTO_ROOT');
+        if (empty($magentoRootFolder)) {
+            $this->markTestSkipped(
+                'Please specify environment variable N98_MAGERUN_TEST_MAGENTO_ROOT with path to your test ' .
+                'magento installation!'
+            );
+        }
+
+        $application->setMagentoRootFolder($magentoRootFolder);
+
         $this->assertInstanceOf('\N98\Magento\Application', $application);
         $loader = $application->getAutoloader();
         $this->assertInstanceOf('\Composer\Autoload\ClassLoader', $loader);
@@ -28,7 +37,7 @@ class ApplicationTest extends TestCase
         /**
          * Check version
          */
-        $this->assertEquals(\N98\Magento\Application::APP_VERSION, trim(file_get_contents(__DIR__ . '/../../../version.txt')));
+        $this->assertEquals($application::APP_VERSION, trim(file_get_contents(__DIR__ . '/../../../version.txt')));
 
         /* @var $loader \Composer\Autoload\ClassLoader */
         $prefixes = $loader->getPrefixes();
