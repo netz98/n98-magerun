@@ -61,7 +61,11 @@ HELP;
             
             $res = $this->getCustomerModel()->getResource();
             
-            $faker = \Faker\Factory::create($input->getArgument('locale'));
+            $locale = $input->getArgument('locale');
+            $faker = \Faker\Factory::create($locale);
+            $faker->locale = $locale;
+            $faker->languageCode = substr($locale, 0, 2); // the first two characters of $locale
+            $faker->countryCode = substr($locale, 3, 2);  // the 4th and 5th characters of $locale
             $faker->addProvider(new \N98\Util\Faker\Provider\Internet($faker));
 
             $website = $this->getHelperSet()->get('parameter')->askWebsite($input, $output);
