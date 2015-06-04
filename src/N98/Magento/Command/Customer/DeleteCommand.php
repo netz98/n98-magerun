@@ -221,7 +221,13 @@ HELP;
      */
     protected function deleteCustomer(\Mage_Customer_Model_Customer $customer)
     {
+        require_once $this->getApplication()->getMagentoRootFolder() . '/app/code/local/SFC/CyberSource/controllers/Override/Admin/CustomerController.php';
+
         try {
+            $customerId = $customer->getId();
+            $customerController = new \SFC_CyberSource_Override_Admin_CustomerController();
+            $customerController->deletePaymentProfiles($customerId);
+            
             $customer->delete();
             $this->output->writeln(
                 sprintf('<info>%s (%s) was successfully deleted</info>', $customer->getName(), $customer->getEmail())
