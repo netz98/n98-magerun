@@ -39,33 +39,40 @@ class InfoCommand extends AbstractMagentoCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->detectMagento($output, true);
+        $this->detectMagento($output);
+
+        $softInitMode = in_array($input->getArgument('key'), array(
+            'version',
+            'edition',
+        ));
 
         if ($input->getOption('format') == null && $input->getArgument('key') == null) {
             $this->writeSection($output, 'Magento System Information');
         }
 
-        $this->initMagento();
+        $this->initMagento($softInitMode);
 
         $this->infos['Version'] = \Mage::getVersion();
         $this->infos['Edition'] = ($this->_magentoEnterprise ? 'Enterprise' : 'Community');
 
-        $config = \Mage::app()->getConfig();
-        $this->_addCacheInfos();
+        if ($softInitMode === false) {
+            $config = \Mage::app()->getConfig();
+            $this->addCacheInfos();
 
-        $this->infos['Session'] = $config->getNode('global/session_save');
+            $this->infos['Session'] = $config->getNode('global/session_save');
 
-        $this->infos['Crypt Key'] = $config->getNode('global/crypt/key');
-        $this->infos['Install Date'] = $config->getNode('global/install/date');
-        try {
-            $this->findCoreOverwrites();
-            $this->findVendors();
-            $this->attributeCount();
-            $this->customerCount();
-            $this->categoryCount();
-            $this->productCount();
-        } catch (\Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            $this->infos['Crypt Key'] = $config->getNode('global/crypt/key');
+            $this->infos['Install Date'] = $config->getNode('global/install/date');
+            try {
+                $this->findCoreOverwrites();
+                $this->findVendors();
+                $this->attributeCount();
+                $this->customerCount();
+                $this->categoryCount();
+                $this->productCount();
+            } catch (\Exception $e) {
+                $output->writeln('<error>' . $e->getMessage() . '</error>');
+            }
         }
 
         $table = array();
@@ -87,7 +94,7 @@ class InfoCommand extends AbstractMagentoCommand
         }
     }
 
-    protected function _addCacheInfos()
+    protected function addCacheInfos()
     {
         $this->infos['Cache Backend'] = get_class(\Mage::app()->getCache()->getBackend());
 

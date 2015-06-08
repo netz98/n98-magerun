@@ -450,13 +450,18 @@ class Application extends BaseApplication
 
     }
 
-    public function initMagento()
+    /**
+     * Loads and initializes the Magento application
+     *
+     * @param bool $soft
+     */
+    public function initMagento($soft = false)
     {
         if ($this->getMagentoRootFolder() !== null) {
             if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-                $this->_initMagento2();
+                $this->_initMagento2($soft);
             } else {
-                $this->_initMagento1();
+                $this->_initMagento1($soft);
             }
 
             return true;
@@ -753,9 +758,10 @@ class Application extends BaseApplication
     }
 
     /**
+     * @param bool $soft
      * @return void
      */
-    protected function _initMagento1()
+    protected function _initMagento1($soft = false)
     {
         $initSettings = $this->config['init'];
 
@@ -766,10 +772,18 @@ class Application extends BaseApplication
             $this->_restoreAutoloaders($autoloaders);
         }
 
+        // skip Mage::app init routine and return
+        if ($soft === true) {
+            return;
+        }
+
         \Mage::app($initSettings['code'], $initSettings['type'], $initSettings['options']);
     }
 
-    protected function _initMagento2()
+    /*
+     * @param bool $soft
+     */
+    protected function _initMagento2($soft = false)
     {
         $magento2Hint = <<<'MAGENTO2HINT'
 You are running a Magento 2 instance. This version of n98-magerun is not compatible
