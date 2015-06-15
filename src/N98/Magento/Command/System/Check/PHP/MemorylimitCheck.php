@@ -24,9 +24,9 @@ class MemorylimitCheck implements SimpleCheck, CommandConfigAware
         $result = $results->createResult();
         $result->setStatus($memoryLimit != -1 ? Result::STATUS_OK : Result::STATUS_ERROR);
         if ($result->isValid()) {
-            $result->setMessage("<info>Memory Limit (Magento Bug)<comment>$memoryLimit</comment>.</info>");
+            $result->setMessage("<info>CLI Memory Limit (Magento Bug) <comment>$memoryLimit</comment>.</info>");
         } else {
-            $result->setMessage("<error>Memory Limit (Magento Bug) is -1</error> <comment>It's not recommended to use memory_limit -1 due to a Magento bug in Gd2.php.</comment>");
+            $result->setMessage("<error>CLI Memory Limit (Magento Bug) is -1</error> <comment>It's not recommended to use memory_limit -1 due to a Magento bug in Gd2.php.</comment>");
         }
 
         $recommendMemoryLimitInMBytes = $this->_commandConfig['php']['recommend-memory-limit'];
@@ -34,9 +34,9 @@ class MemorylimitCheck implements SimpleCheck, CommandConfigAware
         $result = $results->createResult();
         $result->setStatus(($memoryLimitInMBytes >= $recommendMemoryLimitInMBytes) ? Result::STATUS_OK : Result::STATUS_ERROR);
         if ($result->isValid()) {
-            $result->setMessage("<info>Memory Limit <comment>$memoryLimit</comment>.</info>");
+            $result->setMessage("<info>CLI Memory Limit <comment>$memoryLimit</comment>.</info>");
         } else {
-            $result->setMessage("<error>Memory Limit is smaller than recommended</error> <comment>Recommended limit is $recommendMemoryLimitInMBytes MB.</comment>");
+            $result->setMessage("<error>CLI Memory Limit is smaller than recommended</error> <comment>Recommended limit is $recommendMemoryLimitInMBytes MB.</comment>");
         }
     }
 
