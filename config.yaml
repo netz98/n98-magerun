@@ -347,7 +347,7 @@ commands:
 
       - id: customers
         description: Customer data - Should not be used without @sales
-        tables: customer_address* customer_entity*
+        tables: customer_address* customer_entity* wishlist*
 
       - id: newsletter
         description: Newsletter subscriber data
