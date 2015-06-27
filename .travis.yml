@@ -45,10 +45,14 @@ matrix:
     - php: 5.5
       env: MAGENTO_VERSION="magento-ce-1.7.0.2" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=66
 
+before_install:
+  - composer self-update
+
+install:
+  - travis_retry composer install --prefer-source --no-interaction --ignore-platform-reqs
+
 before_script:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `magento_travis`;'
-  - curl -s http://getcomposer.org/installer | php
-  - composer install --prefer-source
   - export N98_MAGERUN_TEST_MAGENTO_ROOT="./${MAGENTO_VERSION}"
   - bin/n98-magerun install --magentoVersionByName="${MAGENTO_VERSION}" --installationFolder="./${MAGENTO_VERSION}" --dbHost=127.0.0.1 --dbUser=root --dbPass='' --dbName="magento_travis" --installSampleData=${INSTALL_SAMPLE_DATA} --useDefaultConfigParams=yes --baseUrl="http://travis.magento.local/"
 
