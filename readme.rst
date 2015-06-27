@@ -1151,7 +1151,7 @@ Example:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:resolve model catalog/product
+   $ n98-magerun.phar dev:class:lookup model catalog/product
 
 Toggle Symlinks
 """""""""""""""
