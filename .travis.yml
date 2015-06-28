@@ -46,7 +46,7 @@ matrix:
       env: MAGENTO_VERSION="magento-ce-1.7.0.2" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=66
 
 before_install:
-  - composer self-update
+  - travis_retry composer self-update
 
 install:
   - travis_retry composer install --prefer-source --no-interaction --ignore-platform-reqs
