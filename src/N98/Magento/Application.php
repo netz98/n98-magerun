@@ -5,6 +5,7 @@ namespace N98\Magento;
 use N98\Magento\Command\ConfigurationLoader;
 use N98\Magento\EntryPoint\Magerun as MagerunEntryPoint;
 use N98\Util\ArrayFunctions;
+use N98\Util\AutoloadRestorer;
 use N98\Util\Console\Helper\TwigHelper;
 use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\OperatingSystem;
@@ -763,19 +764,24 @@ class Application extends BaseApplication
      */
     protected function _initMagento1($soft = false)
     {
-        $initSettings = $this->config['init'];
-
-        if (!class_exists('Mage')) {
-            $autoloaders = spl_autoload_functions();
-            require_once $this->getMagentoRootFolder() . '/app/Mage.php';
+        if (!class_exists('Mage', false)) {
+            $restorer = new AutoloadRestorer();
+            // require app/Mage.php from Magento in a function of it's own to have it's own variable scope (but $this)
+            $magentoRootFolder = $this->_magentoRootFolder;
+            $requireOnce = function() use ($magentoRootFolder) {
+                require_once $magentoRootFolder . '/app/Mage.php';
+            };
+            $requireOnce();
             // Restore autoloaders that might be removed by extensions that overwrite Varien/Autoload
-            $this->_restoreAutoloaders($autoloaders);
+            $restorer->restore();
         }
 
         // skip Mage::app init routine and return
         if ($soft === true) {
             return;
         }
+
+        $initSettings = $this->config['init'];
 
         \Mage::app($initSettings['code'], $initSettings['type'], $initSettings['options']);
     }
@@ -813,19 +819,6 @@ MAGENTO2HINT;
 
         $output->writeln($magento2Hint);
         exit;
-    }
-
-    /**
-     * @param $loaders
-     */
-    protected function _restoreAutoloaders($loaders)
-    {
-        $currentLoaders = spl_autoload_functions();
-        foreach ($loaders as $function) {
-            if (!in_array($function, $currentLoaders)) {
-                spl_autoload_register($function);
-            }
-        }
     }
 
     /**
