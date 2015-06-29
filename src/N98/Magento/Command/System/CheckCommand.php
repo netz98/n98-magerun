@@ -13,6 +13,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class CheckCommand
+ *
+ * @package N98\Magento\Command\System
+ */
 class CheckCommand extends AbstractMagentoCommand
 {
     const UNICODE_CHECKMARK_CHAR = 10004;
@@ -76,35 +81,45 @@ HELP;
 
     /**
      * @param ResultCollection $results
-     * @param mixed $checkGroupClass
-     * @internal param ResultCollection $resultCollection
+     * @param string           $checkGroupClass name
      */
     protected function _invokeCheckClass(ResultCollection $results, $checkGroupClass)
     {
-        $check = new $checkGroupClass();
-        if ($check instanceof CommandAware) {
-            $check->setCommand($this);
-        }
-        if ($check instanceof CommandConfigAware) {
-            $check->setCommandConfig($this->_config);
-        }
+        $check = $this->_createCheck($checkGroupClass);
 
-        if ($check instanceof Check\SimpleCheck) {
-            $check->check($results);
-        } elseif ($check instanceof Check\StoreCheck) {
-            foreach (\Mage::app()->getStores() as $store) {
-                $check->check($results, $store);
-            }
-        } elseif ($check instanceof Check\WebsiteCheck) {
-            foreach (\Mage::app()->getWebsites() as $website) {
-                $check->check($results, $website);
-            }
+        switch (true) {
+            case $check instanceof Check\SimpleCheck:
+                $check->check($results);
+                break;
+
+            case $check instanceof Check\StoreCheck:
+                if (!$stores = \Mage::app()->getStores()) {
+                    $this->_markCheckWarning($results, 'stores', $checkGroupClass);
+                }
+                foreach ($stores as $store) {
+                    $check->check($results, $store);
+                }
+                break;
+
+            case $check instanceof Check\WebsiteCheck:
+                if (!$websites = \Mage::app()->getWebsites()) {
+                    $this->_markCheckWarning($results, 'websites', $checkGroupClass);
+                }
+                foreach ($websites as $website) {
+                    $check->check($results, $website);
+                }
+                break;
+
+            default:
+                throw new \LogicException(
+                    sprintf('Unhandled check-class "%s"', $checkGroupClass)
+                );
         }
     }
 
     /**
-     * @param OutputInterface $output
-     * @param Result $result
+     * @param OutputInterface  $output
+     * @param ResultCollection $results
      */
     protected function _printResults(OutputInterface $output, ResultCollection $results)
     {
@@ -120,8 +135,8 @@ HELP;
                         $output->write('<error>' . \N98\Util\Unicode\Charset::convertInteger(Charset::UNICODE_CROSS_CHAR) . '</error> ');
                         break;
 
-                    default:
                     case Result::STATUS_OK:
+                    default:
                         $output->write('<info>' . \N98\Util\Unicode\Charset::convertInteger(Charset::UNICODE_CHECKMARK_CHAR) . '</info> ');
                         break;
                 }
@@ -133,9 +148,9 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @param Result $result
+     * @param InputInterface   $input
+     * @param OutputInterface  $output
+     * @param ResultCollection $results
      */
     protected function _printTable(InputInterface $input, OutputInterface $output, ResultCollection $results)
     {
@@ -152,5 +167,39 @@ HELP;
         $this->getHelper('table')
             ->setHeaders(array('Group', 'Message', 'Result'))
             ->renderByFormat($output, $table, $input->getOption('format'));
+    }
+
+    /**
+     * @param string $checkGroupClass
+     *
+     * @return object
+     */
+    private function _createCheck($checkGroupClass)
+    {
+        $check = new $checkGroupClass();
+
+        if ($check instanceof CommandAware) {
+            $check->setCommand($this);
+        }
+        if ($check instanceof CommandConfigAware) {
+            $check->setCommandConfig($this->_config);
+
+            return $check;
+        }
+
+        return $check;
+    }
+
+    /**
+     * @param ResultCollection $results
+     * @param string           $context
+     * @param string           $checkGroupClass
+     */
+    private function _markCheckWarning(ResultCollection $results, $context, $checkGroupClass)
+    {
+        $result = $results->createResult();
+        $result->setMessage('<error>No ' . $context . ' configured to run store check:</error> <comment>' . basename($checkGroupClass) . '</comment>');
+        $result->setStatus($result::STATUS_WARNING);
+        $results->addResult($result);
     }
 }
