@@ -5,49 +5,47 @@
 
 namespace N98\Magento\Command\System\Check\Settings;
 
-use N98\Magento\Command\System\Check\StoreCheck;
 use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
+use N98\Magento\Command\System\Check\StoreCheck;
 
-abstract class CookieDomainCheckAbstract implements StoreCheck
+/**
+ * Class CookieDomainCheckAbstract
+ *
+ * @package N98\Magento\Command\System\Check\Settings
+ */
+abstract class CookieDomainCheckAbstract extends CheckAbstract
 {
     protected $class = 'abstract';
 
-    final public function __construct()
+    public function initConfigPaths()
     {
-        $whitelist = array('secure' => 1, 'unsecure' => 2);
-
-        if (!isset($whitelist[$this->class])) {
-            throw new \LogicException(
-                sprintf('cookie class "%s" (%s::$class) is invalid.', $this->class, get_class($this))
-            );
-        }
+        $this->registerStoreConfigPath('baseUrl', 'web/' . $this->class . '/base_url');
+        $this->registerStoreConfigPath('cookieDomain', 'web/cookie/cookie_domain');
     }
 
     /**
-     * @param ResultCollection       $results
+     * @param Result                 $result
      * @param \Mage_Core_Model_Store $store
+     * @param string                 $baseUrl      setting
+     * @param string                 $cookieDomain setting
      */
-    final public function check(ResultCollection $results, \Mage_Core_Model_Store $store)
+    protected function checkSettings(Result $result, \Mage_Core_Model_Store $store, $baseUrl, $cookieDomain)
     {
-        $result       = $results->createResult();
         $errorMessage = 'Cookie Domain and ' . ucfirst($this->class) . ' BaseURL (http) does not match';
-
-        $baseUrl      = \Mage::getStoreConfig('web/' . $this->class . '/base_url', $store);
-        $cookieDomain = \Mage::getStoreConfig('web/cookie/cookie_domain', $store);
 
         if (strlen($cookieDomain)) {
             $isValid = $this->validateCookieDomainAgainstUrl($cookieDomain, $baseUrl);
 
-            $result->setStatus($isValid ? Result::STATUS_OK : Result::STATUS_ERROR);
+            $result->setStatus($isValid);
 
-            if ($result->isValid()) {
-                $result->setMessage('<info>Cookie Domain (' . $this->class . ') of Store: <comment>' . $store->getCode() . '</comment> OK</info>');
+            if ($isValid) {
+                $result->setMessage('<info>Cookie Domain (' . $this->class . '): <comment>' . $cookieDomain . '</comment> of Store: <comment>' . $store->getCode() . '</comment> - OK</info>');
             } else {
-                $result->setMessage('<error>Cookie Domain (' . $this->class . ') of Store: <comment>' . $store->getCode() . '</comment> ' . $errorMessage . '</error>');
+                $result->setMessage('<error>Cookie Domain (' . $this->class . '): <comment>' . $cookieDomain . '</comment> of Store: <comment>' . $store->getCode() . '</comment> - ERROR: ' . $errorMessage . '</error>');
             }
         } else {
-            $result->setMessage('<info>Cookie Domain (' . $this->class . ') of Store: <comment>' . $store->getCode() . '</comment> OK - No domain set</info>');
+            $result->setMessage('<info>Empty cookie Domain (' . $this->class . ') of Store: <comment>' . $store->getCode() . '</comment> - OK</info>');
         }
     }
 
@@ -74,7 +72,9 @@ abstract class CookieDomainCheckAbstract implements StoreCheck
 
         // Let cookie-domain be the attribute-value without the leading %x2E (".") character
         // see 5.2.3. The Domain Attribute <https://tools.ietf.org/html/rfc6265#section-5.2.3>
-        strlen($domain) && ($domain[0] === '.') && ($domain = substr($domain, 1));
+        if (strlen($domain) && ($domain[0] === '.')) {
+            $domain = substr($domain, 1);
+        }
 
         $domainLen = strlen($domain);
 
