@@ -126,7 +126,11 @@ HELP;
         $this->chooseInstallationFolder($input, $output);
 
         if (!$input->getOption('noDownload')) {
-            $this->downloadMagento($input, $output);
+            $result = $this->downloadMagento($input, $output);
+
+            if ($result === false) {
+                return 1;
+            }
         }
 
         if ($input->getOption('only-download')) {
