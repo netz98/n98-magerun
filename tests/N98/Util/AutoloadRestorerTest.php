@@ -9,7 +9,6 @@ namespace N98\Util;
  * Class WindowsSystemTest
  *
  * @package N98\Util
- * @requires OS win
  */
 class AutoloadRestorerTest extends \PHPUnit_Framework_TestCase
 {
