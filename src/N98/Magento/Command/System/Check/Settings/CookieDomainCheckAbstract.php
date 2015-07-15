@@ -6,8 +6,6 @@
 namespace N98\Magento\Command\System\Check\Settings;
 
 use N98\Magento\Command\System\Check\Result;
-use N98\Magento\Command\System\Check\ResultCollection;
-use N98\Magento\Command\System\Check\StoreCheck;
 
 /**
  * Class CookieDomainCheckAbstract
@@ -32,7 +30,7 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
      */
     protected function checkSettings(Result $result, \Mage_Core_Model_Store $store, $baseUrl, $cookieDomain)
     {
-        $errorMessage = 'Cookie Domain and ' . ucfirst($this->class) . ' BaseURL (http) does not match';
+        $errorMessage = 'cookie-domain and ' . $this->class . ' base-URL do not match';
 
         if (strlen($cookieDomain)) {
             $isValid = $this->validateCookieDomainAgainstUrl($cookieDomain, $baseUrl);
@@ -50,46 +48,68 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
     }
 
     /**
-     * quite rough cookie domain against base-URL validation
+     * simplified cookie domain against base-URL validation
      *
-     * follows RFC6265 Domain Matching <https://tools.ietf.org/html/rfc6265#section-5.1.3>
+     * it follows the following (incomplete) verification:
+     *
+     * - the site-domain is extracted from the base-url
+     * - site-domain and cookie-domain are normalized by making them lowercase
+     * - if the site-domain is empty, the check returns false because it's moot
+     * - if the cookie-domain is smaller than three, the check returns false because it's moot
+     * - if the cookie-domain does not start with a dot ("."), and the whole matches site-domain return true.
+     * - otherwise the dot is removed and the cookie-domain is now with removed starting dot.
+     * - the cookie domain must be the suffix of the site-domain and the remaining prefix of site-domain must end with
+     *   a dot. returns true/false
      *
      * @param string $cookieDomain
-     * @param string $url
+     * @param string $siteUrl
      *
      * @return bool
      */
-    private function validateCookieDomainAgainstUrl($cookieDomain, $url)
+    public function validateCookieDomainAgainstUrl($cookieDomain, $siteUrl)
     {
-        $host = strtolower(parse_url($url, PHP_URL_HOST));
+        $siteDomain = strtolower(parse_url($siteUrl, PHP_URL_HOST));
+        $siteLen    = strlen($siteDomain);
 
-        $hostLen = strlen($host);
-        if (!$hostLen) {
+        if (0 === $siteLen) {
             return false;
         }
 
-        $domain = strtolower($cookieDomain);
+        $cookieDomain = strtolower($cookieDomain);
+        $cookieLen    = strlen($cookieDomain);
 
-        // Let cookie-domain be the attribute-value without the leading %x2E (".") character
-        // see 5.2.3. The Domain Attribute <https://tools.ietf.org/html/rfc6265#section-5.2.3>
-        if (strlen($domain) && ($domain[0] === '.')) {
-            $domain = substr($domain, 1);
-        }
-
-        $domainLen = strlen($domain);
-
-        if (!$domainLen) {
+        if (3 > $cookieLen) {
             return false;
         }
 
-        return (
-            ($host === $domain)
-            || (
-                ($hostLen > $domainLen)
-                && (substr($host, -$domainLen) === $domain)
-                && (substr($host, -$domainLen - 1, 1) === '.')
-                && (ip2long($host) === false)
-            )
-        );
+        $hasLeadingDot = $cookieDomain[0] === '.';
+        if ($hasLeadingDot) {
+            $cookieDomain = substr($cookieDomain, 1);
+            $cookieLen    = strlen($cookieDomain);
+        } elseif ($siteDomain === $cookieDomain) {
+            return true;
+        }
+
+        // cookie domain must at least contain a SLD.TLD, no match or match at offset 0 for '.' invalidates
+        if (!strpos($cookieDomain, '.')) {
+            return false;
+        }
+
+        $suffix = substr($siteDomain, -$cookieLen);
+
+        if ($suffix !== $cookieDomain) {
+            return false;
+        }
+
+        $prefix = substr($siteDomain, 0, -$cookieLen);
+        if (0 === strlen($prefix)) {
+            return false;
+        }
+
+        if (substr($prefix, -1) !== '.') {
+            return false;
+        }
+
+        return true;
     }
 }
