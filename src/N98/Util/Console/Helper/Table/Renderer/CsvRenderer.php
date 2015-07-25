@@ -8,22 +8,23 @@ use Symfony\Component\Console\Output\StreamOutput;
 class CsvRenderer implements RendererInterface
 {
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param array $rows
+     * {@inheritdoc}
      */
     public function render(OutputInterface $output, array $rows)
     {
+        // no rows - there is nothing to do
+        if (!$rows) {
+            return;
+        }
+
         if ($output instanceof StreamOutput) {
             $stream = $output->getStream();
         } else {
             $stream = \STDOUT;
         }
 
-        $i = 0;
+        fputcsv($stream, array_keys(reset($rows)));
         foreach ($rows as $row) {
-            if ($i++ == 0) {
-                fputcsv($stream, array_keys($row));
-            }
             fputcsv($stream, $row);
         }
     }

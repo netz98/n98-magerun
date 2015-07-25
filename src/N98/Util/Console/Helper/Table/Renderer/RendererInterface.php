@@ -8,7 +8,7 @@ interface RendererInterface
 {
     /**
      * @param OutputInterface $output
-     * @param array $rows
+     * @param array           $rows headers are expected to be the keys of the first row.
      */
     public function render(OutputInterface $output, array $rows);
 }
