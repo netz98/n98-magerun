@@ -7,6 +7,7 @@ class RendererFactory
     protected static $formats = array(
         'csv'  => 'N98\Util\Console\Helper\Table\Renderer\CsvRenderer',
         'json' => 'N98\Util\Console\Helper\Table\Renderer\JsonRenderer',
+        'text' => 'N98\Util\Console\Helper\Table\Renderer\TextRenderer',
         'xml'  => 'N98\Util\Console\Helper\Table\Renderer\XmlRenderer',
     );
 

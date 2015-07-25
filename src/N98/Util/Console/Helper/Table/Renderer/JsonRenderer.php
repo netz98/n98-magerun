@@ -7,8 +7,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class JsonRenderer implements RendererInterface
 {
     /**
-     * @param OutputInterface $output
-     * @param array           $rows
+     * {@inheritdoc}
      */
     public function render(OutputInterface $output, array $rows)
     {
