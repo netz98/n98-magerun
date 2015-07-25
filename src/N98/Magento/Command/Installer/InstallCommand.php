@@ -13,6 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
+use N98\Util\Exec;
 
 /**
  * Class InstallCommand
@@ -106,14 +107,6 @@ HELP;
     }
 
     /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return function_exists('exec');
-    }
-
-    /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @throws \RuntimeException
@@ -133,7 +126,11 @@ HELP;
         $this->chooseInstallationFolder($input, $output);
 
         if (!$input->getOption('noDownload')) {
-            $this->downloadMagento($input, $output);
+            $result = $this->downloadMagento($input, $output);
+
+            if ($result === false) {
+                return 1;
+            }
         }
 
         if ($input->getOption('only-download')) {
@@ -464,7 +461,7 @@ HELP;
                                 . ' < '
                                 . escapeshellarg($sampleDataSqlFile[0]);
                             $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with mysql cli client</info>');
-                            exec($exec);
+                            Exec::run($exec);
                             @unlink($sampleDataSqlFile[0]);
                         } else {
                             $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with PDO driver</info>');
@@ -694,8 +691,7 @@ HELP;
             $installCommand = '/usr/bin/env php -f ' . escapeshellarg($this->getInstallScriptPath()) . ' -- ' . $installArgs;
         }
         $output->writeln('<comment>' . $installCommand . '</comment>');
-        exec($installCommand, $installationOutput, $returnStatus);
-        $installationOutput = implode(PHP_EOL, $installationOutput);
+        Exec::run($installCommand, $installationOutput, $returnStatus);
         if ($returnStatus !== self::EXEC_STATUS_OK) {
             $this->getApplication()->setAutoExit(true);
             throw new \RuntimeException('Installation failed.' . $installationOutput, 1);

@@ -44,7 +44,7 @@ class ConsoleCommand extends AbstractMagentoCommand
         $shell = new Shell($config);
 
         if ($initialized) {
-            $ok = Charset::convertInteger(10004);
+            $ok = Charset::convertInteger(Charset::UNICODE_CHECKMARK_CHAR);
             $edition = $this->getApplication()->isMagentoEnterprise() ? 'EE' : 'CE';
             $consoleOutput->writeln('<fg=black;bg=green>Magento ' . \Mage::getVersion() . ' ' . $edition . ' initialized.</fg=black;bg=green> ' . $ok);
         } else {

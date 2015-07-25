@@ -32,12 +32,9 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
         if ($this->initMagento()) {
 
             // Username
-            if (($id = $input->getArgument('id')) == null) {
-                $dialog = $this->getHelperSet()->get('dialog');
-                $id = $dialog->ask($output, '<question>Username or Email:</question>');
-            }
 
-            $user = $this->getUserModel()->loadByUsername($id);
+            $id = $this->getOrAskForArgument('id', $input, $output, 'Username or Email');
+                        $user = $this->getUserModel()->loadByUsername($id);
             if (!$user->getId()) {
                 $user = $this->getUserModel()->load($id, 'email');
             }

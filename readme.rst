@@ -16,13 +16,22 @@ Build Status
 .. image:: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5/badge.png
    :target: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5
 
+.. image:: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=master
+   :target: https://scrutinizer-ci.com/g/netz98/n98-magerun/
+
 .. image:: https://poser.pugx.org/n98/magerun/v/stable.png
    :target: https://packagist.org/packages/n98/magerun
+
+.. image:: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=master
+   :target: https://scrutinizer-ci.com/g/netz98/n98-magerun/
 
 **Development Branch**
 
 .. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=develop
-  :target: https://travis-ci.org/netz98/n98-magerun
+   :target: https://travis-ci.org/netz98/n98-magerun
+
+.. image:: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=develop
+   :target: https://scrutinizer-ci.com/g/netz98/n98-magerun/?branch=develop
 
 Compatibility
 -------------
@@ -704,6 +713,17 @@ Prints stored cache entry by ID.
 
 If value is serialized you can force a pretty output with --unserialize option.
 
+Toggle CMS Block
+"""""""""""
+
+Toggle "is_active" on a cms block
+
+.. code-block:: sh
+
+   $ n98-magerun.phar cms:block:toggle [block_id]
+
+"block_id" can be an entity id or an "identifier"
+
 Demo Notice
 """""""""""
 
@@ -791,7 +811,13 @@ Provides info like the edition and version or the configured cache backends.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar sys:info
+   $ n98-magerun.phar sys:info [key]
+
+Print only one value like the version.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:info version
 
 Magento Stores
 """"""""""""""
@@ -1125,7 +1151,7 @@ Example:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:resolve model catalog/product
+   $ n98-magerun.phar dev:class:lookup model catalog/product
 
 Toggle Symlinks
 """""""""""""""

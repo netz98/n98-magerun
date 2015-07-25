@@ -3,7 +3,13 @@
 namespace N98\Magento\Command\Customer;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\Exec;
 
+/**
+ * Class AbstractCustomerCommand
+ *
+ * @package N98\Magento\Command\Customer
+ */
 abstract class AbstractCustomerCommand extends AbstractMagentoCommand
 {
     /**
@@ -44,5 +50,14 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
     protected function getCountryCollection()
     {
         return $this->_getResourceModel('directory/country_collection', 'Mage_Directory_Model_Resource_Country_Collection');
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return Exec::allowed();
     }
 }

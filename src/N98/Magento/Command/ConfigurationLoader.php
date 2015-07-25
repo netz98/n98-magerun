@@ -228,20 +228,20 @@ class ConfigurationLoader
             /**
              * Allow modules to be placed vendor folder if not in phar mode
              */
-            if (!$this->_isPharMode) {
-                if (is_dir($this->getVendorDir())) {
-                    $finder = Finder::create();
-                    $finder
-                        ->files()
-                        ->depth(2)
-                        ->followLinks()
-                        ->ignoreUnreadableDirs(true)
-                        ->name($this->_customConfigFilename)
-                        ->in($this->getVendorDir());
+            if (!$this->_isPharMode && is_dir($this->getVendorDir())) {
 
-                    foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
-                        $this->registerPluginConfigFile($magentoRootFolder, $file);
-                    }
+                $finder = Finder::create();
+                $finder
+                    ->files()
+                    ->depth(2)
+                    ->followLinks()
+                    ->ignoreUnreadableDirs(true)
+                    ->name($this->_customConfigFilename)
+                    ->in($this->getVendorDir());
+
+                foreach ($finder as $file) {
+                    /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                    $this->registerPluginConfigFile($magentoRootFolder, $file);
                 }
             }
 

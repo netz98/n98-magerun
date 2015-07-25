@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Cache;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Application;
 
 class AbstractCacheCommand extends AbstractMagentoCommand
 {
@@ -55,5 +56,13 @@ class AbstractCacheCommand extends AbstractMagentoCommand
     protected function _canUseBanCacheFunction()
     {
         return method_exists('\Mage_Core_Model_App', 'baseInit');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->getApplication()->getMagentoMajorVersion() === Application::MAGENTO_MAJOR_VERSION_1;
     }
 }

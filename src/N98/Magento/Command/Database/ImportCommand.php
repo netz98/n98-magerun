@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Exec;
 
 class ImportCommand extends AbstractDatabaseCommand
 {
@@ -29,14 +30,6 @@ You need to have MySQL client tools installed on your system.
 HELP;
         $this->setHelp($help);
 
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return function_exists('exec');
     }
 
     /**
@@ -70,7 +63,7 @@ HELP;
                 $table = $m[1];
                 $values = $m[2];
 
-                if ($table != $currentTable or ($len > $maxlen - 1000)) {
+                if ($table != $currentTable || ($len > $maxlen - 1000)) {
                     if ($currentTable != '') {
                         fwrite($out, ";\n");
                     }
@@ -196,9 +189,11 @@ HELP;
             '<comment>Importing SQL dump <info>' . $fileName . '</info> to database <info>'
             . $this->dbSettings['dbname'] . '</info>'
         );
-        exec($exec, $commandOutput, $returnValue);
+
+        Exec::run($exec, $commandOutput, $returnValue);
+
         if ($returnValue <> 0) {
-            $output->writeln('<error>' . implode(PHP_EOL, $commandOutput) . '</error>');
+            $output->writeln('<error>' . $commandOutput . '</error>');
         }
         $output->writeln('<info>Finished</info>');
     }

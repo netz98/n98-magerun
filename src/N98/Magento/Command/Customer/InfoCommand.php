@@ -52,7 +52,6 @@ class InfoCommand extends AbstractCustomerCommand
                     continue;
                 }
                 try {
-                    //$attribute = \Mage::getSingleton('eav/config')->getAttribute('customer', $key);
                     $attribute = $customer->getResource()->getAttribute($key);
                     $table[] = array(
                         $attribute instanceof \Mage_Customer_Model_Attribute ? $attribute->getFrontend()->getLabel() : $key,

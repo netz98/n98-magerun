@@ -5,6 +5,7 @@ namespace N98\Magento\Command;
 use Composer\Package\PackageInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Factory as ComposerFactory;
@@ -134,9 +135,10 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function getCommandConfig($commandClass = null)
     {
-        if ($commandClass == null) {
+        if (null === $commandClass) {
             $commandClass = get_class($this);
         }
+
         $configArray = $this->getApplication()->getConfig();
         if (isset($configArray['commands'][$commandClass])) {
             return $configArray['commands'][$commandClass];
@@ -162,11 +164,12 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * Bootstrap magento shop
      *
+     * @param bool $soft
      * @return bool
      */
-    protected function initMagento()
+    protected function initMagento($soft = false)
     {
-        $init = $this->getApplication()->initMagento();
+        $init = $this->getApplication()->initMagento($soft);
         if ($init) {
             $this->_magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
         }
@@ -521,5 +524,63 @@ abstract class AbstractMagentoCommand extends Command
     protected function isSourceTypeRepository($type)
     {
         return in_array($type, array('git', 'hg'));
+    }
+
+    /**
+     * @param $argument
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @param null $message
+     * @return mixed
+     */
+    protected function getOrAskForArgument($argument, InputInterface $input, OutputInterface $output, $message = null)
+    {
+        $inputArgument = $input->getArgument($argument);
+        if ($inputArgument === null) {
+
+            $message = $this->getArgumentMessage($argument, $message);
+
+            $dialog = $this->getHelperSet()->get('dialog');
+            return $dialog->ask($output, $message);
+        }
+
+        return $inputArgument;
+    }
+
+    /**
+     * @param array           $entries zero-indexed array of entries (represented by strings) to select from
+     * @param OutputInterface $output
+     * @param string          $question
+     */
+    protected function askForArrayEntry(array $entries, OutputInterface $output, $question)
+    {
+        foreach ($entries as $key => $entry) {
+            $question[] = '<comment>[' . ($key + 1) . ']</comment> ' . $entry . "\n";
+        }
+        $question[] = "<question>{$question}</question> ";
+
+        $selected = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($entries) {
+            if (!in_array($typeInput, range(1, count($entries)))) {
+                throw new \InvalidArgumentException('Invalid type');
+            }
+
+            return $typeInput;
+        });
+
+        return $entries[$selected - 1];
+    }
+
+    /**
+     * @param $argument
+     * @param null $message
+     * @return string
+     */
+    protected function getArgumentMessage($argument, $message = null)
+    {
+        $question = '<question>%s:</question>';
+        if ($message !== null) {
+            return sprintf($question, $message);
+        }
+        return sprintf($message, ucfirst($argument));
     }
 }
