@@ -48,13 +48,13 @@ Download phar file
 
 .. code-block:: sh
 
-   wget http://files.magerun.net/n98-magerun-latest.phar -O n98-magerun.phar 
+   wget http://files.magerun.net/n98-magerun-latest.phar -O n98-magerun.phar
 
 or if you have problems with SSL certificate:
 
 .. code-block:: sh
 
-   curl -sS http://files.magerun.net/n98-magerun-latest.phar -o n98-magerun.phar 
+   curl -sS http://files.magerun.net/n98-magerun-latest.phar -o n98-magerun.phar
 
 You can make the .phar file executable.
 
@@ -998,6 +998,23 @@ See it in action: http://www.youtube.com/watch?v=zAWpRpawTGc
 
 The command is only available for PHP 5.4 users.
 
+CSS Merging
+""""""""""""""
+
+Toggle CSS merging settings of a store
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:merge-css [store_code]
+
+JS Merging
+""""""""""""""
+
+Toggle JS merging settings of a store
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:merge-js [store_code]
 
 Template Hints
 """"""""""""""
