@@ -5,7 +5,6 @@ namespace N98\Util\Console\Helper;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\Table\Renderer\RendererInterface;
 use Symfony\Component\Console\Helper\TableHelper as BaseTableHelper;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -60,6 +59,8 @@ class TableHelper extends BaseTableHelper
 
     /**
      * @param array $headers
+     * @param string[] $headers
+     *
      * @return $this
      */
     public function setHeaders(array $headers)
@@ -73,9 +74,9 @@ class TableHelper extends BaseTableHelper
     /**
      * @param OutputInterface $outputInterface
      * @param array $rows
-     * @param string $format
+     * @param string $format [optional]
      */
-    public function renderByFormat(OutputInterface $outputInterface, array $rows, $format = '')
+    public function renderByFormat(OutputInterface $outputInterface, array $rows, $format = null)
     {
         $rendererFactory = new RendererFactory();
         $renderer = $rendererFactory->create($format);
@@ -91,18 +92,17 @@ class TableHelper extends BaseTableHelper
     }
 
     /**
-     * Takes a 2 dimensional tabular array (or iterable object) and outputs an ascii table
+     * Takes a two dimensional tabular array with headers as keys in the first row and outputs an ascii table
      *
-     * @deprecated Use original Symfony table helper
+     * @deprecated since 1.98.0 use original Symfony table instead.
+     *
      * @param  OutputInterface $output
-     * @param  array           $table
-     * @param  int             $crop    Maximum column width
-     * @param  boolean         $rowKeys Display the keys as first column
+     * @param  array           $rows
      */
-    public function write(OutputInterface $output, $table)
+    public function write(OutputInterface $output, array $rows)
     {
-        $this->setHeaders(array_keys($table[0]));
-        $this->setRows($table);
+        $this->setHeaders(array_keys($rows[0]));
+        $this->setRows($rows);
 
         return $this->render($output);
     }
