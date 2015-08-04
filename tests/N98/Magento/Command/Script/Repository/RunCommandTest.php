@@ -11,7 +11,10 @@ class RunCommandTest extends TestCase
     {
         $application = $this->getApplication();
         $config = $application->getConfig();
-        $config['script']['folders'][] = __DIR__ . '/_scripts';
+
+        $testDir = $this->normalizePathSeparators(__DIR__) . '/_scripts';
+
+        $config['script']['folders'][] = $testDir;
         $application->setConfig($config);
 
         $application->add(new RunCommand());
@@ -27,6 +30,18 @@ class RunCommandTest extends TestCase
 
         // Runs sys:info -> Check for any output
         $this->assertContains('Vendors (core)', $commandTester->getDisplay());
-        $this->assertContains(__DIR__ . '/_scripts/hello-world.magerun', $commandTester->getDisplay());
+
+        $this->assertContains(
+            $testDir . '/hello-world.magerun',
+            $this->normalizePathSeparators($commandTester->getDisplay())
+        );
+    }
+
+    /**
+     * @return string
+     */
+    private function normalizePathSeparators($string)
+    {
+        return strtr($string, "\\", "/");
     }
 }
