@@ -60,9 +60,9 @@ HELP;
 
         $query = $this->getOrAskForArgument('query', $input, $output, 'SQL Query');
 
-        $query = $this->getEscapedSql($query);
-
-        $exec = 'mysql ' . $this->getMysqlClientToolConnectionString() . " -e '" . $query . "'";
+        /** @var $helper \N98\Util\Console\Helper\DatabaseHelper */
+        $helper = $this->getHelper('database');
+        $exec   = sprintf('mysql %s -e %s', $helper->getMysqlClientToolConnectionString(), escapeshellarg($query));
 
         if ($input->getOption('only-command')) {
             $output->writeln($exec);
