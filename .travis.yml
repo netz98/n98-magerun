@@ -35,7 +35,7 @@ matrix:
     - php: 5.3
       env: MAGENTO_VERSION="magento-ce-1.9.1.1" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=66
       
-      - php: 5.3
+    - php: 5.3
       env: MAGENTO_VERSION="magento-mirror-1.9.2.0" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=66
 
     # Old Magneto Versions are not officially supported to run with PHP 5.5 and 5.6
