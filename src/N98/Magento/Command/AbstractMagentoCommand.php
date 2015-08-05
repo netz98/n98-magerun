@@ -263,8 +263,8 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * brings locally cached repository up to date if it is missing the requested tag
      *
-     * @param $package
-     * @param $targetFolder
+     * @param PackageInterface $package
+     * @param string $targetFolder
      */
     protected function checkRepository($package, $targetFolder)
     {
@@ -509,11 +509,11 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @param $argument
+     * @param string $argument
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @param null $message
-     * @return mixed
+     * @param string $message
+     * @return string
      */
     protected function getOrAskForArgument($argument, InputInterface $input, OutputInterface $output, $message = null)
     {
