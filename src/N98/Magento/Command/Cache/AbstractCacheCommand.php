@@ -28,6 +28,8 @@ class AbstractCacheCommand extends AbstractMagentoCommand
      */
     protected function saveCacheStatus($codeArgument, $status)
     {
+        $this->validateCacheCodes($codeArgument);
+
         $cacheTypes = $this->_getCacheModel()->getTypes();
         $enable = \Mage::app()->useCache();
         foreach ($cacheTypes as $cacheCode => $cacheModel) {
@@ -37,6 +39,20 @@ class AbstractCacheCommand extends AbstractMagentoCommand
         }
 
         \Mage::app()->saveUseCache($enable);
+    }
+
+    /**
+     * @param array $codes
+     * @throws \InvalidArgumentException
+     */
+    protected function validateCacheCodes(array $codes)
+    {
+        $cacheTypes = $this->_getCacheModel()->getTypes();
+        foreach ($codes as $cacheCode) {
+            if (!array_key_exists($cacheCode, $cacheTypes)) {
+                throw new \InvalidArgumentException('Invalid cache type: ' . $cacheCode);
+            }
+        }
     }
 
     /**
