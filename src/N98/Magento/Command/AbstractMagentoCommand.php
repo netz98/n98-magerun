@@ -554,12 +554,13 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function askForArrayEntry(array $entries, OutputInterface $output, $question)
     {
+        $dialog = '';
         foreach ($entries as $key => $entry) {
-            $question .= '<comment>[' . ($key + 1) . ']</comment> ' . $entry . "\n";
+            $dialog .= '<comment>[' . ($key + 1) . ']</comment> ' . $entry . "\n";
         }
-        $question .= "<question>{$question}</question> ";
+        $dialog .= "<question>{$question}</question> ";
 
-        $selected = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($entries) {
+        $selected = $this->getHelper('dialog')->askAndValidate($output, $dialog, function($typeInput) use ($entries) {
             if (!in_array($typeInput, range(1, count($entries)))) {
                 throw new \InvalidArgumentException('Invalid type');
             }
