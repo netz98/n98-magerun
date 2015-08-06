@@ -4,6 +4,9 @@ vendor/
 # Phpunit
 phpunit.xml
 
+# Build files
+composer.phar
+
 # Miscellaneous (Kraut und Rueben)
 .DS_Store
 .idea
