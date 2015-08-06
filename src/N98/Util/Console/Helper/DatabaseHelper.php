@@ -7,6 +7,7 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use RuntimeException;
+use SimpleXMLElement;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use N98\Magento\Application;
@@ -52,34 +53,7 @@ class DatabaseHelper extends AbstractHelper
             return;
         }
 
-        $application = $this->getApplication();
-        $application->detectMagento();
-
-        $configFile = $application->getMagentoRootFolder() . '/app/etc/local.xml';
-
-        if (!is_readable($configFile)) {
-            throw new RuntimeException('app/etc/local.xml is not readable');
-        }
-
-        $config = simplexml_load_file($configFile);
-        if (false === $config) {
-            $output->writeln('<error>Unable to open file app/etc/local.xml and parse it as XML</error>');
-
-            return;
-        }
-
-        $resources = $config->global->resources;
-        if (!$resources) {
-            $output->writeln('<error>DB global resources was not found in app/etc/local.xml file</error>');
-
-            return;
-        }
-
-        if (!$resources->default_setup->connection) {
-            $output->writeln('<error>DB settings (default_setup) was not found in app/etc/local.xml file</error>');
-
-            return;
-        }
+        $resources = $this->getMagentoGlobalResources($output);
 
         $isSocketConnect      = null;
         $dbSettings           = (array) $resources->default_setup->connection;
@@ -103,6 +77,57 @@ class DatabaseHelper extends AbstractHelper
 
         $this->isSocketConnect = $isSocketConnect;
         $this->dbSettings      = $dbSettings;
+    }
+
+    /**
+     * @param $output
+     *
+     * @return SimpleXMLElement
+     */
+    private function getMagentoGlobalResources(OutputInterface $output)
+    {
+        $config = $this->loadMagentoConfigFile($output);
+
+        $resources = $config->global->resources;
+        if (!$resources) {
+            $this->giveError($output, 'DB global resources was not found in app/etc/local.xml file');
+        }
+
+        if (!$resources->default_setup->connection) {
+            $this->giveError($output, 'DB settings (default_setup) was not found in app/etc/local.xml file');
+        }
+
+        return $resources;
+    }
+
+    private function loadMagentoConfigFile(OutputInterface $output)
+    {
+        $application = $this->getApplication();
+        $application->detectMagento();
+
+        $configFile = $application->getMagentoRootFolder() . '/app/etc/local.xml';
+
+        if (!is_readable($configFile)) {
+            $this->giveError($output, 'app/etc/local.xml is not readable');
+        }
+
+        $config = simplexml_load_file($configFile);
+        if (false === $config) {
+            $this->giveError($output, 'Unable to open file app/etc/local.xml and parse it as XML');
+        }
+
+        return $config;
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param string          $message
+     */
+    private function giveError(OutputInterface $output, $message)
+    {
+        $output->writeln('<error>' . $message . '</error>');
+
+        throw new RuntimeException($message);
     }
 
     /**
@@ -394,7 +419,7 @@ class DatabaseHelper extends AbstractHelper
     }
 
     /**
-     * Get list of tables in the database
+     * Get list of database tables
      *
      * @param bool $withoutPrefix [optional] remove prefix from the returned table names. prefix is obtained from
      *                            magento database configuration. defaults to false.
