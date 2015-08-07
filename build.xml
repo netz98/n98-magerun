@@ -52,7 +52,7 @@ Build phar with:
     <target name="dist">
         <exec command="./composer.phar install --no-dev" dir="${project.basedir}" passthru="true" />
         <phingcall target="dist_unix">
-            <property name="compression" value="bzip2" />
+            <property name="compression" value="gzip" />
         </phingcall>
 
         <!-- Revert dev settings -->
