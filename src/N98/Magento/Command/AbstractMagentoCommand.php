@@ -70,24 +70,6 @@ abstract class AbstractMagentoCommand extends Command
         $this->checkDeprecatedAliases($input, $output);
     }
 
-    /**
-     * @param array $codeArgument
-     * @param bool  $status
-     * @return bool
-     */
-    protected function saveCacheStatus($codeArgument, $status)
-    {
-        $cacheTypes = $this->_getCacheModel()->getTypes();
-        $enable = \Mage::app()->useCache();
-        foreach ($cacheTypes as $cacheCode => $cacheModel) {
-            if (empty($codeArgument) || in_array($cacheCode, $codeArgument)) {
-                $enable[$cacheCode] = $status ? 1 : 0;
-            }
-        }
-
-        \Mage::app()->saveUseCache($enable);
-    }
-
     private function _initWebsites()
     {
         $this->_websiteCodeMap = array();
@@ -281,8 +263,8 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * brings locally cached repository up to date if it is missing the requested tag
      *
-     * @param $package
-     * @param $targetFolder
+     * @param PackageInterface $package
+     * @param string $targetFolder
      */
     protected function checkRepository($package, $targetFolder)
     {
@@ -527,11 +509,11 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @param $argument
+     * @param string $argument
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @param null $message
-     * @return mixed
+     * @param string $message
+     * @return string
      */
     protected function getOrAskForArgument($argument, InputInterface $input, OutputInterface $output, $message = null)
     {

@@ -46,6 +46,7 @@ HELP;
             \Mage::app()->loadAreaPart('adminhtml', 'events');
             $allTypes = \Mage::app()->useCache();
             $typesToClean = $input->getArgument('type');
+            $this->validateCacheCodes($typesToClean);
             $typeKeys = array_keys($allTypes);
 
             foreach ($typeKeys as $type) {

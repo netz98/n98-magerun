@@ -22,6 +22,40 @@ class AbstractCacheCommand extends AbstractMagentoCommand
     }
 
     /**
+     * @param array $codeArgument
+     * @param bool  $status
+     * @return boolean|null
+     */
+    protected function saveCacheStatus($codeArgument, $status)
+    {
+        $this->validateCacheCodes($codeArgument);
+
+        $cacheTypes = $this->_getCacheModel()->getTypes();
+        $enable = \Mage::app()->useCache();
+        foreach ($cacheTypes as $cacheCode => $cacheModel) {
+            if (empty($codeArgument) || in_array($cacheCode, $codeArgument)) {
+                $enable[$cacheCode] = $status ? 1 : 0;
+            }
+        }
+
+        \Mage::app()->saveUseCache($enable);
+    }
+
+    /**
+     * @param array $codes
+     * @throws \InvalidArgumentException
+     */
+    protected function validateCacheCodes(array $codes)
+    {
+        $cacheTypes = $this->_getCacheModel()->getTypes();
+        foreach ($codes as $cacheCode) {
+            if (!array_key_exists($cacheCode, $cacheTypes)) {
+                throw new \InvalidArgumentException('Invalid cache type: ' . $cacheCode);
+            }
+        }
+    }
+
+    /**
      * Ban cache usage before cleanup to get the latest values.
      *
      * @see https://github.com/netz98/n98-magerun/issues/483
