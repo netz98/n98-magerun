@@ -3,6 +3,14 @@ RECENT CHANGES
 **************
 
 ======
+1.97.3
+======
+
+* Changed phar compression from bzip2 to gzip
+* #627 n98-magerun: command not found (reported by Qbixx, fixed by Tom Klingenberg)
+* #620 cache:disable does not validate code (by Luke Rodgers)
+
+======
 1.97.2
 ======
 

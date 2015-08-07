@@ -50,23 +50,23 @@ Build phar with:
     </fileset>
 
     <target name="dist">
-        <exec command="composer.phar install --no-dev" dir="${project.basedir}" passthru="true" />
+        <exec command="./composer.phar install --no-dev" dir="${project.basedir}" passthru="true" />
         <phingcall target="dist_unix">
-            <property name="compression" value="bzip2" />
+            <property name="compression" value="gzip" />
         </phingcall>
 
         <!-- Revert dev settings -->
-        <exec command="composer.phar install" dir="${project.basedir}" passthru="true" />
+        <exec command="./composer.phar install" dir="${project.basedir}" passthru="true" />
     </target>
 
     <target name="dist_hhvm">
-        <exec command="composer.phar install --no-dev" dir="${project.basedir}" passthru="true" />
+        <exec command="./composer.phar install --no-dev" dir="${project.basedir}" passthru="true" />
         <phingcall target="dist_unix">
             <property name="compression" value="none" />
         </phingcall>
 
         <!-- Revert dev settings -->
-        <exec command="composer.phar install" dir="${project.basedir}" passthru="true" />
+        <exec command="./composer.phar install" dir="${project.basedir}" passthru="true" />
     </target>
 
     <target name="dist_unix">
@@ -88,7 +88,8 @@ Build phar with:
         <!-- make phar executable -->
         <chmod file="./n98-magerun.phar" mode="775" />
         <exec command="git update-index --chmod=+x n98-magerun.phar" />
-        <exec command="git add ./n98-magerun.phar" />
+        <!-- the phar is not updated in the repository any longer -->
+        <exec command="git update-index --assume-unchanged n98-magerun.phar" />
     </target>
 
     <target name="install">
