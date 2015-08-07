@@ -6,6 +6,8 @@ RECENT CHANGES
 1.97.3
 ======
 
+* #620 cache:disable does not validate code (by Luke Rodgers)
+
 ======
 1.97.2
 ======

@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Cache;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Application;
 
@@ -43,14 +44,14 @@ class AbstractCacheCommand extends AbstractMagentoCommand
 
     /**
      * @param array $codes
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function validateCacheCodes(array $codes)
     {
         $cacheTypes = $this->_getCacheModel()->getTypes();
         foreach ($codes as $cacheCode) {
             if (!array_key_exists($cacheCode, $cacheTypes)) {
-                throw new \InvalidArgumentException('Invalid cache type: ' . $cacheCode);
+                throw new InvalidArgumentException('Invalid cache type: ' . $cacheCode);
             }
         }
     }

@@ -53,7 +53,7 @@ HELP;
                 if (count($typesToClean) == 0 || in_array($type, $typesToClean)) {
                     \Mage::app()->getCacheInstance()->cleanType($type);
                     \Mage::dispatchEvent('adminhtml_cache_refresh_type', array('type' => $type));
-                    $output->writeln('<info>' . $type . ' cache cleaned</info>');
+                    $output->writeln('<info>Cache <comment>' . $type . '</comment> cleaned</info>');
                 }
             }
 
