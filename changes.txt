@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 ======
+1.97.4
+======
+
+* #634 regression in user-interaction (reported by 25thhour, fixed by Tom Klingenberg)
+
+======
 1.97.3
 ======
 
