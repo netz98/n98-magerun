@@ -522,6 +522,7 @@ abstract class AbstractMagentoCommand extends Command
 
             $message = $this->getArgumentMessage($argument, $message);
 
+            /** @var  $dialog  \Symfony\Component\Console\Helper\DialogHelper */
             $dialog = $this->getHelperSet()->get('dialog');
             return $dialog->ask($output, $message);
         }
@@ -560,10 +561,10 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function getArgumentMessage($argument, $message = null)
     {
-        $question = '<question>%s:</question>';
-        if ($message !== null) {
-            return sprintf($question, $message);
+        if (null === $message) {
+            $message = ucfirst($argument);
         }
-        return sprintf($message, ucfirst($argument));
+
+        return sprintf('<question>%s:</question>', $message);
     }
 }
