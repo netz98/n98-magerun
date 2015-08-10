@@ -59,7 +59,7 @@ $urlHeaders = function ($url) {
             return explode("\n", $response, 2)[0];
         }
 
-        $pattern = sprintf('~^%s:\s*(.*)$~mi', preg_quote($name, '~'));
+        $pattern = sprintf('~(*ANYCRLF)^%s:\s*(.*)$~mi', preg_quote($name, '~'));
 
         return preg_match($pattern, $response, $matches) ? $matches[1] : null;
     };
