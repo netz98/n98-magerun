@@ -3,6 +3,39 @@ RECENT CHANGES
 **************
 
 ======
+1.97.5
+======
+
+* Show supported compression values (by Tom Klingenberg)
+
+======
+1.97.4
+======
+
+* #634 regression in user-interaction (reported by 25thhour, fixed by Tom Klingenberg)
+
+======
+1.97.3
+======
+
+* Changed phar compression from bzip2 to gzip
+* #627 n98-magerun: command not found (reported by Qbixx, fixed by Tom Klingenberg)
+* #620 cache:disable does not validate code (by Luke Rodgers)
+
+======
+1.97.2
+======
+
+* Minor fix bumping the revision (by Tom Klingenberg)
+
+======
+1.97.1
+======
+
+* #630 Magento 1.9.2.1 is out (by Tom Klingenberg)
+* #632 fix of PHP Fatal error: [] operator not supported for strings (by Tom Klingenberg)
+
+======
 1.97.0
 ======
 

@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Cache;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Application;
 
@@ -18,6 +19,40 @@ class AbstractCacheCommand extends AbstractMagentoCommand
             return \Mage::getModel('Mage_Core_Model_Cache');
         } else {
             return \Mage::app()->getCacheInstance();
+        }
+    }
+
+    /**
+     * @param array $codeArgument
+     * @param bool  $status
+     * @return boolean|null
+     */
+    protected function saveCacheStatus($codeArgument, $status)
+    {
+        $this->validateCacheCodes($codeArgument);
+
+        $cacheTypes = $this->_getCacheModel()->getTypes();
+        $enable = \Mage::app()->useCache();
+        foreach ($cacheTypes as $cacheCode => $cacheModel) {
+            if (empty($codeArgument) || in_array($cacheCode, $codeArgument)) {
+                $enable[$cacheCode] = $status ? 1 : 0;
+            }
+        }
+
+        \Mage::app()->saveUseCache($enable);
+    }
+
+    /**
+     * @param array $codes
+     * @throws InvalidArgumentException
+     */
+    protected function validateCacheCodes(array $codes)
+    {
+        $cacheTypes = $this->_getCacheModel()->getTypes();
+        foreach ($codes as $cacheCode) {
+            if (!array_key_exists($cacheCode, $cacheTypes)) {
+                throw new InvalidArgumentException('Invalid cache type: ' . $cacheCode);
+            }
         }
     }
 

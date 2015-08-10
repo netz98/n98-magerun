@@ -70,24 +70,6 @@ abstract class AbstractMagentoCommand extends Command
         $this->checkDeprecatedAliases($input, $output);
     }
 
-    /**
-     * @param array $codeArgument
-     * @param bool  $status
-     * @return bool
-     */
-    protected function saveCacheStatus($codeArgument, $status)
-    {
-        $cacheTypes = $this->_getCacheModel()->getTypes();
-        $enable = \Mage::app()->useCache();
-        foreach ($cacheTypes as $cacheCode => $cacheModel) {
-            if (empty($codeArgument) || in_array($cacheCode, $codeArgument)) {
-                $enable[$cacheCode] = $status ? 1 : 0;
-            }
-        }
-
-        \Mage::app()->saveUseCache($enable);
-    }
-
     private function _initWebsites()
     {
         $this->_websiteCodeMap = array();
@@ -281,8 +263,8 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * brings locally cached repository up to date if it is missing the requested tag
      *
-     * @param $package
-     * @param $targetFolder
+     * @param PackageInterface $package
+     * @param string $targetFolder
      */
     protected function checkRepository($package, $targetFolder)
     {
@@ -527,11 +509,11 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @param $argument
+     * @param string $argument
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @param null $message
-     * @return mixed
+     * @param string $message
+     * @return string
      */
     protected function getOrAskForArgument($argument, InputInterface $input, OutputInterface $output, $message = null)
     {
@@ -540,6 +522,7 @@ abstract class AbstractMagentoCommand extends Command
 
             $message = $this->getArgumentMessage($argument, $message);
 
+            /** @var  $dialog  \Symfony\Component\Console\Helper\DialogHelper */
             $dialog = $this->getHelperSet()->get('dialog');
             return $dialog->ask($output, $message);
         }
@@ -554,12 +537,13 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function askForArrayEntry(array $entries, OutputInterface $output, $question)
     {
+        $dialog = '';
         foreach ($entries as $key => $entry) {
-            $question[] = '<comment>[' . ($key + 1) . ']</comment> ' . $entry . "\n";
+            $dialog .= '<comment>[' . ($key + 1) . ']</comment> ' . $entry . "\n";
         }
-        $question[] = "<question>{$question}</question> ";
+        $dialog .= "<question>{$question}</question> ";
 
-        $selected = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($entries) {
+        $selected = $this->getHelper('dialog')->askAndValidate($output, $dialog, function($typeInput) use ($entries) {
             if (!in_array($typeInput, range(1, count($entries)))) {
                 throw new \InvalidArgumentException('Invalid type');
             }
@@ -577,10 +561,10 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function getArgumentMessage($argument, $message = null)
     {
-        $question = '<question>%s:</question>';
-        if ($message !== null) {
-            return sprintf($question, $message);
+        if (null === $message) {
+            $message = ucfirst($argument);
         }
-        return sprintf($message, ucfirst($argument));
+
+        return sprintf('<question>%s:</question>', $message);
     }
 }

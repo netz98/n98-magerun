@@ -46,13 +46,14 @@ HELP;
             \Mage::app()->loadAreaPart('adminhtml', 'events');
             $allTypes = \Mage::app()->useCache();
             $typesToClean = $input->getArgument('type');
+            $this->validateCacheCodes($typesToClean);
             $typeKeys = array_keys($allTypes);
 
             foreach ($typeKeys as $type) {
                 if (count($typesToClean) == 0 || in_array($type, $typesToClean)) {
                     \Mage::app()->getCacheInstance()->cleanType($type);
                     \Mage::dispatchEvent('adminhtml_cache_refresh_type', array('type' => $type));
-                    $output->writeln('<info>' . $type . ' cache cleaned</info>');
+                    $output->writeln('<info>Cache <comment>' . $type . '</comment> cleaned</info>');
                 }
             }
 

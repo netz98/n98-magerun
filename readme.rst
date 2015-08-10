@@ -8,27 +8,21 @@ The n98 magerun cli tools provides some handy tools to work with Magento from co
 Build Status
 ------------
 
-**Latest Release**
-
-.. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=master
-   :target: https://travis-ci.org/netz98/n98-magerun
-
-.. image:: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5/badge.png
-   :target: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5
-
-.. image:: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=master
-   :target: https://scrutinizer-ci.com/g/netz98/n98-magerun/
-
-.. image:: https://poser.pugx.org/n98/magerun/v/stable.png
-   :target: https://packagist.org/packages/n98/magerun
-
-*Development Branch**
-
-.. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=develop
-   :target: https://travis-ci.org/netz98/n98-magerun
-
-.. image:: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=develop
-   :target: https://scrutinizer-ci.com/g/netz98/n98-magerun/?branch=develop
++------------------------+-----------------------------------------------------------------------------------------------+
+| **Latest Release**     | .. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=master                         |
+|                        |    :target: https://travis-ci.org/netz98/n98-magerun                                          |
+|                        | .. image:: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5/badge.png        |
+|                        |    :target: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5                 |
+|                        | .. image:: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=master  |
+|                        |    :target: https://scrutinizer-ci.com/g/netz98/n98-magerun/                                  |
+|                        | .. image:: https://poser.pugx.org/n98/magerun/v/stable.png                                    |
+|                        |    :target: https://packagist.org/packages/n98/magerun                                        |
++------------------------+-----------------------------------------------------------------------------------------------+
+| **Development Branch** | .. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=develop                        |
+|                        |    :target: https://travis-ci.org/netz98/n98-magerun                                          |
+|                        | .. image:: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=develop |
+|                        |    :target: https://scrutinizer-ci.com/g/netz98/n98-magerun/?branch=develop                   |
++------------------------+-----------------------------------------------------------------------------------------------+
 
 Compatibility
 -------------
@@ -43,24 +37,42 @@ Installation
 
 There are two ways to install the tools:
 
-Download phar file
-""""""""""""""""""
+Download and Install Phar File
+""""""""""""""""""""""""""""""
+
+Download the latest stable N98-Magerun phar-file from the file-server_:
 
 .. code-block:: sh
 
    wget http://files.magerun.net/n98-magerun-latest.phar -O n98-magerun.phar
 
-or if you have problems with SSL certificate:
+Verify the download by comparing the MD5 checksum with the one on the website:
 
 .. code-block:: sh
+    md5sum n98-magerun.phar
 
-   curl -sS http://files.magerun.net/n98-magerun-latest.phar -o n98-magerun.phar
+If it shows the same checksum as on the website, you downloaded the file successfully.
 
-You can make the .phar file executable.
+Now you can make the phar-file executable:
 
 .. code-block:: sh
 
     chmod +x ./n98-magerun.phar
+
+The base-installation is now complete and you can verify it:
+
+.. code-block:: sh
+
+    ./n98-magerun.phar --version
+
+The command should execute successfully and show you the version number of N98-Magerun like:
+
+.. code-block:: sh
+
+    n98-magerun version 1.97.0 by netz98 new media GmbH
+
+You now have successfully installed Magerun! You can tailor the installation further like installing it system-wide and
+enable autocomplete - read on for more information about these and other features.
 
 If you want to use the command system wide you can copy it to `/usr/local/bin`.
 
@@ -78,10 +90,14 @@ Add this to your php.ini file:
 
    suhosin.executor.include.whitelist="phar"
 
-
 **You don't like the filename?**
 
-Just rename it to whatever you want.
+Just rename it to whatever you want. Or better: create an alias so that the original command name still works. This can
+be useful if you exchange scripts that are making use of magerun with other users as the canonical name is
+`n98-magerun.phar`, Some common aliases amongst the user-base are `magerun` or just `mr` even.
+
+
+.. _file-server: http://files.magerun.net/
 
 Install with Composer
 """""""""""""""""""""

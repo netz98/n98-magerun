@@ -42,7 +42,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.97.0';
+    const APP_VERSION = '1.97.5';
 
     /**
      * @var string
@@ -50,8 +50,8 @@ class Application extends BaseApplication
     private static $logo = "
      ___ ___
  _ _/ _ ( _ )___ _ __  __ _ __ _ ___ _ _ _  _ _ _
-| ' \_, / _ \___| '  \/ _` / _` / -_) '_| || | ' \
-|_||_/_/\___/   |_|_|_\__,_\__, \___|_|  \_,_|_||_|
+| ' \\_, / _ \\___| '  \\/ _` / _` / -_) '_| || | ' \\
+|_||_/_/\\___/   |_|_|_\\__,_\\__, \\___|_|  \\_,_|_||_|
                            |___/
 ";
     /**
