@@ -6,6 +6,8 @@ RECENT CHANGES
 1.97.5
 ======
 
+* Show supported compression values (by Tom Klingenberg)
+
 ======
 1.97.4
 ======
