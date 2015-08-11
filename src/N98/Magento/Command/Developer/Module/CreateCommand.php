@@ -82,6 +82,9 @@ class CreateCommand extends AbstractMagentoCommand
             $input->setOption('add-blocks', true);
             $input->setOption('add-helpers', true);
             $input->setOption('add-models', true);
+            $input->setOption('add-setup', true);
+            $input->setOption('add-readme', true);
+            $input->setOption('add-composer', true);
         }
         if (!$this->modmanMode) {
             $this->detectMagento($output);

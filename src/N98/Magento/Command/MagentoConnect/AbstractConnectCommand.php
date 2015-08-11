@@ -85,26 +85,12 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
 
     /**
      * @param array $alternatives
-     * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return string
      */
-    protected function askForAlternativePackage($alternatives, InputInterface $input, OutputInterface $output)
+    protected function askForAlternativePackage($alternatives, OutputInterface $output)
     {
-        foreach ($alternatives as $key => $package) {
-            $question[] = '<comment>[' . ($key+1) . ']</comment> ' . $package . "\n";
-        }
-        $question[] = "<question>Use alternative package? :</question> ";
-
-        $packageNumber = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($alternatives) {
-            if (!in_array($typeInput, range(1, count($alternatives)))) {
-                throw new \InvalidArgumentException('Invalid type');
-            }
-
-            return $typeInput;
-        });
-
-        return $alternatives[$packageNumber - 1];
+        return $this->askForArrayEntry($alternatives, $output, 'Use alternative package? :');
     }
 
     /**
@@ -135,12 +121,12 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
         if ($found) {
             $this->doAction($input, $output, $searchPackage);
         } else {
-            $output->writeln('<comment>Could not found package.</comment>');
+            $output->writeln('<comment>Could not find package.</comment>');
             if (count($alternatives) > 0) {
                 $this->doAction(
                     $input,
                     $output,
-                    $this->askForAlternativePackage($alternatives, $input, $output)
+                    $this->askForAlternativePackage($alternatives, $output)
                 );
             }
         }

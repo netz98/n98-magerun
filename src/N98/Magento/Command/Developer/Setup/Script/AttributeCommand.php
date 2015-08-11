@@ -52,7 +52,7 @@ class AttributeCommand extends AbstractMagentoCommand
 
                 $output->writeln(implode(PHP_EOL, $warnings) . PHP_EOL . $code);
 
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
             }
 

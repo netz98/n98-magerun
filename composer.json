@@ -10,6 +10,7 @@
     "keywords": ["magento", "installer", "cli", "magerun"],
     "require": {
         "php": ">=5.3.3",
+        "psy/psysh": "@stable",
         "symfony/console": "2.6.*",
         "symfony/event-dispatcher": "2.6.*",
         "symfony/finder": "2.6.*",

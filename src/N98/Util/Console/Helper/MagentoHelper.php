@@ -2,12 +2,8 @@
 
 namespace N98\Util\Console\Helper;
 
-use N98\Util\String;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputAwareInterface;
-use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,6 +27,16 @@ class MagentoHelper extends AbstractHelper
     protected $_magentoEnterprise = false;
 
     /**
+     * @var bool
+     */
+    protected $_magerunStopFileFound = false;
+
+    /**
+     * @var string
+     */
+    protected $_magerunStopFileFolder = null;
+
+    /**
      * @var InputInterface
      */
     protected $input;
@@ -39,6 +45,11 @@ class MagentoHelper extends AbstractHelper
      * @var OutputInterface
      */
     protected $output;
+
+    /**
+     * @var string
+     */
+    protected $_customConfigFilename = 'n98-magerun.yaml';
 
     /**
      * Returns the canonical name of this helper.
@@ -75,6 +86,7 @@ class MagentoHelper extends AbstractHelper
      *
      * @param string $folder
      * @param array $subFolders Sub-folders to check
+     * @return bool
      */
     public function detect($folder, $subFolders = array())
     {
@@ -87,10 +99,14 @@ class MagentoHelper extends AbstractHelper
             if (!is_dir($searchFolder) || !is_readable($searchFolder)) {
                 continue;
             }
-            if ($this->_search($searchFolder)) {
-                break;
+
+            $found = $this->_search($searchFolder);
+            if ($found) {
+                return true;
             }
         }
+
+        return false;
     }
 
 
@@ -121,6 +137,22 @@ class MagentoHelper extends AbstractHelper
     public function getMajorVersion()
     {
         return $this->_magentoMajorVersion;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMagerunStopFileFound()
+    {
+        return $this->_magerunStopFileFound;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMagerunStopFileFolder()
+    {
+        return $this->_magerunStopFileFolder;
     }
 
     /**
@@ -219,6 +251,8 @@ class MagentoHelper extends AbstractHelper
 
             $count = $finder->count();
             if ($count > 0) {
+                $this->_magerunStopFileFound = true;
+                $this->_magerunStopFileFolder = $searchFolder;
                 $magerunFileContent = trim(file_get_contents($searchFolder . DIRECTORY_SEPARATOR . '.n98-magerun'));
                 if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
                     $this->output->writeln('<debug>Found .n98-magerun file with content <info>' . $magerunFileContent . '</info></debug>');
@@ -262,13 +296,21 @@ class MagentoHelper extends AbstractHelper
         if ($finder->count() > 0) {
             $files = iterator_to_array($finder, false);
             /* @var $file \SplFileInfo */
-
-            if (count($files) == 2) {
-                // Magento 2 has bootstrap.php and autoload.php in app folder
-                $this->_magentoMajorVersion = \N98\Magento\Application::MAGENTO_MAJOR_VERSION_2;
+            
+            $hasMageFile = false;
+            foreach ($files as $file) {
+                if ($file->getFilename() == 'Mage.php') {
+                    $hasMageFile = true;
+                }
             }
 
             $this->_magentoRootFolder = $searchFolder;
+
+            // Magento 2 does not have a god class and thus if this file is not there it is version 2
+            if ($hasMageFile == false) {
+                $this->_magentoMajorVersion = \N98\Magento\Application::MAGENTO_MAJOR_VERSION_2;
+                return true;    // the rest of this does not matter since we are simply exiting with a notice
+            }
 
             if (is_callable(array('\Mage', 'getEdition'))) {
                 $this->_magentoEnterprise = (\Mage::getEdition() == 'Enterprise');

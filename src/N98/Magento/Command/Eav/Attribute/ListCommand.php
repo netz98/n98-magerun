@@ -17,6 +17,7 @@ class ListCommand extends AbstractMagentoCommand
           ->setDescription('Lists all EAV attributes')
           ->addOption('filter-type', null, InputOption::VALUE_OPTIONAL, 'Filter attributes by entity type')
           ->addOption('add-source', null, InputOption::VALUE_NONE, 'Add source models to list')
+          ->addOption('add-backend', null, InputOption::VALUE_NONE, 'Add backend type to list')
           ->addOption(
               'format',
               null,
@@ -59,6 +60,9 @@ class ListCommand extends AbstractMagentoCommand
                 if ($input->getOption('add-source'))  {
                     $row[] = $attribute->getSourceModel() ? $attribute->getSourceModel() : '';
                 }
+                if ($input->getOption('add-backend'))  {
+                    $row[] = $attribute->getBackendType();
+                }
 
                 $table[] = $row;
             }
@@ -70,6 +74,9 @@ class ListCommand extends AbstractMagentoCommand
             $headers[] = 'label';
             if ($input->getOption('add-source'))  {
                 $headers[] = 'source';
+            }
+            if ($input->getOption('add-backend'))  {
+                $headers[] = 'backend_type';
             }
 
             $this->getHelper('table')

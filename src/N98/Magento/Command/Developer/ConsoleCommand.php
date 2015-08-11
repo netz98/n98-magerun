@@ -4,6 +4,12 @@ namespace N98\Magento\Command\Developer;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\OperatingSystem;
+use N98\Util\Unicode\Charset;
+use Psy\Command\ListCommand;
+use Psy\Configuration;
+use N98\Magento\Command\Developer\Console\Psy\Shell;
+use Psy\Output\ShellOutput;
+use Psy\Util\String;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -18,48 +24,41 @@ class ConsoleCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        if (OperatingSystem::isWindows()) {
-
-            return false;
-        }
-
-        if ($this->getApplication()->isPharMode()) {
-            $pharFile = $_SERVER['argv'][0];
-            return substr($pharFile, -5) == '.phar';
-        }
-
-        return true;
-    }
-
-    /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return int|void
+     * @throws RuntimeException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $descriptorSpec = array(
-            0 => STDIN,
-            1 => STDOUT,
-            2 => STDERR
-        );
-
-        $prependFile = __DIR__ . '/../../../../../res/dev/console_auto_prepend.php';
-        if ($this->getApplication()->isPharMode()) {
-            $pharFile = $_SERVER['argv'][0];
-            $prependFile = 'phar://' . $pharFile . '/res/dev/console_auto_prepend.php';
+        $initialized = false;
+        try {
+            $this->detectMagento($output);
+            $initialized = $this->initMagento();
+        } catch (\Exception $e) {
+            // do nothing
         }
 
-        $exec = '/usr/bin/env php -d auto_prepend_file=' . escapeshellarg($prependFile) . ' -a';
+        $consoleOutput = new ShellOutput();
+        $config = new Configuration();
+        $shell = new Shell($config);
 
-        $pipes = array();
-        $process = proc_open($exec, $descriptorSpec, $pipes);
-        if (!is_resource($process)) {
-            throw new RuntimeException('Cannot init interactive shell');
+        if ($initialized) {
+            $ok = Charset::convertInteger(Charset::UNICODE_CHECKMARK_CHAR);
+            $edition = $this->getApplication()->isMagentoEnterprise() ? 'EE' : 'CE';
+            $consoleOutput->writeln('<fg=black;bg=green>Magento ' . \Mage::getVersion() . ' ' . $edition . ' initialized.</fg=black;bg=green> ' . $ok);
+        } else {
+            $consoleOutput->writeln('<fg=black;bg=yellow>Magento is not initialized.</fg=black;bg=yellow>');
         }
+
+        $help = <<<'help'
+At the prompt, type <comment>help</comment> for some help.
+
+To exit the shell, type <comment>^D</comment>.
+help;
+
+        $consoleOutput->writeln($help);
+
+        $shell->run($input, $consoleOutput);
     }
 }

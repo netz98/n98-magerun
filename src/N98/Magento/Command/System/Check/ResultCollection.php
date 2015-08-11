@@ -2,6 +2,13 @@
 
 namespace N98\Magento\Command\System\Check;
 
+use Traversable;
+
+/**
+ * Class ResultCollection
+ *
+ * @package N98\Magento\Command\System\Check
+ */
 class ResultCollection implements \IteratorAggregate
 {
     /**
