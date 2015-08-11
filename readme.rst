@@ -26,7 +26,7 @@ Build Status
 
 Compatibility
 -------------
-The tools will automatically be tested for multiple PHP versions (5.3, 5.4, 5.5). It's currently running in various Linux distributions and Mac OS X.
+The tools will automatically be tested for multiple PHP versions (5.3, 5.4, 5.5, 5.6). It's currently running in various Linux distributions and Mac OS X.
 Microsoft Windows is not fully supported (some Commands like `db:dump` or `install` are excluded).
 
 The tool partially works with Magento 2 development branch.
