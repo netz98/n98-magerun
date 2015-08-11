@@ -49,7 +49,6 @@ Download the latest stable N98-Magerun phar-file from the file-server_:
 Verify the download by comparing the MD5 checksum with the one on the website:
 
 .. code-block:: sh
-
     md5sum n98-magerun.phar
 
 If it shows the same checksum as on the website, you downloaded the file successfully.
@@ -1015,6 +1014,23 @@ See it in action: http://www.youtube.com/watch?v=zAWpRpawTGc
 
 The command is only available for PHP 5.4 users.
 
+CSS Merging
+""""""""""""""
+
+Toggle CSS merging settings of a store
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:merge-css [store_code]
+
+JS Merging
+""""""""""""""
+
+Toggle JS merging settings of a store
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:merge-js [store_code]
 
 Template Hints
 """"""""""""""
