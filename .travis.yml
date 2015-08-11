@@ -22,7 +22,7 @@ env:
   # Do not download sample data of 1.9 -> The file is too big
   - MAGENTO_VERSION="magento-ce-1.9.0.1" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=65
   - MAGENTO_VERSION="magento-ce-1.9.1.1" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=65
-  - MAGENTO_VERSION="magento-mirror-1.9.2.1" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=65
+  - MAGENTO_VERSION="magento-mirror-1.9.2.0" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=65
 
 matrix:
   fast_finish: true
@@ -35,19 +35,31 @@ matrix:
       env: MAGENTO_VERSION="magento-ce-1.9.1.1" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=66
 
     - php: 5.3
-      env: MAGENTO_VERSION="magento-mirror-1.9.2.1" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=66
+      env: MAGENTO_VERSION="magento-mirror-1.9.2.0" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=66
 
-    # Old Magneto Versions are not officially supported to run with PHP 5.5
+    # Old Magneto Versions are not officially supported to run with PHP 5.5 and 5.6
     - php: 5.5
+      env: MAGENTO_VERSION="magento-mirror-1.4.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes COVERAGE=65
+
+    - php: 5.6
       env: MAGENTO_VERSION="magento-mirror-1.4.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes COVERAGE=65
 
     - php: 5.5
       env: MAGENTO_VERSION="magento-mirror-1.5.1.0" DB=mysql INSTALL_SAMPLE_DATA=yes COVERAGE=66
 
+    - php: 5.6
+      env: MAGENTO_VERSION="magento-mirror-1.5.1.0" DB=mysql INSTALL_SAMPLE_DATA=yes COVERAGE=66
+
     - php: 5.5
       env: MAGENTO_VERSION="magento-ce-1.6.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes COVERAGE=66
 
+    - php: 5.6
+      env: MAGENTO_VERSION="magento-ce-1.6.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes COVERAGE=66
+
     - php: 5.5
+      env: MAGENTO_VERSION="magento-ce-1.7.0.2" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=66
+
+    - php: 5.6
       env: MAGENTO_VERSION="magento-ce-1.7.0.2" DB=mysql INSTALL_SAMPLE_DATA=no COVERAGE=66
   include:
     # Run the build script with a recent PHP version
