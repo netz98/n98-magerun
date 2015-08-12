@@ -246,7 +246,7 @@ class MagentoHelper extends AbstractHelper
                 ->depth(0)
                 ->followLinks()
                 ->ignoreDotFiles(false)
-                ->name('.' . $this->_customConfigFilename)
+                ->name('.n98-magerun')
                 ->in($searchFolder);
 
             $count = $finder->count();

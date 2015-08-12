@@ -8,21 +8,21 @@ The n98 magerun cli tools provides some handy tools to work with Magento from co
 Build Status
 ------------
 
-**Latest Release**
-
-.. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=master
-   :target: https://travis-ci.org/netz98/n98-magerun
-
-.. image:: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5/badge.png
-   :target: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5
-
-.. image:: https://poser.pugx.org/n98/magerun/v/stable.png
-   :target: https://packagist.org/packages/n98/magerun
-
-**Development Branch**
-
-.. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=develop
-  :target: https://travis-ci.org/netz98/n98-magerun
++------------------------+-----------------------------------------------------------------------------------------------+
+| **Latest Release**     | .. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=master                         |
+|                        |    :target: https://travis-ci.org/netz98/n98-magerun                                          |
+|                        | .. image:: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5/badge.png        |
+|                        |    :target: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5                 |
+|                        | .. image:: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=master  |
+|                        |    :target: https://scrutinizer-ci.com/g/netz98/n98-magerun/                                  |
+|                        | .. image:: https://poser.pugx.org/n98/magerun/v/stable.png                                    |
+|                        |    :target: https://packagist.org/packages/n98/magerun                                        |
++------------------------+-----------------------------------------------------------------------------------------------+
+| **Development Branch** | .. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=develop                        |
+|                        |    :target: https://travis-ci.org/netz98/n98-magerun                                          |
+|                        | .. image:: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=develop |
+|                        |    :target: https://scrutinizer-ci.com/g/netz98/n98-magerun/?branch=develop                   |
++------------------------+-----------------------------------------------------------------------------------------------+
 
 Compatibility
 -------------
@@ -37,24 +37,43 @@ Installation
 
 There are two ways to install the tools:
 
-Download phar file
-""""""""""""""""""
+Download and Install Phar File
+""""""""""""""""""""""""""""""
+
+Download the latest stable N98-Magerun phar-file from the file-server_:
 
 .. code-block:: sh
 
-    wget https://raw.githubusercontent.com/netz98/n98-magerun/master/n98-magerun.phar
+   wget http://files.magerun.net/n98-magerun-latest.phar -O n98-magerun.phar
 
-or if you have problems with SSL certificate:
+Verify the download by comparing the MD5 checksum with the one on the website:
 
 .. code-block:: sh
 
-   curl -o n98-magerun.phar https://raw.githubusercontent.com/netz98/n98-magerun/master/n98-magerun.phar
+    md5sum n98-magerun.phar
 
-You can make the .phar file executable.
+If it shows the same checksum as on the website, you downloaded the file successfully.
+
+Now you can make the phar-file executable:
 
 .. code-block:: sh
 
     chmod +x ./n98-magerun.phar
+
+The base-installation is now complete and you can verify it:
+
+.. code-block:: sh
+
+    ./n98-magerun.phar --version
+
+The command should execute successfully and show you the version number of N98-Magerun like:
+
+.. code-block:: sh
+
+    n98-magerun version 1.97.0 by netz98 new media GmbH
+
+You now have successfully installed Magerun! You can tailor the installation further like installing it system-wide and
+enable autocomplete - read on for more information about these and other features.
 
 If you want to use the command system wide you can copy it to `/usr/local/bin`.
 
@@ -72,10 +91,14 @@ Add this to your php.ini file:
 
    suhosin.executor.include.whitelist="phar"
 
-
 **You don't like the filename?**
 
-Just rename it to whatever you want.
+Just rename it to whatever you want. Or better: create an alias so that the original command name still works. This can
+be useful if you exchange scripts that are making use of magerun with other users as the canonical name is
+`n98-magerun.phar`, Some common aliases amongst the user-base are `magerun` or just `mr` even.
+
+
+.. _file-server: http://files.magerun.net/
 
 Install with Composer
 """""""""""""""""""""
@@ -704,6 +727,17 @@ Prints stored cache entry by ID.
 
 If value is serialized you can force a pretty output with --unserialize option.
 
+Toggle CMS Block
+"""""""""""
+
+Toggle "is_active" on a cms block
+
+.. code-block:: sh
+
+   $ n98-magerun.phar cms:block:toggle [block_id]
+
+"block_id" can be an entity id or an "identifier"
+
 Demo Notice
 """""""""""
 
@@ -746,6 +780,17 @@ ID can be e-mail or username. The command will attempt to find the user by usern
 will attempt to find the user by e-mail. If ID is omitted you will be prompted for it. If the force parameter "-f" is
 omitted you will be prompted for confirmation.
 
+Toggle admin user active state
+""""""""""""""""""""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar admin:user:change-status [--activate] [--deactivate] [email|username]
+
+Toggles the active status of an backend user. ID can be e-mail or username. The command will attempt to find the
+user by username first and if it cannot be found it will attempt to find the user by e-mail. If ID is omitted you
+will be prompted for it.
+
 Unlock admin user
 """""""""""""""""
 
@@ -780,7 +825,13 @@ Provides info like the edition and version or the configured cache backends.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar sys:info
+   $ n98-magerun.phar sys:info [key]
+
+Print only one value like the version.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar sys:info version
 
 Magento Stores
 """"""""""""""
@@ -844,7 +895,7 @@ List URLs
 
 .. code-block:: sh
 
-   $ sys:url:list [--add-categories] [--add-products] [--add-cmspages] [--add-all] [stores] [linetemplate]
+   $ n98-magerun.phar sys:url:list [--add-categories] [--add-products] [--add-cmspages] [--add-all] [stores] [linetemplate]
 
 Examples:
 
@@ -1061,7 +1112,7 @@ List all EAV attributes:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar eav:attribute:list [--filter-type[="..."]] [--add-source] [--format[="..."]]
+   $ n98-magerun.phar eav:attribute:list [--filter-type[="..."]] [--add-source] [--add-backend] [--format[="..."]]
 
 View the data for a particular attribute:
 
@@ -1114,7 +1165,7 @@ Example:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:resolve model catalog/product
+   $ n98-magerun.phar dev:class:lookup model catalog/product
 
 Toggle Symlinks
 """""""""""""""
@@ -1512,13 +1563,13 @@ In my Ubuntu system this can be done with the following command:
    $ sudo cp autocompletion/bash/bash_complete /etc/bash_completion.d/n98-magerun.phar
 
 
-PHPStorm
+PHPStorm 8.0.*
 """"""""
 
 A commandline tool autocompletion XML file for PHPStorm exists in subfolder **autocompletion/phpstorm**.
 Copy **n98_magerun.xml** into your phpstorm config folder.
 
-Linux: ~/.WebIde50/config/commandlinetools
+Linux and Mac: ~/.WebIde80/config/componentVersions
 
 You can also add the XML content over settings menu.
 For further instructions read this blog post: http://blog.jetbrains.com/webide/2012/10/integrating-composer-command-line-tool-with-phpstorm/

@@ -49,6 +49,6 @@ class ViewCommandTest extends TestCase
             )
         );
 
-        $this->assertEquals(print_r($cacheData, true) . "\n", $commandTester->getDisplay());
+        $this->assertEquals(print_r($cacheData, true) . "\n", $commandTester->getDisplay(true));
     }
 }

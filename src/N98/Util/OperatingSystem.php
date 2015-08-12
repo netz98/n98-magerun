@@ -1,9 +1,24 @@
 <?php
+/*
+ * this file is part of magerun
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
+ */
 
 namespace N98\Util;
 
+/**
+ * Class OperatingSystem
+ *
+ * @package N98\Util
+ */
 class OperatingSystem
 {
+    /**
+     * @var int
+     */
+    const UID_ROOT = 0;
+
     /**
      * Returns true if operating system is
      * based on GNU linux.
@@ -12,7 +27,7 @@ class OperatingSystem
      */
     public static function isLinux()
     {
-        return stristr(self::_getOs(), 'linux');
+        return (bool) stristr(PHP_OS, 'linux');
     }
 
     /**
@@ -23,7 +38,7 @@ class OperatingSystem
      */
     public static function isWindows()
     {
-        return strtolower(substr(self::_getOs(), 0, 3)) === 'win';
+        return strtolower(substr(PHP_OS, 0, 3)) === 'win';
     }
 
     /**
@@ -34,7 +49,7 @@ class OperatingSystem
      */
     public static function isNetware()
     {
-        return stristr(self::_getOs(), 'netware');
+        return (bool) stristr(PHP_OS, 'netware');
     }
 
     /**
@@ -45,7 +60,7 @@ class OperatingSystem
      */
     public static function isMacOs()
     {
-        return stristr(self::_getOs(), 'darwin') || stristr(self::_getOs(), 'mac');
+        return stristr(PHP_OS, 'darwin') || stristr(PHP_OS, 'mac');
     }
 
     /**
@@ -54,6 +69,10 @@ class OperatingSystem
      */
     public static function isProgramInstalled($program)
     {
+        if (self::isWindows()) {
+            return WindowsSystem::isProgramInstalled($program);
+        }
+
         $out = null;
         $return = null;
         @exec('which ' . $program, $out, $return);
@@ -64,20 +83,38 @@ class OperatingSystem
     /**
      * @return string
      */
-    protected static function _getOs()
-    {
-        return PHP_OS;
-    }
-
-    /**
-     * @return string
-     */
     public static function getHomeDir()
     {
         if (self::isWindows()) {
             return getenv('USERPROFILE');
-        } else {
-            return getenv('HOME');
         }
+
+        return getenv('HOME');
+    }
+
+    /**
+     * Test for Root UID on a POSIX system if posix_getuid() is available.
+     *
+     * Returns false negatives if posix_getuid() is not available.
+     *
+     * @return bool
+     */
+    public static function isRoot()
+    {
+        return function_exists('posix_getuid') && posix_getuid() === self::UID_ROOT;
+    }
+
+    /**
+     * get current working directory
+     */
+    public static function getCwd()
+    {
+        if (!Exec::allowed() || OperatingSystem::isWindows()) {
+            return getcwd();
+        }
+
+        Exec::run('pwd', $folder);
+
+        return $folder;
     }
 }

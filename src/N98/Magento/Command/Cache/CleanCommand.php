@@ -2,7 +2,6 @@
 
 namespace N98\Magento\Command\Cache;
 
-use N98\Magento\Application;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,11 +33,6 @@ HELP;
         $this->setHelp($help);
     }
 
-    public function isEnabled()
-    {
-        return $this->getApplication()->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1;
-    }
-
     /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
@@ -46,20 +40,24 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->banUseCache();
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
             \Mage::app()->loadAreaPart('adminhtml', 'events');
             $allTypes = \Mage::app()->useCache();
             $typesToClean = $input->getArgument('type');
+            $this->validateCacheCodes($typesToClean);
             $typeKeys = array_keys($allTypes);
 
             foreach ($typeKeys as $type) {
                 if (count($typesToClean) == 0 || in_array($type, $typesToClean)) {
                     \Mage::app()->getCacheInstance()->cleanType($type);
                     \Mage::dispatchEvent('adminhtml_cache_refresh_type', array('type' => $type));
-                    $output->writeln('<info>' . $type . ' cache cleaned</info>');
+                    $output->writeln('<info>Cache <comment>' . $type . '</comment> cleaned</info>');
                 }
             }
+
+            $this->reinitCache();
         }
     }
 }

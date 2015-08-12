@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use N98\Util\Exec;
 
 class ImportCommand extends AbstractDatabaseCommand
 {
@@ -32,14 +33,6 @@ HELP;
     }
 
     /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return function_exists('exec');
-    }
-
-    /**
      * Optimize a dump by converting single INSERTs per line to INSERTs with multiple lines
      * @param $fileName
      * @return string temporary filename
@@ -50,12 +43,13 @@ HELP;
         $result = tempnam(sys_get_temp_dir(), 'dump') . '.sql';
         $out = fopen($result, 'w');
 
+        fwrite($out, 'SET autocommit=0;' . "\n");
         $currentTable = '';
         $maxlen = 8 * 1024 * 1024; // 8 MB
         $len = 0;
         while ($line = fgets($in)) {
             if (strtolower(substr($line, 0, 11)) == 'insert into') {
-                preg_match('/^insert into `(.*)` \(.*\) values (.*);/i', $line, $m);
+                preg_match('/^insert into `(.*)` \([^)]*\) values (.*);/i', $line, $m);
 
                 if (count($m) < 3) { // fallback for very long lines or other cases where the preg_match fails
                     if ($currentTable != '') {
@@ -69,9 +63,9 @@ HELP;
                 $table = $m[1];
                 $values = $m[2];
 
-                if ($table != $currentTable or ($len > $maxlen - 1000)) {
+                if ($table != $currentTable || ($len > $maxlen - 1000)) {
                     if ($currentTable != '') {
-                        fwrite($out, ";\n\n");
+                        fwrite($out, ";\n");
                     }
                     $currentTable = $table;
                     $insert = 'INSERT INTO `' . $table . '` VALUES ' . $values;
@@ -90,6 +84,11 @@ HELP;
             }
 
         }
+
+        fwrite($out, ";\n");
+
+        fwrite($out, 'COMMIT;' . "\n");
+
         fclose($in);
         fclose($out);
 
@@ -111,6 +110,17 @@ HELP;
 
         $compressor = $this->getCompressor($input->getOption('compression'));
 
+        if ($input->getOption('optimize')) {
+            if ($input->getOption('only-command')) {
+                throw new \InvalidArgumentException('Options --only-command and --optimize are not compatible');
+            }
+            if ($input->getOption('compression')) {
+                throw new \InvalidArgumentException('Options --compression and --optimize are not compatible');
+            }
+            $output->writeln('<comment>Optimizing <info>' . $fileName . '</info> to temporary file');
+            $fileName = $this->optimize($fileName);
+        }
+
         // create import command
         $exec = $compressor->getDecompressingCommand(
             'mysql ' . $dbHelper->getMysqlClientToolConnectionString(),
@@ -118,7 +128,6 @@ HELP;
         );
         if ($input->getOption('only-command')) {
             $output->writeln($exec);
-
             return;
         } else {
             if ($input->getOption('only-if-empty')
@@ -130,14 +139,6 @@ HELP;
             }
         }
 
-        if ($input->getOption('optimize')) {
-            if ($input->getOption('compression')) {
-                throw new \Exception('Options --compression and --optimize are not compatible');
-            }
-            $output->writeln('<comment>Optimizing <info>' . $fileName . '</info> to temporary file');
-            $fileName = $this->optimize($fileName);
-        }
-
         if( $input->getOption('drop') ) {
             $dbHelper->dropDatabase($output);
             $dbHelper->createDatabase($output);
@@ -146,10 +147,7 @@ HELP;
             $dbHelper->dropTables($output);
         }
 
-
-
-
-            $this->doImport($output, $fileName, $exec);
+        $this->doImport($output, $fileName, $exec);
 
         if ($input->getOption('optimize')) {
             unlink($fileName);
@@ -191,9 +189,11 @@ HELP;
             '<comment>Importing SQL dump <info>' . $fileName . '</info> to database <info>'
             . $this->dbSettings['dbname'] . '</info>'
         );
-        exec($exec, $commandOutput, $returnValue);
+
+        Exec::run($exec, $commandOutput, $returnValue);
+
         if ($returnValue <> 0) {
-            $output->writeln('<error>' . implode(PHP_EOL, $commandOutput) . '</error>');
+            $output->writeln('<error>' . $commandOutput . '</error>');
         }
         $output->writeln('<info>Finished</info>');
     }

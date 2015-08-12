@@ -8,6 +8,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class EventSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var string
+     */
     const WARNING_ROOT_USER = '<error>It\'s not recommended to run n98-magerun as root user</error>';
 
     /**
@@ -27,7 +30,7 @@ class EventSubscriber implements EventSubscriberInterface
     /**
      * Display a warning if a running n98-magerun as root user
      *
-     * @param ConsoleEvent $event
+     * @param Event $event
      * @return void
      */
     public function checkRunningAsRootUser(Event $event)
@@ -41,17 +44,16 @@ class EventSubscriber implements EventSubscriberInterface
         }
 
         $output = $event->getOutput();
-        if (OperatingSystem::isLinux() || OperatingSystem::isMacOs()) {
-            if (function_exists('posix_getuid')) {
-                if (posix_getuid() === 0) {
-                    $output->writeln('');
-                    $output->writeln(self::WARNING_ROOT_USER);
-                    $output->writeln('');
-                }
-            }
+        if (OperatingSystem::isRoot()) {
+            $output->writeln('');
+            $output->writeln(self::WARNING_ROOT_USER);
+            $output->writeln('');
         }
     }
 
+    /**
+     * @return bool
+     */
     protected function _isSkipRootCheck()
     {
         $skipRootCheckOption = getopt('', array('skip-root-check'));
