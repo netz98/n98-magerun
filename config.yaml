@@ -102,6 +102,8 @@ commands:
     - N98\Magento\Command\Developer\Report\CountCommand
     - N98\Magento\Command\Developer\ClassLookupCommand
     - N98\Magento\Command\Developer\SymlinksCommand
+    - N98\Magento\Command\Developer\MergeCssCommand
+    - N98\Magento\Command\Developer\MergeJsCommand
     - N98\Magento\Command\Developer\TemplateHintsBlocksCommand
     - N98\Magento\Command\Developer\TemplateHintsCommand
     - N98\Magento\Command\Developer\Theme\DuplicatesCommand
