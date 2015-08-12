@@ -13,7 +13,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
-use N98\Util\Exec;
 
 /**
  * Class InstallCommand
@@ -56,7 +55,6 @@ class InstallCommand extends AbstractMagentoCommand
             ->addOption('dbPass', null, InputOption::VALUE_OPTIONAL, 'Database password')
             ->addOption('dbName', null, InputOption::VALUE_OPTIONAL, 'Database name')
             ->addOption('dbPort', null, InputOption::VALUE_OPTIONAL, 'Database port', 3306)
-            ->addOption('dbPrefix', null, InputOption::VALUE_OPTIONAL, 'Table prefix', '')
             ->addOption('installSampleData', null, InputOption::VALUE_OPTIONAL, 'Install sample data')
             ->addOption('useDefaultConfigParams', null, InputOption::VALUE_OPTIONAL, 'Use default installation parameters defined in the yaml file')
             ->addOption('baseUrl', null, InputOption::VALUE_OPTIONAL, 'Installation base url')
@@ -67,12 +65,6 @@ class InstallCommand extends AbstractMagentoCommand
                 InputOption::VALUE_NONE,
                 'If set skips download step. Used when installationFolder is already a Magento installation that has ' .
                 'to be installed on the given database.'
-            )
-            ->addOption(
-                'only-download',
-                null,
-                InputOption::VALUE_NONE,
-                'Downloads (and extracts) source code'
             )
             ->addOption('forceUseDb', null, InputOption::VALUE_OPTIONAL, 'If --noDownload passed, force to use given database if it already exists.')
             ->setDescription('Install magento')
@@ -107,6 +99,14 @@ HELP;
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return function_exists('exec');
+    }
+
+    /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @throws \RuntimeException
@@ -126,15 +126,7 @@ HELP;
         $this->chooseInstallationFolder($input, $output);
 
         if (!$input->getOption('noDownload')) {
-            $result = $this->downloadMagento($input, $output);
-
-            if ($result === false) {
-                return 1;
-            }
-        }
-
-        if ($input->getOption('only-download')) {
-            return 0;
+            $this->downloadMagento($input, $output);
         }
 
         $this->createDatabase($input, $output);
@@ -332,7 +324,6 @@ HELP;
             $this->config['db_pass'] = $input->getOption('dbPass');
             $this->config['db_name'] = $input->getOption('dbName');
             $this->config['db_port'] = $input->getOption('dbPort');
-            $this->config['db_prefix'] = $input->getOption('dbPrefix');
             $db = $this->validateDatabaseSettings($output, $input);
 
             if ($db === false) {
@@ -356,9 +347,6 @@ HELP;
 
                 $dbPortDefault = $input->getOption('dbPort') ? $input->getOption('dbPort') : 3306;
                 $this->config['db_port'] = $dialog->askAndValidate($output, '<question>Please enter the database port </question> <comment>[' . $dbPortDefault . ']</comment>: ', $this->notEmptyCallback, false, $dbPortDefault);
-
-                $dbPrefixDefault = $input->getOption('dbPrefix') ? $input->getOption('dbPrefix') : '';
-                $this->config['db_prefix'] = $dialog->ask($output, '<question>Please enter the table prefix</question> <comment>['. $dbPrefixDefault .']</comment>:', $dbPrefixDefault);
                 $db = $this->validateDatabaseSettings($output, $input);
             } while ($db === false);
         }
@@ -461,8 +449,8 @@ HELP;
                                 . ' < '
                                 . escapeshellarg($sampleDataSqlFile[0]);
                             $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with mysql cli client</info>');
-                            Exec::run($exec);
-                            @unlink($sampleDataSqlFile[0]);
+                            exec($exec);
+                            @unlink($sampleDataSqlFile);
                         } else {
                             $output->writeln('<info>Importing <comment>' . $sampleDataSqlFile[0] . '</comment> with PDO driver</info>');
                             // Fallback -> Try to install dump file by PDO driver
@@ -649,7 +637,6 @@ HELP;
             'db_name'                    => $this->config['db_name'],
             'db_user'                    => $this->config['db_user'],
             'db_pass'                    => $this->config['db_pass'],
-            'db_prefix'                  => $this->config['db_prefix'],
             'url'                        => $baseUrl,
             'use_rewrites'               => 'yes',
             'use_secure'                 => 'no',
@@ -686,15 +673,15 @@ HELP;
         $output->writeln('<info>Start installation process.</info>');
 
         if (OperatingSystem::isWindows()) {
-            $installCommand = 'php -f ' . escapeshellarg($this->getInstallScriptPath()) . ' -- ' . $installArgs;
+            $installCommand = 'php ' . $this->getInstallScriptPath() . ' ' . $installArgs;
         } else {
-            $installCommand = '/usr/bin/env php -f ' . escapeshellarg($this->getInstallScriptPath()) . ' -- ' . $installArgs;
+            $installCommand = '/usr/bin/env php ' . $this->getInstallScriptPath() . ' ' . $installArgs;
         }
         $output->writeln('<comment>' . $installCommand . '</comment>');
-        Exec::run($installCommand, $installationOutput, $returnStatus);
+        exec($installCommand, $installationOutput, $returnStatus);
+        $installationOutput = implode(PHP_EOL, $installationOutput);
         if ($returnStatus !== self::EXEC_STATUS_OK) {
-            $this->getApplication()->setAutoExit(true);
-            throw new \RuntimeException('Installation failed.' . $installationOutput, 1);
+            throw new \Exception('Installation failed.' . $installationOutput);
         } else {
             $output->writeln('<info>Successfully installed Magento</info>');
             $encryptionKey = trim(substr($installationOutput, strpos($installationOutput, ':') + 1));

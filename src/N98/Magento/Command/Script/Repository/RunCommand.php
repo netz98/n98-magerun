@@ -49,7 +49,7 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $files = $this->getScripts();
-        if ($input->getArgument('script') == null && $input->isInteractive()) {
+        if ($input->getArgument('script') == null) {
             $question = array();
             $i = 0;
             foreach ($files as $file) {
@@ -57,9 +57,8 @@ HELP;
                 $question[] = '<comment>[' . ($i + 1) . ']</comment> ' . $file['fileinfo']->getFilename() . PHP_EOL;
                 $i++;
             }
-
             $question[] = '<question>Please select a script file: </question>';
-            $selectedFile = $this->getHelper('dialog')->askAndValidate($output, $question, function ($typeInput) use ($files) {
+            $selectedFile = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($files) {
                 if (!isset($files[$typeInput - 1])) {
                     throw new \InvalidArgumentException('Invalid file');
                 }

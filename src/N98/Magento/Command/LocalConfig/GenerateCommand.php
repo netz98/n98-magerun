@@ -97,45 +97,42 @@ HELP;
     {
         $dialog = $this->getHelperSet()->get('dialog');
 
-
-
-        $messagePrefix = 'Please enter the';
-
         // db-host
-        $input->setArgument('db-host',
-            $this->getOrAskForArgument('db-host', $input, $output, $messagePrefix. 'database host'));
-
+        if ($input->getArgument('db-host') === null) {
+            $input->setArgument('db-host', $dialog->ask($output, '<question>Please enter the database host:</question>'));
+        }
         if ($input->getArgument('db-host') === null) {
             $output->writeln('<error>db-host was not set.</error>');
             return;
         }
 
         // db-user
-        $input->setArgument('db-user',
-            $this->getOrAskForArgument('db-user', $input, $output, $messagePrefix. 'database username'));
-
+        if ($input->getArgument('db-user') === null) {
+            $input->setArgument('db-user', $dialog->ask($output, '<question>Please enter the database username:</question>'));
+        }
         if ($input->getArgument('db-user') === null) {
             $output->writeln('<error>db-user was not set.</error>');
             return;
         }
 
         // db-pass
-        $input->setArgument('db-pass',
-            $this->getOrAskForArgument('db-pass', $input, $output, $messagePrefix. 'database password'));
+        if ($input->getArgument('db-pass') === null) {
+            $input->setArgument('db-pass', $dialog->ask($output, '<question>Please enter the database password:</question>'));
+        }
 
         // db-name
-        $input->setArgument('db-pass',
-            $this->getOrAskForArgument('db-pass', $input, $output, $messagePrefix. 'database name'));
-
+        if ($input->getArgument('db-name') === null) {
+            $input->setArgument('db-name', $dialog->ask($output, '<question>Please enter the database name:</question>'));
+        }
         if ($input->getArgument('db-name') === null) {
             $output->writeln('<error>db-name was not set.</error>');
             return;
         }
 
         // session-save
-        $input->setArgument('db-pass',
-            $this->getOrAskForArgument('db-pass', $input, $output, $messagePrefix. 'session save'));
-
+        if ($input->getArgument('session-save') === null) {
+            $input->setArgument('session-save', $dialog->ask($output, '<question>Please enter the session save:</question>', 'files'));
+        }
         if ($input->getArgument('session-save') === null) {
             $output->writeln('<error>session-save was not set.</error>');
             return;

@@ -103,6 +103,14 @@ HELP;
         $this->setHelp($help);
     }
 
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return function_exists('exec');
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->_scriptFilename = $input->getArgument('filename');

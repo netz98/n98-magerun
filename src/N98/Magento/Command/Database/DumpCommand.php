@@ -8,7 +8,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\Exec;
 
 class DumpCommand extends AbstractDatabaseCommand
 {
@@ -29,8 +28,6 @@ class DumpCommand extends AbstractDatabaseCommand
             ->addArgument('filename', InputArgument::OPTIONAL, 'Dump filename')
             ->addOption('add-time', 't', InputOption::VALUE_OPTIONAL, 'Adds time to filename (only if filename was not provided)')
             ->addOption('compression', 'c', InputOption::VALUE_REQUIRED, 'Compress the dump file using one of the supported algorithms')
-            ->addOption('xml', null, InputOption::VALUE_NONE, 'Dump database in xml format')
-            ->addOption('hex-blob', null, InputOption::VALUE_NONE, 'Dump binary columns using hexadecimal notation (for example, "abc" becomes 0x616263)')
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysqldump command. Do not execute')
             ->addOption('print-only-filename', null, InputOption::VALUE_NONE, 'Execute and prints no output except the dump filename')
             ->addOption('no-single-transaction', null, InputOption::VALUE_NONE, 'Do not use single-transaction (not recommended, this is blocking)')
@@ -210,15 +207,6 @@ HELP;
         if ($input->getOption('add-routines')) {
             $dumpOptions .= '--routines ';
         }
-
-        if($input->getOption('xml')) {
-            $dumpOptions .= '--xml ';
-        }
-
-        if($input->getOption('hex-blob')) {
-            $dumpOptions .= '--hex-blob ';
-        }
-
         $execs = array();
 
         if (!$stripTables) {
@@ -284,10 +272,10 @@ HELP;
                 if ($input->getOption('stdout')) {
                     passthru($exec, $returnValue);
                 } else {
-                    Exec::run($exec, $commandOutput, $returnValue);
+                    exec($exec, $commandOutput, $returnValue);
                 }
                 if ($returnValue > 0) {
-                    $output->writeln('<error>' . $commandOutput . '</error>');
+                    $output->writeln('<error>' . implode(PHP_EOL, $commandOutput) . '</error>');
                     $output->writeln('<error>Return Code: ' . $returnValue . '. ABORTED.</error>');
 
                     return;
@@ -325,12 +313,7 @@ HELP;
     ) {
         $namePrefix    = '';
         $nameSuffix    = '';
-        if($input->getOption('xml')) {
-            $nameExtension = '.xml';
-        } else {
-            $nameExtension = '.sql';
-        }
-
+        $nameExtension = '.sql';
 
         if ($input->getOption('add-time') !== false) {
             $timeStamp = date('Y-m-d_His');

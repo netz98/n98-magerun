@@ -1,19 +1,7 @@
 <?php
-/*
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Util;
 
-use RuntimeException;
-
-/**
- * Class Filesystem
- *
- * @package N98\Util
- */
 class Filesystem
 {
     /**
@@ -25,45 +13,23 @@ class Filesystem
      */
     public function recursiveCopy($src, $dst, $blacklist = array())
     {
-        if (!is_dir($dst)) {
-            @mkdir($dst, 0777, true);
-        }
-
-        if (!is_dir($dst)) {
-            throw new RuntimeException(sprintf('Destination directory <%s> error', $dst));
-        }
-
-        $handle = opendir($src);
-
-        if (!$handle) {
-            throw new RuntimeException(sprintf('Source directory <%s> error', $src));
-        }
-
-        $skip = array_merge(array(".", ".."), $blacklist);
-        $stack = array();
-
-        while (false !== ($file = readdir($handle))) {
-            if (in_array($file, $skip)) {
-                continue;
-            }
-
-            if (is_dir($src . '/' . $file)) {
-                $stack[] = $file;
-            } else {
-                copy($src . '/' . $file, $dst . '/' . $file);
+        $dir = opendir($src);
+        @mkdir($dst);
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..') && !in_array($file, $blacklist)) {
+                if (is_dir($src . '/' . $file)) {
+                    $this->recursiveCopy($src . '/' . $file, $dst . '/' . $file, $blacklist);
+                } else {
+                    copy($src . '/' . $file, $dst . '/' . $file);
+                }
             }
         }
-        closedir($handle);
-
-        foreach ($stack as $file) {
-            $this->recursiveCopy($src . '/' . $file, $dst . '/' . $file, $blacklist);
-        }
+        closedir($dir);
     }
 
     /**
      * @param string $directory
-     * @param bool $empty
-     *
+     * @param bool empty
      * @see http://lixlpixel.org/recursive_function/php/recursive_directory_delete/
      *
      * @return bool
@@ -71,59 +37,56 @@ class Filesystem
     public function recursiveRemoveDirectory($directory, $empty = false)
     {
         // if the path has a slash at the end we remove it here
-        if (substr($directory, -1) === '/') {
+        if (substr($directory, -1) == '/') {
             $directory = substr($directory, 0, -1);
         }
 
         // if the path is not valid or is not a directory ...
-        // ... if the path is not readable
-        if (!is_dir($directory) || !is_readable($directory)) {
+        if (!file_exists($directory) || !is_dir($directory)) {
             return false;
-        }
 
-        // we open the directory
-        $handle = opendir($directory);
+            // ... if the path is not readable
+        } elseif (!is_readable($directory)) {
+            return false;
+        } else {
 
-        if (!$handle) {
-            throw new RuntimeException(sprintf('Directory <%s> error', $directory));
-        }
+            // we open the directory
+            $handle = opendir($directory);
 
-        $skip = array(".", "..");
+            // and scan through the items inside
+            while (false !== ($item = readdir($handle))) {
+                // if the filepointer is not the current directory
+                // or the parent directory
+                if ($item != '.' && $item != '..') {
+                    // we build the new path to delete
+                    $path = $directory . '/' . $item;
 
-        // and scan through the items inside
-        while (false !== ($file = readdir($handle))) {
-            // if the filepointer is not the current directory
-            // or the parent directory
-            if (in_array($file, $skip)) {
-                continue;
+                    // if the new path is a directory
+                    // don't recursively delete symlinks - just remove the actual link
+                    // this is helpful for extensions sym-linked from vendor directory
+                    // previous behaviour would wipe out the files in the vendor directory
+                    if (!is_link($path) && is_dir($path)) {
+                        // we call this function with the new path
+                        $this->recursiveRemoveDirectory($path);
+
+                        // if the new path is a file
+                    } else {
+                        // we remove the file
+                        unlink($path);
+                    }
+                }
             }
+            // close the directory
+            closedir($handle);
 
-            // we build the new path to delete
-            $path = $directory . '/' . $file;
-
-            // if the new path is a directory
-            // don't recursively delete symlinks - just remove the actual link
-            // this is helpful for extensions sym-linked from vendor directory
-            // previous behaviour would wipe out the files in the vendor directory
-            if (!is_link($path) && is_dir($path)) {
-                // we call this function with the new path
-                $this->recursiveRemoveDirectory($path);
-
-                // if the new path is a file
-            } else {
-                // we remove the file
-                unlink($path);
+            // if the option to empty is not set to true
+            if ($empty == false) {
+                // try to delete the now empty directory
+                return rmdir($directory);
             }
+            // return success
+            return true;
         }
-        closedir($handle);
-
-        // if the option not empty
-        if (!$empty) {
-            return rmdir($directory);
-        }
-
-        // return success
-        return true;
     }
 
     /**

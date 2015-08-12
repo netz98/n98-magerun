@@ -24,6 +24,24 @@ class ConsoleCommand extends AbstractMagentoCommand
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        if (OperatingSystem::isWindows()) {
+
+            return false;
+        }
+
+        if ($this->getApplication()->isPharMode()) {
+            $pharFile = $_SERVER['argv'][0];
+            return substr($pharFile, -5) == '.phar';
+        }
+
+        return true;
+    }
+
+    /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return int|void
@@ -44,7 +62,7 @@ class ConsoleCommand extends AbstractMagentoCommand
         $shell = new Shell($config);
 
         if ($initialized) {
-            $ok = Charset::convertInteger(Charset::UNICODE_CHECKMARK_CHAR);
+            $ok = Charset::convertInteger(10004);
             $edition = $this->getApplication()->isMagentoEnterprise() ? 'EE' : 'CE';
             $consoleOutput->writeln('<fg=black;bg=green>Magento ' . \Mage::getVersion() . ' ' . $edition . ' initialized.</fg=black;bg=green> ' . $ok);
         } else {

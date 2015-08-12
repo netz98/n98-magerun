@@ -18,6 +18,7 @@ class ViewCommand extends AbstractCacheCommand
             ->addOption('unserialize', '', InputOption::VALUE_NONE, 'Unserialize output')
             ->setDescription('Prints a cache entry')
             ->addOption('fpc', null, InputOption::VALUE_NONE, 'Use full page cache instead of core cache (Enterprise only!)');
+        ;
     }
 
     /**

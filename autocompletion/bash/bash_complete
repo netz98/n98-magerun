@@ -11,19 +11,19 @@ _n98-magerun()
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     cmd="${COMP_WORDS[0]}"
-
+    
     # gets the word-to-complete without (-n) considering ":" as word breaks
     _get_comp_words_by_ref -n : cur
-
+    
     # workaround for php bug
     commandlist=$(echo "" | "$cmd" --raw --no-ansi list)
-
+    
     # regex to remove command help, wrtie everything on one line with space separated
-    opts=$(echo "$commandlist" | sed "s/[[:space:]].*//g" | paste -sd " ")
+    opts=$(echo "$commandlist" | sed "s/\s.*//g" | paste -sd " ")
 
     COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-
-    # removes colon containing prefix from COMPREPLY items
+    
+    # removes colon containing prefix from COMPREPLY items 
     __ltrim_colon_completions "$cur"
     return 0
 }

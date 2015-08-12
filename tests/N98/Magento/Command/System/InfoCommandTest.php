@@ -19,14 +19,5 @@ class InfoCommandTest extends TestCase
         $this->assertRegExp('/Magento System Information/', $commandTester->getDisplay());
         $this->assertRegExp('/Install Date/', $commandTester->getDisplay());
         $this->assertRegExp('/Crypt Key/', $commandTester->getDisplay());
-
-        // Settings argument
-        $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-                'key'     => 'version',
-            )
-        );
-        $this->assertRegExp('/\d+\.\d+\.\d+\.\d+/', $commandTester->getDisplay());
     }
 }

@@ -7,7 +7,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use N98\Util\OperatingSystem;
-use N98\Util\Exec;
 
 class OpenBrowserCommand extends AbstractMagentoCommand
 {
@@ -18,6 +17,14 @@ class OpenBrowserCommand extends AbstractMagentoCommand
             ->addArgument('store', InputArgument::OPTIONAL, 'Store code or ID')
             ->setDescription('Open current project in browser <comment>(experimental)</comment>')
         ;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return function_exists('exec');
     }
 
     /**
@@ -58,7 +65,7 @@ class OpenBrowserCommand extends AbstractMagentoCommand
                 $url = $store->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK) . '?___store=' . $store->getCode();
             }
             $output->writeln('Opening URL <comment>' . $url . '</comment> in browser');
-            Exec::run(escapeshellcmd($opener . ' ' . $url));
+            exec(escapeshellcmd($opener . ' ' . $url));
         }
     }
 

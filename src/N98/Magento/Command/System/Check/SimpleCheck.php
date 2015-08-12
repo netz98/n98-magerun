@@ -2,11 +2,6 @@
 
 namespace N98\Magento\Command\System\Check;
 
-/**
- * Interface SimpleCheck
- *
- * @package N98\Magento\Command\System\Check
- */
 interface SimpleCheck
 {
     /**

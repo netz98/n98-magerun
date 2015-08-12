@@ -88,6 +88,6 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
      */
     protected function _getConfigModel()
     {
-        return $this->_getModel('core/config', 'Mage_Core_Model_Config');
+        return $this->_getModel('core/config','Mage_Core_Model_Config');
     }
 }
