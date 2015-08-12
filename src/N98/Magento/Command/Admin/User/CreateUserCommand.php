@@ -32,15 +32,36 @@ class CreateUserCommand extends AbstractAdminUserCommand
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
 
-            $username = $this->getOrAskForArgument('username', $input, $output);
-            $email = $this->getOrAskForArgument('email', $input, $output);
-            if (($password = $input->getArgument('password')) === null) {
+            // Username
+            if (($username = $input->getArgument('username')) === null) {
                 $dialog = $this->getHelperSet()->get('dialog');
-                $password = $dialog->askHiddenResponse($output, '<question>Password:</question>');
+                $username = $dialog->ask($output, '<question>Username:</question>');
             }
 
-            $firstname = $this->getOrAskForArgument('firstname', $input, $output);
-            $lastname = $this->getOrAskForArgument('lastname', $input, $output);
+            // Email
+            if (($email = $input->getArgument('email')) === null) {
+                $dialog = $this->getHelperSet()->get('dialog');
+                $email = $dialog->ask($output, '<question>Email:</question>');
+            }
+
+            // Password
+            if (($password = $input->getArgument('password')) === null) {
+                $dialog = $this->getHelperSet()->get('dialog');
+                $password = $dialog->ask($output, '<question>Password:</question>');
+            }
+
+            // Firstname
+            if (($firstname = $input->getArgument('firstname')) === null) {
+                $dialog = $this->getHelperSet()->get('dialog');
+                $firstname = $dialog->ask($output, '<question>Firstname:</question>');
+            }
+
+            // Lastname
+            if (($lastname = $input->getArgument('lastname')) === null) {
+                $dialog = $this->getHelperSet()->get('dialog');
+                $lastname = $dialog->ask($output, '<question>Lastname:</question>');
+            }
+
             if (($roleName = $input->getArgument('role')) != null) {
                 $role = $this->getRoleModel()->load($roleName, 'role_name');
                 if(!$role->getId()) {

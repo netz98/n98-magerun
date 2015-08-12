@@ -35,38 +35,37 @@ Build phar with:
         <exclude name="**/docs/**" />
 
         <!-- unused libs -->
-        <exclude name="fzaninotto/faker/src/Faker/ORM/**" />
+        <exclude name="fzaninotto/faker/src/Faker/ORM" />
 
         <!-- Tests -->
         <exclude name="**/Tests/**" />
         <exclude name="**/tests/**" />
-        <exclude name="**/test/**" />
+        <exclude name="twig/twig/test/**" />
         <exclude name="twig/twig/ext/**" />
 
         <!-- Test utils -->
         <exclude name="phpunit/**" />
-        <exclude name="sebastian/**" />
         <exclude name="mikey179/**" />
     </fileset>
 
     <target name="dist">
-        <exec command="./composer.phar install --no-dev" dir="${project.basedir}" passthru="true" />
+        <exec command="composer.phar install --no-dev" dir="${project.basedir}" passthru="true" />
         <phingcall target="dist_unix">
-            <property name="compression" value="gzip" />
+            <property name="compression" value="bzip2" />
         </phingcall>
 
         <!-- Revert dev settings -->
-        <exec command="./composer.phar install" dir="${project.basedir}" passthru="true" />
+        <exec command="composer.phar install --dev" dir="${project.basedir}" passthru="true" />
     </target>
 
     <target name="dist_hhvm">
-        <exec command="./composer.phar install --no-dev" dir="${project.basedir}" passthru="true" />
+        <exec command="composer.phar install" dir="${project.basedir}" passthru="true" />
         <phingcall target="dist_unix">
             <property name="compression" value="none" />
         </phingcall>
 
         <!-- Revert dev settings -->
-        <exec command="./composer.phar install" dir="${project.basedir}" passthru="true" />
+        <exec command="composer.phar install --dev" dir="${project.basedir}" passthru="true" />
     </target>
 
     <target name="dist_unix">
@@ -86,10 +85,10 @@ Build phar with:
         </patched-pharpackage>
 
         <!-- make phar executable -->
-        <chmod file="./n98-magerun.phar" mode="775" />
+        <exec command="git config core.filemode true" />
         <exec command="git update-index --chmod=+x n98-magerun.phar" />
-        <!-- the phar is not updated in the repository any longer -->
-        <exec command="git update-index --assume-unchanged n98-magerun.phar" />
+        <chmod file="./n98-magerun.phar" mode="775" />
+        <exec command="git add ./n98-magerun.phar" />
     </target>
 
     <target name="install">

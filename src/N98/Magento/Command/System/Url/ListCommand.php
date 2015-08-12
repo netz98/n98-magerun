@@ -88,56 +88,53 @@ HELP;
                 $linkBaseUrl = $currentStore->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK);
 
                 if ($input->getOption('add-categories')) {
-                    $urls = $this->getUrls('sitemap/catalog_category', $linkBaseUrl, $storeId, $urls);
+                    $collection = \Mage::getResourceModel('sitemap/catalog_category')->getCollection($storeId);
+                    if ($collection) {
+                        foreach ($collection as $item) { /* @var $item \Varien_Object */
+                            $urls[] = $linkBaseUrl . $item->getUrl();
+                        }
+                        unset($collection);
+                    }
                 }
 
                 if ($input->getOption('add-products')) {
-                    $urls = $this->getUrls('sitemap/catalog_product', $linkBaseUrl, $storeId, $urls);
+                    $collection = \Mage::getResourceModel('sitemap/catalog_product')->getCollection($storeId);
+                    if ($collection) {
+                        foreach ($collection as $item) { /* @var $item \Varien_Object */
+                            $urls[] = $linkBaseUrl . $item->getUrl();
+                        }
+                        unset($collection);
+                    }
                 }
 
                 if ($input->getOption('add-cmspages')) {
-                    $urls = $this->getUrls('sitemap/cms_page', $linkBaseUrl, $storeId, $urls);
-                }
-            }
-
-            if (count($urls) === 0) {
-                return;
-            }
-
-            foreach ($urls as $url) {
-
-                // pre-process
-                $line = $input->getArgument('linetemplate');
-                $line = str_replace('{url}', $url, $line);
-
-                $parts = parse_url($url);
-                foreach ($parts as $key => $value) {
-                    $line = str_replace('{' . $key . '}', $value, $line);
+                    $collection = \Mage::getResourceModel('sitemap/cms_page')->getCollection($storeId);
+                    if ($collection) {
+                        foreach ($collection as $item) { /* @var $item \Varien_Object */
+                            $urls[] = $linkBaseUrl . $item->getUrl();
+                        }
+                        unset($collection);
+                    }
                 }
 
-                // ... and output
-                $output->writeln($line);
+            } // foreach ($stores as $storeId)
+
+            if (count($urls) > 0) {
+                foreach ($urls as $url) {
+
+                    // pre-process
+                    $line = $input->getArgument('linetemplate');
+                    $line = str_replace('{url}', $url, $line);
+
+                    $parts = parse_url($url);
+                    foreach ($parts as $key => $value) {
+                        $line = str_replace('{'.$key.'}', $value, $line);
+                    }
+
+                    // ... and output
+                    $output->writeln($line);
+                }
             }
-
         }
-    }
-
-    /**
-     * @param $resourceModel
-     * @param $linkBaseUrl
-     * @param $storeId
-     * @param $urls
-     * @return array
-     */
-    protected function getUrls($resourceModel, $linkBaseUrl, $storeId, $urls) {
-        $collection = \Mage::getResourceModel($resourceModel)->getCollection($storeId);
-        if (!$collection) {
-            return $urls;
-        }
-        foreach ($collection as $item) {
-            /* @var $item \Varien_Object */
-            $urls[] = $linkBaseUrl . $item->getUrl();
-        }
-        return $urls;
     }
 }

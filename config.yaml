@@ -46,10 +46,8 @@ commands:
     - N98\Magento\Command\Admin\User\CreateUserCommand
     - N98\Magento\Command\Admin\User\ListCommand
     - N98\Magento\Command\Admin\User\DeleteUserCommand
-    - N98\Magento\Command\Admin\User\ChangeStatusCommand
     - N98\Magento\Command\Admin\User\UnlockCommand
     - N98\Magento\Command\Cache\CleanCommand
-    - N98\Magento\Command\Cache\Dir\FlushCommand
     - N98\Magento\Command\Cache\DisableCommand
     - N98\Magento\Command\Cache\EnableCommand
     - N98\Magento\Command\Cache\FlushCommand
@@ -57,7 +55,6 @@ commands:
     - N98\Magento\Command\Cache\ReportCommand
     - N98\Magento\Command\Cache\ViewCommand
     - N98\Magento\Command\Cms\Banner\ToggleCommand
-    - N98\Magento\Command\Cms\Block\ToggleCommand
     - N98\Magento\Command\Cms\Page\PublishCommand
     - N98\Magento\Command\Config\DeleteCommand
     - N98\Magento\Command\Config\DumpCommand
@@ -106,7 +103,6 @@ commands:
     - N98\Magento\Command\Developer\TemplateHintsCommand
     - N98\Magento\Command\Developer\Theme\DuplicatesCommand
     - N98\Magento\Command\Developer\Theme\ListCommand
-    - N98\Magento\Command\Developer\Theme\InfoCommand
     - N98\Magento\Command\Developer\Translate\InlineAdminCommand
     - N98\Magento\Command\Developer\Translate\InlineShopCommand
     - N98\Magento\Command\Developer\Translate\SetCommand
@@ -166,21 +162,11 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
-      - name: magento-ce-1.9.1.1
-        version: 1.9.1.1
-        dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.1.1/magento-1.9.1.1.tar.gz
-          type: tar
-          shasum: 170e4b9019f43477d2f2a074ef551a05009da724
-        extra:
-          sample-data: sample-data-1.9.1.0
-
       - name: magento-ce-1.9.1.0
         version: 1.9.1.0
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.9.1.0/magento-1.9.1.0.tar.gz
           type: tar
-          shasum: 4f7064f4a5bc46298979e8b37208be6fdaf20002
         extra:
           sample-data: sample-data-1.9.1.0
 
@@ -189,7 +175,6 @@ commands:
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.9.0.1/magento-1.9.0.1.tar.gz
           type: tar
-          shasum: 5100c4dab56cf587d5478b9bf8b5d4a0fa411179
         extra:
           sample-data: sample-data-1.9.0.0
 
@@ -198,7 +183,6 @@ commands:
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.8.1.0/magento-1.8.1.0.tar.gz
           type: tar
-          shasum: 024a6173003e4f6814e7fb7e84ca8b08a18db4c1
         extra:
           sample-data: sample-data-1.6.1.0
 
@@ -207,7 +191,6 @@ commands:
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.8.0.0/magento-1.8.0.0.tar.gz
           type: tar
-          shasum: 31a52e9522d09065ff6f939faa1289023db2eff5
         extra:
           sample-data: sample-data-1.6.1.0
 
@@ -216,7 +199,6 @@ commands:
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.7.0.2/magento-1.7.0.2.tar.gz
           type: tar
-          shasum: 8d2a378e92ee917a3b74b1a51a8d3e6874dc6ab9
         extra:
           sample-data: sample-data-1.6.1.0
 
@@ -225,34 +207,14 @@ commands:
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.6.2.0/magento-1.6.2.0.tar.gz
           type: tar
-          shasum: 897050f0c08480ab6531eead5a5caadfef673340
         extra:
           sample-data: sample-data-1.6.1.0
-
-      - name: magento-mirror-1.9.2.1
-        version: 1.9.2.0
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.2.1.zip
-          type: zip
-          shasum: ce0c435a7320c4cac47290337b64861c2674e3f8
-        extra:
-          sample-data: sample-data-1.9.1.0
-
-      - name: magento-mirror-1.9.2.0
-        version: 1.9.2.0
-        dist:
-          url: https://github.com/LokeyCoding/magento-mirror/archive/1.9.2.0.zip
-          type: zip
-          shasum: 019538c04b6359ad61e4c6d2f54c835bd76f7141
-        extra:
-          sample-data: sample-data-1.9.1.0
 
       - name: magento-mirror-1.7.0.2
         version: 1.7.0.2
         dist:
           url: https://github.com/LokeyCoding/magento-mirror/archive/1.7.0.2.tar.gz
           type: tar
-          shasum: c10a3e15f9311c2b079bb2e71bacb32cb3192402
         extra:
           sample-data: sample-data-1.6.1.0
 
@@ -261,7 +223,6 @@ commands:
         dist:
           url: https://github.com/LokeyCoding/magento-mirror/archive/1.6.2.0.tar.gz
           type: tar
-          shasum: 301b815359b8abd4dfcd828b261cd924d9868a19
         extra:
           sample-data: sample-data-1.6.1.0
 
@@ -298,28 +259,24 @@ commands:
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.9.1.0/magento-sample-data-1.9.1.0.tar.gz
           type: tar
-          shasum: 617e0271900772ac8f11e7bb86e29fca0f640562
 
       - name: sample-data-1.9.0.0
         version: 1.9.0.0
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.9.0.0/magento-sample-data-1.9.0.0.tar.gz
           type: tar
-          shasum: b2b535901eb2db92a8602baf8a839ab2120c4c8f
 
       - name: sample-data-1.6.1.0
         version: 1.6.1.0
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.6.1.0/magento-sample-data-1.6.1.0.tar.gz
           type: tar
-          shasum: a9226bc92966855327f6eb62ff8f6c562b2113a2
 
       - name: sample-data-1.1.2
         version: 1.1.2
         dist:
           url: http://www.magentocommerce.com/downloads/assets/1.1.2/magento-sample-data-1.1.2.tar.bz2
           type: tar
-          shasum: e8ddbf94698224fb71c946e789f7a23dec236384
 
     installation:
       pre-check:
@@ -379,7 +336,7 @@ commands:
 
       - id: customers
         description: Customer data - Should not be used without @sales
-        tables: customer_address* customer_entity* wishlist*
+        tables: customer_address* customer_entity*
 
       - id: newsletter
         description: Newsletter subscriber data

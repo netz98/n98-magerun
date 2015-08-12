@@ -1,25 +1,16 @@
 <?php
-/*
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Util;
 
-use RuntimeException;
+use N98\Util\Filesystem;
 
 /**
  * Class FilesystemTest
  * @package N98\Util
  * @author Aydin Hassan <aydin@hotmail.co.uk>
- * @covers N98\Util\Filesystem
  */
 class FilesystemTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var Filesystem
-     */
     protected $fileSystem;
 
     public function setUp()
@@ -27,9 +18,6 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         $this->fileSystem = new Filesystem();
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
     public function testRecursiveCopy()
     {
         $tmp        = sys_get_temp_dir();
@@ -61,15 +49,6 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         rmdir($dest . "/folder1");
         rmdir($dest . "/folder2");
         rmdir($dest);
-
-        $this->assertFileNotExists($dest . "/folder1/file1.txt");
-        $this->assertFileNotExists($dest);
-
-        is_dir($tmp . '/a') || mkdir($tmp . '/a');
-        touch($tmp . '/file1.txt');
-        $this->fileSystem->recursiveCopy($tmp . '/a', $tmp . '/file1.txt');
-        unlink($tmp . '/file1.txt');
-        rmdir($tmp . '/a');
     }
 
     public function testRecursiveCopyWithBlacklist()
@@ -107,9 +86,6 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         rmdir($dest);
     }
 
-    /**
-     * @requires function symlink
-     */
     public function testRecursiveDirectoryRemoveUnLinksSymLinks()
     {
         $tmp            = sys_get_temp_dir();
@@ -175,9 +151,12 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
     public function testFalseIsReturnedIfDirectoryNotReadable()
     {
         $tmp        = sys_get_temp_dir();
-        $basePath   = $tmp . "/n98_testdir-never-existed";
+        $basePath   = $tmp . "/n98_testdir";
+        @mkdir($basePath, 0000, true);
 
         $this->assertFalse($this->fileSystem->recursiveRemoveDirectory($basePath));
+        //cleanup
+        rmdir($basePath);
     }
 
     public function testParentIsNotRemovedIfEmptyIsTrue()

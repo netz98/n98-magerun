@@ -28,10 +28,6 @@ class ReportCommand extends AbstractCacheCommand
         ;
     }
 
-    protected function isTagFiltered($metaData, $input) {
-        return (bool)count(array_intersect($metaData['tags'], explode(',', $input->getOption('filter-tag'))));
-    }
-
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
@@ -54,14 +50,17 @@ class ReportCommand extends AbstractCacheCommand
             $cacheIds = $cacheInstance->getIds();
             $table = array();
             foreach ($cacheIds as $cacheId) {
-                if ($input->getOption('filter-id') !== null && !stristr($cacheId, $input->getOption('filter-id'))) {
-                    continue;
+                if ($input->getOption('filter-id') !== null) {
+                    if (!stristr($cacheId, $input->getOption('filter-id'))) {
+                        continue;
+                    }
                 }
 
-
                 $metaData = $cacheInstance->getMetadatas($cacheId);
-                if ($input->getOption('filter-tag') !== null && !$this->isTagFiltered($metaData, $input)) {
-                    continue;
+                if ($input->getOption('filter-tag') !== null) {
+                    if (count(array_intersect($metaData['tags'], explode(',', $input->getOption('filter-tag')))) <= 0) {
+                        continue;
+                    }
                 }
 
                 $row = array(

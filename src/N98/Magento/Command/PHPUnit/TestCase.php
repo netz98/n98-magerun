@@ -27,9 +27,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
         if ($this->application === null) {
             $root = getenv('N98_MAGERUN_TEST_MAGENTO_ROOT');
             if (empty($root)) {
-                $this->markTestSkipped(
-                    'Please specify environment variable N98_MAGERUN_TEST_MAGENTO_ROOT with path to your test ' .
-                    'magento installation!'
+                throw new \RuntimeException(
+                    'Please specify environment variable N98_MAGERUN_TEST_MAGENTO_ROOT with path to your test
+                    magento installation!'
                 );
             }
 
@@ -40,9 +40,6 @@ class TestCase extends \PHPUnit_Framework_TestCase
             $loader = require __DIR__ . '/../../../../../vendor/autoload.php';
             $this->application->setAutoloader($loader);
             $this->application->expects($this->any())->method('getMagentoRootFolder')->will($this->returnValue($root));
-
-            spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
-
             $this->application->init();
             $this->application->initMagento();
             if ($this->application->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1) {

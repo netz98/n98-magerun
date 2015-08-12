@@ -20,7 +20,7 @@ class Result
     const STATUS_WARNING = 'warning';
 
     /**
-     * @var string
+     * @var bool
      */
     protected $_status;
 
@@ -50,15 +50,11 @@ class Result
     }
 
     /**
-     * @param boolean|string $status
+     * @param boolean $status
      * @return $this
      */
     public function setStatus($status)
     {
-        if (is_bool($status)) {
-            $status = $status ? self::STATUS_OK : self::STATUS_ERROR;
-        }
-
         if (!in_array($status, array(self::STATUS_OK, self::STATUS_ERROR, self::STATUS_WARNING))) {
             throw new \LogicException('Wrong status was given. Use constants: Result::OK, Result::ERROR, Result::WARNING');
         }

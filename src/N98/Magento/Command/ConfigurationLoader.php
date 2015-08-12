@@ -158,12 +158,10 @@ class ConfigurationLoader
     {
         if ($this->_distConfig == null) {
             $this->_distConfig = Yaml::parse(__DIR__ . '/../../../../config.yaml');
-
-            if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
-                $this->_output->writeln('<debug>Load dist config</debug>');
-            }
         }
-
+        if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
+            $this->_output->writeln('<debug>Load dist config</debug>');
+        }
         $config = ArrayFunctions::mergeArrays($this->_distConfig, $initConfig);
 
         return $config;
@@ -228,20 +226,20 @@ class ConfigurationLoader
             /**
              * Allow modules to be placed vendor folder if not in phar mode
              */
-            if (!$this->_isPharMode && is_dir($this->getVendorDir())) {
+            if (!$this->_isPharMode) {
+                if (is_dir($this->getVendorDir())) {
+                    $finder = Finder::create();
+                    $finder
+                        ->files()
+                        ->depth(2)
+                        ->followLinks()
+                        ->ignoreUnreadableDirs(true)
+                        ->name($this->_customConfigFilename)
+                        ->in($this->getVendorDir());
 
-                $finder = Finder::create();
-                $finder
-                    ->files()
-                    ->depth(2)
-                    ->followLinks()
-                    ->ignoreUnreadableDirs(true)
-                    ->name($this->_customConfigFilename)
-                    ->in($this->getVendorDir());
-
-                foreach ($finder as $file) {
-                    /* @var $file \Symfony\Component\Finder\SplFileInfo */
-                    $this->registerPluginConfigFile($magentoRootFolder, $file);
+                    foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                        $this->registerPluginConfigFile($magentoRootFolder, $file);
+                    }
                 }
             }
 
@@ -308,10 +306,6 @@ class ConfigurationLoader
                 $userConfig = $this->applyVariables(\file_get_contents($personalConfigFile), $magentoRootFolder, null);
                 $this->_userConfig = Yaml::parse($userConfig);
 
-                if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
-                    $this->_output->writeln('<debug>Load user config <comment>' . $personalConfigFile . '</comment></debug>');
-                }
-
                 return $config;
             }
         }
@@ -346,7 +340,7 @@ class ConfigurationLoader
                 $this->_projectConfig = Yaml::parse($projectConfig);
             }
 
-            $stopFileConfigFile = $magerunStopFileFolder . DIRECTORY_SEPARATOR . $this->_customConfigFilename;
+            $stopFileConfigFile = $magerunStopFileFolder . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
             if (!empty($magerunStopFileFolder) && file_exists($stopFileConfigFile)) {
                 $projectConfig = $this->applyVariables(\file_get_contents($stopFileConfigFile), $magentoRootFolder, null);
                 $this->_projectConfig = ArrayFunctions::mergeArrays($this->_projectConfig, Yaml::parse($projectConfig));

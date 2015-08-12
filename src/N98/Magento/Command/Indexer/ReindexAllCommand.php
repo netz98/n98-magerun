@@ -33,28 +33,10 @@ class ReindexAllCommand extends AbstractIndexerCommand
                 \Mage::dispatchEvent('shell_reindex_init_process');
                 $indexCollection = $this->_getIndexerModel()->getProcessesCollection();
                 foreach ($indexCollection as $indexer) {
-                    $output->writeln('<info>Started reindex of: <comment>' . $indexer->getIndexerCode() . '</comment></info>');
-                    /**
-                     * Try to estimate runtime. If index was aborted or never created we have a timestamp < 0
-                     */
-                    $runtimeInSeconds = $this->getRuntimeInSeconds($indexer);
-                    if ($runtimeInSeconds > 0) {
-                        $estimatedEnd = new \DateTime('now', new \DateTimeZone('UTC'));
-                        $estimatedEnd->add(new \DateInterval('PT' . $runtimeInSeconds . 'S'));
-                        $output->writeln(
-                            '<info>Estimated end: <comment>' . $estimatedEnd->format('Y-m-d H:i:s T') . '</comment></info>'
-                        );
-                    }
-                    $startTime = new \DateTime('now');
-                    $dateTimeUtils = new \N98\Util\DateTime();
                     $indexer->reindexEverything();
                     \Mage::dispatchEvent($indexer->getIndexerCode() . '_shell_reindex_after');
-                    $endTime = new \DateTime('now');
                     $output->writeln(
-                        '<info>Successfully reindexed <comment>' . $indexer->getIndexerCode() . '</comment> (Runtime: <comment>' . $dateTimeUtils->getDifferenceAsString(
-                            $startTime,
-                            $endTime
-                        ) . '</comment>)</info>'
+                        '<info>Successfully reindexed</info> <comment>' . $indexer->getIndexerCode() . '</comment>'
                     );
                 }
                 \Mage::dispatchEvent('shell_reindex_init_process');

@@ -3,66 +3,40 @@ RECENT CHANGES
 **************
 
 ======
-1.97.5
+1.94.0
 ======
 
-* Add cache:dir:flush command (by Tom Klingenberg)
-* Show supported compression values (by Tom Klingenberg)
+* #416 Converts times to local or specified timezone (by Steve Robbin)
+* #428 Add newsletter table group for db:dump command (by Christoph Aßmann)
+* #441 config:dump produces invalid xml (Andrew Stayart)
+* #443 Create, view, and remove gift cards (by Steve Robbins)
+* #452 Added .DS_Store to .gitignore (by Hervé Guétin)
+* #453 Add store parameter to template hints commands (by Hadrien Collongues)
+* #462 dbHost not respected #462 (by Achim Rosenhagen)
+* #463 Fixed missing sprintf when creating Exception in sys:cron:run command (by Tim Eydamos)
+* #464 SampleData in Version 1.9 are not downloading (by Rafael Corrêa Gomes)
+* Disable command by config.
+* Removed Magento 2 bootstrapping -> Moved into n98-magerun2
+* Updated 3rd party components
 
 ======
-1.97.4
+1.93.0
 ======
 
-* #634 regression in user-interaction (reported by 25thhour, fixed by Tom Klingenberg)
-
-======
-1.97.3
-======
-
-* Changed phar compression from bzip2 to gzip
-* #627 n98-magerun: command not found (reported by Qbixx, fixed by Tom Klingenberg)
-* #620 cache:disable does not validate code (by Luke Rodgers)
-
-======
-1.97.2
-======
-
-* Minor fix bumping the revision (by Tom Klingenberg)
-
-======
-1.97.1
-======
-
-* #630 Magento 1.9.2.1 is out (by Tom Klingenberg)
-* #632 fix of PHP Fatal error: [] operator not supported for strings (by Tom Klingenberg)
-
-======
-1.97.0
-======
-
-* #549 general code cleanup (by Simon Bräuer)
-* #564 Print only magento version -> sys:info command (by David Alger)
-* #572 fixes and improvements (by Tom Klingenberg)
-* #573 Improve observer list accuracy (by Peter O'Callaghan)
-* #574 reduced complexity observer list command (by Tom Klingenberg)
-* #580 reset magento root folder in `N98\Magento\Application::reinit` (by Claudio Kressibucher)
-* #590 Bugfix/Bash Completion on OS X (by Joey Hoer)
-* #591 Bugfix/Configuration Agnostic ZSH Completion (by Joey Hoer)
-* #593 n98-magerun.phar dev:module:create --add-all does not create setup scripts (by Michael Lühr)
-* #599 Excluding wishlist tables (by Aaron Edmonds)
-* #600 Update lookup command (by Tomas Liubinas)
-* #602 Update Travis configuration (by Tom Klingenberg)
-* #603 Feature/autoload restorer (by Tom Klingenberg)
-* #604 Fix Cookie Domain validation (by Tom Klingenberg)
-* #610 Checksum for package downloads (by Tom Klingenberg)
-* #614 Package magento-mirror-1.9.2.0 (by Achim Rosenhagen)
-* #618 CommandTester normalization of Display (by Tom Klingenberg)
-
-======
-1.96.1
-======
-
-* Changed self-update URLs to new download page: http://files.magerun.net
+* #399 Admin user unlock [EE only] (by Steve Robbins)
+* #415 Clean multiple caches at once (by Michael Barrett)
+* #418 Use already instantiated cache object. (by Alan Storm)
+* #421 enable or disable a module based on name or codepool (by Steve Robbins)
+* #423 db:import --drop does not take into account the "only-command" option (by Michael Lühr)
+* #429 Install command ignores skin folder of 1.9.0.0 sample data (by Vinai Kopp)
+* #435 New db:status and db:variable commands (by Cyrill Schumacher)
+* #436 Alternative Installation Port is not respected (by Christian Münch)
+* #440 Added Magento CE 1.9.1.0 to installer (by Rouven Rieker)
+* Minor documentation corrections (by  Jaik Dean)
+* Refactored db:maintain:check-tables to allow InnoDB and Memory tables to be optimized. (by Cyrill Schumacher)
+* Bash completion - change regexp condition to string contains. (by Paweł Bogut)
+* Updated Symfony components to V2.6
+* Updated locked phpunit version.
 
 -----------------------------------------
 SEE FULL CHANGELOG: http://bit.ly/10IDU1H
