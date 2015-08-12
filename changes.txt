@@ -6,6 +6,7 @@ RECENT CHANGES
 1.97.5
 ======
 
+* Add js and css merging commands (by Simon Sippert)
 * Add cache:dir:flush command (by Tom Klingenberg)
 * Show supported compression values (by Tom Klingenberg)
 
