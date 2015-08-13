@@ -38,6 +38,7 @@ class DumpCommand extends AbstractDatabaseCommand
             ->addOption('add-routines', null, InputOption::VALUE_NONE, 'Include stored routines in dump (procedures & functions)')
             ->addOption('stdout', null, InputOption::VALUE_NONE, 'Dump to stdout')
             ->addOption('strip', 's', InputOption::VALUE_OPTIONAL, 'Tables to strip (dump only structure of those tables)')
+            ->addOption('exclude', 'e', InputOption::VALUE_OPTIONAL, 'Tables to exclude from the dump')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not prompt if all options are defined')
             ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml');
 
@@ -186,13 +187,25 @@ HELP;
         $compressor = $this->getCompressor($input->getOption('compression'));
         $fileName   = $this->getFileName($input, $output, $compressor);
 
-        $stripTables = false;
+        $stripTables = array();
         if ($input->getOption('strip')) {
             $stripTables = $this->getHelper('database')->resolveTables(explode(' ', $input->getOption('strip')), $this->getTableDefinitions());
             if (!$input->getOption('stdout') && !$input->getOption('only-command')
                 && !$input->getOption('print-only-filename')
             ) {
                 $output->writeln('<comment>No-data export for: <info>' . implode(' ', $stripTables)
+                    . '</info></comment>'
+                );
+            }
+        }
+
+        $excludeTables = array();
+        if ($input->getOption('exclude')) {
+            $excludeTables = $this->getHelper('database')->resolveTables(explode(' ', $input->getOption('exclude')), $this->getTableDefinitions());
+            if (!$input->getOption('stdout') && !$input->getOption('only-command')
+                && !$input->getOption('print-only-filename')
+            ) {
+                $output->writeln('<comment>Excluded: <info>' . implode(' ', $excludeTables)
                     . '</info></comment>'
                 );
             }
@@ -221,15 +234,12 @@ HELP;
 
         $execs = array();
 
-        if (!$stripTables) {
-            $exec = 'mysqldump ' . $dumpOptions . $this->getHelper('database')->getMysqlClientToolConnectionString();
-            $exec .= $this->postDumpPipeCommands();
-            $exec = $compressor->getCompressingCommand($exec);
-            if (!$input->getOption('stdout')) {
-                $exec .= ' > ' . escapeshellarg($fileName);
-            }
-            $execs[] = $exec;
-        } else {
+        $ignore = '';
+        foreach (array_merge($excludeTables, $stripTables) as $tableName) {
+            $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $tableName . ' ';
+        }
+
+        if (count($stripTables) > 0) {
             // dump structure for strip-tables
             $exec = 'mysqldump ' . $dumpOptions . '--no-data ' . $this->getHelper('database')->getMysqlClientToolConnectionString();
             $exec .= ' ' . implode(' ', $stripTables);
@@ -239,21 +249,16 @@ HELP;
                 $exec .= ' > ' . escapeshellarg($fileName);
             }
             $execs[] = $exec;
-
-            $ignore = '';
-            foreach ($stripTables as $stripTable) {
-                $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $stripTable . ' ';
-            }
-
-            // dump data for all other tables
-            $exec = 'mysqldump ' . $dumpOptions . $ignore . $this->getHelper('database')->getMysqlClientToolConnectionString();
-            $exec .= $this->postDumpPipeCommands();
-            $exec = $compressor->getCompressingCommand($exec);
-            if (!$input->getOption('stdout')) {
-                $exec .= ' >> ' . escapeshellarg($fileName);
-            }
-            $execs[] = $exec;
         }
+
+        // dump data for all other tables
+        $exec = 'mysqldump ' . $dumpOptions . $ignore . $this->getHelper('database')->getMysqlClientToolConnectionString();
+        $exec .= $this->postDumpPipeCommands();
+        $exec = $compressor->getCompressingCommand($exec);
+        if (!$input->getOption('stdout')) {
+            $exec .= (count($stripTables) > 0 ? ' >> ' : ' > ' ). escapeshellarg($fileName);
+        }
+        $execs[] = $exec;
 
         $this->runExecs($execs, $fileName, $input, $output);
     }
