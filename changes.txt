@@ -6,6 +6,8 @@ RECENT CHANGES
 1.97.5
 ======
 
+* #640 Fix db:dump duplicate help (by Alexander Menk)
+* #616 Add db:dump exclude option (by Alexander Menk)
 * Add js and css merging commands (by Simon Sippert)
 * Add cache:dir:flush command (by Tom Klingenberg)
 * Show supported compression values (by Tom Klingenberg)
