@@ -43,8 +43,8 @@ class DumpCommand extends AbstractDatabaseCommand
             ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml');
 
         $help = <<<HELP
-Dumps configured magento database with `mysqldump`.
-You must have installed the MySQL client tools.
+Dumps configured magento database with `mysqldump`. You must have installed
+the MySQL client tools.
 
 On debian systems run `apt-get install mysql-client` to do that.
 
@@ -52,10 +52,11 @@ The command reads app/etc/local.xml to find the correct settings.
 
 See it in action: http://youtu.be/ttjZHY6vThs
 
-- If you like to prepend a timestamp to the dump name the --add-time option can be used.
+- If you like to prepend a timestamp to the dump name the --add-time option
+  can be used.
 
-- The command comes with a compression function. Add i.e. `--compression=gz` to dump directly in
- gzip compressed file.
+- The command comes with a compression function. Add i.e. `--compression=gz`
+  to dump directly in gzip compressed file.
 
 HELP;
         $this->setHelp($help);
@@ -118,12 +119,14 @@ HELP;
         $messages .= <<<HELP
 <comment>Strip option</comment>
  If you like to skip data of some tables you can use the --strip option.
-  The strip option creates only the structure of the defined tables and
+ The strip option creates only the structure of the defined tables and
  forces `mysqldump` to skip the data.
 
  Separate each table to strip by a space.
- You can use wildcards like * and ? in the table names to strip multiple tables.
- In addition you can specify pre-defined table groups, that start with an @
+ You can use wildcards like * and ? in the table names to strip multiple
+ tables. In addition you can specify pre-defined table groups, that start
+ with an
+
  Example: "dataflow_batch_export unimportant_module_* @log
 
     $ n98-magerun.phar db:dump --strip="@stripped"
@@ -131,14 +134,29 @@ HELP;
 <comment>Available Table Groups</comment>
 
 HELP;
+
         $definitions = $this->getTableDefinitions();
+        $list = array();
+        $maxNameLen = 0;
         foreach ($definitions as $id => $definition) {
-            $description = isset($definition['description']) ? $definition['description'] : '';
-            /** @TODO:
-             * Column-Wise formatting of the options, see InputDefinition::asText for code to pad by the max length,
-             * but I do not like to copy and paste ..
-             */
-            $messages .= ' <info>@' . $id . '</info> ' . $description . PHP_EOL;
+            $name    = '@' . $id;
+            $description = isset($definition['description']) ? $definition['description'] . '.' : '';
+            $nameLen = strlen($name);
+            if ($nameLen > $maxNameLen) {
+                $maxNameLen = $nameLen;
+            }
+            $list[] = array($name, $description);
+        }
+
+        $decrSize = 78 - $maxNameLen - 3;
+
+        foreach ($list as $entry) {
+            list($name, $description) = $entry;
+            $delta  = max(0, $maxNameLen - strlen($name));
+            $spacer = $delta ? str_repeat(' ', $delta) : '';
+            $buffer = wordwrap($description, $decrSize);
+            $buffer = strtr($buffer, ["\n" => "\n" . str_repeat(' ', 3 +  $maxNameLen)]);
+            $messages .= sprintf(" <info>%s</info>%s  %s\n", $name, $spacer, $buffer);
         }
 
         return $messages;
