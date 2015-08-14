@@ -761,14 +761,11 @@ class Application extends BaseApplication
     protected function _initMagento1($soft = false)
     {
         if (!class_exists('Mage', false)) {
+            // Create a new AutoloadRestorer to capture currenjt auto-öpaders
             $restorer = new AutoloadRestorer();
-            // require app/Mage.php from Magento in a function of it's own to have it's own variable scope (but $this)
-            $magentoRootFolder = $this->_magentoRootFolder;
-            $requireOnce = function() use ($magentoRootFolder) {
-                require_once $magentoRootFolder . '/app/Mage.php';
-            };
-            $requireOnce();
-            // Restore autoloaders that might be removed by extensions that overwrite Varien/Autoload
+            // require app/Mage.php from Magento in a function of it's own to have it's own variable scope
+            $this->requireOnce($this->_magentoRootFolder . '/app/Mage.php');
+            // Restore auto-loaders that might be removed by extensions that overwrite Varien/Autoload
             $restorer->restore();
         }
 
@@ -780,6 +777,22 @@ class Application extends BaseApplication
         $initSettings = $this->config['init'];
 
         \Mage::app($initSettings['code'], $initSettings['type'], $initSettings['options']);
+    }
+
+    /**
+     * use require-once inside a function with it's own variable scope w/o any other variables
+     * and $this unbound.
+     */
+    private function requireOnce($path)
+    {
+        $requireOnce = function() {
+            require_once  func_get_arg(0);
+        };
+        if (50400 <= PHP_VERSION_ID) {
+            $requireOnce->bindTo(null);
+        }
+
+        $requireOnce($path);
     }
 
     /*
