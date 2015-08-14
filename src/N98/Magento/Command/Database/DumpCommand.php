@@ -155,7 +155,7 @@ HELP;
             $delta  = max(0, $maxNameLen - strlen($name));
             $spacer = $delta ? str_repeat(' ', $delta) : '';
             $buffer = wordwrap($description, $decrSize);
-            $buffer = strtr($buffer, ["\n" => "\n" . str_repeat(' ', 3 +  $maxNameLen)]);
+            $buffer = strtr($buffer, array("\n" => "\n" . str_repeat(' ', 3 +  $maxNameLen)));
             $messages .= sprintf(" <info>%s</info>%s  %s\n", $name, $spacer, $buffer);
         }
 
