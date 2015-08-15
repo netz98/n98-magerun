@@ -87,10 +87,10 @@ HELP;
                 foreach ($tableGroups as $index=>$definition) {
                     $description = isset($definition['description']) ? $definition['description'] : '';
                     if (!isset($definition['id'])) {
-                        throw new \Exception('Invalid definition of table-groups (id missing) Index: ' . $index);
+                        throw new \RuntimeException('Invalid definition of table-groups (id missing) Index: ' . $index);
                     }
                     if (!isset($definition['id'])) {
-                        throw new \Exception('Invalid definition of table-groups (tables missing) Id: '
+                        throw new \RuntimeException('Invalid definition of table-groups (tables missing) Id: '
                             . $definition['id']
                         );
                     }

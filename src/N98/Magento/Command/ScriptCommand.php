@@ -230,7 +230,7 @@ HELP;
                         '<info>Please enter a value for <comment>' . $matches[1] . '</comment>:</info> ',
                         function($value) {
                             if ($value == '') {
-                                throw new \Exception('Please enter a value');
+                                throw new \RuntimeException('Please enter a value');
                             }
 
                             return $value;

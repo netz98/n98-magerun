@@ -48,7 +48,7 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
                 $result = $user->validate();
 
                 if (is_array($result)) {
-                    throw new \Exception(implode(PHP_EOL, $result));
+                    throw new \RuntimeException(implode(PHP_EOL, $result));
                 }
 
                 if ($input->getOption('activate')) {

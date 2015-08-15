@@ -215,7 +215,7 @@ HELP;
         }
 
         if (!$customer->getId()) {
-            throw new \Exception('No customer found!');
+            throw new \RuntimeException('No customer found!');
         }
 
         return $customer;

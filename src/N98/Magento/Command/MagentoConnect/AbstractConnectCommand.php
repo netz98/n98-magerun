@@ -26,11 +26,11 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
             @chdir($this->_magentoRootFolder);
             $this->mageScript = './mage';
             if (!is_file($this->mageScript)) {
-                throw new \Exception('Could not find "mage" shell script in current installation');
+                throw new \RuntimeException('Could not find "mage" shell script in current installation');
             }
             if (!is_executable($this->mageScript)) {
                 if (!@chmod($this->mageScript, 0755)) {
-                    throw new \Exception('Cannot make "mage" shell script executable. Please chmod the file manually.');
+                    throw new \RuntimeException('Cannot make "mage" shell script executable. Please chmod the file manually.');
                 }
             }
             if (!strstr(shell_exec($this->mageScript . ' list-channels'), 'community')) {
