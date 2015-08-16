@@ -25,7 +25,7 @@ $main = function($urls) use (&$urlHeaders, &$box, &$bytes)
 
         $headers = $urlHeaders($url->url);
         printf("Status..: %s\n", $headers(TRUE));
-        printf("Size....: %s (bytes)\n", $bytes($headers('Content-Length')));
+        printf("Size....: %s\n", $bytes($headers('Content-Length')));
         printf("Modified: %s\n", $headers('Last-Modified'));
 
         echo "\n";
