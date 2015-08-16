@@ -110,7 +110,7 @@ bump_version() {
 }
 
 # TODO: - tag a release
-#         tag for current version: $ git tag -a `cat version.txt` -m "Tagged version `cat version.txt`"
+#         tag for current version: $ git tag -a `cat version.txt` -m "tag version `cat version.txt`"
 #         show last X latest tags: $ git tag | sort -rn | head -2 | xargs git show
 tag_release()
 {
@@ -427,7 +427,7 @@ git add "${FILE_CHANGES}"
 git add "${FILE_APPLICATION}"
 
 if [ ${FLAG_GITGUI} -eq 1 ]; then
-    echo "[TASK] Updated version of development branch." > .git/GITGUI_MSG
+    echo "[TASK] update version of development branch" > .git/GITGUI_MSG
     git gui
 fi
 
