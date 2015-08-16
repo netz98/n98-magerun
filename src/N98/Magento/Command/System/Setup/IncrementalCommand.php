@@ -373,7 +373,7 @@ class IncrementalCommand extends AbstractMagentoCommand
     {
         $output = $this->_output;
         if (!in_array($type, array(self::TYPE_MIGRATION_STRUCTURE, self::TYPE_MIGRATION_DATA))) {
-            throw new \Exception('Invalid Type [' . $type . ']: structure, data are valid');
+            throw new \RuntimeException('Invalid Type [' . $type . ']: structure, data are valid');
         }
 
         if (!array_key_Exists($name, $needsUpdate)) {

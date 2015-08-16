@@ -53,7 +53,7 @@ HELP;
             if (!$jobConfig || !$jobConfig->run) {
                 $jobConfig = $defaultJobsRoot->{$jobCode};
                 if (!$jobConfig || !$jobConfig->run) {
-                    throw new \Exception('No job config found!');
+                    throw new \RuntimeException('No job config found!');
                 }
             }
 
@@ -62,10 +62,10 @@ HELP;
             if ($runConfig->model) {
 
                 if (!preg_match(self::REGEX_RUN_MODEL, (string)$runConfig->model, $run)) {
-                    throw new \Exception('Invalid model/method definition, expecting "model/class::method".');
+                    throw new \RuntimeException('Invalid model/method definition, expecting "model/class::method".');
                 }
                 if (!($model = \Mage::getModel($run[1])) || !method_exists($model, $run[2])) {
-                    throw new \Exception(sprintf('Invalid callback: %s::%s does not exist', $run[1], $run[2]));
+                    throw new \RuntimeException(sprintf('Invalid callback: %s::%s does not exist', $run[1], $run[2]));
                 }
                 $callback = array($model, $run[2]);
 

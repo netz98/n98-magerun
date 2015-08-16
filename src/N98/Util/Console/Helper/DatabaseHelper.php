@@ -53,7 +53,7 @@ class DatabaseHelper extends AbstractHelper
             $configFile = $application->getMagentoRootFolder() . '/app/etc/local.xml';
 
             if (!is_readable($configFile)) {
-                throw new \Exception('app/etc/local.xml is not readable');
+                throw new \RuntimeException('app/etc/local.xml is not readable');
             }
             $config = \simplexml_load_string(\file_get_contents($configFile));
             if (!$config->global->resources->default_setup->connection) {
@@ -62,7 +62,7 @@ class DatabaseHelper extends AbstractHelper
             }
 
             if (!isset($config->global->resources->default_setup->connection)) {
-                throw new \Exception('Cannot find default_setup config in app/etc/local.xml');
+                throw new \RuntimeException('Cannot find default_setup config in app/etc/local.xml');
             }
 
             $this->dbSettings           = (array)$config->global->resources->default_setup->connection;
@@ -110,7 +110,7 @@ class DatabaseHelper extends AbstractHelper
         $this->detectDbSettings($output);
 
         if (!extension_loaded('pdo_mysql')) {
-            throw new \Exception('pdo_mysql extension is not installed');
+            throw new \RuntimeException('pdo_mysql extension is not installed');
         }
 
         $this->_connection = new \PDO(
@@ -249,10 +249,10 @@ class DatabaseHelper extends AbstractHelper
             foreach ($tableGroups as $index => $definition) {
                 $description = isset($definition['description']) ? $definition['description'] : '';
                 if (!isset($definition['id'])) {
-                    throw new \Exception('Invalid definition of table-groups (id missing) Index: ' . $index);
+                    throw new \RuntimeException('Invalid definition of table-groups (id missing) Index: ' . $index);
                 }
-                if (!isset($definition['id'])) {
-                    throw new \Exception('Invalid definition of table-groups (tables missing) Id: '
+                if (!isset($definition['tables'])) {
+                    throw new \RuntimeException('Invalid definition of table-groups (tables missing) Id: '
                         . $definition['id']
                     );
                 }
@@ -286,7 +286,7 @@ class DatabaseHelper extends AbstractHelper
             if (substr($entry, 0, 1) == '@') {
                 $code = substr($entry, 1);
                 if (!isset($definitions[$code])) {
-                    throw new \Exception('Table-groups could not be resolved: ' . $entry);
+                    throw new \RuntimeException('Table-groups could not be resolved: ' . $entry);
                 }
                 if (!isset($resolved[$code])) {
                     $resolved[$code] = true;

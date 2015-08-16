@@ -38,48 +38,25 @@ class DumpCommand extends AbstractDatabaseCommand
             ->addOption('add-routines', null, InputOption::VALUE_NONE, 'Include stored routines in dump (procedures & functions)')
             ->addOption('stdout', null, InputOption::VALUE_NONE, 'Dump to stdout')
             ->addOption('strip', 's', InputOption::VALUE_OPTIONAL, 'Tables to strip (dump only structure of those tables)')
+            ->addOption('exclude', 'e', InputOption::VALUE_OPTIONAL, 'Tables to exclude from the dump')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not prompt if all options are defined')
             ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml');
 
         $help = <<<HELP
-Dumps configured magento database with `mysqldump`.
-You must have installed the MySQL client tools.
+Dumps configured magento database with `mysqldump`. You must have installed
+the MySQL client tools.
 
 On debian systems run `apt-get install mysql-client` to do that.
 
 The command reads app/etc/local.xml to find the correct settings.
-If you like to skip data of some tables you can use the --strip option.
-The strip option creates only the structure of the defined tables and
-forces `mysqldump` to skip the data.
-
-Dumps your database and excludes some tables. This is useful i.e. for development.
-
-Separate each table to strip by a space.
-You can use wildcards like * and ? in the table names to strip multiple tables.
-In addition you can specify pre-defined table groups, that start with an @
-Example: "dataflow_batch_export unimportant_module_* @log
-
-   $ n98-magerun.phar db:dump --strip="@stripped"
-
-Available Table Groups:
-
-* @log Log tables
-* @dataflowtemp Temporary tables of the dataflow import/export tool
-* @importexporttemp Temporary tables of the Import/Export module
-* @stripped Standard definition for a stripped dump (logs, dataflow and importexport)
-* @sales Sales data (orders, invoices, creditmemos etc)
-* @customers Customer data
-* @trade Current trade data (customers and orders). You usally do not want those in developer systems.
-* @development Removes logs and trade data so developers do not have to work with real customer data
-
-Extended: https://github.com/netz98/n98-magerun/wiki/Stripped-Database-Dumps
 
 See it in action: http://youtu.be/ttjZHY6vThs
 
-- If you like to prepend a timestamp to the dump name the --add-time option can be used.
+- If you like to prepend a timestamp to the dump name the --add-time option
+  can be used.
 
-- The command comes with a compression function. Add i.e. `--compression=gz` to dump directly in
- gzip compressed file.
+- The command comes with a compression function. Add i.e. `--compression=gz`
+  to dump directly in gzip compressed file.
 
 HELP;
         $this->setHelp($help);
@@ -110,10 +87,10 @@ HELP;
                 foreach ($tableGroups as $index=>$definition) {
                     $description = isset($definition['description']) ? $definition['description'] : '';
                     if (!isset($definition['id'])) {
-                        throw new \Exception('Invalid definition of table-groups (id missing) Index: ' . $index);
+                        throw new \RuntimeException('Invalid definition of table-groups (id missing) Index: ' . $index);
                     }
                     if (!isset($definition['id'])) {
-                        throw new \Exception('Invalid definition of table-groups (tables missing) Id: '
+                        throw new \RuntimeException('Invalid definition of table-groups (tables missing) Id: '
                             . $definition['id']
                         );
                     }
@@ -137,28 +114,52 @@ HELP;
      */
     public function getTableDefinitionHelp()
     {
-        $messages = array();
+        $messages = PHP_EOL;;
         $this->commandConfig = $this->getCommandConfig();
-        $messages[] = '';
-        $messages[] = '<comment>Strip option</comment>';
-        $messages[] = ' Separate each table to strip by a space.';
-        $messages[] = ' You can use wildcards like * and ? in the table names to strip multiple tables.';
-        $messages[] = ' In addition you can specify pre-defined table groups, that start with an @';
-        $messages[] = ' Example: "dataflow_batch_export unimportant_module_* @log';
-        $messages[] = '';
-        $messages[] = '<comment>Available Table Groups</comment>';
+        $messages .= <<<HELP
+<comment>Strip option</comment>
+ If you like to skip data of some tables you can use the --strip option.
+ The strip option creates only the structure of the defined tables and
+ forces `mysqldump` to skip the data.
+
+ Separate each table to strip by a space.
+ You can use wildcards like * and ? in the table names to strip multiple
+ tables. In addition you can specify pre-defined table groups, that start
+ with an
+
+ Example: "dataflow_batch_export unimportant_module_* @log
+
+    $ n98-magerun.phar db:dump --strip="@stripped"
+
+<comment>Available Table Groups</comment>
+
+HELP;
 
         $definitions = $this->getTableDefinitions();
+        $list = array();
+        $maxNameLen = 0;
         foreach ($definitions as $id => $definition) {
-            $description = isset($definition['description']) ? $definition['description'] : '';
-            /** @TODO:
-             * Column-Wise formatting of the options, see InputDefinition::asText for code to pad by the max length,
-             * but I do not like to copy and paste ..
-             */
-            $messages[] = ' <info>@' . $id . '</info> ' . $description;
+            $name    = '@' . $id;
+            $description = isset($definition['description']) ? $definition['description'] . '.' : '';
+            $nameLen = strlen($name);
+            if ($nameLen > $maxNameLen) {
+                $maxNameLen = $nameLen;
+            }
+            $list[] = array($name, $description);
         }
 
-        return implode(PHP_EOL, $messages);
+        $decrSize = 78 - $maxNameLen - 3;
+
+        foreach ($list as $entry) {
+            list($name, $description) = $entry;
+            $delta  = max(0, $maxNameLen - strlen($name));
+            $spacer = $delta ? str_repeat(' ', $delta) : '';
+            $buffer = wordwrap($description, $decrSize);
+            $buffer = strtr($buffer, array("\n" => "\n" . str_repeat(' ', 3 +  $maxNameLen)));
+            $messages .= sprintf(" <info>%s</info>%s  %s\n", $name, $spacer, $buffer);
+        }
+
+        return $messages;
     }
 
     public function getHelp()
@@ -186,13 +187,25 @@ HELP;
         $compressor = $this->getCompressor($input->getOption('compression'));
         $fileName   = $this->getFileName($input, $output, $compressor);
 
-        $stripTables = false;
+        $stripTables = array();
         if ($input->getOption('strip')) {
             $stripTables = $this->getHelper('database')->resolveTables(explode(' ', $input->getOption('strip')), $this->getTableDefinitions());
             if (!$input->getOption('stdout') && !$input->getOption('only-command')
                 && !$input->getOption('print-only-filename')
             ) {
                 $output->writeln('<comment>No-data export for: <info>' . implode(' ', $stripTables)
+                    . '</info></comment>'
+                );
+            }
+        }
+
+        $excludeTables = array();
+        if ($input->getOption('exclude')) {
+            $excludeTables = $this->getHelper('database')->resolveTables(explode(' ', $input->getOption('exclude')), $this->getTableDefinitions());
+            if (!$input->getOption('stdout') && !$input->getOption('only-command')
+                && !$input->getOption('print-only-filename')
+            ) {
+                $output->writeln('<comment>Excluded: <info>' . implode(' ', $excludeTables)
                     . '</info></comment>'
                 );
             }
@@ -221,15 +234,12 @@ HELP;
 
         $execs = array();
 
-        if (!$stripTables) {
-            $exec = 'mysqldump ' . $dumpOptions . $this->getHelper('database')->getMysqlClientToolConnectionString();
-            $exec .= $this->postDumpPipeCommands();
-            $exec = $compressor->getCompressingCommand($exec);
-            if (!$input->getOption('stdout')) {
-                $exec .= ' > ' . escapeshellarg($fileName);
-            }
-            $execs[] = $exec;
-        } else {
+        $ignore = '';
+        foreach (array_merge($excludeTables, $stripTables) as $tableName) {
+            $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $tableName . ' ';
+        }
+
+        if (count($stripTables) > 0) {
             // dump structure for strip-tables
             $exec = 'mysqldump ' . $dumpOptions . '--no-data ' . $this->getHelper('database')->getMysqlClientToolConnectionString();
             $exec .= ' ' . implode(' ', $stripTables);
@@ -239,21 +249,16 @@ HELP;
                 $exec .= ' > ' . escapeshellarg($fileName);
             }
             $execs[] = $exec;
-
-            $ignore = '';
-            foreach ($stripTables as $stripTable) {
-                $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $stripTable . ' ';
-            }
-
-            // dump data for all other tables
-            $exec = 'mysqldump ' . $dumpOptions . $ignore . $this->getHelper('database')->getMysqlClientToolConnectionString();
-            $exec .= $this->postDumpPipeCommands();
-            $exec = $compressor->getCompressingCommand($exec);
-            if (!$input->getOption('stdout')) {
-                $exec .= ' >> ' . escapeshellarg($fileName);
-            }
-            $execs[] = $exec;
         }
+
+        // dump data for all other tables
+        $exec = 'mysqldump ' . $dumpOptions . $ignore . $this->getHelper('database')->getMysqlClientToolConnectionString();
+        $exec .= $this->postDumpPipeCommands();
+        $exec = $compressor->getCompressingCommand($exec);
+        if (!$input->getOption('stdout')) {
+            $exec .= (count($stripTables) > 0 ? ' >> ' : ' > ' ). escapeshellarg($fileName);
+        }
+        $execs[] = $exec;
 
         $this->runExecs($execs, $fileName, $input, $output);
     }

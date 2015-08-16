@@ -56,7 +56,7 @@ HELP;
             try {
                 $result = $customer->validate();
                 if (is_array($result)) {
-                    throw new \Exception(implode(PHP_EOL, $result));
+                    throw new \RuntimeException(implode(PHP_EOL, $result));
                 }
                 $customer->setPassword($password);
                 $customer->save();

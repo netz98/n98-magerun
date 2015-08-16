@@ -3,6 +3,8 @@
 namespace N98\Magento\Command\Cache;
 
 use InvalidArgumentException;
+use RuntimeException;
+use Mage_Core_Model_Cache;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Application;
 
@@ -10,13 +12,13 @@ class AbstractCacheCommand extends AbstractMagentoCommand
 {
     /**
      * @return Mage_Core_Model_Cache
-     * @throws \Exception
+     *
+     * @throws RuntimeException
      */
     protected function _getCacheModel()
     {
         if ($this->_magentoMajorVersion == AbstractMagentoCommand::MAGENTO_MAJOR_VERSION_2) {
-            throw new \Exception('There global Mage class was removed from Magento 2. What should we do here?');
-            return \Mage::getModel('Mage_Core_Model_Cache');
+            throw new RuntimeException('There global Mage class was removed from Magento 2. What should we do here?');
         } else {
             return \Mage::app()->getCacheInstance();
         }
