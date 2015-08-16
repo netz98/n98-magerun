@@ -1,4 +1,5 @@
 #!/bin/bash
+{
 # build version tasks in magerung project
 #
 # Copyright (C) 2015 Tom Klingenberg <mot@fsfe.org>
@@ -116,6 +117,7 @@ tag_release()
     echo "tag a release"
 
     # checkout develop
+    # update to latest (fetch && merge --ff-only)
     # obtain version
     # check if a tag with the version already exists
     # create release branch if not yet exists
@@ -128,6 +130,27 @@ tag_release()
         >&2 echo "failed to checkout develop branch"
         exit 2
     fi
+
+    echo "checked out develop."
+
+    if ! git fetch; then
+        >&2 echo "failed to fetch (from within develop branch)"
+        exit 2
+    fi
+
+    local tracking=$(git for-each-ref --format='%(upstream:short)' $(git symbolic-ref -q HEAD))
+    if [ $? -ne 0 ]; then
+        >&2 echo "failed to obtain tracking branch (of develop branch)"
+        exit 2
+    fi
+
+    if ! git merge --ff-only "${tracking}"; then
+        >&2 echo "failed to merge tracking branch '${tracking}' (from within develop branch)"
+        exit 2
+    fi
+
+    echo "up-to-date with tracking branch ${tracking}."
+
     current_version
     VERSION_RELEASE="${VERSION_CURRENT}"
     echo "release version: ${VERSION_RELEASE}"
@@ -407,3 +430,6 @@ if [ ${FLAG_GITGUI} -eq 1 ]; then
     echo "[TASK] Updated version of development branch." > .git/GITGUI_MSG
     git gui
 fi
+
+exit
+}
