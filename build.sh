@@ -16,13 +16,10 @@ if [ ! -d "build/vendor" ]; then
     ./composer.phar -d=build install
 fi
 
-php -f build/vendor/bin/phing -dphar.readonly=0 -- -verbose dist
+php -f build/vendor/phing/phing/bin/phing -dphar.readonly=0 -- -verbose dist
 
 php -f "n98-magerun.phar" -- --version
 
 ls -go --full-time n98-magerun.phar
 
-echo -n "SHA1: "
-shasum n98-magerun.phar
-echo -n "MD5: "
-md5sum n98-magerun.phar
+php -r 'echo "SHA1: ", sha1_file("n98-magerun.phar"), "\nMD5.: ", md5_file("n98-magerun.phar"), "\n";'
