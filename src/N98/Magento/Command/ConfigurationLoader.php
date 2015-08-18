@@ -119,7 +119,7 @@ class ConfigurationLoader
 
     /**
      * @param string $magentoRootFolder
-     * @param bool   $loadExternalConfig
+     * @param bool $loadExternalConfig
      * @param string $magerunStopFileFolder
      */
     public function loadStageTwo($magentoRootFolder, $loadExternalConfig = true, $magerunStopFileFolder = '')
@@ -202,7 +202,7 @@ class ConfigurationLoader
     /**
      * Load config from all installed bundles
      *
-     * @param array  $config
+     * @param array $config
      * @param string $magentoRootFolder
      *
      * @return array
@@ -213,11 +213,9 @@ class ConfigurationLoader
             $this->_pluginConfig = array();
             $moduleBaseFolders = array();
             if (OperatingSystem::isWindows()) {
-                $config['plugin']['folders'][] = getenv('WINDIR') . '/n98-magerun/modules';
-                $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/n98-magerun/modules';
-            } else {
-                $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/.n98-magerun/modules';
+                $config['plugin']['folders'][] = getenv('WINDIR') . OperatingSystem::$magerunFolder . 'modules';
             }
+            $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . OperatingSystem::$magerunFolder . 'modules';
             $config['plugin']['folders'][] = $magentoRootFolder . '/lib/n98-magerun/modules';
             foreach ($config['plugin']['folders'] as $folder) {
                 if (is_dir($folder)) {
@@ -256,7 +254,8 @@ class ConfigurationLoader
                     ->name($this->_customConfigFilename)
                     ->in($moduleBaseFolders);
 
-                foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                foreach ($finder as $file) {
+                    /* @var $file \Symfony\Component\Finder\SplFileInfo */
                     $this->registerPluginConfigFile($magentoRootFolder, $file);
                 }
             }
@@ -268,8 +267,8 @@ class ConfigurationLoader
     }
 
     /**
-     * @param string                                $rawConfig
-     * @param string                                $magentoRootFolder
+     * @param string $rawConfig
+     * @param string $magentoRootFolder
      * @param \Symfony\Component\Finder\SplFileInfo $file
      *
      * @return string
@@ -278,7 +277,7 @@ class ConfigurationLoader
     {
         $replace = array(
             '%module%' => $file ? $file->getPath() : '',
-            '%root%'   => $magentoRootFolder,
+            '%root%' => $magentoRootFolder,
         );
 
         return str_replace(array_keys($replace), $replace, $rawConfig);
@@ -288,7 +287,7 @@ class ConfigurationLoader
     /**
      * Check if there is a user config file. ~/.n98-magerun.yaml
      *
-     * @param array  $config
+     * @param array $config
      * @param string $magentoRootFolder
      *
      * @return array
@@ -297,12 +296,9 @@ class ConfigurationLoader
     {
         if ($this->_userConfig == null) {
             $this->_userConfig = array();
-            $homeDirectory =  OperatingSystem::getHomeDir();
-            if (OperatingSystem::isWindows()) {
-                $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . $this->_customConfigFilename;
-            } else {
-                $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
-            }
+            $homeDirectory = OperatingSystem::getHomeDir();
+
+            $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
 
             if ($homeDirectory && file_exists($personalConfigFile)) {
                 $userConfig = $this->applyVariables(\file_get_contents($personalConfigFile), $magentoRootFolder, null);
@@ -365,7 +361,7 @@ class ConfigurationLoader
     /**
      * Loads a plugin config file and merges it to plugin config
      *
-     * @param string       $magentoRootFolder
+     * @param string $magentoRootFolder
      * @param SplFileInfo $file
      */
     protected function registerPluginConfigFile($magentoRootFolder, $file)

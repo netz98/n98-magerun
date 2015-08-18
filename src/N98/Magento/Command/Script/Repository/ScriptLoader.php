@@ -29,17 +29,14 @@ class ScriptLoader
     protected $_scriptFolders = array();
 
     /**
-     * @param array  $scriptFolders
+     * @param array $scriptFolders
      * @param string $magentoRootFolder
      */
     public function __construct(array $scriptFolders, $magentoRootFolder = null)
     {
         $this->_magentoRootFolder = $magentoRootFolder;
-        if (OperatingSystem::isWindows()) {
-            $this->_homeScriptFolder = OperatingSystem::getHomeDir() . '/n98-magerun/scripts';
-        } else {
-            $this->_homeScriptFolder = OperatingSystem::getHomeDir() . '/.n98-magerun/scripts';
-        }
+
+        $this->_homeScriptFolder = OperatingSystem::getHomeDir() . OperatingSystem::$magerunFolder . 'scripts';
 
         $this->_scriptFolders = $scriptFolders;
         $this->_scriptFolders[] = $this->_homeScriptFolder;
@@ -48,7 +45,7 @@ class ScriptLoader
                 unset($this->_scriptFolders[$key]);
             }
         }
-        
+
         if (count($this->_scriptFolders)) {
             $this->findScripts();
         }
@@ -64,11 +61,12 @@ class ScriptLoader
             ->in($this->_scriptFolders);
 
         $this->_scriptFiles = array();
-        foreach ($finder as $file) { /* @var $file SplFileInfo */
+        foreach ($finder as $file) {
+            /* @var $file SplFileInfo */
             $this->_scriptFiles[$file->getFilename()] = array(
-                'fileinfo'    => $file,
+                'fileinfo' => $file,
                 'description' => $this->_readFirstLineOfFile($file->getPathname()),
-                'location'    => $this->_getLocation($file->getPathname()),
+                'location' => $this->_getLocation($file->getPathname()),
             );
         }
 
