@@ -50,7 +50,7 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
             try {
                 $result = $user->validate();
                 if (is_array($result)) {
-                    throw new \Exception(implode(PHP_EOL, $result));
+                    throw new \RuntimeException(implode(PHP_EOL, $result));
                 }
                 $user->setPassword($password);
                 $user->save();

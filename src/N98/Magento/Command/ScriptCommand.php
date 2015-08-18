@@ -103,14 +103,6 @@ HELP;
         $this->setHelp($help);
     }
 
-    /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return function_exists('exec');
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->_scriptFilename = $input->getArgument('filename');
@@ -238,7 +230,7 @@ HELP;
                         '<info>Please enter a value for <comment>' . $matches[1] . '</comment>:</info> ',
                         function($value) {
                             if ($value == '') {
-                                throw new \Exception('Please enter a value');
+                                throw new \RuntimeException('Please enter a value');
                             }
 
                             return $value;

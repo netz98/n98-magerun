@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Customer;
 
+use N98\Util\Console\Helper\ParameterHelper;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -25,7 +27,7 @@ class DeleteCommand extends AbstractCustomerCommand
     protected $output;
 
     /**
-     * @var  \Composer\Command\Helper\DialogHelper
+     * @var DialogHelper
      */
     protected $dialog;
 
@@ -67,9 +69,10 @@ HELP;
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
 
-            $this->input    = $input;
-            $this->output   = $output;
-            $this->dialog   = $this->getHelperSet()->get('dialog');
+            $this->input  = $input;
+            $this->output = $output;
+            /** @var DialogHelper dialog */
+            $this->dialog = $this->getHelperSet()->get('dialog');
 
             // Defaults
             $range = $all = false;
@@ -83,7 +86,7 @@ HELP;
                 // Delete more than one customer ?
                 $batchDelete = $this->dialog->askConfirmation(
                     $this->output,
-                    $this->dialog->getQuestion('Delete more than 1 customer?', 'n'),
+                    $this->getQuestion('Delete more than 1 customer?', 'n'),
                     false
                 );
 
@@ -91,14 +94,14 @@ HELP;
                     // Batch deletion
                     $all = $this->dialog->askConfirmation(
                         $this->output,
-                        $this->dialog->getQuestion('Delete all customers?', 'n'),
+                        $this->getQuestion('Delete all customers?', 'n'),
                         false
                     );
 
                     if (!$all) {
                         $range = $this->dialog->askConfirmation(
                             $this->output,
-                            $this->dialog->getQuestion('Delete a range of customers?', 'n'),
+                            $this->getQuestion('Delete a range of customers?', 'n'),
                             false
                         );
 
@@ -114,7 +117,7 @@ HELP;
             if (!$range && !$all) {
                 // Single customer deletion
                 if (!$id) {
-                    $id = $this->dialog->ask($this->output, $this->dialog->getQuestion('Customer Id'), null);
+                    $id = $this->dialog->ask($this->output, $this->getQuestion('Customer Id'), null);
                 }
 
                 try {
@@ -132,7 +135,8 @@ HELP;
                 }
             } else {
 
-                $customers = $this->getCustomerCollection()
+                $customers = $this->getCustomerCollection();
+                $customers
                     ->addAttributeToSelect('firstname')
                     ->addAttributeToSelect('lastname')
                     ->addAttributeToSelect('email');
@@ -142,14 +146,14 @@ HELP;
                     $ranges = array();
                     $ranges[0] = $this->dialog->askAndValidate(
                         $this->output,
-                        $this->dialog->getQuestion('Range start Id', '1'),
+                        $this->getQuestion('Range start Id', '1'),
                         array($this, 'validateInt'),
                         false,
                         '1'
                     );
                     $ranges[1] = $this->dialog->askAndValidate(
                         $this->output,
-                        $this->dialog->getQuestion('Range end Id', '1'),
+                        $this->getQuestion('Range end Id', '1'),
                         array($this, 'validateInt'),
                         false,
                         '1'
@@ -184,7 +188,7 @@ HELP;
         if (!$shouldRemove) {
             $shouldRemove = $this->dialog->askConfirmation(
                 $this->output,
-                $this->dialog->getQuestion('Are you sure?', 'n'),
+                $this->getQuestion('Are you sure?', 'n'),
                 false
             );
         }
@@ -199,17 +203,19 @@ HELP;
      */
     protected function getCustomer($id)
     {
-        // Get customer
+        /** @var \Mage_Customer_Model_Customer $customer */
         $customer = $this->getCustomerModel()->load($id);
         if (!$customer->getId()) {
-            $website = $this->getHelperSet()->get('parameter')->askWebsite($this->input, $this->output);
+            /** @var $parameterHelper ParameterHelper */
+            $parameterHelper = $this->getHelperSet()->get('parameter');
+            $website = $parameterHelper->askWebsite($this->input, $this->output);
             $customer = $this->getCustomerModel()
                 ->setWebsiteId($website->getId())
                 ->loadByEmail($id);
         }
 
         if (!$customer->getId()) {
-            throw new \Exception('No customer found!');
+            throw new \RuntimeException('No customer found!');
         }
 
         return $customer;
@@ -262,5 +268,25 @@ HELP;
         }
 
         return $answer;
+    }
+
+    /**
+     * @param string $message
+     * @param string $default [optional]
+     *
+     * @return string
+     */
+    private function getQuestion($message, $default = null)
+    {
+        $params  = array($message);
+        $pattern = '%s: ';
+
+        if (null !== $default) {
+            $params[] = $default;
+            $pattern .= '[%s] ';
+
+        }
+
+        return vsprintf($pattern, $params);
     }
 }

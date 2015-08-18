@@ -2,8 +2,19 @@
 
 namespace N98\Magento\Command\Customer;
 
+use Mage_Customer_Model_Address;
+use Mage_Customer_Model_Customer;
+use Mage_Customer_Model_Resource_Customer_Collection;
+use Mage_Directory_Model_Resource_Country_Collection;
+use Mage_Directory_Model_Resource_Region_Collection;
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\Exec;
 
+/**
+ * Class AbstractCustomerCommand
+ *
+ * @package N98\Magento\Command\Customer
+ */
 abstract class AbstractCustomerCommand extends AbstractMagentoCommand
 {
     /**
@@ -15,7 +26,7 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return \Mage_Customer_Model_Resource_Customer_Collection
+     * @return Mage_Customer_Model_Resource_Customer_Collection
      */
     protected function getCustomerCollection()
     {
@@ -23,7 +34,7 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return \Mage_Customer_Model_Address
+     * @return Mage_Customer_Model_Address
      */
     protected function getAddressModel()
     {
@@ -31,7 +42,7 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return \Mage_Directory_Model_Resource_Region_Collection
+     * @return Mage_Directory_Model_Resource_Region_Collection
      */
     protected function getRegionCollection()
     {
@@ -39,10 +50,19 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return \Mage_Directory_Model_Resource_Country_Collection
+     * @return Mage_Directory_Model_Resource_Country_Collection
      */
     protected function getCountryCollection()
     {
         return $this->_getResourceModel('directory/country_collection', 'Mage_Directory_Model_Resource_Country_Collection');
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return Exec::allowed();
     }
 }

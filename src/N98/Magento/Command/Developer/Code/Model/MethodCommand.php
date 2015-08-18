@@ -82,7 +82,7 @@ class MethodCommand extends AbstractMagentoCommand
         }
         $written = file_put_contents($this->_fileName, implode('', $fileParts));
         if (false === $written) {
-            throw new \Exception("Cannot write to file: " . $this->_fileName);
+            throw new \RuntimeException("Cannot write to file: " . $this->_fileName);
         }
     }
 

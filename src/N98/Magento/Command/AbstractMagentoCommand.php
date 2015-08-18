@@ -5,6 +5,7 @@ namespace N98\Magento\Command;
 use Composer\Package\PackageInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Factory as ComposerFactory;
@@ -69,24 +70,6 @@ abstract class AbstractMagentoCommand extends Command
         $this->checkDeprecatedAliases($input, $output);
     }
 
-    /**
-     * @param array $codeArgument
-     * @param bool  $status
-     * @return bool
-     */
-    protected function saveCacheStatus($codeArgument, $status)
-    {
-        $cacheTypes = $this->_getCacheModel()->getTypes();
-        $enable = \Mage::app()->useCache();
-        foreach ($cacheTypes as $cacheCode => $cacheModel) {
-            if (empty($codeArgument) || in_array($cacheCode, $codeArgument)) {
-                $enable[$cacheCode] = $status ? 1 : 0;
-            }
-        }
-
-        \Mage::app()->saveUseCache($enable);
-    }
-
     private function _initWebsites()
     {
         $this->_websiteCodeMap = array();
@@ -134,9 +117,10 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function getCommandConfig($commandClass = null)
     {
-        if ($commandClass == null) {
+        if (null === $commandClass) {
             $commandClass = get_class($this);
         }
+
         $configArray = $this->getApplication()->getConfig();
         if (isset($configArray['commands'][$commandClass])) {
             return $configArray['commands'][$commandClass];
@@ -162,11 +146,12 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * Bootstrap magento shop
      *
+     * @param bool $soft
      * @return bool
      */
-    protected function initMagento()
+    protected function initMagento($soft = false)
     {
-        $init = $this->getApplication()->initMagento();
+        $init = $this->getApplication()->initMagento($soft);
         if ($init) {
             $this->_magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
         }
@@ -278,8 +263,8 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * brings locally cached repository up to date if it is missing the requested tag
      *
-     * @param $package
-     * @param $targetFolder
+     * @param PackageInterface $package
+     * @param string $targetFolder
      */
     protected function checkRepository($package, $targetFolder)
     {
@@ -521,5 +506,65 @@ abstract class AbstractMagentoCommand extends Command
     protected function isSourceTypeRepository($type)
     {
         return in_array($type, array('git', 'hg'));
+    }
+
+    /**
+     * @param string $argument
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @param string $message
+     * @return string
+     */
+    protected function getOrAskForArgument($argument, InputInterface $input, OutputInterface $output, $message = null)
+    {
+        $inputArgument = $input->getArgument($argument);
+        if ($inputArgument === null) {
+
+            $message = $this->getArgumentMessage($argument, $message);
+
+            /** @var  $dialog  \Symfony\Component\Console\Helper\DialogHelper */
+            $dialog = $this->getHelperSet()->get('dialog');
+            return $dialog->ask($output, $message);
+        }
+
+        return $inputArgument;
+    }
+
+    /**
+     * @param array           $entries zero-indexed array of entries (represented by strings) to select from
+     * @param OutputInterface $output
+     * @param string          $question
+     */
+    protected function askForArrayEntry(array $entries, OutputInterface $output, $question)
+    {
+        $dialog = '';
+        foreach ($entries as $key => $entry) {
+            $dialog .= '<comment>[' . ($key + 1) . ']</comment> ' . $entry . "\n";
+        }
+        $dialog .= "<question>{$question}</question> ";
+
+        $selected = $this->getHelper('dialog')->askAndValidate($output, $dialog, function($typeInput) use ($entries) {
+            if (!in_array($typeInput, range(1, count($entries)))) {
+                throw new \InvalidArgumentException('Invalid type');
+            }
+
+            return $typeInput;
+        });
+
+        return $entries[$selected - 1];
+    }
+
+    /**
+     * @param $argument
+     * @param null $message
+     * @return string
+     */
+    protected function getArgumentMessage($argument, $message = null)
+    {
+        if (null === $message) {
+            $message = ucfirst($argument);
+        }
+
+        return sprintf('<question>%s:</question>', $message);
     }
 }

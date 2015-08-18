@@ -66,7 +66,7 @@ class DbCommand extends AbstractLogCommand
         $debugLinePattern = "/protected\s" . '\\' . $variable . "\s*?=\s(false|true)/m";
         preg_match($debugLinePattern, $contents, $matches);
         if (!isset($matches[1])) {
-            throw new \Exception("Problem finding the \$_debug parameter");
+            throw new \RuntimeException("Problem finding the \$_debug parameter");
         }
 
         $currentValue = $matches[1];

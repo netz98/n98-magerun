@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\System;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,6 +21,7 @@ class InfoCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:info')
+            ->addArgument('key', InputArgument::OPTIONAL, 'Only output value of named param like "version". Key is case insensitive.')
             ->setDescription('Prints infos about the current magento system.')
             ->addOption(
                 'format',
@@ -37,33 +39,40 @@ class InfoCommand extends AbstractMagentoCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->detectMagento($output, true);
+        $this->detectMagento($output);
 
-        if ($input->getOption('format') == null) {
+        $softInitMode = in_array($input->getArgument('key'), array(
+            'version',
+            'edition',
+        ));
+
+        if ($input->getOption('format') == null && $input->getArgument('key') == null) {
             $this->writeSection($output, 'Magento System Information');
         }
 
-        $this->initMagento();
+        $this->initMagento($softInitMode);
 
         $this->infos['Version'] = \Mage::getVersion();
         $this->infos['Edition'] = ($this->_magentoEnterprise ? 'Enterprise' : 'Community');
 
-        $config = \Mage::app()->getConfig();
-        $this->_addCacheInfos();
+        if ($softInitMode === false) {
+            $config = \Mage::app()->getConfig();
+            $this->addCacheInfos();
 
-        $this->infos['Session'] = $config->getNode('global/session_save');
+            $this->infos['Session'] = $config->getNode('global/session_save');
 
-        $this->infos['Crypt Key'] = $config->getNode('global/crypt/key');
-        $this->infos['Install Date'] = $config->getNode('global/install/date');
-        try {
-            $this->findCoreOverwrites();
-            $this->findVendors();
-            $this->attributeCount();
-            $this->customerCount();
-            $this->categoryCount();
-            $this->productCount();
-        } catch (\Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            $this->infos['Crypt Key'] = $config->getNode('global/crypt/key');
+            $this->infos['Install Date'] = $config->getNode('global/install/date');
+            try {
+                $this->findCoreOverwrites();
+                $this->findVendors();
+                $this->attributeCount();
+                $this->customerCount();
+                $this->categoryCount();
+                $this->productCount();
+            } catch (\Exception $e) {
+                $output->writeln('<error>' . $e->getMessage() . '</error>');
+            }
         }
 
         $table = array();
@@ -71,12 +80,21 @@ class InfoCommand extends AbstractMagentoCommand
             $table[] = array($key, $value);
         }
 
-        $this->getHelper('table')
-            ->setHeaders(array('name', 'value'))
-            ->renderByFormat($output, $table, $input->getOption('format'));
+        if (($settingArgument = $input->getArgument('key')) !== null) {
+            $settingArgument = strtolower($settingArgument);
+            $this->infos = array_change_key_case($this->infos, CASE_LOWER);
+            if (!isset($this->infos[$settingArgument])) {
+                throw new \InvalidArgumentException('Unknown key: ' . $settingArgument);
+            }
+            $output->writeln((string) $this->infos[$settingArgument]);
+        } else {
+            $this->getHelper('table')
+                ->setHeaders(array('name', 'value'))
+                ->renderByFormat($output, $table, $input->getOption('format'));
+        }
     }
 
-    protected function _addCacheInfos()
+    protected function addCacheInfos()
     {
         $this->infos['Cache Backend'] = get_class(\Mage::app()->getCache()->getBackend());
 

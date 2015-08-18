@@ -49,7 +49,7 @@ class ParameterHelper extends AbstractHelper
     {
         try {
             if ($input->getArgument($argumentName) === null) {
-                throw new \Exception('No store given');
+                throw new \RuntimeException('No store given');
             }
             $store = \Mage::app()->getStore($input->getArgument($argumentName));
         } catch (\Exception $e) {
@@ -93,7 +93,7 @@ class ParameterHelper extends AbstractHelper
     {
         try {
             if ($input->getArgument($argumentName) === null) {
-                throw new \Exception('No website given');
+                throw new \RuntimeException('No website given');
             }
             $website = \Mage::app()->getWebsite($input->getArgument($argumentName));
         } catch (\Exception $e) {

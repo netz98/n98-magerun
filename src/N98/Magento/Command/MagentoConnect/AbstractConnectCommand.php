@@ -26,11 +26,11 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
             @chdir($this->_magentoRootFolder);
             $this->mageScript = './mage';
             if (!is_file($this->mageScript)) {
-                throw new \Exception('Could not find "mage" shell script in current installation');
+                throw new \RuntimeException('Could not find "mage" shell script in current installation');
             }
             if (!is_executable($this->mageScript)) {
                 if (!@chmod($this->mageScript, 0755)) {
-                    throw new \Exception('Cannot make "mage" shell script executable. Please chmod the file manually.');
+                    throw new \RuntimeException('Cannot make "mage" shell script executable. Please chmod the file manually.');
                 }
             }
             if (!strstr(shell_exec($this->mageScript . ' list-channels'), 'community')) {
@@ -85,26 +85,12 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
 
     /**
      * @param array $alternatives
-     * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return string
      */
-    protected function askForAlternativePackage($alternatives, InputInterface $input, OutputInterface $output)
+    protected function askForAlternativePackage($alternatives, OutputInterface $output)
     {
-        foreach ($alternatives as $key => $package) {
-            $question[] = '<comment>[' . ($key+1) . ']</comment> ' . $package . "\n";
-        }
-        $question[] = "<question>Use alternative package? :</question> ";
-
-        $packageNumber = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($alternatives) {
-            if (!in_array($typeInput, range(1, count($alternatives)))) {
-                throw new \InvalidArgumentException('Invalid type');
-            }
-
-            return $typeInput;
-        });
-
-        return $alternatives[$packageNumber - 1];
+        return $this->askForArrayEntry($alternatives, $output, 'Use alternative package? :');
     }
 
     /**
@@ -140,7 +126,7 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
                 $this->doAction(
                     $input,
                     $output,
-                    $this->askForAlternativePackage($alternatives, $input, $output)
+                    $this->askForAlternativePackage($alternatives, $output)
                 );
             }
         }
