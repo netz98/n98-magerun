@@ -21,7 +21,7 @@ If <info>path</info> is not set, all available config items will be listed.
 The <info>path</info> may contain wildcards (*).
 If <info>path</info> ends with a trailing slash, all child items will be listed. E.g.
 
-    config:get web/ 
+    config:get web/
 is the same as
     config:get web/*
 EOT

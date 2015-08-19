@@ -296,7 +296,7 @@ class MagentoHelper extends AbstractHelper
         if ($finder->count() > 0) {
             $files = iterator_to_array($finder, false);
             /* @var $file \SplFileInfo */
-            
+
             $hasMageFile = false;
             foreach ($files as $file) {
                 if ($file->getFilename() == 'Mage.php') {

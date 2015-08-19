@@ -15,7 +15,7 @@ class CountCommand extends AbstractMagentoCommand
             ->setName('dev:report:count')
             ->setDescription('Get count of report files');
     }
-    
+
     /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
@@ -25,16 +25,16 @@ class CountCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output);
         $this->initMagento();
-        
+
         $dir = \Mage::getBaseDir('var') . DIRECTORY_SEPARATOR . 'report' . DIRECTORY_SEPARATOR;
         $count = $this->getFileCount($dir);
-        
+
         $output->writeln($count);
     }
-    
+
     /**
      * Returns the number of files in the directory.
-     * 
+     *
      * @param string $path Path to the directory
      * @return int
      */

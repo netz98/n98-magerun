@@ -58,9 +58,9 @@ HELP;
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            
+
             $res = $this->getCustomerModel()->getResource();
-            
+
             $faker = \Faker\Factory::create($input->getArgument('locale'));
             $faker->addProvider(new \N98\Util\Faker\Provider\Internet($faker));
 
