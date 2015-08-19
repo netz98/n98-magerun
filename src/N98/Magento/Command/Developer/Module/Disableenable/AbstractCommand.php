@@ -107,7 +107,7 @@ class AbstractCommand extends AbstractMagentoCommand
         } else {
             $xml = new \Varien_Simplexml_Element(file_get_contents($decFile));
             $setTo = $this->commandName == 'enable' ? 'true' : 'false';
-            if ((string)$xml->modules->{$module}->active != $setTo) {
+            if ((string) $xml->modules->{$module}->active != $setTo) {
                 $xml->modules->{$module}->active = $setTo;
                 if (file_put_contents($decFile, $xml->asXML()) !== false) {
                     $output->writeln('<info><comment>' . $module . ': </comment>' . $this->commandName . 'd</info>');

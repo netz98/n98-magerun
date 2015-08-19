@@ -177,7 +177,7 @@ abstract class AbstractMagentoCommand extends Command
 
         if (!$silent) {
             $editionString = ($this->_magentoEnterprise ? ' (Enterprise Edition) ' : '');
-            $output->writeln('<info>Found Magento '. $editionString . 'in folder "' . $this->_magentoRootFolder . '"</info>');
+            $output->writeln('<info>Found Magento ' . $editionString . 'in folder "' . $this->_magentoRootFolder . '"</info>');
         }
 
         if (!empty($this->_magentoRootFolder)) {
@@ -241,7 +241,7 @@ abstract class AbstractMagentoCommand extends Command
         $preferSource = true
     ) {
         $dm = $this->getComposerDownloadManager($input, $output);
-        if (! $config instanceof PackageInterface) {
+        if (!$config instanceof PackageInterface) {
             $package = $this->createComposerPackageByConfig($config);
         } else {
             $package = $config;
@@ -285,7 +285,7 @@ abstract class AbstractMagentoCommand extends Command
                 escapeshellarg($targetFolder),
                 escapeshellarg($package->getSourceReference())
             );
-            $existingTag =  shell_exec($command);
+            $existingTag = shell_exec($command);
             if ($existingTag === $package->getSourceReference()) {
                 $command = sprintf('cd %s && hg pull', escapeshellarg($targetFolder));
                 shell_exec($command);
@@ -298,8 +298,8 @@ abstract class AbstractMagentoCommand extends Command
      *
      * when using a path value that has been created in a cygwin shell but then PHP uses it inside a cmd shell it needs
      * to be filtered.
-
-     * @param $path
+     *
+     * @param  string $path
      * @return string
      */
     protected function normalizePath($path)
@@ -440,7 +440,7 @@ abstract class AbstractMagentoCommand extends Command
 
             $folderName = rtrim(trim($folderName, ' '), '/');
             if (substr($folderName, 0, 1) == '.') {
-                $cwd = \getcwd() ;
+                $cwd = \getcwd();
                 if (empty($cwd) && isset($_SERVER['PWD'])) {
                     $cwd = $_SERVER['PWD'];
                 }
@@ -452,7 +452,7 @@ abstract class AbstractMagentoCommand extends Command
             }
 
             if (!is_dir($folderName)) {
-                if (!@mkdir($folderName,0777, true)) {
+                if (!@mkdir($folderName, 0777, true)) {
                     throw new \InvalidArgumentException('Cannot create folder.');
                 }
 
@@ -503,6 +503,11 @@ abstract class AbstractMagentoCommand extends Command
         \chdir($this->config['installationFolder']);
     }
 
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
     protected function isSourceTypeRepository($type)
     {
         return in_array($type, array('git', 'hg'));
@@ -555,8 +560,8 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @param $argument
-     * @param null $message
+     * @param string $argument
+     * @param string $message [optional]
      * @return string
      */
     protected function getArgumentMessage($argument, $message = null)

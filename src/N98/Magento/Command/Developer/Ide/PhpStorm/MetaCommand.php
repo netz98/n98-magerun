@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Varien_Simplexml_Element;
 
 class MetaCommand extends AbstractMagentoCommand
 {
@@ -352,7 +353,7 @@ PHP;
     }
 
     /**
-     * @param $group
+     * @param string $group
      * @return \Mage_Core_Model_Config_Element
      */
     protected function getGroupXmlDefinition($group)
@@ -363,28 +364,27 @@ PHP;
 
         $definitions = \Mage::getConfig()->getNode('global/' . $group);
 
-        if (in_array($group, array('blocks', 'helpers', 'models'))) {
-            foreach ($this->missingHelperDefinitionModules as $moduleName) {
-                switch ($group) {
-                    case 'blocks':
-                        $groupClassType = 'Block';
-                        break;
+        switch ($group) {
+            case 'blocks':
+                $groupClassType = 'Block';
+                break;
 
-                    case 'helpers':
-                        $groupClassType = 'Helper';
-                        break;
+            case 'helpers':
+                $groupClassType = 'Helper';
+                break;
 
-                    case 'models':
-                        $groupClassType = 'Model';
-                        break;
-                }
+            case 'models':
+                $groupClassType = 'Model';
+                break;
 
-                $moduleXmlDefinition = '<'. strtolower($moduleName) .'>'
-                    . '   <class>Mage_' . $moduleName . '_' . $groupClassType .'</class>'
-                    . '</' . strtolower($moduleName). '>';
-                $children = new \Varien_Simplexml_Element($moduleXmlDefinition);
-                $definitions->appendChild($children);
-            }
+            default:
+                return $definitions->children();
+        }
+
+        foreach ($this->missingHelperDefinitionModules as $moduleName) {
+            $children = new Varien_Simplexml_Element(sprintf("<%s/>", strtolower($moduleName)));
+            $children->class = sprintf('Mage_%s_%s', $moduleName, $groupClassType);
+            $definitions->appendChild($children);
         }
 
         return $definitions->children();

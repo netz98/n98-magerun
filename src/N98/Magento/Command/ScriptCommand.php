@@ -163,7 +163,7 @@ HELP;
                 if (isset($parts[1])) {
                     $value = $parts[1];
                 }
-                $this->scriptVars['${' . $variable. '}'] = $value;
+                $this->scriptVars['${' . $variable . '}'] = $value;
             }
         }
     }
@@ -205,7 +205,8 @@ HELP;
                     return $this->scriptVars[$matches[1]];
                 }
 
-                $dialog = $this->getHelperSet()->get('dialog'); /* @var $dialog DialogHelper */
+                /* @var $dialog DialogHelper */
+                $dialog = $this->getHelperSet()->get('dialog');
 
                 /**
                  * Check for select "?["
@@ -246,7 +247,7 @@ HELP;
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @param $commandString
+     * @param string $commandString
      * @throws \RuntimeException
      */
     protected function runMagerunCommand(InputInterface $input, OutputInterface $output, $commandString)
@@ -262,7 +263,7 @@ HELP;
 
     /**
      * @param string $commandString
-     * @return mixed|string
+     * @return string
      */
     protected function _prepareShellCommand($commandString)
     {
@@ -310,8 +311,9 @@ HELP;
     }
 
     /**
-     * @param $commandString
-     * @return mixed
+     * @param string $commandString
+     *
+     * @return string
      */
     protected function _replaceScriptVars($commandString)
     {

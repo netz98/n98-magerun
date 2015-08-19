@@ -78,7 +78,7 @@ class ScriptLoader
     /**
      * Reads the first line. If it's a comment return it.
      *
-     * @param $file
+     * @param string $file
      *
      * @return string
      */

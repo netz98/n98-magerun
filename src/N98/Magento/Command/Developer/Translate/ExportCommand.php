@@ -34,7 +34,7 @@ class ExportCommand extends AbstractMagentoCommand
 
             $filename = $input->getArgument('filename');
 
-            if(!$filename) {
+            if (!$filename) {
                 $filename = 'translate.csv';
             }
 
@@ -52,8 +52,8 @@ class ExportCommand extends AbstractMagentoCommand
             $result = $statement->fetchAll();
             $f = fopen($filename, 'w');
 
-            foreach($result as $row) {
-                fputcsv($f,array($row['string'],$row['translate']));
+            foreach ($result as $row) {
+                fputcsv($f, array($row['string'], $row['translate']));
             }
 
             fclose($f);

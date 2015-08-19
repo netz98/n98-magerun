@@ -123,13 +123,14 @@ HELP;
     }
 
     /**
-     * @param $resourceModel
-     * @param $linkBaseUrl
-     * @param $storeId
-     * @param $urls
+     * @param string $resourceModel
+     * @param string $linkBaseUrl
+     * @param string $storeId
+     * @param array  $urls
+     *
      * @return array
      */
-    protected function getUrls($resourceModel, $linkBaseUrl, $storeId, $urls) {
+    protected function getUrls($resourceModel, $linkBaseUrl, $storeId, array $urls) {
         $collection = \Mage::getResourceModel($resourceModel)->getCollection($storeId);
         if (!$collection) {
             return $urls;

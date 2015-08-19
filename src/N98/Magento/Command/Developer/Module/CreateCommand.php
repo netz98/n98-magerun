@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Developer\Module;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\Console\Helper\TwigHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -128,7 +129,7 @@ class CreateCommand extends AbstractMagentoCommand
     protected function createModuleDirectories(InputInterface $input, OutputInterface $output)
     {
         if ($this->modmanMode) {
-            $modManDir = $this->vendorNamespace . '_' . $this->moduleName. '/src';
+            $modManDir = $this->vendorNamespace . '_' . $this->moduleName . '/src';
             if (file_exists($modManDir)) {
                 throw new \RuntimeException('Module already exists. Stop.');
             }
@@ -136,38 +137,38 @@ class CreateCommand extends AbstractMagentoCommand
             $this->_magentoRootFolder = './' . $modManDir;
             mkdir($this->_magentoRootFolder . '/app/etc/modules', 0777, true);
         }
-        $moduleDir = $this->_magentoRootFolder
-                   . '/app/code/'
-                   . $this->codePool
-                   . '/' . $this->vendorNamespace
-                   . '/' . $this->moduleName;
+        $moduleDir = sprintf(
+            '%s/app/code/%s/%s/%s', $this->_magentoRootFolder, $this->codePool, $this->vendorNamespace,
+            $this->moduleName
+        );
+
         if (file_exists($moduleDir)) {
             throw new \RuntimeException('Module already exists. Stop.');
         }
         $this->moduleDirectory = $moduleDir;
         mkdir($this->moduleDirectory, 0777, true);
-        $output->writeln('<info>Created directory: <comment>' .  $this->moduleDirectory .'<comment></info>');
+        $output->writeln('<info>Created directory: <comment>' . $this->moduleDirectory . '<comment></info>');
 
         // Add etc folder
         mkdir($this->moduleDirectory . '/etc');
-        $output->writeln('<info>Created directory: <comment>' .  $this->moduleDirectory .'/etc<comment></info>');
+        $output->writeln('<info>Created directory: <comment>' . $this->moduleDirectory . '/etc<comment></info>');
 
         // Add blocks folder
         if ($input->getOption('add-blocks')) {
             mkdir($this->moduleDirectory . '/Block');
-            $output->writeln('<info>Created directory: <comment>' .  $this->moduleDirectory . '/Block' .'<comment></info>');
+            $output->writeln('<info>Created directory: <comment>' . $this->moduleDirectory . '/Block' . '<comment></info>');
         }
 
         // Add helpers folder
         if ($input->getOption('add-helpers')) {
             mkdir($this->moduleDirectory . '/Helper');
-            $output->writeln('<info>Created directory: <comment>' .  $this->moduleDirectory . '/Helper' .'<comment></info>');
+            $output->writeln('<info>Created directory: <comment>' . $this->moduleDirectory . '/Helper' . '<comment></info>');
         }
 
         // Add models folder
         if ($input->getOption('add-models')) {
             mkdir($this->moduleDirectory . '/Model');
-            $output->writeln('<info>Created directory: <comment>' .  $this->moduleDirectory . '/Model' .'<comment></info>');
+            $output->writeln('<info>Created directory: <comment>' . $this->moduleDirectory . '/Model' . '<comment></info>');
         }
 
         // Create SQL and Data folder
@@ -185,17 +186,16 @@ class CreateCommand extends AbstractMagentoCommand
 
     protected function writeEtcModules(OutputInterface $output)
     {
-        $outFile = $this->_magentoRootFolder
-                 . '/app/etc/modules/'
-                 . $this->vendorNamespace
-                 . '_'
-                 . $this->moduleName
-                 . '.xml';
-        file_put_contents(
-            $outFile,
-            $this->getHelper('twig')->render('dev/module/create/app/etc/modules/definition.twig', $this->twigVars)
+        $outFile = sprintf(
+            '%s/app/etc/modules/%s_%s.xml', $this->_magentoRootFolder, $this->vendorNamespace, $this->moduleName
         );
-        $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
+
+        /** @var $helper TwigHelper */
+        $helper = $this->getHelper('twig');
+        $buffer = $helper->render('dev/module/create/app/etc/modules/definition.twig', $this->twigVars);
+        $size   = file_put_contents($outFile, $buffer);
+
+        $output->writeln('<info>Created file: <comment>' . $outFile . '<comment> (' . $size . ' bytes)</info>');
     }
 
     protected function writeModuleConfig(OutputInterface $output)
@@ -206,7 +206,7 @@ class CreateCommand extends AbstractMagentoCommand
             $this->getHelper('twig')->render('dev/module/create/app/etc/modules/config.twig', $this->twigVars)
         );
 
-        $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
+        $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
     }
 
     protected function writeModmanFile(OutputInterface $output)
@@ -216,7 +216,7 @@ class CreateCommand extends AbstractMagentoCommand
             $outFile,
             $this->getHelper('twig')->render('dev/module/create/modman.twig', $this->twigVars)
         );
-        $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
+        $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
     }
 
     /**
@@ -243,7 +243,7 @@ class CreateCommand extends AbstractMagentoCommand
             $outFile,
             $this->getHelper('twig')->render('dev/module/create/app/etc/modules/readme.twig', $this->twigVars)
         );
-        $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
+        $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
     }
 
     /**
@@ -266,7 +266,7 @@ class CreateCommand extends AbstractMagentoCommand
             $outFile,
             $this->getHelper('twig')->render('dev/module/create/composer.twig', $this->twigVars)
         );
-        $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
+        $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
     }
 
     protected function addAdditionalFiles(OutputInterface $output)
@@ -282,7 +282,7 @@ class CreateCommand extends AbstractMagentoCommand
                     $outFile,
                     $this->getHelper('twig')->render($template, $this->twigVars)
                 );
-                $output->writeln('<info>Created file: <comment>' .  $outFile .'<comment></info>');
+                $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
             }
 
         }

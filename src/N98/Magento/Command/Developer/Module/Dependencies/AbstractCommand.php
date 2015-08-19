@@ -30,7 +30,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
      */
     protected $modules;
 
-        /**
+    /**
      * Configure command
      */
     protected function configure()
@@ -49,9 +49,10 @@ abstract class AbstractCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return int|void
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

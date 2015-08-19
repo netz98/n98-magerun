@@ -5,8 +5,6 @@ namespace N98\Magento\Command\System\Setup;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -253,8 +251,8 @@ class IncrementalCommand extends AbstractMagentoCommand
             $config_ver  = $this->_getConfiguredVersionFromResourceObject($setupResource);
 
             if (
-                (string)$config_ver == (string)$db_ver && //structure
-                (string)$config_ver == (string)$db_data_ver //data
+                (string) $config_ver == (string) $db_ver && //structure
+                (string) $config_ver == (string) $db_data_ver //data
             ) {
                 continue;
             }
@@ -313,8 +311,8 @@ class IncrementalCommand extends AbstractMagentoCommand
 
             $args = array(
                 '',
-                (string)$dbVersion,
-                (string)$configVersion,
+                (string) $dbVersion,
+                (string) $configVersion,
             );
 
             $args[0] = $dbVersion ? \Mage_Core_Model_Resource_Setup::TYPE_DB_UPGRADE : \Mage_Core_Model_Resource_Setup::TYPE_DB_INSTALL;

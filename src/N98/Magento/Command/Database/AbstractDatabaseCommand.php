@@ -6,7 +6,6 @@ use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\Database\Compressor;
 use N98\Util\Console\Helper\DatabaseHelper;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Finder\Finder;
 
 abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
 {

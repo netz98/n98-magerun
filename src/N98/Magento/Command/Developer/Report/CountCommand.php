@@ -11,8 +11,9 @@ class CountCommand extends AbstractMagentoCommand
 {
     protected function configure()
     {
-        $this->setName('dev:report:count')
-             ->setDescription('Get count of report files');
+        $this
+            ->setName('dev:report:count')
+            ->setDescription('Get count of report files');
     }
     
     /**
