@@ -61,12 +61,7 @@ HELP;
                 $collection->addFieldToFilter('path', array('like' => $searchPath));
 
                 if ($scopeId = $input->getOption('scope')) {
-                    $collection->addFieldToFilter(
-                        'scope',
-                        array(
-                             'eq' => $scopeId
-                        )
-                    );
+                    $collection->addFieldToFilter('scope', array('eq' => $scopeId));
                 }
                 $collection->addOrder('path', 'ASC');
 

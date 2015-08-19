@@ -43,14 +43,14 @@ class CreateUserCommand extends AbstractAdminUserCommand
             $lastname = $this->getOrAskForArgument('lastname', $input, $output);
             if (($roleName = $input->getArgument('role')) != null) {
                 $role = $this->getRoleModel()->load($roleName, 'role_name');
-                if(!$role->getId()) {
+                if (!$role->getId()) {
                     $output->writeln('<error>Role was not found</error>');
                     return;
                 }
             } else {
                 // create new role if not yet existing
                 $role = $this->getRoleModel()->load('Development', 'role_name');
-                if(!$role->getId()) {
+                if (!$role->getId()) {
                     $role->setName('Development')
                         ->setRoleType('G')
                         ->save();

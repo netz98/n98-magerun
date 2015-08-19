@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Customer;
 
 use N98\Util\Console\Helper\ParameterHelper;
+use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,12 +18,12 @@ class DeleteCommand extends AbstractCustomerCommand
 {
 
     /**
-     * @var \Symfony\Component\Console\Input\InputInterface
+     * @var InputInterface
      */
     protected $input;
 
     /**
-     * @var \Symfony\Component\Console\Output\OutputInterface
+     * @var OutputInterface
      */
     protected $output;
 
@@ -60,9 +61,10 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return bool|void
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return false|null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -198,8 +200,9 @@ HELP;
 
     /**
      * @param int|string $id
+     *
      * @return \Mage_Customer_Model_Customer
-     * @throws \Exception
+     * @throws RuntimeException
      */
     protected function getCustomer($id)
     {
@@ -215,7 +218,7 @@ HELP;
         }
 
         if (!$customer->getId()) {
-            throw new \RuntimeException('No customer found!');
+            throw new RuntimeException('No customer found!');
         }
 
         return $customer;
@@ -223,7 +226,7 @@ HELP;
 
     /**
      * @param \Mage_Customer_Model_Customer $customer
-     * @return bool|\Exception
+     * @return true|\Exception
      */
     protected function deleteCustomer(\Mage_Customer_Model_Customer $customer)
     {
@@ -262,7 +265,7 @@ HELP;
     public function validateInt($answer)
     {
         if (intval($answer) === 0) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'The range should be numeric and above 0 e.g. 1'
             );
         }

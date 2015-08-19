@@ -96,7 +96,7 @@ HELP;
                     return strcmp($a['Setup'], $b['Setup']);
                 });
 
-                array_walk($table, function (&$row) {
+                array_walk($table, function(&$row) {
                     $status             = $row['Status'];
                     $availableStatus    = array('OK' => 'info', 'Error' => 'error');
                     $statusString       = sprintf(

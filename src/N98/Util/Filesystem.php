@@ -19,7 +19,7 @@ class Filesystem
     /**
      * @param string $src
      * @param string $dst
-     * @param array  $blacklist
+     * @param string[]  $blacklist
      *
      * @return void
      */

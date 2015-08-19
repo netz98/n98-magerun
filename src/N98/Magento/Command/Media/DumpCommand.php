@@ -5,7 +5,6 @@ namespace N98\Magento\Command\Media;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
@@ -49,7 +48,7 @@ class DumpCommand extends AbstractMagentoCommand
             $filename .= '/';
         }
         if (empty($filename) || is_dir($filename)) {
-            $filename .= 'media_'. date('Ymd_his') . '.zip';
+            $filename .= 'media_' . date('Ymd_his') . '.zip';
         }
 
         $zip = new \ZipArchive();

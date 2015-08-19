@@ -26,9 +26,9 @@ class ConsoleCommand extends AbstractDatabaseCommand
         $this->detectDbSettings($output);
 
         $descriptorSpec = array(
-           0 => STDIN,
-           1 => STDOUT,
-           2 => STDERR
+            0 => STDIN,
+            1 => STDOUT,
+            2 => STDERR,
         );
 
         $exec = 'mysql ' . $this->getHelper('database')->getMysqlClientToolConnectionString();

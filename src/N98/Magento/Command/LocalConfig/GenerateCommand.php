@@ -103,7 +103,7 @@ HELP;
 
         // db-host
         $input->setArgument('db-host',
-            $this->getOrAskForArgument('db-host', $input, $output, $messagePrefix. 'database host'));
+            $this->getOrAskForArgument('db-host', $input, $output, $messagePrefix . 'database host'));
 
         if ($input->getArgument('db-host') === null) {
             $output->writeln('<error>db-host was not set.</error>');
@@ -112,7 +112,7 @@ HELP;
 
         // db-user
         $input->setArgument('db-user',
-            $this->getOrAskForArgument('db-user', $input, $output, $messagePrefix. 'database username'));
+            $this->getOrAskForArgument('db-user', $input, $output, $messagePrefix . 'database username'));
 
         if ($input->getArgument('db-user') === null) {
             $output->writeln('<error>db-user was not set.</error>');
@@ -121,11 +121,11 @@ HELP;
 
         // db-pass
         $input->setArgument('db-pass',
-            $this->getOrAskForArgument('db-pass', $input, $output, $messagePrefix. 'database password'));
+            $this->getOrAskForArgument('db-pass', $input, $output, $messagePrefix . 'database password'));
 
         // db-name
         $input->setArgument('db-pass',
-            $this->getOrAskForArgument('db-pass', $input, $output, $messagePrefix. 'database name'));
+            $this->getOrAskForArgument('db-pass', $input, $output, $messagePrefix . 'database name'));
 
         if ($input->getArgument('db-name') === null) {
             $output->writeln('<error>db-name was not set.</error>');
@@ -134,7 +134,7 @@ HELP;
 
         // session-save
         $input->setArgument('db-pass',
-            $this->getOrAskForArgument('db-pass', $input, $output, $messagePrefix. 'session save'));
+            $this->getOrAskForArgument('db-pass', $input, $output, $messagePrefix . 'session save'));
 
         if ($input->getArgument('session-save') === null) {
             $output->writeln('<error>session-save was not set.</error>');

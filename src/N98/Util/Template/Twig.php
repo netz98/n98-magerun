@@ -30,7 +30,7 @@ class Twig
      * @param string $filename
      * @param array $variables
      *
-     * @return mixed
+     * @return string
      */
     public function render($filename, $variables)
     {
@@ -41,7 +41,7 @@ class Twig
      * @param string $string
      * @param array  $variables
      *
-     * @return mixed
+     * @return string
      */
     public function renderString($string, $variables)
     {

@@ -1,8 +1,9 @@
 <?php
-/**
+/*
  * Ported attribute migration script from:
  *
  * https://github.com/astorm/Pulsestorm/blob/master/magento-create-setup.php
+ * https://github.com/astorm/Pulsestorm/blob/2863201b19367d02483e01b1c03b54b979d87278/_trash/magento-create-setup.php
  *
  * It creates attribute script for existing attribute
  *
@@ -30,32 +31,35 @@ class AttributeCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface   $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
-            try {
-                $entityType = $input->getArgument('entityType');
-                $attributeCode = $input->getArgument('attributeCode');
+        if (!$this->initMagento()) {
+            return;
+        }
 
-                $attribute = $this->getAttribute($entityType, $attributeCode);
+        try {
+            $entityType = $input->getArgument('entityType');
+            $attributeCode = $input->getArgument('attributeCode');
 
-                $generator = Attribute\EntityType\Factory::create($entityType, $attribute);
-                $generator->setReadConnection(
-                    $this->_getModel('core/resource', 'Mage_Core_Model_Resource')->getConnection('core_read')
-                );
-                $code = $generator->generateCode();
-                $warnings = $generator->getWarnings();
+            $attribute = $this->getAttribute($entityType, $attributeCode);
 
-                $output->writeln(implode(PHP_EOL, $warnings) . PHP_EOL . $code);
+            $generator = Attribute\EntityType\Factory::create($entityType, $attribute);
+            $generator->setReadConnection(
+                $this->_getModel('core/resource', 'Mage_Core_Model_Resource')->getConnection('core_read')
+            );
+            $code = $generator->generateCode();
+            $warnings = $generator->getWarnings();
 
-            } catch (\Exception $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
-            }
+            $output->writeln(implode(PHP_EOL, $warnings) . PHP_EOL . $code);
 
+        } catch (\Exception $e) {
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
     }
 
