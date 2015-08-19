@@ -45,7 +45,7 @@ changed by another process, or *might* mean the file is from
 a previous package version, or *might* mean the extension
 packager failed to generate the hash correctly.
 
-This is the madness of using software that lies.         
+This is the madness of using software that lies.
 
 HELP;
         $this->setHelp($help);

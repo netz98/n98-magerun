@@ -67,7 +67,7 @@ HELP;
                         $output->write($table->render());
                         $message = sprintf(
                             '%d %s found!',
-                            $conflictCounter,  
+                            $conflictCounter,
                             $conflictCounter == 1 ? 'conflict was' : 'conflicts were'
                         );
                         $output->writeln('<error>' . $message . '</error>');

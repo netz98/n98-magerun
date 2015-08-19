@@ -17,7 +17,7 @@ class SizeCommand extends AbstractLogCommand
             ->addOption('human', '', InputOption::VALUE_NONE, 'Human readable output')
             ->setDescription('Get size of log file');
     }
-    
+
     /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output

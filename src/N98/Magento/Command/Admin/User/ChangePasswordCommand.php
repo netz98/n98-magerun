@@ -28,9 +28,9 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
     {
         $this->detectMagento($output);
         if ($this->initMagento()) {
-            
+
             $dialog = $this->getHelperSet()->get('dialog');
-            
+
             // Username
             if (($username = $input->getArgument('username')) == null) {
                 $username = $dialog->ask($output, '<question>Username:</question>');
