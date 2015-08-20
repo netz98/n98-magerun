@@ -14,18 +14,17 @@ class ViewCommand extends AbstractMagentoCommand
 {
     protected function configure()
     {
-      $this
-          ->setName('eav:attribute:view')
-          ->addArgument('entityType', InputArgument::REQUIRED, 'Entity Type Code like catalog_product')
-          ->addArgument('attributeCode', InputArgument::REQUIRED, 'Attribute Code')
-          ->setDescription('View informations about an EAV attribute')
-          ->addOption(
-              'format',
-              null,
-              InputOption::VALUE_OPTIONAL,
-              'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-          )
-      ;
+        $this
+            ->setName('eav:attribute:view')
+            ->addArgument('entityType', InputArgument::REQUIRED, 'Entity Type Code like catalog_product')
+            ->addArgument('attributeCode', InputArgument::REQUIRED, 'Attribute Code')
+            ->setDescription('View informations about an EAV attribute')
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            );
     }
 
     /**
@@ -70,10 +69,10 @@ class ViewCommand extends AbstractMagentoCommand
                 $table[] = array('Frontend-Input-Renderer-Class', trim($attribute->getFrontend()->getInputRendererClass()));
             }
 
-            $this->getHelper('table')
-                 ->setHeaders(array('Type', 'Value'))
-                 ->renderByFormat($output, $table, $input->getOption('format'));
-
+            $this
+                ->getHelper('table')
+                ->setHeaders(array('Type', 'Value'))
+                ->renderByFormat($output, $table, $input->getOption('format'));
         }
     }
 

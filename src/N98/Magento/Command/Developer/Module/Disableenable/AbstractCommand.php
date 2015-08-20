@@ -30,7 +30,7 @@ class AbstractCommand extends AbstractMagentoCommand
 
     /**
      * Setup
-     * 
+     *
      * @return void
      */
     protected function configure()
@@ -44,12 +44,12 @@ class AbstractCommand extends AbstractMagentoCommand
 
     /**
      * Execute command
-     * 
+     *
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * 
+     *
      * @return void
-     * 
+     *
      * @throws \InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -73,10 +73,10 @@ class AbstractCommand extends AbstractMagentoCommand
 
     /**
      * Search a code pool for modules and enable them
-     * 
+     *
      * @param string $codePool
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * 
+     *
      * @return int|void
      */
     protected function enableCodePool($codePool, OutputInterface $output)
@@ -87,14 +87,14 @@ class AbstractCommand extends AbstractMagentoCommand
                 $this->enableModule($module, $output);
             }
         }
-    }    
+    }
 
     /**
      * Enable a single module
-     * 
+     *
      * @param string $module
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * 
+     *
      * @return int|void
      */
     protected function enableModule($module, OutputInterface $output)
@@ -107,7 +107,7 @@ class AbstractCommand extends AbstractMagentoCommand
         } else {
             $xml = new \Varien_Simplexml_Element(file_get_contents($decFile));
             $setTo = $this->commandName == 'enable' ? 'true' : 'false';
-            if ((string)$xml->modules->{$module}->active != $setTo) {
+            if ((string) $xml->modules->{$module}->active != $setTo) {
                 $xml->modules->{$module}->active = $setTo;
                 if (file_put_contents($decFile, $xml->asXML()) !== false) {
                     $output->writeln('<info><comment>' . $module . ': </comment>' . $this->commandName . 'd</info>');

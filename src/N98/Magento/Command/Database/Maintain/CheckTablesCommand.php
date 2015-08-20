@@ -86,7 +86,7 @@ HELP;
                 InputOption::VALUE_OPTIONAL,
                 'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
             )
-            ->setHelp($help);;
+            ->setHelp($help);
     }
 
     /**
@@ -136,7 +136,7 @@ HELP;
                     )
                 )
             );
-            $tables         = $resolvedTables[0];
+            $tables = $resolvedTables[0];
         } else {
             $tables = $this->dbHelper->getTables();
         }
@@ -197,7 +197,7 @@ HELP;
         return array(array(
             'table'     => $tableName,
             'operation' => 'ENGINE ' . $engine,
-            'type'      => sprintf('%15s rows', (string)$affectedRows),
+            'type'      => sprintf('%15s rows', (string) $affectedRows),
             'status'    => sprintf('%.3f secs', microtime(true) - $start),
         )
         );

@@ -10,7 +10,7 @@ class CreateCommand extends AbstractGiftCardCommand
 {
     /**
      * Setup
-     * 
+     *
      * @return void
      */
     protected function configure()

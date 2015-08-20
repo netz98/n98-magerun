@@ -6,6 +6,8 @@ RECENT CHANGES
 1.97.6
 ======
 
+* #648 Fix FPC cleared - even if not (by Steve Robbins)
+
 ======
 1.97.5
 ======

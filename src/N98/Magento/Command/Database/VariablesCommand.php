@@ -72,7 +72,7 @@ HELP;
             'max_write_lock_count'     => 1,
             'slave_max_allowed_packet' => 1,
         );
-        $isSize  = false !== strpos($name, '_size');
+        $isSize = false !== strpos($name, '_size');
 
         return $isSize || isset($toHuman[$name]);
     }

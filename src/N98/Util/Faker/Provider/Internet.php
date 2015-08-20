@@ -11,5 +11,5 @@ class Internet extends \Faker\Provider\Internet {
         '{{firstName}}.######',
         '?{{lastName}}.######',
     );
-    
+
 }

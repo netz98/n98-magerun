@@ -58,7 +58,8 @@ class WindowsSystem
     /**
      * a name is executable based on it's extension
      *
-     * @param $name
+     * @param string $name
+     *
      * @return bool
      */
     public static function isExecutableName($name)
@@ -82,7 +83,7 @@ class WindowsSystem
     /**
      * a program (by it's basename) is available on system for execution
      *
-     * @param $program
+     * @param string $program
      * @return bool
      */
     public static function isProgramInstalled($program)

@@ -6,7 +6,6 @@ use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class MethodCommand extends AbstractMagentoCommand
 {
@@ -167,9 +166,9 @@ class MethodCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param $filename
+     * @param string $filename
      *
-     * @return bool|string
+     * @return string|false
      */
     protected function searchFullPath($filename)
     {

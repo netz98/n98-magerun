@@ -39,7 +39,7 @@ HELP;
      */
     protected function optimize($fileName)
     {
-        $in = fopen($fileName,'r');
+        $in = fopen($fileName, 'r');
         $result = tempnam(sys_get_temp_dir(), 'dump') . '.sql';
         $out = fopen($result, 'w');
 
@@ -139,11 +139,11 @@ HELP;
             }
         }
 
-        if( $input->getOption('drop') ) {
+        if ($input->getOption('drop')) {
             $dbHelper->dropDatabase($output);
             $dbHelper->createDatabase($output);
         }
-        if( $input->getOption('drop-tables') ) {
+        if ($input->getOption('drop-tables')) {
             $dbHelper->dropTables($output);
         }
 

@@ -2,13 +2,6 @@
 
 namespace N98\Magento\Command\Database;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Filesystem;
-
 class StatusCommand extends AbstractShowCommand
 {
     protected $showMethod = 'getGlobalStatus';
@@ -105,7 +98,7 @@ HELP;
                     $this->_allVariables['Handler_read_first'] +
                     $this->_allVariables['Handler_read_next'] + $this->_allVariables['Handler_read_key'] +
                     $this->_allVariables['Handler_read_prev']));
-            $rows[]        = array(
+            $rows[] = array(
                 'Full table scans',
                 sprintf('%.2f', $tableScanRate * 100) . '%',
                 $this->formatDesc('HINT: "Handler_read_rnd_next" is reset to zero when reached the value of 2^32 (4G).')
@@ -181,7 +174,10 @@ HELP;
             }
         }
 
-        if (!$full) $string = array_slice($string, 0, 1);
+        if (!$full) {
+            $string = array_slice($string, 0, 1);
+        }
+
         return $string ? implode(', ', $string) . ' ago' : 'just now';
     }
 }

@@ -36,7 +36,7 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
 
             // Load config of module
             $configXmlFile = \Mage::getConfig()->getModuleDir('etc', $moduleName) . DIRECTORY_SEPARATOR . 'config.xml';
-            if (! file_exists($configXmlFile)) {
+            if (!file_exists($configXmlFile)) {
                 continue;
             }
 

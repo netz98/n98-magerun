@@ -31,11 +31,8 @@ class DatabaseHelper extends AbstractHelper
 
     /**
      * @param OutputInterface $output
-     * @param bool            $silent
      *
-     * @throws \Exception
-     *
-     * @throws \Exception
+     * @throws \RuntimeException
      * @return void
      */
     public function detectDbSettings(OutputInterface $output)

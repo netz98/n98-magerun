@@ -11,12 +11,13 @@ class SizeCommand extends AbstractLogCommand
 {
     protected function configure()
     {
-        $this->setName('dev:log:size')
-             ->addArgument('log_filename', InputArgument::OPTIONAL, 'Name of log file.')
-             ->addOption('human', '', InputOption::VALUE_NONE, 'Human readable output')
-             ->setDescription('Get size of log file');
+        $this
+            ->setName('dev:log:size')
+            ->addArgument('log_filename', InputArgument::OPTIONAL, 'Name of log file.')
+            ->addOption('human', '', InputOption::VALUE_NONE, 'Human readable output')
+            ->setDescription('Get size of log file');
     }
-    
+
     /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
