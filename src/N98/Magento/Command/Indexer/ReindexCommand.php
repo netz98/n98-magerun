@@ -50,7 +50,7 @@ HELP;
             if ($indexCode === null) {
                 $question = array();
                 foreach ($indexerList as $key => $indexer) {
-                    $question[] = '<comment>' . str_pad('[' . ($key+1) . ']', 4, ' ', STR_PAD_RIGHT) . '</comment> ' . str_pad($indexer['code'], 40, ' ', STR_PAD_RIGHT) . ' <info>(last runtime: ' . $indexer['last_runtime'] . ')</info>' . "\n";
+                    $question[] = '<comment>' . str_pad('[' . ($key + 1) . ']', 4, ' ', STR_PAD_RIGHT) . '</comment> ' . str_pad($indexer['code'], 40, ' ', STR_PAD_RIGHT) . ' <info>(last runtime: ' . $indexer['last_runtime'] . ')</info>' . "\n";
                 }
                 $question[] = '<question>Please select a indexer:</question>';
 

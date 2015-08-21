@@ -36,7 +36,7 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
 
             // Load config of module
             $configXmlFile = \Mage::getConfig()->getModuleDir('etc', $moduleName) . DIRECTORY_SEPARATOR . 'config.xml';
-            if (! file_exists($configXmlFile)) {
+            if (!file_exists($configXmlFile)) {
                 continue;
             }
 
@@ -104,9 +104,7 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
                     ->in($folder);
                 foreach ($finder as $file) {
                     $classFile = trim(str_replace($folder, '', $file->getPathname()), '/');
-                    $className = $vendorPrefix
-                               . '_'
-                               . str_replace(DIRECTORY_SEPARATOR, '_', $classFile);
+                    $className = $vendorPrefix . '_' . str_replace(DIRECTORY_SEPARATOR, '_', $classFile);
                     $className = substr($className, 0, -4); // replace .php extension
                     $return['autoload: ' . $vendorPrefix][$className][] = $className;
                 }

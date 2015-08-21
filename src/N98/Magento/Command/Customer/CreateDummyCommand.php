@@ -58,9 +58,9 @@ HELP;
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            
+
             $res = $this->getCustomerModel()->getResource();
-            
+
             $faker = \Faker\Factory::create($input->getArgument('locale'));
             $faker->addProvider(new \N98\Util\Faker\Provider\Internet($faker));
 
@@ -97,7 +97,7 @@ HELP;
                     $customer->save();
 
                     if ($outputPlain) {
-                        $output->writeln('<info>Customer <comment>' . $email . '</comment> with password <comment>' . $password .  '</comment> successfully created</info>');
+                        $output->writeln('<info>Customer <comment>' . $email . '</comment> with password <comment>' . $password . '</comment> successfully created</info>');
                     } else {
                         $table[] = array(
                             $email, $password, $customer->getFirstname(), $customer->getLastname(),

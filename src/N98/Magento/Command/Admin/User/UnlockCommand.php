@@ -10,7 +10,7 @@ class UnlockCommand extends AbstractAdminUserCommand
 {
     /**
      * Setup
-     * 
+     *
      * @return void
      */
     protected function configure()

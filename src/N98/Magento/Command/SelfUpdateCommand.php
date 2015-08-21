@@ -46,7 +46,7 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $localFilename = realpath($_SERVER['argv'][0]) ?: $_SERVER['argv'][0];
-        $tempFilename = dirname($localFilename) . '/' . basename($localFilename, '.phar').'-temp.phar';
+        $tempFilename = dirname($localFilename) . '/' . basename($localFilename, '.phar') . '-temp.phar';
 
         // check for permissions in local filesystem before start connection process
         if (!is_writable($tempDirectory = dirname($tempFilename))) {
@@ -128,7 +128,7 @@ UNSTABLE_FOOTER;
                 if (!$e instanceof \UnexpectedValueException && !$e instanceof \PharException) {
                     throw $e;
                 }
-                $output->writeln('<error>The download is corrupted ('.$e->getMessage().').</error>');
+                $output->writeln('<error>The download is corrupted (' . $e->getMessage() . ').</error>');
                 $output->writeln('<error>Please re-run the self-update command to try again.</error>');
             }
         } else {

@@ -134,9 +134,11 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             $store->getId()
         );
 
-        $comment = '<comment>' . $this->toggleComment . '</comment> '
-                 . '<info>' . (!$isFalse ? $this->falseName : $this->trueName) . '</info>'
-                 . ($runOnStoreView ? ' <comment>for store</comment> <info>' . $store->getCode() . '</info>' : '');
+        $comment =
+            '<comment>' . $this->toggleComment . '</comment> '
+            . '<info>' . (!$isFalse ? $this->falseName : $this->trueName) . '</info>'
+            . ($runOnStoreView ? ' <comment>for store</comment> <info>' . $store->getCode() . '</info>' : '');
+
         $output->writeln($comment);
 
         $this->_afterSave($store, $isFalse);

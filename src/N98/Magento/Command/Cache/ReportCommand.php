@@ -29,7 +29,7 @@ class ReportCommand extends AbstractCacheCommand
     }
 
     protected function isTagFiltered($metaData, $input) {
-        return (bool)count(array_intersect($metaData['tags'], explode(',', $input->getOption('filter-tag'))));
+        return (bool) count(array_intersect($metaData['tags'], explode(',', $input->getOption('filter-tag'))));
     }
 
     /**

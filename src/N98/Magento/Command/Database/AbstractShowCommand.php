@@ -187,7 +187,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
      */
     protected function formatVariables(array $vars)
     {
-        $rounding = (int)$this->_input->getOption('rounding');
+        $rounding = (int) $this->_input->getOption('rounding');
         if ($rounding > -1) {
             foreach ($vars as $k => &$v) {
                 if (true === $this->allowRounding($k)) {

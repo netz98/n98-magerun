@@ -79,7 +79,7 @@ class InfoCommand extends AbstractMagentoCommand
 
         foreach ($nodes as $nodeLabel => $node) {
             $result[] = array(
-                $nodeLabel, (string)\Mage::getConfig()->getNode($node, AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW, $store->getCode())
+                $nodeLabel, (string) \Mage::getConfig()->getNode($node, AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW, $store->getCode())
             );
             if ($withExceptions) {
                 $result[] = array(
@@ -96,7 +96,7 @@ class InfoCommand extends AbstractMagentoCommand
      */
     protected function _parseException($node, \Mage_Core_Model_Store $store)
     {
-        $exception = (string)\Mage::getConfig()->getNode($node . self::THEMES_EXCEPTION, AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW, $store->getCode());
+        $exception = (string) \Mage::getConfig()->getNode($node . self::THEMES_EXCEPTION, AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW, $store->getCode());
 
         if (empty($exception)) {
             return '';

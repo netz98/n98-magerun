@@ -10,7 +10,7 @@ class RemoveCommand extends AbstractGiftCardCommand
 {
     /**
      * Setup
-     * 
+     *
      * @return void
      */
     protected function configure()

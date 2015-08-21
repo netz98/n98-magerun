@@ -297,7 +297,7 @@ class ConfigurationLoader
     {
         if ($this->_userConfig == null) {
             $this->_userConfig = array();
-            $homeDirectory =  OperatingSystem::getHomeDir();
+            $homeDirectory = OperatingSystem::getHomeDir();
             if (OperatingSystem::isWindows()) {
                 $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . $this->_customConfigFilename;
             } else {

@@ -21,7 +21,7 @@ If <info>path</info> is not set, all available config items will be listed.
 The <info>path</info> may contain wildcards (*).
 If <info>path</info> ends with a trailing slash, all child items will be listed. E.g.
 
-    config:get web/ 
+    config:get web/
 is the same as
     config:get web/*
 EOT
@@ -68,12 +68,7 @@ HELP;
             ));
 
             if ($scopeId = $input->getOption('scope')) {
-                $collection->addFieldToFilter(
-                    'scope',
-                    array(
-                         'eq' => $scopeId
-                    )
-                );
+                $collection->addFieldToFilter('scope', array('eq' => $scopeId));
             }
 
             if ($scopeId = $input->getOption('scope-id')) {
@@ -93,7 +88,7 @@ HELP;
 
             $collection->addOrder('scope_id', 'ASC');
 
-            if($collection->count() == 0) {
+            if ($collection->count() == 0) {
                 $output->writeln(sprintf("Couldn't find a config value for \"%s\"", $input->getArgument('path')));
                 return;
             }
@@ -181,10 +176,10 @@ HELP;
     {
         foreach ($table as $row) {
             $value = str_replace(array("\n", "\r"), array('\n', '\r'), $row['value']);
-            $line = 'config:set ' . $row['path']
-                  . ' --scope-id=' . $row['scope_id']
-                  . ' --scope=' . $row['scope']
-                  . ' ' . escapeshellarg($value);
+            $line = sprintf(
+                'config:set %s --scope-id=%s --scope=%s %s', $row['path'], $row['scope_id'], $row['scope'],
+                escapeshellarg($value)
+            );
             $output->writeln($line);
         }
     }

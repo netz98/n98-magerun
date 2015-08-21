@@ -9,10 +9,12 @@ use N98\Util\Console\Helper\TwigHelper;
 use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\OperatingSystem;
 use N98\Util\String;
+use RuntimeException;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -141,7 +143,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return \Symfony\Component\Console\Input\InputDefinition|void
+     * @return \Symfony\Component\Console\Input\InputDefinition
      */
     protected function getDefaultInputDefinition()
     {
@@ -393,7 +395,7 @@ class Application extends BaseApplication
      * @TODO Move logic into "EventSubscriber"
      *
      * @param OutputInterface $output
-     * @return bool
+     * @return null|false
      */
     public function checkVarDir(OutputInterface $output)
     {
@@ -451,12 +453,14 @@ class Application extends BaseApplication
      * Loads and initializes the Magento application
      *
      * @param bool $soft
+     *
+     * @return bool false if magento root folder is not set, true otherwise
      */
     public function initMagento($soft = false)
     {
         if ($this->getMagentoRootFolder() !== null) {
             if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-                $this->_initMagento2($soft);
+                $this->_initMagento2();
             } else {
                 $this->_initMagento1($soft);
             }
@@ -782,6 +786,8 @@ class Application extends BaseApplication
     /**
      * use require-once inside a function with it's own variable scope w/o any other variables
      * and $this unbound.
+     *
+     * @param string $path
      */
     private function requireOnce($path)
     {
@@ -798,7 +804,7 @@ class Application extends BaseApplication
     /*
      * @param bool $soft
      */
-    protected function _initMagento2($soft = false)
+    protected function _initMagento2()
     {
         $magento2Hint = <<<'MAGENTO2HINT'
 You are running a Magento 2 instance. This version of n98-magerun is not compatible
@@ -820,14 +826,19 @@ MAGENTO2HINT;
 
         $output = new ConsoleOutput();
 
+
+        /** @var $formatter FormatterHelper */
+        $formatter = $this->getHelperSet()->get('formatter');
+
         $output->writeln(array(
             '',
-            $this->getHelperSet()->get('formatter')->formatBlock('Compatibility Notice', 'bg=blue;fg=white', true),
+            $formatter->formatBlock('Compatibility Notice', 'bg=blue;fg=white', true),
             ''
         ));
 
         $output->writeln($magento2Hint);
-        exit;
+
+        throw new RuntimeException('This version of n98-magerun is not compatible with Magento 2');
     }
 
     /**

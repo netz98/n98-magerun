@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Developer\Log;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
@@ -45,6 +46,7 @@ class AbstractLogCommand extends AbstractMagentoCommand
 
     /**
      * @param string $filename
+     *
      * @return bool
      */
     protected function logfileExists($filename)
@@ -54,25 +56,30 @@ class AbstractLogCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param $output OutputInterface
+     * @param OutputInterface $output
+     *
      * @return string
      */
     protected function askLogFile($output)
     {
         $logFiles = $this->getLogFileIterator();
+        $files    = array();
+        $question = array();
+
         $i = 0;
         foreach ($logFiles as $logFile) {
-            $files[$i] = $logFile->getPathname();
-            $question[] = '<comment>[' . ($i + 1) . ']</comment> ' . $logFile->getFilename() . PHP_EOL;
-            $i++;
+            $files[$i++] = $logFile->getPathname();
+            $question[] = '<comment>[' . ($i) . ']</comment> ' . $logFile->getFilename() . PHP_EOL;
         }
         $question[] = '<question>Please select a log file: </question>';
 
-        if (count($logFiles) == 0) {
+        if ($i === 0) {
             return '';
         }
 
-        $logFile = $this->getHelperSet()->get('dialog')->askAndValidate($output, $question, function($typeInput) use ($files) {
+        /** @var $dialog DialogHelper */
+        $dialog  = $this->getHelperSet()->get('dialog');
+        $logFile = $dialog->askAndValidate($output, $question, function($typeInput) use ($files) {
             if (!isset($files[$typeInput - 1])) {
                 throw new \InvalidArgumentException('Invalid file');
             }

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * @author Tom Klingenberg <mot@fsfe.org>
  */
 
@@ -119,6 +119,9 @@ HELP;
         throw new RuntimeException($message);
     }
 
+    /**
+     * @param string $message
+     */
     private function verbose($message)
     {
         $output = $this->output;

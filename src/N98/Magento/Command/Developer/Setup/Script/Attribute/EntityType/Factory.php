@@ -2,8 +2,6 @@
 
 namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
 
-use Installer\Exception;
-
 class Factory
 {
     public static function create($entityType, $attribute)
