@@ -21,9 +21,9 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
     protected function loadRewrites()
     {
         $return = array(
-            'blocks',
-            'models',
-            'helpers',
+            'blocks'  => array(),
+            'models'  => array(),
+            'helpers' => array(),
         );
 
         // Load config of each module because modules can overwrite config each other. Globl config is already merged
