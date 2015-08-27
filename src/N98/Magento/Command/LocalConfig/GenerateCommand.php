@@ -96,58 +96,39 @@ HELP;
     protected function askForArguments(InputInterface $input, OutputInterface $output)
     {
         $dialog = $this->getHelperSet()->get('dialog');
+        $messagePrefix = 'Please enter the ';
 
+        $arguments = array(
+            'db-host'           => array('prompt' => 'database host',        'required' => true),
+            'db-user'           => array('prompt' => 'database username',    'required' => true),
+            'db-pass'           => array('prompt' => 'database password',    'required' => false),
+            'db-name'           => array('prompt' => 'database name',        'required' => true),
+            'session-save'      => array('prompt' => 'session save',         'required' => true, 'default' => 'files'),
+            'admin-frontname'   => array('prompt' => 'admin frontname',      'required' => true, 'default' => 'admin'),
+        );
 
+        foreach ($arguments as $argument => $options) {
 
-        $messagePrefix = 'Please enter the';
+            if (isset($options['default']) && $input->getArgument($argument) === null) {
+                $input->setArgument(
+                    $argument,
+                    $dialog->ask(
+                        $output,
+                        sprintf('<question>%s%s:</question>', $messagePrefix, $options['prompt']),
+                        $options['default']
+                    )
+                );
+            } else {
+                $input->setArgument(
+                    $argument,
+                    $this->getOrAskForArgument($argument, $input, $output, $messagePrefix . $options['prompt'])
+                );
+            }
 
-        // db-host
-        $input->setArgument('db-host',
-            $this->getOrAskForArgument('db-host', $input, $output, $messagePrefix . 'database host'));
-
-        if ($input->getArgument('db-host') === null) {
-            $output->writeln('<error>db-host was not set.</error>');
-            return;
-        }
-
-        // db-user
-        $input->setArgument('db-user',
-            $this->getOrAskForArgument('db-user', $input, $output, $messagePrefix . 'database username'));
-
-        if ($input->getArgument('db-user') === null) {
-            $output->writeln('<error>db-user was not set.</error>');
-            return;
-        }
-
-        // db-pass
-        $input->setArgument('db-pass',
-            $this->getOrAskForArgument('db-pass', $input, $output, $messagePrefix . 'database password'));
-
-        // db-name
-        $input->setArgument('db-pass',
-            $this->getOrAskForArgument('db-pass', $input, $output, $messagePrefix . 'database name'));
-
-        if ($input->getArgument('db-name') === null) {
-            $output->writeln('<error>db-name was not set.</error>');
-            return;
-        }
-
-        // session-save
-        $input->setArgument('db-pass',
-            $this->getOrAskForArgument('db-pass', $input, $output, $messagePrefix . 'session save'));
-
-        if ($input->getArgument('session-save') === null) {
-            $output->writeln('<error>session-save was not set.</error>');
-            return;
-        }
-
-        // admin-frontname
-        if ($input->getArgument('admin-frontname') === null) {
-            $input->setArgument('admin-frontname', $dialog->ask($output, '<question>Please enter the admin frontname:</question>', 'admin'));
-        }
-        if ($input->getArgument('admin-frontname') === null) {
-            $output->writeln('<error>admin-frontname was not set.</error>');
-            return;
+            if ($options['required'] && $input->getArgument($argument) === null) {
+                $output->writeln(sprintf('<error>%s was not set</error>'), $argument);
+                return;
+            }
         }
     }
 
