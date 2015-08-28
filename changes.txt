@@ -6,6 +6,8 @@ RECENT CHANGES
 1.97.6
 ======
 
+* #657 Fix and improve input processing in "local-config:generate" command (by Aydin Hassan)
+* #654 Fix PHP warning in Rewrite command (by Pieter Hoste)
 * #648 Fix FPC cleared - even if not (by Steve Robbins)
 
 ======
