@@ -20,13 +20,10 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
      */
     protected function loadRewrites()
     {
-        $return = array(
-            'blocks'  => array(),
-            'models'  => array(),
-            'helpers' => array(),
-        );
+        $prototype = $this->_rewriteTypes;
+        $return    = array_combine($prototype, array_fill(0, count($prototype), array()));
 
-        // Load config of each module because modules can overwrite config each other. Globl config is already merged
+        // Load config of each module because modules can overwrite config each other. Global config is already merged
         $modules = \Mage::getConfig()->getNode('modules')->children();
         foreach ($modules as $moduleName => $moduleData) {
             // Check only active modules
@@ -36,25 +33,28 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
 
             // Load config of module
             $configXmlFile = \Mage::getConfig()->getModuleDir('etc', $moduleName) . DIRECTORY_SEPARATOR . 'config.xml';
-            if (!file_exists($configXmlFile)) {
+            if (!is_readable($configXmlFile)) {
                 continue;
             }
 
             $xml = \simplexml_load_file($configXmlFile);
-            if ($xml) {
-                $rewriteElements = $xml->xpath('//rewrite');
-                foreach ($rewriteElements as $element) {
-                    foreach ($element->children() as $child) {
-                        $type = \simplexml_import_dom(dom_import_simplexml($element)->parentNode->parentNode)->getName();
-                        if (!in_array($type, $this->_rewriteTypes)) {
-                            continue;
-                        }
-                        $groupClassName = \simplexml_import_dom(dom_import_simplexml($element)->parentNode)->getName();
-                        if (!isset($return[$type][$groupClassName . '/' . $child->getName()])) {
-                            $return[$type][$groupClassName . '/' . $child->getName()] = array();
-                        }
-                        $return[$type][$groupClassName . '/' . $child->getName()][] = (string) $child;
+            if (!$xml) {
+                continue;
+            }
+
+            $rewriteElements = $xml->xpath('//*/*/rewrite');
+            foreach ($rewriteElements as $element) {
+                $type = \simplexml_import_dom(dom_import_simplexml($element)->parentNode->parentNode)->getName();
+                if (!isset($return[$type])) {
+                    continue;
+                }
+
+                foreach ($element->children() as $child) {
+                    $groupClassName = \simplexml_import_dom(dom_import_simplexml($element)->parentNode)->getName();
+                    if (!isset($return[$type][$groupClassName . '/' . $child->getName()])) {
+                        $return[$type][$groupClassName . '/' . $child->getName()] = array();
                     }
+                    $return[$type][$groupClassName . '/' . $child->getName()][] = (string) $child;
                 }
             }
         }

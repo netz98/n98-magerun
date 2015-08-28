@@ -4,9 +4,15 @@ namespace N98\Magento\Command\MagentoConnect;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\OperatingSystem;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class AbstractConnectCommand
+ *
+ * @package N98\Magento\Command\MagentoConnect
+ */
 abstract class AbstractConnectCommand extends AbstractMagentoCommand
 {
     /**
@@ -15,9 +21,10 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
     protected $mageScript = null;
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @throws \Exception
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @throws RuntimeException
      */
     private function findMageScript(InputInterface $input, OutputInterface $output)
     {
@@ -26,11 +33,11 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
             @chdir($this->_magentoRootFolder);
             $this->mageScript = './mage';
             if (!is_file($this->mageScript)) {
-                throw new \RuntimeException('Could not find "mage" shell script in current installation');
+                throw new RuntimeException('Could not find "mage" shell script in current installation');
             }
             if (!is_executable($this->mageScript)) {
                 if (!@chmod($this->mageScript, 0755)) {
-                    throw new \RuntimeException('Cannot make "mage" shell script executable. Please chmod the file manually.');
+                    throw new RuntimeException('Cannot make "mage" shell script executable. Please chmod the file manually.');
                 }
             }
             if (!strstr(shell_exec($this->mageScript . ' list-channels'), 'community')) {
@@ -50,6 +57,7 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
 
     /**
      * @param string $line
+     *
      * @return array
      */
     protected function matchConnectLine($line)
@@ -60,9 +68,10 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param string $mageScriptParams
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @param string          $mageScriptParams
+     *
      * @return string
      */
     protected function callMageScript(InputInterface $input, OutputInterface $output, $mageScriptParams)
@@ -74,6 +83,7 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
     /**
      * @param string $packageName
      * @param string $searchPackageName
+     *
      * @return bool
      */
     protected function isAlternative($packageName, $searchPackageName)
@@ -84,8 +94,9 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param array $alternatives
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param array           $alternatives
+     * @param OutputInterface $output
+     *
      * @return string
      */
     protected function askForAlternativePackage($alternatives, OutputInterface $output)
@@ -94,8 +105,9 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -123,11 +135,7 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
         } else {
             $output->writeln('<comment>Could not find package.</comment>');
             if (count($alternatives) > 0) {
-                $this->doAction(
-                    $input,
-                    $output,
-                    $this->askForAlternativePackage($alternatives, $output)
-                );
+                $this->doAction($input, $output, $this->askForAlternativePackage($alternatives, $output));
             }
         }
     }

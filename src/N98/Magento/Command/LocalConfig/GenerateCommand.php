@@ -99,12 +99,12 @@ HELP;
         $messagePrefix = 'Please enter the ';
 
         $arguments = array(
-            'db-host'           => array('prompt' => 'database host',        'required' => true),
-            'db-user'           => array('prompt' => 'database username',    'required' => true),
-            'db-pass'           => array('prompt' => 'database password',    'required' => false),
-            'db-name'           => array('prompt' => 'database name',        'required' => true),
-            'session-save'      => array('prompt' => 'session save',         'required' => true, 'default' => 'files'),
-            'admin-frontname'   => array('prompt' => 'admin frontname',      'required' => true, 'default' => 'admin'),
+            'db-host'         => array('prompt' => 'database host', 'required' => true),
+            'db-user'         => array('prompt' => 'database username', 'required' => true),
+            'db-pass'         => array('prompt' => 'database password', 'required' => false),
+            'db-name'         => array('prompt' => 'database name', 'required' => true),
+            'session-save'    => array('prompt' => 'session save', 'required' => true, 'default' => 'files'),
+            'admin-frontname' => array('prompt' => 'admin frontname', 'required' => true, 'default' => 'admin'),
         );
 
         foreach ($arguments as $argument => $options) {
