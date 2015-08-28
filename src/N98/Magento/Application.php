@@ -801,8 +801,8 @@ class Application extends BaseApplication
         $requireOnce($path);
     }
 
-    /*
-     * @param bool $soft
+    /**
+     * show compatibility notice about Magento 2
      */
     protected function _initMagento2()
     {
