@@ -65,8 +65,8 @@ class DatabaseHelper extends AbstractHelper
                 throw new RuntimeException('Cannot find default_setup config in app/etc/local.xml');
             }
 
-            $this->dbSettings           = (array)$config->global->resources->default_setup->connection;
-            $this->dbSettings['prefix'] = (string)$config->global->resources->db->table_prefix;
+            $this->dbSettings           = (array) $config->global->resources->default_setup->connection;
+            $this->dbSettings['prefix'] = (string) $config->global->resources->db->table_prefix;
 
             if (isset($this->dbSettings['host']) && strpos($this->dbSettings['host'], ':') !== false) {
                 list($this->dbSettings['host'], $this->dbSettings['port']) = explode(':', $this->dbSettings['host']);
@@ -81,7 +81,7 @@ class DatabaseHelper extends AbstractHelper
             }
 
             // @see Varien_Db_Adapter_Pdo_Mysql->_connect()
-            if (isset($this->dbSettings['host']) && strpos($this->dbSettings['host'], '/') !== false ) {
+            if (isset($this->dbSettings['host']) && strpos($this->dbSettings['host'], '/') !== false) {
                 $this->isSocketConnect = true;
                 $this->dbSettings['unix_socket'] = $this->dbSettings['host'];
                 unset($this->dbSettings['host']);
@@ -350,7 +350,7 @@ class DatabaseHelper extends AbstractHelper
                 return $result;
             }
 
-            return array_map(function ($tableName) use ($prefix) {
+            return array_map(function($tableName) use ($prefix) {
                 return str_replace($prefix, '', $tableName);
             }, $result);
         }
