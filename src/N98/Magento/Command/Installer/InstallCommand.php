@@ -12,6 +12,7 @@ use N98\Util\Filesystem;
 use N98\Util\OperatingSystem;
 use N98\Util\String;
 use PDO;
+use PDOException;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -399,7 +400,7 @@ HELP;
             }
 
             return $db;
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
 
