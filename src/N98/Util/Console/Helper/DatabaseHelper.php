@@ -394,37 +394,97 @@ class DatabaseHelper extends AbstractHelper
     }
 
     /**
-     * Get list of db tables
+     * Get list of tables in the database
      *
-     * @param bool $withoutPrefix
+     * @param bool $withoutPrefix [optional] remove prefix from the returned table names. prefix is obtained from
+     *                            magento database configuration. defaults to false.
      *
      * @return array
+     * @throws RuntimeException
      */
-    public function getTables($withoutPrefix = false)
+    public function getTables($withoutPrefix = null)
     {
+        $withoutPrefix = (bool) $withoutPrefix;
+
         $db     = $this->getConnection();
         $prefix = $this->dbSettings['prefix'];
-        if (strlen($prefix) > 0) {
-            $statement = $db->prepare('SHOW TABLES LIKE :like', array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-            $statement->execute(
-                array(':like' => $prefix . '%')
+        $length = strlen($prefix);
+
+        $columnName = 'table_name';
+        $column     = $columnName;
+
+        $input = array();
+
+        if ($withoutPrefix && $length) {
+            $column         = sprintf('SUBSTRING(%1$s FROM 1 + CHAR_LENGTH(:name)) %1$s', $columnName);
+            $input[':name'] = $prefix;
+        }
+
+        $condition = 'table_schema = database()';
+
+        if ($length) {
+            $escape = '=';
+            $condition .= sprintf(" AND %s LIKE :like ESCAPE '%s'", $columnName, $escape);
+            $input[':like'] = $this->quoteLike($prefix, $escape) . '%';
+        }
+
+        $query     = sprintf('SELECT %s FROM information_schema.tables WHERE %s;', $column, $condition);
+        $statement = $db->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $result    = $statement->execute($input);
+
+        if (!$result) {
+            // @codeCoverageIgnoreStart
+            $this->throwRuntimeException(
+                $statement
+                , sprintf('Failed to obtain tables from database: %s', var_export($query, true))
             );
+        } // @codeCoverageIgnoreEnd
+
+        $result = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+
+        return $result;
+    }
+
+    /**
+     * throw a runtime exception and provide error info for the statement if available
+     *
+     * @param PDOStatement $statement
+     * @param string       $message
+     *
+     * @throws RuntimeException
+     */
+    private function throwRuntimeException(PDOStatement $statement, $message = "")
+    {
+        $reason = $statement->errorInfo()
+            ? vsprintf('SQLSTATE[%s]: %s: %s', $statement->errorInfo())
+            : 'no error info for statement';
+
+        if (strlen($message)) {
+            $message .= ': ';
         } else {
-            $statement = $db->query('SHOW TABLES');
+            $message = '';
         }
 
-        if ($statement) {
-            $result = $statement->fetchAll(PDO::FETCH_COLUMN);
-            if ($withoutPrefix === false) {
-                return $result;
-            }
+        throw new RuntimeException($message . $reason);
+    }
 
-            return array_map(function($tableName) use ($prefix) {
-                return str_replace($prefix, '', $tableName);
-            }, $result);
-        }
+    /**
+     * quote a string so that it is safe to use in a LIKE
+     *
+     * @param string $string
+     * @param string $escape character - single us-ascii character
+     *
+     * @return string
+     */
+    private function quoteLike($string, $escape = '=')
+    {
+        $translation = array(
+            $escape => $escape . $escape,
+            '%'     => $escape . '%',
+            '_'     => $escape . '_',
+        );
 
-        return array();
+        return strtr($string, $translation);
     }
 
     /**
