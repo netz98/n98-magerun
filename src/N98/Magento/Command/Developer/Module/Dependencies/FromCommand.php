@@ -18,13 +18,7 @@ class FromCommand extends AbstractCommand
     /**#@-*/
 
     /**
-     * Find dependencies of given module $moduleName.
-     * If $recursive = true, dependencies will be collected recursively for all module dependencies
-     *
-     * @param string $moduleName
-     * @param bool $recursive
-     * @return array
-     * @throws InvalidArgumentException
+     * @inheritdoc
      */
     protected function findModuleDependencies($moduleName, $recursive = false)
     {

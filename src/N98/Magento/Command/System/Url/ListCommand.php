@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System\Url;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -56,11 +57,12 @@ HELP;
     /**
      * Execute command
      *
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @throws \InvalidArgumentException
-     * @throws \Mage_Core_Model_Store_Exception
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     *
      * @return int|void
+     * @throws InvalidArgumentException
+     * @throws \Mage_Core_Model_Store_Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

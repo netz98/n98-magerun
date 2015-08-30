@@ -23,8 +23,9 @@ class ViewCommand extends AbstractCacheCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @throws \RuntimeException
+     *
      * @return int|void
+     * @throws RuntimeException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

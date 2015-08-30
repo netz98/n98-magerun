@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Admin\User;
 
 use Exception;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -27,8 +28,9 @@ class DeleteUserCommand extends AbstractAdminUserCommand
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -36,6 +38,7 @@ class DeleteUserCommand extends AbstractAdminUserCommand
         $this->detectMagento($output);
         if ($this->initMagento()) {
 
+            /** @var $dialog DialogHelper */
             $dialog = $this->getHelperSet()->get('dialog');
 
             // Username

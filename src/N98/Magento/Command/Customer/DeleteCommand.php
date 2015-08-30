@@ -227,6 +227,7 @@ HELP;
 
     /**
      * @param \Mage_Customer_Model_Customer $customer
+     *
      * @return true|Exception
      */
     protected function deleteCustomer(\Mage_Customer_Model_Customer $customer)
@@ -245,6 +246,7 @@ HELP;
 
     /**
      * @param \Mage_Customer_Model_Entity_Customer_Collection|\Mage_Customer_Model_Resource_Customer_Collection $customers
+     *
      * @return int
      */
     protected function batchDelete($customers)

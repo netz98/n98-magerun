@@ -242,7 +242,7 @@ class ConfigurationLoader
                     ->in($this->getVendorDir());
 
                 foreach ($finder as $file) {
-                    /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                    /* @var $file SplFileInfo */
                     $this->registerPluginConfigFile($magentoRootFolder, $file);
                 }
             }
@@ -258,7 +258,7 @@ class ConfigurationLoader
                     ->name($this->_customConfigFilename)
                     ->in($moduleBaseFolders);
 
-                foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                foreach ($finder as $file) { /* @var $file SplFileInfo */
                     $this->registerPluginConfigFile($magentoRootFolder, $file);
                 }
             }
@@ -270,9 +270,9 @@ class ConfigurationLoader
     }
 
     /**
-     * @param string                                $rawConfig
-     * @param string                                $magentoRootFolder
-     * @param \Symfony\Component\Finder\SplFileInfo $file
+     * @param string      $rawConfig
+     * @param string      $magentoRootFolder
+     * @param SplFileInfo $file
      *
      * @return string
      */

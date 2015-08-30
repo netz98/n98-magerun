@@ -7,7 +7,7 @@ use N98\Magento\Command\AbstractMagentoCommand;
 abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
 {
     /**
-     * @return Mage_Core_Model_Abstract
+     * @return \Mage_Core_Model_Abstract|\Mage_Admin_Model_User
      */
     protected function getUserModel()
     {
@@ -15,7 +15,7 @@ abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return Mage_Core_Model_Abstract
+     * @return \Mage_Core_Model_Abstract
      */
     protected function getRoleModel()
     {
@@ -23,7 +23,7 @@ abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return Mage_Core_Model_Abstract
+     * @return \Mage_Core_Model_Abstract
      */
     protected function getRulesModel()
     {

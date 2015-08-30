@@ -2,6 +2,8 @@
 
 namespace N98\Util\Console\Helper;
 
+use PDO;
+use PDOException;
 use RuntimeException;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use N98\Magento\Application;
@@ -21,7 +23,7 @@ class DatabaseHelper extends AbstractHelper
     protected $isSocketConnect = false;
 
     /**
-     * @var \PDO
+     * @var PDO
      */
     protected $_connection = null;
 
@@ -92,8 +94,8 @@ class DatabaseHelper extends AbstractHelper
      *
      * @param OutputInterface $output = null
      *
-     * @throws \Exception
-     * @return \PDO
+     * @return PDO
+     * @throws RuntimeException pdo mysql extension is not installed
      */
     public function getConnection(OutputInterface $output = null)
     {
@@ -111,7 +113,7 @@ class DatabaseHelper extends AbstractHelper
             throw new RuntimeException('pdo_mysql extension is not installed');
         }
 
-        $this->_connection = new \PDO(
+        $this->_connection = new PDO(
             $this->dsn(),
             $this->dbSettings['username'],
             $this->dbSettings['password']
@@ -122,13 +124,19 @@ class DatabaseHelper extends AbstractHelper
 
         try {
             $this->_connection->query('USE `' . $this->dbSettings['dbname'] . '`');
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
+            if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $output->getVerbosity()) {
+                $output->writeln(sprintf(
+                    '<error>Failed to use database <comment>%s</comment>: %s</error>',
+                    var_export($this->dbSettings['dbname'], true), $e->getMessage()
+                ));
+            }
         }
 
         $this->_connection->query("SET NAMES utf8");
 
-        $this->_connection->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
-        $this->_connection->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+        $this->_connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+        $this->_connection->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 
         return $this->_connection;
     }
@@ -178,7 +186,7 @@ class DatabaseHelper extends AbstractHelper
     {
         $statement = $this->getConnection()->query('SHOW GRANTS');
 
-        $result = $statement->fetchAll(\PDO::FETCH_COLUMN);
+        $result = $statement->fetchAll(PDO::FETCH_COLUMN);
         foreach ($result as $row) {
             if (preg_match('/^GRANT(.*)' . strtoupper($privilege) . '/', $row)
                 || preg_match('/^GRANT(.*)ALL/', $row)
@@ -223,7 +231,7 @@ class DatabaseHelper extends AbstractHelper
     public function getMysqlVariableValue($variable)
     {
         $statement = $this->getConnection()->query("SELECT @@{$variable};");
-        $result    = $statement->fetch(\PDO::FETCH_ASSOC);
+        $result    = $statement->fetch(PDO::FETCH_ASSOC);
         if ($result) {
             return $result;
         }
@@ -232,14 +240,11 @@ class DatabaseHelper extends AbstractHelper
     }
 
     /**
-     * @param $commandConfig
+     * @param array $commandConfig
      *
-     * @throws \Exception
-     * @internal param $config
-     * @return array $commandConfig
      * @return array
      */
-    public function getTableDefinitions($commandConfig)
+    public function getTableDefinitions(array $commandConfig)
     {
         $tableDefinitions = array();
         if (isset($commandConfig['table-groups'])) {
@@ -271,7 +276,7 @@ class DatabaseHelper extends AbstractHelper
      * @param array $resolved Which definitions where already resolved -> prevent endless loops
      *
      * @return array
-     * @throws \Exception
+     * @throws RuntimeException
      */
     public function resolveTables(array $list, array $definitions = array(), array $resolved = array())
     {
@@ -297,7 +302,7 @@ class DatabaseHelper extends AbstractHelper
             // resolve wildcards
             if (strpos($entry, '*') !== false) {
                 $connection = $this->getConnection();
-                $sth        = $connection->prepare('SHOW TABLES LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+                $sth        = $connection->prepare('SHOW TABLES LIKE :like', array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
                 $sth->execute(
                     array(':like' => str_replace('*', '%', $this->dbSettings['prefix'] . $entry))
                 );
@@ -331,7 +336,7 @@ class DatabaseHelper extends AbstractHelper
         $db     = $this->getConnection();
         $prefix = $this->dbSettings['prefix'];
         if (strlen($prefix) > 0) {
-            $statement = $db->prepare('SHOW TABLES LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+            $statement = $db->prepare('SHOW TABLES LIKE :like', array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
             $statement->execute(
                 array(':like' => $prefix . '%')
             );
@@ -340,7 +345,7 @@ class DatabaseHelper extends AbstractHelper
         }
 
         if ($statement) {
-            $result = $statement->fetchAll(\PDO::FETCH_COLUMN);
+            $result = $statement->fetchAll(PDO::FETCH_COLUMN);
             if ($withoutPrefix === false) {
                 return $result;
             }
@@ -365,7 +370,7 @@ class DatabaseHelper extends AbstractHelper
         $db     = $this->getConnection();
         $prefix = $this->dbSettings['prefix'];
         if (strlen($prefix) > 0) {
-            $statement = $db->prepare('SHOW TABLE STATUS LIKE :like', array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY));
+            $statement = $db->prepare('SHOW TABLE STATUS LIKE :like', array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
             $statement->execute(
                 array(':like' => $prefix . '%')
             );
@@ -374,7 +379,7 @@ class DatabaseHelper extends AbstractHelper
         }
 
         if ($statement) {
-            $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
             $return = array();
             foreach ($result as $table) {
                 if (true === $withoutPrefix) {
@@ -418,8 +423,6 @@ class DatabaseHelper extends AbstractHelper
 
     /**
      * @param OutputInterface $output
-     *
-     * @throws \Exception
      */
     public function dropDatabase($output)
     {
@@ -431,8 +434,6 @@ class DatabaseHelper extends AbstractHelper
 
     /**
      * @param OutputInterface $output
-     *
-     * @throws \Exception
      */
     public function dropTables($output)
     {
@@ -450,8 +451,6 @@ class DatabaseHelper extends AbstractHelper
 
     /**
      * @param OutputInterface $output
-     *
-     * @throws \Exception
      */
     public function createDatabase($output)
     {
@@ -462,11 +461,10 @@ class DatabaseHelper extends AbstractHelper
     }
 
     /**
-     * @param string      $command
-     * @param string|null $variable
+     * @param string $command  example: 'VARIABLES', 'STATUS'
+     * @param string $variable [optional]
      *
      * @return array
-     * @throws \Exception
      */
     private function runShowCommand($command, $variable = null)
     {
@@ -475,7 +473,7 @@ class DatabaseHelper extends AbstractHelper
         if (null !== $variable) {
             $statement = $db->prepare(
                 'SHOW /*!50000 GLOBAL */ ' . $command . ' LIKE :like',
-                array(\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY)
+                array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY)
             );
             $statement->execute(
                 array(':like' => $variable)
@@ -485,21 +483,21 @@ class DatabaseHelper extends AbstractHelper
         }
 
         if ($statement) {
-            $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
             $return = array();
             foreach ($result as $row) {
                 $return[$row['Variable_name']] = $row['Value'];
             }
             return $return;
         }
+
         return array();
     }
 
     /**
-     * @param string|null $variable
+     * @param string $variable [optional]
      *
      * @return array
-     * @throws \Exception
      */
     public function getGlobalVariables($variable = null)
     {
@@ -507,10 +505,9 @@ class DatabaseHelper extends AbstractHelper
     }
 
     /**
-     * @param string|null $variable
+     * @param string $variable [optional]
      *
      * @return array
-     * @throws \Exception
      */
     public function getGlobalStatus($variable = null)
     {

@@ -39,15 +39,14 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface   $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param string                                            $argumentName
-     * @param  bool                                             $withDefaultStore
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @param string          $argumentName
+     * @param bool            $withDefaultStore [optional]
      *
      * @return mixed
      *
      * @throws InvalidArgumentException
-     * @throws \Exception
      */
     public function askStore(InputInterface $input, OutputInterface $output, $argumentName = 'store', $withDefaultStore = false)
     {
@@ -55,6 +54,7 @@ class ParameterHelper extends AbstractHelper
             if ($input->getArgument($argumentName) === null) {
                 throw new RuntimeException('No store given');
             }
+            /** @var $store \Mage_Core_Model_Store */
             $store = \Mage::app()->getStore($input->getArgument($argumentName));
         } catch (Exception $e) {
             $stores = array();
@@ -86,12 +86,12 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @param string $argumentName
+     *
      * @return mixed
      * @throws InvalidArgumentException
-     * @throws \Exception
      */
     public function askWebsite(InputInterface $input, OutputInterface $output, $argumentName = 'website')
     {
@@ -99,6 +99,7 @@ class ParameterHelper extends AbstractHelper
             if ($input->getArgument($argumentName) === null) {
                 throw new RuntimeException('No website given');
             }
+            /** @var $website \Mage_Core_Model_Website */
             $website = \Mage::app()->getWebsite($input->getArgument($argumentName));
         } catch (Exception $e) {
             $i = 0;
@@ -128,9 +129,10 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param string $argumentName
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @param string          $argumentName
+     *
      * @return string
      */
     public function askEmail(InputInterface $input, OutputInterface $output, $argumentName = 'email')
@@ -148,10 +150,11 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @param string $argumentName
-     * @return string
+     *
+*@return string
      */
     public function askPassword(
         InputInterface $input,
@@ -182,10 +185,10 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param OutputInterface         $output
-     * @param string                  $name
-     * @param string                  $value
-     * @param Constraint|Constraint[] $constraints
+     * @param OutputInterface                                $output
+     * @param string                                         $name
+     * @param string                                         $value
+     * @param Constraints\Collection|Constraint|Constraint[] $constraints The constraint(s) to validate against.
      *
      * @return mixed
      */

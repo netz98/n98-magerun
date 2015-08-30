@@ -8,8 +8,8 @@ use Symfony\Component\Console\Output\StreamOutput;
 class CsvRenderer implements RendererInterface
 {
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param array $rows
+     * @param OutputInterface $output
+     * @param array           $rows
      */
     public function render(OutputInterface $output, array $rows)
     {

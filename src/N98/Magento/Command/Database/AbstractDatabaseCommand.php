@@ -22,7 +22,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
 
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      */
     protected function detectDbSettings(OutputInterface $output)
     {
@@ -113,8 +113,6 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      * @return array
      *
      * @deprecated Please use database helper
-     *
-     * @throws \Exception
      */
     protected function resolveTables(array $excludes, array $definitions, array $resolved = array())
     {

@@ -21,9 +21,9 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
-     * @throws \Exception
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)

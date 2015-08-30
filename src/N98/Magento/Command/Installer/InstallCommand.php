@@ -11,6 +11,7 @@ use N98\Util\Database as DatabaseUtils;
 use N98\Util\Filesystem;
 use N98\Util\OperatingSystem;
 use N98\Util\String;
+use PDO;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -173,8 +174,9 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @throws InvalidArgumentException
      */
     protected function selectMagentoVersion(InputInterface $input, OutputInterface $output)
@@ -311,8 +313,9 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @throws InvalidArgumentException
      */
     protected function createDatabase(InputInterface $input, OutputInterface $output)
@@ -372,14 +375,15 @@ HELP;
 
     /**
      * @param OutputInterface $output
-     * @param InputInterface $input
-     * @return bool|\PDO
+     * @param InputInterface  $input
+     *
+     * @return bool|PDO
      */
     protected function validateDatabaseSettings(OutputInterface $output, InputInterface $input)
     {
         try {
             $dsn = sprintf("mysql:host=%s;port=%s", $this->config['db_host'], $this->config['db_port']);
-            $db = new \PDO($dsn, $this->config['db_user'], $this->config['db_pass']);
+            $db = new PDO($dsn, $this->config['db_user'], $this->config['db_pass']);
             if (!$db->query('USE ' . $this->config['db_name'])) {
                 $db->query("CREATE DATABASE `" . $this->config['db_name'] . "`");
                 $output->writeln('<info>Created database ' . $this->config['db_name'] . '</info>');
@@ -451,7 +455,8 @@ HELP;
 
                     // Install sample data
                     $sampleDataSqlFile = glob($this->config['installationFolder'] . '/_temp_demo_data/magento_*sample_data*sql');
-                    $db = $this->config['db']; /* @var $db \PDO */
+                    $db = $this->config['db'];
+                    /* @var $db PDO */
                     if (isset($sampleDataSqlFile[0])) {
                         if (OperatingSystem::isProgramInstalled('mysql')) {
                             $exec = 'mysql '
@@ -515,10 +520,12 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
-     * @throws \Exception
+     *
      * @return array
+     * @throws InvalidArgumentException parameter mismatch (e.g. base-url components like hostname)
+     * @throws RuntimeException
      */
     protected function installMagento(InputInterface $input, OutputInterface $output)
     {

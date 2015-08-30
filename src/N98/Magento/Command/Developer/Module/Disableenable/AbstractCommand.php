@@ -47,8 +47,8 @@ class AbstractCommand extends AbstractMagentoCommand
     /**
      * Execute command
      *
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
      *
      * @return void
      *
@@ -77,7 +77,7 @@ class AbstractCommand extends AbstractMagentoCommand
      * Search a code pool for modules and enable them
      *
      * @param string $codePool
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      *
      * @return int|void
      */
@@ -95,7 +95,7 @@ class AbstractCommand extends AbstractMagentoCommand
      * Enable a single module
      *
      * @param string $module
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      *
      * @return int|void
      */

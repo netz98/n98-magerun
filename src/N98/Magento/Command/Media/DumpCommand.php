@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use ZipArchive;
 
 class DumpCommand extends AbstractMagentoCommand
 {
@@ -23,10 +24,10 @@ class DumpCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @return int|null|void
-     * @throws \RuntimeException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -51,8 +52,8 @@ class DumpCommand extends AbstractMagentoCommand
             $filename .= 'media_' . date('Ymd_his') . '.zip';
         }
 
-        $zip = new \ZipArchive();
-        $zip->open($filename, \ZIPARCHIVE::CREATE);
+        $zip = new ZipArchive();
+        $zip->open($filename, ZIPARCHIVE::CREATE);
         $zip->addEmptyDir('media');
         $lastFolder = '';
         foreach ($finder as $file) {

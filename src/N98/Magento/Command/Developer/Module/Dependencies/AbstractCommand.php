@@ -83,12 +83,14 @@ abstract class AbstractCommand extends AbstractMagentoCommand
 
     /**
      * Find dependencies of given module $moduleName.
+     *
      * If $recursive = true, dependencies will be collected recursively for all module dependencies
      *
      * @param string $moduleName
-     * @param bool $recursive
+     * @param bool   $recursive  [optional]
+     *
      * @return array
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException of module-name is not found
      */
     abstract protected function findModuleDependencies($moduleName, $recursive = false);
 

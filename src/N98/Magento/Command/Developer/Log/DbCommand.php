@@ -27,8 +27,9 @@ class DbCommand extends AbstractLogCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -54,11 +55,11 @@ class DbCommand extends AbstractLogCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface  $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param string                                         $variable
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @param string          $variable
+     *
      * @return void
-     * @throws \Exception
      */
     protected function _replaceVariable($input, $output, $variable)
     {

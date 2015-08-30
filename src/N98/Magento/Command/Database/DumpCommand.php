@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Database;
 
+use N98\Magento\Command\Database\Compressor\AbstractCompressor;
 use N98\Util\OperatingSystem;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -74,8 +75,9 @@ HELP;
 
     /**
      * @return array
+     *
      * @deprecated Use database helper
-     * @throws \Exception
+     * @throws RuntimeException
      */
     public function getTableDefinitions()
     {
@@ -111,7 +113,6 @@ HELP;
      * Generate help for table definitions
      *
      * @return string
-     * @throws \Exception
      */
     public function getTableDefinitionHelp()
     {
@@ -171,8 +172,9 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -321,14 +323,14 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param \N98\Magento\Command\Database\Compressor\AbstractCompressor $compressor
+     * @param InputInterface     $input
+     * @param OutputInterface    $output
+     * @param AbstractCompressor $compressor
+     *
      * @return string
      */
-    protected function getFileName(InputInterface $input, OutputInterface $output,
-        Compressor\AbstractCompressor $compressor
-    ) {
+    protected function getFileName(InputInterface $input, OutputInterface $output, AbstractCompressor $compressor)
+    {
         $namePrefix    = '';
         $nameSuffix    = '';
         if ($input->getOption('xml')) {

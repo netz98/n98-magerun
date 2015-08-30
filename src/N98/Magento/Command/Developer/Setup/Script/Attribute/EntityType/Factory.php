@@ -6,6 +6,12 @@ use RuntimeException;
 
 class Factory
 {
+    /**
+     * @param $entityType
+     * @param $attribute
+     *
+     * @return mixed
+     */
     public static function create($entityType, $attribute)
     {
         $words = explode('_', strtolower($entityType));

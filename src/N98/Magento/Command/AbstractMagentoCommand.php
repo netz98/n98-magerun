@@ -133,7 +133,7 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      * @param string $text
      * @param string $style
      */
@@ -439,6 +439,11 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function chooseInstallationFolder(InputInterface $input, OutputInterface $output)
     {
+        /**
+         * @param string $folderName
+         *
+         * @return string
+         */
         $validateInstallationFolder = function($folderName) use ($input) {
 
             $folderName = rtrim(trim($folderName, ' '), '/');

@@ -4,6 +4,7 @@ namespace N98\Magento\Command\System\Cron;
 
 use Exception;
 use RuntimeException;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -33,7 +34,7 @@ HELP;
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @throws \Exception
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -44,7 +45,7 @@ HELP;
             $jobCode = $input->getArgument('job');
             if (!$jobCode) {
                 $this->writeSection($output, 'Cronjob');
-                $jobCode = $this->askJobCode($input, $output, $this->getJobs());
+                $jobCode = $this->askJobCode($output, $this->getJobs());
             }
 
             $jobsRoot = \Mage::getConfig()->getNode('crontab/jobs');
@@ -103,21 +104,22 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
      * @param OutputInterface $output
-     * @param array $jobs
-     * @return mixed
-     * @throws \InvalidArgumentException
-     * @throws \Exception
+     * @param array           $jobs array of array containing "job" keyed string entries of job-codes
+     *
+     * @return string         job-code
+     * @throws InvalidArgumentException when user selects invalid job interactively
      */
-    protected function askJobCode(InputInterface $input, OutputInterface $output, $jobs)
+    protected function askJobCode(OutputInterface $output, array $jobs)
     {
         foreach ($jobs as $key => $job) {
             $question[] = '<comment>[' . ($key + 1) . ']</comment> ' . $job['Job'] . PHP_EOL;
         }
         $question[] = '<question>Please select job: </question>' . PHP_EOL;
 
-        $jobCode = $this->getHelperSet()->get('dialog')->askAndValidate(
+        /** @var $dialogHelper DialogHelper */
+        $dialogHelper = $this->getHelperSet()->get('dialog');
+        $jobCode = $dialogHelper->askAndValidate(
             $output,
             $question,
             function($typeInput) use ($jobs) {

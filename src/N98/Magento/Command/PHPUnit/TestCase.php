@@ -14,7 +14,7 @@ use PHPUnit_Framework_MockObject_MockObject;
 class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \N98\Magento\Application
+     * @var Application
      */
     private $application = null;
 
@@ -32,8 +32,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @throws \RuntimeException
-     * @return PHPUnit_Framework_MockObject_MockObject|\N98\Magento\Application
+     * @return PHPUnit_Framework_MockObject_MockObject|Application
      */
     public function getApplication()
     {

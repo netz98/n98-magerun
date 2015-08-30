@@ -2,15 +2,18 @@
 
 namespace N98\Util;
 
+use PDO;
+
 class Database
 {
     /**
-     * @param \PDO $pdo
+     * @param PDO    $pdo
      * @param string $file
      * @param string $delimiter
+     *
      * @return bool
      */
-    public function importSqlDump(\PDO $pdo, $file, $delimiter = ';')
+    public function importSqlDump(PDO $pdo, $file, $delimiter = ';')
     {
         set_time_limit(0);
 

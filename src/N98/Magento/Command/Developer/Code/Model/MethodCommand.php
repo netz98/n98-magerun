@@ -38,6 +38,7 @@ class MethodCommand extends AbstractMagentoCommand
 
     /**
      * @var array
+     * @see initTableColumns
      */
     protected $_tableColumns = array();
 
@@ -152,6 +153,11 @@ class MethodCommand extends AbstractMagentoCommand
         return isset($typeMapper[$columnType]) ? $typeMapper[$columnType] : '';
     }
 
+    /**
+     * helper method to fill _tableColumns array
+     *
+     * @see _tableColumns
+     */
     protected function initTableColumns()
     {
         $dbHelper = $this->getHelper('database');

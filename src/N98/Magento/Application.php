@@ -2,6 +2,7 @@
 
 namespace N98\Magento;
 
+use Composer\Autoload\ClassLoader;
 use Exception;
 use N98\Magento\Command\ConfigurationLoader;
 use N98\Util\ArrayFunctions;
@@ -58,7 +59,7 @@ class Application extends BaseApplication
                            |___/
 ";
     /**
-     * @var \Composer\Autoload\ClassLoader
+     * @var ClassLoader
      */
     protected $autoloader;
 
@@ -135,7 +136,7 @@ class Application extends BaseApplication
     protected $_magentoDetected = false;
 
     /**
-     * @param \Composer\Autoload\ClassLoader $autoloader
+     * @param ClassLoader $autoloader
      */
     public function __construct($autoloader = null)
     {
@@ -334,8 +335,9 @@ class Application extends BaseApplication
     /**
      * Override standard command registration. We want alias support.
      *
-     * @param \Symfony\Component\Console\Command\Command $command
-     * @return \Symfony\Component\Console\Command\Command
+     * @param Command $command
+     *
+     * @return Command
      */
     public function add(Command $command)
     {
@@ -345,7 +347,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param \Symfony\Component\Console\Command\Command $command
+     * @param Command $command
      */
     protected function registerConfigCommandAlias(Command $command)
     {
@@ -518,7 +520,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return \Composer\Autoload\ClassLoader
+     * @return ClassLoader
      */
     public function getAutoloader()
     {
@@ -526,7 +528,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param \Composer\Autoload\ClassLoader $autoloader
+     * @param ClassLoader $autoloader
      */
     public function setAutoloader($autoloader)
     {
@@ -589,8 +591,9 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @return \Symfony\Component\Console\Input\ArgvInput|\Symfony\Component\Console\Input\InputInterface
+     * @param InputInterface $input
+     *
+     * @return ArgvInput|InputInterface
      */
     protected function checkConfigCommandAlias(InputInterface $input)
     {
@@ -869,7 +872,7 @@ MAGENTO2HINT;
     }
 
     /**
-     * @param \N98\Magento\Command\ConfigurationLoader $configurationLoader
+     * @param ConfigurationLoader $configurationLoader
      *
      * @return $this
      */
