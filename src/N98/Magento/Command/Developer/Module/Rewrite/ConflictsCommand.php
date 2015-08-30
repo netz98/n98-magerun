@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
+use Exception;
 use N98\JUnitXml\Document as JUnitXmlDocument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -27,8 +28,9 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -156,7 +158,7 @@ HELP;
                         return true;
                     }
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return true;
             }
         }

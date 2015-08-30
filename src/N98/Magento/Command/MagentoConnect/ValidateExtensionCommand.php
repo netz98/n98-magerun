@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\MagentoConnect;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use SimpleXMLElement;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -141,24 +142,25 @@ HELP;
     }
 
     /**
-     * @param \SimpleXMLElement $node
-     * @param string $path
+     * @param SimpleXMLElement $node
+     * @param string           $path
+     *
      * @return string
      */
-    protected function _getPathOfFileNodeToTarget($node, $path = '')
+    protected function _getPathOfFileNodeToTarget(SimpleXMLElement $node, $path = '')
     {
         if ($node->getName() == 'target') {
             return $this->_getBasePathFromTargetName((string) $node['name']) . $path;
         }
 
-        $path = '/' . $node['name'] . $path;
+        $path   = '/' . $node['name'] . $path;
         $parent = $this->_getParentNode($node);
 
         return $this->_getPathOfFileNodeToTarget($parent, $path);
     }
 
     /**
-     * @param \SimpleXMLElement $node
+     * @param SimpleXMLElement $node
      * @return mixed
      */
     protected function _getParentNode($node)
@@ -169,7 +171,7 @@ HELP;
     }
 
     /**
-     * @param \SimpleXmlElement $node
+     * @param SimpleXmlElement $node
      * @param string $path
      * @return string
      */

@@ -14,24 +14,30 @@ use PHPUnit_Framework_MockObject_MockObject;
 class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \N98\Magento\Application
+     * @var Application
      */
     private $application = null;
 
+    public function getTestMagentoRoot()
+    {
+        $root = getenv('N98_MAGERUN_TEST_MAGENTO_ROOT');
+        if (empty($root)) {
+            $this->markTestSkipped(
+                'Please specify environment variable N98_MAGERUN_TEST_MAGENTO_ROOT with path to your test ' .
+                'magento installation!'
+            );
+        }
+
+        return $root;
+    }
+
     /**
-     * @throws \RuntimeException
-     * @return PHPUnit_Framework_MockObject_MockObject|\N98\Magento\Application
+     * @return PHPUnit_Framework_MockObject_MockObject|Application
      */
     public function getApplication()
     {
         if ($this->application === null) {
-            $root = getenv('N98_MAGERUN_TEST_MAGENTO_ROOT');
-            if (empty($root)) {
-                $this->markTestSkipped(
-                    'Please specify environment variable N98_MAGERUN_TEST_MAGENTO_ROOT with path to your test ' .
-                    'magento installation!'
-                );
-            }
+            $root = $this->getTestMagentoRoot();
 
             $this->application = $this->getMock(
                 'N98\Magento\Application',

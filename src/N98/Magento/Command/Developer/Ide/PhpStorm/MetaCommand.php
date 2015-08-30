@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Ide\PhpStorm;
 
+use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -101,8 +102,9 @@ class MetaCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @internal param string $package
      * @return void
      */
@@ -175,7 +177,7 @@ class MetaCommand extends AbstractMagentoCommand
     {
         try {
             return preg_match("/class\s+{$className}/m", $file->getContents());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln('<error>File: ' . $file->__toString() . ' | ' . $e->getMessage() . '</error>');
             return false;
         }
@@ -209,8 +211,9 @@ class MetaCommand extends AbstractMagentoCommand
 
     /**
      * @param string $group
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return array
+     * @param OutputInterface $output
+     *
+*@return array
      */
     protected function getClassMapForGroup($group, OutputInterface $output)
     {

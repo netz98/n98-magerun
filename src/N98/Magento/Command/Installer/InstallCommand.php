@@ -4,11 +4,15 @@ namespace N98\Magento\Command\Installer;
 
 use Composer\Composer;
 use Composer\Package\CompletePackage;
+use Exception;
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Database as DatabaseUtils;
 use N98\Util\Filesystem;
 use N98\Util\OperatingSystem;
 use N98\Util\String;
+use PDO;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
@@ -101,7 +105,7 @@ HELP;
         $this->notEmptyCallback = function($input)
         {
             if (empty($input)) {
-                throw new \InvalidArgumentException('Please enter a value');
+                throw new InvalidArgumentException('Please enter a value');
             }
             return $input;
         };
@@ -110,7 +114,7 @@ HELP;
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -163,16 +167,17 @@ HELP;
         }
 
         if (count($missingExtensions) > 0) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'The following PHP extensions are required to start installation: ' . implode(',', $missingExtensions)
             );
         }
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
-     * @throws \InvalidArgumentException
+     *
+     * @throws InvalidArgumentException
      */
     protected function selectMagentoVersion(InputInterface $input, OutputInterface $output)
     {
@@ -188,7 +193,7 @@ HELP;
 
             $type = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($commandConfig) {
                 if (!in_array($typeInput, range(1, count($commandConfig['magento-packages'])))) {
-                    throw new \InvalidArgumentException('Invalid type');
+                    throw new InvalidArgumentException('Invalid type');
                 }
 
                 return $typeInput;
@@ -208,7 +213,7 @@ HELP;
             }
 
             if ($type == null) {
-                throw new \InvalidArgumentException('Unable to locate Magento version');
+                throw new InvalidArgumentException('Unable to locate Magento version');
             }
         }
 
@@ -255,7 +260,7 @@ HELP;
                 // Patch installer
                 $this->patchMagentoInstallerForPHP54($this->config['installationFolder']);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
             return false;
         }
@@ -308,9 +313,10 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
-     * @throws \InvalidArgumentException
+     *
+     * @throws InvalidArgumentException
      */
     protected function createDatabase(InputInterface $input, OutputInterface $output)
     {
@@ -337,7 +343,7 @@ HELP;
             $db = $this->validateDatabaseSettings($output, $input);
 
             if ($db === false) {
-                throw new \InvalidArgumentException("Database configuration is invalid", null);
+                throw new InvalidArgumentException("Database configuration is invalid", null);
             }
 
         } else {
@@ -369,14 +375,15 @@ HELP;
 
     /**
      * @param OutputInterface $output
-     * @param InputInterface $input
-     * @return bool|\PDO
+     * @param InputInterface  $input
+     *
+     * @return bool|PDO
      */
     protected function validateDatabaseSettings(OutputInterface $output, InputInterface $input)
     {
         try {
             $dsn = sprintf("mysql:host=%s;port=%s", $this->config['db_host'], $this->config['db_port']);
-            $db = new \PDO($dsn, $this->config['db_user'], $this->config['db_pass']);
+            $db = new PDO($dsn, $this->config['db_user'], $this->config['db_pass']);
             if (!$db->query('USE ' . $this->config['db_name'])) {
                 $db->query("CREATE DATABASE `" . $this->config['db_name'] . "`");
                 $output->writeln('<info>Created database ' . $this->config['db_name'] . '</info>');
@@ -448,7 +455,8 @@ HELP;
 
                     // Install sample data
                     $sampleDataSqlFile = glob($this->config['installationFolder'] . '/_temp_demo_data/magento_*sample_data*sql');
-                    $db = $this->config['db']; /* @var $db \PDO */
+                    $db = $this->config['db'];
+                    /* @var $db PDO */
                     if (isset($sampleDataSqlFile[0])) {
                         if (OperatingSystem::isProgramInstalled('mysql')) {
                             $exec = 'mysql '
@@ -512,10 +520,12 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
-     * @throws \Exception
+     *
      * @return array
+     * @throws InvalidArgumentException parameter mismatch (e.g. base-url components like hostname)
+     * @throws RuntimeException
      */
     protected function installMagento(InputInterface $input, OutputInterface $output)
     {
@@ -606,10 +616,10 @@ HELP;
 
         $validateBaseUrl = function($input) {
             if (!preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $input)) {
-                throw new \InvalidArgumentException('Please enter a valid URL');
+                throw new InvalidArgumentException('Please enter a valid URL');
             }
             if (parse_url($input, \PHP_URL_HOST) == 'localhost') {
-                throw new \InvalidArgumentException('localhost cause problems! Please use 127.0.0.1 or another hostname');
+                throw new InvalidArgumentException('localhost cause problems! Please use 127.0.0.1 or another hostname');
             }
             return $input;
         };
@@ -695,7 +705,7 @@ HELP;
         Exec::run($installCommand, $installationOutput, $returnStatus);
         if ($returnStatus !== self::EXEC_STATUS_OK) {
             $this->getApplication()->setAutoExit(true);
-            throw new \RuntimeException('Installation failed.' . $installationOutput, 1);
+            throw new RuntimeException('Installation failed.' . $installationOutput, 1);
         } else {
             $output->writeln('<info>Successfully installed Magento</info>');
             $encryptionKey = trim(substr($installationOutput, strpos($installationOutput, ':') + 1));
@@ -791,7 +801,7 @@ HELP;
             foreach ($finder as $dir) {
                 @chmod($dir->getRealpath(), 0777);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
     }

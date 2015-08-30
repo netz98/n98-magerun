@@ -2,7 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Module\Dependencies;
 
-use Installer\Exception;
+use Exception;
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -75,19 +76,21 @@ abstract class AbstractCommand extends AbstractMagentoCommand
             } else {
                 $output->writeln(sprintf(static::COMMAND_NO_RESULTS_TEXT, $moduleName));
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln($e->getMessage());
         }
     }
 
     /**
      * Find dependencies of given module $moduleName.
+     *
      * If $recursive = true, dependencies will be collected recursively for all module dependencies
      *
      * @param string $moduleName
-     * @param bool $recursive
+     * @param bool   $recursive  [optional]
+     *
      * @return array
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException of module-name is not found
      */
     abstract protected function findModuleDependencies($moduleName, $recursive = false);
 

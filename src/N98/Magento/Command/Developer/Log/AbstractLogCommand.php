@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Log;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -81,7 +82,7 @@ class AbstractLogCommand extends AbstractMagentoCommand
         $dialog  = $this->getHelperSet()->get('dialog');
         $logFile = $dialog->askAndValidate($output, $question, function($typeInput) use ($files) {
             if (!isset($files[$typeInput - 1])) {
-                throw new \InvalidArgumentException('Invalid file');
+                throw new InvalidArgumentException('Invalid file');
             }
 
             return $files[$typeInput - 1];

@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Database\Maintain;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,12 +15,12 @@ class CheckTablesCommand extends AbstractMagentoCommand
     const MESSAGE_REPAIR_NOT_SUPPORTED = 'The storage engine for the table doesn\'t support repair';
 
     /**
-     * @var \Symfony\Component\Console\Input\InputInterface
+     * @var InputInterface
      */
     protected $input = null;
 
     /**
-     * @var \Symfony\Component\Console\Output\OutputInterface
+     * @var OutputInterface
      */
     protected $output = null;
 
@@ -90,7 +91,7 @@ HELP;
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      */
     protected function isTypeAllowed()
@@ -98,7 +99,7 @@ HELP;
         $type = $this->input->getOption('type');
         $type = strtoupper($type);
         if ($type && !in_array($type, $this->allowedTypes)) {
-            throw new \InvalidArgumentException('Invalid type was given');
+            throw new InvalidArgumentException('Invalid type was given');
         }
     }
 
@@ -110,10 +111,10 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface   $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)

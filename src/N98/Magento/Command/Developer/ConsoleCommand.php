@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer;
 
+use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\OperatingSystem;
 use N98\Util\Unicode\Charset;
@@ -24,10 +25,10 @@ class ConsoleCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
-     * @throws RuntimeException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -35,7 +36,7 @@ class ConsoleCommand extends AbstractMagentoCommand
         try {
             $this->detectMagento($output);
             $initialized = $this->initMagento();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // do nothing
         }
 

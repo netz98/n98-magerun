@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Admin\User;
 
+use Exception;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,9 +23,9 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
-     * @throws \Exception
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -48,7 +50,7 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
                 $result = $user->validate();
 
                 if (is_array($result)) {
-                    throw new \RuntimeException(implode(PHP_EOL, $result));
+                    throw new RuntimeException(implode(PHP_EOL, $result));
                 }
 
                 if ($input->getOption('activate')) {
@@ -72,7 +74,7 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
                     $output->writeln('<info>User <comment>' . $user->getUsername() . '</comment> is now <comment>inactive</comment></info>');
                 }
 
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
             }
         }

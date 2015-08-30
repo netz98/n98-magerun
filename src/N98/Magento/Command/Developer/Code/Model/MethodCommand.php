@@ -2,7 +2,9 @@
 
 namespace N98\Magento\Command\Developer\Code\Model;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,6 +38,7 @@ class MethodCommand extends AbstractMagentoCommand
 
     /**
      * @var array
+     * @see initTableColumns
      */
     protected $_tableColumns = array();
 
@@ -52,7 +55,7 @@ class MethodCommand extends AbstractMagentoCommand
      * @param OutputInterface $output
      *
      * @return int|null|void
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -60,7 +63,7 @@ class MethodCommand extends AbstractMagentoCommand
         $this->_output = $output;
         $this->detectMagento($this->_output, true);
         if (false === $this->initMagento()) {
-            throw new \RuntimeException('Magento could not be loaded');
+            throw new RuntimeException('Magento could not be loaded');
         }
         $this->checkModel();
         $this->checkClassFileName();
@@ -81,7 +84,7 @@ class MethodCommand extends AbstractMagentoCommand
         }
         $written = file_put_contents($this->_fileName, implode('', $fileParts));
         if (false === $written) {
-            throw new \RuntimeException("Cannot write to file: " . $this->_fileName);
+            throw new RuntimeException("Cannot write to file: " . $this->_fileName);
         }
     }
 
@@ -150,6 +153,11 @@ class MethodCommand extends AbstractMagentoCommand
         return isset($typeMapper[$columnType]) ? $typeMapper[$columnType] : '';
     }
 
+    /**
+     * helper method to fill _tableColumns array
+     *
+     * @see _tableColumns
+     */
     protected function initTableColumns()
     {
         $dbHelper = $this->getHelper('database');
@@ -161,7 +169,7 @@ class MethodCommand extends AbstractMagentoCommand
             $this->_tableColumns[$row['Field']] = $row;
         }
         if (0 === count($this->_tableColumns)) {
-            throw new \InvalidArgumentException('No columns found in table: ' . $this->_mageModelTable);
+            throw new InvalidArgumentException('No columns found in table: ' . $this->_mageModelTable);
         }
     }
 
@@ -188,7 +196,7 @@ class MethodCommand extends AbstractMagentoCommand
         $this->_fileName = $this->searchFullPath($fileName);
 
         if (false === $this->_fileName) {
-            throw new \InvalidArgumentException('File not found: ' . $this->_fileName);
+            throw new InvalidArgumentException('File not found: ' . $this->_fileName);
         }
     }
 
@@ -196,12 +204,12 @@ class MethodCommand extends AbstractMagentoCommand
     {
         $this->_mageModel = \Mage::getModel($this->_input->getArgument('modelName'));
         if (true === empty($this->_mageModel)) {
-            throw new \InvalidArgumentException('Model ' . $this->_input->getArgument('modelName') . ' not found!');
+            throw new InvalidArgumentException('Model ' . $this->_input->getArgument('modelName') . ' not found!');
         }
 
         $this->_mageModelTable = $this->_mageModel->getResource() ? $this->_mageModel->getResource()->getMainTable() : null;
         if (true === empty($this->_mageModelTable)) {
-            throw new \InvalidArgumentException('Cannot find main table of model ' . $this->_input->getArgument('modelName'));
+            throw new InvalidArgumentException('Cannot find main table of model ' . $this->_input->getArgument('modelName'));
         }
     }
 }

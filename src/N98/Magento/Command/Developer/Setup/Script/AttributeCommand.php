@@ -14,6 +14,7 @@
 
 namespace N98\Magento\Command\Developer\Setup\Script;
 
+use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -58,7 +59,7 @@ class AttributeCommand extends AbstractMagentoCommand
 
             $output->writeln(implode(PHP_EOL, $warnings) . PHP_EOL . $code);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
     }

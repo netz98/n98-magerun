@@ -2,17 +2,19 @@
 
 namespace N98\Util;
 
+use DateTime as PhpDateTime;
+
 class DateTime
 {
     /**
      * Returns a readable string with time difference
      *
-     * @param \DateTime $time1
-     * @param \DateTime $time2
+     * @param PhpDateTime $time1
+     * @param PhpDateTime $time2
      *
      * @return string
      */
-    public function getDifferenceAsString(\DateTime $time1, \DateTime $time2)
+    public function getDifferenceAsString(PhpDateTime $time1, PhpDateTime $time2)
     {
         if ($time1 == $time2) {
             return '0';

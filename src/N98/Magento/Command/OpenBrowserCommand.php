@@ -3,6 +3,7 @@
 namespace N98\Magento\Command;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,7 +24,7 @@ class OpenBrowserCommand extends AbstractMagentoCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -45,7 +46,7 @@ class OpenBrowserCommand extends AbstractMagentoCommand
         }
 
         if (empty($opener)) {
-            throw new \RuntimeException('No opener command like xde-open, gnome-open, kde-open was found.');
+            throw new RuntimeException('No opener command like xde-open, gnome-open, kde-open was found.');
         }
 
         $this->detectMagento($output);

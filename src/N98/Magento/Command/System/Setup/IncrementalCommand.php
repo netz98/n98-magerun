@@ -2,7 +2,12 @@
 
 namespace N98\Magento\Command\System\Setup;
 
+use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionProperty;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -163,42 +168,42 @@ class IncrementalCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \ReflectionMethod $method
+     * @param ReflectionMethod $method
      * @param Object            $object
      * @param array             $args
      *
      * @return mixed
      */
-    protected function _callProtectedMethodFromObject($method, $object, $args = array())
+    protected function _callProtectedMethodFromObject(ReflectionMethod $method, $object, $args = array())
     {
-        $r = new \ReflectionClass($object);
+        $r = new ReflectionClass($object);
         $m = $r->getMethod('_getAvailableDbFiles');
         $m->setAccessible(true);
         return $m->invokeArgs($object, $args);
     }
 
     /**
-     * @param \ReflectionProperty $property
-     * @param Object              $object
-     * @param mixed               $value
+     * @param string $property
+     * @param Object $object
+     * @param mixed  $value
      */
     protected function _setProtectedPropertyFromObjectToValue($property, $object, $value)
     {
-        $r = new \ReflectionClass($object);
+        $r = new ReflectionClass($object);
         $p = $r->getProperty($property);
         $p->setAccessible(true);
         $p->setValue($object, $value);
     }
 
     /**
-     * @param \ReflectionProperty $property
+     * @param ReflectionProperty $property
      * @param Object              $object
      *
      * @return mixed
      */
     protected function _getProtectedPropertyFromObject($property, $object)
     {
-        $r = new \ReflectionClass($object);
+        $r = new ReflectionClass($object);
         $p = $r->getProperty($property);
         $p->setAccessible(true);
         return $p->getValue($object);
@@ -364,14 +369,14 @@ class IncrementalCommand extends AbstractMagentoCommand
      * @param array  $needsUpdate
      * @param string $type
      *
-     * @throws \Exception
+     * @throws RuntimeException
      * @internal param $string
      */
     protected function _runNamedSetupResource($name, array $needsUpdate, $type)
     {
         $output = $this->_output;
         if (!in_array($type, array(self::TYPE_MIGRATION_STRUCTURE, self::TYPE_MIGRATION_DATA))) {
-            throw new \RuntimeException('Invalid Type [' . $type . ']: structure, data are valid');
+            throw new RuntimeException('Invalid Type [' . $type . ']: structure, data is valid');
         }
 
         if (!array_key_Exists($name, $needsUpdate)) {
@@ -419,22 +424,22 @@ class IncrementalCommand extends AbstractMagentoCommand
             }
             $exceptionOutput = ob_get_clean();
             $this->_output->writeln($exceptionOutput);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $exceptionOutput = ob_get_clean();
             $this->_processExceptionDuringUpdate($e, $name, $exceptionOutput);
             if ($this->_input->getOption('stop-on-error')) {
-                throw new \RuntimeException('Setup stopped with errors');
+                throw new RuntimeException('Setup stopped with errors');
             }
         }
     }
 
     /**
-     * @param \Exception                      $e
+     * @param Exception                      $e
      * @param string                          $name
      * @param string                          $magentoExceptionOutput
      */
     protected function _processExceptionDuringUpdate(
-        \Exception $e,
+        Exception $e,
         $name,
         $magentoExceptionOutput
     )
@@ -498,8 +503,6 @@ class IncrementalCommand extends AbstractMagentoCommand
      * @param string $toUpdate
      * @param array  $needsUpdate
      * @param string $type
-     *
-     * @throws \Exception
      */
     protected function _runStructureOrDataScripts($toUpdate, array $needsUpdate, $type)
     {

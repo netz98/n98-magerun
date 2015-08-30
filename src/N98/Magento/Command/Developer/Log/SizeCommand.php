@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Log;
 
+use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,10 +20,10 @@ class SizeCommand extends AbstractLogCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -41,7 +42,7 @@ class SizeCommand extends AbstractLogCommand
                 $size = @filesize($path);
 
                 if ($size === false) {
-                    throw new \RuntimeException('Couldn\t detect filesize.');
+                    throw new RuntimeException('Couldn\t detect filesize.');
                 }
             } else {
                 $size = 0;

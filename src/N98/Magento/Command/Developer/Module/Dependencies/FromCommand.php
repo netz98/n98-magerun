@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Module\Dependencies;
 
+use InvalidArgumentException;
+
 class FromCommand extends AbstractCommand
 {
     /**#@+
@@ -16,13 +18,7 @@ class FromCommand extends AbstractCommand
     /**#@-*/
 
     /**
-     * Find dependencies of given module $moduleName.
-     * If $recursive = true, dependencies will be collected recursively for all module dependencies
-     *
-     * @param string $moduleName
-     * @param bool $recursive
-     * @return array
-     * @throws \InvalidArgumentException
+     * @inheritdoc
      */
     protected function findModuleDependencies($moduleName, $recursive = false)
     {
@@ -31,7 +27,7 @@ class FromCommand extends AbstractCommand
         }
 
         if (!isset($this->modules[$moduleName])) {
-            throw new \InvalidArgumentException(sprintf("Module %s was not found", $moduleName));
+            throw new InvalidArgumentException(sprintf("Module %s was not found", $moduleName));
         }
 
         $dependencies = array();

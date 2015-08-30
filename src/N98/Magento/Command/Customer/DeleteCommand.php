@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Customer;
 
+use Exception;
 use N98\Util\Console\Helper\ParameterHelper;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -124,7 +125,7 @@ HELP;
 
                 try {
                     $customer = $this->getCustomer($id);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->output->writeln('<error>No customer found!</error>');
                     return false;
                 }
@@ -226,7 +227,8 @@ HELP;
 
     /**
      * @param \Mage_Customer_Model_Customer $customer
-     * @return true|\Exception
+     *
+     * @return true|Exception
      */
     protected function deleteCustomer(\Mage_Customer_Model_Customer $customer)
     {
@@ -236,7 +238,7 @@ HELP;
                 sprintf('<info>%s (%s) was successfully deleted</info>', $customer->getName(), $customer->getEmail())
             );
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->output->writeln('<error>' . $e->getMessage() . '</error>');
             return $e;
         }
@@ -244,6 +246,7 @@ HELP;
 
     /**
      * @param \Mage_Customer_Model_Entity_Customer_Collection|\Mage_Customer_Model_Resource_Customer_Collection $customers
+     *
      * @return int
      */
     protected function batchDelete($customers)

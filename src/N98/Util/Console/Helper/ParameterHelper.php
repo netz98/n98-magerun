@@ -2,7 +2,10 @@
 
 namespace N98\Util\Console\Helper;
 
+use Exception;
+use InvalidArgumentException;
 use N98\Util\Validator\FakeMetadataFactory;
+use RuntimeException;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -36,24 +39,24 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface   $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param string                                            $argumentName
-     * @param  bool                                             $withDefaultStore
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @param string          $argumentName
+     * @param bool            $withDefaultStore [optional]
      *
      * @return mixed
      *
-     * @throws \InvalidArgumentException
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function askStore(InputInterface $input, OutputInterface $output, $argumentName = 'store', $withDefaultStore = false)
     {
         try {
             if ($input->getArgument($argumentName) === null) {
-                throw new \RuntimeException('No store given');
+                throw new RuntimeException('No store given');
             }
+            /** @var $store \Mage_Core_Model_Store */
             $store = \Mage::app()->getStore($input->getArgument($argumentName));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $stores = array();
             $i = 0;
             foreach (\Mage::app()->getStores($withDefaultStore) as $store) {
@@ -66,7 +69,7 @@ class ParameterHelper extends AbstractHelper
                 $question[] = '<question>Please select a store: </question>';
                 $storeId = $this->getHelperSet()->get('dialog')->askAndValidate($output, $question, function($typeInput) use ($stores) {
                     if (!isset($stores[$typeInput - 1])) {
-                        throw new \InvalidArgumentException('Invalid store');
+                        throw new InvalidArgumentException('Invalid store');
                     }
 
                     return $stores[$typeInput - 1];
@@ -83,21 +86,22 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @param string $argumentName
+     *
      * @return mixed
-     * @throws \InvalidArgumentException
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function askWebsite(InputInterface $input, OutputInterface $output, $argumentName = 'website')
     {
         try {
             if ($input->getArgument($argumentName) === null) {
-                throw new \RuntimeException('No website given');
+                throw new RuntimeException('No website given');
             }
+            /** @var $website \Mage_Core_Model_Website */
             $website = \Mage::app()->getWebsite($input->getArgument($argumentName));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $i = 0;
             $websites = array();
             foreach (\Mage::app()->getWebsites() as $website) {
@@ -112,7 +116,7 @@ class ParameterHelper extends AbstractHelper
 
             $websiteId = $this->getHelperSet()->get('dialog')->askAndValidate($output, $question, function($typeInput) use ($websites) {
                 if (!isset($websites[$typeInput - 1])) {
-                    throw new \InvalidArgumentException('Invalid store');
+                    throw new InvalidArgumentException('Invalid store');
                 }
 
                 return $websites[$typeInput - 1];
@@ -125,9 +129,10 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param string $argumentName
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @param string          $argumentName
+     *
      * @return string
      */
     public function askEmail(InputInterface $input, OutputInterface $output, $argumentName = 'email')
@@ -145,10 +150,11 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @param string $argumentName
-     * @return string
+     *
+*@return string
      */
     public function askPassword(
         InputInterface $input,
@@ -179,10 +185,10 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param OutputInterface         $output
-     * @param string                  $name
-     * @param string                  $value
-     * @param Constraint|Constraint[] $constraints
+     * @param OutputInterface                                $output
+     * @param string                                         $name
+     * @param string                                         $value
+     * @param Constraints\Collection|Constraint|Constraint[] $constraints The constraint(s) to validate against.
      *
      * @return mixed
      */
@@ -206,7 +212,7 @@ class ParameterHelper extends AbstractHelper
                 function($typeInput) use ($validator, $constraints, $name) {
                     $errors = $validator->validateValue(array($name => $typeInput), $constraints);
                     if (count($errors) > 0) {
-                        throw new \InvalidArgumentException($errors[0]->getMessage());
+                        throw new InvalidArgumentException($errors[0]->getMessage());
                     }
 
                     return $typeInput;

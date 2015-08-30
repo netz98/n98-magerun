@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System\Setup;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -39,7 +40,7 @@ class AbstractSetupCommand extends AbstractMagentoCommand
     /**
      * @param InputInterface $input
      * @return string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getModule(InputInterface $input)
     {
@@ -51,6 +52,6 @@ class AbstractSetupCommand extends AbstractMagentoCommand
             }
         }
 
-        throw new \InvalidArgumentException(sprintf('No module found with name: "%s"', $input->getArgument('module')));
+        throw new InvalidArgumentException(sprintf('No module found with name: "%s"', $input->getArgument('module')));
     }
 }

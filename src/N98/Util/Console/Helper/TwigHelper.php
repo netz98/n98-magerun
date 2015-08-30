@@ -2,7 +2,9 @@
 
 namespace N98\Util\Console\Helper;
 
+use Exception;
 use N98\Util\Template\Twig;
+use RuntimeException;
 use Symfony\Component\Console\Helper\Helper;
 
 /**
@@ -17,14 +19,14 @@ class TwigHelper extends Helper
 
     /**
      * @param array $baseDirs
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function __construct(array $baseDirs)
     {
         try {
             $this->twig = new Twig($baseDirs);
-        } catch (\Exception $e) {
-            throw new \RuntimeException($e->getMessage());
+        } catch (Exception $e) {
+            throw new RuntimeException($e->getMessage());
         }
     }
 

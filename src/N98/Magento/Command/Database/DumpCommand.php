@@ -2,7 +2,9 @@
 
 namespace N98\Magento\Command\Database;
 
+use N98\Magento\Command\Database\Compressor\AbstractCompressor;
 use N98\Util\OperatingSystem;
+use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -73,8 +75,9 @@ HELP;
 
     /**
      * @return array
+     *
      * @deprecated Use database helper
-     * @throws \Exception
+     * @throws RuntimeException
      */
     public function getTableDefinitions()
     {
@@ -87,10 +90,10 @@ HELP;
                 foreach ($tableGroups as $index=>$definition) {
                     $description = isset($definition['description']) ? $definition['description'] : '';
                     if (!isset($definition['id'])) {
-                        throw new \RuntimeException('Invalid definition of table-groups (id missing) Index: ' . $index);
+                        throw new RuntimeException('Invalid definition of table-groups (id missing) Index: ' . $index);
                     }
                     if (!isset($definition['id'])) {
-                        throw new \RuntimeException('Invalid definition of table-groups (tables missing) Id: '
+                        throw new RuntimeException('Invalid definition of table-groups (tables missing) Id: '
                             . $definition['id']
                         );
                     }
@@ -110,7 +113,6 @@ HELP;
      * Generate help for table definitions
      *
      * @return string
-     * @throws \Exception
      */
     public function getTableDefinitionHelp()
     {
@@ -170,8 +172,9 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -320,14 +323,14 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param \N98\Magento\Command\Database\Compressor\AbstractCompressor $compressor
+     * @param InputInterface     $input
+     * @param OutputInterface    $output
+     * @param AbstractCompressor $compressor
+     *
      * @return string
      */
-    protected function getFileName(InputInterface $input, OutputInterface $output,
-        Compressor\AbstractCompressor $compressor
-    ) {
+    protected function getFileName(InputInterface $input, OutputInterface $output, AbstractCompressor $compressor)
+    {
         $namePrefix    = '';
         $nameSuffix    = '';
         if ($input->getOption('xml')) {
