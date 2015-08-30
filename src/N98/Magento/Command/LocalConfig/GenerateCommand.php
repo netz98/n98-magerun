@@ -43,51 +43,51 @@ HELP;
     {
         $this->detectMagento($output);
         $configFile = $this->_getLocalConfigFilename();
-        $configFileTemplate = $this->_magentoRootFolder . '/app/etc/local.xml.template';
-        if (!file_exists($configFile)) {
-            $this->writeSection($output, 'Generate Magento local.xml');
-            $this->askForArguments($input, $output);
-            if (!file_exists($configFileTemplate)) {
-                $output->writeln('<error>File ' . $this->_magentoRootFolder . '/app/etc/local.xml.template does not exist.</error>');
-                return;
-            }
+        $configFileTemplate = dirname($configFile) . '/local.xml.template';
 
-            if (!is_writable($this->_magentoRootFolder . '/app/etc')) {
-                $output->writeln('<error>Folder ' . $this->_magentoRootFolder . '/app/etc is not writeable</error>');
-                return;
-            }
-
-            $content = file_get_contents($configFileTemplate);
-            $key = $input->getArgument('encryption-key') ? $input->getArgument('encryption-key') : md5(uniqid());
-            if (is_array($key)) {
-                $key = $key[0];
-            }
-
-            $replace = array(
-                '{{date}}'               => $this->_wrapCData(date(\DateTime::RFC2822)),
-                '{{key}}'                => $this->_wrapCData($key),
-                '{{db_prefix}}'          => $this->_wrapCData(''),
-                '{{db_host}}'            => $this->_wrapCData($input->getArgument('db-host')),
-                '{{db_user}}'            => $this->_wrapCData($input->getArgument('db-user')),
-                '{{db_pass}}'            => $this->_wrapCData($input->getArgument('db-pass')),
-                '{{db_name}}'            => $this->_wrapCData($input->getArgument('db-name')),
-                '{{db_init_statemants}}' => $this->_wrapCData('SET NAMES utf8'), // this is right -> magento has a little typo bug "statemants".
-                '{{db_model}}'           => $this->_wrapCData('mysql4'),
-                '{{db_type}}'            => $this->_wrapCData('pdo_mysql'),
-                '{{db_pdo_type}}'        => $this->_wrapCData(''),
-                '{{session_save}}'       => $this->_wrapCData($input->getArgument('session-save')),
-                '{{admin_frontname}}'    => $this->_wrapCData($input->getArgument('admin-frontname')),
-            );
-
-            $newFileContent = str_replace(array_keys($replace), array_values($replace), $content);
-            if (file_put_contents($configFile, $newFileContent)) {
-                $output->writeln('<info>Generated config</info>');
-            } else {
-                $output->writeln('<error>could not save config</error>');
-            }
-        } else {
-            $output->writeln('<info>local.xml file already exists in folder "' . $this->_magentoRootFolder . '/app/etc' . '"</info>');
+        if (file_exists($configFile)) {
+            $output->writeln(sprintf('<info>local.xml file already exists in folder "%s/app/etc"</info>', dirname($configFile)));
+            return;
         }
+
+        $this->writeSection($output, 'Generate Magento local.xml');
+        $this->askForArguments($input, $output);
+        if (!file_exists($configFileTemplate)) {
+            $output->writeln(sprintf('<error>File %s does not exist.</error>', $configFileTemplate));
+            return;
+        }
+
+        if (!is_writable(dirname($configFileTemplate))) {
+            $output->writeln(sprintf('<error>Folder %s is not writeable</error>', dirname($configFileTemplate)));
+            return;
+        }
+
+        $content = file_get_contents($configFileTemplate);
+        $key = $input->getArgument('encryption-key') ? $input->getArgument('encryption-key') : md5(uniqid());
+
+        $replace = array(
+            '{{date}}'               => $this->_wrapCData(date(\DateTime::RFC2822)),
+            '{{key}}'                => $this->_wrapCData($key),
+            '{{db_prefix}}'          => $this->_wrapCData(''),
+            '{{db_host}}'            => $this->_wrapCData($input->getArgument('db-host')),
+            '{{db_user}}'            => $this->_wrapCData($input->getArgument('db-user')),
+            '{{db_pass}}'            => $this->_wrapCData($input->getArgument('db-pass')),
+            '{{db_name}}'            => $this->_wrapCData($input->getArgument('db-name')),
+            '{{db_init_statemants}}' => $this->_wrapCData('SET NAMES utf8'), // this is right -> magento has a little typo bug "statemants".
+            '{{db_model}}'           => $this->_wrapCData('mysql4'),
+            '{{db_type}}'            => $this->_wrapCData('pdo_mysql'),
+            '{{db_pdo_type}}'        => $this->_wrapCData(''),
+            '{{session_save}}'       => $this->_wrapCData($input->getArgument('session-save')),
+            '{{admin_frontname}}'    => $this->_wrapCData($input->getArgument('admin-frontname')),
+        );
+
+        $newFileContent = str_replace(array_keys($replace), array_values($replace), $content);
+        if (false === file_put_contents($configFile, $newFileContent)) {
+            $output->writeln('<error>could not save config</error>');
+            return;
+        }
+
+        $output->writeln('<info>Generated config</info>');
     }
 
     /**
@@ -97,6 +97,7 @@ HELP;
     protected function askForArguments(InputInterface $input, OutputInterface $output)
     {
         $dialog = $this->getHelperSet()->get('dialog');
+        $dialog->setInput($input);
         $messagePrefix = 'Please enter the ';
 
         $arguments = array(
@@ -127,8 +128,7 @@ HELP;
             }
 
             if ($options['required'] && $input->getArgument($argument) === null) {
-                $output->writeln(sprintf('<error>%s was not set</error>'), $argument);
-                return;
+                throw new \InvalidArgumentException(sprintf('%s was not set', $argument));
             }
         }
     }
