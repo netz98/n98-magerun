@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use UnexpectedValueException;
 use Varien_Simplexml_Element;
 
 class MetaCommand extends AbstractMagentoCommand
@@ -137,9 +138,16 @@ class MetaCommand extends AbstractMagentoCommand
      */
     protected function getRealClassname(SplFileInfo $file, $classPrefix)
     {
-        $path = str_replace('.php', '', $file->getRelativePathname());
+        $path = $file->getRelativePathname();
+        if (substr($path, -4) !== '.php') {
+            throw new UnexpectedValueException(
+                sprintf('Expected that relative file %s ends with ".php"', var_export($path, true))
+            );
+        }
+        $path = substr($path, 0, -4);
+        $path = strtr($path, '\\', '/');
 
-        return trim($classPrefix . '_' . str_replace('/', '_', $path), '_');
+        return trim($classPrefix . '_' . strtr($path, '/', '_'), '_');
     }
 
     /**
