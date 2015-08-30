@@ -344,7 +344,7 @@ HELP;
             $db = $this->validateDatabaseSettings($output, $input);
 
             if ($db === false) {
-                throw new InvalidArgumentException("Database configuration is invalid", null);
+                throw new InvalidArgumentException("Database configuration is invalid");
             }
 
         } else {
