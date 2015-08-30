@@ -3,6 +3,7 @@
 namespace N98\Util\Console\Helper;
 
 use InvalidArgumentException;
+use N98\Magento\DbSettings;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -52,6 +53,17 @@ class DatabaseHelper extends AbstractHelper
 
             return;
         }
+
+        // NEW
+
+        $application = $this->getApplication();
+        $application->detectMagento();
+
+        $configFile = $application->getMagentoRootFolder() . '/app/etc/local.xml';
+        $configSettings = new DbSettings($configFile);
+        $config = new DbConfig($configSettings);
+
+        // NEW END
 
         $resources = $this->getMagentoGlobalResources($output);
 
