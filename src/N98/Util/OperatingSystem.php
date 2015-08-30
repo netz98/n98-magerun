@@ -106,15 +106,11 @@ class OperatingSystem
 
     /**
      * get current working directory
+     *
+     * @return string the current working directory on success, or false on failure.
      */
     public static function getCwd()
     {
-        if (!Exec::allowed() || OperatingSystem::isWindows()) {
-            return getcwd();
-        }
-
-        Exec::run('pwd', $folder);
-
-        return $folder;
+        return getcwd();
     }
 }

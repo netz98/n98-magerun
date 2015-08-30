@@ -3,6 +3,7 @@
 namespace N98\Magento\Command;
 
 use Composer\Package\PackageInterface;
+use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\Output;
@@ -439,11 +440,9 @@ abstract class AbstractMagentoCommand extends Command
         $validateInstallationFolder = function($folderName) use ($input) {
 
             $folderName = rtrim(trim($folderName, ' '), '/');
+            // resolve folder-name to current working directory if relative
             if (substr($folderName, 0, 1) == '.') {
-                $cwd = \getcwd();
-                if (empty($cwd) && isset($_SERVER['PWD'])) {
-                    $cwd = $_SERVER['PWD'];
-                }
+                $cwd = OperatingSystem::getCwd();
                 $folderName = $cwd . substr($folderName, 1);
             }
 
