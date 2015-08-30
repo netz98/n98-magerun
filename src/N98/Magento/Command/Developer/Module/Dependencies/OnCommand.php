@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Module\Dependencies;
 
+use Exception;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -62,7 +63,7 @@ class OnCommand extends AbstractMagentoCommand
                     ->setPadType(STR_PAD_LEFT)
                     ->renderByFormat($output, $dependencies, $input->getOption('format'));
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln($e->getMessage());
         }
     }

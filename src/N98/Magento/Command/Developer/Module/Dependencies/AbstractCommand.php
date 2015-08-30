@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Module\Dependencies;
 
+use Exception;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -75,7 +76,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
             } else {
                 $output->writeln(sprintf(static::COMMAND_NO_RESULTS_TEXT, $moduleName));
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln($e->getMessage());
         }
     }

@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Customer;
 
+use Exception;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -62,7 +63,7 @@ HELP;
                 $customer->setPassword($password);
                 $customer->save();
                 $output->writeln('<info>Password successfully changed</info>');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
             }
         }

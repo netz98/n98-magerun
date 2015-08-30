@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Indexer;
 
+use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -58,7 +59,7 @@ class ReindexAllCommand extends AbstractIndexerCommand
                     );
                 }
                 \Mage::dispatchEvent('shell_reindex_init_process');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 \Mage::dispatchEvent('shell_reindex_init_process');
             }
         }

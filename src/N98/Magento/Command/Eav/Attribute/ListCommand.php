@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Eav\Attribute;
 
+use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -98,7 +99,7 @@ class ListCommand extends AbstractMagentoCommand
             if ($entityType instanceof \Mage_Eav_Model_Entity_Type) {
                 $entityTypeCode = $entityType->getEntityTypeCode();
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
         }
 
         return $entityTypeCode;

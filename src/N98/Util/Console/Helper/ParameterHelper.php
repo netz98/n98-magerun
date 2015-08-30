@@ -2,6 +2,7 @@
 
 namespace N98\Util\Console\Helper;
 
+use Exception;
 use InvalidArgumentException;
 use N98\Util\Validator\FakeMetadataFactory;
 use RuntimeException;
@@ -55,7 +56,7 @@ class ParameterHelper extends AbstractHelper
                 throw new RuntimeException('No store given');
             }
             $store = \Mage::app()->getStore($input->getArgument($argumentName));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $stores = array();
             $i = 0;
             foreach (\Mage::app()->getStores($withDefaultStore) as $store) {
@@ -99,7 +100,7 @@ class ParameterHelper extends AbstractHelper
                 throw new RuntimeException('No website given');
             }
             $website = \Mage::app()->getWebsite($input->getArgument($argumentName));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $i = 0;
             $websites = array();
             foreach (\Mage::app()->getWebsites() as $website) {

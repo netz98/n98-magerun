@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Admin\User;
 
+use Exception;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -73,7 +74,7 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
                     $output->writeln('<info>User <comment>' . $user->getUsername() . '</comment> is now <comment>inactive</comment></info>');
                 }
 
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
             }
         }

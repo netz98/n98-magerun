@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
+use Exception;
 use N98\JUnitXml\Document as JUnitXmlDocument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -156,7 +157,7 @@ HELP;
                         return true;
                     }
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return true;
             }
         }

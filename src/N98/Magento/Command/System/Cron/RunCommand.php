@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System\Cron;
 
+use Exception;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -85,7 +86,7 @@ HELP;
                         ->setStatus(\Mage_Cron_Model_Schedule::STATUS_SUCCESS)
                         ->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
                         ->save();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $schedule
                         ->setStatus(\Mage_Cron_Model_Schedule::STATUS_ERROR)
                         ->setMessages($e->getMessage())

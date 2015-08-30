@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Ide\PhpStorm;
 
+use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -175,7 +176,7 @@ class MetaCommand extends AbstractMagentoCommand
     {
         try {
             return preg_match("/class\s+{$className}/m", $file->getContents());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln('<error>File: ' . $file->__toString() . ' | ' . $e->getMessage() . '</error>');
             return false;
         }

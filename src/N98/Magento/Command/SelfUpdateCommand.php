@@ -5,6 +5,7 @@ namespace N98\Magento\Command;
 use Composer\Downloader\FilesystemException;
 use Composer\IO\ConsoleIO;
 use Composer\Util\RemoteFilesystem;
+use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -123,7 +124,7 @@ UNSTABLE_FOOTER;
                 }
 
                 $this->_exit();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 @unlink($tempFilename);
                 if (!$e instanceof \UnexpectedValueException && !$e instanceof \PharException) {
                     throw $e;

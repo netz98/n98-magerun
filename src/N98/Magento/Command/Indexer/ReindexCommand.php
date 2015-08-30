@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Indexer;
 
+use Exception;
 use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -112,7 +113,7 @@ HELP;
                         ) . '</comment>)</info>'
                     );
                     \Mage::dispatchEvent('shell_reindex_finalize_process');
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $output->writeln('<error>' . $e->getMessage() . '</error>');
                     \Mage::dispatchEvent('shell_reindex_finalize_process');
                 }

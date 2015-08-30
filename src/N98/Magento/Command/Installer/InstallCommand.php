@@ -4,6 +4,7 @@ namespace N98\Magento\Command\Installer;
 
 use Composer\Composer;
 use Composer\Package\CompletePackage;
+use Exception;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Database as DatabaseUtils;
@@ -257,7 +258,7 @@ HELP;
                 // Patch installer
                 $this->patchMagentoInstallerForPHP54($this->config['installationFolder']);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
             return false;
         }
@@ -793,7 +794,7 @@ HELP;
             foreach ($finder as $dir) {
                 @chmod($dir->getRealpath(), 0777);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
     }

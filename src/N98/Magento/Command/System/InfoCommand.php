@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System;
 
+use Exception;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -71,7 +72,7 @@ class InfoCommand extends AbstractMagentoCommand
                 $this->customerCount();
                 $this->categoryCount();
                 $this->productCount();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
             }
         }

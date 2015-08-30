@@ -2,6 +2,7 @@
 
 namespace N98\Magento;
 
+use Exception;
 use N98\Magento\Command\ConfigurationLoader;
 use N98\Util\ArrayFunctions;
 use N98\Util\AutoloadRestorer;
@@ -414,7 +415,7 @@ class Application extends BaseApplication
 
         try {
             $this->initMagento();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $message = 'Cannot initialize Magento. Please check your configuration. '
                 . 'Some n98-magerun command will not work. Got message: ';
             if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $output->getVerbosity()) {
@@ -639,7 +640,7 @@ class Application extends BaseApplication
 
         try {
             $this->init(array(), $input, $output);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output = new ConsoleOutput();
             $this->renderException($e, $output);
         }

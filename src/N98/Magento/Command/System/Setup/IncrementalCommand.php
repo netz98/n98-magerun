@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System\Setup;
 
+use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -420,7 +421,7 @@ class IncrementalCommand extends AbstractMagentoCommand
             }
             $exceptionOutput = ob_get_clean();
             $this->_output->writeln($exceptionOutput);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $exceptionOutput = ob_get_clean();
             $this->_processExceptionDuringUpdate($e, $name, $exceptionOutput);
             if ($this->_input->getOption('stop-on-error')) {
@@ -430,12 +431,12 @@ class IncrementalCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Exception                      $e
+     * @param Exception                      $e
      * @param string                          $name
      * @param string                          $magentoExceptionOutput
      */
     protected function _processExceptionDuringUpdate(
-        \Exception $e,
+        Exception $e,
         $name,
         $magentoExceptionOutput
     )

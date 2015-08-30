@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Admin\User;
 
+use Exception;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -56,7 +57,7 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
                 $user->setPassword($password);
                 $user->save();
                 $output->writeln('<info>Password successfully changed</info>');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
             }
         }
