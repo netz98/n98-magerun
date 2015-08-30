@@ -2,14 +2,22 @@
 
 namespace N98\Util\Console\Helper;
 
+use InvalidArgumentException;
 use PDO;
 use PDOException;
+use PDOStatement;
 use RuntimeException;
+use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use N98\Magento\Application;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class DatabaseHelper
+ *
+ * @package N98\Util\Console\Helper
+ */
 class DatabaseHelper extends AbstractHelper
 {
     /**
@@ -36,21 +44,15 @@ class DatabaseHelper extends AbstractHelper
      * @param OutputInterface $output
      *
      * @throws RuntimeException
-     * @return void
      */
     public function detectDbSettings(OutputInterface $output)
     {
-        if ($this->dbSettings !== null) {
+        if (null !== $this->dbSettings) {
+
             return;
         }
 
-        $command = $this->getHelperSet()->getCommand();
-        if ($command == null) {
-            $application = new Application();
-        } else {
-            $application = $command->getApplication();
-            /* @var $application Application */
-        }
+        $application = $this->getApplication();
         $application->detectMagento();
 
         $configFile = $application->getMagentoRootFolder() . '/app/etc/local.xml';
@@ -58,37 +60,49 @@ class DatabaseHelper extends AbstractHelper
         if (!is_readable($configFile)) {
             throw new RuntimeException('app/etc/local.xml is not readable');
         }
-        $config = \simplexml_load_string(\file_get_contents($configFile));
-        if (!$config->global->resources->default_setup->connection) {
-            $output->writeln('<error>DB settings was not found in local.xml file</error>');
+
+        $config = simplexml_load_file($configFile);
+        if (false === $config) {
+            $output->writeln('<error>Unable to open file app/etc/local.xml and parse it as XML</error>');
+
             return;
         }
 
-        if (!isset($config->global->resources->default_setup->connection)) {
-            throw new RuntimeException('Cannot find default_setup config in app/etc/local.xml');
+        $resources = $config->global->resources;
+        if (!$resources) {
+            $output->writeln('<error>DB global resources was not found in app/etc/local.xml file</error>');
+
+            return;
         }
 
-        $this->dbSettings           = (array) $config->global->resources->default_setup->connection;
-        $this->dbSettings['prefix'] = (string) $config->global->resources->db->table_prefix;
+        if (!$resources->default_setup->connection) {
+            $output->writeln('<error>DB settings (default_setup) was not found in app/etc/local.xml file</error>');
 
-        if (isset($this->dbSettings['host']) && strpos($this->dbSettings['host'], ':') !== false) {
-            list($this->dbSettings['host'], $this->dbSettings['port']) = explode(':', $this->dbSettings['host']);
+            return;
         }
 
-        if (isset($this->dbSettings['comment'])) {
-            unset($this->dbSettings['comment']);
+        $isSocketConnect      = null;
+        $dbSettings           = (array) $resources->default_setup->connection;
+        $dbSettings['prefix'] = (string) $resources->db->table_prefix;
+
+        if (isset($dbSettings['host']) && strpos($dbSettings['host'], ':') !== false) {
+            list($dbSettings['host'], $dbSettings['port']) = explode(':', $dbSettings['host']);
         }
 
-        if (isset($this->dbSettings['unix_socket'])) {
-            $this->isSocketConnect = true;
+        unset($dbSettings['comment']);
+
+        /* @see \Varien_Db_Adapter_Pdo_Mysql::_connect() */
+        if (isset($dbSettings['host']) && strpos($dbSettings['host'], '/') !== false) {
+            $dbSettings['unix_socket'] = $dbSettings['host'];
+            unset($dbSettings['host']);
         }
 
-        // @see Varien_Db_Adapter_Pdo_Mysql->_connect()
-        if (isset($this->dbSettings['host']) && strpos($this->dbSettings['host'], '/') !== false) {
-            $this->isSocketConnect = true;
-            $this->dbSettings['unix_socket'] = $this->dbSettings['host'];
-            unset($this->dbSettings['host']);
+        if (isset($dbSettings['unix_socket'])) {
+            $isSocketConnect = true;
         }
+
+        $this->isSocketConnect = $isSocketConnect;
+        $this->dbSettings      = $dbSettings;
     }
 
     /**
@@ -228,18 +242,71 @@ class DatabaseHelper extends AbstractHelper
      *
      * @param string $variable
      *
-     * @return bool|string
+     * @return bool|array returns array on success, false on failure
      */
     public function getMysqlVariableValue($variable)
     {
         $statement = $this->getConnection()->query("SELECT @@{$variable};");
-        $result    = $statement->fetch(PDO::FETCH_ASSOC);
+        if (false === $statement) {
+            throw new RuntimeException(sprintf('Failed to query mysql variable %s', var_export($variable, 1)));
+        }
+
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
         if ($result) {
             return $result;
         }
 
         return false;
     }
+
+    /**
+     * obtain mysql variable value from the database connection.
+     *
+     * in difference to @see getMysqlVariableValue(), this method allows to specify the type of the variable as well
+     * as to use any variable identifier even such that need quoting.
+     *
+     * @param string $name mysql variable name
+     * @param string $type [optional] variable type, can be a system variable ("@@", default) or a session variable
+     *                     ("@").
+     *
+     * @return string variable value, null if variable was not defined
+     * @throws RuntimeException in case a system variable is unknown (SQLSTATE[HY000]: 1193: Unknown system variable
+     *                          'nonexistent')
+     */
+    public function getMysqlVariable($name, $type = null)
+    {
+        if (null === $type) {
+            $type = "@@";
+        } else {
+            $type = (string) $type;
+        }
+
+        if (!in_array($type, array("@@", "@"), true)) {
+            throw new InvalidArgumentException(
+                sprintf('Invalid mysql variable type "%s", must be "@@" (system) or "@" (session)', $type)
+            );
+        }
+
+        $quoted = '`' . strtr($name, array('`' => '``')) . '`';
+        $query  = "SELECT {$type}{$quoted};";
+
+        $connection = $this->getConnection();
+        $statement  = $connection->query($query, PDO::FETCH_COLUMN, 0);
+        if ($statement instanceof PDOStatement) {
+            $result = $statement->fetchColumn(0);
+        } else {
+            $reason = $connection->errorInfo()
+                ? vsprintf('SQLSTATE[%s]: %s: %s', $connection->errorInfo())
+                : 'no error info';
+
+            throw new RuntimeException(
+                sprintf('Failed to query mysql variable %s: %s', var_export($name, true), $reason)
+            );
+        }
+
+        return $result;
+    }
+
 
     /**
      * @param array $commandConfig
@@ -389,6 +456,7 @@ class DatabaseHelper extends AbstractHelper
                 }
                 $return[$table['Name']] = $table;
             }
+
             return $return;
         }
 
@@ -485,11 +553,13 @@ class DatabaseHelper extends AbstractHelper
         }
 
         if ($statement) {
+            /** @var array|string[] $result */
             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
             $return = array();
             foreach ($result as $row) {
                 $return[$row['Variable_name']] = $row['Value'];
             }
+
             return $return;
         }
 
@@ -514,5 +584,21 @@ class DatabaseHelper extends AbstractHelper
     public function getGlobalStatus($variable = null)
     {
         return $this->runShowCommand('STATUS', $variable);
+    }
+
+    /**
+     * @return Application|BaseApplication
+     */
+    private function getApplication()
+    {
+        $command = $this->getHelperSet()->getCommand();
+
+        if ($command) {
+            $application = $command->getApplication();
+        } else {
+            $application = new Application();
+        }
+
+        return $application;
     }
 }
