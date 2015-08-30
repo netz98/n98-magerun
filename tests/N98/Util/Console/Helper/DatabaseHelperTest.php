@@ -14,6 +14,12 @@ use RuntimeException;
 class DatabaseHelperTest extends TestCase
 {
     /**
+     * @var array of functions to call on teardown
+     * @see tearDown()
+     */
+    private $tearDownRestore = array();
+
+    /**
      * @return DatabaseHelper
      */
     protected function getHelper()
@@ -131,9 +137,36 @@ class DatabaseHelperTest extends TestCase
      */
     public function getTables()
     {
-        $tables = $this->getHelper()->getTables();
+        $helper = $this->getHelper();
+
+        $tables = $helper->getTables();
         $this->assertInternalType('array', $tables);
         $this->assertContains('admin_user', $tables);
+
+        $ro = new \ReflectionObject($helper);
+        $rp = $ro->getProperty('dbSettings');
+        $rp->setAccessible(true);
+        $config                        = $rp->getValue($helper);
+        $previous                      = $config['prefix'];
+        $index                         = count($this->tearDownRestore);
+        $this->tearDownRestore[$index] = function () use ($rp, $helper, $previous) {
+            $config['prefix'] = $previous;
+            $rp->setValue($helper, $config);
+        };
+        $config['prefix']              = $previous . 'core_';
+        $rp->setValue($helper, $config);
+
+        $tables = $helper->getTables(null); // default value should be null-able and is false
+        $this->assertInternalType('array', $tables);
+        $this->assertNotContains('admin_user', $tables);
+        $this->assertContains('core_store', $tables);
+        $this->assertContains('core_website', $tables);
+
+        $tables = $helper->getTables(true);
+        $this->assertInternalType('array', $tables);
+        $this->assertNotContains('admin_user', $tables);
+        $this->assertContains('store', $tables);
+        $this->assertContains('website', $tables);
     }
 
     /**
@@ -157,5 +190,21 @@ class DatabaseHelperTest extends TestCase
         $this->assertContains('catalog_product_entity', $tables);
         $this->assertContains('dataflow_batch_import', $tables);
         $this->assertNotContains('catalogrule', $tables);
+    }
+
+    /**
+     * Tears down the fixture, for example, close a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown()
+    {
+        foreach ($this->tearDownRestore as $restore) {
+            $restore();
+        }
+
+        $restore               = null;
+        $this->tearDownRestore = null;
+
+        parent::tearDown();
     }
 }
