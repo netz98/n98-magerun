@@ -59,6 +59,8 @@ class TableHelper extends BaseTableHelper
 
     /**
      * @param array $headers
+     * @param string[] $headers
+     *
      * @return $this
      */
     public function setHeaders(array $headers)
@@ -72,9 +74,9 @@ class TableHelper extends BaseTableHelper
     /**
      * @param OutputInterface $outputInterface
      * @param array $rows
-     * @param string $format
+     * @param string $format [optional]
      */
-    public function renderByFormat(OutputInterface $outputInterface, array $rows, $format = '')
+    public function renderByFormat(OutputInterface $outputInterface, array $rows, $format = null)
     {
         $rendererFactory = new RendererFactory();
         $renderer = $rendererFactory->create($format);
@@ -90,17 +92,17 @@ class TableHelper extends BaseTableHelper
     }
 
     /**
-     * Takes a two-dimensional tabular array and outputs an ascii table
+     * Takes a two dimensional tabular array with headers as keys in the first row and outputs an ascii table
      *
-     * @deprecated Use original Symfony table helper
+     * @deprecated since 1.98.0 use original Symfony table instead.
      *
      * @param  OutputInterface $output
-     * @param  array           $table
+     * @param  array           $rows
      */
-    public function write(OutputInterface $output, array $table)
+    public function write(OutputInterface $output, array $rows)
     {
-        $this->setHeaders(array_keys($table[0]));
-        $this->setRows($table);
+        $this->setHeaders(array_keys($rows[0]));
+        $this->setRows($rows);
         $this->render($output);
     }
 }
