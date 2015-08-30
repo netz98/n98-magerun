@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Database;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\Database\Compressor;
 use N98\Util\Console\Helper\DatabaseHelper;
@@ -64,7 +65,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
     /**
      * @param string $type
      * @return Compressor\AbstractCompressor
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function getCompressor($type)
     {
@@ -77,7 +78,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
                 return new Compressor\Gzip;
 
             default:
-                throw new \InvalidArgumentException("Compression type '{$type}' is not supported. Known values are: gz, gzip");
+                throw new InvalidArgumentException("Compression type '{$type}' is not supported. Known values are: gz, gzip");
         }
     }
 

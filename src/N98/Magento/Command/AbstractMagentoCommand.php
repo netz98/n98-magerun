@@ -3,7 +3,9 @@
 namespace N98\Magento\Command;
 
 use Composer\Package\PackageInterface;
+use InvalidArgumentException;
 use N98\Util\OperatingSystem;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\Output;
@@ -165,7 +167,7 @@ abstract class AbstractMagentoCommand extends Command
      *
      * @param OutputInterface $output
      * @param bool $silent print debug messages
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function detectMagento(OutputInterface $output, $silent = true)
     {
@@ -185,7 +187,7 @@ abstract class AbstractMagentoCommand extends Command
             return;
         }
 
-        throw new \RuntimeException('Magento folder could not be detected');
+        throw new RuntimeException('Magento folder could not be detected');
     }
 
     /**
@@ -447,12 +449,12 @@ abstract class AbstractMagentoCommand extends Command
             }
 
             if (empty($folderName)) {
-                throw new \InvalidArgumentException('Installation folder cannot be empty');
+                throw new InvalidArgumentException('Installation folder cannot be empty');
             }
 
             if (!is_dir($folderName)) {
                 if (!@mkdir($folderName, 0777, true)) {
-                    throw new \InvalidArgumentException('Cannot create folder.');
+                    throw new InvalidArgumentException('Cannot create folder.');
                 }
 
                 return $folderName;
@@ -463,7 +465,7 @@ abstract class AbstractMagentoCommand extends Command
                 $magentoHelper = new MagentoHelper();
                 $magentoHelper->detect($folderName);
                 if ($magentoHelper->getRootFolder() !== $folderName) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         sprintf(
                             'Folder %s is not a Magento working copy.',
                             $folderName
@@ -473,7 +475,7 @@ abstract class AbstractMagentoCommand extends Command
 
                 $localXml = $folderName . '/app/etc/local.xml';
                 if (file_exists($localXml)) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         sprintf(
                             'Magento working copy in %s seems already installed. Please remove %s and retry.',
                             $folderName,
@@ -549,7 +551,7 @@ abstract class AbstractMagentoCommand extends Command
 
         $selected = $this->getHelper('dialog')->askAndValidate($output, $dialog, function($typeInput) use ($entries) {
             if (!in_array($typeInput, range(1, count($entries)))) {
-                throw new \InvalidArgumentException('Invalid type');
+                throw new InvalidArgumentException('Invalid type');
             }
 
             return $typeInput;

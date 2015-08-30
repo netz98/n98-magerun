@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Eav\Attribute;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use Symfony\Component\Console\Input\InputArgument;
@@ -30,7 +31,7 @@ class ViewCommand extends AbstractMagentoCommand
     /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -42,7 +43,7 @@ class ViewCommand extends AbstractMagentoCommand
 
             $attribute = $this->getAttribute($entityType, $attributeCode);
             if (!$attribute) {
-                throw new \InvalidArgumentException('Attribute was not found.');
+                throw new InvalidArgumentException('Attribute was not found.');
             }
 
             $table = array(

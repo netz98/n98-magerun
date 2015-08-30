@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System;
 
+use LogicException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\CommandAware;
 use N98\Magento\Command\CommandConfigAware;
@@ -111,7 +112,7 @@ HELP;
                 break;
 
             default:
-                throw new \LogicException(
+                throw new LogicException(
                     sprintf('Unhandled check-class "%s"', $checkGroupClass)
                 );
         }

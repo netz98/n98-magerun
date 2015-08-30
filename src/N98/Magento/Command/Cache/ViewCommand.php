@@ -32,7 +32,7 @@ class ViewCommand extends AbstractCacheCommand
         if ($this->initMagento()) {
             if ($input->hasOption('fpc') && $input->getOption('fpc')) {
                 if (!class_exists('\Enterprise_PageCache_Model_Cache')) {
-                    throw new \RuntimeException('Enterprise page cache not found');
+                    throw new RuntimeException('Enterprise page cache not found');
                 }
                 $cacheInstance = \Enterprise_PageCache_Model_Cache::getCacheInstance()->getFrontend();
             } else {

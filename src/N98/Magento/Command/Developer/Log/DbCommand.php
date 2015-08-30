@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Log;
 
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -67,7 +68,7 @@ class DbCommand extends AbstractLogCommand
         $debugLinePattern = "/protected\s" . '\\' . $variable . "\s*?=\s(false|true)/m";
         preg_match($debugLinePattern, $contents, $matches);
         if (!isset($matches[1])) {
-            throw new \RuntimeException("Problem finding the \$_debug parameter");
+            throw new RuntimeException("Problem finding the \$_debug parameter");
         }
 
         $currentValue = $matches[1];

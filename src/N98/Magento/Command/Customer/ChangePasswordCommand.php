@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Customer;
 
+use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -56,7 +57,7 @@ HELP;
             try {
                 $result = $customer->validate();
                 if (is_array($result)) {
-                    throw new \RuntimeException(implode(PHP_EOL, $result));
+                    throw new RuntimeException(implode(PHP_EOL, $result));
                 }
                 $customer->setPassword($password);
                 $customer->save();

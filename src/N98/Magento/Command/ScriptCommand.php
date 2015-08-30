@@ -2,8 +2,10 @@
 
 namespace N98\Magento\Command;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\String;
+use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -144,7 +146,7 @@ HELP;
 
     /**
      * @param InputInterface $input
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function _initDefines(InputInterface $input)
     {
@@ -155,7 +157,7 @@ HELP;
         if (count($defines) > 0) {
             foreach ($defines as $define) {
                 if (!strstr($define, '=')) {
-                    throw new \InvalidArgumentException('Invalid define');
+                    throw new InvalidArgumentException('Invalid define');
                 }
                 $parts = String::trimExplodeEmpty('=', $define);
                 $variable = $parts[0];
@@ -170,7 +172,7 @@ HELP;
 
     /**
      * @param string $filename
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @internal param string $input
      * @return string
      */
@@ -183,7 +185,7 @@ HELP;
         }
 
         if (!$script) {
-            throw new \RuntimeException('Script file was not found');
+            throw new RuntimeException('Script file was not found');
         }
 
         return $script;
@@ -192,7 +194,7 @@ HELP;
     /**
      * @param OutputInterface $output
      * @param string $commandString
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @return void
      */
     protected function registerVariable(OutputInterface $output, $commandString)
@@ -222,7 +224,7 @@ HELP;
                         $this->scriptVars[$matches[1]] = $choices[$selectedIndex];
 
                     } else {
-                        throw new \RuntimeException('Invalid choices');
+                        throw new RuntimeException('Invalid choices');
                     }
                 } else {
                     // normal input
@@ -231,7 +233,7 @@ HELP;
                         '<info>Please enter a value for <comment>' . $matches[1] . '</comment>:</info> ',
                         function($value) {
                             if ($value == '') {
-                                throw new \RuntimeException('Please enter a value');
+                                throw new RuntimeException('Please enter a value');
                             }
 
                             return $value;
@@ -248,7 +250,7 @@ HELP;
      * @param InputInterface $input
      * @param OutputInterface $output
      * @param string $commandString
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function runMagerunCommand(InputInterface $input, OutputInterface $output, $commandString)
     {
@@ -257,7 +259,7 @@ HELP;
         $input = new StringInput($commandString);
         $exitCode = $this->getApplication()->run($input, $output);
         if ($exitCode !== 0 && $this->_stopOnError) {
-            throw new \RuntimeException('Script stopped with errors');
+            throw new RuntimeException('Script stopped with errors');
         }
     }
 

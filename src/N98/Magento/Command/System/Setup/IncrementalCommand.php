@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\System\Setup;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -371,7 +372,7 @@ class IncrementalCommand extends AbstractMagentoCommand
     {
         $output = $this->_output;
         if (!in_array($type, array(self::TYPE_MIGRATION_STRUCTURE, self::TYPE_MIGRATION_DATA))) {
-            throw new \RuntimeException('Invalid Type [' . $type . ']: structure, data are valid');
+            throw new RuntimeException('Invalid Type [' . $type . ']: structure, data are valid');
         }
 
         if (!array_key_Exists($name, $needsUpdate)) {
@@ -423,7 +424,7 @@ class IncrementalCommand extends AbstractMagentoCommand
             $exceptionOutput = ob_get_clean();
             $this->_processExceptionDuringUpdate($e, $name, $exceptionOutput);
             if ($this->_input->getOption('stop-on-error')) {
-                throw new \RuntimeException('Setup stopped with errors');
+                throw new RuntimeException('Setup stopped with errors');
             }
         }
     }

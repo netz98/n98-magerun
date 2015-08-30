@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Config;
 
+use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -164,7 +165,7 @@ EOT
      * @param object $match
      *
      * @return string
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function _getPhpMageStoreConfigPathFromMatch($match)
     {
@@ -191,7 +192,7 @@ EOT
 
             default:
                 // @TODO Why?
-                throw new \RuntimeException(__METHOD__);
+                throw new RuntimeException(__METHOD__);
         }
 
         return "Mage::getStoreConfig('" . $path . "')";
@@ -201,7 +202,7 @@ EOT
      * @param object $match
      *
      * @return string
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function _getPathFromMatch($match)
     {
@@ -225,7 +226,7 @@ EOT
 
             default:
                 // @TODO Why?
-                throw new \RuntimeException(__METHOD__);
+                throw new RuntimeException(__METHOD__);
         }
 
     }

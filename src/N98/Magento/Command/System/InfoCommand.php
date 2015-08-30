@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -84,7 +85,7 @@ class InfoCommand extends AbstractMagentoCommand
             $settingArgument = strtolower($settingArgument);
             $this->infos = array_change_key_case($this->infos, CASE_LOWER);
             if (!isset($this->infos[$settingArgument])) {
-                throw new \InvalidArgumentException('Unknown key: ' . $settingArgument);
+                throw new InvalidArgumentException('Unknown key: ' . $settingArgument);
             }
             $output->writeln((string) $this->infos[$settingArgument]);
         } else {

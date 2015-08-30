@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Database;
 
 use N98\Util\OperatingSystem;
+use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -87,10 +88,10 @@ HELP;
                 foreach ($tableGroups as $index=>$definition) {
                     $description = isset($definition['description']) ? $definition['description'] : '';
                     if (!isset($definition['id'])) {
-                        throw new \RuntimeException('Invalid definition of table-groups (id missing) Index: ' . $index);
+                        throw new RuntimeException('Invalid definition of table-groups (id missing) Index: ' . $index);
                     }
                     if (!isset($definition['id'])) {
-                        throw new \RuntimeException('Invalid definition of table-groups (tables missing) Id: '
+                        throw new RuntimeException('Invalid definition of table-groups (tables missing) Id: '
                             . $definition['id']
                         );
                     }

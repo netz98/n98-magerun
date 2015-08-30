@@ -2,8 +2,10 @@
 
 namespace N98\Magento\Command\Developer\Module;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\TwigHelper;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -74,7 +76,7 @@ class CreateCommand extends AbstractMagentoCommand
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return int|void
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -96,7 +98,7 @@ class CreateCommand extends AbstractMagentoCommand
         $this->moduleName = ucfirst($input->getArgument('moduleName'));
         $this->codePool = $input->getArgument('codePool');
         if (!in_array($this->codePool, array('local', 'community'))) {
-            throw new \InvalidArgumentException('Code pool must "community" or "local"');
+            throw new InvalidArgumentException('Code pool must "community" or "local"');
         }
         $this->initView($input);
         $this->createModuleDirectories($input, $output);
@@ -131,7 +133,7 @@ class CreateCommand extends AbstractMagentoCommand
         if ($this->modmanMode) {
             $modManDir = $this->vendorNamespace . '_' . $this->moduleName . '/src';
             if (file_exists($modManDir)) {
-                throw new \RuntimeException('Module already exists. Stop.');
+                throw new RuntimeException('Module already exists. Stop.');
             }
             mkdir($modManDir, 0777, true);
             $this->_magentoRootFolder = './' . $modManDir;
@@ -143,7 +145,7 @@ class CreateCommand extends AbstractMagentoCommand
         );
 
         if (file_exists($moduleDir)) {
-            throw new \RuntimeException('Module already exists. Stop.');
+            throw new RuntimeException('Module already exists. Stop.');
         }
         $this->moduleDirectory = $moduleDir;
         mkdir($this->moduleDirectory, 0777, true);

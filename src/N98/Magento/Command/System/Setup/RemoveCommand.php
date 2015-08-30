@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System\Setup;
 
+use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -54,7 +55,7 @@ class RemoveCommand extends AbstractSetupCommand
             } elseif (array_key_exists($setupName, $moduleSetups)) {
                 $this->removeSetupResource($moduleName, $setupName, $output);
             } else {
-                throw new \InvalidArgumentException(sprintf('Error no setup found with the name: "%s"', $setupName));
+                throw new InvalidArgumentException(sprintf('Error no setup found with the name: "%s"', $setupName));
             }
         }
     }

@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Script\Repository;
 
+use InvalidArgumentException;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -61,7 +62,7 @@ HELP;
             $question[] = '<question>Please select a script file: </question>';
             $selectedFile = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($files) {
                 if (!isset($files[$typeInput - 1])) {
-                    throw new \InvalidArgumentException('Invalid file');
+                    throw new InvalidArgumentException('Invalid file');
                 }
 
                 return $files[$typeInput - 1]['fileinfo']->getPathname();
@@ -73,7 +74,7 @@ HELP;
             }
 
             if (!isset($files[$script])) {
-                throw new \InvalidArgumentException('Invalid script');
+                throw new InvalidArgumentException('Invalid script');
             }
             $selectedFile = $files[$script]['fileinfo']->getPathname();
         }

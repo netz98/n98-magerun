@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Module\Observer;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -35,7 +36,7 @@ class ListCommand extends AbstractMagentoCommand
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -59,7 +60,7 @@ class ListCommand extends AbstractMagentoCommand
         }
 
         if (!in_array($type, $areas)) {
-            throw new \InvalidArgumentException('Invalid type! Use one of: ' . implode(', ', $areas));
+            throw new InvalidArgumentException('Invalid type! Use one of: ' . implode(', ', $areas));
         }
 
         if ($input->getOption('format') === null) {

@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
 
+use RuntimeException;
+
 class Factory
 {
     public static function create($entityType, $attribute)
@@ -13,7 +15,7 @@ class Factory
         }
 
         if (!class_exists($class)) {
-            throw new \RuntimeException('No script generator for this entity type available');
+            throw new RuntimeException('No script generator for this entity type available');
         }
 
         return new $class($attribute);
