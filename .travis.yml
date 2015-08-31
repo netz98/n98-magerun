@@ -65,5 +65,5 @@ before_script:
   - source ./build/travis/before_script.sh
 
 script:
-  - vendor/bin/phpunit --debug --stop-on-error --stop-on-failure
+  - vendor/bin/phpunit --debug --stop-on-error --stop-on-failure --coverage-clover=clover.xml
   - php tests/check-coverage.php clover.xml ${COVERAGE}
