@@ -12,6 +12,7 @@ use N98\Util\Filesystem;
 use N98\Util\OperatingSystem;
 use N98\Util\String;
 use PDO;
+use PDOException;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -343,7 +344,7 @@ HELP;
             $db = $this->validateDatabaseSettings($output, $input);
 
             if ($db === false) {
-                throw new InvalidArgumentException("Database configuration is invalid", null);
+                throw new InvalidArgumentException("Database configuration is invalid");
             }
 
         } else {
@@ -399,7 +400,7 @@ HELP;
             }
 
             return $db;
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
 

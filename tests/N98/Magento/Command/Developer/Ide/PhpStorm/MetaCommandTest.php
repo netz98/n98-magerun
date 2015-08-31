@@ -16,13 +16,13 @@ class MetaCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
-                'command' => $command->getName()
+                'command'  => $command->getName(),
+                '--stdout' => true,
             )
         );
 
-        $generatedFile = $this->getApplication()->getMagentoRootFolder() . '/.phpstorm.meta.php';
-        $this->assertFileExists($generatedFile);
-        $fileContent = file_get_contents($generatedFile);
+        $fileContent = $commandTester->getDisplay(true);
+
         $this->assertContains('\'catalog\' instanceof \Mage_Catalog_Helper_Data', $fileContent);
         $this->assertContains('\'core/config\' instanceof \Mage_Core_Model_Config', $fileContent);
         if (class_exists('\Mage_Core_Model_Resource_Config')) { // since magento 1.7

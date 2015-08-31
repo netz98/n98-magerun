@@ -55,7 +55,7 @@ class GetCommandTest extends TestCase
             )
         );
         $this->assertContains(
-            "config:set n98_magerun/foo/bar --scope-id=0 --scope=default '1234'",
+            "config:set n98_magerun/foo/bar --scope-id=0 --scope=default " . escapeshellarg(1234),
             $commandTester->getDisplay()
         );
 
