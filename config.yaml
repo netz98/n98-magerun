@@ -232,7 +232,7 @@ commands:
           sample-data: sample-data-1.6.1.0
 
       - name: magento-mirror-1.9.2.1
-        version: 1.9.2.0
+        version: 1.9.2.1
         dist:
           url: https://github.com/OpenMage/magento-mirror/archive/1.9.2.1.zip
           type: zip
