@@ -6,6 +6,7 @@ RECENT CHANGES
 1.97.6
 ======
 
+* #669 Fix Magerun2 download instructions (by Pierre du Plessis)
 * #665 Fix Magento 1.9.2.1 announced as 1.9.2.0 (reported by jurgisl)
 * #657 Fix and improve input processing in "local-config:generate" command (by Aydin Hassan)
 * #654 Fix PHP warning in Rewrite command (by Pieter Hoste)
