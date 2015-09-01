@@ -18,6 +18,13 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     private $application = null;
 
+    /**
+     * getter for the magento root directory of the test-suite
+     *
+     * @see ApplicationTest::testExecute
+     *
+     * @return string
+     */
     public function getTestMagentoRoot()
     {
         $root = getenv('N98_MAGERUN_TEST_MAGENTO_ROOT');

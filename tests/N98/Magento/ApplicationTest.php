@@ -20,15 +20,7 @@ class ApplicationTest extends TestCase
 
         /* @var $application Application */
         $application = require __DIR__ . '/../../../src/bootstrap.php';
-        $magentoRootFolder = getenv('N98_MAGERUN_TEST_MAGENTO_ROOT');
-        if (empty($magentoRootFolder)) {
-            $this->markTestSkipped(
-                'Please specify environment variable N98_MAGERUN_TEST_MAGENTO_ROOT with path to your test ' .
-                'magento installation!'
-            );
-        }
-
-        $application->setMagentoRootFolder($magentoRootFolder);
+        $application->setMagentoRootFolder($this->getTestMagentoRoot());
 
         $this->assertInstanceOf('\N98\Magento\Application', $application);
         $loader = $application->getAutoloader();
@@ -106,7 +98,7 @@ class ApplicationTest extends TestCase
          * Check autoloading
          */
         $application = require __DIR__ . '/../../../src/bootstrap.php';
-        $application->setMagentoRootFolder(getenv('N98_MAGERUN_TEST_MAGENTO_ROOT'));
+        $application->setMagentoRootFolder($this->getTestMagentoRoot());
 
         // Load plugin config
         $injectConfig = array(
