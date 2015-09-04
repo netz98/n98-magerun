@@ -8,6 +8,12 @@ buildecho()
     echo "${1}"
 }
 
+smokerun()
+{
+    buildecho "smokerun:"
+    build/circleci/smoke.sh
+}
+
 export CLOVER_XML="${CIRCLE_ARTIFACTS:-.}/clover.xml"
 buildecho "clover.xml: '${CLOVER_XML}', exported as \$CLOVER_XML."
 
