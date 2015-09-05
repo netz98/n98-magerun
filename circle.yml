@@ -12,3 +12,5 @@ dependencies:
 test:
   override:
     - build/circleci/test.sh
+  post:
+    - build/circleci/test_post.sh
