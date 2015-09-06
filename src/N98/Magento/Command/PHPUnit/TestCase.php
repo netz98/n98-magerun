@@ -19,6 +19,11 @@ class TestCase extends \PHPUnit_Framework_TestCase
     private $application = null;
 
     /**
+     * @var string|null
+     */
+    private $root;
+
+    /**
      * getter for the magento root directory of the test-suite
      *
      * @see ApplicationTest::testExecute
@@ -27,6 +32,10 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     public function getTestMagentoRoot()
     {
+        if ($this->root) {
+            return $this->root;
+        }
+
         $root = getenv('N98_MAGERUN_TEST_MAGENTO_ROOT');
         if (empty($root)) {
             $this->markTestSkipped(
@@ -35,7 +44,8 @@ class TestCase extends \PHPUnit_Framework_TestCase
             );
         }
 
-        return $root;
+        $this->root = realpath($root);
+        return $this->root;
     }
 
     /**
