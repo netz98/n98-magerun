@@ -336,7 +336,7 @@ class GenerateCommandTest extends TestCase
         $fileContent = \file_get_contents($this->configFile);
         $this->assertContains('<host><![CDATA[my_db_host]]></host>', $fileContent);
         $this->assertContains('<username><![CDATA[my_db_user]]></username>', $fileContent);
-        $this->assertContains('<password><![CDATA[]]></password>', $fileContent);
+        $this->assertContains('<password></password>', $fileContent);
         $this->assertContains('<dbname><![CDATA[my_db_name]]></dbname>', $fileContent);
         $this->assertContains('<session_save><![CDATA[my_session_save]]></session_save>', $fileContent);
         $this->assertContains('<frontName><![CDATA[my_admin_frontname]]></frontName>', $fileContent);
@@ -376,7 +376,7 @@ class GenerateCommandTest extends TestCase
 
         $this->assertFileExists($this->configFile);
         $fileContent = \file_get_contents($this->configFile);
-        $this->assertContains('<host>CDATAdatabasehost</host>', $fileContent);
+        $this->assertContains('<host><![CDATA[CDATAdatabasehost]]></host>', $fileContent);
         $this->assertContains('<username><![CDATA[my_db_user]]></username>', $fileContent);
         $this->assertContains('<password><![CDATA[my_db_pass]]></password>', $fileContent);
         $this->assertContains('<dbname><![CDATA[my_db_name]]></dbname>', $fileContent);
@@ -385,6 +385,27 @@ class GenerateCommandTest extends TestCase
         $this->assertContains('<key><![CDATA[key123456789]]></key>', $fileContent);
         $xml = \simplexml_load_file($this->configFile);
         $this->assertNotInternalType('bool', $xml);
+    }
+
+    /**
+     * @test unit utility method _wrapCdata
+     */
+    public function wrapCdata()
+    {
+        $command = new GenerateCommand();
+        $refl = new \ReflectionClass($command);
+        $method = $refl->getMethod('_wrapCData');
+        $method->setAccessible(true);
+        $sujet = function($string) use ($method, $command) {
+            return $method->invoke($command, $string);
+        };
+
+        $this->assertSame('', $sujet(null));
+        $this->assertSame('<![CDATA[CDATA]]>', $sujet('CDATA'));
+        $this->assertSame('<![CDATA[]]]]>', $sujet(']]'));
+        $this->assertSame('<![CDATA[ with terminator "]]>]]&gt;<![CDATA[" inside ]]>', $sujet(' with terminator "]]>" inside '));
+        $this->assertSame(']]&gt;<![CDATA[ at the start ]]>', $sujet(']]> at the start '));
+        $this->assertSame('<![CDATA[ at the end ]]>]]&gt;', $sujet(' at the end ]]>'));
     }
 
     public function tearDown()
