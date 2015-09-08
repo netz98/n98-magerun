@@ -143,15 +143,21 @@ HELP;
     }
 
     /**
-     * @param string $value
-     * @return string
+     * wrap utf-8 string as a <![CDATA[ ... ]]> section if the string has length.
+     *
+     * in case the string has length and not the whole string can be wrapped in a CDATA section (because it contains
+     * a sequence that can not be part of a CDATA section "]]>") the part that can well be.
+     *
+     * @param string $string
+     *
+     * @return string CDATA section or equivalent
      */
-    protected function _wrapCData($value)
+    protected function _wrapCData($string)
     {
-        if (!strstr($value, 'CDATA')) {
-            return '<![CDATA[' . $value . ']]>';
-        }
+        $buffer = strtr($string, array(']]>' => ']]>]]&gt;<![CDATA['));
+        $buffer = '<![CDATA[' . $buffer . ']]>';
+        $buffer = strtr($buffer, array('<![CDATA[]]>' => ''));
 
-        return $value;
+        return $buffer;
     }
 }
