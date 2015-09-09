@@ -20,8 +20,12 @@ Build Status
 +------------------------+-----------------------------------------------------------------------------------------------+
 | **Development Branch** | .. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=develop                        |
 |                        |    :target: https://travis-ci.org/netz98/n98-magerun                                          |
+|                        | .. image:: https://circleci.com/gh/netz98/n98-magerun/tree/develop.svg?style=shield           |
+|                        |    :target: https://circleci.com/gh/netz98/n98-magerun/tree/develop                           |
 |                        | .. image:: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=develop |
 |                        |    :target: https://scrutinizer-ci.com/g/netz98/n98-magerun/?branch=develop                   |
+|                        | .. image:: https://codecov.io/github/netz98/n98-magerun/coverage.svg?branch=develop           |
+|                        |    :target: https://codecov.io/github/netz98/n98-magerun?branch=develop                       |
 +------------------------+-----------------------------------------------------------------------------------------------+
 
 Compatibility
