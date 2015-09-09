@@ -1,0 +1,554 @@
+#!/bin/bash
+
+set -e
+
+VERSION="cd5c049"
+
+url="https://codecov.io"
+verbose="0"
+silent="0"
+env=""
+token=""
+build=""
+slug=""
+dump="0"
+files=""
+gcov_ignore=""
+ft_gcov="1"
+ft_coveragepy="1"
+ft_issue43="1"
+proj_root="."
+gcov_exe="gcov"
+gcov_arg=""
+
+show_help() {
+cat << EOF
+Codecov $VERSION
+Usage: ${0##*/} [-hv] [-f COVERAGE]
+Upload reports to Codecov
+
+    -h           display this help and exit
+    -f COVERAGE  reference a specific file only to upload
+                 otherwise all files will be searched, recursively current directoy.
+    -t TOKEN     Set the private repo token
+                 (or) set environment variable $CODECOV_TOKEN=:uuid
+    -e ENV       Specify environment variables to be included with this build
+                 ex. codecov -e VAR,VAR2
+                 (or) set environment variable $CODECOV_ENV=VAR,VAR2
+    -v           Verbose Mode
+    -d           Dont upload and dump to stdin
+    -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy', 'issue/43'
+    -g GLOB      Paths to ignore during gcov gathering
+    -p dir       Project root used when preparing gcov
+    -x gcovexe   gcov executable to run. Defaults to 'gcov'
+    -a gcovargs  extra arguments to pass to gcov
+    -s silent    Enable silent mode
+    -b build     Tag upload to a specific build (automatically detected in supported CI companies)
+
+    -- Enterprise customers --
+    -u URL       Set the target url for Enterprise customers [default https://codecov.io]
+                 (or) set environment variable CODECOV_URL=https://my-hosted-codecov.com
+    -r           owner/repo slug used instead of the private repo token in Enterprise
+                 (or) set environment variable CODECOV_SLUG=:owner/:repo
+
+Contribute and source at https://github.com/codecov/codecov-bash
+EOF
+}
+
+say() {
+  if [ "$silent" = "0" ];
+  then
+    echo "$1"
+  fi
+}
+
+urlencode() {
+  echo "$1" | curl -Gso /dev/null -w %{url_effective} --data-urlencode @- "" | cut -c 3- | sed -e 's/%0A//'
+}
+
+# detect bower comoponents location
+bower_components="bower_components"
+if [ -f .bowerrc ];
+then
+  bower_components=$(cat .bowerrc | tr -d '\n' | grep '"directory"' | cut -d'"' -f4 | sed -e 's/\/$//')
+  if [ "$bower_components" = "" ];
+  then
+    bower_components="bower_components"
+  fi
+fi
+
+
+if [ $# != 0 ];
+then
+  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:" o
+  do
+    case "$o" in
+      "v")
+        verbose="1"
+        ;;
+      "s")
+        silent="1"
+        ;;
+      "d")
+        dump="1"
+        ;;
+      "b")
+        build="$OPTARG"
+        ;;
+      "h")
+        show_help
+        exit 0;
+        ;;
+      "u")
+        url=$(echo "$OPTARG" | sed -e 's/\/$//')
+        ;;
+      "t")
+        token="&token=$OPTARG"
+        ;;
+      "f")
+        if [ "$files" = "" ];
+        then
+          files="$OPTARG"
+        else
+          files="$files $OPTARG"
+        fi
+        ;;
+      "p")
+        proj_root="$OPTARG"
+        ;;
+      "r")
+        slug="&slug=$OPTARG"
+        ;;
+      "X")
+        if [ "$OPTARG" = "gcov" ];
+        then
+          ft_gcov="0"
+        elif [ "$OPTARG" = "coveragepy" ];
+        then
+          ft_coveragepy="0"
+        elif [ "$OPTARG" = "issue/43" ];
+        then
+          ft_issue43="0"
+        fi
+        ;;
+      "g")
+        gcov_ignore="$gcov_ignore -not -path '$OPTARG'"
+        ;;
+      "x")
+        gcov_exe=$OPTARG
+        ;;
+      "a")
+        gcov_arg=$OPTARG
+        ;;
+      "e")
+        if [ "$env" = "" ];
+        then
+          env="$OPTARG"
+        else
+          env="$env,$OPTARG"
+        fi
+        ;;
+    esac
+  done
+fi
+
+say "Codecov"
+say "(version) $VERSION"
+
+if [ "$CODECOV_URL" != "" ];
+then
+  say "--> url set from env"
+  url=$(echo "$CODECOV_URL" | sed -e 's/\/$//')
+fi
+
+say "(url) $url"
+
+if [ "$CODECOV_TOKEN" != "" ];
+then
+  say "--> token set from env"
+  token="&token=$CODECOV_TOKEN"
+fi
+
+if [ "$CODECOV_SLUG" != "" ];
+then
+  say "--> slug set from env"
+  slug="&slug=$CODECOV_SLUG"
+fi
+
+
+if [ "$JENKINS_URL" != "" ];
+then
+  say "==> Jenkins CI detected."
+  # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
+  # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
+  build_url=$(urlencode "$BUILD_URL")
+  _commit=$([ ! -z "$ghprbActualCommit" ] && echo "$ghprbActualCommit" || echo "$GIT_COMMIT")
+  _branch=$([ ! -z "$ghprbSourceBranch" ] && echo "$ghprbSourceBranch" || echo "$GIT_BRANCH")
+  query="service=jenkins\
+         &branch=$_branch\
+         &commit=$_commit\
+         &build=$BUILD_NUMBER\
+         &pr=$ghprbPullId\
+         &build_url=$build_url"
+  cd "$WORKSPACE"
+
+elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ];
+then
+  say "==> Travis CI detected."
+  # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
+  query="service=travis-org\
+         &branch=$TRAVIS_BRANCH\
+         &commit=$TRAVIS_COMMIT\
+         &build=$TRAVIS_JOB_NUMBER\
+         &pull_request=$TRAVIS_PULL_REQUEST\
+         &job=$TRAVIS_JOB_ID\
+         &slug=$TRAVIS_REPO_SLUG"
+  cd "$TRAVIS_BUILD_DIR"
+
+elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
+then
+  say "==> Codeship CI detected."
+  # https://www.codeship.io/documentation/continuous-integration/set-environment-variables/
+  build_url=$(urlencode "$CI_BUILD_URL")
+  query="service=codeship\
+         &branch=$CI_BRANCH\
+         &build=$CI_BUILD_NUMBER\
+         &build_url=$build_url\
+         &commit=$CI_COMMIT_ID"
+
+elif [ "$CI" = "true" ] && [ "$CIRCLECI" = "true" ];
+then
+  say "==> Circle CI detected."
+  # https://circleci.com/docs/environment-variables
+  query="service=circleci\
+         &branch=$CIRCLE_BRANCH\
+         &build=$CIRCLE_BUILD_NUM.$CIRCLE_NODE_INDEX\
+         &slug=$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME\
+         &pr=$CIRCLE_PR_NUMBER\
+         &commit=$CIRCLE_SHA1"
+
+elif [ "$CI" = "true" ] && [ "$SEMAPHORE" = "true" ];
+then
+  say "==> Semaphore CI detected."
+  # https://semaphoreapp.com/docs/available-environment-variables.html
+  query="service=semaphore\
+         &branch=$BRANCH_NAME\
+         &build=$SEMAPHORE_BUILD_NUMBER.$SEMAPHORE_CURRENT_THREAD\
+         &slug=$SEMAPHORE_REPO_SLUG\
+         &commit=$REVISION"
+
+elif [ "$CI" = "true" ] && [ "$DRONE" = "true" ];
+then
+  say "==> Drone CI detected."
+  # http://docs.drone.io/env.html
+  build_url=$(urlencode "$DRONE_BUILD_URL")
+  query="service=drone.io\
+         &branch=$DRONE_BRANCH\
+         &build=$DRONE_BUILD_NUMBER\
+         &build_url=$build_url\
+         &commit=$DRONE_COMMIT"
+
+elif [ "$CI" = "True" ] && [ "$APPVEYOR" = "True" ];
+then
+  say "==> Appveyor CI detected."
+  # http://www.appveyor.com/docs/environment-variables
+  query="service=appveyor\
+         &branch=$APPVEYOR_REPO_BRANCH\
+         &build=$APPVEYOR_JOB_ID\
+         &pr=$APPVEYOR_PULL_REQUEST_NUMBER\
+         &job=$APPVEYOR_ACCOUNT_NAME/$APPVEYOR_PROJECT_SLUG/$APPVEYOR_BUILD_VERSION\
+         &slug=$APPVEYOR_REPO_NAME\
+         &commit=$APPVEYOR_REPO_COMMIT"
+
+elif [ "$CI" = "True" ] && [ "$WERCKER_GIT_BRANCH" != "" ];
+then
+  say "==> Wercker CI detected."
+  # http://devcenter.wercker.com/articles/steps/variables.html
+  query="service=wercker\
+         &branch=$WERCKER_GIT_BRANCH\
+         &build=$WERCKER_MAIN_PIPELINE_STARTED\
+         &slug=$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY\
+         &commit=$WERCKER_GIT_COMMIT"
+
+elif [ "$CI" = "true" ] && [ "$MAGNUM" = "true" ];
+then
+  say "==> Magnum CI detected."
+  # https://magnum-ci.com/docs/environment
+  query="service=magnum\
+         &branch=$CI_BRANCH\
+         &build=$CI_BUILD_NUMBER\
+         &commit=$CI_COMMIT"
+
+elif [ "$CI" = "true" ] && [ "$SNAP_CI" = "true" ];
+then
+  say "==> Snap CI detected."
+  # https://docs.snap-ci.com/environment-variables/
+  if [ "$SNAP_BRANCH" != "" ]; then
+    _branch="$SNAP_BRANCH"
+  else
+    _branch="$SNAP_UPSTREAM_BRANCH"
+  fi
+  if [ "$SNAP_COMMIT" != "" ]; then
+    _commit="$SNAP_COMMIT"
+  else
+    _commit="$SNAP_UPSTREAM_COMMIT"
+  fi
+  query="service=snap\
+         &branch=$_branch\
+         &build=$SNAP_PIPELINE_COUNTER\
+         &pr=$SNAP_PULL_REQUEST_NUMBER\
+         &commit=$_commit"
+
+elif [ "$SHIPPABLE" = "true" ];
+then
+  say "==> Shippable CI detected."
+  # http://docs.shippable.com/en/latest/config.html#common-environment-variables
+  _build_url=$(urlencode "$BUILD_URL")
+  query="service=shippable\
+         &branch=$BRANCH\
+         &build=$BUILD_NUMBER\
+         &build_url=$_build_url\
+         &pull_request=$PULL_REQUEST\
+         &slug=$REPO_NAME\
+         &commit=$COMMIT"
+
+elif [ "$CI_SERVER_NAME" = "GitLab CI" ];
+then
+  say "==> GitLab CI detected."
+  # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
+  # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
+  _slug=$(echo "$CI_BUILD_REPO" | cut -d'/' -f4-5 | sed -e 's/.git//')
+  query="service=gitlab\
+         &branch=$CI_BUILD_REF_NAME\
+         &build=$CI_BUILD_ID\
+         &slug=$_slug\
+         &commit=$CI_BUILD_REF"
+
+else
+  # find branch, commit, repo from git command
+  say "==> No CI detected, using git for branch and commit sha."
+  branch=$(git rev-parse --abbrev-ref HEAD)
+  if [ "$branch" = "HEAD" ];
+  then
+    branch=""
+  fi
+
+  query="branch=$branch&commit=$(git rev-parse HEAD)"
+
+  if [ "$build" != "" ];
+  then
+    query="$query&build=$build"
+  fi
+fi
+
+# find all the reports
+if [ "$files" != "" ];
+then
+  say "==> Targeting specific file"
+
+else
+
+  if [ "$ft_gcov" = "1" ];
+  then
+    # osx gcov
+    if [ -d ~/Library/Developer/Xcode/DerivedData ];
+    then
+      say "==> Found gcda in ~/Library/Developer/Xcode/DerivedData"
+      find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec $gcov_exe $gcov_arg {} +
+    fi
+
+    say "==> find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +"
+
+    # all other gcov
+    bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +" || true
+  else
+    say '**> gcov disable'
+  fi
+
+  say "==> Searching for coverage reports"
+  files=$(find . -type f \( -name '*coverage.*' \
+                     -or -name 'nosetests.xml' \
+                     -or -name 'jacoco*.xml' \
+                     -or -name 'clover.xml' \
+                     -or -name 'report.xml' \
+                     -or -name 'cobertura.xml' \
+                     -or -name 'luacov.report.out' \
+                     -or -name 'lcov.info' \
+                     -or -name '*.lcov' \
+                     -or -name 'gcov.info' \
+                     -or -name '*.gcov' \
+                     -or -name '*.lst' \) \
+                    -not -name '*.sh' \
+                    -not -name 'inputFiles.lst' \
+                    -not -path '*/vendor/*' \
+                    -not -path '*/home/cainus/*' \
+                    -not -path '*/virtualenv/*' \
+                    -not -path '*/.virtualenv/*' \
+                    -not -path '*/virtualenvs/*' \
+                    -not -path '*/.virtualenvs/*' \
+                    -not -path '*/.env/*' \
+                    -not -path '*/.envs/*' \
+                    -not -path '*/env/*' \
+                    -not -path '*/envs/*' \
+                    -not -path '*/.venv/*' \
+                    -not -path '*/.venvs/*' \
+                    -not -path '*/venv/*' \
+                    -not -path '*/venvs/*' \
+                    -not -path '*/.git/*' \
+                    -not -path '*/__pycache__/*' \
+                    -not -path '*/.egg-info*' \
+                    -not -path "*/$bower_components/*" \
+                    -not -path '*/node_modules/*' \
+                    -not -path '*/conftest_*.c.gcov')
+
+  # Python coveragepy generation
+  if [ "$ft_coveragepy" = "1" ];
+  then
+    if which coverage >/dev/null 2>&1;
+    then
+      say "==> Python coveragepy exists"
+
+      if [ "$ft_issue43" = "1" ];
+      then
+        say "    Replacing coveragepy with https://github.com/codecov/coveragepy"
+        say "    Read more at https://github.com/codecov/support/issues/43"
+        pip uninstall -y coverage || true
+        pip install git+git://github.com/codecov/coveragepy.git@stable || true
+      else
+        say "**> #43 disabled"
+      fi
+
+      say "    Running coverage xml"
+      if [ "$(coverage xml)" != "No data to report." ];
+      then
+        files="$files
+coverage.xml"
+      else
+        say "    No data to report."
+      fi
+    else
+      say "**> Python coverage not found"
+    fi
+  else
+    say "**> Python coverage disabled"
+  fi
+fi
+
+# no files found
+if [ "$files" = "" ];
+then
+  say "**> No coverage report found."
+  exit 1;
+fi
+
+say "==> Detecting file structure"
+upload=$(find . -type f \
+                -not -path '*/virtualenv/*' \
+                -not -path '*/.virtualenv/*' \
+                -not -path '*/virtualenvs/*' \
+                -not -path '*/.virtualenvs/*' \
+                -not -path '*/.env/*' \
+                -not -path '*/.envs/*' \
+                -not -path '*/env/*' \
+                -not -path '*/envs/*' \
+                -not -path '*/.venv/*' \
+                -not -path '*/.venvs/*' \
+                -not -path '*/venv/*' \
+                -not -path '*/venvs/*' \
+                -not -path '*/build/lib/*' \
+                -not -path '*/.git/*' \
+                -not -path '*/.egg-info/*' \
+                -not -path '*/shunit2-2.1.6/*' \
+                -not -path '*/vendor/*' \
+                -not -path '*/__pycache__/*' \
+                -not -path '*/node_modules/*' \
+                -not -path "*/$bower_components/*" \
+                -not -path '*/coverage/instrumented/*' \
+                -not -name 'shunit2-2.1.6.tgz' \
+                -not -name '*.gcov' \
+                -not -name '.ruby-version' \
+                -not -name '.gitignore' \
+                -not -name '*.lcov' \
+                -not -name '*.yml' \
+                -not -name '*.txt' \
+                -not -name '*.xml' \
+                -not -name '*.json' \
+                -not -name 'readme.md' \
+                -not -name 'codecov' \
+                -not -name '.DS_Store')
+
+if [ -d "shunit2-2.1.6" ];
+then
+  say "==> Sorting output for unit testing"
+  upload=$(echo "$upload" | sort)
+fi
+
+# Append Environment Variables
+if [ "$env" != "" ] || [ "$CODECOV_ENV" != "" ];
+then
+  inc_env=""
+  say "==> Appending build variables"
+  if [ "$CODECOV_ENV" != "" ];
+  then
+    for e in $(echo "$CODECOV_ENV" | tr ',' ' ')
+    do
+      say "    + $e"
+      inc_env="$inc_env$e=$(eval echo "\$$e")
+"
+    done
+  fi
+
+  if [ "$env" != "" ];
+  then
+    for e in $(echo "$env" | tr ',' ' ')
+    do
+      say "    + $e"
+      inc_env="$inc_env$e=$(eval echo "\$$e")
+"
+    done
+  fi
+
+  upload="$inc_env<<<<<< ENV
+$upload"
+fi
+
+# Append Reports
+say "==> Reading reports"
+for file in $files
+do
+  # escape file paths
+  file="$(echo $file | sed -e 's/ /\\ /')"
+  # read the coverage file
+  if [ -f "$file" ];
+  then
+    say "    + $file"
+    report=$(cat "$file")
+    # append to to upload
+    upload="$upload
+<<<<<< EOF
+# path=$file
+$report"
+  fi
+done
+
+# trim whitespace from query
+query=$(echo "package=bash-$VERSION&$query$slug$token" | tr -d ' ')
+say "(query) $query"
+
+if [ "$dump" != "0" ];
+then
+  echo "$url/upload/v2?$query"
+  echo "$upload"
+else
+  say "==> Uploading reports"
+  res=$(echo "$upload" | \
+            curl -X POST \
+                 --silent \
+                 --data-binary @- \
+                 -H "Content-Type: text/plain" \
+                 -H "Accept: text/plain" \
+                 "$url/upload/v2?$query")
+  say "    $res"
+fi
+
+# EOF
