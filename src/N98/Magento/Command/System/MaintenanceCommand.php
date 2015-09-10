@@ -48,7 +48,9 @@ class MaintenanceCommand extends AbstractMagentoCommand
      */
     protected function _switchOn(OutputInterface $output, $flagFile)
     {
-        touch($flagFile);
+        if (!touch($flagFile)) {
+            throw new \RuntimeException('maintenance.flag file is not writable.');
+        }
         $output->writeln('Maintenance mode <info>on</info>');
     }
 
@@ -59,7 +61,9 @@ class MaintenanceCommand extends AbstractMagentoCommand
     protected function _switchOff($output, $flagFile)
     {
         if (file_exists($flagFile)) {
-            unlink($flagFile);
+            if (!unlink($flagFile)) {
+                throw new \RuntimeException('maintenance.flag file is not writable.');
+            }
         }
         $output->writeln('Maintenance mode <info>off</info>');
     }
