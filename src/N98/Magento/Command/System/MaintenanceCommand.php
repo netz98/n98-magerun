@@ -9,17 +9,26 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MaintenanceCommand extends AbstractMagentoCommand
 {
+    const MAINTENANCE_FLAG_FILENAME = 'maintenance.flag';
+
+    /**
+     * Configured sys:maintenance command
+     *
+     * @return void
+     */
     protected function configure()
     {
         $this
             ->setName('sys:maintenance')
-            ->addOption('on', null, InputOption::VALUE_NONE, 'Force maintenance mode')
+            ->addOption('on', null, InputOption::VALUE_NONE, 'Enable maintenance mode')
             ->addOption('off', null, InputOption::VALUE_NONE, 'Disable maintenance mode')
             ->setDescription('Toggles maintenance mode.')
         ;
     }
 
     /**
+     * Run the command
+     *
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return int|void
@@ -27,40 +36,52 @@ class MaintenanceCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        $flagFile = $this->_magentoRootFolder . '/maintenance.flag';
 
-        if ($input->getOption('off')) {
-            $this->_switchOff($output, $flagFile);
-        } elseif ($input->getOption('on')) {
-            $this->_switchOn($output, $flagFile);
+        /**
+         * false = disable maint
+         * true  = enable main
+         */
+        $action = $input->getOption('off') ? false : ($input->getOption('on') ? true : !$this->isMaintenanceOn());
+
+        if ($action) {
+            $this->enable();
         } else {
-            if (file_exists($flagFile)) {
-                $this->_switchOff($output, $flagFile);
-            } else {
-                $this->_switchOn($output, $flagFile);
-            }
+            $this->disable();
+        }
+        $output->writeln(sprintf('Maintenance mode <info>%s</info>', $action ? 'on' : 'off'));
+    }
+
+    /**
+     * Enable maintenance mode
+     *
+     * @return boolean
+     */
+    protected function enable()
+    {
+        if (!touch($this->_magentoRootFolder . DIRECTORY_SEPARATOR . self::MAINTENANCE_FLAG_FILENAME)) {
+            throw new \RuntimeException('Failed to turn on maintenance mode');
         }
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param $flagFile
+     * Disable maintenance mode
+     *
+     * @return boolean
      */
-    protected function _switchOn(OutputInterface $output, $flagFile)
+    protected function disable()
     {
-        touch($flagFile);
-        $output->writeln('Maintenance mode <info>on</info>');
+        if (!unlink($this->_magentoRootFolder . DIRECTORY_SEPARATOR . self::MAINTENANCE_FLAG_FILENAME)) {
+            throw new \RuntimeException('Failed to turn off maintenance mode');
+        }
     }
 
     /**
-     * @param OutputInterface $output
-     * @param string $flagFile
+     * Determines if the store is currently in maintenance mode
+     *
+     * @return boolean
      */
-    protected function _switchOff($output, $flagFile)
+    protected function isMaintenanceOn()
     {
-        if (file_exists($flagFile)) {
-            unlink($flagFile);
-        }
-        $output->writeln('Maintenance mode <info>off</info>');
+        return file_exists($this->_magentoRootFolder . DIRECTORY_SEPARATOR . self::MAINTENANCE_FLAG_FILENAME);
     }
 }
