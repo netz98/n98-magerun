@@ -14,6 +14,7 @@ RECENT CHANGES
 * #657 Fix and improve input processing in "local-config:generate" command (by Aydin Hassan)
 * #654 Fix PHP warning in Rewrite command (by Pieter Hoste)
 * #648 Fix FPC cleared - even if not (by Steve Robbins)
+* #651 Update symfony dependencies to ~2.3 (by James Halsall)
 * #671 Unit Tests for Uninstall command (by Aydin Hassan)
 * #662 Unit Test for LocalConfigGenerate (by Aydin Hassan)
 
