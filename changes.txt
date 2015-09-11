@@ -6,6 +6,7 @@ RECENT CHANGES
 1.97.6
 ======
 
+* #678 Fix sys:maintenance result report (by Wojtek Naruniec)
 * #670 Fix Slow Unit-Tests on Travis (reported by Aydin Hassan, fixed by Tom Klingenberg)
 * #664 Fix GenerateCommand::wrapCdata (by Tom Klingenberg)
 * #669 Fix Magerun2 download instructions (by Pierre du Plessis)
