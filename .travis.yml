@@ -50,6 +50,11 @@ matrix:
     - php: 5.5
       env: MAGENTO_VERSION="magento-ce-1.7.0.2" DB=mysql INSTALL_SAMPLE_DATA=no
   include:
+    # Run the build script with am older PHP version
+    - php: 5.3
+      env: BUILDSH=1
+      script: ./build.sh
+
     # Run the build script with a recent PHP version
     - php: 5.5
       env: BUILDSH=1
