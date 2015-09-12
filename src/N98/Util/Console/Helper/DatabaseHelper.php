@@ -209,7 +209,7 @@ class DatabaseHelper extends AbstractHelper
             . '-u' . escapeshellarg(strval($this->dbSettings['username']))
             . ' '
             . (isset($this->dbSettings['port']) ? '-P' . escapeshellarg($this->dbSettings['port']) . ' ' : '')
-            . (!strval($this->dbSettings['password'] == '') ? '-p' . escapeshellarg($this->dbSettings['password']) . ' ' : '')
+            . (!strval($this->dbSettings['password'] == '') ? '--pass=' . escapeshellarg($this->dbSettings['password']) . ' ' : '')
             . escapeshellarg(strval($this->dbSettings['dbname']));
 
         return $string;
