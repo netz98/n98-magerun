@@ -13,9 +13,8 @@ class ConsoleCommand extends AbstractDatabaseCommand
         $this
             ->setName('db:console')
             ->setAliases(array('mysql-client'))
-			->addOption('mycli', 'm', InputOption::VALUE_NONE, 'Use `mycli` as the MySQL client instead of `mysql`')
-            ->setDescription('Opens mysql client by database config from local.xml')
-        ;
+            ->addOption('mycli', 'm', InputOption::VALUE_NONE, 'Use `mycli` as the MySQL client instead of `mysql`')
+            ->setDescription('Opens mysql client by database config from local.xml');
     }
 
     /**
@@ -28,12 +27,12 @@ class ConsoleCommand extends AbstractDatabaseCommand
         $this->detectDbSettings($output);
 
         $descriptorSpec = array(
-           0 => STDIN,
-           1 => STDOUT,
-           2 => STDERR
+            0 => STDIN,
+            1 => STDOUT,
+            2 => STDERR
         );
 
-		$mysqlClient = $input->getOption('mycli') ? 'mycli' : 'mysql';
+        $mysqlClient = $input->getOption('mycli') ? 'mycli' : 'mysql';
         $exec = $mysqlClient . ' ' . $this->getHelper('database')->getMysqlClientToolConnectionString();
 
         $pipes = array();
