@@ -10,7 +10,7 @@ use N98\Util\AutoloadRestorer;
 use N98\Util\Console\Helper\TwigHelper;
 use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\OperatingSystem;
-use N98\Util\String;
+use N98\Util\BinaryString;
 use RuntimeException;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
@@ -602,7 +602,7 @@ class Application extends BaseApplication
                 if (is_array($alias)) {
                     $aliasCommandName = key($alias);
                     if ($input->getFirstArgument() == $aliasCommandName) {
-                        $aliasCommandParams = array_slice(String::trimExplodeEmpty(' ', $alias[$aliasCommandName]), 1);
+                        $aliasCommandParams = array_slice(BinaryString::trimExplodeEmpty(' ', $alias[$aliasCommandName]), 1);
                         if (count($aliasCommandParams) > 0) {
                             // replace with aliased data
                             $mergedParams = array_merge(

@@ -4,7 +4,7 @@ namespace N98\Magento\Command;
 
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\String;
+use N98\Util\BinaryString;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -159,7 +159,7 @@ HELP;
                 if (!strstr($define, '=')) {
                     throw new InvalidArgumentException('Invalid define');
                 }
-                $parts = String::trimExplodeEmpty('=', $define);
+                $parts = BinaryString::trimExplodeEmpty('=', $define);
                 $variable = $parts[0];
                 $value = null;
                 if (isset($parts[1])) {
@@ -215,7 +215,7 @@ HELP;
                  */
                 if (isset($matches[2][1]) && $matches[2][1] == '[') {
                     if (preg_match('/\[(.+)\]/', $matches[2], $choiceMatches)) {
-                        $choices = String::trimExplodeEmpty(',', $choiceMatches[1]);
+                        $choices = BinaryString::trimExplodeEmpty(',', $choiceMatches[1]);
                         $selectedIndex = $dialog->select(
                             $output,
                             '<info>Please enter a value for <comment>' . $matches[1] . '</comment>:</info> ',

@@ -10,7 +10,7 @@ use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Database as DatabaseUtils;
 use N98\Util\Filesystem;
 use N98\Util\OperatingSystem;
-use N98\Util\String;
+use N98\Util\BinaryString;
 use PDO;
 use PDOException;
 use RuntimeException;
@@ -325,7 +325,7 @@ HELP;
         $dbOptionsFound = 0;
         foreach ($dbOptions as $dbOption) {
             foreach ($this->getCliArguments() as $definedCliOption) {
-                if (String::startsWith($definedCliOption, $dbOption)) {
+                if (BinaryString::startsWith($definedCliOption, $dbOption)) {
                     $dbOptionsFound++;
                 }
             }
