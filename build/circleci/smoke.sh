@@ -30,5 +30,6 @@ set +e
 smokerun --version
 smokerun --help
 smokerun sys:info
+smokerun extension:list
 
 echo "smokerun is done."

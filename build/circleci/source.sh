@@ -8,7 +8,7 @@ buildecho()
     echo "${1}"
 }
 
-smokerun()
+buildsmokerun()
 {
     buildecho "smokerun:"
     build/circleci/smoke.sh
