@@ -60,6 +60,11 @@ matrix:
       env: BUILDSH=1
       script: ./build.sh
 
+    # Lint PHP code with PHP 7.0
+    - php: 7.0
+      env: LINTSH=1
+      script: find {src,tests} -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
+
 before_install:
   - travis_retry composer self-update
 

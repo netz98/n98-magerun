@@ -2,7 +2,7 @@
 
 namespace N98\Util;
 
-class String
+class BinaryString
 {
     /**
      * @param $delimiter

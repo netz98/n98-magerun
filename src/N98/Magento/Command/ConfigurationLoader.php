@@ -3,7 +3,7 @@
 namespace N98\Magento\Command;
 
 use ErrorException;
-use N98\Util\String;
+use N98\Util\BinaryString;
 use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
@@ -372,7 +372,7 @@ class ConfigurationLoader
      */
     protected function registerPluginConfigFile($magentoRootFolder, $file)
     {
-        if (String::startsWith($file->getPathname(), 'vfs://')) {
+        if (BinaryString::startsWith($file->getPathname(), 'vfs://')) {
             $path = $file->getPathname();
         } else {
             $path = $file->getRealPath();
