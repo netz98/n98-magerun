@@ -28,7 +28,4 @@ _n98-magerun()
     return 0
 }
 
-
-complete -F _n98-magerun n98-magerun.phar
-complete -F _n98-magerun n98-magerun
-complete -F _n98-magerun magerun
+complete -o dirnames -F _n98-magerun n98-magerun.phar n98-magerun magerun
