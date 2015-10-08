@@ -45,7 +45,7 @@ HELP;
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
             \Mage::app()->loadAreaPart('adminhtml', 'events');
-            $allTypes = \Mage::app()->useCache();
+            $allTypes = \Mage::app()->getCacheInstance()->getTypes();
             $typesToClean = $input->getArgument('type');
             $this->validateCacheCodes($typesToClean);
             $typeKeys = array_keys($allTypes);
