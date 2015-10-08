@@ -6,6 +6,7 @@ RECENT CHANGES
 1.97.6
 ======
 
+* #704 Fix missing custom cache types (fixed by Jon Acker)
 * #691 Fix PHP 7 forward compat (reported by Yireo, fixed by Tom Klingenberg)
 * #678 Fix sys:maintenance result report (by Wojtek Naruniec)
 * #670 Fix Slow Unit-Tests on Travis (reported by Aydin Hassan, fixed by Tom Klingenberg)
