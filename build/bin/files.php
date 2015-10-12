@@ -66,7 +66,7 @@ $main = function($urls) use ($urlHeaders, $box, $bytes)
     echo $box("Verify Phar-Files Versions");
 
     foreach ($urls as $url) {
-        $tempFile = '.magerun-phar.~dl-temp';
+        $tempFile = '.magerun-phar.~dl-temp-' . md5($url->url);
         if (file_exists($tempFile)) {
             unlink($tempFile);
         }
