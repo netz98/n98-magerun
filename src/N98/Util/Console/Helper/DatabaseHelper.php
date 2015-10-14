@@ -206,17 +206,17 @@ class DatabaseHelper extends AbstractHelper
         $this->detectDbSettings(new NullOutput());
 
         if ($this->isSocketConnect) {
-            $string = '--socket=' . escapeshellarg(strval($this->dbSettings['unix_socket']));
+            $string = '--socket=' . escapeshellarg($this->dbSettings['unix_socket']);
         } else {
-            $string = '-h' . escapeshellarg(strval($this->dbSettings['host']));
+            $string = '-h' . escapeshellarg($this->dbSettings['host']);
         }
 
         $string .= ' '
-            . '-u' . escapeshellarg(strval($this->dbSettings['username']))
+            . '-u' . escapeshellarg($this->dbSettings['username'])
             . ' '
             . (isset($this->dbSettings['port']) ? '-P' . escapeshellarg($this->dbSettings['port']) . ' ' : '')
-            . (!strval($this->dbSettings['password'] == '') ? '-p' . escapeshellarg($this->dbSettings['password']) . ' ' : '')
-            . escapeshellarg(strval($this->dbSettings['dbname']));
+            . (strlen($this->dbSettings['password']) ? '--pass=' . escapeshellarg($this->dbSettings['password']) . ' ' : '')
+            . escapeshellarg($this->dbSettings['dbname']);
 
         return $string;
     }
