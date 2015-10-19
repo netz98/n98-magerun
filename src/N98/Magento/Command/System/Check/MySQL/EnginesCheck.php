@@ -15,6 +15,14 @@ class EnginesCheck implements SimpleCheck
     {
         $result = $results->createResult();
         $dbAdapter = \Mage::getModel('core/resource')->getConnection('core_write');
+        
+        if (!$dbAdapter instanceof \Varien_Db_Adapter_Interface) {
+            $result->setStatus(Result::STATUS_ERROR);
+            $result->setMessage(
+                "<error>Mysql Version: Can not check. Unable to obtain resource connection 'core_write'.</error>"
+            );
+            return;
+        }
 
         $engines = $dbAdapter->fetchAll('SHOW ENGINES');
         $innodbFound = false;
