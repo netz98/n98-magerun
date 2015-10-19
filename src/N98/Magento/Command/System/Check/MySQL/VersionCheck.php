@@ -15,6 +15,11 @@ class VersionCheck implements SimpleCheck
     {
         $result = $results->createResult();
         $dbAdapter = \Mage::getModel('core/resource')->getConnection('core_write');
+        if (!$dbAdapter) {
+            $result->setStatus(Result::STATUS_ERROR);
+            $result->setMessage("<error>core_write Connection Resource not found.");
+            return;
+        }
 
         /**
          * Check Version
