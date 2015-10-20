@@ -36,8 +36,8 @@ matrix:
 
     - php: 5.3
       env: MAGENTO_VERSION="magento-mirror-1.9.2.1" DB=mysql INSTALL_SAMPLE_DATA=no
-
-    # Old Magneto Versions are not officially supported to run with PHP 5.5
+      
+    # Old Magento Versions are not officially supported to run with PHP 5.5
     - php: 5.5
       env: MAGENTO_VERSION="magento-mirror-1.4.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes
 
@@ -50,7 +50,10 @@ matrix:
     - php: 5.5
       env: MAGENTO_VERSION="magento-ce-1.7.0.2" DB=mysql INSTALL_SAMPLE_DATA=no
   include:
-    # Run the build script with am older PHP version
+    - php: 7.0
+      env: MAGENTO_VERSION="magento-mirror-1.9.2.1" DB=mysql INSTALL_SAMPLE_DATA=no
+
+    # Run the build script with an older PHP version
     - php: 5.3
       env: BUILDSH=1
       script: ./build.sh
