@@ -32,8 +32,9 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -96,7 +97,7 @@ HELP;
                     return strcmp($a['Setup'], $b['Setup']);
                 });
 
-                array_walk($table, function (&$row) {
+                array_walk($table, function(&$row) {
                     $status             = $row['Status'];
                     $availableStatus    = array('OK' => 'info', 'Error' => 'error');
                     $statusString       = sprintf(

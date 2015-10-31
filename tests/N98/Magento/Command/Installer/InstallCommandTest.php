@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Installer;
 
+use RuntimeException;
 use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
 
@@ -18,7 +19,17 @@ class InstallCommandTest extends TestCase
      */
     public function setup()
     {
-        $this->installDir = sys_get_temp_dir() . "/mageinstall";
+        $installDir = sys_get_temp_dir() . "/mageinstall";
+        if (is_readable($installDir)) {
+            $result = rmdir($installDir);
+            if (!$result) {
+                throw new RuntimeException(
+                    sprintf('Failed to remove temporary install dir %s', var_export($installDir))
+                );
+            }
+        }
+
+        $this->installDir = $installDir;
     }
 
     /**
@@ -49,14 +60,16 @@ class InstallCommandTest extends TestCase
                     '--installSampleData'       => 'no',
                     '--useDefaultConfigParams'  => 'yes',
                     '--installationFolder'      => $this->installDir,
-                    '--dbHost'                  => 'hostWhichDoesntExist',
+                    '--dbHost'                  => 'hostWhichDoesNotExists',
                     '--dbUser'                  => 'user',
                     '--dbPass'                  => 'pa$$w0rd',
                     '--dbName'                  => 'magento',
                 )
             );
         } catch (\InvalidArgumentException $e) {
-            $this->assertContains('SQLSTATE', $commandTester->getDisplay());
+            $this->assertEquals("Database configuration is invalid", $e->getMessage());
+            $display = $commandTester->getDisplay(true);
+            $this->assertContains('SQLSTATE', $display);
             return;
         }
 

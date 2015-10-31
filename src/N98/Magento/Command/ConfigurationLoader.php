@@ -2,13 +2,15 @@
 
 namespace N98\Magento\Command;
 
-use N98\Util\String;
+use ErrorException;
+use N98\Util\BinaryString;
 use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 use N98\Util\ArrayFunctions;
+use UnexpectedValueException;
 
 /**
  * Config consists of several parts which are merged.
@@ -136,14 +138,14 @@ class ConfigurationLoader
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      *
      * @return array
      */
     public function toArray()
     {
         if ($this->_configArray == null) {
-            throw new \ErrorException('Configuration not yet fully loaded');
+            throw new ErrorException('Configuration not yet fully loaded');
         }
 
         return $this->_configArray;
@@ -240,7 +242,7 @@ class ConfigurationLoader
                     ->in($this->getVendorDir());
 
                 foreach ($finder as $file) {
-                    /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                    /* @var $file SplFileInfo */
                     $this->registerPluginConfigFile($magentoRootFolder, $file);
                 }
             }
@@ -256,7 +258,7 @@ class ConfigurationLoader
                     ->name($this->_customConfigFilename)
                     ->in($moduleBaseFolders);
 
-                foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                foreach ($finder as $file) { /* @var $file SplFileInfo */
                     $this->registerPluginConfigFile($magentoRootFolder, $file);
                 }
             }
@@ -268,9 +270,9 @@ class ConfigurationLoader
     }
 
     /**
-     * @param string                                $rawConfig
-     * @param string                                $magentoRootFolder
-     * @param \Symfony\Component\Finder\SplFileInfo $file
+     * @param string      $rawConfig
+     * @param string      $magentoRootFolder
+     * @param SplFileInfo $file
      *
      * @return string
      */
@@ -297,7 +299,7 @@ class ConfigurationLoader
     {
         if ($this->_userConfig == null) {
             $this->_userConfig = array();
-            $homeDirectory =  OperatingSystem::getHomeDir();
+            $homeDirectory = OperatingSystem::getHomeDir();
             if (OperatingSystem::isWindows()) {
                 $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . $this->_customConfigFilename;
             } else {
@@ -370,12 +372,12 @@ class ConfigurationLoader
      */
     protected function registerPluginConfigFile($magentoRootFolder, $file)
     {
-        if (String::startsWith($file->getPathname(), 'vfs://')) {
+        if (BinaryString::startsWith($file->getPathname(), 'vfs://')) {
             $path = $file->getPathname();
         } else {
             $path = $file->getRealPath();
             if ($path === "") {
-                throw new \UnexpectedValueException(sprintf("Realpath for '%s' did return an empty string.", $file));
+                throw new UnexpectedValueException(sprintf("Realpath for '%s' did return an empty string.", $file));
             }
             if ($path === false) {
                 $this->_output->writeln(sprintf("<error>Plugin config file broken link '%s'</error>", $file));

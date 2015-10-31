@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Database;
 
+use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -39,7 +40,7 @@ HELP;
      */
     protected function optimize($fileName)
     {
-        $in = fopen($fileName,'r');
+        $in = fopen($fileName, 'r');
         $result = tempnam(sys_get_temp_dir(), 'dump') . '.sql';
         $out = fopen($result, 'w');
 
@@ -96,8 +97,9 @@ HELP;
 
     }
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -112,10 +114,10 @@ HELP;
 
         if ($input->getOption('optimize')) {
             if ($input->getOption('only-command')) {
-                throw new \InvalidArgumentException('Options --only-command and --optimize are not compatible');
+                throw new InvalidArgumentException('Options --only-command and --optimize are not compatible');
             }
             if ($input->getOption('compression')) {
-                throw new \InvalidArgumentException('Options --compression and --optimize are not compatible');
+                throw new InvalidArgumentException('Options --compression and --optimize are not compatible');
             }
             $output->writeln('<comment>Optimizing <info>' . $fileName . '</info> to temporary file');
             $fileName = $this->optimize($fileName);
@@ -139,11 +141,11 @@ HELP;
             }
         }
 
-        if( $input->getOption('drop') ) {
+        if ($input->getOption('drop')) {
             $dbHelper->dropDatabase($output);
             $dbHelper->createDatabase($output);
         }
-        if( $input->getOption('drop-tables') ) {
+        if ($input->getOption('drop-tables')) {
             $dbHelper->dropTables($output);
         }
 
@@ -163,13 +165,13 @@ HELP;
      * @param InputInterface $input
      *
      * @return mixed
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function checkFilename(InputInterface $input)
     {
         $fileName = $input->getArgument('filename');
         if (!file_exists($fileName)) {
-            throw new \InvalidArgumentException('File does not exist');
+            throw new InvalidArgumentException('File does not exist');
         }
         return $fileName;
     }

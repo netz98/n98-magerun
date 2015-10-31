@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Config;
 
+use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,8 +23,9 @@ EOT
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -49,7 +51,7 @@ EOT
                             str_ireplace(
                                 $searchString,
                                 '<info>' . $searchString . '</info>',
-                                (string)$match->node->comment
+                                (string) $match->node->comment
                             )
                         );
                     }
@@ -116,7 +118,7 @@ EOT
     {
         $match = new \stdClass;
         $match->type = $this->_getNodeType($node);
-        if (stristr((string)$node->label, $searchString)) {
+        if (stristr((string) $node->label, $searchString)) {
 
             $match->match_type = 'label';
             $match->node = $node;
@@ -124,7 +126,7 @@ EOT
             return $match;
         }
 
-        if (stristr((string)$node->comment, $searchString)) {
+        if (stristr((string) $node->comment, $searchString)) {
             $match->match_type = 'comment';
             $match->node = $node;
 
@@ -164,7 +166,7 @@ EOT
      * @param object $match
      *
      * @return string
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function _getPhpMageStoreConfigPathFromMatch($match)
     {
@@ -191,7 +193,7 @@ EOT
 
             default:
                 // @TODO Why?
-                throw new \RuntimeException(__METHOD__);
+                throw new RuntimeException(__METHOD__);
         }
 
         return "Mage::getStoreConfig('" . $path . "')";
@@ -201,13 +203,13 @@ EOT
      * @param object $match
      *
      * @return string
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function _getPathFromMatch($match)
     {
         switch ($match->type) {
             case 'section':
-                return (string)$match->node->label . ' -> ... -> ...';
+                return (string) $match->node->label . ' -> ... -> ...';
 
             case 'field':
                 $parent = current($match->node->xpath('parent::*'));
@@ -225,7 +227,7 @@ EOT
 
             default:
                 // @TODO Why?
-                throw new \RuntimeException(__METHOD__);
+                throw new RuntimeException(__METHOD__);
         }
 
     }

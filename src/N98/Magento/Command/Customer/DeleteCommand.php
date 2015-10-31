@@ -2,7 +2,9 @@
 
 namespace N98\Magento\Command\Customer;
 
+use Exception;
 use N98\Util\Console\Helper\ParameterHelper;
+use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,12 +19,12 @@ class DeleteCommand extends AbstractCustomerCommand
 {
 
     /**
-     * @var \Symfony\Component\Console\Input\InputInterface
+     * @var InputInterface
      */
     protected $input;
 
     /**
-     * @var \Symfony\Component\Console\Output\OutputInterface
+     * @var OutputInterface
      */
     protected $output;
 
@@ -60,9 +62,10 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return bool|void
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return false|null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -122,7 +125,7 @@ HELP;
 
                 try {
                     $customer = $this->getCustomer($id);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->output->writeln('<error>No customer found!</error>');
                     return false;
                 }
@@ -198,8 +201,9 @@ HELP;
 
     /**
      * @param int|string $id
+     *
      * @return \Mage_Customer_Model_Customer
-     * @throws \Exception
+     * @throws RuntimeException
      */
     protected function getCustomer($id)
     {
@@ -215,7 +219,7 @@ HELP;
         }
 
         if (!$customer->getId()) {
-            throw new \RuntimeException('No customer found!');
+            throw new RuntimeException('No customer found!');
         }
 
         return $customer;
@@ -223,7 +227,8 @@ HELP;
 
     /**
      * @param \Mage_Customer_Model_Customer $customer
-     * @return bool|\Exception
+     *
+     * @return true|Exception
      */
     protected function deleteCustomer(\Mage_Customer_Model_Customer $customer)
     {
@@ -233,7 +238,7 @@ HELP;
                 sprintf('<info>%s (%s) was successfully deleted</info>', $customer->getName(), $customer->getEmail())
             );
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->output->writeln('<error>' . $e->getMessage() . '</error>');
             return $e;
         }
@@ -241,6 +246,7 @@ HELP;
 
     /**
      * @param \Mage_Customer_Model_Entity_Customer_Collection|\Mage_Customer_Model_Resource_Customer_Collection $customers
+     *
      * @return int
      */
     protected function batchDelete($customers)
@@ -262,7 +268,7 @@ HELP;
     public function validateInt($answer)
     {
         if (intval($answer) === 0) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'The range should be numeric and above 0 e.g. 1'
             );
         }

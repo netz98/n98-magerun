@@ -2,7 +2,9 @@
 
 namespace N98\Magento\Command\Database;
 
+use N98\Magento\Command\Database\Compressor\AbstractCompressor;
 use N98\Util\OperatingSystem;
+use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -73,8 +75,9 @@ HELP;
 
     /**
      * @return array
+     *
      * @deprecated Use database helper
-     * @throws \Exception
+     * @throws RuntimeException
      */
     public function getTableDefinitions()
     {
@@ -87,10 +90,10 @@ HELP;
                 foreach ($tableGroups as $index=>$definition) {
                     $description = isset($definition['description']) ? $definition['description'] : '';
                     if (!isset($definition['id'])) {
-                        throw new \RuntimeException('Invalid definition of table-groups (id missing) Index: ' . $index);
+                        throw new RuntimeException('Invalid definition of table-groups (id missing) Index: ' . $index);
                     }
                     if (!isset($definition['id'])) {
-                        throw new \RuntimeException('Invalid definition of table-groups (tables missing) Id: '
+                        throw new RuntimeException('Invalid definition of table-groups (tables missing) Id: '
                             . $definition['id']
                         );
                     }
@@ -110,11 +113,10 @@ HELP;
      * Generate help for table definitions
      *
      * @return string
-     * @throws \Exception
      */
     public function getTableDefinitionHelp()
     {
-        $messages = PHP_EOL;;
+        $messages = PHP_EOL;
         $this->commandConfig = $this->getCommandConfig();
         $messages .= <<<HELP
 <comment>Strip option</comment>
@@ -155,7 +157,7 @@ HELP;
             $delta  = max(0, $maxNameLen - strlen($name));
             $spacer = $delta ? str_repeat(' ', $delta) : '';
             $buffer = wordwrap($description, $decrSize);
-            $buffer = strtr($buffer, array("\n" => "\n" . str_repeat(' ', 3 +  $maxNameLen)));
+            $buffer = strtr($buffer, array("\n" => "\n" . str_repeat(' ', 3 + $maxNameLen)));
             $messages .= sprintf(" <info>%s</info>%s  %s\n", $name, $spacer, $buffer);
         }
 
@@ -170,8 +172,9 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -224,11 +227,11 @@ HELP;
             $dumpOptions .= '--routines ';
         }
 
-        if($input->getOption('xml')) {
+        if ($input->getOption('xml')) {
             $dumpOptions .= '--xml ';
         }
 
-        if($input->getOption('hex-blob')) {
+        if ($input->getOption('hex-blob')) {
             $dumpOptions .= '--hex-blob ';
         }
 
@@ -256,7 +259,7 @@ HELP;
         $exec .= $this->postDumpPipeCommands();
         $exec = $compressor->getCompressingCommand($exec);
         if (!$input->getOption('stdout')) {
-            $exec .= (count($stripTables) > 0 ? ' >> ' : ' > ' ). escapeshellarg($fileName);
+            $exec .= (count($stripTables) > 0 ? ' >> ' : ' > ') . escapeshellarg($fileName);
         }
         $execs[] = $exec;
 
@@ -320,17 +323,17 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param \N98\Magento\Command\Database\Compressor\AbstractCompressor $compressor
+     * @param InputInterface     $input
+     * @param OutputInterface    $output
+     * @param AbstractCompressor $compressor
+     *
      * @return string
      */
-    protected function getFileName(InputInterface $input, OutputInterface $output,
-        Compressor\AbstractCompressor $compressor
-    ) {
+    protected function getFileName(InputInterface $input, OutputInterface $output, AbstractCompressor $compressor)
+    {
         $namePrefix    = '';
         $nameSuffix    = '';
-        if($input->getOption('xml')) {
+        if ($input->getOption('xml')) {
             $nameExtension = '.xml';
         } else {
             $nameExtension = '.sql';
@@ -351,7 +354,9 @@ HELP;
             /** @var DialogHelper $dialog */
             $dialog      = $this->getHelperSet()->get('dialog');
             $defaultName = $namePrefix . $this->dbSettings['dbname'] . $nameSuffix . $nameExtension;
-            if (isset($isDir) && $isDir) $defaultName = rtrim($fileName, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $defaultName;
+            if (isset($isDir) && $isDir) {
+                $defaultName = rtrim($fileName, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $defaultName;
+            }
             if (!$input->getOption('force')) {
                 $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question> [<comment>'
                     . $defaultName . '</comment>]', $defaultName
@@ -362,7 +367,7 @@ HELP;
         } else {
             if ($input->getOption('add-time')) {
                 $pathParts = pathinfo($fileName);
-                $fileName = ($pathParts['dirname'] == '.' ? '' : $pathParts['dirname'] . DIRECTORY_SEPARATOR ) .
+                $fileName = ($pathParts['dirname'] == '.' ? '' : $pathParts['dirname'] . DIRECTORY_SEPARATOR) .
                     $namePrefix . $pathParts['filename'] . $nameSuffix . '.' . $pathParts['extension'];
             }
         }

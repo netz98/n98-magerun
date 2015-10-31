@@ -17,38 +17,8 @@ $urls = <<<JSON_URLS
 ]
 JSON_URLS;
 
-$main = function($urls) use (&$urlHeaders, &$box, &$bytes)
-{
-    foreach ($urls as $url) {
-        $title = sprintf("%s: %s", $url->channel, $url->url);
-        echo $box($title);
-
-        $headers = $urlHeaders($url->url);
-        printf("Status..: %s\n", $headers(TRUE));
-        printf("Size....: %s (bytes)\n", $bytes($headers('Content-Length')));
-        printf("Modified: %s\n", $headers('Last-Modified'));
-
-        echo "\n";
-    }
-
-    echo $box("Verify Phar-Files Versions");
-
-    foreach ($urls as $url) {
-        $tempFile = '.magerun-phar.~dl-temp';
-        @unlink($tempFile);
-        file_put_contents($tempFile, fopen($url->url, 'r'));
-        printf(
-            "%'.-8s: %s\n          MD5.: %s\n", ucfirst($url->channel), rtrim(`php -f "{$tempFile}" -- --no-ansi --version`),
-            @md5_file($tempFile, false)
-        );
-        clearstatcache(null, $tempFile);
-        printf("          Size: %s\n", $bytes(filesize($tempFile)));
-        @unlink($tempFile);
-    }
-};
-
-$urlHeaders = function ($url) {
-    return function ($name = null) use ($url) {
+$urlHeaders = function($url) {
+    return function($name = null) use ($url) {
         static $response;
         $response || $response = shell_exec(sprintf('curl -sI %s', escapeshellarg($url)));
 
@@ -65,7 +35,7 @@ $urlHeaders = function ($url) {
     };
 };
 
-$box = function ($title) {
+$box = function($title) {
     $len    = strlen($title);
     $buffer = str_repeat("=", $len + 4);
     $buffer .= "\n= $title =\n";
@@ -78,5 +48,37 @@ $bytes = function($count) {
 };
 
 $urls = json_decode($urls, false, 16, null);
+
+$main = function($urls) use ($urlHeaders, $box, $bytes)
+{
+    foreach ($urls as $url) {
+        $title = sprintf("%s: %s", $url->channel, $url->url);
+        echo $box($title);
+
+        $headers = $urlHeaders($url->url);
+        printf("Status..: %s\n", $headers(TRUE));
+        printf("Size....: %s\n", $bytes($headers('Content-Length')));
+        printf("Modified: %s\n", $headers('Last-Modified'));
+
+        echo "\n";
+    }
+
+    echo $box("Verify Phar-Files Versions");
+
+    foreach ($urls as $url) {
+        $tempFile = '.magerun-phar.~dl-temp-' . md5($url->url);
+        if (file_exists($tempFile)) {
+            unlink($tempFile);
+        }
+        file_put_contents($tempFile, fopen($url->url, 'r'));
+        printf(
+            "%'.-8s: %s\n          MD5.: %s\n", ucfirst($url->channel), rtrim(`php -f "{$tempFile}" -- --no-ansi --version`),
+            md5_file($tempFile, false)
+        );
+        clearstatcache(null, $tempFile);
+        printf("          Size: %s\n", $bytes(filesize($tempFile)));
+        unlink($tempFile);
+    }
+};
 
 $main($urls);

@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Database;
 
+use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -34,9 +35,10 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface   $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @throws \InvalidArgumentException
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @throws InvalidArgumentException
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -91,7 +93,7 @@ HELP;
 
         if (($settingArgument = $input->getArgument('setting')) !== null) {
             if (!isset($settings[$settingArgument])) {
-                throw new \InvalidArgumentException('Unknown setting: ' . $settingArgument);
+                throw new InvalidArgumentException('Unknown setting: ' . $settingArgument);
             }
             $output->writeln((string) $settings[$settingArgument]);
         } else {

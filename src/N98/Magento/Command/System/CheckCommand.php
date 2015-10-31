@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System;
 
+use LogicException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\CommandAware;
 use N98\Magento\Command\CommandConfigAware;
@@ -53,8 +54,9 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -111,7 +113,7 @@ HELP;
                 break;
 
             default:
-                throw new \LogicException(
+                throw new LogicException(
                     sprintf('Unhandled check-class "%s"', $checkGroupClass)
                 );
         }

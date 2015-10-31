@@ -16,8 +16,9 @@ class FlushCommand extends AbstractCacheCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -30,15 +31,23 @@ class FlushCommand extends AbstractCacheCommand
 
             \Mage::app()->loadAreaPart('adminhtml', 'events');
             \Mage::dispatchEvent('adminhtml_cache_flush_all', array('output' => $output));
-            \Mage::app()->getCacheInstance()->flush();
-            $output->writeln('<info>Cache cleared</info>');
+            $result = \Mage::app()->getCacheInstance()->flush();
+            if ($result) {
+                $output->writeln('<info>Cache cleared</info>');
+            } else {
+                $output->writeln('<error>Failed to clear Cache</error>');
+            }
 
             $this->reinitCache();
 
             /* Since Magento 1.10 we have an own cache handler for FPC */
             if ($this->isEnterpriseFullPageCachePresent()) {
-                \Enterprise_PageCache_Model_Cache::getCacheInstance()->flush();
-                $output->writeln('<info>FPC cleared</info>');
+                $result = \Enterprise_PageCache_Model_Cache::getCacheInstance()->flush();
+                if ($result) {
+                    $output->writeln('<info>FPC cleared</info>');
+                } else {
+                    $output->writeln('<error>Failed to clear FPC</error>');
+                }
             }
 
         }

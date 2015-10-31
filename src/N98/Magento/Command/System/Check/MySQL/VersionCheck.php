@@ -14,7 +14,20 @@ class VersionCheck implements SimpleCheck
     public function check(ResultCollection $results)
     {
         $result = $results->createResult();
-        $dbAdapter = \Mage::getModel('core/resource')->getConnection('core_write');
+
+        /** @var $resourceModel \Mage_Core_Model_Resource */
+        $resourceModel = \Mage::getModel('core/resource');
+
+        /** @var $dbAdapter \Varien_Db_Adapter_Interface|false */
+        $dbAdapter = $resourceModel->getConnection('core_write');
+
+        if (!$dbAdapter instanceof \Varien_Db_Adapter_Interface) {
+            $result->setStatus(Result::STATUS_ERROR);
+            $result->setMessage(
+                "<error>Mysql Version: Can not check. Unable to obtain resource connection 'core_write'.</error>"
+            );
+            return;
+        }
 
         /**
          * Check Version

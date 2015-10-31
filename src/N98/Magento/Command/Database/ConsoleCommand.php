@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Database;
 
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ConsoleCommand extends AbstractDatabaseCommand
@@ -12,13 +13,14 @@ class ConsoleCommand extends AbstractDatabaseCommand
         $this
             ->setName('db:console')
             ->setAliases(array('mysql-client'))
-            ->setDescription('Opens mysql client by database config from local.xml')
-        ;
+            ->addOption('use-mycli-instead-of-mysql', null, InputOption::VALUE_NONE, 'Use `mycli` as the MySQL client instead of `mysql`')
+            ->setDescription('Opens mysql client by database config from local.xml');
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -26,12 +28,13 @@ class ConsoleCommand extends AbstractDatabaseCommand
         $this->detectDbSettings($output);
 
         $descriptorSpec = array(
-           0 => STDIN,
-           1 => STDOUT,
-           2 => STDERR
+            0 => STDIN,
+            1 => STDOUT,
+            2 => STDERR,
         );
 
-        $exec = 'mysql ' . $this->getHelper('database')->getMysqlClientToolConnectionString();
+        $mysqlClient = $input->getOption('use-mycli-instead-of-mysql') ? 'mycli' : 'mysql';
+        $exec = $mysqlClient . ' ' . $this->getHelper('database')->getMysqlClientToolConnectionString();
 
         $pipes = array();
         $process = proc_open($exec, $descriptorSpec, $pipes);

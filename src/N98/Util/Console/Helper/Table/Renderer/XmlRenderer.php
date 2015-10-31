@@ -7,8 +7,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class XmlRenderer implements RendererInterface
 {
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param array $rows
+     * @param OutputInterface $output
+     * @param array           $rows
      */
     public function render(OutputInterface $output, array $rows)
     {

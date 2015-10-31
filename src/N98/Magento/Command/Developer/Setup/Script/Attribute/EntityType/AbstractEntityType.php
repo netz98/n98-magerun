@@ -2,6 +2,11 @@
 
 namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
 
+/**
+ * Class AbstractEntityType
+ *
+ * @package N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType
+ */
 abstract class AbstractEntityType
 {
     /**
@@ -10,7 +15,7 @@ abstract class AbstractEntityType
     protected $readConnection;
 
     /**
-     * @var string
+     * @var \Mage_Eav_Model_Entity_Attribute
      */
     protected $attribute;
 
@@ -27,7 +32,7 @@ abstract class AbstractEntityType
     /**
      * @param \Mage_Eav_Model_Entity_Attribute $attribute
      */
-    public function __construct($attribute)
+    public function __construct(\Mage_Eav_Model_Entity_Attribute $attribute)
     {
         $this->attribute = $attribute;
     }
@@ -65,6 +70,13 @@ abstract class AbstractEntityType
      */
     public function getAttributeLabels($attribute)
     {
+        // FIXME: after having this warning in for some time, promote to a parameter type-hint.
+        if (!$attribute instanceof \Mage_Eav_Model_Entity_Attribute) {
+            trigger_error(
+                sprintf('Attribute not of type Mage_Eav_Model_Entity_Attribute, is of type %s', get_class($attribute))
+            );
+        }
+
         $select = $this->readConnection->select()
             ->from(\Mage::getSingleton('core/resource')->getTableName('eav_attribute_label'))
             ->where('attribute_id = ?', $attribute->getId());
@@ -86,7 +98,7 @@ abstract class AbstractEntityType
      *
      * @return array
      */
-    protected function getOptions($attribute)
+    protected function getOptions(\Mage_Eav_Model_Entity_Attribute $attribute)
     {
         $select = $this->readConnection->select()
             ->from(array('o' => \Mage::getSingleton('core/resource')->getTableName('eav_attribute_option')))

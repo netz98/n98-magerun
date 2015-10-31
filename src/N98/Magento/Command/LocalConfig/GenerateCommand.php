@@ -34,120 +34,102 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
         $configFile = $this->_getLocalConfigFilename();
-        $configFileTemplate = $this->_magentoRootFolder . '/app/etc/local.xml.template';
-        if (!file_exists($configFile)) {
-            $this->writeSection($output, 'Generate Magento local.xml');
-            $this->askForArguments($input, $output);
-            if (!file_exists($configFileTemplate)) {
-                $output->writeln('<error>File ' . $this->_magentoRootFolder . '/app/etc/local.xml.template does not exist.</error>');
-                return;
-            }
+        $configFileTemplate = dirname($configFile) . '/local.xml.template';
 
-            if (!is_writable($this->_magentoRootFolder . '/app/etc')) {
-                $output->writeln('<error>Folder ' . $this->_magentoRootFolder . '/app/etc is not writeable</error>');
-                return;
-            }
-
-            $content = file_get_contents($configFileTemplate);
-            $key = $input->getArgument('encryption-key') ? $input->getArgument('encryption-key') : md5(uniqid());
-            if (is_array($key)) {
-                $key = $key[0];
-            }
-
-            $replace = array(
-                '{{date}}'               => $this->_wrapCData(date(\DateTime::RFC2822)),
-                '{{key}}'                => $this->_wrapCData($key),
-                '{{db_prefix}}'          => $this->_wrapCData(''),
-                '{{db_host}}'            => $this->_wrapCData($input->getArgument('db-host')),
-                '{{db_user}}'            => $this->_wrapCData($input->getArgument('db-user')),
-                '{{db_pass}}'            => $this->_wrapCData($input->getArgument('db-pass')),
-                '{{db_name}}'            => $this->_wrapCData($input->getArgument('db-name')),
-                '{{db_init_statemants}}' => $this->_wrapCData('SET NAMES utf8'), // this is right -> magento has a little typo bug "statemants".
-                '{{db_model}}'           => $this->_wrapCData('mysql4'),
-                '{{db_type}}'            => $this->_wrapCData('pdo_mysql'),
-                '{{db_pdo_type}}'        => $this->_wrapCData(''),
-                '{{session_save}}'       => $this->_wrapCData($input->getArgument('session-save')),
-                '{{admin_frontname}}'    => $this->_wrapCData($input->getArgument('admin-frontname')),
-            );
-
-            $newFileContent = str_replace(array_keys($replace), array_values($replace), $content);
-            if (file_put_contents($configFile, $newFileContent)) {
-                $output->writeln('<info>Generated config</info>');
-            } else {
-                $output->writeln('<error>could not save config</error>');
-            }
-        } else {
-            $output->writeln('<info>local.xml file already exists in folder "' . $this->_magentoRootFolder . '/app/etc' . '"</info>');
+        if (file_exists($configFile)) {
+            $output->writeln(sprintf('<info>local.xml file already exists in folder "%s/app/etc"</info>', dirname($configFile)));
+            return;
         }
+
+        $this->writeSection($output, 'Generate Magento local.xml');
+        $this->askForArguments($input, $output);
+        if (!file_exists($configFileTemplate)) {
+            $output->writeln(sprintf('<error>File %s does not exist.</error>', $configFileTemplate));
+            return;
+        }
+
+        if (!is_writable(dirname($configFileTemplate))) {
+            $output->writeln(sprintf('<error>Folder %s is not writeable</error>', dirname($configFileTemplate)));
+            return;
+        }
+
+        $content = file_get_contents($configFileTemplate);
+        $key = $input->getArgument('encryption-key') ? $input->getArgument('encryption-key') : md5(uniqid());
+
+        $replace = array(
+            '{{date}}'               => $this->_wrapCData(date(\DateTime::RFC2822)),
+            '{{key}}'                => $this->_wrapCData($key),
+            '{{db_prefix}}'          => $this->_wrapCData(''),
+            '{{db_host}}'            => $this->_wrapCData($input->getArgument('db-host')),
+            '{{db_user}}'            => $this->_wrapCData($input->getArgument('db-user')),
+            '{{db_pass}}'            => $this->_wrapCData($input->getArgument('db-pass')),
+            '{{db_name}}'            => $this->_wrapCData($input->getArgument('db-name')),
+            '{{db_init_statemants}}' => $this->_wrapCData('SET NAMES utf8'), // this is right -> magento has a little typo bug "statemants".
+            '{{db_model}}'           => $this->_wrapCData('mysql4'),
+            '{{db_type}}'            => $this->_wrapCData('pdo_mysql'),
+            '{{db_pdo_type}}'        => $this->_wrapCData(''),
+            '{{session_save}}'       => $this->_wrapCData($input->getArgument('session-save')),
+            '{{admin_frontname}}'    => $this->_wrapCData($input->getArgument('admin-frontname')),
+        );
+
+        $newFileContent = str_replace(array_keys($replace), array_values($replace), $content);
+        if (false === file_put_contents($configFile, $newFileContent)) {
+            $output->writeln('<error>could not save config</error>');
+            return;
+        }
+
+        $output->writeln('<info>Generated config</info>');
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      */
     protected function askForArguments(InputInterface $input, OutputInterface $output)
     {
         $dialog = $this->getHelperSet()->get('dialog');
+        $dialog->setInput($input);
+        $messagePrefix = 'Please enter the ';
 
+        $arguments = array(
+            'db-host'         => array('prompt' => 'database host', 'required' => true),
+            'db-user'         => array('prompt' => 'database username', 'required' => true),
+            'db-pass'         => array('prompt' => 'database password', 'required' => false),
+            'db-name'         => array('prompt' => 'database name', 'required' => true),
+            'session-save'    => array('prompt' => 'session save', 'required' => true, 'default' => 'files'),
+            'admin-frontname' => array('prompt' => 'admin frontname', 'required' => true, 'default' => 'admin'),
+        );
 
+        foreach ($arguments as $argument => $options) {
 
-        $messagePrefix = 'Please enter the';
+            if (isset($options['default']) && $input->getArgument($argument) === null) {
+                $input->setArgument(
+                    $argument,
+                    $dialog->ask(
+                        $output,
+                        sprintf('<question>%s%s:</question>', $messagePrefix, $options['prompt']),
+                        $options['default']
+                    )
+                );
+            } else {
+                $input->setArgument(
+                    $argument,
+                    $this->getOrAskForArgument($argument, $input, $output, $messagePrefix . $options['prompt'])
+                );
+            }
 
-        // db-host
-        $input->setArgument('db-host',
-            $this->getOrAskForArgument('db-host', $input, $output, $messagePrefix. 'database host'));
-
-        if ($input->getArgument('db-host') === null) {
-            $output->writeln('<error>db-host was not set.</error>');
-            return;
-        }
-
-        // db-user
-        $input->setArgument('db-user',
-            $this->getOrAskForArgument('db-user', $input, $output, $messagePrefix. 'database username'));
-
-        if ($input->getArgument('db-user') === null) {
-            $output->writeln('<error>db-user was not set.</error>');
-            return;
-        }
-
-        // db-pass
-        $input->setArgument('db-pass',
-            $this->getOrAskForArgument('db-pass', $input, $output, $messagePrefix. 'database password'));
-
-        // db-name
-        $input->setArgument('db-pass',
-            $this->getOrAskForArgument('db-pass', $input, $output, $messagePrefix. 'database name'));
-
-        if ($input->getArgument('db-name') === null) {
-            $output->writeln('<error>db-name was not set.</error>');
-            return;
-        }
-
-        // session-save
-        $input->setArgument('db-pass',
-            $this->getOrAskForArgument('db-pass', $input, $output, $messagePrefix. 'session save'));
-
-        if ($input->getArgument('session-save') === null) {
-            $output->writeln('<error>session-save was not set.</error>');
-            return;
-        }
-
-        // admin-frontname
-        if ($input->getArgument('admin-frontname') === null) {
-            $input->setArgument('admin-frontname', $dialog->ask($output, '<question>Please enter the admin frontname:</question>', 'admin'));
-        }
-        if ($input->getArgument('admin-frontname') === null) {
-            $output->writeln('<error>admin-frontname was not set.</error>');
-            return;
+            if ($options['required'] && $input->getArgument($argument) === null) {
+                throw new \InvalidArgumentException(sprintf('%s was not set', $argument));
+            }
         }
     }
 
@@ -161,15 +143,21 @@ HELP;
     }
 
     /**
-     * @param string $value
-     * @return string
+     * wrap utf-8 string as a <![CDATA[ ... ]]> section if the string has length.
+     *
+     * in case the string has length and not the whole string can be wrapped in a CDATA section (because it contains
+     * a sequence that can not be part of a CDATA section "]]>") the part that can well be.
+     *
+     * @param string $string
+     *
+     * @return string CDATA section or equivalent
      */
-    protected function _wrapCData($value)
+    protected function _wrapCData($string)
     {
-        if (!strstr($value, 'CDATA')) {
-            return '<![CDATA[' . $value . ']]>';
-        }
+        $buffer = strtr($string, array(']]>' => ']]>]]&gt;<![CDATA['));
+        $buffer = '<![CDATA[' . $buffer . ']]>';
+        $buffer = strtr($buffer, array('<![CDATA[]]>' => ''));
 
-        return $value;
+        return $buffer;
     }
 }

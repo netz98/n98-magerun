@@ -159,6 +159,25 @@ class PatchedPharPackageTask
     }
 
     /**
+     * @return string
+     */
+    private function getCompressionLabel()
+    {
+        $compression = $this->compression;
+
+        switch ($compression) {
+            case Phar::GZ:
+                return "gzip";
+
+            case Phar::BZ2:
+                return "bzip2";
+
+            default:
+                return sprintf("int(%d)", $compression);
+        }
+    }
+
+    /**
      * Destination (output) file.
      *
      * @param PhingFile $destinationFile
@@ -398,10 +417,10 @@ class PatchedPharPackageTask
     }
 
     /**
-     * @param $phar
-     * @param $baseDirectory
+     * @param Phar   $phar
+     * @param string $baseDirectory
      */
-    private function compressEachFile($phar, $baseDirectory)
+    private function compressEachFile(Phar $phar, $baseDirectory)
     {
         $phar->startBuffering();
 
@@ -427,23 +446,50 @@ class PatchedPharPackageTask
     }
 
     /**
-     * @param $phar
-     * @param $baseDirectory
+     * @param Phar   $phar
+     * @param string $baseDirectory
      */
-    private function compressAllFiles($phar, $baseDirectory)
+    private function compressAllFiles(Phar $phar, $baseDirectory)
     {
+        $total = 0;
+
         $phar->startBuffering();
 
         foreach ($this->filesets as $fileset) {
-            $this->log("Fileset " . $fileset->getDir($this->project) . " ... ", Project::MSG_VERBOSE);
-            $phar->buildFromIterator($fileset, $baseDirectory);
+            $dir = $fileset->getDir($this->project);
+            $msg = sprintf("Fileset %s ...", $dir);
+            $this->log($msg, Project::MSG_VERBOSE);
+            $added = $phar->buildFromIterator($fileset, $baseDirectory);
+            $total += count($added);
         }
 
         $phar->stopBuffering();
 
-        if (Phar::NONE != $this->compression) {
-            $this->log("Compressing files (" . $this->compression . ") ... ", Project::MSG_VERBOSE);
+        if (Phar::NONE === $this->compression) {
+            return;
+        }
+
+        $msg = sprintf("Compressing %d files (compression: %s) ... ", $total, $this->getCompressionLabel());
+        $this->log($msg, Project::MSG_VERBOSE);
+
+        // safeguard open files soft limit
+        if (function_exists('posix_getrlimit')) {
+            $rlimit = posix_getrlimit();
+            if ($rlimit['soft openfiles'] < ($total + 5)) {
+                $msg = sprintf("Limit of openfiles (%d) is too low.", $rlimit['soft openfiles']);
+                $this->log($msg, Project::MSG_VERBOSE);
+            }
+        }
+
+        // safeguard compression
+        try {
             $phar->compressFiles($this->compression);
+        } catch (BadMethodCallException $e) {
+            if ($e->getMessage() === 'unable to create temporary file') {
+                $msg = sprintf("Info: Check openfiles limit it must be %d or higher", $total + 5);
+                throw new BadMethodCallException($msg, 0, $e);
+            }
+            throw $e;
         }
     }
 }

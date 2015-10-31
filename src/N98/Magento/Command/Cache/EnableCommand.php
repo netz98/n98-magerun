@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\Cache;
 
-use N98\Util\String;
+use N98\Util\BinaryString;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,15 +19,16 @@ class EnableCommand extends AbstractCacheCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            $codeArgument = String::trimExplodeEmpty(',', $input->getArgument('code'));
+            $codeArgument = BinaryString::trimExplodeEmpty(',', $input->getArgument('code'));
             $this->saveCacheStatus($codeArgument, true);
 
             if (count($codeArgument) > 0) {

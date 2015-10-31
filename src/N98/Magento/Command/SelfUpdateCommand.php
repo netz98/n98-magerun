@@ -5,6 +5,7 @@ namespace N98\Magento\Command;
 use Composer\Downloader\FilesystemException;
 use Composer\IO\ConsoleIO;
 use Composer\Util\RemoteFilesystem;
+use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -43,10 +44,16 @@ EOT
         return $this->getApplication()->isPharMode();
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @throws FilesystemException
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $localFilename = realpath($_SERVER['argv'][0]) ?: $_SERVER['argv'][0];
-        $tempFilename = dirname($localFilename) . '/' . basename($localFilename, '.phar').'-temp.phar';
+        $tempFilename = dirname($localFilename) . '/' . basename($localFilename, '.phar') . '-temp.phar';
 
         // check for permissions in local filesystem before start connection process
         if (!is_writable($tempDirectory = dirname($tempFilename))) {
@@ -123,12 +130,12 @@ UNSTABLE_FOOTER;
                 }
 
                 $this->_exit();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 @unlink($tempFilename);
                 if (!$e instanceof \UnexpectedValueException && !$e instanceof \PharException) {
                     throw $e;
                 }
-                $output->writeln('<error>The download is corrupted ('.$e->getMessage().').</error>');
+                $output->writeln('<error>The download is corrupted (' . $e->getMessage() . ').</error>');
                 $output->writeln('<error>Please re-run the self-update command to try again.</error>');
             }
         } else {

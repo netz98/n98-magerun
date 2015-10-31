@@ -2,7 +2,11 @@
 
 namespace N98\Magento\Command\Developer\Module;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
+use RuntimeException;
+use SimpleXMLElement;
+use Symfony\Component\Console\Helper\HelperInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -85,33 +89,40 @@ class UpdateCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->initMagento();
         $this->initArguments($input);
 
-        if ($this->hasAddResourceModelOption($input))
+        if ($this->hasAddResourceModelOption($input)) {
             $this->askResourceModelOptions($output);
+        }
 
-        if ($this->hasAddRoutersOption($input))
+        if ($this->hasAddRoutersOption($input)) {
             $this->askRoutersOptions($output);
+        }
 
-        if ($this->hasAddEventsOption($input))
+        if ($this->hasAddEventsOption($input)) {
             $this->askEventsOptions($output);
+        }
 
-        if ($this->hasAddLayoutUpdatesOptions($input))
+        if ($this->hasAddLayoutUpdatesOptions($input)) {
             $this->askLayoutUpdatesOptions($output);
+        }
 
-        if ($this->hasAddTranslateOption($input))
+        if ($this->hasAddTranslateOption($input)) {
             $this->askTranslateOptions($output);
+        }
 
-        if ($this->hasAddDefaultOption($input))
+        if ($this->hasAddDefaultOption($input)) {
             $this->askDefaultOptions($output);
+        }
 
         $this->setModuleDirectory($this->getModuleDir());
         $this->writeModuleConfig($input, $output);
@@ -119,22 +130,20 @@ class UpdateCommand extends AbstractMagentoCommand
 
     /**
      * @param InputInterface $input
-     * @throws \InvalidArgumentException
      */
     protected function initArguments(InputInterface $input)
     {
         $this->vendorNamespace = ucfirst($input->getArgument('vendorNamespace'));
         $this->moduleName = ucfirst($input->getArgument('moduleName'));
-        $this->determineModuleCodePool($input);
+        $this->determineModuleCodePool();
     }
 
     /**
      * Find module codepool from module directory
      *
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @return bool|string
+     * @return string
      */
-    protected function determineModuleCodePool(InputInterface $input)
+    protected function determineModuleCodePool()
     {
         if ($this->testMode === true) {
             $this->codePool = 'local';
@@ -144,26 +153,29 @@ class UpdateCommand extends AbstractMagentoCommand
                 . $this->codePool
                 . '/' . $this->vendorNamespace
                 . '/' . $this->moduleName;
-        }
-        else
+        } else {
             $this->moduleDirectory = $this->getModuleDir();
+        }
 
-        if (preg_match('/community/', $this->moduleDirectory))
+        if (preg_match('/community/', $this->moduleDirectory)) {
             $this->codePool = 'community';
-        if (preg_match('/local/', $this->moduleDirectory))
+        }
+
+        if (preg_match('/local/', $this->moduleDirectory)) {
             $this->codePool = 'local';
+        }
 
         return $this->codePool;
     }
 
     /**
-     * @param $moduleDir
-     * @throws \RuntimeException
+     * @param string $moduleDir
+     * @throws RuntimeException
      */
     protected function setModuleDirectory($moduleDir)
     {
         if (!file_exists($moduleDir)) {
-            throw new \RuntimeException('Module does not exist. Use dev:module:create to create it before updating. Stop.');
+            throw new RuntimeException('Module does not exist. Use dev:module:create to create it before updating. Stop.');
         }
 
         $this->moduleDirectory = $moduleDir;
@@ -171,7 +183,7 @@ class UpdateCommand extends AbstractMagentoCommand
 
 
     /**
-     * @return \Symfony\Component\Console\Helper\HelperInterface
+     * @return HelperInterface
      */
     protected function getDialog()
     {
@@ -221,10 +233,10 @@ class UpdateCommand extends AbstractMagentoCommand
      * Sets global xml config node
      *
      * @param InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      * @param SimpleXMLElement $configXml
      */
-    protected function setGlobalNode(InputInterface $input, OutputInterface $output, \SimpleXMLElement $configXml)
+    protected function setGlobalNode(InputInterface $input, OutputInterface $output, SimpleXMLElement $configXml)
     {
         if ($this->shouldAddAll($input)) {
             $this->addGlobalNode($configXml, 'blocks', '_Block');
@@ -232,11 +244,13 @@ class UpdateCommand extends AbstractMagentoCommand
             $this->addGlobalNode($configXml, 'models', '_Model');
             $this->addResourceModelNodeIfConfirmed($output, $configXml);
         } else {
-            if ($this->shouldAddBlocks($input))
+            if ($this->shouldAddBlocks($input)) {
                 $this->addGlobalNode($configXml, 'blocks', '_Block');
+            }
 
-            if ($this->shouldAddHelpers($input))
+            if ($this->shouldAddHelpers($input)) {
                 $this->addGlobalNode($configXml, 'helpers', '_Helper');
+            }
 
             if ($this->shouldAddModels($input)) {
                 $this->addGlobalNode($configXml, 'models', '_Model');
@@ -269,8 +283,9 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function setResourceModelNode(InputInterface $input, \SimpleXMLElement $configXml)
     {
-        if ($this->hasAddResourceModelOption($input))
+        if ($this->hasAddResourceModelOption($input)) {
             $this->addResourceModel($configXml);
+        }
     }
 
     /**
@@ -279,8 +294,9 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function setRoutersNode(InputInterface $input, \SimpleXMLElement $configXml)
     {
-        if ($this->hasAddRoutersOption($input))
+        if ($this->hasAddRoutersOption($input)) {
             $this->addRouter($configXml, $this->configNodes['router_area']);
+        }
     }
 
     /**
@@ -289,8 +305,9 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function setEventsNode(InputInterface $input, \SimpleXMLElement $configXml)
     {
-        if ($this->hasAddEventsOption($input))
+        if ($this->hasAddEventsOption($input)) {
             $this->addEvent($configXml, $this->configNodes['events_area'], $this->configNodes['event_name']);
+        }
     }
 
     /**
@@ -299,8 +316,9 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function setLayoutUpdatesNode(InputInterface $input, \SimpleXMLElement $configXml)
     {
-        if ($this->hasAddLayoutUpdatesOptions($input))
+        if ($this->hasAddLayoutUpdatesOptions($input)) {
             $this->addLayoutUpdate($configXml, $this->configNodes['layout_updates_area'], $this->configNodes['layout_update_module']);
+        }
     }
 
     /**
@@ -309,8 +327,9 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function setTranslateNode(InputInterface $input, \SimpleXMLElement $configXml)
     {
-        if ($this->hasAddTranslateOption($input))
+        if ($this->hasAddTranslateOption($input)) {
             $this->addTranslate($configXml, $this->configNodes['translate_area'], $this->configNodes['translate_module']);
+        }
     }
 
     /**
@@ -319,19 +338,21 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function setDefaultNode(InputInterface $input, \SimpleXMLElement $configXml)
     {
-        if ($this->hasAddDefaultOption($input))
+        if ($this->hasAddDefaultOption($input)) {
             $this->addDefault($configXml);
+        }
     }
 
     /**
      * Gets config XML
      *
-     * @return \SimpleXMLElement
+     * @return SimpleXMLElement
      */
     protected function getConfigXml()
     {
         $currentConfigXml = $this->getCurrentConfigContent();
         $simpleXml = new \SimpleXMLElement($currentConfigXml);
+
         return $simpleXml;
     }
 
@@ -343,6 +364,7 @@ class UpdateCommand extends AbstractMagentoCommand
     protected function getCurrentConfigContent()
     {
         $configFile = $this->getModuleDir() . '/etc/config.xml';
+
         return file_get_contents($configFile);
     }
 
@@ -422,7 +444,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * Asks for routers node options
      *
      * @param OutputInterface $output
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function askResourceModelOptions(OutputInterface $output)
     {
@@ -440,10 +462,11 @@ class UpdateCommand extends AbstractMagentoCommand
         $entityName = true;
 
         while ($entityName) {
-            $entityName =  trim($dialog->ask($output, '<question>Entity Name (leave blank to exit):</question>'));
-            if (!$entityName)
+            $entityName = trim($dialog->ask($output, '<question>Entity Name (leave blank to exit):</question>'));
+            if (!$entityName) {
                 break;
-            $entityTable =  trim($dialog->ask($output, '<question>Entity Table:</question>'));
+            }
+            $entityTable = trim($dialog->ask($output, '<question>Entity Table:</question>'));
             $this->configNodes['resource_entities'][$entityName] = $entityTable;
         }
     }
@@ -452,7 +475,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * Asks for routers node options
      *
      * @param OutputInterface $output
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function askRoutersOptions(OutputInterface $output)
     {
@@ -462,8 +485,9 @@ class UpdateCommand extends AbstractMagentoCommand
         $use = trim($dialog->ask($output, '<question>Use:</question>'));
         $frontName = trim($dialog->ask($output, '<question>Frontname:</question>'));
 
-        if ($area != 'frontend' && $area != 'admin')
-            throw new \RuntimeException('Router area must be either "frontend" or "admin"');
+        if ($area != 'frontend' && $area != 'admin') {
+            throw new RuntimeException('Router area must be either "frontend" or "admin"');
+        }
 
         $this->configNodes['router_area'] = $area;
         $this->configNodes['use'] = $use;
@@ -474,7 +498,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * Asks for events node options
      *
      * @param OutputInterface $output
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function askEventsOptions(OutputInterface $output)
     {
@@ -486,8 +510,9 @@ class UpdateCommand extends AbstractMagentoCommand
         $observerClass = trim($dialog->ask($output, '<question>Event Observer Class:</question>'));
         $observerMethod = trim($dialog->ask($output, '<question>Event Observer Method:</question>'));
 
-        if ($area != 'global' && $area != 'frontend' && $area != 'adminhtml')
-            throw new \RuntimeException('Event area must be either "global", "frontend" or "adminhtml"');
+        if ($area != 'global' && $area != 'frontend' && $area != 'adminhtml') {
+            throw new RuntimeException('Event area must be either "global", "frontend" or "adminhtml"');
+        }
 
         $this->configNodes['events_area'] = $area;
         $this->configNodes['event_name'] = $event;
@@ -501,7 +526,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * Asks for layout updates node options
      *
      * @param OutputInterface $output
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function askLayoutUpdatesOptions(OutputInterface $output)
     {
@@ -511,8 +536,9 @@ class UpdateCommand extends AbstractMagentoCommand
         $module = trim($dialog->ask($output, '<question>Module:</question>'));
         $file = trim($dialog->ask($output, '<question>File:</question>'));
 
-        if ($area != 'frontend' && $area != 'adminhtml')
-            throw new \RuntimeException('Layout updates area must be either "frontend" or "adminhtml"');
+        if ($area != 'frontend' && $area != 'adminhtml') {
+            throw new RuntimeException('Layout updates area must be either "frontend" or "adminhtml"');
+        }
 
         $this->configNodes['layout_updates_area'] = $area;
         $this->configNodes['layout_update_module'] = $module;
@@ -523,7 +549,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * Asks for translate node options
      *
      * @param OutputInterface $output
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function askTranslateOptions(OutputInterface $output)
     {
@@ -532,8 +558,9 @@ class UpdateCommand extends AbstractMagentoCommand
         $area = trim($dialog->ask($output, '<question>Area (frontend|adminhtml):</question>'));
         $file = trim($dialog->ask($output, '<question>File:</question>'));
 
-        if ($area != 'frontend' && $area != 'adminhtml')
-            throw new \RuntimeException('Layout updates area must be either "frontend" or "adminhtml"');
+        if ($area != 'frontend' && $area != 'adminhtml') {
+            throw new RuntimeException('Layout updates area must be either "frontend" or "adminhtml"');
+        }
 
         $this->configNodes['translate_area'] = $area;
         $this->configNodes['translate_files_default'] = $file;
@@ -543,7 +570,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * Asks for default node options
      *
      * @param OutputInterface $output
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function askDefaultOptions(OutputInterface $output)
     {
@@ -562,8 +589,8 @@ class UpdateCommand extends AbstractMagentoCommand
 
     /**
      * @param SimpleXMLElement $configXml
-     * @param $type e.g. blocks
-     * @param $classSuffix e.g. _Block
+     * @param string           $type        e.g. "blocks"
+     * @param string           $classSuffix e.g. "_Block"
      */
     protected function addGlobalNode(\SimpleXMLElement $configXml, $type, $classSuffix)
     {
@@ -580,8 +607,9 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function addResourceModel(\SimpleXMLElement $simpleXml)
     {
-        if (is_null($simpleXml->global->models))
-            throw new \RuntimeException('Global models node is not set. Run --add-models before --add-resource-model command.');
+        if (is_null($simpleXml->global->models)) {
+            throw new RuntimeException('Global models node is not set. Run --add-models before --add-resource-model command.');
+        }
 
         $resourceNamespace = $this->getLowercaseModuleNamespace() . '_resource';
         $resourceModelNode = $simpleXml->global->models->$resourceNamespace ?
@@ -694,10 +722,16 @@ class UpdateCommand extends AbstractMagentoCommand
     /**
      * @param SimpleXMLElement $configXml
      */
-    protected function putConfigXml(\SimpleXMLElement $configXml)
+    protected function putConfigXml(SimpleXMLElement $configXml)
     {
         $outFile = $this->getOutFile();
-        file_put_contents($outFile, $this->asPrettyXml($configXml->asXML()));
+
+        $xml = $configXml->asXML();
+        if (false === $xml) {
+            throw new RuntimeException(sprintf('Failed to get XML from config SimpleXMLElement'));
+        }
+
+        file_put_contents($outFile, $this->asPrettyXml($xml));
     }
 
     /**
@@ -835,19 +869,21 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function removeChildNodeIfNotNull($node, $child)
     {
-        if (!is_null($node->{$child}))
+        if (!is_null($node->{$child})) {
             unset($node->{$child});
+        }
     }
 
     /**
      * Formats given string as pretty xml
      *
-     * @param $string
-     * @return mixed|string
+     * @param string $string
+     *
+     * @return string
      */
     protected function asPrettyXml($string)
     {
-        $string = preg_replace("/>\s*</", ">\n<", $string);
+        $string = preg_replace("/>\\s*</", ">\n<", $string);
         $xmlArray = explode("\n", $string);
         $currIndent = 0;
         $indent = "    ";
@@ -859,8 +895,9 @@ class UpdateCommand extends AbstractMagentoCommand
             } elseif (preg_match('/^<\/.+>$/', $element)) {
                 $currIndent -= 1;
                 $string .= str_repeat($indent, $currIndent) . $element . "\n";
-            } else
+            } else {
                 $string .= str_repeat($indent, $currIndent) . $element . "\n";
+            }
         }
         return $string;
     }

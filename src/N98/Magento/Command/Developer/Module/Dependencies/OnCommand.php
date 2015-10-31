@@ -2,7 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Module\Dependencies;
 
-use Installer\Exception;
+use Exception;
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,8 +32,9 @@ class OnCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -62,7 +64,7 @@ class OnCommand extends AbstractMagentoCommand
                     ->setPadType(STR_PAD_LEFT)
                     ->renderByFormat($output, $dependencies, $input->getOption('format'));
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln($e->getMessage());
         }
     }
@@ -74,7 +76,7 @@ class OnCommand extends AbstractMagentoCommand
      * @param string $moduleName
      * @param bool $recursive
      * @return array
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function findModuleDependencies($moduleName, $recursive = false)
     {
@@ -110,7 +112,7 @@ class OnCommand extends AbstractMagentoCommand
 
             return $dependencies;
         } else {
-            throw new \InvalidArgumentException(sprintf("Module %s was not found", $moduleName));
+            throw new InvalidArgumentException(sprintf("Module %s was not found", $moduleName));
         }
     }
 

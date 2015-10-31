@@ -211,8 +211,13 @@ class DumpCommandTest extends TestCase
      */
     protected function getCommand()
     {
+        $dumpCommand = new DumpCommand();
+        if (!$dumpCommand->isEnabled()) {
+            $this->markTestSkipped('DumpCommand is not enabled.');
+        }
+
         $application = $this->getApplication();
-        $application->add(new DumpCommand());
+        $application->add($dumpCommand);
         $command = $this->getApplication()->find('db:dump');
 
         return $command;

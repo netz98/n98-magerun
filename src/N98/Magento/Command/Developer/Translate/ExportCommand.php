@@ -22,8 +22,9 @@ class ExportCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -34,7 +35,7 @@ class ExportCommand extends AbstractMagentoCommand
 
             $filename = $input->getArgument('filename');
 
-            if(!$filename) {
+            if (!$filename) {
                 $filename = 'translate.csv';
             }
 
@@ -52,8 +53,8 @@ class ExportCommand extends AbstractMagentoCommand
             $result = $statement->fetchAll();
             $f = fopen($filename, 'w');
 
-            foreach($result as $row) {
-                fputcsv($f,array($row['string'],$row['translate']));
+            foreach ($result as $row) {
+                fputcsv($f, array($row['string'], $row['translate']));
             }
 
             fclose($f);

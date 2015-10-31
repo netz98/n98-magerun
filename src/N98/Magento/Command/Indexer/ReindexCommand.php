@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Indexer;
 
+use Exception;
+use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,8 +37,9 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -50,13 +53,13 @@ HELP;
             if ($indexCode === null) {
                 $question = array();
                 foreach ($indexerList as $key => $indexer) {
-                    $question[] = '<comment>' . str_pad('[' . ($key+1) . ']', 4, ' ', STR_PAD_RIGHT) . '</comment> ' . str_pad($indexer['code'], 40, ' ', STR_PAD_RIGHT) . ' <info>(last runtime: ' . $indexer['last_runtime'] . ')</info>' . "\n";
+                    $question[] = '<comment>' . str_pad('[' . ($key + 1) . ']', 4, ' ', STR_PAD_RIGHT) . '</comment> ' . str_pad($indexer['code'], 40, ' ', STR_PAD_RIGHT) . ' <info>(last runtime: ' . $indexer['last_runtime'] . ')</info>' . "\n";
                 }
                 $question[] = '<question>Please select a indexer:</question>';
 
                 $indexCodes = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($indexerList) {
                     if (strstr($typeInput, ',')) {
-                        $typeInputs = \N98\Util\String::trimExplodeEmpty(',', $typeInput);
+                        $typeInputs = \N98\Util\BinaryString::trimExplodeEmpty(',', $typeInput);
                     } else {
                         $typeInputs = array($typeInput);
                     }
@@ -64,7 +67,7 @@ HELP;
                     $returnCodes = array();
                     foreach ($typeInputs as $typeInput) {
                         if (!isset($indexerList[$typeInput - 1])) {
-                            throw new \InvalidArgumentException('Invalid indexer');
+                            throw new InvalidArgumentException('Invalid indexer');
                         }
 
                         $returnCodes[] = $indexerList[$typeInput - 1]['code'];
@@ -74,7 +77,7 @@ HELP;
                 });
             } else {
                 // take cli argument
-                $indexCodes = \N98\Util\String::trimExplodeEmpty(',', $indexCode);
+                $indexCodes = \N98\Util\BinaryString::trimExplodeEmpty(',', $indexCode);
             }
 
             foreach ($indexCodes as $indexCode) {
@@ -83,7 +86,7 @@ HELP;
                     \Mage::dispatchEvent('shell_reindex_init_process');
                     $process = $this->_getIndexerModel()->getProcessByCode($indexCode);
                     if (!$process) {
-                        throw new \InvalidArgumentException('Indexer was not found!');
+                        throw new InvalidArgumentException('Indexer was not found!');
                     }
                     $output->writeln('<info>Started reindex of: <comment>' . $indexCode . '</comment></info>');
 
@@ -111,7 +114,7 @@ HELP;
                         ) . '</comment>)</info>'
                     );
                     \Mage::dispatchEvent('shell_reindex_finalize_process');
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $output->writeln('<error>' . $e->getMessage() . '</error>');
                     \Mage::dispatchEvent('shell_reindex_finalize_process');
                 }

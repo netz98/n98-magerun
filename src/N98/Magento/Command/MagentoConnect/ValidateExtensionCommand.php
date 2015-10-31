@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\MagentoConnect;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use SimpleXMLElement;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -45,7 +46,7 @@ changed by another process, or *might* mean the file is from
 a previous package version, or *might* mean the extension
 packager failed to generate the hash correctly.
 
-This is the madness of using software that lies.         
+This is the madness of using software that lies.
 
 HELP;
         $this->setHelp($help);
@@ -110,13 +111,16 @@ HELP;
             $return = array();
             foreach ($files as $file) {
                 $path = $this->_getPathOfFileNodeToTarget($file);
-                $return[$path] = (string)$file['hash'];
+                $return[$path] = (string) $file['hash'];
             }
         }
 
         return $return;
     }
 
+    /**
+     * @param string $targetName
+     */
     protected function _getBasePathFromTargetName($targetName)
     {
         $paths = array(
@@ -138,24 +142,25 @@ HELP;
     }
 
     /**
-     * @param \SimpleXMLElement $node
-     * @param string $path
+     * @param SimpleXMLElement $node
+     * @param string           $path
+     *
      * @return string
      */
-    protected function _getPathOfFileNodeToTarget($node, $path = '')
+    protected function _getPathOfFileNodeToTarget(SimpleXMLElement $node, $path = '')
     {
         if ($node->getName() == 'target') {
-            return $this->_getBasePathFromTargetName((string)$node['name']) . $path;
+            return $this->_getBasePathFromTargetName((string) $node['name']) . $path;
         }
 
-        $path = '/' . $node['name'] . $path;
+        $path   = '/' . $node['name'] . $path;
         $parent = $this->_getParentNode($node);
 
         return $this->_getPathOfFileNodeToTarget($parent, $path);
     }
 
     /**
-     * @param \SimpleXMLElement $node
+     * @param SimpleXMLElement $node
      * @return mixed
      */
     protected function _getParentNode($node)
@@ -166,14 +171,14 @@ HELP;
     }
 
     /**
-     * @param \SimpleXmlElement $node
+     * @param SimpleXmlElement $node
      * @param string $path
      * @return string
      */
     protected function getPathOfFileNodeToTarget($node, $path = '')
     {
         if ($node->getName() == 'target') {
-            return $this->_getBasePathFromTargetName((string)$node['name']) . $path;
+            return $this->_getBasePathFromTargetName((string) $node['name']) . $path;
         }
 
         $path = '/' . $node['name'] . $path;
@@ -273,7 +278,7 @@ HELP;
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     protected function _getBasePackages()
     {

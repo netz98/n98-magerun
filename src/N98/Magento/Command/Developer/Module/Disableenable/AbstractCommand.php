@@ -2,7 +2,9 @@
 
 namespace N98\Magento\Command\Developer\Module\Disableenable;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -30,7 +32,7 @@ class AbstractCommand extends AbstractMagentoCommand
 
     /**
      * Setup
-     * 
+     *
      * @return void
      */
     protected function configure()
@@ -44,19 +46,19 @@ class AbstractCommand extends AbstractMagentoCommand
 
     /**
      * Execute command
-     * 
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * 
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return void
-     * 
-     * @throws \InvalidArgumentException
+     *
+     * @throws InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
         if (false === $this->initMagento()) {
-            throw new \RuntimeException('Magento could not be loaded');
+            throw new RuntimeException('Magento could not be loaded');
         }
         $this->config     = \Mage::getConfig();
         $this->modulesDir = $this->config->getOptions()->getEtcDir() . DS . 'modules' . DS;
@@ -67,16 +69,16 @@ class AbstractCommand extends AbstractMagentoCommand
         } else if ($module = $input->getArgument('moduleName')) {
             $this->enableModule($module, $output);
         } else {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException('No code-pool option nor module-name argument');
         }
     }
 
     /**
      * Search a code pool for modules and enable them
-     * 
+     *
      * @param string $codePool
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * 
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function enableCodePool($codePool, OutputInterface $output)
@@ -87,14 +89,14 @@ class AbstractCommand extends AbstractMagentoCommand
                 $this->enableModule($module, $output);
             }
         }
-    }    
+    }
 
     /**
      * Enable a single module
-     * 
+     *
      * @param string $module
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * 
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function enableModule($module, OutputInterface $output)
@@ -107,7 +109,7 @@ class AbstractCommand extends AbstractMagentoCommand
         } else {
             $xml = new \Varien_Simplexml_Element(file_get_contents($decFile));
             $setTo = $this->commandName == 'enable' ? 'true' : 'false';
-            if ((string)$xml->modules->{$module}->active != $setTo) {
+            if ((string) $xml->modules->{$module}->active != $setTo) {
                 $xml->modules->{$module}->active = $setTo;
                 if (file_put_contents($decFile, $xml->asXML()) !== false) {
                     $output->writeln('<info><comment>' . $module . ': </comment>' . $this->commandName . 'd</info>');

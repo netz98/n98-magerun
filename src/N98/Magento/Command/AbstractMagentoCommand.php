@@ -3,6 +3,9 @@
 namespace N98\Magento\Command;
 
 use Composer\Package\PackageInterface;
+use InvalidArgumentException;
+use N98\Util\OperatingSystem;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\Output;
@@ -130,7 +133,7 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      * @param string $text
      * @param string $style
      */
@@ -164,7 +167,7 @@ abstract class AbstractMagentoCommand extends Command
      *
      * @param OutputInterface $output
      * @param bool $silent print debug messages
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function detectMagento(OutputInterface $output, $silent = true)
     {
@@ -173,18 +176,17 @@ abstract class AbstractMagentoCommand extends Command
         $this->_magentoEnterprise = $this->getApplication()->isMagentoEnterprise();
         $this->_magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
         $this->_magentoMajorVersion = $this->getApplication()->getMagentoMajorVersion();
-        $this->_magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
 
         if (!$silent) {
             $editionString = ($this->_magentoEnterprise ? ' (Enterprise Edition) ' : '');
-            $output->writeln('<info>Found Magento '. $editionString . 'in folder "' . $this->_magentoRootFolder . '"</info>');
+            $output->writeln('<info>Found Magento ' . $editionString . 'in folder "' . $this->_magentoRootFolder . '"</info>');
         }
 
         if (!empty($this->_magentoRootFolder)) {
             return;
         }
 
-        throw new \RuntimeException('Magento folder could not be detected');
+        throw new RuntimeException('Magento folder could not be detected');
     }
 
     /**
@@ -241,7 +243,7 @@ abstract class AbstractMagentoCommand extends Command
         $preferSource = true
     ) {
         $dm = $this->getComposerDownloadManager($input, $output);
-        if (! $config instanceof PackageInterface) {
+        if (!$config instanceof PackageInterface) {
             $package = $this->createComposerPackageByConfig($config);
         } else {
             $package = $config;
@@ -285,7 +287,7 @@ abstract class AbstractMagentoCommand extends Command
                 escapeshellarg($targetFolder),
                 escapeshellarg($package->getSourceReference())
             );
-            $existingTag =  shell_exec($command);
+            $existingTag = shell_exec($command);
             if ($existingTag === $package->getSourceReference()) {
                 $command = sprintf('cd %s && hg pull', escapeshellarg($targetFolder));
                 shell_exec($command);
@@ -298,8 +300,8 @@ abstract class AbstractMagentoCommand extends Command
      *
      * when using a path value that has been created in a cygwin shell but then PHP uses it inside a cmd shell it needs
      * to be filtered.
-
-     * @param $path
+     *
+     * @param  string $path
      * @return string
      */
     protected function normalizePath($path)
@@ -436,24 +438,27 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function chooseInstallationFolder(InputInterface $input, OutputInterface $output)
     {
+        /**
+         * @param string $folderName
+         *
+         * @return string
+         */
         $validateInstallationFolder = function($folderName) use ($input) {
 
             $folderName = rtrim(trim($folderName, ' '), '/');
+            // resolve folder-name to current working directory if relative
             if (substr($folderName, 0, 1) == '.') {
-                $cwd = \getcwd() ;
-                if (empty($cwd) && isset($_SERVER['PWD'])) {
-                    $cwd = $_SERVER['PWD'];
-                }
+                $cwd = OperatingSystem::getCwd();
                 $folderName = $cwd . substr($folderName, 1);
             }
 
             if (empty($folderName)) {
-                throw new \InvalidArgumentException('Installation folder cannot be empty');
+                throw new InvalidArgumentException('Installation folder cannot be empty');
             }
 
             if (!is_dir($folderName)) {
-                if (!@mkdir($folderName,0777, true)) {
-                    throw new \InvalidArgumentException('Cannot create folder.');
+                if (!@mkdir($folderName, 0777, true)) {
+                    throw new InvalidArgumentException('Cannot create folder.');
                 }
 
                 return $folderName;
@@ -464,7 +469,7 @@ abstract class AbstractMagentoCommand extends Command
                 $magentoHelper = new MagentoHelper();
                 $magentoHelper->detect($folderName);
                 if ($magentoHelper->getRootFolder() !== $folderName) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         sprintf(
                             'Folder %s is not a Magento working copy.',
                             $folderName
@@ -474,7 +479,7 @@ abstract class AbstractMagentoCommand extends Command
 
                 $localXml = $folderName . '/app/etc/local.xml';
                 if (file_exists($localXml)) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         sprintf(
                             'Magento working copy in %s seems already installed. Please remove %s and retry.',
                             $folderName,
@@ -503,6 +508,11 @@ abstract class AbstractMagentoCommand extends Command
         \chdir($this->config['installationFolder']);
     }
 
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
     protected function isSourceTypeRepository($type)
     {
         return in_array($type, array('git', 'hg'));
@@ -545,7 +555,7 @@ abstract class AbstractMagentoCommand extends Command
 
         $selected = $this->getHelper('dialog')->askAndValidate($output, $dialog, function($typeInput) use ($entries) {
             if (!in_array($typeInput, range(1, count($entries)))) {
-                throw new \InvalidArgumentException('Invalid type');
+                throw new InvalidArgumentException('Invalid type');
             }
 
             return $typeInput;
@@ -555,8 +565,8 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @param $argument
-     * @param null $message
+     * @param string $argument
+     * @param string $message [optional]
      * @return string
      */
     protected function getArgumentMessage($argument, $message = null)

@@ -3,6 +3,27 @@ RECENT CHANGES
 **************
 
 ======
+1.97.6
+======
+
+* #704 Fix missing custom cache types (fixed by Jon Acker)
+* #691 Fix PHP 7 forward compat (reported by Yireo, fixed by Tom Klingenberg)
+* #678 Fix sys:maintenance result report (by Wojtek Naruniec)
+* #670 Fix Slow Unit-Tests on Travis (reported by Aydin Hassan, fixed by Tom Klingenberg)
+* #664 Fix GenerateCommand::wrapCdata (by Tom Klingenberg)
+* #669 Fix Magerun2 download instructions (by Pierre du Plessis)
+* #665 Fix Magento 1.9.2.1 announced as 1.9.2.0 (reported by jurgisl)
+* #657 Fix and improve input processing in "local-config:generate" command (by Aydin Hassan)
+* #654 Fix PHP warning in Rewrite command (by Pieter Hoste)
+* #648 Fix FPC cleared - even if not (by Steve Robbins)
+* Add support for single autoloader files (by Christian Münch)
+* #718 Package magento-mirror-1.9.2.2 (by Achim Rosenhagen)
+* #698 Add path completion in bash autocomplete (by Chris N)
+* #651 Update symfony dependencies to ~2.3 (by James Halsall)
+* #671 Unit Tests for Uninstall command (by Aydin Hassan)
+* #662 Unit Test for LocalConfigGenerate (by Aydin Hassan)
+
+======
 1.97.5
 ======
 

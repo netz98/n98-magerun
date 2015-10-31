@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\System;
 
+use Exception;
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,8 +35,9 @@ class InfoCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -70,7 +73,7 @@ class InfoCommand extends AbstractMagentoCommand
                 $this->customerCount();
                 $this->categoryCount();
                 $this->productCount();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
             }
         }
@@ -84,7 +87,7 @@ class InfoCommand extends AbstractMagentoCommand
             $settingArgument = strtolower($settingArgument);
             $this->infos = array_change_key_case($this->infos, CASE_LOWER);
             if (!isset($this->infos[$settingArgument])) {
-                throw new \InvalidArgumentException('Unknown key: ' . $settingArgument);
+                throw new InvalidArgumentException('Unknown key: ' . $settingArgument);
             }
             $output->writeln((string) $this->infos[$settingArgument]);
         } else {

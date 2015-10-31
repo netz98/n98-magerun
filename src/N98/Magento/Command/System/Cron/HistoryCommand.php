@@ -36,8 +36,9 @@ class HistoryCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -50,16 +51,16 @@ class HistoryCommand extends AbstractMagentoCommand
         $this->initMagento();
 
         $timezone = $input->getOption('timezone')
-            ? $input->getOption('timezone') :
-            \Mage::app()->getStore()->getConfig('general/locale/timezone');
+            ? $input->getOption('timezone') : \Mage::app()->getStore()->getConfig('general/locale/timezone');
 
         $output->writeln('<info>Times shown in <comment>' . $timezone . '</comment></info>');
 
         $date       = \Mage::getSingleton('core/date');
         $offset     = $date->calculateOffset($timezone);
         $collection = \Mage::getModel('cron/schedule')->getCollection();
-        $collection->addFieldToFilter('status', array('neq' => \Mage_Cron_Model_Schedule::STATUS_PENDING))
-                   ->addOrder('finished_at', \Varien_Data_Collection_Db::SORT_ORDER_DESC);
+        $collection
+            ->addFieldToFilter('status', array('neq' => \Mage_Cron_Model_Schedule::STATUS_PENDING))
+            ->addOrder('finished_at', \Varien_Data_Collection_Db::SORT_ORDER_DESC);
 
         $table = array();
         foreach ($collection as $job) {

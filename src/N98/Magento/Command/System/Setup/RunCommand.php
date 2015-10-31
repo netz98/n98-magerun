@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System\Setup;
 
+use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
@@ -59,7 +60,7 @@ HELP;
                 }
                 \ob_end_clean();
                 $output->writeln('<info>done</info>');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 \ob_end_clean();
                 $this->printException($output, $e);
                 $this->printStackTrace($output, $e->getTrace());

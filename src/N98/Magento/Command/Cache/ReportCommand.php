@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Cache;
 
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,13 +30,13 @@ class ReportCommand extends AbstractCacheCommand
     }
 
     protected function isTagFiltered($metaData, $input) {
-        return (bool)count(array_intersect($metaData['tags'], explode(',', $input->getOption('filter-tag'))));
+        return (bool) count(array_intersect($metaData['tags'], explode(',', $input->getOption('filter-tag'))));
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -44,7 +45,7 @@ class ReportCommand extends AbstractCacheCommand
         if ($this->initMagento()) {
             if ($input->hasOption('fpc') && $input->getOption('fpc')) {
                 if (!class_exists('\Enterprise_PageCache_Model_Cache')) {
-                    throw new \RuntimeException('Enterprise page cache not found');
+                    throw new RuntimeException('Enterprise page cache not found');
                 }
                 $cacheInstance = \Enterprise_PageCache_Model_Cache::getCacheInstance()->getFrontend();
             } else {

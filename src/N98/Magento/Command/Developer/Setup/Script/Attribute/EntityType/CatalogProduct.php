@@ -35,7 +35,6 @@ class CatalogProduct extends AbstractEntityType implements EntityType
             'is_user_defined'               => 'user_defined',
             'default_value'                 => 'default',
             'is_unique'                     => 'unique',
-            'is_global'                     => 'global',
         );
     }
 

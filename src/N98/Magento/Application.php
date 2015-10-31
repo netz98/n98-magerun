@@ -2,17 +2,21 @@
 
 namespace N98\Magento;
 
+use Composer\Autoload\ClassLoader;
+use Exception;
 use N98\Magento\Command\ConfigurationLoader;
 use N98\Util\ArrayFunctions;
 use N98\Util\AutoloadRestorer;
 use N98\Util\Console\Helper\TwigHelper;
 use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\OperatingSystem;
-use N98\Util\String;
+use N98\Util\BinaryString;
+use RuntimeException;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -42,7 +46,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.97.5';
+    const APP_VERSION = '1.97.6';
 
     /**
      * @var string
@@ -55,7 +59,7 @@ class Application extends BaseApplication
                            |___/
 ";
     /**
-     * @var \Composer\Autoload\ClassLoader
+     * @var ClassLoader
      */
     protected $autoloader;
 
@@ -132,7 +136,7 @@ class Application extends BaseApplication
     protected $_magentoDetected = false;
 
     /**
-     * @param \Composer\Autoload\ClassLoader $autoloader
+     * @param ClassLoader $autoloader
      */
     public function __construct($autoloader = null)
     {
@@ -141,7 +145,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return \Symfony\Component\Console\Input\InputDefinition|void
+     * @return \Symfony\Component\Console\Input\InputDefinition
      */
     protected function getDefaultInputDefinition()
     {
@@ -283,6 +287,12 @@ class Application extends BaseApplication
                 $this->autoloader->addPsr4($prefix, $path);
             }
         }
+
+        if (isset($this->config['autoload_files']) && is_array($this->config['autoload_files'])) {
+            foreach ($this->config['autoload_files'] as $file) {
+                require $file;
+            }
+        }
     }
 
     /**
@@ -331,8 +341,9 @@ class Application extends BaseApplication
     /**
      * Override standard command registration. We want alias support.
      *
-     * @param \Symfony\Component\Console\Command\Command $command
-     * @return \Symfony\Component\Console\Command\Command
+     * @param Command $command
+     *
+     * @return Command
      */
     public function add(Command $command)
     {
@@ -342,7 +353,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param \Symfony\Component\Console\Command\Command $command
+     * @param Command $command
      */
     protected function registerConfigCommandAlias(Command $command)
     {
@@ -393,7 +404,7 @@ class Application extends BaseApplication
      * @TODO Move logic into "EventSubscriber"
      *
      * @param OutputInterface $output
-     * @return bool
+     * @return null|false
      */
     public function checkVarDir(OutputInterface $output)
     {
@@ -412,7 +423,7 @@ class Application extends BaseApplication
 
         try {
             $this->initMagento();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $message = 'Cannot initialize Magento. Please check your configuration. '
                 . 'Some n98-magerun command will not work. Got message: ';
             if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $output->getVerbosity()) {
@@ -451,12 +462,14 @@ class Application extends BaseApplication
      * Loads and initializes the Magento application
      *
      * @param bool $soft
+     *
+     * @return bool false if magento root folder is not set, true otherwise
      */
     public function initMagento($soft = false)
     {
         if ($this->getMagentoRootFolder() !== null) {
             if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-                $this->_initMagento2($soft);
+                $this->_initMagento2();
             } else {
                 $this->_initMagento1($soft);
             }
@@ -513,7 +526,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return \Composer\Autoload\ClassLoader
+     * @return ClassLoader
      */
     public function getAutoloader()
     {
@@ -521,7 +534,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param \Composer\Autoload\ClassLoader $autoloader
+     * @param ClassLoader $autoloader
      */
     public function setAutoloader($autoloader)
     {
@@ -584,8 +597,9 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @return \Symfony\Component\Console\Input\ArgvInput|\Symfony\Component\Console\Input\InputInterface
+     * @param InputInterface $input
+     *
+     * @return ArgvInput|InputInterface
      */
     protected function checkConfigCommandAlias(InputInterface $input)
     {
@@ -594,7 +608,7 @@ class Application extends BaseApplication
                 if (is_array($alias)) {
                     $aliasCommandName = key($alias);
                     if ($input->getFirstArgument() == $aliasCommandName) {
-                        $aliasCommandParams = array_slice(String::trimExplodeEmpty(' ', $alias[$aliasCommandName]), 1);
+                        $aliasCommandParams = array_slice(BinaryString::trimExplodeEmpty(' ', $alias[$aliasCommandName]), 1);
                         if (count($aliasCommandParams) > 0) {
                             // replace with aliased data
                             $mergedParams = array_merge(
@@ -635,7 +649,7 @@ class Application extends BaseApplication
 
         try {
             $this->init(array(), $input, $output);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output = new ConsoleOutput();
             $this->renderException($e, $output);
         }
@@ -782,6 +796,8 @@ class Application extends BaseApplication
     /**
      * use require-once inside a function with it's own variable scope w/o any other variables
      * and $this unbound.
+     *
+     * @param string $path
      */
     private function requireOnce($path)
     {
@@ -795,10 +811,10 @@ class Application extends BaseApplication
         $requireOnce($path);
     }
 
-    /*
-     * @param bool $soft
+    /**
+     * show compatibility notice about Magento 2
      */
-    protected function _initMagento2($soft = false)
+    protected function _initMagento2()
     {
         $magento2Hint = <<<'MAGENTO2HINT'
 You are running a Magento 2 instance. This version of n98-magerun is not compatible
@@ -809,25 +825,30 @@ A current version of the software can be downloaded on github.
 <info>Download with curl
 ------------------</info>
 
-    <comment>curl -o n98-magerun2.phar https://raw.githubusercontent.com/netz98/n98-magerun2/master/n98-magerun2.phar</comment>
+    <comment>curl -sS http://files.magerun.net/n98-magerun2-latest.phar -o n98-magerun2.phar</comment>
 
 <info>Download with wget
 ------------------</info>
 
-    <comment>curl -o n98-magerun2.phar https://raw.githubusercontent.com/netz98/n98-magerun2/master/n98-magerun2.phar</comment>
+    <comment>wget http://files.magerun.net/n98-magerun2-latest.phar -O n98-magerun2.phar</comment>
 
 MAGENTO2HINT;
 
         $output = new ConsoleOutput();
 
+
+        /** @var $formatter FormatterHelper */
+        $formatter = $this->getHelperSet()->get('formatter');
+
         $output->writeln(array(
             '',
-            $this->getHelperSet()->get('formatter')->formatBlock('Compatibility Notice', 'bg=blue;fg=white', true),
+            $formatter->formatBlock('Compatibility Notice', 'bg=blue;fg=white', true),
             ''
         ));
 
         $output->writeln($magento2Hint);
-        exit;
+
+        throw new RuntimeException('This version of n98-magerun is not compatible with Magento 2');
     }
 
     /**
@@ -857,7 +878,7 @@ MAGENTO2HINT;
     }
 
     /**
-     * @param \N98\Magento\Command\ConfigurationLoader $configurationLoader
+     * @param ConfigurationLoader $configurationLoader
      *
      * @return $this
      */

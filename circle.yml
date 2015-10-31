@@ -1,0 +1,16 @@
+machine:
+  php:
+    version: 5.5.21
+
+dependencies:
+  cache_directories:
+    - /home/ubuntu/.composer/cache/repo  # composer repo cache
+    - /home/ubuntu/.composer/cache/files # composer files cache (magerun downloader uses it for packages, too)
+  pre:
+    - build/circleci/dependencies_pre.sh
+
+test:
+  override:
+    - build/circleci/test.sh
+  post:
+    - build/circleci/test_post.sh

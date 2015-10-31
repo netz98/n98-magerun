@@ -34,8 +34,9 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -44,7 +45,7 @@ HELP;
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
             \Mage::app()->loadAreaPart('adminhtml', 'events');
-            $allTypes = \Mage::app()->useCache();
+            $allTypes = \Mage::app()->getCacheInstance()->getTypes();
             $typesToClean = $input->getArgument('type');
             $this->validateCacheCodes($typesToClean);
             $typeKeys = array_keys($allTypes);

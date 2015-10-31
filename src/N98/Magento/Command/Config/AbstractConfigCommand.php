@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Config;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 
 abstract class AbstractConfigCommand extends AbstractMagentoCommand
@@ -48,7 +49,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     protected function _validateScopeParam($scope)
     {
         if (!in_array($scope, $this->_scopes)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Invalid scope parameter. It must be one of ' . implode(',', $this->_scopes)
             );
         }
@@ -65,7 +66,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
         if ($scope == 'websites' && !is_numeric($scopeId)) {
             $website = \Mage::app()->getWebsite($scopeId);
             if (!$website) {
-                throw new \InvalidArgumentException('Invalid scope parameter. Website does not exist.');
+                throw new InvalidArgumentException('Invalid scope parameter. Website does not exist.');
             }
 
             return $website->getId();
@@ -74,7 +75,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
         if ($scope == 'stores' && !is_numeric($scopeId)) {
             $store = \Mage::app()->getStore($scopeId);
             if (!$store) {
-                throw new \InvalidArgumentException('Invalid scope parameter. Store does not exist.');
+                throw new InvalidArgumentException('Invalid scope parameter. Store does not exist.');
             }
 
             return $store->getId();

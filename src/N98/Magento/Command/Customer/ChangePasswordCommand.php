@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Customer;
 
+use Exception;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,15 +28,16 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
         if ($this->initMagento()) {
-            
+
             $dialog = $this->getHelperSet()->get('dialog');
             $email = $this->getHelper('parameter')->askEmail($input, $output);
 
@@ -56,12 +59,12 @@ HELP;
             try {
                 $result = $customer->validate();
                 if (is_array($result)) {
-                    throw new \RuntimeException(implode(PHP_EOL, $result));
+                    throw new RuntimeException(implode(PHP_EOL, $result));
                 }
                 $customer->setPassword($password);
                 $customer->save();
                 $output->writeln('<info>Password successfully changed</info>');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
             }
         }
