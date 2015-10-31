@@ -287,6 +287,12 @@ class Application extends BaseApplication
                 $this->autoloader->addPsr4($prefix, $path);
             }
         }
+
+        if (isset($this->config['autoload_files']) && is_array($this->config['autoload_files'])) {
+            foreach ($this->config['autoload_files'] as $file) {
+                require $file;
+            }
+        }
     }
 
     /**

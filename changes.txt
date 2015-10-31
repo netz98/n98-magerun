@@ -16,6 +16,7 @@ RECENT CHANGES
 * #657 Fix and improve input processing in "local-config:generate" command (by Aydin Hassan)
 * #654 Fix PHP warning in Rewrite command (by Pieter Hoste)
 * #648 Fix FPC cleared - even if not (by Steve Robbins)
+* Add support for single autoloader files (by Christian Münch)
 * #718 Package magento-mirror-1.9.2.2 (by Achim Rosenhagen)
 * #698 Add path completion in bash autocomplete (by Chris N)
 * #651 Update symfony dependencies to ~2.3 (by James Halsall)
