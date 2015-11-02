@@ -22,7 +22,7 @@ BUILD_STATUS=$?
 
 php -f "n98-magerun.phar" -- --version
 
-ls -go --full-time n98-magerun.phar
+ls -l n98-magerun.phar
 
 php -r 'echo "SHA1: ", sha1_file("n98-magerun.phar"), "\nMD5.: ", md5_file("n98-magerun.phar"), "\n";'
 
