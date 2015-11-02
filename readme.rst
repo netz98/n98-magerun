@@ -1276,7 +1276,7 @@ Rewrite List
 
 Lists all registered class rewrites.
 
-.. code-blocks:: sh
+.. code-block:: sh
 
    $ n98-magerun.phar dev:module:rewrite:list [--format[="..."]]
 
