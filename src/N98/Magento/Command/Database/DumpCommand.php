@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Database;
 
 use N98\Magento\Command\Database\Compressor\AbstractCompressor;
+use N98\Util\Console\Helper\DatabaseHelper;
 use N98\Util\OperatingSystem;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -192,7 +193,9 @@ HELP;
 
         $stripTables = array();
         if ($input->getOption('strip')) {
-            $stripTables = $this->getHelper('database')->resolveTables(explode(' ', $input->getOption('strip')), $this->getTableDefinitions());
+            /* @var $database DatabaseHelper */
+            $database = $this->getHelper('database');
+            $stripTables = $database->resolveTables(explode(' ', $input->getOption('strip')), $this->getTableDefinitions());
             if (!$input->getOption('stdout') && !$input->getOption('only-command')
                 && !$input->getOption('print-only-filename')
             ) {

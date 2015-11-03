@@ -50,8 +50,14 @@ HELP;
             $settings[$key] = (string) $value;
         }
 
+        $isSocketConnect = $this->dbSettings->isSocketConnect();
+
+        // FIXME remove superfluous code
+        // there is no need to specify the default port neither for PDO, nor JDBC nor CLI.
+        $portOrDefault = isset($this->dbSettings['port']) ? $this->dbSettings['port'] : 3306;
+
         $pdoConnectionString = '';
-        if ($this->isSocketConnect) {
+        if ($isSocketConnect) {
             $pdoConnectionString = sprintf(
                 'mysql:unix_socket=%s;dbname=%s',
                 $this->dbSettings['unix_socket'],
@@ -61,21 +67,21 @@ HELP;
             $pdoConnectionString = sprintf(
                 'mysql:host=%s;port=%s;dbname=%s',
                 $this->dbSettings['host'],
-                isset($this->dbSettings['port']) ? $this->dbSettings['port'] : 3306,
+                $portOrDefault,
                 $this->dbSettings['dbname']
             );
         }
         $settings['PDO-Connection-String'] = $pdoConnectionString;
 
         $jdbcConnectionString = '';
-        if ($this->isSocketConnect) {
+        if ($isSocketConnect) {
             // isn't supported according to this post: http://stackoverflow.com/a/18493673/145829
             $jdbcConnectionString = 'Connecting using JDBC through a unix socket isn\'t supported!';
         } else {
             $jdbcConnectionString = sprintf(
                 'jdbc:mysql://%s:%s/%s?username=%s&password=%s',
                 $this->dbSettings['host'],
-                isset($this->dbSettings['port']) ? $this->dbSettings['port'] : 3306,
+                $portOrDefault,
                 $this->dbSettings['dbname'],
                 $this->dbSettings['username'],
                 $this->dbSettings['password']
@@ -102,5 +108,4 @@ HELP;
                 ->renderByFormat($output, $rows, $input->getOption('format'));
         }
     }
-
 }
