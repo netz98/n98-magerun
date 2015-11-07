@@ -252,7 +252,7 @@ commands:
       - name: magento-mirror-1.9.2.0
         version: 1.9.2.0
         dist:
-          url: https://github.com/LokeyCoding/magento-mirror/archive/1.9.2.0.zip
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.2.0.zip
           type: zip
           shasum: 019538c04b6359ad61e4c6d2f54c835bd76f7141
         extra:
@@ -282,6 +282,15 @@ commands:
           url: https://github.com/OpenMage/magento-mirror/archive/1.9.0.1.zip
           type: zip
           shasum: 9c87abc997957ebbf646e1a4d87d3d09e4d773f5
+        extra:
+          sample-data: sample-data-1.9.0.0
+
+      - name: magento-mirror-1.9.0.0
+        version: 1.9.0.0
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.0.0.zip
+          type: zip
+          shasum: 98dc5a70d0d12fa595032a7e4257e9a8ee8e293c
         extra:
           sample-data: sample-data-1.9.0.0
 
@@ -324,7 +333,7 @@ commands:
       - name: magento-mirror-1.5.1.0
         version: 1.5.1.0
         source:
-          url: git://github.com/LokeyCoding/magento-mirror.git
+          url: git://github.com/OpenMage/magento-mirror.git
           type: git
           reference: magento-1.5
         extra:
@@ -333,7 +342,7 @@ commands:
       - name: magento-mirror-1.4.2.0
         version: 1.4.2.0
         source:
-          url: git://github.com/LokeyCoding/magento-mirror.git
+          url: git://github.com/OpenMage/magento-mirror.git
           type: git
           reference: magento-1.4
         extra:
