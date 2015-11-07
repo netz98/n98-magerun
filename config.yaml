@@ -258,21 +258,66 @@ commands:
         extra:
           sample-data: sample-data-1.9.1.0
 
+      - name: magento-mirror-1.9.1.1
+        version: 1.9.1.1
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.1.1.zip
+          type: zip
+          shasum: 3aa497d245affb273cc55851163f5133cecef650
+        extra:
+          sample-data: sample-data-1.9.1.0
+
+      - name: magento-mirror-1.9.1.0
+        version: 1.9.1.0
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.1.0.zip
+          type: zip
+          shasum: e3dcfea601ada21ce84ee4836d801dd2feeb08d1
+        extra:
+          sample-data: sample-data-1.9.1.0
+
+      - name: magento-mirror-1.9.0.1
+        version: 1.9.0.1
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.0.1.zip
+          type: zip
+          shasum: 9c87abc997957ebbf646e1a4d87d3d09e4d773f5
+        extra:
+          sample-data: sample-data-1.9.0.0
+
+      - name: magento-mirror-1.8.1.0
+        version: 1.8.1.0
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.8.1.0.zip
+          type: zip
+          shasum: 3fbff399799177e8048cc4048f66213fedd132c1
+        extra:
+          sample-data: sample-data-1.6.1.0
+
+      - name: magento-mirror-1.8.0.0
+        version: 1.8.0.0
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.8.0.0.zip
+          type: zip
+          shasum: 9b1dee54d0b047b66d7ad6b8ea1ff414b7773093
+        extra:
+          sample-data: sample-data-1.6.1.0
+
       - name: magento-mirror-1.7.0.2
         version: 1.7.0.2
         dist:
-          url: https://github.com/LokeyCoding/magento-mirror/archive/1.7.0.2.tar.gz
-          type: tar
-          shasum: c10a3e15f9311c2b079bb2e71bacb32cb3192402
+          url: https://github.com/OpenMage/magento-mirror/archive/1.7.0.2.zip
+          type: zip
+          shasum: e7f761d1ca60d16db867e24b5219de8815d0ea25
         extra:
           sample-data: sample-data-1.6.1.0
 
       - name: magento-mirror-1.6.2.0
         version: 1.6.2.0
         dist:
-          url: https://github.com/LokeyCoding/magento-mirror/archive/1.6.2.0.tar.gz
-          type: tar
-          shasum: 301b815359b8abd4dfcd828b261cd924d9868a19
+          url: https://github.com/OpenMage/magento-mirror/archive/1.6.2.0.zip
+          type: zip
+          shasum: db0de6d0d82427d997a206554bcd7e5874099671
         extra:
           sample-data: sample-data-1.6.1.0
 
@@ -307,30 +352,30 @@ commands:
       - name: sample-data-1.9.1.0
         version: 1.9.1.0
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.1.0/magento-sample-data-1.9.1.0.tar.gz
+          url: http://sourceforge.net/projects/mageloads/files/assets/1.9.1.0/magento-sample-data-1.9.1.0.tar.gz
           type: tar
           shasum: 617e0271900772ac8f11e7bb86e29fca0f640562
 
       - name: sample-data-1.9.0.0
         version: 1.9.0.0
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.0.0/magento-sample-data-1.9.0.0.tar.gz
+          url: http://sourceforge.net/projects/mageloads/files/assets/1.9.0.0/magento-sample-data-1.9.0.0.tar.gz
           type: tar
           shasum: b2b535901eb2db92a8602baf8a839ab2120c4c8f
 
       - name: sample-data-1.6.1.0
         version: 1.6.1.0
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.6.1.0/magento-sample-data-1.6.1.0.tar.gz
+          url: http://sourceforge.net/projects/mageloads/files/assets/1.6.1.0/magento-sample-data-1.6.1.0.tar.gz
           type: tar
           shasum: a9226bc92966855327f6eb62ff8f6c562b2113a2
 
       - name: sample-data-1.1.2
         version: 1.1.2
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.1.2/magento-sample-data-1.1.2.tar.bz2
-          type: tar
-          shasum: e8ddbf94698224fb71c946e789f7a23dec236384
+          url: http://sourceforge.net/projects/mageloads/files/assets/1.1.2/magento-sample-data-1.1.2.zip
+          type: zip
+          shasum: 6bbb57e387c59da2752fe013aadef6dcd3cd2b29
 
     installation:
       pre-check:
