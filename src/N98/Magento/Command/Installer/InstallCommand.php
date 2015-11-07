@@ -204,13 +204,11 @@ HELP;
 
             if ($input->getOption('magentoVersion')) {
                 $type = $input->getOption('magentoVersion');
-            } elseif ($input->getOption('magentoVersionByName')) {
-                foreach ($this->commandConfig['magento-packages'] as $key => $package) {
-                    if ($package['name'] == $input->getOption('magentoVersionByName')) {
-                        $type = $key + 1;
-                        break;
-                    }
+                if ($type !== (string)(int)$type) {
+                    $type = $this->getPackageNumberByName($type);
                 }
+            } elseif ($input->getOption('magentoVersionByName')) {
+                $type = $this->getPackageNumberByName($input->getOption('magentoVersionByName'));
             }
 
             if ($type == null) {
@@ -218,7 +216,43 @@ HELP;
             }
         }
 
-        $this->config['magentoVersionData'] = $this->commandConfig['magento-packages'][$type - 1];
+        $magentoPackages = $this->commandConfig['magento-packages'];
+
+        $index = $type - 1;
+        if (!isset($magentoPackages[$index])) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid Magento package number %s, must be from 1 to %d.', var_export($type, true),
+                    count($magentoPackages)
+                )
+            );
+        }
+
+        $this->config['magentoVersionData'] = $magentoPackages[$index];
+    }
+
+
+    /**
+     * @param $name
+     *
+     * @return int 1 or greater as the one-based package number, null on failure to resolve the name
+     */
+    private function getPackageNumberByName($name)
+    {
+        // directly filter integer strings
+        if ($name === (string)(int)$name) {
+            return (int) $name;
+        }
+
+        $magentoPackages = $this->commandConfig['magento-packages'];
+
+        foreach ($magentoPackages as $key => $package) {
+            if ($package['name'] === $name) {
+                return $key + 1;
+            }
+        }
+
+        return null;
     }
 
     /**
