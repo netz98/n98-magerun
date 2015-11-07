@@ -3,6 +3,15 @@ RECENT CHANGES
 **************
 
 ======
+1.97.7
+======
+
+* #724 Add missing versions from magento-mirror (by Fabrizio Branca)
+* #722 Magento downloads are no longer working from magentocommerce.com (by Tom Klingenberg)
+* #720 Add Info notice if dev:class:lookup returns a non-existent class (by Robbie Averill)
+* Improve installer magento version switch argument parsing (by Tom Klingenberg)
+
+======
 1.97.6
 ======
 

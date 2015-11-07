@@ -1178,6 +1178,8 @@ Resolve/Lookup Class Names
 
 Resolves the given type and grouped class name to a class name, useful for debugging rewrites.
 
+If the resolved class doesn't exist, an info message will be displayed.
+
 .. code-block:: sh
 
    $ n98-magerun.phar dev:class:lookup <block|model|helper> <name>
@@ -1276,7 +1278,7 @@ Rewrite List
 
 Lists all registered class rewrites.
 
-.. code-blocks:: sh
+.. code-block:: sh
 
    $ n98-magerun.phar dev:module:rewrite:list [--format[="..."]]
 
