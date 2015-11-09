@@ -314,15 +314,17 @@ class PatchedPharPackageTask
         }
         if (!is_null($this->baseDirectory)) {
             if (!$this->baseDirectory->exists()) {
-                throw new BuildException("basedir '" . (string) $this->baseDirectory . "' does not exist!", $this->getLocation(
-                    ));
+                throw new BuildException(
+                    "basedir '" . (string) $this->baseDirectory . "' does not exist!", $this->getLocation()
+                );
             }
         }
         if ($this->signatureAlgorithm == Phar::OPENSSL) {
 
             if (!extension_loaded('openssl')) {
-                throw new BuildException("PHP OpenSSL extension is required for OpenSSL signing of Phars!", $this->getLocation(
-                ));
+                throw new BuildException(
+                    "PHP OpenSSL extension is required for OpenSSL signing of Phars!", $this->getLocation()
+                );
             }
 
             if (is_null($this->key)) {
