@@ -159,7 +159,7 @@ class ConfigurationLoader
     protected function loadDistConfig($initConfig)
     {
         if ($this->_distConfig == null) {
-            $this->_distConfig = Yaml::parse(__DIR__ . '/../../../../config.yaml');
+            $this->_distConfig = Yaml::parse(file_get_contents(__DIR__ . '/../../../../config.yaml'));
 
             if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
                 $this->_output->writeln('<debug>Load dist config</debug>');
@@ -191,7 +191,7 @@ class ConfigurationLoader
                 if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
                     $this->_output->writeln('<debug>Load system config <comment>' . $systemWideConfigFile . '</comment></debug>');
                 }
-                $this->_systemConfig = Yaml::parse($systemWideConfigFile);
+                $this->_systemConfig = Yaml::parse(file_get_contents($systemWideConfigFile));
             } else {
                 $this->_systemConfig = array();
             }
