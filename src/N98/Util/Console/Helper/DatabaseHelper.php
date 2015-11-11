@@ -40,52 +40,54 @@ class DatabaseHelper extends AbstractHelper
      */
     public function detectDbSettings(OutputInterface $output)
     {
-        if ($this->dbSettings == null) {
-            $command = $this->getHelperSet()->getCommand();
-            if ($command == null) {
-                $application = new Application();
-            } else {
-                $application = $command->getApplication();
-                /* @var $application Application */
-            }
-            $application->detectMagento();
+        if ($this->dbSettings !== null) {
+            return;
+        }
 
-            $configFile = $application->getMagentoRootFolder() . '/app/etc/local.xml';
+        $command = $this->getHelperSet()->getCommand();
+        if ($command == null) {
+            $application = new Application();
+        } else {
+            $application = $command->getApplication();
+            /* @var $application Application */
+        }
+        $application->detectMagento();
 
-            if (!is_readable($configFile)) {
-                throw new RuntimeException('app/etc/local.xml is not readable');
-            }
-            $config = \simplexml_load_string(\file_get_contents($configFile));
-            if (!$config->global->resources->default_setup->connection) {
-                $output->writeln('<error>DB settings was not found in local.xml file</error>');
-                return;
-            }
+        $configFile = $application->getMagentoRootFolder() . '/app/etc/local.xml';
 
-            if (!isset($config->global->resources->default_setup->connection)) {
-                throw new RuntimeException('Cannot find default_setup config in app/etc/local.xml');
-            }
+        if (!is_readable($configFile)) {
+            throw new RuntimeException('app/etc/local.xml is not readable');
+        }
+        $config = \simplexml_load_string(\file_get_contents($configFile));
+        if (!$config->global->resources->default_setup->connection) {
+            $output->writeln('<error>DB settings was not found in local.xml file</error>');
+            return;
+        }
 
-            $this->dbSettings           = (array) $config->global->resources->default_setup->connection;
-            $this->dbSettings['prefix'] = (string) $config->global->resources->db->table_prefix;
+        if (!isset($config->global->resources->default_setup->connection)) {
+            throw new RuntimeException('Cannot find default_setup config in app/etc/local.xml');
+        }
 
-            if (isset($this->dbSettings['host']) && strpos($this->dbSettings['host'], ':') !== false) {
-                list($this->dbSettings['host'], $this->dbSettings['port']) = explode(':', $this->dbSettings['host']);
-            }
+        $this->dbSettings           = (array) $config->global->resources->default_setup->connection;
+        $this->dbSettings['prefix'] = (string) $config->global->resources->db->table_prefix;
 
-            if (isset($this->dbSettings['comment'])) {
-                unset($this->dbSettings['comment']);
-            }
+        if (isset($this->dbSettings['host']) && strpos($this->dbSettings['host'], ':') !== false) {
+            list($this->dbSettings['host'], $this->dbSettings['port']) = explode(':', $this->dbSettings['host']);
+        }
 
-            if (isset($this->dbSettings['unix_socket'])) {
-                $this->isSocketConnect = true;
-            }
+        if (isset($this->dbSettings['comment'])) {
+            unset($this->dbSettings['comment']);
+        }
 
-            // @see Varien_Db_Adapter_Pdo_Mysql->_connect()
-            if (isset($this->dbSettings['host']) && strpos($this->dbSettings['host'], '/') !== false) {
-                $this->isSocketConnect = true;
-                $this->dbSettings['unix_socket'] = $this->dbSettings['host'];
-                unset($this->dbSettings['host']);
-            }
+        if (isset($this->dbSettings['unix_socket'])) {
+            $this->isSocketConnect = true;
+        }
+
+        // @see Varien_Db_Adapter_Pdo_Mysql->_connect()
+        if (isset($this->dbSettings['host']) && strpos($this->dbSettings['host'], '/') !== false) {
+            $this->isSocketConnect = true;
+            $this->dbSettings['unix_socket'] = $this->dbSettings['host'];
+            unset($this->dbSettings['host']);
         }
     }
 

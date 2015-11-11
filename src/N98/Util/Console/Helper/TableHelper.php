@@ -58,9 +58,7 @@ class TableHelper extends BaseTableHelper
     }
 
     /**
-     * @param array $headers
-     * @param string[] $headers
-     *
+     * @param array|string[] $headers
      * @return $this
      */
     public function setHeaders(array $headers)

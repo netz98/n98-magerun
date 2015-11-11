@@ -2,6 +2,7 @@
 
 namespace N98\Util\Console\Helper;
 
+use N98\Magento\Application;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -315,7 +316,7 @@ class MagentoHelper extends AbstractHelper
 
             // Magento 2 does not have a god class and thus if this file is not there it is version 2
             if ($hasMageFile == false) {
-                $this->_magentoMajorVersion = \N98\Magento\Application::MAGENTO_MAJOR_VERSION_2;
+                $this->_magentoMajorVersion = Application::MAGENTO_MAJOR_VERSION_2;
                 return true; // the rest of this does not matter since we are simply exiting with a notice
             }
 
