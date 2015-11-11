@@ -98,7 +98,7 @@ class PatchedPharPackageTask
      */
     public function createFileSet()
     {
-        $this->fileset = new IterableFileSet();
+        $this->fileset    = new IterableFileSet();
         $this->filesets[] = $this->fileset;
 
         return $this->fileset;
