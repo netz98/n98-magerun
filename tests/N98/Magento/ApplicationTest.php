@@ -29,7 +29,7 @@ class ApplicationTest extends TestCase
         /**
          * Check version
          */
-        $this->assertEquals($application::APP_VERSION, trim(file_get_contents(__DIR__ . '/../../../version.txt')));
+        $this->assertEquals(Application::APP_VERSION, trim(file_get_contents(__DIR__ . '/../../../version.txt')));
 
         /* @var $loader \Composer\Autoload\ClassLoader */
         $prefixes = $loader->getPrefixes();
@@ -162,8 +162,8 @@ class ApplicationTest extends TestCase
             ->method('getConfigurationLoaderDir')
             ->will($this->returnValue(vfsStream::url('root/vendor/n98/magerun/src/N98/Magento/Command')));
 
-        $application = require __DIR__ . '/../../../src/bootstrap.php';
         /* @var $application Application */
+        $application = require __DIR__ . '/../../../src/bootstrap.php';
         $application->setMagentoRootFolder(vfsStream::url('root/htdocs'));
         $application->setConfigurationLoader($configurationLoader);
         $application->init();

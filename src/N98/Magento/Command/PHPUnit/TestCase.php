@@ -81,6 +81,8 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     public function getDatabaseConnection()
     {
-        return \Mage::getSingleton('core/resource')->getConnection('write');
+        $resource = \Mage::getSingleton('core/resource');
+
+        return $resource->getConnection('write');
     }
 }
