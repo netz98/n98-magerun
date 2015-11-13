@@ -6,7 +6,8 @@ RECENT CHANGES
 1.97.8
 ======
 
-* 729 Fix YAML::parse input type (by Dane MacMillan)
+* #732 Fix DB:console unknown variable (reported by robinero)
+* #729 Fix YAML::parse input type (by Dane MacMillan)
 
 ======
 1.97.7
