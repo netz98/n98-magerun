@@ -56,6 +56,20 @@ HELP;
                             $matches[2],
                             $matches[3],
                         );
+                        if(isset($matches[4]) && isset($matches[5])) {
+                            $table[] = array(
+                                 $matches[1],
+                                 $matches[4],
+                                 $matches[5],
+                            );
+                        }
+                        if(isset($matches[6]) && isset($matches[7])) {
+                            $table[] = array(
+                                $matches[1],
+                                $matches[6],
+                                $matches[7],
+                            );
+                        }
                     }
                 }
             }
