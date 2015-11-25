@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+/* @var $application \N98\Magento\Application */
 $application = require __DIR__.'/../src/bootstrap.php';
 $application->run();
 
