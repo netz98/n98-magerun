@@ -13,7 +13,18 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
     {
         $table = array();
 
-        foreach (\Mage::getConfig()->getNode('crontab/jobs')->children() as $job) {
+        // Get job configuration from XML and database. Expression priority is given to the database.
+        $config = \Mage::getConfig();
+
+        $xmlJobConfig = $config->getNode('crontab/jobs');
+        $dbJobConfig  = $config->getNode('default/crontab/jobs');
+
+        $xmlJobs      = ($xmlJobConfig) ? $xmlJobConfig->children() : array();
+        $databaseJobs = ($dbJobConfig) ? $dbJobConfig->children() : array();
+
+        $jobs = array_merge((array)$xmlJobs, (array)$databaseJobs);
+
+        foreach ($jobs as $job) {
             /* @var $job \Mage_Core_Model_Config_Element */
             $table[] = array('Job'  => (string) $job->getName()) + $this->getSchedule($job);
         }
