@@ -2,6 +2,11 @@
 
 namespace N98\Magento\Command\System\Cron;
 
+use AppendIterator;
+use Mage;
+use Mage_Core_Model_Config_Element;
+use Mage_Cron_Exception;
+use Mage_Cron_Model_Schedule;
 use N98\Magento\Command\AbstractMagentoCommand;
 
 abstract class AbstractCronCommand extends AbstractMagentoCommand
@@ -9,64 +14,93 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
     /**
      * @return array
      */
-    protected  function getJobs()
+    protected function getJobs()
     {
         $table = array();
 
         // Get job configuration from XML and database. Expression priority is given to the database.
-        $config = \Mage::getConfig();
 
-        $xmlJobConfig = $config->getNode('crontab/jobs');
-        $dbJobConfig  = $config->getNode('default/crontab/jobs');
+        /** @var $jobs AppendIterator */
+        $jobs = array_reduce(
+            array('crontab/jobs', 'default/crontab/jobs'), function(AppendIterator $carry, $path) {
+                if ($jobConfig = Mage::getConfig()->getNode($path)) {
+                    $carry->append(new \IteratorIterator($jobConfig->children()));
+                };
+                return $carry;
+            }, new AppendIterator()
+        );
 
-        $xmlJobs      = ($xmlJobConfig) ? $xmlJobConfig->children() : array();
-        $databaseJobs = ($dbJobConfig) ? $dbJobConfig->children() : array();
-
-        $jobs = array_merge((array)$xmlJobs, (array)$databaseJobs);
-
-        foreach ($jobs as $job) {
-            /* @var $job \Mage_Core_Model_Config_Element */
-            $table[] = array('Job'  => (string) $job->getName()) + $this->getSchedule($job);
+        foreach ($jobs as $name => $job) {
+            /* @var $job Mage_Core_Model_Config_Element */
+            $table[$name] = array('Job'  => $name) + $this->getSchedule($job);
         }
 
-        usort($table, function($a, $b) {
-            return strcmp($a['Job'], $b['Job']);
-        });
+        ksort($table, SORT_STRING);
 
         return $table;
     }
 
     /**
-     * @param $job
-     * @return array
+     * @param  Mage_Core_Model_Config_Element $job
+     * @return array of five cron values,keyed by 'm', 'h', 'D', 'M' and 'WD'
      */
-    protected function getSchedule($job)
+    protected function getSchedule(Mage_Core_Model_Config_Element $job)
     {
+        $keys = array('m', 'h', 'D', 'M', 'WD');
         $expr = null;
 
         if (isset($job->schedule->config_path)) {
-            $expr = \Mage::getStoreConfig((string) $job->schedule->config_path);
+            $expr = Mage::getStoreConfig((string) $job->schedule->config_path);
         } elseif (isset($job->schedule->cron_expr)) {
-            $expr = (string) $job->schedule->cron_expr;
+            $expr = $job->schedule->cron_expr;
         }
 
-        if ($expr) {
-            if ($expr == 'always') {
-                return array('m' => '*', 'h' => '*', 'D' => '*', 'M' => '*', 'WD' => '*');
+        if ($cronExpressions = $this->parseCronExpression($expr)) {
+            return array_combine($keys, $cronExpressions);
+        }
+
+        return array_combine($keys, array_fill(0, 5, '  '));
+    }
+
+    /**
+     * parse a cron expression into an array, false-ly if unable to handle
+     *
+     * uses magento 1 internal parser of cron expressions
+     *
+     * @return array with five values (zero-indexed) or FALSE in case it does not exists.
+     */
+    private function parseCronExpression($expr) {
+
+        if ($expr === 'always') {
+            return array_fill(0, 5, '*');
+        }
+
+        /** @var $schedule Mage_Cron_Model_Schedule */
+        $schedule = $this->_getModel('cron/schedule', 'Mage_Cron_Model_Schedule');
+
+        try {
+            $schedule->setCronExpr($expr);
+        } catch (Mage_Cron_Exception $e) {
+            return false;
+        }
+
+        $array = $schedule->getData('cron_expr_arr');
+
+        $count = 0;
+        foreach ($array as $expression) {
+            if (++$count > 5) {
+                // year is optional and never parsed
+                break;
             }
 
-            $schedule = $this->_getModel('cron/schedule', 'Mage_Cron_Model_Schedule');
-            $schedule->setCronExpr($expr);
-            $array = $schedule->getCronExprArr();
-            return array(
-                'm'  => $array[0],
-                'h'  => $array[1],
-                'D'  => $array[2],
-                'M'  => $array[3],
-                'WD' => $array[4]
-            );
+            // parse each entry
+            try {
+                $schedule->matchCronExpression($expression, 1);
+            } catch (Mage_Cron_Exception $e) {
+                return false;
+            }
         }
 
-        return array('m' => '  ', 'h' => '  ', 'D' => '  ', 'M' => '  ', 'WD' => '  ');
+        return $array;
     }
 }
