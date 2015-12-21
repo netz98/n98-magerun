@@ -26,13 +26,16 @@ ulimit -Sn $(ulimit -Hn)
 php -f build/vendor/phing/phing/bin/phing -dphar.readonly=0 -- -verbose dist
 BUILD_STATUS=$?
 
+if [ ${BUILD_STATUS} -ne 0 ]; then
+    >&2 echo "error: phing build failed with exit status ${BUILD_STATUS}"
+    exit ${BUILD_STATUS}
+fi
+
+php -f build/phar/phar-timestamp.php
+
 php -f "${phar}" -- --version
 
 ls -l "${phar}"
 
 php -r 'echo "SHA1: ", sha1_file("'"${phar}"'"), "\nMD5.: ", md5_file("'"${phar}"'"), "\n";'
 
-if [ ${BUILD_STATUS} -ne 0 ]; then
-    >&2 echo "error: phing build failed with exit status ${BUILD_STATUS}"
-    exit ${BUILD_STATUS}
-fi
