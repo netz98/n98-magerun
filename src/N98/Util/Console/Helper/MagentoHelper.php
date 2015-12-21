@@ -231,7 +231,7 @@ class MagentoHelper extends AbstractHelper
     }
 
     /**
-     * Check for .n98-magerun file
+     * Check for magerun stop-file
      *
      * @param array $folders
      *
@@ -243,11 +243,12 @@ class MagentoHelper extends AbstractHelper
             if (!is_readable($searchFolder)) {
                 if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
                     $this->output->writeln(
-                        '<debug>Folder <info>' . $searchFolder . '</info> is not readable. Skip.</debug>'
+                        sprintf('<debug>Folder <info>%s</info> is not readable. Skip.</debug>', $searchFolder)
                     );
                 }
                 continue;
             }
+            $stopFile = '.' . pathinfo($this->_customConfigFilename, PATHINFO_FILENAME);
             $finder = Finder::create();
             $finder
                 ->files()
@@ -255,18 +256,21 @@ class MagentoHelper extends AbstractHelper
                 ->depth(0)
                 ->followLinks()
                 ->ignoreDotFiles(false)
-                ->name('.n98-magerun')
+                ->name($stopFile)
                 ->in($searchFolder);
 
             $count = $finder->count();
             if ($count > 0) {
-                $this->_magerunStopFileFound = true;
+                $this->_magerunStopFileFound  = true;
                 $this->_magerunStopFileFolder = $searchFolder;
-                $magerunFileContent = trim(file_get_contents($searchFolder . DIRECTORY_SEPARATOR . '.n98-magerun'));
+                $magerunFilePath              = $searchFolder . DIRECTORY_SEPARATOR . $stopFile;
+                $magerunFileContent           = trim(file_get_contents($magerunFilePath));
                 if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
-                    $this->output->writeln(
-                        '<debug>Found .n98-magerun file with content <info>' . $magerunFileContent . '</info></debug>'
+                    $message = sprintf(
+                        '<debug>Found stopfile \'%s\' file with content <info>%s</info></debug>', $stopFile,
+                        $magerunFileContent
                     );
+                    $this->output->writeln($message);
                 }
 
                 array_push($folders, $searchFolder . DIRECTORY_SEPARATOR . $magerunFileContent);
