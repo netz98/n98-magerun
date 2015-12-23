@@ -50,16 +50,20 @@ class ParameterHelper extends AbstractHelper
      */
     public function askStore(InputInterface $input, OutputInterface $output, $argumentName = 'store', $withDefaultStore = false)
     {
+        /* @var $storeManager \Mage_Core_Model_App */
+        $storeManager = \Mage::app();
+
         try {
             if ($input->getArgument($argumentName) === null) {
                 throw new RuntimeException('No store given');
             }
             /** @var $store \Mage_Core_Model_Store */
-            $store = \Mage::app()->getStore($input->getArgument($argumentName));
+            $store = $storeManager->getStore($input->getArgument($argumentName));
         } catch (Exception $e) {
             $stores = array();
             $i = 0;
-            foreach (\Mage::app()->getStores($withDefaultStore) as $store) {
+
+            foreach ($storeManager->getStores($withDefaultStore) as $store) {
                 $stores[$i] = $store->getId();
                 $question[] = '<comment>[' . ($i + 1) . ']</comment> ' . $store->getCode() . ' - ' . $store->getName() . PHP_EOL;
                 $i++;
@@ -79,7 +83,7 @@ class ParameterHelper extends AbstractHelper
                 $storeId = $stores[0];
             }
 
-            $store = \Mage::app()->getStore($storeId);
+            $store = $storeManager->getStore($storeId);
         }
 
         return $store;
@@ -92,25 +96,29 @@ class ParameterHelper extends AbstractHelper
      *
      * @return mixed
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function askWebsite(InputInterface $input, OutputInterface $output, $argumentName = 'website')
     {
+        /* @var $storeManager \Mage_Core_Model_App */
+        $storeManager = \Mage::app();
+
         try {
             if ($input->getArgument($argumentName) === null) {
                 throw new RuntimeException('No website given');
             }
             /** @var $website \Mage_Core_Model_Website */
-            $website = \Mage::app()->getWebsite($input->getArgument($argumentName));
+            $website = $storeManager->getWebsite($input->getArgument($argumentName));
         } catch (Exception $e) {
             $i = 0;
             $websites = array();
-            foreach (\Mage::app()->getWebsites() as $website) {
+            foreach ($storeManager->getWebsites() as $website) {
                 $websites[$i] = $website->getId();
                 $question[] = '<comment>[' . ($i + 1) . ']</comment> ' . $website->getCode() . ' - ' . $website->getName() . PHP_EOL;
                 $i++;
             }
             if (count($websites) == 1) {
-                return \Mage::app()->getWebsite($websites[0]);
+                return $storeManager->getWebsite($websites[0]);
             }
             $question[] = '<question>Please select a website: </question>';
 
@@ -122,7 +130,7 @@ class ParameterHelper extends AbstractHelper
                 return $websites[$typeInput - 1];
             });
 
-            $website = \Mage::app()->getWebsite($websiteId);
+            $website = $storeManager->getWebsite($websiteId);
         }
 
         return $website;

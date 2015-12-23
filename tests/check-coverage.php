@@ -8,7 +8,12 @@ $inputFile  = $argv[1];
 $percentage = min(100, max(0, (int) $argv[2]));
 
 if (!file_exists($inputFile)) {
-    throw new InvalidArgumentException('Invalid input file provided');
+    throw new InvalidArgumentException(
+        sprintf(
+            'Invalid input file %s provided as first parameter. The file does not exists.',
+            var_export($inputFile, true)
+        )
+    );
 }
 
 if (!$percentage) {

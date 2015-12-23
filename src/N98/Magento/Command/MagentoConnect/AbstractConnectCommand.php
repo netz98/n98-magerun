@@ -63,7 +63,9 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
     protected function matchConnectLine($line)
     {
         $matches = array();
-        preg_match('/([a-zA-Z0-9-_]+):\s([0-9.]+)\s([a-z]+)/', $line, $matches);
+        // expected format "Package: Version Stability[,Version Stability][,Version Stability]"
+        $pattern = '/([a-zA-Z0-9-_]+):\s([0-9.]+)\s([a-z]+),?([0-9.]+)?\s?([a-z]+)?,?([0-9.]+)?\s?([a-z]+)?/';
+        preg_match($pattern, $line, $matches);
         return $matches;
     }
 

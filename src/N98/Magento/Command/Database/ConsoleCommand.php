@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Database;
 
+use N98\Util\Console\Helper\DatabaseHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,7 +35,10 @@ class ConsoleCommand extends AbstractDatabaseCommand
         );
 
         $mysqlClient = $input->getOption('use-mycli-instead-of-mysql') ? 'mycli' : 'mysql';
-        $exec = $mysqlClient . ' ' . $this->getHelper('database')->getMysqlClientToolConnectionString();
+
+        /* @var $database DatabaseHelper */
+        $database = $this->getHelper('database');
+        $exec     = $mysqlClient . ' ' . $database->getMysqlClientToolConnectionString();
 
         $pipes = array();
         $process = proc_open($exec, $descriptorSpec, $pipes);

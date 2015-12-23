@@ -71,9 +71,10 @@ matrix:
     # Lint PHP code with PHP 7.0
     - php: 7.0
       env: LINTSH=1
-      script: find {src,tests} -name "*.php" ! -path '*/String.php' -print0 | xargs -0 -n1 -P8 php -l
+      script: find {src,tests} -name "*.php" ! -path '*/String.php' -print0 | xargs -0 -n1 -P8 php -l | grep -v '^No syntax errors detected'; test $? -eq 1
 
 before_install:
+  - phpenv config-rm xdebug.ini
   - travis_retry composer self-update
 
 install:

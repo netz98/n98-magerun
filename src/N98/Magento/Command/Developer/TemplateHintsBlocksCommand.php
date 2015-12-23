@@ -30,4 +30,11 @@ class TemplateHintsBlocksCommand extends AbstractMagentoStoreConfigCommand
      * @var string
      */
     protected $scope = self::SCOPE_STORE_VIEW;
+
+    /**
+     * Add admin store to interactive prompt
+     *
+     * @var bool
+     */
+    protected $withAdminStore = true;
 }

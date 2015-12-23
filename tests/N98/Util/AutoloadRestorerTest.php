@@ -6,7 +6,7 @@
 namespace N98\Util;
 
 /**
- * Class WindowsSystemTest
+ * Class AutoloadRestorerTest
  *
  * @package N98\Util
  */

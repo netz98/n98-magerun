@@ -11,5 +11,7 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {}
+    "require": {
+        "seld/phar-utils": "1.0.1"
+    }
 }

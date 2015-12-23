@@ -2,6 +2,7 @@
 
 namespace N98\Util\Console\Helper;
 
+use N98\Magento\Application;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -230,7 +231,7 @@ class MagentoHelper extends AbstractHelper
     }
 
     /**
-     * Check for .n98-magerun file
+     * Check for magerun stop-file
      *
      * @param array $folders
      *
@@ -242,11 +243,12 @@ class MagentoHelper extends AbstractHelper
             if (!is_readable($searchFolder)) {
                 if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
                     $this->output->writeln(
-                        '<debug>Folder <info>' . $searchFolder . '</info> is not readable. Skip.</debug>'
+                        sprintf('<debug>Folder <info>%s</info> is not readable. Skip.</debug>', $searchFolder)
                     );
                 }
                 continue;
             }
+            $stopFile = '.' . pathinfo($this->_customConfigFilename, PATHINFO_FILENAME);
             $finder = Finder::create();
             $finder
                 ->files()
@@ -254,18 +256,21 @@ class MagentoHelper extends AbstractHelper
                 ->depth(0)
                 ->followLinks()
                 ->ignoreDotFiles(false)
-                ->name('.n98-magerun')
+                ->name($stopFile)
                 ->in($searchFolder);
 
             $count = $finder->count();
             if ($count > 0) {
-                $this->_magerunStopFileFound = true;
+                $this->_magerunStopFileFound  = true;
                 $this->_magerunStopFileFolder = $searchFolder;
-                $magerunFileContent = trim(file_get_contents($searchFolder . DIRECTORY_SEPARATOR . '.n98-magerun'));
+                $magerunFilePath              = $searchFolder . DIRECTORY_SEPARATOR . $stopFile;
+                $magerunFileContent           = trim(file_get_contents($magerunFilePath));
                 if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
-                    $this->output->writeln(
-                        '<debug>Found .n98-magerun file with content <info>' . $magerunFileContent . '</info></debug>'
+                    $message = sprintf(
+                        '<debug>Found stopfile \'%s\' file with content <info>%s</info></debug>', $stopFile,
+                        $magerunFileContent
                     );
+                    $this->output->writeln($message);
                 }
 
                 array_push($folders, $searchFolder . DIRECTORY_SEPARATOR . $magerunFileContent);
@@ -315,7 +320,7 @@ class MagentoHelper extends AbstractHelper
 
             // Magento 2 does not have a god class and thus if this file is not there it is version 2
             if ($hasMageFile == false) {
-                $this->_magentoMajorVersion = \N98\Magento\Application::MAGENTO_MAJOR_VERSION_2;
+                $this->_magentoMajorVersion = Application::MAGENTO_MAJOR_VERSION_2;
                 return true; // the rest of this does not matter since we are simply exiting with a notice
             }
 

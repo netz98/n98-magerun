@@ -3,6 +3,16 @@ RECENT CHANGES
 **************
 
 ======
+1.97.8
+======
+
+* #727 Fix sys:cron:list cron expression display (by Robbie Averill)
+* #736 Fix missing Admin store in dev:template-hints (by Steve Robbins)
+* #733 Fix extenions:search display (by EmPeWe)
+* #732 Fix DB:console unknown variable (reported by robinero)
+* #729 Fix YAML::parse input type (by Dane MacMillan)
+
+======
 1.97.7
 ======
 
