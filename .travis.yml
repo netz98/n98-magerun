@@ -14,16 +14,19 @@ php:
   - 5.5
 
 env:
-  - MAGENTO_VERSION="magento-mirror-1.4.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes
-  - MAGENTO_VERSION="magento-mirror-1.5.1.0" DB=mysql INSTALL_SAMPLE_DATA=yes
-  - MAGENTO_VERSION="magento-mirror-1.6.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes
-  - MAGENTO_VERSION="magento-mirror-1.7.0.2" DB=mysql INSTALL_SAMPLE_DATA=yes
-  - MAGENTO_VERSION="magento-mirror-1.8.1.0" DB=mysql INSTALL_SAMPLE_DATA=yes
-  # Do not download sample data of 1.9 -> The file is too big
-  - MAGENTO_VERSION="magento-mirror-1.9.0.1" DB=mysql INSTALL_SAMPLE_DATA=no
-  - MAGENTO_VERSION="magento-mirror-1.9.1.1" DB=mysql INSTALL_SAMPLE_DATA=no
-  - MAGENTO_VERSION="magento-mirror-1.9.2.1" DB=mysql INSTALL_SAMPLE_DATA=no
-  - MAGENTO_VERSION="magento-mirror-1.9.2.2" DB=mysql INSTALL_SAMPLE_DATA=no
+  global:
+    - DB=mysql
+  matrix:
+    - MAGENTO_VERSION="magento-mirror-1.4.2.0" INSTALL_SAMPLE_DATA=yes
+    - MAGENTO_VERSION="magento-mirror-1.5.1.0" INSTALL_SAMPLE_DATA=yes
+    - MAGENTO_VERSION="magento-mirror-1.6.2.0" INSTALL_SAMPLE_DATA=yes
+    - MAGENTO_VERSION="magento-mirror-1.7.0.2" INSTALL_SAMPLE_DATA=yes
+    - MAGENTO_VERSION="magento-mirror-1.8.1.0" INSTALL_SAMPLE_DATA=yes
+    # Do not download sample data of 1.9 -> The file is too big
+    - MAGENTO_VERSION="magento-mirror-1.9.0.1" INSTALL_SAMPLE_DATA=no
+    - MAGENTO_VERSION="magento-mirror-1.9.1.1" INSTALL_SAMPLE_DATA=no
+    - MAGENTO_VERSION="magento-mirror-1.9.2.1" INSTALL_SAMPLE_DATA=no
+    - MAGENTO_VERSION="magento-mirror-1.9.2.2" INSTALL_SAMPLE_DATA=no
 
 matrix:
   fast_finish: true
@@ -81,7 +84,7 @@ install:
   - travis_retry composer install --prefer-source --no-interaction --ignore-platform-reqs
 
 before_script:
-  - source ./build/travis/before_script.sh
+  - source build/travis/before_script.sh
 
 script:
   - vendor/bin/phpunit --debug --stop-on-error --stop-on-failure
