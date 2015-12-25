@@ -34,47 +34,45 @@ matrix:
     # Newer Magento versions uses newer PHP versions
     - php: 5.3
       env: MAGENTO_VERSION="magento-mirror-1.9.0.1" DB=mysql INSTALL_SAMPLE_DATA=no
-
     - php: 5.3
       env: MAGENTO_VERSION="magento-mirror-1.9.1.1" DB=mysql INSTALL_SAMPLE_DATA=no
-
     - php: 5.3
       env: MAGENTO_VERSION="magento-mirror-1.9.2.1" DB=mysql INSTALL_SAMPLE_DATA=no
-
     - php: 5.3
       env: MAGENTO_VERSION="magento-mirror-1.9.2.2" DB=mysql INSTALL_SAMPLE_DATA=no
-
     # Old Magento Versions are not officially supported to run with PHP 5.5
     - php: 5.5
       env: MAGENTO_VERSION="magento-mirror-1.4.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes
-
     - php: 5.5
       env: MAGENTO_VERSION="magento-mirror-1.5.1.0" DB=mysql INSTALL_SAMPLE_DATA=yes
-
     - php: 5.5
       env: MAGENTO_VERSION="magento-mirror-1.6.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes
-
     - php: 5.5
       env: MAGENTO_VERSION="magento-mirror-1.7.0.2" DB=mysql INSTALL_SAMPLE_DATA=no
   include:
-    # Run the build script with an older PHP version
-    - php: 5.3
-      env: BUILDSH=1
-      script: ./build.sh
-
-    # Run the build script with a recent PHP version
-    - php: 5.5
-      env: BUILDSH=1
-      script: ./build.sh
-
-    # Run the build script with upcoming PHP 7.0 version
-    - php: 7.0
-      env: MAGENTO_VERSION="magento-mirror-1.9.2.1" DB=mysql INSTALL_SAMPLE_DATA=no
-
     # Lint PHP code with PHP 7.0
     - php: 7.0
       env: LINTSH=1
       script: find {src,tests} -name "*.php" ! -path '*/String.php' -print0 | xargs -0 -n1 -P8 php -l | grep -v '^No syntax errors detected'; test $? -eq 1
+    # Run the build script with different PHP versions
+    - php: 5.3
+      env: BUILDSH=1
+      script: ./build.sh
+    - php: 5.4
+      env: BUILDSH=1
+      script: ./build.sh
+    - php: 5.5
+      env: BUILDSH=1
+      script: ./build.sh
+    - php: 5.6
+      env: BUILDSH=1
+      script: ./build.sh
+    - php: 7.0
+      env: BUILDSH=1
+      script: ./build.sh
+    # Run with upcoming PHP 7.0 version
+    - php: 7.0
+      env: MAGENTO_VERSION="magento-mirror-1.9.2.2" DB=mysql INSTALL_SAMPLE_DATA=no
 
 before_install:
   - phpenv config-rm xdebug.ini
