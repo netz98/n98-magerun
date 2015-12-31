@@ -33,6 +33,14 @@ HELP;
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return Exec::allowed();
+    }
+
+    /**
      * Returns the query string with escaped ' characters so it can be used
      * within the mysql -e argument.
      *

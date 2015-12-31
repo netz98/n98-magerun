@@ -6,6 +6,8 @@ RECENT CHANGES
 1.97.9
 ======
 
+* #741 Fix remove customer exec dependency (by Tom Klingenberg)
+
 ======
 1.97.8
 ======
