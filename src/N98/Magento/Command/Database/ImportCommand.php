@@ -34,6 +34,14 @@ HELP;
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return Exec::allowed();
+    }
+
+    /**
      * Optimize a dump by converting single INSERTs per line to INSERTs with multiple lines
      * @param $fileName
      * @return string temporary filename

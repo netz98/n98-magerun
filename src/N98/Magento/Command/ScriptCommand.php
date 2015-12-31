@@ -5,6 +5,7 @@ namespace N98\Magento\Command;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\BinaryString;
+use N98\Util\Exec;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -103,6 +104,14 @@ Example:
 It's possible to define multiple values by passing more than one option.
 HELP;
         $this->setHelp($help);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return Exec::allowed();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
