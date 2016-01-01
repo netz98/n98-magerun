@@ -113,6 +113,7 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectDbSettings($output);
+
         $this->writeSection($output, 'Import MySQL Database');
         $dbHelper = $this->getHelper('database');
 

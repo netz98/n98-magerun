@@ -143,18 +143,21 @@ class DatabaseHelperTest extends TestCase
         $this->assertInternalType('array', $tables);
         $this->assertContains('admin_user', $tables);
 
-        $ro = new \ReflectionObject($helper);
-        $rp = $ro->getProperty('dbSettings');
+        $dbSettings = $helper->getDbSettings();
+        $ro = new \ReflectionObject($dbSettings);
+        $rp = $ro->getProperty('config');
         $rp->setAccessible(true);
-        $config                        = $rp->getValue($helper);
-        $previous                      = $config['prefix'];
-        $index                         = count($this->tearDownRestore);
-        $this->tearDownRestore[$index] = function () use ($rp, $helper, $previous) {
+
+        $config   = $rp->getValue($dbSettings);
+        $previous = $config['prefix'];
+
+        $this->tearDownRestore[] = function () use ($rp, $dbSettings, $previous) {
             $config['prefix'] = $previous;
-            $rp->setValue($helper, $config);
+            $rp->setValue($dbSettings, $config);
         };
-        $config['prefix']              = $previous . 'core_';
-        $rp->setValue($helper, $config);
+
+        $config['prefix'] = $previous . 'core_';
+        $rp->setValue($dbSettings, $config);
 
         $tables = $helper->getTables(null); // default value should be null-able and is false
         $this->assertInternalType('array', $tables);

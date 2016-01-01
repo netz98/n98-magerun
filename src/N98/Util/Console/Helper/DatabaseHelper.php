@@ -3,8 +3,8 @@
 namespace N98\Util\Console\Helper;
 
 use InvalidArgumentException;
+use N98\Magento\DbSettings;
 use PDO;
-use PDOException;
 use PDOStatement;
 use RuntimeException;
 use Symfony\Component\Console\Application as BaseApplication;
@@ -21,12 +21,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DatabaseHelper extends AbstractHelper
 {
     /**
-     * @var array
+     * @var array|DbSettings
      */
     protected $dbSettings = null;
 
     /**
      * @var bool
+     * @deprecated since 1.97.9, use $dbSettings->isSocketConnect()
      */
     protected $isSocketConnect = false;
 
@@ -57,52 +58,16 @@ class DatabaseHelper extends AbstractHelper
 
         $configFile = $application->getMagentoRootFolder() . '/app/etc/local.xml';
 
-        if (!is_readable($configFile)) {
-            throw new RuntimeException('app/etc/local.xml is not readable');
+        if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $output->writeln(sprintf('<debug>Loading database configuration from file <info>%s</info></debug>', $configFile));
         }
 
-        $config = simplexml_load_file($configFile);
-        if (false === $config) {
-            $output->writeln('<error>Unable to open file app/etc/local.xml and parse it as XML</error>');
-
-            return;
+        try {
+            $this->dbSettings = new DbSettings($configFile);
+        } catch (InvalidArgumentException $e) {
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            throw new RuntimeException('Failed to load database settings from config file', 0, $e);
         }
-
-        $resources = $config->global->resources;
-        if (!$resources) {
-            $output->writeln('<error>DB global resources was not found in app/etc/local.xml file</error>');
-
-            return;
-        }
-
-        if (!$resources->default_setup->connection) {
-            $output->writeln('<error>DB settings (default_setup) was not found in app/etc/local.xml file</error>');
-
-            return;
-        }
-
-        $isSocketConnect      = null;
-        $dbSettings           = (array) $resources->default_setup->connection;
-        $dbSettings['prefix'] = (string) $resources->db->table_prefix;
-
-        if (isset($dbSettings['host']) && strpos($dbSettings['host'], ':') !== false) {
-            list($dbSettings['host'], $dbSettings['port']) = explode(':', $dbSettings['host']);
-        }
-
-        unset($dbSettings['comment']);
-
-        /* @see \Varien_Db_Adapter_Pdo_Mysql::_connect() */
-        if (isset($dbSettings['host']) && strpos($dbSettings['host'], '/') !== false) {
-            $dbSettings['unix_socket'] = $dbSettings['host'];
-            unset($dbSettings['host']);
-        }
-
-        if (isset($dbSettings['unix_socket'])) {
-            $isSocketConnect = true;
-        }
-
-        $this->isSocketConnect = $isSocketConnect;
-        $this->dbSettings      = $dbSettings;
     }
 
     /**
@@ -111,48 +76,12 @@ class DatabaseHelper extends AbstractHelper
      * @param OutputInterface $output = null
      *
      * @return PDO
-     * @throws RuntimeException pdo mysql extension is not installed
      */
     public function getConnection(OutputInterface $output = null)
     {
-        if ($output == null) {
-            $output = new NullOutput();
+        if (!$this->_connection) {
+            $this->_connection = $this->getDbSettings($output)->getConnection();
         }
-
-        if ($this->_connection) {
-            return $this->_connection;
-        }
-
-        $this->detectDbSettings($output);
-
-        if (!extension_loaded('pdo_mysql')) {
-            throw new RuntimeException('pdo_mysql extension is not installed');
-        }
-
-        $this->_connection = new PDO(
-            $this->dsn(),
-            $this->dbSettings['username'],
-            $this->dbSettings['password']
-        );
-
-        /** @link http://bugs.mysql.com/bug.php?id=18551 */
-        $this->_connection->query("SET SQL_MODE=''");
-
-        try {
-            $this->_connection->query('USE `' . $this->dbSettings['dbname'] . '`');
-        } catch (PDOException $e) {
-            if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $output->getVerbosity()) {
-                $output->writeln(sprintf(
-                    '<error>Failed to use database <comment>%s</comment>: %s</error>',
-                    var_export($this->dbSettings['dbname'], true), $e->getMessage()
-                ));
-            }
-        }
-
-        $this->_connection->query("SET NAMES utf8");
-
-        $this->_connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
-        $this->_connection->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 
         return $this->_connection;
     }
@@ -165,30 +94,7 @@ class DatabaseHelper extends AbstractHelper
      */
     public function dsn()
     {
-        $this->detectDbSettings(new NullOutput());
-
-        // baseline of DSN parts
-        $dsn = $this->dbSettings;
-
-        // don't pass the username, password, charset, database, persistent and driver_options in the DSN
-        unset($dsn['username']);
-        unset($dsn['password']);
-        unset($dsn['options']);
-        unset($dsn['charset']);
-        unset($dsn['persistent']);
-        unset($dsn['driver_options']);
-        unset($dsn['dbname']);
-
-        // use all remaining parts in the DSN
-        $buildDsn = array();
-        foreach ($dsn as $key => $val) {
-            if (is_array($val)) {
-                continue;
-            }
-            $buildDsn[$key] = "$key=$val";
-        }
-
-        return 'mysql:' . implode(';', $buildDsn);
+        return $this->getDbSettings()->getDsn();
     }
 
     /**
@@ -219,22 +125,7 @@ class DatabaseHelper extends AbstractHelper
      */
     public function getMysqlClientToolConnectionString()
     {
-        $this->detectDbSettings(new NullOutput());
-
-        if ($this->isSocketConnect) {
-            $string = '--socket=' . escapeshellarg($this->dbSettings['unix_socket']);
-        } else {
-            $string = '-h' . escapeshellarg($this->dbSettings['host']);
-        }
-
-        $string .= ' '
-            . '-u' . escapeshellarg($this->dbSettings['username'])
-            . ' '
-            . (isset($this->dbSettings['port']) ? '-P' . escapeshellarg($this->dbSettings['port']) . ' ' : '')
-            . (strlen($this->dbSettings['password']) ? '--password=' . escapeshellarg($this->dbSettings['password']) . ' ' : '')
-            . escapeshellarg($this->dbSettings['dbname']);
-
-        return $string;
+        return $this->getDbSettings()->getMysqlClientToolConnectionString();
     }
 
     /**
@@ -306,7 +197,6 @@ class DatabaseHelper extends AbstractHelper
 
         return $result;
     }
-
 
     /**
      * @param array $commandConfig
@@ -524,10 +414,24 @@ class DatabaseHelper extends AbstractHelper
     }
 
     /**
-     * @return array
+     * @param OutputInterface $output [optional]
+     *
+     * @return array|DbSettings
      */
-    public function getDbSettings()
+    public function getDbSettings(OutputInterface $output = null)
     {
+        if ($this->dbSettings) {
+            return $this->dbSettings;
+        }
+
+        $output = $this->fallbackOutput($output);
+
+        $this->detectDbSettings($output);
+
+        if (!$this->dbSettings) {
+            throw new RuntimeException('Database settings fatal error');
+        }
+
         return $this->dbSettings;
     }
 
@@ -536,7 +440,7 @@ class DatabaseHelper extends AbstractHelper
      */
     public function getIsSocketConnect()
     {
-        return $this->isSocketConnect;
+        return $this->getDbSettings()->isSocketConnect();
     }
 
     /**
@@ -660,5 +564,30 @@ class DatabaseHelper extends AbstractHelper
         }
 
         return $application;
+    }
+
+    /**
+     * small helper method to obtain an object of type OutputInterface
+     *
+     * @param OutputInterface|null $output
+     *
+     * @return OutputInterface
+     */
+    private function fallbackOutput(OutputInterface $output = null)
+    {
+        if (null !== $output) {
+            return $output;
+        }
+
+        if ($helper = $this->getHelperSet()->get('io')) {
+            /** @var $helper IoHelper */
+            $output = $helper->getOutput();
+        }
+
+        if (null === $output) {
+            $output = new NullOutput();
+        }
+
+        return $output;
     }
 }
