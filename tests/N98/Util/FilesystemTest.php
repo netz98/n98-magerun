@@ -82,19 +82,22 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         $ignoreMe   = $folder1 . "/ignore.me";
         $file2      = $folder2 . "/file2.txt";
         $dest       = sys_get_temp_dir() . "/n98_copy_dest";
+        $this->fileSystem->recursiveRemoveDirectory($dest, true);
 
         @mkdir($folder1, 0777, true);
         @mkdir($folder2, 0777, true);
         touch($file1);
+        touch($ignoreMe);
         touch($file2);
 
         $this->fileSystem->recursiveCopy($basePath, $dest, array('ignore.me'));
         $this->assertFileExists($dest . "/folder1/file1.txt");
-        $this->assertFileExists($dest . "/folder2/file2.txt");
         $this->assertFileNotExists($dest . "/folder1/ignore.me");
+        $this->assertFileExists($dest . "/folder2/file2.txt");
 
         //cleanup
         unlink($file1);
+        unlink($ignoreMe);
         unlink($file2);
         rmdir($folder1);
         rmdir($folder2);
