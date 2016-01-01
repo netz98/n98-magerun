@@ -1,0 +1,52 @@
+<!-- fixture for DbSettings tests -->
+<config>
+    <global>
+        <cache>
+            <backend>Zend_Cache_Backend_BlackHole</backend>
+        </cache>
+        <install>
+            <date>Sun, 28 Oct 2012 13:09:07 +0000</date>
+        </install>
+        <crypt>
+            <key>1aaa1a11a11aa11aaaa111111aaaa111</key>
+        </crypt>
+        <disable_local_modules>false</disable_local_modules>
+        <resources>
+            <db>
+                <table_prefix/>
+            </db>
+            <default_setup>
+                <connection>
+                    <host>localhost</host>
+                    <username>user</username>
+                    <password>pass</password>
+                    <dbname>magento</dbname>
+                    <initStatements>SET NAMES utf8</initStatements>
+                    <model>mysql4</model>
+                    <type>pdo_mysql</type>
+                    <pdoType/>
+                    <active>1</active>
+                </connection>
+            </default_setup>
+        </resources>
+        <session_save>files</session_save>
+    </global>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <frontName>admin</frontName>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    <frontend>
+        <layout>
+            <updates>
+                <update_frontend>
+                    <file>update_frontend.xml</file>
+                </update_frontend>
+            </updates>
+        </layout>
+    </frontend>
+</config>
