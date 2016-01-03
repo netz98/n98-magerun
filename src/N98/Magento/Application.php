@@ -28,6 +28,16 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 class Application extends BaseApplication
 {
     /**
+     * @var string
+     */
+
+    const APP_NAME = 'n98-magerun';
+    /**
+     * @var string
+     */
+    const APP_VERSION = '1.97.9';
+
+    /**
      * @var int
      */
     const MAGENTO_MAJOR_VERSION_1 = 1;
@@ -36,17 +46,6 @@ class Application extends BaseApplication
      * @var int
      */
     const MAGENTO_MAJOR_VERSION_2 = 2;
-
-    /**
-     * @var string
-     */
-
-    const APP_NAME = 'n98-magerun';
-
-    /**
-     * @var string
-     */
-    const APP_VERSION = '1.97.9';
 
     /**
      * @var string

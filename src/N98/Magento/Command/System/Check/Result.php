@@ -7,17 +7,17 @@ use LogicException;
 class Result
 {
     /**
-     * @type string
+     * @var string
      */
     const STATUS_OK = 'ok';
 
     /**
-     * @type string
+     * @var string
      */
     const STATUS_ERROR = 'error';
 
     /**
-     * @type string
+     * @var string
      */
     const STATUS_WARNING = 'warning';
 
