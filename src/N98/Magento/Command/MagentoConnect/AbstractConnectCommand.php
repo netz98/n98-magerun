@@ -58,7 +58,7 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
     /**
      * @param string $line
      *
-     * @return array
+     * @return string[]
      */
     protected function matchConnectLine($line)
     {

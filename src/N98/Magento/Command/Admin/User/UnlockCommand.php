@@ -42,8 +42,8 @@ class UnlockCommand extends AbstractAdminUserCommand
             if ($username = $input->getArgument('username')) {
                 $user = \Mage::getModel('admin/user')->loadByUsername($username);
                 if (!$user || !$user->getId()) {
-                     $output->writeln('<error>Couldn\'t find admin ' . $username . '</error>');
-                     return;
+                    $output->writeln('<error>Couldn\'t find admin ' . $username . '</error>');
+                    return;
                 }
                 \Mage::getResourceModel('enterprise_pci/admin_user')->unlock($user->getId());
                 $output->writeln('<info><comment>' . $username . '</comment> unlocked</info>');
