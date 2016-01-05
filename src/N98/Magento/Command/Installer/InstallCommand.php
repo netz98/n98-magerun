@@ -113,6 +113,14 @@ HELP;
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return Exec::allowed();
+    }
+
+    /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @throws RuntimeException
@@ -204,7 +212,7 @@ HELP;
 
             if ($input->getOption('magentoVersion')) {
                 $type = $input->getOption('magentoVersion');
-                if ($type !== (string)(int)$type) {
+                if ($type !== (string) (int) $type) {
                     $type = $this->getPackageNumberByName($type);
                 }
             } elseif ($input->getOption('magentoVersionByName')) {
@@ -240,7 +248,7 @@ HELP;
     private function getPackageNumberByName($name)
     {
         // directly filter integer strings
-        if ($name === (string)(int)$name) {
+        if ($name === (string) (int) $name) {
             return (int) $name;
         }
 

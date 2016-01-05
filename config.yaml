@@ -13,6 +13,7 @@ helpers:
   dialog: Composer\Command\Helper\DialogHelper
   parameter: N98\Util\Console\Helper\ParameterHelper
   table: N98\Util\Console\Helper\TableHelper
+  io: N98\Util\Console\Helper\IoHelper
 
 script:
   folders:
@@ -38,6 +39,7 @@ event:
   subscriber:
     - N98\Magento\EventSubscriber
     - N98\Magento\Command\ComposerWrapper\EventSubscriber
+    - N98\Util\Console\Helper\IoHelper
 
 commands:
   customCommands:

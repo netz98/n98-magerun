@@ -34,6 +34,14 @@ HELP;
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return Exec::allowed();
+    }
+
+    /**
      * Optimize a dump by converting single INSERTs per line to INSERTs with multiple lines
      * @param $fileName
      * @return string temporary filename
@@ -105,6 +113,7 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectDbSettings($output);
+
         $this->writeSection($output, 'Import MySQL Database');
         $dbHelper = $this->getHelper('database');
 

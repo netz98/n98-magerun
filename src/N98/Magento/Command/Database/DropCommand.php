@@ -34,6 +34,7 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectDbSettings($output);
+
         $dialog = $this->getHelperSet()->get('dialog');
         $dbHelper = $this->getHelper('database');
 

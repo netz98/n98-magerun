@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # only install magento if MAGENTO_VERSION has been set
 
 if [ ! -z ${MAGENTO_VERSION+x} ]; then

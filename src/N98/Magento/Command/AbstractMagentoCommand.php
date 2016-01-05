@@ -8,7 +8,6 @@ use N98\Util\OperatingSystem;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Factory as ComposerFactory;
