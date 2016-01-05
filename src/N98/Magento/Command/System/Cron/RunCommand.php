@@ -112,8 +112,11 @@ HELP;
      */
     protected function askJobCode(OutputInterface $output, array $jobs)
     {
+        $index = 0;
+        $keyMap = array_keys($jobs);
+
         foreach ($jobs as $key => $job) {
-            $question[] = '<comment>[' . ($key + 1) . ']</comment> ' . $job['Job'] . PHP_EOL;
+            $question[] = '<comment>[' . ($index++) . ']</comment> ' . $job['Job'] . PHP_EOL;
         }
         $question[] = '<question>Please select job: </question>' . PHP_EOL;
 
@@ -122,11 +125,12 @@ HELP;
         $jobCode = $dialogHelper->askAndValidate(
             $output,
             $question,
-            function($typeInput) use ($jobs) {
-                if (!isset($jobs[$typeInput - 1])) {
+            function($typeInput) use ($keyMap, $jobs) {
+                $key = $keyMap[$typeInput];
+                if (!isset($jobs[$key])) {
                     throw new InvalidArgumentException('Invalid job');
                 }
-                return $jobs[$typeInput - 1]['Job'];
+                return $jobs[$key]['Job'];
             }
         );
 
