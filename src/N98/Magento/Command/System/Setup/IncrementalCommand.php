@@ -168,16 +168,16 @@ class IncrementalCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param ReflectionMethod $method
-     * @param Object            $object
-     * @param array             $args
+     * @param string $method
+     * @param Object $object
+     * @param array  $args
      *
      * @return mixed
      */
-    protected function _callProtectedMethodFromObject(ReflectionMethod $method, $object, $args = array())
+    protected function _callProtectedMethodFromObject($method, $object, $args = array())
     {
         $r = new ReflectionClass($object);
-        $m = $r->getMethod('_getAvailableDbFiles');
+        $m = $r->getMethod($method);
         $m->setAccessible(true);
         return $m->invokeArgs($object, $args);
     }
