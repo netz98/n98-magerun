@@ -114,6 +114,7 @@ HELP;
     {
         $index = 0;
         $keyMap = array_keys($jobs);
+        $question = array();
 
         foreach ($jobs as $key => $job) {
             $question[] = '<comment>[' . ($index++) . ']</comment> ' . $job['Job'] . PHP_EOL;
