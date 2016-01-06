@@ -739,11 +739,10 @@ HELP;
 
         $output->writeln('<info>Start installation process.</info>');
 
-        if (OperatingSystem::isWindows()) {
-            $installCommand = 'php -f ' . escapeshellarg($this->getInstallScriptPath()) . ' -- ' . $installArgs;
-        } else {
-            $installCommand = '/usr/bin/env php -f ' . escapeshellarg($this->getInstallScriptPath()) . ' -- ' . $installArgs;
-        }
+        $phpExec = $this->getPhpExecutable();
+        $installCommand = $phpExec . ' -f ' . escapeshellarg($this->getInstallScriptPath()) . ' -- ' . $installArgs;
+
+
         $output->writeln('<comment>' . $installCommand . '</comment>');
         Exec::run($installCommand, $installationOutput, $returnStatus);
         if ($returnStatus !== self::EXEC_STATUS_OK) {
@@ -848,6 +847,26 @@ HELP;
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
     }
+
+
+    /**
+     * Retrieve path to php executable
+     *
+     * @return string
+     */
+    protected function getPhpExecutable()
+    {
+        $php = getenv('_');
+        if(!$php) {
+            if (OperatingSystem::isWindows()) {
+                $php = 'php';
+            } else {
+                $php = '/usr/bin/env php';
+            }
+        }
+        return $php;
+    }
+
 
     /**
      * @return array
