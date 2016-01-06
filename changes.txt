@@ -6,6 +6,8 @@ RECENT CHANGES
 1.97.11
 =======
 
+* #746 Untry composer required version (by Tom Klingenberg)
+
 =======
 1.97.10
 =======
