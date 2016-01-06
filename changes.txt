@@ -6,6 +6,7 @@ RECENT CHANGES
 1.97.11
 =======
 
+* #747 Fix uncaught TypeError in sys:setup:incremental (by Tom Richards)
 * #746 Untry composer required version (by Tom Klingenberg)
 
 =======
