@@ -6,6 +6,8 @@ RECENT CHANGES
 1.97.10
 =======
 
+* #746 Try composer required version (reported by Vinai Kopp)
+
 ======
 1.97.9
 ======
