@@ -35,12 +35,13 @@ class ConflictsCommandTest extends TestCase
          * Junit Log without any output
          */
         $commandTester = new CommandTester($command);
-        $commandTester->execute(
+        $result = $commandTester->execute(
             array(
                 'command'     => $command->getName(),
                 '--log-junit' => '_output.xml',
             )
         );
+        $this->assertEquals(0, $result);
         $this->assertEquals('', $commandTester->getDisplay());
         $this->assertFileExists('_output.xml');
         @unlink('_output.xml');
@@ -61,7 +62,8 @@ class ConflictsCommandTest extends TestCase
         );
         $command = $this->getCommandWithMockLoadRewrites($rewrites);
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $result = $commandTester->execute(array('command' => $command->getName()));
+        $this->assertNotEquals(0, $result);
         $this->assertContains('1 conflict was found', $commandTester->getDisplay());
     }
 
@@ -82,7 +84,8 @@ class ConflictsCommandTest extends TestCase
         );
         $command = $this->getCommandWithMockLoadRewrites($rewrites);
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $result = $commandTester->execute(array('command' => $command->getName()));
+        $this->assertEquals(0, $result);
         $this->assertContains('No rewrite conflicts were found', $commandTester->getDisplay());
     }
 
