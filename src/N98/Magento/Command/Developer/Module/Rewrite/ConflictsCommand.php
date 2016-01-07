@@ -73,6 +73,7 @@ HELP;
                             $conflictCounter == 1 ? 'conflict was' : 'conflicts were'
                         );
                         $output->writeln('<error>' . $message . '</error>');
+                        return 1;
                     } else {
                         $output->writeln('<info>No rewrite conflicts were found.</info>');
                     }
