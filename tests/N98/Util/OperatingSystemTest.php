@@ -79,4 +79,13 @@ class OperatingSystemTest extends \PHPUnit_Framework_TestCase
         $expected = getcwd();
         $this->assertEquals($expected, OperatingSystem::getCwd());
     }
+
+    /**
+     * @test
+     * @requires PHP 5.4
+     */
+    public function phpBinary()
+    {
+        $this->assertEquals(PHP_BINARY, OperatingSystem::getPhpBinary());
+    }
 }
