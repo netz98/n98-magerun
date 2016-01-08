@@ -42,7 +42,7 @@ class OperatingSystemTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @requires OS Win
+     * @requires OS ^Win
      */
     public function testIsWindows() {
         $this->assertTrue(OperatingSystem::isWindows());
