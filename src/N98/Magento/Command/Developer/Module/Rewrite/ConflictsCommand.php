@@ -144,20 +144,22 @@ HELP;
      * If yes we have no conflict. The top class can extend every core class.
      * So we cannot check this.
      *
-     * @var array $classes
+     * @param  array $classes
      * @return bool
      */
-    protected function _isInheritanceConflict($classes)
+    protected function _isInheritanceConflict(array $classes)
     {
         $classes = array_reverse($classes);
-        for ($i = 0; $i < count($classes) - 1; $i++) {
+        $count   = count($classes) - 1;
+        for ($i = 0; $i < $count; $i++) {
             try {
                 if (class_exists($classes[$i])
                     && class_exists($classes[$i + 1])
                 ) {
-                    if (!is_a($classes[$i], $classes[$i + 1], true)) {
-                        return true;
-                    }
+                    return !$this->_isClassInstanceOf(
+                        $classes[$i],
+                        $classes[$i + 1]
+                    );
                 }
             } catch (Exception $e) {
                 return true;
@@ -165,5 +167,21 @@ HELP;
         }
 
         return false;
+    }
+
+    /**
+     * Check if a classA is an instance of classB
+     *
+     * @param  object|string  $classA
+     * @param  object|string  $classB
+     * @return boolean
+     */
+    private function _isClassInstanceOf($classA, $classB)
+    {
+        if (is_string($classA)) {
+            $classA = new $classA;
+        }
+        $reflectionB = new \ReflectionClass($classB);
+        return $reflectionB->isInstance($classA);
     }
 }
