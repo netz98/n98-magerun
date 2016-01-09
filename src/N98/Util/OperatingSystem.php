@@ -121,7 +121,7 @@ class OperatingSystem
      */
     public static function getPhpBinary()
     {
-        // PHP_BINARY (> php 5.4)
+        // PHP_BINARY (>= php 5.4)
         if (defined('PHP_BINARY')) {
             return PHP_BINARY;
         }
