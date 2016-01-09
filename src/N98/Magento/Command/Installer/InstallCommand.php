@@ -739,11 +739,10 @@ HELP;
 
         $output->writeln('<info>Start installation process.</info>');
 
-        if (OperatingSystem::isWindows()) {
-            $installCommand = 'php -f ' . escapeshellarg($this->getInstallScriptPath()) . ' -- ' . $installArgs;
-        } else {
-            $installCommand = '/usr/bin/env php -f ' . escapeshellarg($this->getInstallScriptPath()) . ' -- ' . $installArgs;
-        }
+        $phpExec = OperatingSystem::getPhpBinary();
+        $installCommand = $phpExec . ' -f ' . escapeshellarg($this->getInstallScriptPath()) . ' -- ' . $installArgs;
+
+
         $output->writeln('<comment>' . $installCommand . '</comment>');
         Exec::run($installCommand, $installationOutput, $returnStatus);
         if ($returnStatus !== self::EXEC_STATUS_OK) {
