@@ -1,18 +1,18 @@
 #!/usr/bin/env php
 <?php
 /*
- * show information about latest phar files on http://files.magerun.net/
+ * show information about latest phar files on https://files.magerun.net/
  */
 
 $urls = <<<JSON_URLS
 [
   {
     "channel": "unstable",
-    "url":     "http://files.magerun.net/n98-magerun-dev.phar"
+    "url":     "https://files.magerun.net/n98-magerun-dev.phar"
   },
   {
     "channel": "stable",
-    "url":     "http://files.magerun.net/n98-magerun-latest.phar"
+    "url":     "https://files.magerun.net/n98-magerun.phar"
   }
 ]
 JSON_URLS;
