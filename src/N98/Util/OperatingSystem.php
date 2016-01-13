@@ -113,4 +113,21 @@ class OperatingSystem
     {
         return getcwd();
     }
+
+    /**
+     * Retrieve path to php binary
+     *
+     * @return string
+     */
+    public static function getPhpBinary()
+    {
+        // PHP_BINARY (>= php 5.4)
+        if (defined('PHP_BINARY')) {
+            return PHP_BINARY;
+        }
+        if (self::isWindows()) {
+            return 'php';
+        }
+        return '/usr/bin/env php';
+    }
 }
