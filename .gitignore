@@ -7,6 +7,9 @@ phpunit.xml
 # Build files
 composer.phar
 
+# Magerun stopfile
+.n98-magerun
+
 # Miscellaneous (Kraut und Rueben)
 .DS_Store
 .idea
