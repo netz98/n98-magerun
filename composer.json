@@ -18,7 +18,7 @@
         "symfony/validator": "~2.3",
         "n98/junit-xml": "~1.0",
         "fzaninotto/faker": "~1.4",
-        "composer/composer": "dev-master#9f6fdfd703f433bd0777fd89fb4684908a6c4f06",
+        "composer/composer": "1.0.*@dev",
         "twig/twig": "~1.0"
     },
     "require-dev": {

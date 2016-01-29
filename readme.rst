@@ -48,7 +48,7 @@ Download the latest stable N98-Magerun phar-file from the file-server_:
 
 .. code-block:: sh
 
-   wget http://files.magerun.net/n98-magerun-latest.phar -O n98-magerun.phar
+   wget https://files.magerun.net/n98-magerun.phar
 
 Verify the download by comparing the MD5 checksum with the one on the website:
 
@@ -102,7 +102,7 @@ be useful if you exchange scripts that are making use of magerun with other user
 `n98-magerun.phar`, Some common aliases amongst the user-base are `magerun` or just `mr` even.
 
 
-.. _file-server: http://files.magerun.net/
+.. _file-server: https://files.magerun.net/
 
 Install with Composer
 """""""""""""""""""""

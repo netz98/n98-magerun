@@ -7,25 +7,273 @@
 
 _n98-magerun()
 {
-    local cur opts cmd commandlist
+    local cur prev script coms opts com
     COMPREPLY=()
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    cmd="${COMP_WORDS[0]}"
+    _get_comp_words_by_ref -n : cur prev words
+    coms="help install list open-browser script shell uninstall admin:notifications admin:user:change-password admin:user:change-status admin:user:create admin:user:delete admin:user:list cache:clean cache:dir:flush cache:disable cache:enable cache:flush cache:list cache:report cache:view cms:block:toggle composer:diagnose composer:init composer:install composer:require composer:search composer:update composer:validate config:delete config:dump config:get config:search config:set customer:change-password customer:create customer:create:dummy customer:delete customer:info customer:list db:console db:create db:drop db:dump db:import db:info db:maintain:check-tables db:query db:status db:variables design:demo-notice dev:class:lookup dev:code:model:method dev:console dev:ide:phpstorm:meta dev:log dev:log:db dev:log:size dev:merge-css dev:merge-js dev:module:create dev:module:dependencies:from dev:module:dependencies:on dev:module:disable dev:module:enable dev:module:list dev:module:observer:list dev:module:rewrite:conflicts dev:module:rewrite:list dev:module:update dev:profiler dev:report:count dev:setup:script:attribute dev:symlinks dev:template-hints dev:template-hints-blocks dev:theme:duplicates dev:theme:info dev:theme:list dev:translate:admin dev:translate:export dev:translate:set dev:translate:shop eav:attribute:list eav:attribute:remove eav:attribute:view extension:download extension:install extension:list extension:upgrade extension:validate index:list index:reindex index:reindex:all local-config:generate media:dump script:repo:list script:repo:run sys:check sys:cron:history sys:cron:list sys:cron:run sys:info sys:maintenance sys:setup:change-version sys:setup:compare-versions sys:setup:incremental sys:setup:remove sys:setup:run sys:store:config:base-url:list sys:store:list sys:url:list sys:website:list"
+    opts="--help --quiet --verbose --version --ansi --no-ansi --no-interaction --root-dir --skip-config --skip-root-check"
 
-    # gets the word-to-complete without (-n) considering ":" as word breaks
-    _get_comp_words_by_ref -n : cur
+    for word in ${words[@]:1}; do
+        if [[ $word != -* ]]; then
+            com=$word
+            break
+        fi
+    done
 
-    # workaround for php bug
-    commandlist=$(echo "" | "$cmd" --raw --no-ansi list)
+    if [[ ${cur} == --* ]] ; then
+        case "$com" in
+            help)
+            opts="${opts} --xml --format --raw"
+            ;;
+            install)
+            opts="${opts} --magentoVersion --magentoVersionByName --installationFolder --dbHost --dbUser --dbPass --dbName --dbPort --dbPrefix --installSampleData --useDefaultConfigParams --baseUrl --replaceHtaccessFile --noDownload --only-download --forceUseDb"
+            ;;
+            list)
+            opts="${opts} --xml --raw --format"
+            ;;
+            script)
+            opts="${opts} --define --stop-on-error"
+            ;;
+            uninstall)
+            opts="${opts} --force --installationFolder"
+            ;;
+            admin:notifications)
+            opts="${opts} --on --off"
+            ;;
+            admin:user:change-status)
+            opts="${opts} --activate --deactivate"
+            ;;
+            admin:user:delete)
+            opts="${opts} --force"
+            ;;
+            admin:user:list)
+            opts="${opts} --format"
+            ;;
+            cache:list)
+            opts="${opts} --format"
+            ;;
+            cache:report)
+            opts="${opts} --tags --mtime --filter-id --filter-tag --fpc --format"
+            ;;
+            cache:view)
+            opts="${opts} --unserialize --fpc"
+            ;;
+            composer:init)
+            opts="${opts} --name --description --author --type --homepage --require --require-dev --stability --license"
+            ;;
+            composer:install)
+            opts="${opts} --prefer-source --prefer-dist --dry-run --dev --no-dev --no-plugins --no-custom-installers --no-autoloader --no-scripts --no-progress --optimize-autoloader --ignore-platform-reqs"
+            ;;
+            composer:require)
+            opts="${opts} --dev --prefer-source --prefer-dist --no-progress --no-update --update-no-dev --update-with-dependencies --ignore-platform-reqs --sort-packages"
+            ;;
+            composer:search)
+            opts="${opts} --only-name"
+            ;;
+            composer:update)
+            opts="${opts} --prefer-source --prefer-dist --dry-run --dev --no-dev --lock --no-plugins --no-custom-installers --no-autoloader --no-scripts --no-progress --with-dependencies --optimize-autoloader --ignore-platform-reqs --prefer-stable --prefer-lowest"
+            ;;
+            composer:validate)
+            opts="${opts} --no-check-all --no-check-lock --no-check-publish"
+            ;;
+            config:delete)
+            opts="${opts} --scope --scope-id --all"
+            ;;
+            config:get)
+            opts="${opts} --scope --scope-id --decrypt --update-script --magerun-script --format"
+            ;;
+            config:set)
+            opts="${opts} --scope --scope-id --encrypt"
+            ;;
+            customer:create)
+            opts="${opts} --format"
+            ;;
+            customer:create:dummy)
+            opts="${opts} --with-addresses --format"
+            ;;
+            customer:delete)
+            opts="${opts} --all --force --range"
+            ;;
+            customer:list)
+            opts="${opts} --format"
+            ;;
+            db:console)
+            opts="${opts} --use-mycli-instead-of-mysql"
+            ;;
+            db:drop)
+            opts="${opts} --tables --force"
+            ;;
+            db:dump)
+            opts="${opts} --add-time --compression --xml --hex-blob --only-command --print-only-filename --no-single-transaction --human-readable --add-routines --stdout --strip --exclude --force"
+            ;;
+            db:import)
+            opts="${opts} --compression --only-command --only-if-empty --optimize --drop --drop-tables"
+            ;;
+            db:info)
+            opts="${opts} --format"
+            ;;
+            db:maintain:check-tables)
+            opts="${opts} --type --repair --table --format"
+            ;;
+            db:query)
+            opts="${opts} --only-command"
+            ;;
+            db:status)
+            opts="${opts} --format --rounding --no-description"
+            ;;
+            db:variables)
+            opts="${opts} --format --rounding --no-description"
+            ;;
+            design:demo-notice)
+            opts="${opts} --on --off --global"
+            ;;
+            dev:ide:phpstorm:meta)
+            opts="${opts} --stdout"
+            ;;
+            dev:log)
+            opts="${opts} --on --off --global"
+            ;;
+            dev:log:db)
+            opts="${opts} --on --off"
+            ;;
+            dev:log:size)
+            opts="${opts} --human"
+            ;;
+            dev:merge-css)
+            opts="${opts} --on --off --global"
+            ;;
+            dev:merge-js)
+            opts="${opts} --on --off --global"
+            ;;
+            dev:module:create)
+            opts="${opts} --add-blocks --add-helpers --add-models --add-setup --add-all --modman --add-readme --add-composer --author-name --author-email --description"
+            ;;
+            dev:module:dependencies:from)
+            opts="${opts} --all --format"
+            ;;
+            dev:module:dependencies:on)
+            opts="${opts} --all --format"
+            ;;
+            dev:module:disable)
+            opts="${opts} --codepool"
+            ;;
+            dev:module:enable)
+            opts="${opts} --codepool"
+            ;;
+            dev:module:list)
+            opts="${opts} --codepool --status --vendor --format"
+            ;;
+            dev:module:observer:list)
+            opts="${opts} --format --sort"
+            ;;
+            dev:module:rewrite:conflicts)
+            opts="${opts} --log-junit"
+            ;;
+            dev:module:rewrite:list)
+            opts="${opts} --format"
+            ;;
+            dev:module:update)
+            opts="${opts} --set-version --add-blocks --add-helpers --add-models --add-all --add-resource-model --add-routers --add-events --add-layout-updates --add-translate --add-default"
+            ;;
+            dev:profiler)
+            opts="${opts} --on --off --global"
+            ;;
+            dev:symlinks)
+            opts="${opts} --on --off --global"
+            ;;
+            dev:template-hints)
+            opts="${opts} --on --off"
+            ;;
+            dev:template-hints-blocks)
+            opts="${opts} --on --off"
+            ;;
+            dev:theme:duplicates)
+            opts="${opts} --log-junit"
+            ;;
+            dev:theme:list)
+            opts="${opts} --format"
+            ;;
+            dev:translate:admin)
+            opts="${opts} --on --off"
+            ;;
+            dev:translate:export)
+            opts="${opts} --store"
+            ;;
+            dev:translate:shop)
+            opts="${opts} --on --off"
+            ;;
+            eav:attribute:list)
+            opts="${opts} --filter-type --add-source --add-backend --format"
+            ;;
+            eav:attribute:view)
+            opts="${opts} --format"
+            ;;
+            extension:list)
+            opts="${opts} --format"
+            ;;
+            extension:validate)
+            opts="${opts} --skip-file --skip-hash --full-report --include-default"
+            ;;
+            index:list)
+            opts="${opts} --format"
+            ;;
+            media:dump)
+            opts="${opts} --strip"
+            ;;
+            script:repo:list)
+            opts="${opts} --format"
+            ;;
+            script:repo:run)
+            opts="${opts} --define --stop-on-error"
+            ;;
+            sys:check)
+            opts="${opts} --format"
+            ;;
+            sys:cron:history)
+            opts="${opts} --timezone --format"
+            ;;
+            sys:cron:list)
+            opts="${opts} --format"
+            ;;
+            sys:info)
+            opts="${opts} --format"
+            ;;
+            sys:maintenance)
+            opts="${opts} --on --off"
+            ;;
+            sys:setup:compare-versions)
+            opts="${opts} --ignore-data --log-junit --format"
+            ;;
+            sys:setup:incremental)
+            opts="${opts} --stop-on-error"
+            ;;
+            sys:store:config:base-url:list)
+            opts="${opts} --format"
+            ;;
+            sys:store:list)
+            opts="${opts} --format"
+            ;;
+            sys:url:list)
+            opts="${opts} --add-categories --add-products --add-cmspages --add-all"
+            ;;
+            sys:website:list)
+            opts="${opts} --format"
+            ;;
 
-    # regex to remove command help, wrtie everything on one line with space separated
-    opts=$(echo "$commandlist" | sed "s/[[:space:]].*//g" | paste -sd " ")
+        esac
 
-    COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+        COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
+        __ltrim_colon_completions "$cur"
 
-    # removes colon containing prefix from COMPREPLY items
-    __ltrim_colon_completions "$cur"
-    return 0
+        return 0;
+    fi
+
+    if [[ $cur == $com ]]; then
+        COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
+        __ltrim_colon_completions "$cur"
+
+        return 0
+    fi
 }
 
-complete -o dirnames -F _n98-magerun n98-magerun.phar n98-magerun magerun
+complete -o default -F _n98-magerun n98-magerun.phar n98-magerun magerun

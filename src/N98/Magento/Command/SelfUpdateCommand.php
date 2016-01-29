@@ -73,7 +73,7 @@ EOT
             $remoteFilename = 'https://files.magerun.net/n98-magerun-dev.phar';
         } else {
             $versionTxtUrl = 'https://raw.githubusercontent.com/netz98/n98-magerun/master/version.txt';
-            $remoteFilename = 'https://files.magerun.net/n98-magerun-latest.phar';
+            $remoteFilename = 'https://files.magerun.net/n98-magerun.phar';
         }
 
         $latest = trim($rfs->getContents('raw.githubusercontent.com', $versionTxtUrl, false));
