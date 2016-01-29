@@ -6,6 +6,7 @@ RECENT CHANGES
 1.97.11
 =======
 
+* #758 Add Magento 1.9.2.3 (by Tom Klingenberg)
 * improved bash autocompletion file (by Tom Klingenberg)
 * #752 Fix install cmd fails using custom PHP binary (by Jacob Siefer)
 * #748 Non-zero exit status with module rewrite conflict (by Steve Robbins)
