@@ -33,7 +33,7 @@ class UnlockCommand extends AbstractAdminUserCommand
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-*@return void
+     *@return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -49,12 +49,15 @@ class UnlockCommand extends AbstractAdminUserCommand
                 $output->writeln('<info><comment>' . $username . '</comment> unlocked</info>');
                 return;
             }
-            \Mage::getResourceModel('enterprise_pci/admin_user')->unlock(
-                \Mage::getModel('admin/user')
-                    ->getCollection()
-                    ->getAllIds()
-            );
-            $output->writeln('<info><comment>All admins</comment> unlocked</info>');
+            $dialog = $this->getHelperSet()->get('dialog');
+            $shouldUnlockAll = $dialog->askConfirmation($output, '<question>Really unlock all users?</question> <comment>[n]</comment>: ', false);
+            if ($shouldUnlockAll) {
+                $ids = \Mage::getModel('admin/user')->getCollection()->getAllIds();
+                if (count($ids) > 0) {
+                    \Mage::getResourceModel('enterprise_pci/admin_user')->unlock($ids);
+                }
+                $output->writeln('<info><comment>All admins</comment> unlocked</info>');
+            }
         }
     }
 }
