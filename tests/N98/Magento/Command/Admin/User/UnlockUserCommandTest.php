@@ -11,6 +11,15 @@ use Symfony\Component\Console\Tester\CommandTester;
 class UnlockUserCommandTest extends TestCase
 {
 
+    protected function _getCommand(){
+        $command = new UnlockCommand();
+        $command->setApplication($this->getApplication());
+        if (!$command->isEnabled()){
+            $this->markTestSkipped('UnlockCommand is not enabled.');
+
+        }
+        return $command;
+    }
 
 
     public function testUnlockAllUsersPromptNo()
@@ -22,12 +31,7 @@ class UnlockUserCommandTest extends TestCase
             ->will($this->returnValue("n"));
 
         $application = $this->getApplication();
-        $command = new UnlockCommand();
-        if (!$command->isEnabled()){
-            $this->markTestSkipped('UnlockCommand is not enabled.');
-
-        }
-        $application->add($command);
+        $application->add($this->_getCommand());
         $command = $this->getApplication()->find('admin:user:unlock');
         $command->getHelperSet()->set($dialog, 'dialog');
 
@@ -46,12 +50,7 @@ class UnlockUserCommandTest extends TestCase
             ->will($this->returnValue("y"));
 
         $application = $this->getApplication();
-        $command = new UnlockCommand();
-        if (!$command->isEnabled()){
-            $this->markTestSkipped('UnlockCommand is not enabled.');
-
-        }
-        $application->add($command);
+        $application->add($this->_getCommand());
         $command = $this->getApplication()->find('admin:user:unlock');
         $command->getHelperSet()->set($dialog, 'dialog');
 
