@@ -11,7 +11,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 class UnlockUserCommandTest extends TestCase
 {
 
-    protected function _getCommand(){
+    private function getCommand(){
         $command = new UnlockCommand();
         $command->setApplication($this->getApplication());
         if (!$command->isEnabled()){
@@ -31,7 +31,7 @@ class UnlockUserCommandTest extends TestCase
             ->will($this->returnValue("n"));
 
         $application = $this->getApplication();
-        $application->add($this->_getCommand());
+        $application->add($this->getCommand());
         $command = $this->getApplication()->find('admin:user:unlock');
         $command->getHelperSet()->set($dialog, 'dialog');
 
@@ -50,7 +50,7 @@ class UnlockUserCommandTest extends TestCase
             ->will($this->returnValue("y"));
 
         $application = $this->getApplication();
-        $application->add($this->_getCommand());
+        $application->add($this->getCommand());
         $command = $this->getApplication()->find('admin:user:unlock');
         $command->getHelperSet()->set($dialog, 'dialog');
 
