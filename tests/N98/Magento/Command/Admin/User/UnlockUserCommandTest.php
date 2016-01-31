@@ -22,7 +22,12 @@ class UnlockUserCommandTest extends TestCase
             ->will($this->returnValue("n"));
 
         $application = $this->getApplication();
-        $application->add(new UnlockCommand());
+        $command = new UnlockCommand();
+        if (!$command->isEnabled()){
+            $this->markTestSkipped('UnlockCommand is not enabled.');
+
+        }
+        $application->add($command);
         $command = $this->getApplication()->find('admin:user:unlock');
         $command->getHelperSet()->set($dialog, 'dialog');
 
@@ -41,7 +46,12 @@ class UnlockUserCommandTest extends TestCase
             ->will($this->returnValue("y"));
 
         $application = $this->getApplication();
-        $application->add(new UnlockCommand());
+        $command = new UnlockCommand();
+        if (!$command->isEnabled()){
+            $this->markTestSkipped('UnlockCommand is not enabled.');
+
+        }
+        $application->add($command);
         $command = $this->getApplication()->find('admin:user:unlock');
         $command->getHelperSet()->set($dialog, 'dialog');
 
