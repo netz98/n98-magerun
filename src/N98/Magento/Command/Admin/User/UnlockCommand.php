@@ -22,6 +22,7 @@ class UnlockCommand extends AbstractAdminUserCommand
                 \Symfony\Component\Console\Input\InputArgument::OPTIONAL,
                 'Admin Username to Unlock'
             )
+            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Dry run mode')
             ->setDescription('Release lock on admin user for one or all users');
     }
 
@@ -43,6 +44,10 @@ class UnlockCommand extends AbstractAdminUserCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
+            if ($dryrun = $input->getOption('dry-run')) {
+                $output->writeln('<info>Dry run mode enabled.</info>');
+            }
+
             // Unlock a single admin account
             if ($username = $input->getArgument('username')) {
                 $user = \Mage::getModel('admin/user')->loadByUsername($username);
@@ -57,8 +62,31 @@ class UnlockCommand extends AbstractAdminUserCommand
 
             // Unlock all admin accounts
             $userIds = \Mage::getModel('admin/user')->getCollection()->getAllIds();
-            \Mage::getResourceModel('enterprise_pci/admin_user')->unlock($userIds);
-            $output->writeln(sprintf('<info><comment>All %d admins</comment> unlocked</info>', count($userIds)));
+
+            if (empty($userIds)) {
+                $output->writeln('<error>No admin users found.</error>');
+                return;
+            }
+
+            /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
+            $dialog = $this->getHelperSet()->get('dialog');
+            $shouldUnlockAll = $dialog->askConfirmation(
+                $output,
+                sprintf(
+                    '<question>Really unlock all %d admin users?</question> <comment>[n]</comment>: ',
+                    count($userIds)
+                ),
+                false
+            );
+
+            if ($shouldUnlockAll) {
+                if (!$dryrun) {
+                    \Mage::getResourceModel('enterprise_pci/admin_user')->unlock($userIds);
+                }
+                $output->writeln(
+                    sprintf('<info><comment>All %d admin users</comment> unlocked</info>', count($userIds))
+                );
+            }
         }
     }
 }

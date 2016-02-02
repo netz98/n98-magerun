@@ -55,13 +55,13 @@ HELP
 
         /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
         $dialog = $this->getHelperSet()->get('dialog');
-        $confirm = $dialog->ask(
+        $confirm = $dialog->askConfirmation(
             $output,
-            '<info><comment>Are you sure? This will lock all admin accounts! Type "yes" to continue...</comment></info>'
-            . PHP_EOL
+            sprintf('<question>Really lock all %d admin users?</question> <comment>[n]</comment>: ', count($userIds)),
+            false
         );
 
-        if ('yes' !== $confirm) {
+        if (!$confirm) {
             return;
         }
 
