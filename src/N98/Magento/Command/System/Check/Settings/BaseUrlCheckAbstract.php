@@ -5,9 +5,8 @@
 
 namespace N98\Magento\Command\System\Check\Settings;
 
+use Mage_Core_Model_Store;
 use N98\Magento\Command\System\Check\Result;
-use N98\Magento\Command\System\Check\ResultCollection;
-use N98\Magento\Command\System\Check\StoreCheck;
 
 /**
  * Class BaseUrlCheckAbstract
@@ -18,16 +17,17 @@ abstract class BaseUrlCheckAbstract extends CheckAbstract
 {
     protected $class = 'abstract';
 
-    public function initConfigPaths() {
+    public function initConfigPaths()
+    {
         $this->registerStoreConfigPath('baseUrl', 'web/' . $this->class . '/base_url');
     }
 
     /**
      * @param Result $result
-     * @param \Mage_Core_Model_Store $store
+     * @param Mage_Core_Model_Store $store
      * @param string $baseUrl setting
      */
-    protected function checkSettings(Result $result, \Mage_Core_Model_Store $store, $baseUrl)
+    protected function checkSettings(Result $result, Mage_Core_Model_Store $store, $baseUrl)
     {
         $errorMessage = 'Wrong hostname configured. <info>Hostname must contain a dot</info>';
 
