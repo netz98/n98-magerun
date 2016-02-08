@@ -3,15 +3,15 @@
 namespace N98\Magento\Command\Database;
 
 use N98\Magento\Command\Database\Compressor\AbstractCompressor;
+use N98\Util\Console\Enabler;
 use N98\Util\Console\Helper\DatabaseHelper;
-use N98\Util\OperatingSystem;
+use N98\Util\Exec;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\Exec;
 
 class DumpCommand extends AbstractDatabaseCommand
 {
@@ -64,14 +64,6 @@ See it in action: http://youtu.be/ttjZHY6vThs
 HELP;
         $this->setHelp($help);
 
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return function_exists('exec') && !OperatingSystem::isWindows();
     }
 
     /**
@@ -164,6 +156,12 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // communicate early what is required for this command to run (is enabled)
+        $enabler = new Enabler($this);
+        $enabler->functionExists('exec');
+        $enabler->functionExists('passthru');
+        $enabler->operatingSystemIsNotWindows();
+
         $this->detectDbSettings($output);
 
         if (!$input->getOption('stdout') && !$input->getOption('only-command')
