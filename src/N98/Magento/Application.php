@@ -687,7 +687,7 @@ class Application extends BaseApplication
             $input = new ArgvInput();
         }
 
-        if ($output === null) {
+        if (null === $output) {
             $output = new NullOutput();
         }
 
