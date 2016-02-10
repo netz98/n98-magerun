@@ -650,7 +650,7 @@ class Application extends BaseApplication
             $this->init(array(), $input, $output);
         } catch (Exception $e) {
             $output = new ConsoleOutput();
-            $this->renderException($e, $output);
+            $this->renderException($e, $output->getErrorOutput());
         }
 
         $return = parent::run($input, $output);
