@@ -6,6 +6,8 @@ RECENT CHANGES
 1.97.12
 =======
 
+* #772 Undefined "io" helper
+* #768 Report init exceptions to stderr
 * #717 Check requirements in db:dump (by Tom Klingenberg)
 * #764 Sanitize module properties in dev:module:list (by Ben McManus)
 

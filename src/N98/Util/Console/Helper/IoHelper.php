@@ -25,6 +25,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class IoHelper implements HelperInterface, EventSubscriberInterface
 {
+    const HELPER_NAME = 'io';
+
     /**
      * @var HelperSet
      */
@@ -47,8 +49,13 @@ class IoHelper implements HelperInterface, EventSubscriberInterface
      */
     public function initializeEventIo(ConsoleCommandEvent $event)
     {
+        $set = $event->getCommand()->getHelperSet();
+        if (!$set->has(self::HELPER_NAME)) {
+            return;
+        }
+
         /** @var  $helper IoHelper */
-        $helper = $event->getCommand()->getHelperSet()->get($this->getName());
+        $helper = $set->get(self::HELPER_NAME);
         $helper->initializeIo($event->getInput(), $event->getOutput());
     }
 
@@ -107,7 +114,7 @@ class IoHelper implements HelperInterface, EventSubscriberInterface
      */
     public function getName()
     {
-        return 'io';
+        return self::HELPER_NAME;
     }
 
     /*
