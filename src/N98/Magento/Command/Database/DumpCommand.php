@@ -304,7 +304,7 @@ HELP;
      */
     protected function postDumpPipeCommands()
     {
-        return ' | sed -e ' . escapeshellarg('s/DEFINER[ ]*=[ ]*[^*]*\*/\*/');
+        return ' | LANG=C LC_CTYPE=C LC_ALL=C sed -e ' . escapeshellarg('s/DEFINER[ ]*=[ ]*[^*]*\*/\*/');
     }
 
     /**
