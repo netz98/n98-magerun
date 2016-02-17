@@ -227,9 +227,11 @@ HELP;
             $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $tableName . ' ';
         }
 
+        $mysqlClientToolConnectionString = $this->getHelper('database')->getMysqlClientToolConnectionString();
+
         if (count($stripTables) > 0) {
             // dump structure for strip-tables
-            $exec = 'mysqldump ' . $dumpOptions . '--no-data ' . $this->getHelper('database')->getMysqlClientToolConnectionString();
+            $exec = 'mysqldump ' . $dumpOptions . '--no-data ' . $mysqlClientToolConnectionString;
             $exec .= ' ' . implode(' ', $stripTables);
             $exec .= $this->postDumpPipeCommands();
             $exec = $compressor->getCompressingCommand($exec);
@@ -240,7 +242,7 @@ HELP;
         }
 
         // dump data for all other tables
-        $exec = 'mysqldump ' . $dumpOptions . $ignore . $this->getHelper('database')->getMysqlClientToolConnectionString();
+        $exec = 'mysqldump ' . $dumpOptions . $mysqlClientToolConnectionString . ' ' . $ignore;
         $exec .= $this->postDumpPipeCommands();
         $exec = $compressor->getCompressingCommand($exec);
         if (!$input->getOption('stdout')) {
