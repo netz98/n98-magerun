@@ -60,7 +60,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
                 'N98\Magento\Application',
                 array('getMagentoRootFolder')
             );
-            $loader = require __DIR__ . '/../../../../../vendor/autoload.php';
+            $loader = require PHPUNIT_COMPOSER_INSTALL;
             $this->application->setAutoloader($loader);
             $this->application->expects($this->any())->method('getMagentoRootFolder')->will($this->returnValue($root));
 
