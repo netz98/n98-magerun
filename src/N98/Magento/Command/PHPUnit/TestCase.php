@@ -64,12 +64,12 @@ class TestCase extends \PHPUnit_Framework_TestCase
             // Get the composer bootstrap
             if (defined('PHPUNIT_COMPOSER_INSTALL')) {
                 $loader = require PHPUNIT_COMPOSER_INSTALL;
-            } else if (file_exists(__DIR__ . '/../../../../../vendor/autoload.php')) {
-                // Check if testing root package without PHPUnit
-                $loader = require __DIR__ . '/../../../../../vendor/autoload.php';
             } else if (file_exists(__DIR__ . '/../../../../../../../autoload.php')) {
                 // Installed via composer, already in vendor
                 $loader = require __DIR__ . '/../../../../../../../autoload.php';
+            } else {
+                // Check if testing root package without PHPUnit
+                $loader = require __DIR__ . '/../../../../../vendor/autoload.php';
             }
 
             $this->application->setAutoloader($loader);
