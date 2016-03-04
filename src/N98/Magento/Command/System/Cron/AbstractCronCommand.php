@@ -32,7 +32,7 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
 
         foreach ($jobs as $name => $job) {
             /* @var $job Mage_Core_Model_Config_Element */
-            $table[$name] = array('Job'  => $name) + $this->getSchedule($job);
+            $table[$name] = array('Job'  => $name) + (array) $this->getSchedule($job);
         }
 
         ksort($table, SORT_STRING);
