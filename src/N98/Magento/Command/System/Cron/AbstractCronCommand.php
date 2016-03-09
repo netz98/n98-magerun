@@ -33,8 +33,8 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
         foreach ($jobs as $name => $job) {
             /* @var $job Mage_Core_Model_Config_Element */
             $schedule = $this->getSchedule($job);
-            if (false !== $schedule) {
-                $table[$name] = array('Job'  => $name) + (array) $schedule;
+            if (is_array($schedule)) {
+                $table[$name] = array('Job'  => $name) + $schedule;
             } else {
                 $table[$name] = array('Job'  => $name);
             }
