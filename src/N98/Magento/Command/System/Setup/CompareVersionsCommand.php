@@ -53,6 +53,8 @@ HELP;
                 unset($headers[array_search('Data', $headers)]);
             }
 
+            $hasStatusErrors = false;
+
             $errorCounter = 0;
             $table = array();
             foreach ($setups as $setupName => $setup) {
@@ -80,6 +82,11 @@ HELP;
                     $row['Data-Version'] = $dataVersion;
                 }
                 $row['Status'] = $ok ? 'OK' : 'Error';
+
+                if (!$ok) {
+                    $hasStatusErrors = true;
+                }
+
                 $table[] = $row;
             }
 
@@ -141,6 +148,13 @@ HELP;
                         $this->writeSection($output, 'No setup problems were found.', 'info');
                     }
                 }
+            }
+
+            if ($hasStatusErrors) {
+                //Return a non-zero status to indicate there is an error in the setup scripts.
+                return 1;
+            } else {
+                return 0;
             }
         }
     }
