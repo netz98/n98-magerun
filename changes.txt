@@ -6,8 +6,13 @@ RECENT CHANGES
 1.97.12
 =======
 
-* #772 Undefined "io" helper
-* #768 Report init exceptions to stderr
+* #789 Add --errors-only and exist status in sys:setup:compare-version (by Luke Rodgers)
+* #785 fix cron expression parsing (by Dariusz Maciejewski and Tom Klingenberg)
+* #782 Improve Phpunit integration for magerun extension developers (by Jeroen Boersma)
+* #778 Move ignored tables to the end of the command in db:dump (by Luke Rodgers)
+* #771 Fix sed iconv encoding error on Mac OSX in db:dump (by Luke Rodgers)
+* #772 Fix undefined "io" helper (by Tom Klingenberg)
+* #768 Report init exceptions to stderr (by Tom Klingenberg)
 * #717 Check requirements in db:dump (by Tom Klingenberg)
 * #764 Sanitize module properties in dev:module:list (by Ben McManus)
 
