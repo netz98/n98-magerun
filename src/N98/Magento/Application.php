@@ -35,7 +35,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.97.11';
+    const APP_VERSION = '1.97.12';
 
     /**
      * @var int
@@ -650,7 +650,7 @@ class Application extends BaseApplication
             $this->init(array(), $input, $output);
         } catch (Exception $e) {
             $output = new ConsoleOutput();
-            $this->renderException($e, $output);
+            $this->renderException($e, $output->getErrorOutput());
         }
 
         $return = parent::run($input, $output);
@@ -687,7 +687,7 @@ class Application extends BaseApplication
             $input = new ArgvInput();
         }
 
-        if ($output === null) {
+        if (null === $output) {
             $output = new NullOutput();
         }
 

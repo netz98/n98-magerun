@@ -579,7 +579,8 @@ class DatabaseHelper extends AbstractHelper
             return $output;
         }
 
-        if ($helper = $this->getHelperSet()->get('io')) {
+        if ($this->getHelperSet()->has('io')) {
+            $helper = $this->getHelperSet()->get('io');
             /** @var $helper IoHelper */
             $output = $helper->getOutput();
         }

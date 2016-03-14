@@ -64,10 +64,12 @@ class ListCommand extends AbstractMagentoCommand
         $modules = \Mage::app()->getConfig()->getNode('modules')->asArray();
         foreach ($modules as $moduleName => $moduleInfo) {
             $this->infos[] = array(
-                'codePool' => $moduleInfo['codePool'],
-                'Name' => $moduleName,
-                'Version' => isset($moduleInfo['version']) ? $moduleInfo['version'] : '',
-                'Status' => $this->formatActive($moduleInfo['active']),
+                'codePool' => $this->sanitizeModuleProperty($moduleInfo['codePool']),
+                'Name'     => $this->sanitizeModuleProperty($moduleName),
+                'Version'  => isset($moduleInfo['version'])
+                    ? $this->sanitizeModuleProperty($moduleInfo['version'])
+                    : '',
+                'Status'   => $this->formatActive($moduleInfo['active']),
             );
         }
     }
@@ -116,5 +118,15 @@ class ListCommand extends AbstractMagentoCommand
                 unset($this->infos[$k]);
             }
         }
+    }
+
+    /**
+     * @param string $input Module property to be sanitized
+     *
+     * @return string
+     */
+    private function sanitizeModuleProperty($input)
+    {
+        return trim($input);
     }
 }

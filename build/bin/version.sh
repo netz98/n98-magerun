@@ -1,6 +1,6 @@
 #!/bin/bash
 {
-# build version tasks in magerung project
+# build version tasks in magerun project
 #
 # Copyright (C) 2015 Tom Klingenberg <mot@fsfe.org>
 #
