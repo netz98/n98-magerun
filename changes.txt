@@ -6,6 +6,8 @@ RECENT CHANGES
 1.97.14
 =======
 
+* #791 Add .github pull request template
+
 =======
 1.97.13
 =======
