@@ -91,7 +91,7 @@ HELP;
             }
 
             if ($input->getOption('errors-only')) {
-                $table = array_filter($table, function($row){
+                $table = array_filter($table, function($row) {
                     return ($row['Status'] === 'Error');
                 });
             }

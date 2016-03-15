@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 =======
+1.97.13
+=======
+
+* #789 Update readme with compare-versions changes  (by Luke Rodgers)
+
+=======
 1.97.12
 =======
 

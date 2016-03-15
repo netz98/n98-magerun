@@ -945,9 +945,10 @@ Compares module version with saved setup version in `core_resource` table and di
 
 .. code-block:: sh
 
-   $ n98-magerun.phar sys:setup:compare-versions [--ignore-data] [--log-junit="..."] [--format[="..."]]
+   $ n98-magerun.phar sys:setup:compare-versions [--ignore-data] [--errors-only] [--log-junit="..."] [--format[="..."]]
 
 * If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
+* If status errors are found this will return an exit status of 1 rather than 0, making it perfect for hooking into deployment scripts.
 
 Change Setup Version
 """"""""""""""""""""
