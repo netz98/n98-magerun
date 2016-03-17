@@ -6,7 +6,8 @@ RECENT CHANGES
 1.97.14
 =======
 
-* #791 Add .github pull request template
+* #794 Fix crontab event observers / event area in sys:cron:run (by Tom Klingenberg)
+* #791 Add .github pull request template (by Tom Klingenberg)
 
 =======
 1.97.13

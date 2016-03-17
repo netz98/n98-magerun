@@ -73,6 +73,9 @@ HELP;
 
                 $output->write('<info>Run </info><comment>' . get_class($model) . '::' . $run[2] . '</comment> ');
 
+                \Mage::getConfig()->init()->loadEventObservers('crontab');
+                \Mage::app()->addEventArea('crontab');
+
                 try {
                     $schedule = \Mage::getModel('cron/schedule');
                     $schedule
