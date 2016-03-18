@@ -588,10 +588,6 @@ class Application extends BaseApplication
             $this->checkVarDir($output->getErrorOutput());
         }
 
-        if (OutputInterface::VERBOSITY_DEBUG <= $output->getVerbosity()) {
-            $output->writeln('DEBUG');
-        }
-
         return parent::doRun($input, $output);
     }
 
