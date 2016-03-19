@@ -7,6 +7,11 @@
 
 namespace N98\Magento\Command\Database\Compressor;
 
+/**
+ * Interface Compressor
+ *
+ * @package N98\Magento\Command\Database\Compressor
+ */
 interface Compressor
 {
     /**
