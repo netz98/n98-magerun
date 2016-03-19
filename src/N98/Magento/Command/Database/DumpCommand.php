@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\Database;
 
-use N98\Magento\Command\Database\Compressor\AbstractCompressor;
+use N98\Magento\Command\Database\Compressor\Compressor;
 use N98\Util\Console\Enabler;
 use N98\Util\Console\Helper\DatabaseHelper;
 use N98\Util\Exec;
@@ -313,11 +313,11 @@ HELP;
     /**
      * @param InputInterface     $input
      * @param OutputInterface    $output
-     * @param AbstractCompressor $compressor
+     * @param Compressor         $compressor
      *
      * @return string
      */
-    protected function getFileName(InputInterface $input, OutputInterface $output, AbstractCompressor $compressor)
+    protected function getFileName(InputInterface $input, OutputInterface $output, Compressor $compressor)
     {
         $namePrefix    = '';
         $nameSuffix    = '';
