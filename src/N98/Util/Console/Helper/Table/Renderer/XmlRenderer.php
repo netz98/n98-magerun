@@ -42,7 +42,7 @@ class XmlRenderer implements RendererInterface
         $this->appendRows($table, $rows);
 
         /** @var $output \Symfony\Component\Console\Output\StreamOutput */
-        $output->write($dom->saveXML(), false, $output::OUTPUT_RAW);
+        $output->write($dom->saveXML($dom, LIBXML_NOEMPTYTAG), false, $output::OUTPUT_RAW);
     }
 
     private function appendRows(DOMElement $parent, array $rows)
