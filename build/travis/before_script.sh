@@ -1,5 +1,7 @@
 # only install magento if MAGENTO_VERSION has been set
 
+grep -v 'remove uninstall test' phpunit.xml.dist > phpunit.xml
+
 if [ ! -z ${MAGENTO_VERSION+x} ]; then
 
     echo "installing magento ${MAGENTO_VERSION}"

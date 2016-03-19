@@ -18,9 +18,11 @@
             <directory>./tests</directory>
             <exclude>tests/N98/Magento/Command/Installer/UninstallCommandTest.php</exclude>
         </testsuite>
+        <!-- remove uninstall test
         <testsuite name="n98-magerun-magento-uninstall-tests">
           <file>./tests/N98/Magento/Command/Installer/UninstallCommandTest.php</file>
         </testsuite>
+        remove uninstall test -->
     </testsuites>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
