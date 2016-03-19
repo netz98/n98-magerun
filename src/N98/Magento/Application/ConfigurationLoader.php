@@ -1,8 +1,7 @@
 <?php
 
-namespace N98\Magento\Command;
+namespace N98\Magento\Application;
 
-use ErrorException;
 use N98\Util\BinaryString;
 use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -10,7 +9,6 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 use N98\Util\ArrayFunctions;
-use UnexpectedValueException;
 
 /**
  * Config consists of several parts which are merged.
@@ -138,14 +136,14 @@ class ConfigurationLoader
     }
 
     /**
-     * @throws ErrorException
+     * @throws \ErrorException
      *
      * @return array
      */
     public function toArray()
     {
         if ($this->_configArray == null) {
-            throw new ErrorException('Configuration not yet fully loaded');
+            throw new \ErrorException('Configuration not yet fully loaded');
         }
 
         return $this->_configArray;
@@ -159,13 +157,11 @@ class ConfigurationLoader
     protected function loadDistConfig($initConfig)
     {
         if ($this->_distConfig == null) {
-            $this->_distConfig = Yaml::parse(file_get_contents(__DIR__ . '/../../../../config.yaml'));
-
-            if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
-                $this->_output->writeln('<debug>Load dist config</debug>');
-            }
+            $this->_distConfig = Yaml::parse(__DIR__ . '/../../../../config.yaml');
         }
-
+        if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
+            $this->_output->writeln('<debug>Load dist config</debug>');
+        }
         $config = ArrayFunctions::mergeArrays($this->_distConfig, $initConfig);
 
         return $config;
@@ -191,7 +187,7 @@ class ConfigurationLoader
                 if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
                     $this->_output->writeln('<debug>Load system config <comment>' . $systemWideConfigFile . '</comment></debug>');
                 }
-                $this->_systemConfig = Yaml::parse(file_get_contents($systemWideConfigFile));
+                $this->_systemConfig = Yaml::parse($systemWideConfigFile);
             } else {
                 $this->_systemConfig = array();
             }
@@ -215,12 +211,12 @@ class ConfigurationLoader
             $this->_pluginConfig = array();
             $moduleBaseFolders = array();
             if (OperatingSystem::isWindows()) {
-                $config['plugin']['folders'][] = getenv('WINDIR') . '/n98-magerun/modules';
-                $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/n98-magerun/modules';
+                $config['plugin']['folders'][] = getenv('WINDIR') . '/n98-magerun2/modules';
+                $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/n98-magerun2/modules';
             } else {
-                $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/.n98-magerun/modules';
+                $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/.n98-magerun2/modules';
             }
-            $config['plugin']['folders'][] = $magentoRootFolder . '/lib/n98-magerun/modules';
+            $config['plugin']['folders'][] = $magentoRootFolder . '/lib/n98-magerun2/modules';
             foreach ($config['plugin']['folders'] as $folder) {
                 if (is_dir($folder)) {
                     $moduleBaseFolders[] = $folder;
@@ -230,20 +226,20 @@ class ConfigurationLoader
             /**
              * Allow modules to be placed vendor folder if not in phar mode
              */
-            if (!$this->_isPharMode && is_dir($this->getVendorDir())) {
+            if (!$this->_isPharMode) {
+                if (is_dir($this->getVendorDir())) {
+                    $finder = Finder::create();
+                    $finder
+                        ->files()
+                        ->depth(2)
+                        ->followLinks()
+                        ->ignoreUnreadableDirs(true)
+                        ->name($this->_customConfigFilename)
+                        ->in($this->getVendorDir());
 
-                $finder = Finder::create();
-                $finder
-                    ->files()
-                    ->depth(2)
-                    ->followLinks()
-                    ->ignoreUnreadableDirs(true)
-                    ->name($this->_customConfigFilename)
-                    ->in($this->getVendorDir());
-
-                foreach ($finder as $file) {
-                    /* @var $file SplFileInfo */
-                    $this->registerPluginConfigFile($magentoRootFolder, $file);
+                    foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                        $this->registerPluginConfigFile($magentoRootFolder, $file);
+                    }
                 }
             }
 
@@ -258,7 +254,7 @@ class ConfigurationLoader
                     ->name($this->_customConfigFilename)
                     ->in($moduleBaseFolders);
 
-                foreach ($finder as $file) { /* @var $file SplFileInfo */
+                foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
                     $this->registerPluginConfigFile($magentoRootFolder, $file);
                 }
             }
@@ -270,9 +266,9 @@ class ConfigurationLoader
     }
 
     /**
-     * @param string      $rawConfig
-     * @param string      $magentoRootFolder
-     * @param SplFileInfo $file
+     * @param string                                $rawConfig
+     * @param string                                $magentoRootFolder
+     * @param \Symfony\Component\Finder\SplFileInfo $file
      *
      * @return string
      */
@@ -299,7 +295,7 @@ class ConfigurationLoader
     {
         if ($this->_userConfig == null) {
             $this->_userConfig = array();
-            $homeDirectory = OperatingSystem::getHomeDir();
+            $homeDirectory =  OperatingSystem::getHomeDir();
             if (OperatingSystem::isWindows()) {
                 $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . $this->_customConfigFilename;
             } else {
@@ -309,10 +305,6 @@ class ConfigurationLoader
             if ($homeDirectory && file_exists($personalConfigFile)) {
                 $userConfig = $this->applyVariables(\file_get_contents($personalConfigFile), $magentoRootFolder, null);
                 $this->_userConfig = Yaml::parse($userConfig);
-
-                if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
-                    $this->_output->writeln('<debug>Load user config <comment>' . $personalConfigFile . '</comment></debug>');
-                }
 
                 return $config;
             }
@@ -339,23 +331,14 @@ class ConfigurationLoader
 
             $projectConfigFile = $magentoRootFolder . DIRECTORY_SEPARATOR . 'app/etc/' . $this->_customConfigFilename;
             if ($projectConfigFile && file_exists($projectConfigFile)) {
-
-                if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
-                    $this->_output->writeln('<debug>Load project config <comment>' . $projectConfigFile . '</comment></debug>');
-                }
-
                 $projectConfig = $this->applyVariables(\file_get_contents($projectConfigFile), $magentoRootFolder, null);
                 $this->_projectConfig = Yaml::parse($projectConfig);
             }
 
-            $stopFileConfigFile = $magerunStopFileFolder . DIRECTORY_SEPARATOR . $this->_customConfigFilename;
+            $stopFileConfigFile = $magerunStopFileFolder . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
             if (!empty($magerunStopFileFolder) && file_exists($stopFileConfigFile)) {
                 $projectConfig = $this->applyVariables(\file_get_contents($stopFileConfigFile), $magentoRootFolder, null);
                 $this->_projectConfig = ArrayFunctions::mergeArrays($this->_projectConfig, Yaml::parse($projectConfig));
-
-                if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
-                    $this->_output->writeln('<debug>Load project config <comment>' . $stopFileConfigFile . '</comment></debug>');
-                }
             }
 
             $config = ArrayFunctions::mergeArrays($config, $this->_projectConfig);
@@ -376,9 +359,11 @@ class ConfigurationLoader
             $path = $file->getPathname();
         } else {
             $path = $file->getRealPath();
+
             if ($path === "") {
-                throw new UnexpectedValueException(sprintf("Realpath for '%s' did return an empty string.", $file));
+                throw new \UnexpectedValueException(sprintf("Realpath for '%s' did return an empty string.", $file));
             }
+
             if ($path === false) {
                 $this->_output->writeln(sprintf("<error>Plugin config file broken link '%s'</error>", $file));
                 return;
@@ -390,10 +375,6 @@ class ConfigurationLoader
         }
 
         $localPluginConfig = \file_get_contents($path);
-        if ($localPluginConfig === false) {
-            $this->_output->writeln(sprintf("<error>Failed to read from plugin config file '%s'</error>", $file));
-        }
-
         $localPluginConfig = Yaml::parse($this->applyVariables($localPluginConfig, $magentoRootFolder, $file));
 
         $this->_pluginConfig = ArrayFunctions::mergeArrays($this->_pluginConfig, $localPluginConfig);

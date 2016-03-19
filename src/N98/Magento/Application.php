@@ -5,7 +5,7 @@ namespace N98\Magento;
 use Composer\Autoload\ClassLoader;
 use Exception;
 use Magento\Mtf\EntryPoint\EntryPoint;
-use N98\Magento\Command\ConfigurationLoader;
+use N98\Magento\Application\ConfigurationLoader;
 use N98\Util\ArrayFunctions;
 use N98\Util\AutoloadRestorer;
 use N98\Util\Console\Helper\TwigHelper;
