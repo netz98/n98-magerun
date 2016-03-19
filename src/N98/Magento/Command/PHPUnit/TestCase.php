@@ -4,6 +4,7 @@ namespace N98\Magento\Command\PHPUnit;
 
 use N98\Magento\Application;
 use PHPUnit_Framework_MockObject_MockObject;
+use RuntimeException;
 
 /**
  * Class TestCase
@@ -44,8 +45,22 @@ class TestCase extends \PHPUnit_Framework_TestCase
             );
         }
 
-        $this->root = realpath($root);
-        return $this->root;
+        # directory test
+        if (!is_dir($root)) {
+            throw new RuntimeException(
+                sprintf("N98_MAGERUN_TEST_MAGENTO_ROOT path '%s' is not a directory", $root)
+            );
+        }
+
+        # resolve root to realpath to be independent to current working directory
+        $rootRealpath = realpath($root);
+        if (false === $rootRealpath) {
+            throw new RuntimeException(
+                sprintf("Failed to resolve N98_MAGERUN_TEST_MAGENTO_ROOT path '%s' with realpath()", $root)
+            );
+        }
+
+        return $this->root = $rootRealpath;
     }
 
     /**
