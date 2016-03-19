@@ -6,6 +6,7 @@ use N98\Magento\Command\Database\Compressor\AbstractCompressor;
 use N98\Util\Console\Enabler;
 use N98\Util\Console\Helper\DatabaseHelper;
 use N98\Util\Exec;
+use N98\Util\VerifyOrDie;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -340,7 +341,7 @@ HELP;
         if ((($fileName = $input->getArgument('filename')) === null || ($isDir = is_dir($fileName))) && !$input->getOption('stdout')) {
             /** @var DialogHelper $dialog */
             $dialog      = $this->getHelperSet()->get('dialog');
-            $defaultName = $namePrefix . $this->dbSettings['dbname'] . $nameSuffix . $nameExtension;
+            $defaultName = VerifyOrDie::filename($namePrefix . $this->dbSettings['dbname'] . $nameSuffix . $nameExtension);
             if (isset($isDir) && $isDir) {
                 $defaultName = rtrim($fileName, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $defaultName;
             }
