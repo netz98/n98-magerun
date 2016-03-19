@@ -4,6 +4,7 @@ namespace N98\Magento;
 
 use Composer\Autoload\ClassLoader;
 use Exception;
+use Magento\Mtf\EntryPoint\EntryPoint;
 use N98\Magento\Command\ConfigurationLoader;
 use N98\Util\ArrayFunctions;
 use N98\Util\AutoloadRestorer;
@@ -18,6 +19,7 @@ use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -30,8 +32,8 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-
     const APP_NAME = 'n98-magerun';
+
     /**
      * @var string
      */
@@ -118,7 +120,7 @@ class Application extends BaseApplication
     protected $_isInitialized = false;
 
     /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     * @var EventDispatcher
      */
     protected $dispatcher;
 
@@ -144,7 +146,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return \Symfony\Component\Console\Input\InputDefinition
+     * @return InputDefinition
      */
     protected function getDefaultInputDefinition()
     {
@@ -202,8 +204,8 @@ class Application extends BaseApplication
     /**
      * Search for magento root folder
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @param InputInterface $input [optional]
+     * @param OutputInterface $output [optional]
      * @return void
      */
     public function detectMagento(InputInterface $input = null, OutputInterface $output = null)
@@ -847,7 +849,7 @@ MAGENTO2HINT;
     }
 
     /**
-     * @return \Symfony\Component\EventDispatcher\EventDispatcher
+     * @return EventDispatcher
      */
     public function getDispatcher()
     {
