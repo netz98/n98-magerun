@@ -1,5 +1,7 @@
 <?php
-/*
+/**
+ * this file is part of magerun
+ *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
 

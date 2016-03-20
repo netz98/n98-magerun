@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Ported attribute migration script from:
  *
  * https://github.com/astorm/Pulsestorm/blob/master/magento-create-setup.php
