@@ -17,7 +17,11 @@ class UnlockCommand extends AbstractAdminUserCommand
     {
         $this
             ->setName('admin:user:unlock')
-            ->addArgument('username', \Symfony\Component\Console\Input\InputArgument::OPTIONAL, 'Admin Username to Unlock')
+            ->addArgument(
+                'username',
+                \Symfony\Component\Console\Input\InputArgument::OPTIONAL,
+                'Admin Username to Unlock'
+            )
             ->setDescription('Release lock on admin user for one or all users');
     }
 

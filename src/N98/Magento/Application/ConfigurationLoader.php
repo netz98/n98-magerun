@@ -185,7 +185,9 @@ class ConfigurationLoader
 
             if ($systemWideConfigFile && file_exists($systemWideConfigFile)) {
                 if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
-                    $this->_output->writeln('<debug>Load system config <comment>' . $systemWideConfigFile . '</comment></debug>');
+                    $this->_output->writeln(
+                        '<debug>Load system config <comment>' . $systemWideConfigFile . '</comment></debug>'
+                    );
                 }
                 $this->_systemConfig = Yaml::parse($systemWideConfigFile);
             } else {
@@ -331,13 +333,21 @@ class ConfigurationLoader
 
             $projectConfigFile = $magentoRootFolder . DIRECTORY_SEPARATOR . 'app/etc/' . $this->_customConfigFilename;
             if ($projectConfigFile && file_exists($projectConfigFile)) {
-                $projectConfig = $this->applyVariables(\file_get_contents($projectConfigFile), $magentoRootFolder, null);
+                $projectConfig = $this->applyVariables(
+                    \file_get_contents($projectConfigFile),
+                    $magentoRootFolder,
+                    null
+                );
                 $this->_projectConfig = Yaml::parse($projectConfig);
             }
 
             $stopFileConfigFile = $magerunStopFileFolder . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
             if (!empty($magerunStopFileFolder) && file_exists($stopFileConfigFile)) {
-                $projectConfig = $this->applyVariables(\file_get_contents($stopFileConfigFile), $magentoRootFolder, null);
+                $projectConfig = $this->applyVariables(
+                    \file_get_contents($stopFileConfigFile),
+                    $magentoRootFolder,
+                    null
+                );
                 $this->_projectConfig = ArrayFunctions::mergeArrays($this->_projectConfig, Yaml::parse($projectConfig));
             }
 

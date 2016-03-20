@@ -41,7 +41,12 @@ HELP;
         if ($input->getOption('force')) {
             $shouldDrop = true;
         } else {
-            $shouldDrop = $dialog->askConfirmation($output, '<question>Really drop database ' . $this->dbSettings['dbname'] . ' ?</question> <comment>[n]</comment>: ', false);
+            $shouldDrop = $dialog->askConfirmation(
+                $output,
+                '<question>Really drop database ' . $this->dbSettings['dbname'] .
+                ' ?</question> <comment>[n]</comment>: ',
+                false
+            );
         }
 
         if ($shouldDrop) {

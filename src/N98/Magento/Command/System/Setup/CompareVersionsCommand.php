@@ -17,7 +17,12 @@ class CompareVersionsCommand extends AbstractMagentoCommand
             ->setName('sys:setup:compare-versions')
             ->addOption('ignore-data', null, InputOption::VALUE_NONE, 'Ignore data updates')
             ->addOption('log-junit', null, InputOption::VALUE_REQUIRED, 'Log output to a JUnit xml file.')
-            ->addOption('errors-only', null, InputOption::VALUE_NONE, 'Only display Setup resources where Status equals Error.')
+            ->addOption(
+                'errors-only',
+                null,
+                InputOption::VALUE_NONE,
+                'Only display Setup resources where Status equals Error.'
+            )
             ->addOption(
                 'format',
                 null,

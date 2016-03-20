@@ -60,7 +60,9 @@ class DumpCommand extends AbstractMagentoCommand
             /* @var $file SplFileInfo */
             $currentFolder = pathinfo($file->getRelativePathname(), PATHINFO_DIRNAME);
             if ($currentFolder != $lastFolder) {
-                $output->writeln(sprintf('<info>Compress directory:</info> <comment>media/%s</comment>', $currentFolder));
+                $output->writeln(
+                    sprintf('<info>Compress directory:</info> <comment>media/%s</comment>', $currentFolder)
+                );
             }
             $zip->addFile($file->getPathname(), 'media' . DIRECTORY_SEPARATOR . $file->getRelativePathname());
 

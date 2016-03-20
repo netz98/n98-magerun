@@ -4,14 +4,14 @@ namespace N98\Magento\Command\Database\Maintain;
 
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class CheckTablesCommand extends AbstractMagentoCommand
 {
-    const MESSAGE_CHECK_NOT_SUPPORTED = 'The storage engine for the table doesn\'t support check';
+    const MESSAGE_CHECK_NOT_SUPPORTED  = 'The storage engine for the table doesn\'t support check';
     const MESSAGE_REPAIR_NOT_SUPPORTED = 'The storage engine for the table doesn\'t support repair';
 
     /**
@@ -78,9 +78,20 @@ HELP;
         $this
             ->setName('db:maintain:check-tables')
             ->setDescription('Check database tables')
-            ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Check type (one of QUICK, FAST, MEDIUM, EXTENDED, CHANGED)', 'MEDIUM')
+            ->addOption(
+                'type',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Check type (one of QUICK, FAST, MEDIUM, EXTENDED, CHANGED)',
+                'MEDIUM'
+            )
             ->addOption('repair', null, InputOption::VALUE_NONE, 'Repair tables (only MyISAM)')
-            ->addOption('table', null, InputOption::VALUE_OPTIONAL, 'Process only given table (wildcards are supported)')
+            ->addOption(
+                'table',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Process only given table (wildcards are supported)'
+            )
             ->addOption(
                 'format',
                 null,
@@ -111,7 +122,7 @@ HELP;
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @throws InvalidArgumentException
@@ -119,11 +130,11 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->input  = $input;
+        $this->input = $input;
         $this->output = $output;
         $this->isTypeAllowed();
         $this->detectMagento($output);
-        $this->dbHelper     = $this->getHelper('database');
+        $this->dbHelper = $this->getHelper('database');
         $this->showProgress = $input->getOption('format') == null;
 
         if ($input->getOption('table')) {
@@ -159,7 +170,7 @@ HELP;
 
         foreach ($tables as $tableName) {
             if (isset($allTableStatus[$tableName]) && isset($methods[$allTableStatus[$tableName]['Engine']])) {
-                $m           = '_check' . $allTableStatus[$tableName]['Engine'];
+                $m = '_check' . $allTableStatus[$tableName]['Engine'];
                 $tableOutput = array_merge($tableOutput, $this->$m($tableName));
             } else {
                 $tableOutput[] = array(
@@ -190,16 +201,17 @@ HELP;
     protected function _queryAlterTable($tableName, $engine)
     {
         /** @var \PDO $connection */
-        $connection   = $this->dbHelper->getConnection($this->output);
-        $start        = microtime(true);
+        $connection = $this->dbHelper->getConnection($this->output);
+        $start = microtime(true);
         $affectedRows = $connection->exec(sprintf('ALTER TABLE %s ENGINE=%s', $tableName, $engine));
 
-        return array(array(
-            'table'     => $tableName,
-            'operation' => 'ENGINE ' . $engine,
-            'type'      => sprintf('%15s rows', (string) $affectedRows),
-            'status'    => sprintf('%.3f secs', microtime(true) - $start),
-        )
+        return array(
+            array(
+                'table'     => $tableName,
+                'operation' => 'ENGINE ' . $engine,
+                'type'      => sprintf('%15s rows', (string)$affectedRows),
+                'status'    => sprintf('%.3f secs', microtime(true) - $start),
+            )
         );
     }
 
@@ -230,8 +242,8 @@ HELP;
      */
     protected function _checkMyISAM($tableName)
     {
-        $table  = array();
-        $type   = $this->input->getOption('type');
+        $table = array();
+        $type = $this->input->getOption('type');
         $result = $this->_query(sprintf('CHECK TABLE %s %s', $tableName, $type));
         if ($result['Msg_text'] == self::MESSAGE_CHECK_NOT_SUPPORTED) {
             return array();
@@ -257,6 +269,7 @@ HELP;
                 );
             }
         }
+
         return $table;
     }
 
@@ -269,9 +282,10 @@ HELP;
     {
         /** @var \PDO $connection */
         $connection = $this->dbHelper->getConnection($this->output);
-        $query      = $connection->prepare($sql);
+        $query = $connection->prepare($sql);
         $query->execute();
         $result = $query->fetch(\PDO::FETCH_ASSOC);
+
         return $result;
     }
 }

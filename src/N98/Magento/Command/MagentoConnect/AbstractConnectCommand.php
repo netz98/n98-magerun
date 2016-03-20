@@ -37,7 +37,9 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
             }
             if (!is_executable($this->mageScript)) {
                 if (!@chmod($this->mageScript, 0755)) {
-                    throw new RuntimeException('Cannot make "mage" shell script executable. Please chmod the file manually.');
+                    throw new RuntimeException(
+                        'Cannot make "mage" shell script executable. Please chmod the file manually.'
+                    );
                 }
             }
             if (!strstr(shell_exec($this->mageScript . ' list-channels'), 'community')) {

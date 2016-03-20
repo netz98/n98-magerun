@@ -37,7 +37,12 @@ HELP;
             ->addArgument('count', InputArgument::REQUIRED, 'Count')
             ->addArgument('locale', InputArgument::REQUIRED, 'Locale')
             ->addArgument('website', InputArgument::OPTIONAL, 'Website')
-            ->addOption('with-addresses', null, InputOption::VALUE_NONE, 'Create dummy billing/shipping addresses for each customers')
+            ->addOption(
+                'with-addresses',
+                null,
+                InputOption::VALUE_NONE,
+                'Create dummy billing/shipping addresses for each customers'
+            )
             ->setDescription('Generate dummy customers. You can specify a count and a locale.')
             ->addOption(
                 'format',
@@ -96,7 +101,10 @@ HELP;
                     $customer->save();
 
                     if ($outputPlain) {
-                        $output->writeln('<info>Customer <comment>' . $email . '</comment> with password <comment>' . $password . '</comment> successfully created</info>');
+                        $output->writeln(
+                            '<info>Customer <comment>' . $email . '</comment> with password <comment>' . $password .
+                            '</comment> successfully created</info>'
+                        );
                     } else {
                         $table[] = array(
                             $email, $password, $customer->getFirstname(), $customer->getLastname(),

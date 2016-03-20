@@ -79,7 +79,9 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
                 return new Gzip;
 
             default:
-                throw new InvalidArgumentException("Compression type '{$type}' is not supported. Known values are: gz, gzip");
+                throw new InvalidArgumentException(
+                    "Compression type '{$type}' is not supported. Known values are: gz, gzip"
+                );
         }
     }
 

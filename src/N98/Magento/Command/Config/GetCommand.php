@@ -16,7 +16,8 @@ class GetCommand extends AbstractConfigCommand
         $this
             ->setName('config:get')
             ->setDescription('Get a core config item')
-            ->setHelp(<<<EOT
+            ->setHelp(
+<<<EOT
 If <info>path</info> is not set, all available config items will be listed.
 The <info>path</info> may contain wildcards (*).
 If <info>path</info> ends with a trailing slash, all child items will be listed. E.g.
@@ -25,11 +26,16 @@ If <info>path</info> ends with a trailing slash, all child items will be listed.
 is the same as
     config:get web/*
 EOT
-                )
+            )
             ->addArgument('path', InputArgument::OPTIONAL, 'The config path')
             ->addOption('scope', null, InputOption::VALUE_REQUIRED, 'The config value\'s scope')
             ->addOption('scope-id', null, InputOption::VALUE_REQUIRED, 'The config value\'s scope ID')
-            ->addOption('decrypt', null, InputOption::VALUE_NONE, 'Decrypt the config value using local.xml\'s crypt key')
+            ->addOption(
+                'decrypt',
+                null,
+                InputOption::VALUE_NONE,
+                'Decrypt the config value using local.xml\'s crypt key'
+            )
             ->addOption('update-script', null, InputOption::VALUE_NONE, 'Output as update script lines')
             ->addOption('magerun-script', null, InputOption::VALUE_NONE, 'Output for usage with config:set')
             ->addOption(
@@ -99,7 +105,10 @@ HELP;
                     'path'     => $item->getPath(),
                     'scope'    => $item->getScope(),
                     'scope_id' => $item->getScopeId(),
-                    'value'    => $this->_formatValue($item->getValue(), ($input->getOption('decrypt') ? 'decrypt' : false)),
+                    'value'    => $this->_formatValue(
+                        $item->getValue(),
+                        $input->getOption('decrypt') ? 'decrypt' : false
+                    ),
                 );
             }
 
@@ -151,7 +160,8 @@ HELP;
             if ($row['scope'] == 'default') {
                 $output->writeln(
                     sprintf(
-                        '$installer->setConfigData(%s, %s);', var_export($row['path'], true),
+                        '$installer->setConfigData(%s, %s);',
+                        var_export($row['path'], true),
                         var_export($row['value'], true)
                     )
                 );
@@ -178,7 +188,10 @@ HELP;
         foreach ($table as $row) {
             $value = str_replace(array("\n", "\r"), array('\n', '\r'), $row['value']);
             $line = sprintf(
-                'config:set %s --scope-id=%s --scope=%s %s', $row['path'], $row['scope_id'], $row['scope'],
+                'config:set %s --scope-id=%s --scope=%s %s',
+                $row['path'],
+                $row['scope_id'],
+                $row['scope'],
                 escapeshellarg($value)
             );
             $output->writeln($line);

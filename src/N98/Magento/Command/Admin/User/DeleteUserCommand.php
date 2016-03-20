@@ -56,7 +56,11 @@ class DeleteUserCommand extends AbstractAdminUserCommand
 
             $shouldRemove = $input->getOption('force');
             if (!$shouldRemove) {
-                $shouldRemove = $dialog->askConfirmation($output, '<question>Are you sure?</question> <comment>[n]</comment>: ', false);
+                $shouldRemove = $dialog->askConfirmation(
+                    $output,
+                    '<question>Are you sure?</question> <comment>[n]</comment>: ',
+                    false
+                );
             }
 
             if ($shouldRemove) {

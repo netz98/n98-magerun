@@ -51,7 +51,9 @@ class WindowsSystem
     private function getExecuteableExtesions()
     {
         // PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.PSC1
-        $this->exts || $this->exts = array_flip(array_map('strtoupper', explode(self::PATH_SEPARATOR, getenv('PATHEXT'))));
+        $this->exts || $this->exts = array_flip(
+            array_map('strtoupper', explode(self::PATH_SEPARATOR, getenv('PATHEXT')))
+        );
 
         return $this->exts;
     }

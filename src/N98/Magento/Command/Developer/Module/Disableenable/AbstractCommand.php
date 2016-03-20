@@ -39,8 +39,8 @@ class AbstractCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('dev:module:' . $this->commandName)
-            ->addArgument('moduleName', \Symfony\Component\Console\Input\InputArgument::OPTIONAL, 'Name of module to ' . $this->commandName)
-            ->addOption('codepool', null, \Symfony\Component\Console\Input\InputOption::VALUE_OPTIONAL, 'Name of codePool to ' . $this->commandName)
+            ->addArgument('moduleName', InputArgument::OPTIONAL, 'Name of module to ' . $this->commandName)
+            ->addOption('codepool', null, InputOption::VALUE_OPTIONAL, 'Name of codePool to ' . $this->commandName)
             ->setDescription(ucwords($this->commandName) . ' a module or all modules in codePool');
     }
 
@@ -114,10 +114,14 @@ class AbstractCommand extends AbstractMagentoCommand
                 if (file_put_contents($decFile, $xml->asXML()) !== false) {
                     $output->writeln('<info><comment>' . $module . ': </comment>' . $this->commandName . 'd</info>');
                 } else {
-                    $output->writeln('<error><comment>' . $module . ': </comment>Failed to update declaration file</error>');
+                    $output->writeln(
+                        '<error><comment>' . $module . ': </comment>Failed to update declaration file</error>'
+                    );
                 }
             } else {
-                $output->writeln('<info><comment>' . $module . ': already ' . $this->commandName . 'd</comment></info>');
+                $output->writeln(
+                    '<info><comment>' . $module . ': already ' . $this->commandName . 'd</comment></info>'
+                );
             }
         }
     }

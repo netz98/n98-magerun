@@ -19,7 +19,12 @@ class ImportCommand extends AbstractDatabaseCommand
             ->addOption('compression', 'c', InputOption::VALUE_REQUIRED, 'The compression of the specified file')
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysql command. Do not execute')
             ->addOption('only-if-empty', null, InputOption::VALUE_NONE, 'Imports only if database is empty')
-            ->addOption('optimize', null, InputOption::VALUE_NONE, 'Convert verbose INSERTs to short ones before import (not working with compression)')
+            ->addOption(
+                'optimize',
+                null,
+                InputOption::VALUE_NONE,
+                'Convert verbose INSERTs to short ones before import (not working with compression)'
+            )
             ->addOption('drop', null, InputOption::VALUE_NONE, 'Drop and recreate database before import')
             ->addOption('drop-tables', null, InputOption::VALUE_NONE, 'Drop tables before import')
             ->setDescription('Imports database with mysql cli client according to database defined in local.xml');

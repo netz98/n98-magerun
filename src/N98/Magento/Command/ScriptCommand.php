@@ -297,7 +297,8 @@ HELP;
         if (class_exists('\Mage')) {
             $this->scriptVars['${magento.root}'] = $this->getApplication()->getMagentoRootFolder();
             $this->scriptVars['${magento.version}'] = \Mage::getVersion();
-            $this->scriptVars['${magento.edition}'] = is_callable(array('\Mage', 'getEdition')) ? \Mage::getEdition() : 'Community';
+            $this->scriptVars['${magento.edition}'] = is_callable(array('\Mage', 'getEdition'))
+                ? \Mage::getEdition() : 'Community';
         }
 
         $this->scriptVars['${php.version}']     = substr(phpversion(), 0, strpos(phpversion(), '-'));

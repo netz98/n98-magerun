@@ -31,25 +31,68 @@ class DumpCommand extends AbstractDatabaseCommand
         $this
             ->setName('db:dump')
             ->addArgument('filename', InputArgument::OPTIONAL, 'Dump filename')
-            ->addOption('add-time', 't', InputOption::VALUE_OPTIONAL,
-                'Adds time to filename (only if filename was not provided)')
-            ->addOption('compression', 'c', InputOption::VALUE_REQUIRED,
-                'Compress the dump file using one of the supported algorithms')
-            ->addOption('xml', null, InputOption::VALUE_NONE, 'Dump database in xml format')
-            ->addOption('hex-blob', null, InputOption::VALUE_NONE,
-                'Dump binary columns using hexadecimal notation (for example, "abc" becomes 0x616263)')
-            ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysqldump command. Do not execute')
-            ->addOption('print-only-filename', null, InputOption::VALUE_NONE,
-                'Execute and prints no output except the dump filename')
-            ->addOption('no-single-transaction', null, InputOption::VALUE_NONE,
-                'Do not use single-transaction (not recommended, this is blocking)')
-            ->addOption('human-readable', null, InputOption::VALUE_NONE,
-                'Use a single insert with column names per row. Useful to track database differences. Use db:import --optimize for speeding up the import.')
-            ->addOption('add-routines', null, InputOption::VALUE_NONE,
-                'Include stored routines in dump (procedures & functions)')
+            ->addOption(
+                'add-time',
+                't',
+                InputOption::VALUE_OPTIONAL,
+                'Adds time to filename (only if filename was not provided)'
+            )
+            ->addOption(
+                'compression',
+                'c',
+                InputOption::VALUE_REQUIRED,
+                'Compress the dump file using one of the supported algorithms'
+            )
+            ->addOption(
+                'xml',
+                null,
+                InputOption::VALUE_NONE,
+                'Dump database in xml format'
+            )
+            ->addOption(
+                'hex-blob',
+                null,
+                InputOption::VALUE_NONE,
+                'Dump binary columns using hexadecimal notation (for example, "abc" becomes 0x616263)'
+            )
+            ->addOption(
+                'only-command',
+                null,
+                InputOption::VALUE_NONE,
+                'Print only mysqldump command. Do not execute'
+            )
+            ->addOption(
+                'print-only-filename',
+                null,
+                InputOption::VALUE_NONE,
+                'Execute and prints no output except the dump filename'
+            )
+            ->addOption(
+                'no-single-transaction',
+                null,
+                InputOption::VALUE_NONE,
+                'Do not use single-transaction (not recommended, this is blocking)'
+            )
+            ->addOption(
+                'human-readable',
+                null,
+                InputOption::VALUE_NONE,
+                'Use a single insert with column names per row. Useful to track database differences. Use db:import ' .
+                '--optimize for speeding up the import.'
+            )
+            ->addOption(
+                'add-routines',
+                null,
+                InputOption::VALUE_NONE,
+                'Include stored routines in dump (procedures & functions)'
+            )
             ->addOption('stdout', null, InputOption::VALUE_NONE, 'Dump to stdout')
-            ->addOption('strip', 's', InputOption::VALUE_OPTIONAL,
-                'Tables to strip (dump only structure of those tables)')
+            ->addOption(
+                'strip',
+                's',
+                InputOption::VALUE_OPTIONAL,
+                'Tables to strip (dump only structure of those tables)'
+            )
             ->addOption('exclude', 'e', InputOption::VALUE_OPTIONAL, 'Tables to exclude from the dump')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not prompt if all options are defined')
             ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml');
@@ -186,26 +229,30 @@ HELP;
         if ($input->getOption('strip')) {
             /* @var $database DatabaseHelper */
             $database = $this->getHelper('database');
-            $stripTables = $database->resolveTables(explode(' ', $input->getOption('strip')),
-                $this->getTableDefinitions());
+            $stripTables = $database->resolveTables(
+                explode(' ', $input->getOption('strip')),
+                $this->getTableDefinitions()
+            );
             if (!$input->getOption('stdout') && !$input->getOption('only-command')
                 && !$input->getOption('print-only-filename')
             ) {
-                $output->writeln('<comment>No-data export for: <info>' . implode(' ', $stripTables)
-                    . '</info></comment>'
+                $output->writeln(
+                    '<comment>No-data export for: <info>' . implode(' ', $stripTables) . '</info></comment>'
                 );
             }
         }
 
         $excludeTables = array();
         if ($input->getOption('exclude')) {
-            $excludeTables = $this->getHelper('database')->resolveTables(explode(' ', $input->getOption('exclude')),
-                $this->getTableDefinitions());
+            $excludeTables = $this->getHelper('database')->resolveTables(
+                explode(' ', $input->getOption('exclude')),
+                $this->getTableDefinitions()
+            );
             if (!$input->getOption('stdout') && !$input->getOption('only-command')
                 && !$input->getOption('print-only-filename')
             ) {
-                $output->writeln('<comment>Excluded: <info>' . implode(' ', $excludeTables)
-                    . '</info></comment>'
+                $output->writeln(
+                    '<comment>Excluded: <info>' . implode(' ', $excludeTables) . '</info></comment>'
                 );
             }
         }
@@ -280,7 +327,8 @@ HELP;
             if (!$input->getOption('stdout') && !$input->getOption('only-command')
                 && !$input->getOption('print-only-filename')
             ) {
-                $output->writeln('<comment>Start dumping database <info>' . $this->dbSettings['dbname']
+                $output->writeln(
+                    '<comment>Start dumping database <info>' . $this->dbSettings['dbname']
                     . '</info> to file <info>' . $fileName . '</info>'
                 );
             }
@@ -348,16 +396,26 @@ HELP;
             }
         }
 
-        if ((($fileName = $input->getArgument('filename')) === null || ($isDir = is_dir($fileName))) && !$input->getOption('stdout')) {
+        if (
+            (
+                ($fileName = $input->getArgument('filename')) === null
+                || ($isDir = is_dir($fileName))
+            )
+            && !$input->getOption('stdout')
+        ) {
             /** @var DialogHelper $dialog */
             $dialog = $this->getHelperSet()->get('dialog');
-            $defaultName = VerifyOrDie::filename($namePrefix . $this->dbSettings['dbname'] . $nameSuffix . $nameExtension);
+            $defaultName = VerifyOrDie::filename(
+                $namePrefix . $this->dbSettings['dbname'] . $nameSuffix . $nameExtension
+            );
             if (isset($isDir) && $isDir) {
                 $defaultName = rtrim($fileName, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $defaultName;
             }
             if (!$input->getOption('force')) {
-                $fileName = $dialog->ask($output, '<question>Filename for SQL dump:</question> [<comment>'
-                    . $defaultName . '</comment>]', $defaultName
+                $fileName = $dialog->ask(
+                    $output,
+                    '<question>Filename for SQL dump:</question> [<comment>' . $defaultName . '</comment>]',
+                    $defaultName
                 );
             } else {
                 $fileName = $defaultName;

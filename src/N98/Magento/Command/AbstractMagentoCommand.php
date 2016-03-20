@@ -178,7 +178,9 @@ abstract class AbstractMagentoCommand extends Command
 
         if (!$silent) {
             $editionString = ($this->_magentoEnterprise ? ' (Enterprise Edition) ' : '');
-            $output->writeln('<info>Found Magento ' . $editionString . 'in folder "' . $this->_magentoRootFolder . '"</info>');
+            $output->writeln(
+                '<info>Found Magento ' . $editionString . 'in folder "' . $this->_magentoRootFolder . '"</info>'
+            );
         }
 
         if (!empty($this->_magentoRootFolder)) {
@@ -344,7 +346,10 @@ abstract class AbstractMagentoCommand extends Command
     protected function checkDeprecatedAliases(InputInterface $input, OutputInterface $output)
     {
         if (isset($this->_deprecatedAlias[$input->getArgument('command')])) {
-            $output->writeln('<error>Deprecated:</error> <comment>' . $this->_deprecatedAlias[$input->getArgument('command')] . '</comment>');
+            $output->writeln(
+                '<error>Deprecated:</error> <comment>' . $this->_deprecatedAlias[$input->getArgument('command')] .
+                '</comment>'
+            );
         }
     }
 
@@ -495,7 +500,13 @@ abstract class AbstractMagentoCommand extends Command
             $defaultFolder = './magento';
             $question[] = "<question>Enter installation folder:</question> [<comment>" . $defaultFolder . "</comment>]";
 
-            $installationFolder = $this->getHelper('dialog')->askAndValidate($output, $question, $validateInstallationFolder, false, $defaultFolder);
+            $installationFolder = $this->getHelper('dialog')->askAndValidate(
+                $output,
+                $question,
+                $validateInstallationFolder,
+                false,
+                $defaultFolder
+            );
         } else {
             // @Todo improve validation and bring it to 1 single function
             $installationFolder = $validateInstallationFolder($installationFolder);

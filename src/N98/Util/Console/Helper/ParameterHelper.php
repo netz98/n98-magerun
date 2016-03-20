@@ -8,14 +8,14 @@ use N98\Util\Validator\FakeMetadataFactory;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Translation\Translator;
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\ConstraintValidatorFactory;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator;
-use Symfony\Component\Validator\Constraints;
-use Symfony\Component\Validator\ConstraintValidatorFactory;
 
 /**
  * Helper to init some parameters
@@ -40,10 +40,10 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
-     * @param string          $argumentName
-     * @param bool            $withDefaultStore [optional]
+     * @param string $argumentName
+     * @param bool $withDefaultStore [optional]
      *
      * @return mixed
      *
@@ -70,20 +70,27 @@ class ParameterHelper extends AbstractHelper
 
             foreach ($storeManager->getStores($withDefaultStore) as $store) {
                 $stores[$i] = $store->getId();
-                $question[] = '<comment>[' . ($i + 1) . ']</comment> ' . $store->getCode() . ' - ' . $store->getName() . PHP_EOL;
-                $i++;
+                $question[] = sprintf(
+                    '<comment>[%d]</comment> %s - %s' . PHP_EOL,
+                    ++$i,
+                    $store->getCode(),
+                    $store->getName()
+                );
             }
 
             if (count($stores) > 1) {
                 $question[] = '<question>Please select a store: </question>';
-                $storeId = $this->askAndValidate($output, $question,
+                $storeId = $this->askAndValidate(
+                    $output,
+                    $question,
                     function ($typeInput) use ($stores) {
                         if (!isset($stores[$typeInput - 1])) {
                             throw new InvalidArgumentException('Invalid store');
                         }
 
                         return $stores[$typeInput - 1];
-                    });
+                    }
+                );
             } else {
                 // only one store view available -> take it
                 $storeId = $stores[0];
@@ -96,9 +103,9 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
-     * @param string          $argumentName
+     * @param string $argumentName
      *
      * @return mixed
      * @throws InvalidArgumentException
@@ -120,22 +127,27 @@ class ParameterHelper extends AbstractHelper
             $websites = array();
             foreach ($storeManager->getWebsites() as $website) {
                 $websites[$i] = $website->getId();
-                $question[] = '<comment>[' . ($i + 1) . ']</comment> ' . $website->getCode() . ' - ' . $website->getName() . PHP_EOL;
-                $i++;
+                $question[] = sprintf(
+                    '<comment>[%d]</comment> ' . $website->getCode() . ' - ' . $website->getName() . PHP_EOL,
+                    ++$i
+                );
             }
             if (count($websites) == 1) {
                 return $storeManager->getWebsite($websites[0]);
             }
             $question[] = '<question>Please select a website: </question>';
 
-            $websiteId = $this->askAndValidate($output, $question,
+            $websiteId = $this->askAndValidate(
+                $output,
+                $question,
                 function ($typeInput) use ($websites) {
                     if (!isset($websites[$typeInput - 1])) {
                         throw new InvalidArgumentException('Invalid store');
                     }
 
                     return $websites[$typeInput - 1];
-                });
+                }
+            );
 
             $website = $storeManager->getWebsite($websiteId);
         }
@@ -144,9 +156,9 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
-     * @param string          $argumentName
+     * @param string $argumentName
      *
      * @return string
      */
@@ -165,11 +177,11 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
-     * @param string          $argumentName
+     * @param string $argumentName
      *
-     * @param bool            $needDigits [optional]
+     * @param bool $needDigits [optional]
      * @return string
      */
     public function askPassword(
@@ -202,7 +214,7 @@ class ParameterHelper extends AbstractHelper
     /**
      * @param OutputInterface $output
      * @param                 $question
-     * @param callable        $callback
+     * @param callable $callback
      *
      * @return string
      */
@@ -215,9 +227,9 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param OutputInterface        $output
-     * @param string                 $name
-     * @param string                 $value
+     * @param OutputInterface $output
+     * @param string $name
+     * @param string $value
      * @param Constraints\Collection $constraints The constraint(s) to validate against.
      *
      * @return string
@@ -236,7 +248,8 @@ class ParameterHelper extends AbstractHelper
         $question = '<question>' . ucfirst($name) . ': </question>';
 
         $value = $this->askAndValidate(
-            $output, $question,
+            $output,
+            $question,
             function ($inputValue) use ($constraints, $name) {
                 $errors = $this->validateValue($name, $inputValue, $constraints);
                 if ($errors->count() > 0) {
@@ -251,8 +264,8 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param string                 $name
-     * @param string                 $value
+     * @param string $name
+     * @param string $value
      * @param Constraints\Collection $constraints The constraint(s) to validate against.
      *
      * @return \Symfony\Component\Validator\ConstraintViolationInterface[]|ConstraintViolationListInterface

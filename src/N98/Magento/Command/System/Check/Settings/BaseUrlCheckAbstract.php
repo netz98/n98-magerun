@@ -36,9 +36,15 @@ abstract class BaseUrlCheckAbstract extends CheckAbstract
         $isValid = (bool) strstr($host, '.');
         $result->setStatus($isValid);
         if ($isValid) {
-            $result->setMessage('<info>' . ucfirst($this->class) . ' BaseURL: <comment>' . $baseUrl . '</comment> of Store: <comment>' . $store->getCode() . '</comment> - OK');
+            $result->setMessage(
+                '<info>' . ucfirst($this->class) . ' BaseURL: <comment>' . $baseUrl . '</comment> of Store: <comment>' .
+                $store->getCode() . '</comment> - OK'
+            );
         } else {
-            $result->setMessage('<error>Invalid ' . ucfirst($this->class) . ' BaseURL: <comment>' . $baseUrl . '</comment> of Store: <comment>' . $store->getCode() . '</comment> ' . $errorMessage . '</error>');
+            $result->setMessage(
+                '<error>Invalid ' . ucfirst($this->class) . ' BaseURL: <comment>' . $baseUrl .
+                '</comment> of Store: <comment>' . $store->getCode() . '</comment> ' . $errorMessage . '</error>'
+            );
         }
     }
 }

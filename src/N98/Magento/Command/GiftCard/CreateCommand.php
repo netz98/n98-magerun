@@ -17,8 +17,17 @@ class CreateCommand extends AbstractGiftCardCommand
     {
         $this
             ->setName('giftcard:create')
-            ->addArgument('amount', \Symfony\Component\Console\Input\InputArgument::REQUIRED, 'Amount for new gift card')
-            ->addOption('website', null, \Symfony\Component\Console\Input\InputOption::VALUE_OPTIONAL, 'Website ID to attach gift card to')
+            ->addArgument(
+                'amount',
+                \Symfony\Component\Console\Input\InputArgument::REQUIRED,
+                'Amount for new gift card'
+            )
+            ->addOption(
+                'website',
+                null,
+                \Symfony\Component\Console\Input\InputOption::VALUE_OPTIONAL,
+                'Website ID to attach gift card to'
+            )
             ->setDescription('Create a gift card with a specified amount');
     }
 

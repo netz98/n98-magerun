@@ -441,18 +441,25 @@ class Application extends BaseApplication
         $currentVarDir = $configOptions->getVarDir();
 
         if ($currentVarDir == $tempVarDir) {
-            $output->writeln(sprintf('<warning>Fallback folder %s is used in n98-magerun</warning>', $tempVarDir));
-            $output->writeln('');
-            $output->writeln('n98-magerun is using the fallback folder. If there is another folder configured for Magento, this can cause serious problems.');
-            $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
-            $output->writeln('');
+            $output->writeln(array(
+                sprintf('<warning>Fallback folder %s is used in n98-magerun</warning>', $tempVarDir),
+                '',
+                'n98-magerun is using the fallback folder. If there is another folder configured for Magento, this ' .
+                'can cause serious problems.',
+                'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
+                'for more information.',
+                '',
+            ));
         } else {
-            $output->writeln(sprintf('<warning>Folder %s found, but not used in n98-magerun</warning>', $tempVarDir));
-            $output->writeln('');
-            $output->writeln(sprintf('This might cause serious problems. n98-magerun is using the configured var-folder <comment>%s</comment>', $currentVarDir));
-            $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
-            $output->writeln('');
-
+            $output->writeln(array(
+                sprintf('<warning>Folder %s found, but not used in n98-magerun</warning>', $tempVarDir),
+                '',
+                "This might cause serious problems. n98-magerun is using the configured var-folder " .
+                "<comment>$currentVarDir</comment>",
+                'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
+                'for more information.',
+                '',
+            ));
             return false;
         }
     }
@@ -603,7 +610,10 @@ class Application extends BaseApplication
                 if (is_array($alias)) {
                     $aliasCommandName = key($alias);
                     if ($input->getFirstArgument() == $aliasCommandName) {
-                        $aliasCommandParams = array_slice(BinaryString::trimExplodeEmpty(' ', $alias[$aliasCommandName]), 1);
+                        $aliasCommandParams = array_slice(
+                            BinaryString::trimExplodeEmpty(' ', $alias[$aliasCommandName]),
+                            1
+                        );
                         if (count($aliasCommandParams) > 0) {
                             // replace with aliased data
                             $mergedParams = array_merge(
@@ -859,7 +869,7 @@ MAGENTO2HINT;
      * @param OutputInterface $output
      * @return ConfigurationLoader
      */
-    public function getConfigurationLoader(array $initConfig = array(), OutputInterface $output)
+    public function getConfigurationLoader(array $initConfig, OutputInterface $output)
     {
         if ($this->configurationLoader === null) {
             $this->configurationLoader = new ConfigurationLoader(

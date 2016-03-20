@@ -69,9 +69,15 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
                 $user->save();
 
                 if ($user->getIsActive() == 1) {
-                    $output->writeln('<info>User <comment>' . $user->getUsername() . '</comment> is now <comment>active</comment></info>');
+                    $output->writeln(
+                        '<info>User <comment>' . $user->getUsername() . '</comment>' .
+                        ' is now <comment>active</comment></info>'
+                    );
                 } else {
-                    $output->writeln('<info>User <comment>' . $user->getUsername() . '</comment> is now <comment>inactive</comment></info>');
+                    $output->writeln(
+                        '<info>User <comment>' . $user->getUsername() . '</comment>' .
+                        ' is now <comment>inactive</comment></info>'
+                    );
                 }
             } catch (Exception $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');

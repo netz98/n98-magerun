@@ -120,7 +120,9 @@ class MetaCommand extends AbstractMagentoCommand
                     $classMaps[$group] = $this->getClassMapForGroup($group, $output);
 
                     if (!$input->getOption('stdout') && count($classMaps[$group]) > 0) {
-                        $output->writeln('<info>Generated definitions for <comment>' . $group . '</comment> group</info>');
+                        $output->writeln(
+                            '<info>Generated definitions for <comment>' . $group . '</comment> group</info>'
+                        );
                     }
                 }
 

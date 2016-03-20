@@ -18,7 +18,9 @@ class ConsoleCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('dev:console')
-            ->setDescription('Opens PHP interactive shell with initialized Mage::app() <comment>(Experimental)</comment>')
+            ->setDescription(
+                'Opens PHP interactive shell with initialized Mage::app() <comment>(Experimental)</comment>'
+            )
         ;
     }
 
@@ -45,7 +47,10 @@ class ConsoleCommand extends AbstractMagentoCommand
         if ($initialized) {
             $ok = Charset::convertInteger(Charset::UNICODE_CHECKMARK_CHAR);
             $edition = $this->getApplication()->isMagentoEnterprise() ? 'EE' : 'CE';
-            $consoleOutput->writeln('<fg=black;bg=green>Magento ' . \Mage::getVersion() . ' ' . $edition . ' initialized.</fg=black;bg=green> ' . $ok);
+            $consoleOutput->writeln(
+                '<fg=black;bg=green>Magento ' . \Mage::getVersion() . ' ' . $edition .
+                ' initialized.</fg=black;bg=green> ' . $ok
+            );
         } else {
             $consoleOutput->writeln('<fg=black;bg=yellow>Magento is not initialized.</fg=black;bg=yellow>');
         }

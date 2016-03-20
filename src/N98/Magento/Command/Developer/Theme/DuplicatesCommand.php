@@ -23,7 +23,12 @@ class DuplicatesCommand extends AbstractMagentoCommand
                 'Original theme to comapre. Default is "base/default"',
                 'base/default'
             )
-            ->addOption('log-junit', null, InputOption::VALUE_REQUIRED, 'Log duplicates in JUnit XML format to defined file.')
+            ->addOption(
+                'log-junit',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Log duplicates in JUnit XML format to defined file.'
+            )
             ->setDescription('Find duplicate files (templates, layout, locale, etc.) between two themes.')
         ;
 
@@ -115,7 +120,8 @@ HELP;
 
         $testCase = $suite->addTestCase();
         $testCase->setName(
-            'Magento Duplicate Theme Files: ' . $input->getArgument('theme') . ' | ' . $input->getArgument('originalTheme')
+            'Magento Duplicate Theme Files: ' . $input->getArgument('theme') . ' | ' .
+            $input->getArgument('originalTheme')
         );
         $testCase->setClassname('ConflictsCommand');
         foreach ($duplicates as $duplicate) {

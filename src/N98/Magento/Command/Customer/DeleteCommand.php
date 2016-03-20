@@ -3,6 +3,8 @@
 namespace N98\Magento\Command\Customer;
 
 use Exception;
+use Mage_Customer_Model_Entity_Customer_Collection;
+use Mage_Customer_Model_Resource_Customer_Collection;
 use N98\Util\Console\Helper\ParameterHelper;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -242,7 +244,7 @@ HELP;
     }
 
     /**
-     * @param \Mage_Customer_Model_Entity_Customer_Collection|\Mage_Customer_Model_Resource_Customer_Collection $customers
+     * @param Mage_Customer_Model_Entity_Customer_Collection|Mage_Customer_Model_Resource_Customer_Collection $customers
      *
      * @return int
      */

@@ -39,12 +39,22 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
             $result->setStatus($isValid);
 
             if ($isValid) {
-                $result->setMessage('<info>Cookie Domain (' . $this->class . '): <comment>' . $cookieDomain . '</comment> of Store: <comment>' . $store->getCode() . '</comment> - OK</info>');
+                $result->setMessage(
+                    '<info>Cookie Domain (' . $this->class . '): <comment>' . $cookieDomain .
+                    '</comment> of Store: <comment>' . $store->getCode() . '</comment> - OK</info>'
+                );
             } else {
-                $result->setMessage('<error>Cookie Domain (' . $this->class . '): <comment>' . $cookieDomain . '</comment> of Store: <comment>' . $store->getCode() . '</comment> - ERROR: ' . $errorMessage . '</error>');
+                $result->setMessage(
+                    '<error>Cookie Domain (' . $this->class . '): <comment>' . $cookieDomain .
+                    '</comment> of Store: <comment>' . $store->getCode() . '</comment> - ERROR: ' . $errorMessage .
+                    '</error>'
+                );
             }
         } else {
-            $result->setMessage('<info>Empty cookie Domain (' . $this->class . ') of Store: <comment>' . $store->getCode() . '</comment> - OK</info>');
+            $result->setMessage(
+                '<info>Empty cookie Domain (' . $this->class . ') of Store: <comment>' . $store->getCode() .
+                '</comment> - OK</info>'
+            );
         }
     }
 
