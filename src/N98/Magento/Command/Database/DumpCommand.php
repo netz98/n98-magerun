@@ -72,7 +72,6 @@ See it in action: http://youtu.be/ttjZHY6vThs
 
 HELP;
         $this->setHelp($help);
-
     }
 
     /**

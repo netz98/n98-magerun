@@ -110,7 +110,6 @@ HELP;
         );
 
         foreach ($arguments as $argument => $options) {
-
             if (isset($options['default']) && $input->getArgument($argument) === null) {
                 $input->setArgument(
                     $argument,

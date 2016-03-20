@@ -4,7 +4,6 @@
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
-
 namespace N98\Util\Console\Helper\Table\Renderer;
 
 use Symfony\Component\Console\Helper\Table;
@@ -18,7 +17,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class TextRenderer implements RendererInterface
 {
-
     /**
      * @param OutputInterface $output
      * @param array           $rows headers are expected to be the keys of the first row.

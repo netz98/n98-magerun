@@ -158,7 +158,6 @@ HELP;
         );
 
         foreach ($tables as $tableName) {
-
             if (isset($allTableStatus[$tableName]) && isset($methods[$allTableStatus[$tableName]['Engine']])) {
                 $m           = '_check' . $allTableStatus[$tableName]['Engine'];
                 $tableOutput = array_merge($tableOutput, $this->$m($tableName));

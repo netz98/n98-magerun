@@ -34,7 +34,6 @@ class RemoveCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-
             $entityType = $input->getArgument('entityType');
 
             try {

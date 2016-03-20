@@ -58,7 +58,6 @@ HELP;
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-
             $res = $this->getCustomerModel()->getResource();
 
             $faker = \Faker\Factory::create($input->getArgument('locale'));
@@ -120,7 +119,6 @@ HELP;
                     ->setHeaders(array('email', 'password', 'firstname', 'lastname'))
                     ->renderByFormat($output, $table, $input->getOption('format'));
             }
-
         }
     }
 

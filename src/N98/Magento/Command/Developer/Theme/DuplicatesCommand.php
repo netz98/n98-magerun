@@ -71,7 +71,6 @@ HELP;
                     $output->writeln($duplicates);
                 }
             }
-
         }
     }
 

@@ -31,7 +31,6 @@ class CreateUserCommand extends AbstractAdminUserCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-
             $username = $this->getOrAskForArgument('username', $input, $output);
             $email = $this->getOrAskForArgument('email', $input, $output);
             if (($password = $input->getArgument('password')) === null) {

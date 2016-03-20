@@ -104,8 +104,7 @@ See it in action: http://youtu.be/WU-CbJ86eQc
 HELP;
         $this->setHelp($help);
 
-        $this->notEmptyCallback = function($input)
-        {
+        $this->notEmptyCallback = function ($input) {
             if (empty($input)) {
                 throw new InvalidArgumentException('Please enter a value');
             }
@@ -201,7 +200,7 @@ HELP;
             $commandConfig = $this->commandConfig;
 
 
-            $type = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($commandConfig) {
+            $type = $this->getHelper('dialog')->askAndValidate($output, $question, function ($typeInput) use ($commandConfig) {
                 if (!in_array($typeInput, range(1, count($commandConfig['magento-packages'])))) {
                     throw new InvalidArgumentException('Invalid type');
                 }
@@ -389,7 +388,6 @@ HELP;
             if ($db === false) {
                 throw new InvalidArgumentException("Database configuration is invalid");
             }
-
         } else {
             $dialog = $this->getHelperSet()->get('dialog');
             do {
@@ -658,7 +656,7 @@ HELP;
             $defaults['admin_email']
         );
 
-        $validateBaseUrl = function($input) {
+        $validateBaseUrl = function ($input) {
             if (!preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $input)) {
                 throw new InvalidArgumentException('Please enter a valid URL');
             }

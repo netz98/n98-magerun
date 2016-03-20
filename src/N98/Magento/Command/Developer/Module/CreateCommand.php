@@ -187,7 +187,6 @@ class CreateCommand extends AbstractMagentoCommand
             $dataSetupFolder = $this->moduleDirectory . '/data/' . strtolower($this->vendorNamespace) . '_' . strtolower($this->moduleName) . '_setup';
             mkdir($dataSetupFolder, 0777, true);
             $output->writeln('<info>Created directory: <comment>' . $dataSetupFolder . '<comment></info>');
-
         }
     }
 
@@ -291,7 +290,6 @@ class CreateCommand extends AbstractMagentoCommand
                 );
                 $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
             }
-
         }
     }
 

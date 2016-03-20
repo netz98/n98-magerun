@@ -196,7 +196,6 @@ class Application extends BaseApplication
     {
         if (isset($this->partialConfig['detect']) && isset($this->partialConfig['detect']['subFolders'])) {
             return $this->partialConfig['detect']['subFolders'];
-
         }
         return array();
     }
@@ -299,7 +298,8 @@ class Application extends BaseApplication
     /**
      * @return bool
      */
-    protected function hasCustomCommands() {
+    protected function hasCustomCommands()
+    {
         return isset($this->config['commands']['customCommands'])
         && is_array($this->config['commands']['customCommands']);
     }
@@ -455,8 +455,6 @@ class Application extends BaseApplication
 
             return false;
         }
-
-
     }
 
     /**
@@ -798,7 +796,7 @@ class Application extends BaseApplication
      */
     private function requireOnce($path)
     {
-        $requireOnce = function() {
+        $requireOnce = function () {
             require_once  func_get_arg(0);
         };
         if (50400 <= PHP_VERSION_ID) {

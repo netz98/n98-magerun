@@ -57,7 +57,7 @@ HELP;
         $this->_init($output);
 
         $packages = array($input->getArgument('package'));
-        if ($packages == array(NULL)) {
+        if ($packages == array(null)) {
             $packages = $this->_getInstalledPackages();
         }
 
@@ -341,5 +341,4 @@ HELP;
     {
         return \Mage::getBaseDir() . '/downloader/cache.cfg';
     }
-
 }

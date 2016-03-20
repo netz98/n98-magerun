@@ -28,7 +28,6 @@ class ReindexAllCommand extends AbstractIndexerCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-
             $this->disableObservers();
 
             try {

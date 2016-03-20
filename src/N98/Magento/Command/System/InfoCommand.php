@@ -162,7 +162,7 @@ class InfoCommand extends AbstractMagentoCommand
                 ->sortByName();
 
             $vendors = iterator_to_array($finder);
-            $vendors = array_map(function($value) use ($codePoolDir) {
+            $vendors = array_map(function ($value) use ($codePoolDir) {
                     return str_replace($codePoolDir, '', $value);
                 }, $vendors);
 

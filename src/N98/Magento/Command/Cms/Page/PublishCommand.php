@@ -79,7 +79,6 @@ class PublishCommand extends AbstractMagentoCommand
             }
             $revision->publish();
             $output->writeln('<info>Page published</info>');
-
         }
     }
 }

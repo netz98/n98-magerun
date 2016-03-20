@@ -29,7 +29,6 @@ List customers. The output is limited to 1000 (can be changed by overriding conf
 If search parameter is given the customers are filtered (searchs in firstname, lastname and email).
 HELP;
         $this->setHelp($help);
-
     }
 
     /**
@@ -42,7 +41,6 @@ HELP;
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-
             $config = $this->getCommandConfig();
 
             $collection = $this->getCustomerCollection();

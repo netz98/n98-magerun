@@ -11,7 +11,6 @@ use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class CompareVersionsCommand extends AbstractMagentoCommand
 {
-
     protected function configure()
     {
         $this
@@ -91,7 +90,7 @@ HELP;
             }
 
             if ($input->getOption('errors-only')) {
-                $table = array_filter($table, function($row) {
+                $table = array_filter($table, function ($row) {
                     return ($row['Status'] === 'Error');
                 });
             }
@@ -100,8 +99,7 @@ HELP;
             //highlight the status
             //and show error'd rows at bottom
             if (!$input->getOption('format')) {
-
-                usort($table, function($a, $b) {
+                usort($table, function ($a, $b) {
                     if ($a['Status'] !== 'OK' && $b['Status'] === 'OK') {
                         return 1;
                     }
@@ -111,7 +109,7 @@ HELP;
                     return strcmp($a['Setup'], $b['Setup']);
                 });
 
-                array_walk($table, function(&$row) {
+                array_walk($table, function (&$row) {
                     $status             = $row['Status'];
                     $availableStatus    = array('OK' => 'info', 'Error' => 'error');
                     $statusString       = sprintf(

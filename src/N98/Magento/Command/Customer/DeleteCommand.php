@@ -17,7 +17,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DeleteCommand extends AbstractCustomerCommand
 {
-
     /**
      * @var InputInterface
      */
@@ -71,7 +70,6 @@ HELP;
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-
             $this->input  = $input;
             $this->output = $output;
             /** @var DialogHelper dialog */
@@ -137,7 +135,6 @@ HELP;
                     $this->output->writeln('<error>Aborting delete</error>');
                 }
             } else {
-
                 $customers = $this->getCustomerCollection();
                 $customers
                     ->addAttributeToSelect('firstname')
@@ -290,7 +287,6 @@ HELP;
         if (null !== $default) {
             $params[] = $default;
             $pattern .= '[%s] ';
-
         }
 
         return vsprintf($pattern, $params);

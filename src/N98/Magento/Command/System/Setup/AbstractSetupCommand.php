@@ -16,7 +16,6 @@ use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
  */
 class AbstractSetupCommand extends AbstractMagentoCommand
 {
-
     /**
      * @param string $moduleName
      * @return array

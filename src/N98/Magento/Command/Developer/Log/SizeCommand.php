@@ -30,7 +30,6 @@ class SizeCommand extends AbstractLogCommand
     {
         $this->detectMagento($output);
         if ($this->initMagento()) {
-
             $fileName = $input->getArgument('log_filename');
             if ($fileName === null) {
                 $path = $this->askLogFile($output);

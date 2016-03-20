@@ -66,7 +66,7 @@ class AbstractCommand extends AbstractMagentoCommand
             $output->writeln('<info>' . ($this->commandName == 'enable' ? 'Enabling' : 'Disabling') .
                 ' modules in <comment>' . $codePool . '</comment> codePool...</info>');
             $this->enableCodePool($codePool, $output);
-        } else if ($module = $input->getArgument('moduleName')) {
+        } elseif ($module = $input->getArgument('moduleName')) {
             $this->enableModule($module, $output);
         } else {
             throw new InvalidArgumentException('No code-pool option nor module-name argument');
@@ -104,7 +104,7 @@ class AbstractCommand extends AbstractMagentoCommand
         $decFile = $this->modulesDir . $module . '.xml';
         if (!is_file($decFile)) {
             $output->writeln('<error><comment>' . $module . ': </comment>Couldn\'t find declaration file</error>');
-        } else if (!is_writable($decFile)) {
+        } elseif (!is_writable($decFile)) {
             $output->writeln('<error><comment>' . $module . ': </comment>Can\'t write to declaration file</error>');
         } else {
             $xml = new \Varien_Simplexml_Element(file_get_contents($decFile));

@@ -30,7 +30,6 @@ Imports an SQL file with mysql cli client into current configured database.
 You need to have MySQL client tools installed on your system.
 HELP;
         $this->setHelp($help);
-
     }
 
     /**
@@ -91,7 +90,6 @@ HELP;
                 }
                 fwrite($out, $line);
             }
-
         }
 
         fwrite($out, ";\n");
@@ -102,7 +100,6 @@ HELP;
         fclose($out);
 
         return $result;
-
     }
     /**
      * @param InputInterface  $input
@@ -165,7 +162,8 @@ HELP;
         }
     }
 
-    public function asText() {
+    public function asText()
+    {
         return parent::asText() . "\n" .
             $this->getCompressionHelp();
     }

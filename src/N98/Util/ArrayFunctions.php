@@ -36,4 +36,3 @@ class ArrayFunctions
         return $a;
     }
 }
-

@@ -32,7 +32,6 @@ class FromCommand extends AbstractCommand
 
         $dependencies = array();
         foreach ($this->modules as $dependencyName => $module) {
-
             if (!isset($module['depends'][$moduleName])) {
                 continue;
             }
@@ -50,7 +49,6 @@ class FromCommand extends AbstractCommand
                     $this->findModuleDependencies($dependencyName, $recursive)
                 );
             }
-
         }
 
         return $dependencies;

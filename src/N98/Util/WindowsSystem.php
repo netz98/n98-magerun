@@ -4,7 +4,6 @@
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
-
 namespace N98\Util;
 
 /**
@@ -42,7 +41,7 @@ class WindowsSystem
         return self::$instance;
     }
 
-    private function  __construct()
+    private function __construct()
     {
     }
 

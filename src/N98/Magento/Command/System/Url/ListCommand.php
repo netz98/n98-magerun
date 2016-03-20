@@ -66,7 +66,6 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         if ($input->getOption('add-all')) {
             $input->setOption('add-categories', true);
             $input->setOption('add-products', true);
@@ -75,13 +74,11 @@ HELP;
 
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-
             $stores = explode(',', $input->getArgument('stores'));
 
             $urls = array();
 
             foreach ($stores as $storeId) {
-
                 $currentStore = \Mage::app()->getStore($storeId); /* @var $currentStore \Mage_Core_Model_Store */
 
                 // base url
@@ -120,7 +117,6 @@ HELP;
                 // ... and output
                 $output->writeln($line);
             }
-
         }
     }
 
@@ -132,7 +128,8 @@ HELP;
      *
      * @return array
      */
-    protected function getUrls($resourceModel, $linkBaseUrl, $storeId, array $urls) {
+    protected function getUrls($resourceModel, $linkBaseUrl, $storeId, array $urls)
+    {
         $collection = \Mage::getResourceModel($resourceModel)->getCollection($storeId);
         if (!$collection) {
             return $urls;

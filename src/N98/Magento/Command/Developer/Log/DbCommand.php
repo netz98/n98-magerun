@@ -21,7 +21,7 @@ class DbCommand extends AbstractLogCommand
     /**
      * @return string
      */
-    protected function  _getVarienAdapterPhpFile()
+    protected function _getVarienAdapterPhpFile()
     {
         return $this->_magentoRootFolder . '/lib/Varien/Db/Adapter/Pdo/Mysql.php';
     }

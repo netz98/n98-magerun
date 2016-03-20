@@ -38,7 +38,6 @@ class CreateCommand extends AbstractCustomerCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-
             $dialog = $this->getHelperSet()->get('dialog');
 
             // Email

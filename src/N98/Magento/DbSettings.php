@@ -4,7 +4,6 @@
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
-
 namespace N98\Magento;
 
 use ArrayAccess;
@@ -112,7 +111,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             $config['unix_socket'] = (string) $config['host'];
             $config['host'] = null;
             $config['port'] = null;
-        } else if (strpos($config['host'], ':') !== false) {
+        } elseif (strpos($config['host'], ':') !== false) {
             list($config['host'], $config['port']) = explode(':', $config['host']);
             $config['unix_socket'] = null;
         }

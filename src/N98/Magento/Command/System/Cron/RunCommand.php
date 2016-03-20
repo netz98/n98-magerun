@@ -41,7 +41,6 @@ HELP;
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-
             $jobCode = $input->getArgument('job');
             if (!$jobCode) {
                 $this->writeSection($output, 'Cronjob');
@@ -62,7 +61,6 @@ HELP;
             $runConfig = $jobConfig->run;
 
             if ($runConfig->model) {
-
                 if (!preg_match(self::REGEX_RUN_MODEL, (string) $runConfig->model, $run)) {
                     throw new RuntimeException('Invalid model/method definition, expecting "model/class::method".');
                 }
@@ -129,7 +127,7 @@ HELP;
         $jobCode = $dialogHelper->askAndValidate(
             $output,
             $question,
-            function($typeInput) use ($keyMap, $jobs) {
+            function ($typeInput) use ($keyMap, $jobs) {
                 $key = $keyMap[$typeInput];
                 if (!isset($jobs[$key])) {
                     throw new InvalidArgumentException('Invalid job');

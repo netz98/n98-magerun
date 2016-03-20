@@ -11,7 +11,6 @@ use N98\Util\Filesystem;
 
 class VariablesCommand extends AbstractShowCommand
 {
-
     /**
      * variable name => recommended size (but this value must be calculated depending on the server size
      * @see https://launchpadlibrarian.net/78745738/tuning-primer.sh convert that to PHP ... ?

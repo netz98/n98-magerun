@@ -31,5 +31,4 @@ HELP;
     {
         $this->getHelper('database')->createDatabase($output);
     }
-
 }

@@ -59,5 +59,4 @@ class PhpView implements View
     {
         return '<?xml version="1.0"?>' . "\n";
     }
-
 }

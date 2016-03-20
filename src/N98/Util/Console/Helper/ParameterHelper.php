@@ -77,7 +77,7 @@ class ParameterHelper extends AbstractHelper
             if (count($stores) > 1) {
                 $question[] = '<question>Please select a store: </question>';
                 $storeId = $this->askAndValidate($output, $question,
-                    function($typeInput) use ($stores) {
+                    function ($typeInput) use ($stores) {
                         if (!isset($stores[$typeInput - 1])) {
                             throw new InvalidArgumentException('Invalid store');
                         }
@@ -129,7 +129,7 @@ class ParameterHelper extends AbstractHelper
             $question[] = '<question>Please select a website: </question>';
 
             $websiteId = $this->askAndValidate($output, $question,
-                function($typeInput) use ($websites) {
+                function ($typeInput) use ($websites) {
                     if (!isset($websites[$typeInput - 1])) {
                         throw new InvalidArgumentException('Invalid store');
                     }
@@ -224,13 +224,11 @@ class ParameterHelper extends AbstractHelper
      */
     private function validateArgument(OutputInterface $output, $name, $value, $constraints)
     {
-
         if (strlen($value)) {
             $errors = $this->validateValue($name, $value, $constraints);
             if ($errors->count() > 0) {
                 $output->writeln('<error>' . $errors[0]->getMessage() . '</error>');
             } else {
-
                 return $value;
             }
         }
@@ -239,7 +237,7 @@ class ParameterHelper extends AbstractHelper
 
         $value = $this->askAndValidate(
             $output, $question,
-            function($inputValue) use ($constraints, $name) {
+            function ($inputValue) use ($constraints, $name) {
                 $errors = $this->validateValue($name, $inputValue, $constraints);
                 if ($errors->count() > 0) {
                     throw new InvalidArgumentException($errors[0]->getMessage());

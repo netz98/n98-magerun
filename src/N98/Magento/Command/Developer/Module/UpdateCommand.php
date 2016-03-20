@@ -519,7 +519,6 @@ class UpdateCommand extends AbstractMagentoCommand
         $this->configNodes['event_observer'] = $observer;
         $this->configNodes['event_observer_class'] = $observerClass;
         $this->configNodes['event_observer_method'] = $observerMethod;
-
     }
 
     /**
@@ -708,7 +707,6 @@ class UpdateCommand extends AbstractMagentoCommand
             $sectionNode->{$this->configNodes['default_group_name']} : $sectionNode->addChild($this->configNodes['default_group_name']);
         $this->removeChildNodeIfNotNull($groupNode, $this->configNodes['default_field_name']);
         $groupNode->addChild($this->configNodes['default_field_name'], $this->configNodes['default_field_value']);
-
     }
 
     /**

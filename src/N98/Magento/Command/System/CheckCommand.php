@@ -62,7 +62,6 @@ HELP;
 
         $this->detectMagento($output);
         if ($this->initMagento()) {
-
             $results = new ResultCollection();
 
             foreach ($this->config['checks'] as $checkGroup => $checkGroupClasses) {

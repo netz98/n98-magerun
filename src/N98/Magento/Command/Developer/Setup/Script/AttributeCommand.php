@@ -11,7 +11,6 @@
  *
  * @author Dusan Lukic <ldusan84@gmail.com>
  */
-
 namespace N98\Magento\Command\Developer\Setup\Script;
 
 use Exception;
@@ -58,7 +57,6 @@ class AttributeCommand extends AbstractMagentoCommand
             $warnings = $generator->getWarnings();
 
             $output->writeln(implode(PHP_EOL, $warnings) . PHP_EOL . $code);
-
         } catch (Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
@@ -77,5 +75,4 @@ class AttributeCommand extends AbstractMagentoCommand
 
         return $attribute;
     }
-
 }

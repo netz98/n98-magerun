@@ -4,7 +4,6 @@
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
-
 namespace N98\Util;
 
 use RuntimeException;

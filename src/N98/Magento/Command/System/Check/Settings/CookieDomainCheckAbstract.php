@@ -4,7 +4,6 @@
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
-
 namespace N98\Magento\Command\System\Check\Settings;
 
 use N98\Magento\Command\System\Check\Result;

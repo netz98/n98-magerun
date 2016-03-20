@@ -49,7 +49,6 @@ class DatabaseHelper extends AbstractHelper
     public function detectDbSettings(OutputInterface $output)
     {
         if (null !== $this->dbSettings) {
-
             return;
         }
 
@@ -325,8 +324,7 @@ class DatabaseHelper extends AbstractHelper
         if (!$result) {
             // @codeCoverageIgnoreStart
             $this->throwRuntimeException(
-                $statement
-                , sprintf('Failed to obtain tables from database: %s', var_export($query, true))
+                $statement, sprintf('Failed to obtain tables from database: %s', var_export($query, true))
             );
         } // @codeCoverageIgnoreEnd
 

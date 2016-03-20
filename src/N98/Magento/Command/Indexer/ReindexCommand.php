@@ -57,7 +57,7 @@ HELP;
                 }
                 $question[] = '<question>Please select a indexer:</question>';
 
-                $indexCodes = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($indexerList) {
+                $indexCodes = $this->getHelper('dialog')->askAndValidate($output, $question, function ($typeInput) use ($indexerList) {
                     if (strstr($typeInput, ',')) {
                         $typeInputs = \N98\Util\BinaryString::trimExplodeEmpty(',', $typeInput);
                     } else {
@@ -81,7 +81,6 @@ HELP;
             }
 
             foreach ($indexCodes as $indexCode) {
-
                 try {
                     \Mage::dispatchEvent('shell_reindex_init_process');
                     $process = $this->_getIndexerModel()->getProcessByCode($indexCode);

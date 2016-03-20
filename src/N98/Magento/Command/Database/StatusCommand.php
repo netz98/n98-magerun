@@ -91,7 +91,6 @@ HELP;
         }
 
         if (isset($this->_allVariables['Handler_read_rnd_next'])) {
-
             $tableScanRate = (($this->_allVariables['Handler_read_rnd_next'] + $this->_allVariables['Handler_read_rnd']) /
                 ($this->_allVariables['Handler_read_rnd_next'] +
                     $this->_allVariables['Handler_read_rnd'] +
@@ -105,7 +104,6 @@ HELP;
             );
         }
         if (isset($this->_allVariables['Innodb_buffer_pool_read_requests'])) {
-
             $bufferHitRate = $this->_allVariables['Innodb_buffer_pool_read_requests'] /
                 ($this->_allVariables['Innodb_buffer_pool_read_requests'] +
                     $this->_allVariables['Innodb_buffer_pool_reads']);

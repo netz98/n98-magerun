@@ -139,7 +139,6 @@ HELP;
                     'scopeId' => $store->getId(),
                 );
             }
-
         } else {
             $config->deleteConfig(
                 $path,
@@ -152,7 +151,6 @@ HELP;
                 'scope'   => $input->getOption('scope'),
                 'scopeId' => $scopeId,
             );
-
         }
 
         return $deleted;

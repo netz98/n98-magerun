@@ -79,7 +79,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
             // Get the composer bootstrap
             if (defined('PHPUNIT_COMPOSER_INSTALL')) {
                 $loader = require PHPUNIT_COMPOSER_INSTALL;
-            } else if (file_exists(__DIR__ . '/../../../../../../../autoload.php')) {
+            } elseif (file_exists(__DIR__ . '/../../../../../../../autoload.php')) {
                 // Installed via composer, already in vendor
                 $loader = require __DIR__ . '/../../../../../../../autoload.php';
             } else {
