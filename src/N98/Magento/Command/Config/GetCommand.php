@@ -188,10 +188,10 @@ HELP;
         foreach ($table as $row) {
             $value = str_replace(array("\n", "\r"), array('\n', '\r'), $row['value']);
             $line = sprintf(
-                'config:set %s --scope-id=%s --scope=%s %s',
-                $row['path'],
+                'config:set --scope-id=%s --scope=%s -- %s %s',
                 $row['scope_id'],
                 $row['scope'],
+                escapeshellarg($row['path']),
                 escapeshellarg($value)
             );
             $output->writeln($line);
