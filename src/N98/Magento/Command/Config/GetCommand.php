@@ -2,12 +2,12 @@
 
 namespace N98\Magento\Command\Config;
 
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class GetCommand extends AbstractConfigCommand
 {
@@ -17,8 +17,8 @@ class GetCommand extends AbstractConfigCommand
             ->setName('config:get')
             ->setDescription('Get a core config item')
             ->setHelp(
-<<<EOT
-If <info>path</info> is not set, all available config items will be listed.
+                <<<EOT
+                If <info>path</info> is not set, all available config items will be listed.
 The <info>path</info> may contain wildcards (*).
 If <info>path</info> ends with a trailing slash, all child items will be listed. E.g.
 
@@ -43,8 +43,7 @@ EOT
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
-        ;
+            );
 
         $help = <<<HELP
 If path is not set, all available config items will be listed. path may contain wildcards (*)
@@ -53,7 +52,7 @@ HELP;
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int|void
@@ -61,66 +60,68 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
-            /* @var $collection \Mage_Core_Model_Resource_Db_Collection_Abstract */
-            $collection = $this->_getConfigDataModel()->getCollection();
-            $searchPath = $input->getArgument('path');
+        if (!$this->initMagento()) {
+            return;
+        }
 
-            if (substr($input->getArgument('path'), -1, 1) === '/') {
-                $searchPath .= '*';
-            }
+        /* @var $collection \Mage_Core_Model_Resource_Db_Collection_Abstract */
+        $collection = $this->_getConfigDataModel()->getCollection();
 
-            $collection->addFieldToFilter('path', array(
-                'like' => str_replace('*', '%', $searchPath)
-            ));
+        $searchPath = $input->getArgument('path');
 
-            if ($scopeId = $input->getOption('scope')) {
-                $collection->addFieldToFilter('scope', array('eq' => $scopeId));
-            }
+        if (substr($input->getArgument('path'), -1, 1) === '/') {
+            $searchPath .= '*';
+        }
 
-            if ($scopeId = $input->getOption('scope-id')) {
-                $collection->addFieldToFilter(
-                    'scope_id',
-                    array(
-                        'eq' => $scopeId
-                    )
-                );
-            }
+        $collection->addFieldToFilter('path', array(
+            'like' => str_replace('*', '%', $searchPath)
+        ));
 
-            $collection->addOrder('path', 'ASC');
+        if ($scopeId = $input->getOption('scope')) {
+            $collection->addFieldToFilter('scope', array('eq' => $scopeId));
+        }
 
-            // sort according to the config overwrite order
-            // trick to force order default -> (f)website -> store , because f comes after d and before s
-            $collection->addOrder('REPLACE(scope, "website", "fwebsite")', 'ASC');
+        if ($scopeId = $input->getOption('scope-id')) {
+            $collection->addFieldToFilter(
+                'scope_id',
+                array('eq' => $scopeId)
+            );
+        }
 
-            $collection->addOrder('scope_id', 'ASC');
+        $collection->addOrder('path', 'ASC');
 
-            if ($collection->count() == 0) {
-                $output->writeln(sprintf("Couldn't find a config value for \"%s\"", $input->getArgument('path')));
-                return;
-            }
+        // sort according to the config overwrite order
+        // trick to force order default -> (f)website -> store , because f comes after d and before s
+        $collection->addOrder('REPLACE(scope, "website", "fwebsite")', 'ASC');
 
-            foreach ($collection as $item) {
-                $table[] = array(
-                    'path'     => $item->getPath(),
-                    'scope'    => $item->getScope(),
-                    'scope_id' => $item->getScopeId(),
-                    'value'    => $this->_formatValue(
-                        $item->getValue(),
-                        $input->getOption('decrypt') ? 'decrypt' : false
-                    ),
-                );
-            }
+        $collection->addOrder('scope_id', 'ASC');
 
-            ksort($table);
+        if ($collection->count() == 0) {
+            $output->writeln(sprintf("Couldn't find a config value for \"%s\"", $input->getArgument('path')));
 
-            if ($input->getOption('update-script')) {
-                $this->renderAsUpdateScript($output, $table);
-            } elseif ($input->getOption('magerun-script')) {
-                $this->renderAsMagerunScript($output, $table);
-            } else {
-                $this->renderAsTable($output, $table, $input->getOption('format'));
-            }
+            return;
+        }
+
+        foreach ($collection as $item) {
+            $table[] = array(
+                'path'     => $item->getPath(),
+                'scope'    => $item->getScope(),
+                'scope_id' => $item->getScopeId(),
+                'value'    => $this->_formatValue(
+                    $item->getValue(),
+                    $input->getOption('decrypt') ? 'decrypt' : false
+                ),
+            );
+        }
+
+        ksort($table);
+
+        if ($input->getOption('update-script')) {
+            $this->renderAsUpdateScript($output, $table);
+        } elseif ($input->getOption('magerun-script')) {
+            $this->renderAsMagerunScript($output, $table);
+        } else {
+            $this->renderAsTable($output, $table, $input->getOption('format'));
         }
     }
 
@@ -148,7 +149,7 @@ HELP;
 
     /**
      * @param OutputInterface $output
-     * @param array           $table
+     * @param array $table
      */
     protected function renderAsUpdateScript(OutputInterface $output, $table)
     {
@@ -181,7 +182,7 @@ HELP;
 
     /**
      * @param OutputInterface $output
-     * @param array           $table
+     * @param array $table
      */
     protected function renderAsMagerunScript(OutputInterface $output, $table)
     {

@@ -2,13 +2,13 @@
 
 namespace N98\Magento\Application;
 
+use N98\Util\ArrayFunctions;
 use N98\Util\BinaryString;
 use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
-use N98\Util\ArrayFunctions;
 
 /**
  * Config consists of several parts which are merged.
@@ -20,6 +20,7 @@ use N98\Util\ArrayFunctions;
  * The toArray method only works if the Magento folder specific configuration is already loaded.
  *
  * Class ConfigurationLoader
+ *
  * @package N98\Magento\Command
  */
 class ConfigurationLoader
@@ -119,7 +120,7 @@ class ConfigurationLoader
 
     /**
      * @param string $magentoRootFolder
-     * @param bool   $loadExternalConfig
+     * @param bool $loadExternalConfig
      * @param string $magerunStopFileFolder
      */
     public function loadStageTwo($magentoRootFolder, $loadExternalConfig = true, $magerunStopFileFolder = '')
@@ -196,13 +197,14 @@ class ConfigurationLoader
         }
 
         $config = ArrayFunctions::mergeArrays($config, $this->_systemConfig);
+
         return $config;
     }
 
     /**
      * Load config from all installed bundles
      *
-     * @param array  $config
+     * @param array $config
      * @param string $magentoRootFolder
      *
      * @return array
@@ -239,7 +241,8 @@ class ConfigurationLoader
                         ->name($this->_customConfigFilename)
                         ->in($this->getVendorDir());
 
-                    foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                    foreach ($finder as $file) {
+                        /* @var $file \Symfony\Component\Finder\SplFileInfo */
                         $this->registerPluginConfigFile($magentoRootFolder, $file);
                     }
                 }
@@ -256,7 +259,8 @@ class ConfigurationLoader
                     ->name($this->_customConfigFilename)
                     ->in($moduleBaseFolders);
 
-                foreach ($finder as $file) { /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                foreach ($finder as $file) {
+                    /* @var $file \Symfony\Component\Finder\SplFileInfo */
                     $this->registerPluginConfigFile($magentoRootFolder, $file);
                 }
             }
@@ -268,8 +272,8 @@ class ConfigurationLoader
     }
 
     /**
-     * @param string                                $rawConfig
-     * @param string                                $magentoRootFolder
+     * @param string $rawConfig
+     * @param string $magentoRootFolder
      * @param \Symfony\Component\Finder\SplFileInfo $file
      *
      * @return string
@@ -288,7 +292,7 @@ class ConfigurationLoader
     /**
      * Check if there is a user config file. ~/.n98-magerun.yaml
      *
-     * @param array  $config
+     * @param array $config
      * @param string $magentoRootFolder
      *
      * @return array
@@ -297,7 +301,7 @@ class ConfigurationLoader
     {
         if ($this->_userConfig == null) {
             $this->_userConfig = array();
-            $homeDirectory =  OperatingSystem::getHomeDir();
+            $homeDirectory = OperatingSystem::getHomeDir();
             if (OperatingSystem::isWindows()) {
                 $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . $this->_customConfigFilename;
             } else {
@@ -360,7 +364,7 @@ class ConfigurationLoader
     /**
      * Loads a plugin config file and merges it to plugin config
      *
-     * @param string       $magentoRootFolder
+     * @param string $magentoRootFolder
      * @param SplFileInfo $file
      */
     protected function registerPluginConfigFile($magentoRootFolder, $file)
@@ -376,6 +380,7 @@ class ConfigurationLoader
 
             if ($path === false) {
                 $this->_output->writeln(sprintf("<error>Plugin config file broken link '%s'</error>", $file));
+
                 return;
             }
         }
