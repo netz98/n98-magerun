@@ -21,10 +21,13 @@ class PublishCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('cms:page:publish')
-            ->addArgument('page_id', InputArgument::REQUIRED, 'Even if the Revision ID is unique, we require the page id for security reasons')
+            ->addArgument(
+                'page_id',
+                InputArgument::REQUIRED,
+                'Even if the Revision ID is unique, we require the page id for security reasons'
+            )
             ->addArgument('revision_id', InputArgument::REQUIRED, 'Revision ID (the ID, not the sequential number)')
-            ->setDescription('Publish a CMS page revision (Enterprise only)')
-        ;
+            ->setDescription('Publish a CMS page revision (Enterprise only)');
     }
 
     /**
@@ -52,7 +55,7 @@ class PublishCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int|void
@@ -70,16 +73,20 @@ class PublishCommand extends AbstractMagentoCommand
 
             if (!$revision->getId()) {
                 $output->writeln('<error>Revision was not found</error>');
+
                 return;
             }
 
             if ($revision->getPageId() != $pageId) {
-                $output->writeln(sprintf('<error>Revision\'s page id (%d) does not match the given page id</error>', $revision->getPageId()));
+                $output->writeln(sprintf(
+                    '<error>Revision\'s page id (%d) does not match the given page id</error>',
+                    $revision->getPageId()
+                ));
+
                 return;
             }
             $revision->publish();
             $output->writeln('<info>Page published</info>');
-
         }
     }
 }

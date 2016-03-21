@@ -4,6 +4,7 @@ namespace N98\Magento\Command\Indexer;
 
 use Exception;
 use InvalidArgumentException;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,8 +16,7 @@ class ReindexCommand extends AbstractIndexerCommand
         $this
             ->setName('index:reindex')
             ->addArgument('index_code', InputArgument::OPTIONAL, 'Code of indexer.')
-            ->setDescription('Reindex a magento index by code')
-        ;
+            ->setDescription('Reindex a magento index by code');
 
         $help = <<<HELP
 Index by indexer code. Code is optional. If you don't specify a code you can pick a indexer from a list.
@@ -37,7 +37,7 @@ HELP;
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int|void
@@ -53,11 +53,15 @@ HELP;
             if ($indexCode === null) {
                 $question = array();
                 foreach ($indexerList as $key => $indexer) {
-                    $question[] = '<comment>' . str_pad('[' . ($key + 1) . ']', 4, ' ', STR_PAD_RIGHT) . '</comment> ' . str_pad($indexer['code'], 40, ' ', STR_PAD_RIGHT) . ' <info>(last runtime: ' . $indexer['last_runtime'] . ')</info>' . "\n";
+                    $question[] = '<comment>' . str_pad('[' . ($key + 1) . ']', 4, ' ', STR_PAD_RIGHT) . '</comment> ' .
+                        str_pad($indexer['code'], 40, ' ', STR_PAD_RIGHT) . ' <info>(last runtime: ' .
+                        $indexer['last_runtime'] . ')</info>' . "\n";
                 }
                 $question[] = '<question>Please select a indexer:</question>';
 
-                $indexCodes = $this->getHelper('dialog')->askAndValidate($output, $question, function($typeInput) use ($indexerList) {
+                /** @var  DialogHelper $dialog */
+                $dialog = $this->getHelper('dialog');
+                $indexCodes = $dialog->askAndValidate($output, $question, function ($typeInput) use ($indexerList) {
                     if (strstr($typeInput, ',')) {
                         $typeInputs = \N98\Util\BinaryString::trimExplodeEmpty(',', $typeInput);
                     } else {
@@ -81,7 +85,6 @@ HELP;
             }
 
             foreach ($indexCodes as $indexCode) {
-
                 try {
                     \Mage::dispatchEvent('shell_reindex_init_process');
                     $process = $this->_getIndexerModel()->getProcessByCode($indexCode);
@@ -98,7 +101,8 @@ HELP;
                         $estimatedEnd = new \DateTime('now', new \DateTimeZone('UTC'));
                         $estimatedEnd->add(new \DateInterval('PT' . $runtimeInSeconds . 'S'));
                         $output->writeln(
-                            '<info>Estimated end: <comment>' . $estimatedEnd->format('Y-m-d H:i:s T') . '</comment></info>'
+                            '<info>Estimated end: <comment>' . $estimatedEnd->format('Y-m-d H:i:s T') .
+                            '</comment></info>'
                         );
                     }
 
@@ -108,7 +112,8 @@ HELP;
                     \Mage::dispatchEvent($process->getIndexerCode() . '_shell_reindex_after');
                     $endTime = new \DateTime('now');
                     $output->writeln(
-                        '<info>Successfully reindexed <comment>' . $indexCode . '</comment> (Runtime: <comment>' . $dateTimeUtils->getDifferenceAsString(
+                        '<info>Successfully reindexed <comment>' . $indexCode . '</comment> (Runtime: <comment>' .
+                        $dateTimeUtils->getDifferenceAsString(
                             $startTime,
                             $endTime
                         ) . '</comment>)</info>'

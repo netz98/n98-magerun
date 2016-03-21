@@ -8,7 +8,6 @@ use Mage_Customer_Model_Resource_Customer_Collection;
 use Mage_Directory_Model_Resource_Country_Collection;
 use Mage_Directory_Model_Resource_Region_Collection;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Exec;
 
 /**
  * Class AbstractCustomerCommand
@@ -30,7 +29,10 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
      */
     protected function getCustomerCollection()
     {
-        return $this->_getResourceModel('customer/customer_collection', 'Mage_Customer_Model_Resource_Customer_Collection');
+        return $this->_getResourceModel(
+            'customer/customer_collection',
+            'Mage_Customer_Model_Resource_Customer_Collection'
+        );
     }
 
     /**
@@ -46,7 +48,10 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
      */
     protected function getRegionCollection()
     {
-        return $this->_getResourceModel('directory/region_collection', 'Mage_Directory_Model_Resource_Region_Collection');
+        return $this->_getResourceModel(
+            'directory/region_collection',
+            'Mage_Directory_Model_Resource_Region_Collection'
+        );
     }
 
     /**
@@ -54,6 +59,9 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
      */
     protected function getCountryCollection()
     {
-        return $this->_getResourceModel('directory/country_collection', 'Mage_Directory_Model_Resource_Country_Collection');
+        return $this->_getResourceModel(
+            'directory/country_collection',
+            'Mage_Directory_Model_Resource_Country_Collection'
+        );
     }
 }

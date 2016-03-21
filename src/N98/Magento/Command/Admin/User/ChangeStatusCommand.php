@@ -36,7 +36,7 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
             // Username
 
             $id = $this->getOrAskForArgument('id', $input, $output, 'Username or Email');
-                        $user = $this->getUserModel()->loadByUsername($id);
+            $user = $this->getUserModel()->loadByUsername($id);
             if (!$user->getId()) {
                 $user = $this->getUserModel()->load($id, 'email');
             }
@@ -69,11 +69,16 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
                 $user->save();
 
                 if ($user->getIsActive() == 1) {
-                    $output->writeln('<info>User <comment>' . $user->getUsername() . '</comment> is now <comment>active</comment></info>');
+                    $output->writeln(
+                        '<info>User <comment>' . $user->getUsername() . '</comment>' .
+                        ' is now <comment>active</comment></info>'
+                    );
                 } else {
-                    $output->writeln('<info>User <comment>' . $user->getUsername() . '</comment> is now <comment>inactive</comment></info>');
+                    $output->writeln(
+                        '<info>User <comment>' . $user->getUsername() . '</comment>' .
+                        ' is now <comment>inactive</comment></info>'
+                    );
                 }
-
             } catch (Exception $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
             }

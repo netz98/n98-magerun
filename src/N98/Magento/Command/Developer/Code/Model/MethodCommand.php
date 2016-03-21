@@ -47,11 +47,14 @@ class MethodCommand extends AbstractMagentoCommand
         $this
             ->setName('dev:code:model:method')
             ->addArgument('modelName', InputOption::VALUE_REQUIRED, 'Model Name namespace/modelName')
-            ->setDescription('Code annotations: Reads the columns from a table and writes the getter and setter methods into the class file for @methods.');
+            ->setDescription(
+                'Code annotations: Reads the columns from a table and writes the getter and setter methods into the ' .
+                'class file for @methods.'
+            );
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int|null|void
@@ -59,7 +62,7 @@ class MethodCommand extends AbstractMagentoCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->_input  = $input;
+        $this->_input = $input;
         $this->_output = $output;
         $this->detectMagento($this->_output, true);
         if (false === $this->initMagento()) {
@@ -75,7 +78,7 @@ class MethodCommand extends AbstractMagentoCommand
     protected function writeToClassFile()
     {
         $modelFileContent = implode('', file($this->_fileName));
-        $fileParts        = preg_split('~(\s+)(class)(\s+)([a-z0-9_]+)~i', $modelFileContent, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $fileParts = preg_split('~(\s+)(class)(\s+)([a-z0-9_]+)~i', $modelFileContent, -1, PREG_SPLIT_DELIM_CAPTURE);
         foreach ($fileParts as $index => $part) {
             if (strtolower($part) === 'class') {
                 $fileParts[$index] = $this->generateComment() . $part;
@@ -102,11 +105,14 @@ class MethodCommand extends AbstractMagentoCommand
     protected function getGetterSetter()
     {
         $modelClassName = get_class($this->_mageModel);
-        $getterSetter   = array();
+        $getterSetter = array();
         foreach ($this->_tableColumns as $colName => $colProp) {
-            $getterSetter[] = sprintf(' * @method %s get%s()', $this->getColumnType($colProp['Type']), $this->camelize($colName));
-            $getterSetter[] = sprintf(' * @method %s set%s(%s $value)', $modelClassName, $this->camelize($colName), $this->getColumnType($colProp['Type']));
+            $getterSetter[] = sprintf(' * @method %s get%s()', $this->getColumnType($colProp['Type']),
+                $this->camelize($colName));
+            $getterSetter[] = sprintf(' * @method %s set%s(%s $value)', $modelClassName, $this->camelize($colName),
+                $this->getColumnType($colProp['Type']));
         }
+
         return $getterSetter;
     }
 
@@ -129,7 +135,7 @@ class MethodCommand extends AbstractMagentoCommand
      */
     protected function getColumnType($columnType)
     {
-        $cte        = explode('(', $columnType);
+        $cte = explode('(', $columnType);
         $columnType = strtolower($cte[0]);
         $typeMapper = array(
             'int'        => 'int',
@@ -164,7 +170,7 @@ class MethodCommand extends AbstractMagentoCommand
         /* @var $dbHelper \N98\Util\Console\Helper\DatabaseHelper */
         /** @var \PDO $connection */
         $connection = $dbHelper->getConnection($this->_output);
-        $stmt       = $connection->query('SHOW COLUMNS FROM ' . $this->_mageModelTable, \PDO::FETCH_ASSOC);
+        $stmt = $connection->query('SHOW COLUMNS FROM ' . $this->_mageModelTable, \PDO::FETCH_ASSOC);
         foreach ($stmt as $row) {
             $this->_tableColumns[$row['Field']] = $row;
         }
@@ -187,12 +193,17 @@ class MethodCommand extends AbstractMagentoCommand
                 return $fullPath;
             }
         }
+
         return false;
     }
 
     protected function checkClassFileName()
     {
-        $fileName        = str_replace(' ', DIRECTORY_SEPARATOR, ucwords(str_replace('_', ' ', get_class($this->_mageModel)))) . '.php';
+        $fileName = str_replace(
+            ' ',
+            DIRECTORY_SEPARATOR,
+            ucwords(str_replace('_', ' ', get_class($this->_mageModel)))
+        ) . '.php';
         $this->_fileName = $this->searchFullPath($fileName);
 
         if (false === $this->_fileName) {
@@ -207,9 +218,12 @@ class MethodCommand extends AbstractMagentoCommand
             throw new InvalidArgumentException('Model ' . $this->_input->getArgument('modelName') . ' not found!');
         }
 
-        $this->_mageModelTable = $this->_mageModel->getResource() ? $this->_mageModel->getResource()->getMainTable() : null;
+        $this->_mageModelTable = $this->_mageModel->getResource()
+            ? $this->_mageModel->getResource()->getMainTable() : null;
         if (true === empty($this->_mageModelTable)) {
-            throw new InvalidArgumentException('Cannot find main table of model ' . $this->_input->getArgument('modelName'));
+            throw new InvalidArgumentException(
+                'Cannot find main table of model ' . $this->_input->getArgument('modelName')
+            );
         }
     }
 }

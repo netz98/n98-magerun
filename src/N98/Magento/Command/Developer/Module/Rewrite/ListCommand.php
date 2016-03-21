@@ -33,7 +33,6 @@ class ListCommand extends AbstractRewriteCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-
             $rewrites = array_merge($this->loadRewrites(), $this->loadAutoloaderRewrites());
 
             $table = array();

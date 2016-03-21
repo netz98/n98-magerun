@@ -28,7 +28,6 @@ class FlushCommand extends AbstractCacheCommand
         $this->banUseCache();
 
         if ($this->initMagento()) {
-
             \Mage::app()->loadAreaPart('adminhtml', 'events');
             \Mage::dispatchEvent('adminhtml_cache_flush_all', array('output' => $output));
             $result = \Mage::app()->getCacheInstance()->flush();
@@ -49,13 +48,11 @@ class FlushCommand extends AbstractCacheCommand
                     $output->writeln('<error>Failed to clear FPC</error>');
                 }
             }
-
         }
     }
 
     protected function isEnterpriseFullPageCachePresent()
     {
-
         $isModuleEnabled = \Mage::helper('core')->isModuleEnabled('Enterprise_PageCache');
         return $this->_magentoEnterprise && $isModuleEnabled && version_compare(\Mage::getVersion(), '1.11.0.0', '>=');
     }

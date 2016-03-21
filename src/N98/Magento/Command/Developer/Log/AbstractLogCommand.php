@@ -80,7 +80,7 @@ class AbstractLogCommand extends AbstractMagentoCommand
 
         /** @var $dialog DialogHelper */
         $dialog  = $this->getHelperSet()->get('dialog');
-        $logFile = $dialog->askAndValidate($output, $question, function($typeInput) use ($files) {
+        $logFile = $dialog->askAndValidate($output, $question, function ($typeInput) use ($files) {
             if (!isset($files[$typeInput - 1])) {
                 throw new InvalidArgumentException('Invalid file');
             }

@@ -4,6 +4,8 @@ IFS=$'\n\t'
 
 . build/circleci/source.sh
 
+grep -v 'remove uninstall test' phpunit.xml.dist > phpunit.xml
+
 buildecho "php version:"
 php --version
 

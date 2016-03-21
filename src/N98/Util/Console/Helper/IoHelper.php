@@ -1,8 +1,9 @@
 <?php
-/*
- * @author Tom Klingenberg <mot@fsfe.org>
+/**
+ * this file is part of magerun
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
-
 namespace N98\Util\Console\Helper;
 
 use Symfony\Component\Console\ConsoleEvents;
@@ -12,7 +13,6 @@ use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
 
 /**
  * Class IoHelper
@@ -131,4 +131,3 @@ class IoHelper implements HelperInterface, EventSubscriberInterface
         );
     }
 }
-

@@ -1,8 +1,9 @@
 <?php
-/*
- * @author Tom Klingenberg <mot@fsfe.org>
+/**
+ * this file is part of magerun
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
-
 namespace N98\Magento\Command\System\Check\Settings;
 
 use Mage_Core_Model_Store;
@@ -35,9 +36,15 @@ abstract class BaseUrlCheckAbstract extends CheckAbstract
         $isValid = (bool) strstr($host, '.');
         $result->setStatus($isValid);
         if ($isValid) {
-            $result->setMessage('<info>' . ucfirst($this->class) . ' BaseURL: <comment>' . $baseUrl . '</comment> of Store: <comment>' . $store->getCode() . '</comment> - OK');
+            $result->setMessage(
+                '<info>' . ucfirst($this->class) . ' BaseURL: <comment>' . $baseUrl . '</comment> of Store: <comment>' .
+                $store->getCode() . '</comment> - OK'
+            );
         } else {
-            $result->setMessage('<error>Invalid ' . ucfirst($this->class) . ' BaseURL: <comment>' . $baseUrl . '</comment> of Store: <comment>' . $store->getCode() . '</comment> ' . $errorMessage . '</error>');
+            $result->setMessage(
+                '<error>Invalid ' . ucfirst($this->class) . ' BaseURL: <comment>' . $baseUrl .
+                '</comment> of Store: <comment>' . $store->getCode() . '</comment> ' . $errorMessage . '</error>'
+            );
         }
     }
 }

@@ -57,11 +57,16 @@ EOT
 
         // check for permissions in local filesystem before start connection process
         if (!is_writable($tempDirectory = dirname($tempFilename))) {
-            throw new FilesystemException('n98-magerun update failed: the "' . $tempDirectory . '" directory used to download the temp file could not be written');
+            throw new FilesystemException(
+                'n98-magerun update failed: the "' . $tempDirectory .
+                '" directory used to download the temp file could not be written'
+            );
         }
 
         if (!is_writable($localFilename)) {
-            throw new FilesystemException('n98-magerun update failed: the "' . $localFilename . '" file could not be written');
+            throw new FilesystemException(
+                'n98-magerun update failed: the "' . $localFilename . '" file could not be written'
+            );
         }
 
         $io = new ConsoleIO($input, $output, $this->getHelperSet());

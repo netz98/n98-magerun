@@ -23,8 +23,11 @@ class InfoCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:info')
-            ->addArgument('key', InputArgument::OPTIONAL, 'Only output value of named param like "version". Key is case insensitive.')
-            ->setDescription('Prints infos about the current magento system.')
+            ->addArgument(
+                'key',
+                InputArgument::OPTIONAL,
+                'Only output value of named param like "version". Key is case insensitive.'
+            )->setDescription('Prints infos about the current magento system.')
             ->addOption(
                 'format',
                 null,
@@ -162,9 +165,12 @@ class InfoCommand extends AbstractMagentoCommand
                 ->sortByName();
 
             $vendors = iterator_to_array($finder);
-            $vendors = array_map(function($value) use ($codePoolDir) {
+            $vendors = array_map(
+                function ($value) use ($codePoolDir) {
                     return str_replace($codePoolDir, '', $value);
-                }, $vendors);
+                },
+                $vendors
+            );
 
             $this->infos['Vendors (' . $codePool . ')'] = implode(', ', $vendors);
         }

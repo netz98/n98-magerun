@@ -39,7 +39,6 @@ class ChangeVersionCommand extends AbstractSetupCommand
         $this->detectMagento($output, true);
 
         if ($this->initMagento()) {
-
             $moduleVersion  = $input->getArgument('version');
             $moduleName     = $this->getModule($input);
             $setupName      = $input->getArgument('setup');

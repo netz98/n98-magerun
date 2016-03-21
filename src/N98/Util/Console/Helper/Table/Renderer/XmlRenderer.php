@@ -1,8 +1,9 @@
 <?php
-/*
- * @author Tom Klingenberg <mot@fsfe.org>
+/**
+ * this file is part of magerun
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
-
 namespace N98\Util\Console\Helper\Table\Renderer;
 
 use DOMDocument;
@@ -42,7 +43,7 @@ class XmlRenderer implements RendererInterface
         $this->appendRows($table, $rows);
 
         /** @var $output \Symfony\Component\Console\Output\StreamOutput */
-        $output->write($dom->saveXML(), false, $output::OUTPUT_RAW);
+        $output->write($dom->saveXML($dom, LIBXML_NOEMPTYTAG), false, $output::OUTPUT_RAW);
     }
 
     private function appendRows(DOMElement $parent, array $rows)
@@ -132,7 +133,10 @@ class XmlRenderer implements RendererInterface
         $name = preg_replace("/[^a-z0-9]/ui", '_', $string);
         if (null === $name) {
             throw new RuntimeException(
-                sprintf('Encoding error, only US-ASCII and UTF-8 supported, can not process %s', var_export($string, true))
+                sprintf(
+                    'Encoding error, only US-ASCII and UTF-8 supported, can not process %s',
+                    var_export($string, true)
+                )
             );
         }
 

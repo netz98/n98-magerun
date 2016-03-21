@@ -2,8 +2,8 @@
 
 namespace N98\Util\Faker\Provider;
 
-class Internet extends \Faker\Provider\Internet {
-
+class Internet extends \Faker\Provider\Internet
+{
     // Reduce the chance of conflicts.
     protected static $userNameFormats = array(
         '{{lastName}}.{{firstName}}.######',
@@ -11,5 +11,4 @@ class Internet extends \Faker\Provider\Internet {
         '{{firstName}}.######',
         '?{{lastName}}.######',
     );
-
 }

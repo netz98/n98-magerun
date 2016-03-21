@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\System;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class MaintenanceCommandTest extends TestCase
 {
@@ -11,7 +11,12 @@ class MaintenanceCommandTest extends TestCase
     {
         $application = $this->getApplication();
         $application->add(new MaintenanceCommand());
-        $command = $this->getApplication()->find('sys:maintenance');
+        $command = $application->find('sys:maintenance');
+
+        $magentoRootFolder = $application->getMagentoRootFolder();
+        if (!is_writable($magentoRootFolder)) {
+            $this->markTestSkipped('Magento root folder must be writable.');
+        }
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -21,7 +26,7 @@ class MaintenanceCommandTest extends TestCase
             )
         );
         $this->assertRegExp('/Maintenance mode on/', $commandTester->getDisplay());
-        $this->assertFileExists($this->getApplication()->getMagentoRootFolder() . '/maintenance.flag');
+        $this->assertFileExists($magentoRootFolder . '/maintenance.flag');
 
         $commandTester->execute(
             array(
@@ -30,6 +35,6 @@ class MaintenanceCommandTest extends TestCase
             )
         );
         $this->assertRegExp('/Maintenance mode off/', $commandTester->getDisplay());
-        $this->assertFileNotExists($this->getApplication()->getMagentoRootFolder() . '/maintenance.flag');
+        $this->assertFileNotExists($magentoRootFolder . '/maintenance.flag');
     }
 }

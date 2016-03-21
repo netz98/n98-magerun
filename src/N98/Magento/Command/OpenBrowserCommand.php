@@ -70,5 +70,4 @@ class OpenBrowserCommand extends AbstractMagentoCommand
             Exec::run(escapeshellcmd($opener . ' ' . $url));
         }
     }
-
 }

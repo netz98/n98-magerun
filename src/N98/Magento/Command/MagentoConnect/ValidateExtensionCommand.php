@@ -18,10 +18,30 @@ class ValidateExtensionCommand extends AbstractMagentoCommand
         $this
             ->setName('extension:validate')
             ->addArgument('package', InputArgument::OPTIONAL, 'Package_Module to check')
-            ->addOption('skip-file', null, InputOption::VALUE_NONE, 'If set, command will skip reporting the existence of package files')
-            ->addOption('skip-hash', null, InputOption::VALUE_NONE, 'If set, command will skip validating the package file hashes')
-            ->addOption('full-report', null, InputOption::VALUE_NONE, 'If set, command will report on ALL package files')
-            ->addOption('include-default', null, InputOption::VALUE_NONE, 'Include default packages that ship with Magento Connect')
+            ->addOption(
+                'skip-file',
+                null,
+                InputOption::VALUE_NONE,
+                'If set, command will skip reporting the existence of package files'
+            )
+            ->addOption(
+                'skip-hash',
+                null,
+                InputOption::VALUE_NONE,
+                'If set, command will skip validating the package file hashes'
+            )
+            ->addOption(
+                'full-report',
+                null,
+                InputOption::VALUE_NONE,
+                'If set, command will report on ALL package files'
+            )
+            ->addOption(
+                'include-default',
+                null,
+                InputOption::VALUE_NONE,
+                'Include default packages that ship with Magento Connect'
+            )
             ->setDescription('Reads Magento Connect Config, and checks that installed package files are really there');
 
         $help = <<<HELP
@@ -57,7 +77,7 @@ HELP;
         $this->_init($output);
 
         $packages = array($input->getArgument('package'));
-        if ($packages == array(NULL)) {
+        if ($packages == array(null)) {
             $packages = $this->_getInstalledPackages();
         }
 
@@ -120,6 +140,7 @@ HELP;
 
     /**
      * @param string $targetName
+     * @return string
      */
     protected function _getBasePathFromTargetName($targetName)
     {
@@ -341,5 +362,4 @@ HELP;
     {
         return \Mage::getBaseDir() . '/downloader/cache.cfg';
     }
-
 }

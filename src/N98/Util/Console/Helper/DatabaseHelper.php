@@ -49,7 +49,6 @@ class DatabaseHelper extends AbstractHelper
     public function detectDbSettings(OutputInterface $output)
     {
         if (null !== $this->dbSettings) {
-
             return;
         }
 
@@ -59,7 +58,9 @@ class DatabaseHelper extends AbstractHelper
         $configFile = $application->getMagentoRootFolder() . '/app/etc/local.xml';
 
         if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-            $output->writeln(sprintf('<debug>Loading database configuration from file <info>%s</info></debug>', $configFile));
+            $output->writeln(
+                sprintf('<debug>Loading database configuration from file <info>%s</info></debug>', $configFile)
+            );
         }
 
         try {
@@ -252,7 +253,11 @@ class DatabaseHelper extends AbstractHelper
                 }
                 if (!isset($resolved[$code])) {
                     $resolved[$code] = true;
-                    $tables          = $this->resolveTables(explode(' ', $definitions[$code]['tables']), $definitions, $resolved);
+                    $tables          = $this->resolveTables(
+                        explode(' ', $definitions[$code]['tables']),
+                        $definitions,
+                        $resolved
+                    );
                     $resolvedList    = array_merge($resolvedList, $tables);
                 }
                 continue;
@@ -261,7 +266,10 @@ class DatabaseHelper extends AbstractHelper
             // resolve wildcards
             if (strpos($entry, '*') !== false) {
                 $connection = $this->getConnection();
-                $sth        = $connection->prepare('SHOW TABLES LIKE :like', array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+                $sth        = $connection->prepare(
+                    'SHOW TABLES LIKE :like',
+                    array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY)
+                );
                 $sth->execute(
                     array(':like' => str_replace('*', '%', $this->dbSettings['prefix'] . $entry))
                 );
@@ -325,8 +333,7 @@ class DatabaseHelper extends AbstractHelper
         if (!$result) {
             // @codeCoverageIgnoreStart
             $this->throwRuntimeException(
-                $statement
-                , sprintf('Failed to obtain tables from database: %s', var_export($query, true))
+                $statement, sprintf('Failed to obtain tables from database: %s', var_export($query, true))
             );
         } // @codeCoverageIgnoreEnd
 

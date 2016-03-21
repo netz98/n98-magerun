@@ -4,7 +4,8 @@ namespace N98\Magento;
 
 use Composer\Autoload\ClassLoader;
 use Exception;
-use N98\Magento\Command\ConfigurationLoader;
+use Magento\Mtf\EntryPoint\EntryPoint;
+use N98\Magento\Application\ConfigurationLoader;
 use N98\Util\ArrayFunctions;
 use N98\Util\AutoloadRestorer;
 use N98\Util\Console\Helper\TwigHelper;
@@ -18,6 +19,7 @@ use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -30,8 +32,8 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-
     const APP_NAME = 'n98-magerun';
+
     /**
      * @var string
      */
@@ -118,7 +120,7 @@ class Application extends BaseApplication
     protected $_isInitialized = false;
 
     /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     * @var EventDispatcher
      */
     protected $dispatcher;
 
@@ -144,7 +146,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return \Symfony\Component\Console\Input\InputDefinition
+     * @return InputDefinition
      */
     protected function getDefaultInputDefinition()
     {
@@ -194,7 +196,6 @@ class Application extends BaseApplication
     {
         if (isset($this->partialConfig['detect']) && isset($this->partialConfig['detect']['subFolders'])) {
             return $this->partialConfig['detect']['subFolders'];
-
         }
         return array();
     }
@@ -202,8 +203,8 @@ class Application extends BaseApplication
     /**
      * Search for magento root folder
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @param InputInterface $input [optional]
+     * @param OutputInterface $output [optional]
      * @return void
      */
     public function detectMagento(InputInterface $input = null, OutputInterface $output = null)
@@ -297,7 +298,8 @@ class Application extends BaseApplication
     /**
      * @return bool
      */
-    protected function hasCustomCommands() {
+    protected function hasCustomCommands()
+    {
         return isset($this->config['commands']['customCommands'])
         && is_array($this->config['commands']['customCommands']);
     }
@@ -439,22 +441,27 @@ class Application extends BaseApplication
         $currentVarDir = $configOptions->getVarDir();
 
         if ($currentVarDir == $tempVarDir) {
-            $output->writeln(sprintf('<warning>Fallback folder %s is used in n98-magerun</warning>', $tempVarDir));
-            $output->writeln('');
-            $output->writeln('n98-magerun is using the fallback folder. If there is another folder configured for Magento, this can cause serious problems.');
-            $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
-            $output->writeln('');
+            $output->writeln(array(
+                sprintf('<warning>Fallback folder %s is used in n98-magerun</warning>', $tempVarDir),
+                '',
+                'n98-magerun is using the fallback folder. If there is another folder configured for Magento, this ' .
+                'can cause serious problems.',
+                'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
+                'for more information.',
+                '',
+            ));
         } else {
-            $output->writeln(sprintf('<warning>Folder %s found, but not used in n98-magerun</warning>', $tempVarDir));
-            $output->writeln('');
-            $output->writeln(sprintf('This might cause serious problems. n98-magerun is using the configured var-folder <comment>%s</comment>', $currentVarDir));
-            $output->writeln('Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions for more information.');
-            $output->writeln('');
-
+            $output->writeln(array(
+                sprintf('<warning>Folder %s found, but not used in n98-magerun</warning>', $tempVarDir),
+                '',
+                "This might cause serious problems. n98-magerun is using the configured var-folder " .
+                "<comment>$currentVarDir</comment>",
+                'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
+                'for more information.',
+                '',
+            ));
             return false;
         }
-
-
     }
 
     /**
@@ -603,7 +610,10 @@ class Application extends BaseApplication
                 if (is_array($alias)) {
                     $aliasCommandName = key($alias);
                     if ($input->getFirstArgument() == $aliasCommandName) {
-                        $aliasCommandParams = array_slice(BinaryString::trimExplodeEmpty(' ', $alias[$aliasCommandName]), 1);
+                        $aliasCommandParams = array_slice(
+                            BinaryString::trimExplodeEmpty(' ', $alias[$aliasCommandName]),
+                            1
+                        );
                         if (count($aliasCommandParams) > 0) {
                             // replace with aliased data
                             $mergedParams = array_merge(
@@ -796,7 +806,7 @@ class Application extends BaseApplication
      */
     private function requireOnce($path)
     {
-        $requireOnce = function() {
+        $requireOnce = function () {
             require_once  func_get_arg(0);
         };
         if (50400 <= PHP_VERSION_ID) {
@@ -847,7 +857,7 @@ MAGENTO2HINT;
     }
 
     /**
-     * @return \Symfony\Component\EventDispatcher\EventDispatcher
+     * @return EventDispatcher
      */
     public function getDispatcher()
     {
@@ -859,7 +869,7 @@ MAGENTO2HINT;
      * @param OutputInterface $output
      * @return ConfigurationLoader
      */
-    public function getConfigurationLoader(array $initConfig = array(), OutputInterface $output)
+    public function getConfigurationLoader(array $initConfig, OutputInterface $output)
     {
         if ($this->configurationLoader === null) {
             $this->configurationLoader = new ConfigurationLoader(

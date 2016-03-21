@@ -23,8 +23,15 @@ class UninstallCommand extends AbstractMagentoCommand
         $this
             ->setName('uninstall')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force')
-            ->addOption('installationFolder', null, InputOption::VALUE_OPTIONAL, 'Folder where Magento is currently installed')
-            ->setDescription('Uninstall magento (drops database and empties current folder or folder set via installationFolder)')
+            ->addOption(
+                'installationFolder',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Folder where Magento is currently installed'
+            )
+            ->setDescription(
+                'Uninstall magento (drops database and empties current folder or folder set via installationFolder)'
+            )
         ;
 
         $help = <<<HELP
@@ -49,7 +56,11 @@ HELP;
 
         $shouldUninstall = $input->getOption('force');
         if (!$shouldUninstall) {
-            $shouldUninstall = $dialog->askConfirmation($output, '<question>Really uninstall ?</question> <comment>[n]</comment>: ', false);
+            $shouldUninstall = $dialog->askConfirmation(
+                $output,
+                '<question>Really uninstall ?</question> <comment>[n]</comment>: ',
+                false
+            );
         }
 
         if ($shouldUninstall) {

@@ -66,15 +66,13 @@ class CatalogProduct extends AbstractEntityType implements EntityType
 
         // chuck a few warnings out there for things that were a little murky
         if ($newData['attribute_model']) {
-            $this->warnings[] = <<<TEXT
-<warning>WARNING, value detected in attribute_model. We've never seen a value there before and this script doesn't handle it.  Caution, etc. </warning>
-TEXT;
+            $this->warnings[] = '<warning>WARNING, value detected in attribute_model. We\'ve never seen a value ' .
+                'there before and this script doesn\'t handle it.  Caution, etc. </warning>';
         }
 
         if ($newData['is_used_for_price_rules']) {
-            $this->warnings[] = <<<TEXT
-<error>WARNING, non false value detected in is_used_for_price_rules. The setup resource migration scripts may not support this (per 1.7.0.1)</error>
-TEXT;
+            $this->warnings[] = '<error>WARNING, non false value detected in is_used_for_price_rules. ' .
+                'The setup resource migration scripts may not support this (per 1.7.0.1)</error>';
         }
 
         //load values for attributes (if any exist)
@@ -96,7 +94,8 @@ TEXT;
         $attributeLabelsCode = var_export($attributeLabels, true);
 
         $labelsScript = "
-\$attribute = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', '" . $this->attribute->getAttributeCode() . "');
+\$attribute = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', '"
+            . $this->attribute->getAttributeCode() . "');
 \$attribute->setStoreLabels($attributeLabelsCode);
 \$attribute->save();
 ";

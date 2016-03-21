@@ -35,7 +35,10 @@ class BytecodeCacheExtensionsCheck implements SimpleCheck, CommandConfigAware
         if ($result->isValid()) {
             $result->setMessage("<info>Bytecode Cache <comment>$bytecodeCacheExtension</comment> found.</info>");
         } else {
-            $result->setMessage("<error>No Bytecode-Cache found!</error> <comment>It's recommended to install anyone of " . implode(', ', $bytecopdeCacheExtensions) . ".</comment>");
+            $result->setMessage(
+                "<error>No Bytecode-Cache found!</error> <comment>It's recommended to install anyone of " .
+                implode(', ', $bytecopdeCacheExtensions) . ".</comment>"
+            );
         }
     }
 

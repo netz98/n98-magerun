@@ -4,7 +4,6 @@ namespace N98\Util\Unicode;
 
 class Charset
 {
-
     /**
      * @var int
      */
@@ -19,7 +18,8 @@ class Charset
      * @param int|array $codes
      * @return string
      */
-    public static function convertInteger($codes) {
+    public static function convertInteger($codes)
+    {
         if (is_scalar($codes)) {
             $codes = func_get_args();
         }

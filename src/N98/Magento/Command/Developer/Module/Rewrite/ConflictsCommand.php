@@ -17,8 +17,12 @@ class ConflictsCommand extends AbstractRewriteCommand
     {
         $this
             ->setName('dev:module:rewrite:conflicts')
-            ->addOption('log-junit', null, InputOption::VALUE_REQUIRED,
-                'Log conflicts in JUnit XML format to defined file.')
+            ->addOption(
+                'log-junit',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Log conflicts in JUnit XML format to defined file.'
+            )
             ->setDescription('Lists all magento rewrite conflicts');
 
         $help = <<<HELP
@@ -120,7 +124,10 @@ HELP;
         foreach ($conflicts as $conflict) {
             $message = sprintf(
                 'Rewrite conflict: Type %s | Class: %s, Rewrites: %s | Loaded class: %s',
-                $conflict['Type'], $conflict['Class'], $conflict['Rewrites'], $conflict['Loaded Class']
+                $conflict['Type'],
+                $conflict['Class'],
+                $conflict['Rewrites'],
+                $conflict['Loaded Class']
             );
             $testCase->addFailure($message, 'MagentoRewriteConflictException');
         }
@@ -177,7 +184,9 @@ HELP;
         array_map(array($table, 'appendRow'), $conflicts);
         $output->write($table->render());
         $message = sprintf(
-                '%d %s found!', $number, $number === 1 ? 'conflict was' : 'conflicts were'
+            '%d %s found!',
+            $number,
+            $number === 1 ? 'conflict was' : 'conflicts were'
         );
 
         $output->writeln('<error>' . $message . '</error>');
