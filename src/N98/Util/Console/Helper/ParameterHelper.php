@@ -4,6 +4,7 @@ namespace N98\Util\Console\Helper;
 
 use Exception;
 use InvalidArgumentException;
+use Mage_Core_Model_Website;
 use N98\Util\Validator\FakeMetadataFactory;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -109,50 +110,66 @@ class ParameterHelper extends AbstractHelper
      *
      * @return mixed
      * @throws InvalidArgumentException
-     * @throws RuntimeException
      */
     public function askWebsite(InputInterface $input, OutputInterface $output, $argumentName = 'website')
     {
         /* @var $storeManager \Mage_Core_Model_App */
         $storeManager = \Mage::app();
 
-        try {
-            if ($input->getArgument($argumentName) === null) {
-                throw new RuntimeException('No website given');
-            }
-            /** @var $website \Mage_Core_Model_Website */
-            $website = $storeManager->getWebsite($input->getArgument($argumentName));
-        } catch (Exception $e) {
-            $i = 0;
-            $websites = array();
-            foreach ($storeManager->getWebsites() as $website) {
-                $websites[$i] = $website->getId();
-                $question[] = sprintf(
-                    '<comment>[%d]</comment> ' . $website->getCode() . ' - ' . $website->getName() . PHP_EOL,
-                    ++$i
-                );
-            }
-            if (count($websites) == 1) {
-                return $storeManager->getWebsite($websites[0]);
-            }
-            $question[] = '<question>Please select a website: </question>';
+        $website = null;
+        $argumentValue = $input->getArgument($argumentName);
+        $hasArgument = $argumentValue !== null;
 
-            $websiteId = $this->askAndValidate(
-                $output,
-                $question,
-                function ($typeInput) use ($websites) {
-                    if (!isset($websites[$typeInput - 1])) {
-                        throw new InvalidArgumentException('Invalid store');
-                    }
-
-                    return $websites[$typeInput - 1];
-                }
-            );
-
-            $website = $storeManager->getWebsite($websiteId);
+        if ($hasArgument) {
+            try {
+                /* @var $website Mage_Core_Model_Website */
+                $website = $storeManager->getWebsite($argumentValue);
+                return $website;
+            } catch (Exception $e) {
+                // catch all exceptions
+            }
         }
 
+        list($websites, $question) = $this->websitesQuestion($storeManager);
+        if (count($websites) === 1) {
+            return $storeManager->getWebsite($websites[0]);
+        }
+
+        $question[] = '<question>Please select a website: </question>';
+        $callback = function ($typeInput) use ($websites) {
+            if (!isset($websites[$typeInput - 1])) {
+                throw new InvalidArgumentException('Invalid website');
+            }
+
+            return $websites[$typeInput - 1];
+        };
+
+        $websiteId = $this->askAndValidate($output, $question, $callback);
+        $website = $storeManager->getWebsite($websiteId);
+
         return $website;
+    }
+
+    /**
+     * @see askWebsite
+     * @return array websites (integers if website IDs, 0-indexed) and question array (strings)
+     */
+    private function websitesQuestion($storeManager)
+    {
+        $i = 0;
+        $websites = array();
+        $question = array();
+        foreach ($storeManager->getWebsites() as $website) {
+            /* @var $website Mage_Core_Model_Website */
+            $value = $website->getId();
+            $label = sprintf('%s - %s', $website->getCode(), $website->getName());
+            $position = $i + 1;
+
+            $websites[$i] = $value;
+            $question[$i] = sprintf('<comment>[%d]</comment> %s' . PHP_EOL, $position, $label);
+        }
+
+        return array($websites, $question);
     }
 
     /**

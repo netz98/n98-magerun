@@ -3,13 +3,13 @@
 namespace N98\Util\Console\Helper;
 
 use InvalidArgumentException;
+use N98\Magento\Application;
 use N98\Magento\DbSettings;
 use PDO;
 use PDOStatement;
 use RuntimeException;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
-use N98\Magento\Application;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -170,7 +170,7 @@ class DatabaseHelper extends AbstractHelper
         if (null === $type) {
             $type = "@@";
         } else {
-            $type = (string) $type;
+            $type = (string)$type;
         }
 
         if (!in_array($type, array("@@", "@"), true)) {
@@ -180,10 +180,10 @@ class DatabaseHelper extends AbstractHelper
         }
 
         $quoted = '`' . strtr($name, array('`' => '``')) . '`';
-        $query  = "SELECT {$type}{$quoted};";
+        $query = "SELECT {$type}{$quoted};";
 
         $connection = $this->getConnection();
-        $statement  = $connection->query($query, PDO::FETCH_COLUMN, 0);
+        $statement = $connection->query($query, PDO::FETCH_COLUMN, 0);
         if ($statement instanceof PDOStatement) {
             $result = $statement->fetchColumn(0);
         } else {
@@ -253,12 +253,12 @@ class DatabaseHelper extends AbstractHelper
                 }
                 if (!isset($resolved[$code])) {
                     $resolved[$code] = true;
-                    $tables          = $this->resolveTables(
+                    $tables = $this->resolveTables(
                         explode(' ', $definitions[$code]['tables']),
                         $definitions,
                         $resolved
                     );
-                    $resolvedList    = array_merge($resolvedList, $tables);
+                    $resolvedList = array_merge($resolvedList, $tables);
                 }
                 continue;
             }
@@ -266,7 +266,7 @@ class DatabaseHelper extends AbstractHelper
             // resolve wildcards
             if (strpos($entry, '*') !== false) {
                 $connection = $this->getConnection();
-                $sth        = $connection->prepare(
+                $sth = $connection->prepare(
                     'SHOW TABLES LIKE :like',
                     array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY)
                 );
@@ -302,19 +302,19 @@ class DatabaseHelper extends AbstractHelper
      */
     public function getTables($withoutPrefix = null)
     {
-        $withoutPrefix = (bool) $withoutPrefix;
+        $withoutPrefix = (bool)$withoutPrefix;
 
-        $db     = $this->getConnection();
+        $db = $this->getConnection();
         $prefix = $this->dbSettings['prefix'];
         $length = strlen($prefix);
 
         $columnName = 'table_name';
-        $column     = $columnName;
+        $column = $columnName;
 
         $input = array();
 
         if ($withoutPrefix && $length) {
-            $column         = sprintf('SUBSTRING(%1$s FROM 1 + CHAR_LENGTH(:name)) %1$s', $columnName);
+            $column = sprintf('SUBSTRING(%1$s FROM 1 + CHAR_LENGTH(:name)) %1$s', $columnName);
             $input[':name'] = $prefix;
         }
 
@@ -326,14 +326,15 @@ class DatabaseHelper extends AbstractHelper
             $input[':like'] = $this->quoteLike($prefix, $escape) . '%';
         }
 
-        $query     = sprintf('SELECT %s FROM information_schema.tables WHERE %s;', $column, $condition);
+        $query = sprintf('SELECT %s FROM information_schema.tables WHERE %s;', $column, $condition);
         $statement = $db->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $result    = $statement->execute($input);
+        $result = $statement->execute($input);
 
         if (!$result) {
             // @codeCoverageIgnoreStart
             $this->throwRuntimeException(
-                $statement, sprintf('Failed to obtain tables from database: %s', var_export($query, true))
+                $statement,
+                sprintf('Failed to obtain tables from database: %s', var_export($query, true))
             );
         } // @codeCoverageIgnoreEnd
 
@@ -346,7 +347,7 @@ class DatabaseHelper extends AbstractHelper
      * throw a runtime exception and provide error info for the statement if available
      *
      * @param PDOStatement $statement
-     * @param string       $message
+     * @param string $message
      *
      * @throws RuntimeException
      */
@@ -393,7 +394,7 @@ class DatabaseHelper extends AbstractHelper
      */
     public function getTablesStatus($withoutPrefix = false)
     {
-        $db     = $this->getConnection();
+        $db = $this->getConnection();
         $prefix = $this->dbSettings['prefix'];
         if (strlen($prefix) > 0) {
             $statement = $db->prepare('SHOW TABLE STATUS LIKE :like', array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
@@ -479,8 +480,8 @@ class DatabaseHelper extends AbstractHelper
     public function dropTables($output)
     {
         $result = $this->getTables();
-        $query  = 'SET FOREIGN_KEY_CHECKS = 0; ';
-        $count  = 0;
+        $query = 'SET FOREIGN_KEY_CHECKS = 0; ';
+        $count = 0;
         foreach ($result as $tableName) {
             $query .= 'DROP TABLE IF EXISTS `' . $tableName . '`; ';
             $count++;
@@ -502,8 +503,8 @@ class DatabaseHelper extends AbstractHelper
     }
 
     /**
-     * @param string $command  example: 'VARIABLES', 'STATUS'
-     * @param string $variable [optional]
+     * @param string $command example: 'VARIABLES', 'STATUS'
+     * @param string|null $variable [optional]
      *
      * @return array
      */
@@ -538,7 +539,7 @@ class DatabaseHelper extends AbstractHelper
     }
 
     /**
-     * @param string $variable [optional]
+     * @param string|null $variable [optional]
      *
      * @return array
      */
@@ -548,7 +549,7 @@ class DatabaseHelper extends AbstractHelper
     }
 
     /**
-     * @param string $variable [optional]
+     * @param string|null $variable [optional]
      *
      * @return array
      */
