@@ -37,7 +37,6 @@ Examples:
 
 HELP;
         $this->setHelp($help);
-
     }
 
     /**

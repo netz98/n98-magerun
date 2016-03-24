@@ -82,7 +82,7 @@ HELP;
     protected function printStackTrace(OutputInterface $output, array $trace)
     {
         $rootFolder = $this->getApplication()->getMagentoRootFolder();
-        $trace = array_filter($trace, function(&$row) use ($rootFolder) {
+        $trace = array_filter($trace, function (&$row) use ($rootFolder) {
             if (!strstr($row['file'], $rootFolder)) {
                 return false;
             }

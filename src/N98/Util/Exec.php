@@ -8,8 +8,8 @@ use RuntimeException;
  * Class Exec
  * @package N98\Util
  */
-class Exec {
-
+class Exec
+{
     /**
      * @var string
      */
@@ -25,8 +25,8 @@ class Exec {
      * @param string $output
      * @param int $returnCode
      */
-    public static function run($command, &$output = null, &$returnCode = null) {
-
+    public static function run($command, &$output = null, &$returnCode = null)
+    {
         if (!self::allowed()) {
             $message = sprintf("No PHP exec(), can not execute command '%s'.", $command);
             throw new RuntimeException($message);
@@ -47,8 +47,8 @@ class Exec {
      *
      * @return bool
      */
-    public static function allowed() {
-
+    public static function allowed()
+    {
         return function_exists('exec');
     }
 
@@ -58,8 +58,8 @@ class Exec {
      * @param array $commandOutput
      * @return string
      */
-    private static function parseCommandOutput(array $commandOutput) {
-
+    private static function parseCommandOutput(array $commandOutput)
+    {
         return implode(PHP_EOL, $commandOutput) . PHP_EOL;
     }
 }

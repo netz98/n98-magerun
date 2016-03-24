@@ -231,7 +231,6 @@ HELP;
                             $choices
                         );
                         $this->scriptVars[$matches[1]] = $choices[$selectedIndex];
-
                     } else {
                         throw new RuntimeException('Invalid choices');
                     }
@@ -240,7 +239,7 @@ HELP;
                     $this->scriptVars[$matches[1]] = $dialog->askAndValidate(
                         $output,
                         '<info>Please enter a value for <comment>' . $matches[1] . '</comment>:</info> ',
-                        function($value) {
+                        function ($value) {
                             if ($value == '') {
                                 throw new RuntimeException('Please enter a value');
                             }
@@ -298,7 +297,8 @@ HELP;
         if (class_exists('\Mage')) {
             $this->scriptVars['${magento.root}'] = $this->getApplication()->getMagentoRootFolder();
             $this->scriptVars['${magento.version}'] = \Mage::getVersion();
-            $this->scriptVars['${magento.edition}'] = is_callable(array('\Mage', 'getEdition')) ? \Mage::getEdition() : 'Community';
+            $this->scriptVars['${magento.edition}'] = is_callable(array('\Mage', 'getEdition'))
+                ? \Mage::getEdition() : 'Community';
         }
 
         $this->scriptVars['${php.version}']     = substr(phpversion(), 0, strpos(phpversion(), '-'));

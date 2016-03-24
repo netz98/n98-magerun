@@ -24,6 +24,7 @@ class RendererFactory
         $format = strtolower($format);
         if (isset(self::$formats[$format])) {
             $rendererClass = self::$formats[$format];
+
             return new $rendererClass;
         }
 
@@ -31,9 +32,9 @@ class RendererFactory
     }
 
     /**
-     * @param string          $format
+     * @param string $format
      * @param OutputInterface $output
-     * @param array           $rows
+     * @param array $rows
      */
     public static function render($format, OutputInterface $output, array $rows)
     {
@@ -42,7 +43,10 @@ class RendererFactory
         if (!$renderer = $factory->create($format)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Unknown format %s, known formats are: %s', var_export($format)), implode(',', self::getFormats())
+                    'Unknown format %s, known formats are: %s',
+                    var_export($format, true),
+                    implode(',', self::getFormats())
+                )
             );
         }
 

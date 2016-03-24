@@ -178,7 +178,9 @@ abstract class AbstractMagentoCommand extends Command
 
         if (!$silent) {
             $editionString = ($this->_magentoEnterprise ? ' (Enterprise Edition) ' : '');
-            $output->writeln('<info>Found Magento ' . $editionString . 'in folder "' . $this->_magentoRootFolder . '"</info>');
+            $output->writeln(
+                '<info>Found Magento ' . $editionString . 'in folder "' . $this->_magentoRootFolder . '"</info>'
+            );
         }
 
         if (!empty($this->_magentoRootFolder)) {
@@ -344,7 +346,10 @@ abstract class AbstractMagentoCommand extends Command
     protected function checkDeprecatedAliases(InputInterface $input, OutputInterface $output)
     {
         if (isset($this->_deprecatedAlias[$input->getArgument('command')])) {
-            $output->writeln('<error>Deprecated:</error> <comment>' . $this->_deprecatedAlias[$input->getArgument('command')] . '</comment>');
+            $output->writeln(
+                '<error>Deprecated:</error> <comment>' . $this->_deprecatedAlias[$input->getArgument('command')] .
+                '</comment>'
+            );
         }
     }
 
@@ -442,7 +447,7 @@ abstract class AbstractMagentoCommand extends Command
          *
          * @return string
          */
-        $validateInstallationFolder = function($folderName) use ($input) {
+        $validateInstallationFolder = function ($folderName) use ($input) {
 
             $folderName = rtrim(trim($folderName, ' '), '/');
             // resolve folder-name to current working directory if relative
@@ -495,12 +500,16 @@ abstract class AbstractMagentoCommand extends Command
             $defaultFolder = './magento';
             $question[] = "<question>Enter installation folder:</question> [<comment>" . $defaultFolder . "</comment>]";
 
-            $installationFolder = $this->getHelper('dialog')->askAndValidate($output, $question, $validateInstallationFolder, false, $defaultFolder);
-
+            $installationFolder = $this->getHelper('dialog')->askAndValidate(
+                $output,
+                $question,
+                $validateInstallationFolder,
+                false,
+                $defaultFolder
+            );
         } else {
             // @Todo improve validation and bring it to 1 single function
             $installationFolder = $validateInstallationFolder($installationFolder);
-
         }
 
         $this->config['installationFolder'] = realpath($installationFolder);
@@ -528,7 +537,6 @@ abstract class AbstractMagentoCommand extends Command
     {
         $inputArgument = $input->getArgument($argument);
         if ($inputArgument === null) {
-
             $message = $this->getArgumentMessage($argument, $message);
 
             /** @var  $dialog  \Symfony\Component\Console\Helper\DialogHelper */
@@ -552,7 +560,7 @@ abstract class AbstractMagentoCommand extends Command
         }
         $dialog .= "<question>{$question}</question> ";
 
-        $selected = $this->getHelper('dialog')->askAndValidate($output, $dialog, function($typeInput) use ($entries) {
+        $selected = $this->getHelper('dialog')->askAndValidate($output, $dialog, function ($typeInput) use ($entries) {
             if (!in_array($typeInput, range(1, count($entries)))) {
                 throw new InvalidArgumentException('Invalid type');
             }

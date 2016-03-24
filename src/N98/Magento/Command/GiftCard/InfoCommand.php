@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\GiftCard;
 
+use Enterprise_GiftCardAccount_Model_Giftcardaccount as Giftcardaccount;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -48,7 +49,7 @@ class InfoCommand extends AbstractGiftCardCommand
         $data = array(
             array('Gift Card Account ID', $card->getId()),
             array('Code', $card->getCode()),
-            array('Status', \Enterprise_GiftCardAccount_Model_Giftcardaccount::STATUS_ENABLED == $card->getStatus() ? 'Enabled' : 'Disabled'),
+            array('Status', Giftcardaccount::STATUS_ENABLED == $card->getStatus() ? 'Enabled' : 'Disabled'),
             array('Date Created', $card->getDateCreated()),
             array('Expiration Date', $card->getDateExpires()),
             array('Website ID', $card->getWebsiteId()),

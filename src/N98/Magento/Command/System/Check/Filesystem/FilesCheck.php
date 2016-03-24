@@ -37,11 +37,11 @@ class FilesCheck implements SimpleCheck, CommandAware, CommandConfigAware
                 $result->setStatus(Result::STATUS_OK);
                 $result->setMessage("<info>File <comment>" . $file . "</comment> found.</info>");
             } else {
-
                 $result->setStatus(Result::STATUS_ERROR);
-                $result->setMessage("<error>File " . $file . " not found!</error><comment> Usage: " . $comment . "</comment>");
+                $result->setMessage(
+                    "<error>File " . $file . " not found!</error><comment> Usage: " . $comment . "</comment>"
+                );
             }
-
         }
     }
 

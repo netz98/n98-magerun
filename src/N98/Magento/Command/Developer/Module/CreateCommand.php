@@ -145,7 +145,10 @@ class CreateCommand extends AbstractMagentoCommand
             mkdir($this->_magentoRootFolder . '/app/etc/modules', 0777, true);
         }
         $moduleDir = sprintf(
-            '%s/app/code/%s/%s/%s', $this->_magentoRootFolder, $this->codePool, $this->vendorNamespace,
+            '%s/app/code/%s/%s/%s',
+            $this->_magentoRootFolder,
+            $this->codePool,
+            $this->vendorNamespace,
             $this->moduleName
         );
 
@@ -163,38 +166,48 @@ class CreateCommand extends AbstractMagentoCommand
         // Add blocks folder
         if ($input->getOption('add-blocks')) {
             mkdir($this->moduleDirectory . '/Block');
-            $output->writeln('<info>Created directory: <comment>' . $this->moduleDirectory . '/Block' . '<comment></info>');
+            $output->writeln(
+                '<info>Created directory: <comment>' . $this->moduleDirectory . '/Block' . '<comment></info>'
+            );
         }
 
         // Add helpers folder
         if ($input->getOption('add-helpers')) {
             mkdir($this->moduleDirectory . '/Helper');
-            $output->writeln('<info>Created directory: <comment>' . $this->moduleDirectory . '/Helper' . '<comment></info>');
+            $output->writeln(
+                '<info>Created directory: <comment>' . $this->moduleDirectory . '/Helper' . '<comment></info>'
+            );
         }
 
         // Add models folder
         if ($input->getOption('add-models')) {
             mkdir($this->moduleDirectory . '/Model');
-            $output->writeln('<info>Created directory: <comment>' . $this->moduleDirectory . '/Model' . '<comment></info>');
+            $output->writeln(
+                '<info>Created directory: <comment>' . $this->moduleDirectory . '/Model' . '<comment></info>'
+            );
         }
 
         // Create SQL and Data folder
         if ($input->getOption('add-setup')) {
-            $sqlSetupFolder = $this->moduleDirectory . '/sql/' . strtolower($this->vendorNamespace) . '_' . strtolower($this->moduleName) . '_setup';
+            $sqlSetupFolder = $this->moduleDirectory . '/sql/' . strtolower($this->vendorNamespace) . '_' .
+                strtolower($this->moduleName) . '_setup';
             mkdir($sqlSetupFolder, 0777, true);
             $output->writeln('<info>Created directory: <comment>' . $sqlSetupFolder . '<comment></info>');
 
-            $dataSetupFolder = $this->moduleDirectory . '/data/' . strtolower($this->vendorNamespace) . '_' . strtolower($this->moduleName) . '_setup';
+            $dataSetupFolder = $this->moduleDirectory . '/data/' . strtolower($this->vendorNamespace) . '_' .
+                strtolower($this->moduleName) . '_setup';
             mkdir($dataSetupFolder, 0777, true);
             $output->writeln('<info>Created directory: <comment>' . $dataSetupFolder . '<comment></info>');
-
         }
     }
 
     protected function writeEtcModules(OutputInterface $output)
     {
         $outFile = sprintf(
-            '%s/app/etc/modules/%s_%s.xml', $this->_magentoRootFolder, $this->vendorNamespace, $this->moduleName
+            '%s/app/etc/modules/%s_%s.xml',
+            $this->_magentoRootFolder,
+            $this->vendorNamespace,
+            $this->moduleName
         );
 
         /** @var $helper TwigHelper */
@@ -291,7 +304,6 @@ class CreateCommand extends AbstractMagentoCommand
                 );
                 $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
             }
-
         }
     }
 

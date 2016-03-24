@@ -78,18 +78,53 @@ class UpdateCommand extends AbstractMagentoCommand
             ->addOption('add-blocks', null, InputOption::VALUE_NONE, 'Adds blocks class to config.xml')
             ->addOption('add-helpers', null, InputOption::VALUE_NONE, 'Adds helpers class to config.xml')
             ->addOption('add-models', null, InputOption::VALUE_NONE, 'Adds models class to config.xml')
-            ->addOption('add-all', null, InputOption::VALUE_NONE, 'Adds blocks, helpers and models classes to config.xml')
-            ->addOption('add-resource-model', null, InputOption::VALUE_NONE, 'Adds resource model class and entities to config.xml')
-            ->addOption('add-routers', null, InputOption::VALUE_NONE, 'Adds routers for frontend or admin areas to config.xml')
-            ->addOption('add-events', null, InputOption::VALUE_NONE, 'Adds events observer to global, frontend or adminhtml areas to config.xml')
-            ->addOption('add-layout-updates', null, InputOption::VALUE_NONE, 'Adds layout updates to frontend or adminhtml areas to config.xml')
-            ->addOption('add-translate', null, InputOption::VALUE_NONE, 'Adds translate configuration to frontend or adminhtml areas to config.xml')
-            ->addOption('add-default', null, InputOption::VALUE_NONE, 'Adds default value (related to system.xml groups/fields)')
+            ->addOption(
+                'add-all',
+                null,
+                InputOption::VALUE_NONE,
+                'Adds blocks, helpers and models classes to config.xml'
+            )
+            ->addOption(
+                'add-resource-model',
+                null,
+                InputOption::VALUE_NONE,
+                'Adds resource model class and entities to config.xml'
+            )
+            ->addOption(
+                'add-routers',
+                null,
+                InputOption::VALUE_NONE,
+                'Adds routers for frontend or admin areas to config.xml'
+            )
+            ->addOption(
+                'add-events',
+                null,
+                InputOption::VALUE_NONE,
+                'Adds events observer to global, frontend or adminhtml areas to config.xml'
+            )
+            ->addOption(
+                'add-layout-updates',
+                null,
+                InputOption::VALUE_NONE,
+                'Adds layout updates to frontend or adminhtml areas to config.xml'
+            )
+            ->addOption(
+                'add-translate',
+                null,
+                InputOption::VALUE_NONE,
+                'Adds translate configuration to frontend or adminhtml areas to config.xml'
+            )
+            ->addOption(
+                'add-default',
+                null,
+                InputOption::VALUE_NONE,
+                'Adds default value (related to system.xml groups/fields)'
+            )
             ->setDescription('Update a Magento module.');
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int|void
@@ -175,7 +210,9 @@ class UpdateCommand extends AbstractMagentoCommand
     protected function setModuleDirectory($moduleDir)
     {
         if (!file_exists($moduleDir)) {
-            throw new RuntimeException('Module does not exist. Use dev:module:create to create it before updating. Stop.');
+            throw new RuntimeException(
+                'Module does not exist. Use dev:module:create to create it before updating. Stop.'
+            );
         }
 
         $this->moduleDirectory = $moduleDir;
@@ -266,13 +303,15 @@ class UpdateCommand extends AbstractMagentoCommand
     protected function addResourceModelNodeIfConfirmed(OutputInterface $output, \SimpleXMLElement $configXml)
     {
         $dialog = $this->getDialog();
-        if ($dialog->askConfirmation($output,
+        if ($dialog->askConfirmation(
+            $output,
             '<question>Would you like to also add a Resource Model(y/n)?</question>',
             false
         )
         ) {
             $resourceModel = trim($dialog->ask($output, '<question>Resource Model:</question>'));
-            $configXml->global->models->{$this->getLowercaseModuleNamespace()}->addChild('resourceModel', $resourceModel);
+            $configXml->global->models
+                ->{$this->getLowercaseModuleNamespace()}->addChild('resourceModel', $resourceModel);
         }
     }
 
@@ -317,7 +356,11 @@ class UpdateCommand extends AbstractMagentoCommand
     protected function setLayoutUpdatesNode(InputInterface $input, \SimpleXMLElement $configXml)
     {
         if ($this->hasAddLayoutUpdatesOptions($input)) {
-            $this->addLayoutUpdate($configXml, $this->configNodes['layout_updates_area'], $this->configNodes['layout_update_module']);
+            $this->addLayoutUpdate(
+                $configXml,
+                $this->configNodes['layout_updates_area'],
+                $this->configNodes['layout_update_module']
+            );
         }
     }
 
@@ -328,7 +371,11 @@ class UpdateCommand extends AbstractMagentoCommand
     protected function setTranslateNode(InputInterface $input, \SimpleXMLElement $configXml)
     {
         if ($this->hasAddTranslateOption($input)) {
-            $this->addTranslate($configXml, $this->configNodes['translate_area'], $this->configNodes['translate_module']);
+            $this->addTranslate(
+                $configXml,
+                $this->configNodes['translate_area'],
+                $this->configNodes['translate_module']
+            );
         }
     }
 
@@ -373,7 +420,9 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function getModuleDir()
     {
-        return isset($this->moduleDirectory) ? $this->moduleDirectory : \Mage::getModuleDir(false, $this->getModuleNamespace());
+        return isset($this->moduleDirectory)
+            ? $this->moduleDirectory
+            : \Mage::getModuleDir(false, $this->getModuleNamespace());
     }
 
     /**
@@ -381,10 +430,10 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function initResourceModelConfigNodes()
     {
-        $this->configNodes['resource_node_name']      = $this->getLowercaseModuleNamespace() . '_resource';
-        $this->configNodes['resource_model_class']    = $this->getModuleNamespace() . '_Model_Resource';
+        $this->configNodes['resource_node_name'] = $this->getLowercaseModuleNamespace() . '_resource';
+        $this->configNodes['resource_model_class'] = $this->getModuleNamespace() . '_Model_Resource';
         $this->configNodes['resource_deprecated_mysql4_node'] = false;
-        $this->configNodes['resource_entities']       = array();
+        $this->configNodes['resource_entities'] = array();
     }
 
     /**
@@ -393,8 +442,8 @@ class UpdateCommand extends AbstractMagentoCommand
     protected function initRoutersConfigNodes()
     {
         $this->configNodes['router_area'] = false;
-        $this->configNodes['use']         = false;
-        $this->configNodes['frontname']   = false;
+        $this->configNodes['use'] = false;
+        $this->configNodes['frontname'] = false;
     }
 
     /**
@@ -402,10 +451,10 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function initEventsConfigNodes()
     {
-        $this->configNodes['events_area']           = false;
-        $this->configNodes['event_name']            = false;
-        $this->configNodes['event_observer']        = false;
-        $this->configNodes['event_observer_class']  = false;
+        $this->configNodes['events_area'] = false;
+        $this->configNodes['event_name'] = false;
+        $this->configNodes['event_observer'] = false;
+        $this->configNodes['event_observer_class'] = false;
         $this->configNodes['event_observer_method'] = false;
     }
 
@@ -414,9 +463,9 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function initLayoutUpdatesConfigNodes()
     {
-        $this->configNodes['layout_updates_area']  = false;
+        $this->configNodes['layout_updates_area'] = false;
         $this->configNodes['layout_update_module'] = false;
-        $this->configNodes['layout_update_file']   = false;
+        $this->configNodes['layout_update_file'] = false;
     }
 
     /**
@@ -424,8 +473,8 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function initTranslateConfigNodes()
     {
-        $this->configNodes['translate_area']          = false;
-        $this->configNodes['translate_module']        = $this->getModuleNamespace();
+        $this->configNodes['translate_area'] = false;
+        $this->configNodes['translate_module'] = $this->getModuleNamespace();
         $this->configNodes['translate_files_default'] = false;
     }
 
@@ -435,9 +484,9 @@ class UpdateCommand extends AbstractMagentoCommand
     protected function initDefaultConfigNodes()
     {
         $this->configNodes['default_section_name'] = false;
-        $this->configNodes['default_group_name']   = false;
-        $this->configNodes['default_field_name']   = false;
-        $this->configNodes['default_field_value']  = false;
+        $this->configNodes['default_group_name'] = false;
+        $this->configNodes['default_field_name'] = false;
+        $this->configNodes['default_field_value'] = false;
     }
 
     /**
@@ -519,7 +568,6 @@ class UpdateCommand extends AbstractMagentoCommand
         $this->configNodes['event_observer'] = $observer;
         $this->configNodes['event_observer_class'] = $observerClass;
         $this->configNodes['event_observer_method'] = $observerMethod;
-
     }
 
     /**
@@ -576,21 +624,21 @@ class UpdateCommand extends AbstractMagentoCommand
     {
         $this->initDefaultConfigNodes();
         $dialog = $this->getDialog();
-        $sectionName  = strtolower(trim($dialog->ask($output, '<question>Section Name (lowercase):</question>')));
-        $groupName    = strtolower(trim($dialog->ask($output, '<question>Group Name (lowercase):</question>')));
-        $fieldName    = strtolower(trim($dialog->ask($output, '<question>Field Name:</question>')));
-        $fieldValue   = strtolower(trim($dialog->ask($output, '<question>Field Value:</question>')));
+        $sectionName = strtolower(trim($dialog->ask($output, '<question>Section Name (lowercase):</question>')));
+        $groupName = strtolower(trim($dialog->ask($output, '<question>Group Name (lowercase):</question>')));
+        $fieldName = strtolower(trim($dialog->ask($output, '<question>Field Name:</question>')));
+        $fieldValue = strtolower(trim($dialog->ask($output, '<question>Field Value:</question>')));
 
         $this->configNodes['default_section_name'] = $sectionName;
-        $this->configNodes['default_group_name']   = $groupName;
-        $this->configNodes['default_field_name']   = $fieldName;
-        $this->configNodes['default_field_value']  = $fieldValue;
+        $this->configNodes['default_group_name'] = $groupName;
+        $this->configNodes['default_field_name'] = $fieldName;
+        $this->configNodes['default_field_value'] = $fieldValue;
     }
 
     /**
      * @param SimpleXMLElement $configXml
-     * @param string           $type        e.g. "blocks"
-     * @param string           $classSuffix e.g. "_Block"
+     * @param string $type e.g. "blocks"
+     * @param string $classSuffix e.g. "_Block"
      */
     protected function addGlobalNode(\SimpleXMLElement $configXml, $type, $classSuffix)
     {
@@ -608,22 +656,29 @@ class UpdateCommand extends AbstractMagentoCommand
     protected function addResourceModel(\SimpleXMLElement $simpleXml)
     {
         if (is_null($simpleXml->global->models)) {
-            throw new RuntimeException('Global models node is not set. Run --add-models before --add-resource-model command.');
+            throw new RuntimeException(
+                'Global models node is not set. Run --add-models before --add-resource-model command.'
+            );
         }
 
         $resourceNamespace = $this->getLowercaseModuleNamespace() . '_resource';
         $resourceModelNode = $simpleXml->global->models->$resourceNamespace ?
             $simpleXml->global->models->$resourceNamespace : $simpleXml->global->models->addChild($resourceNamespace);
 
-        $simpleXml->global->models->$resourceNamespace->class ? null : $resourceModelNode->addChild('class', $this->configNodes['resource_model_class']);
+        $simpleXml->global->models->$resourceNamespace->class
+            ? null : $resourceModelNode->addChild('class', $this->configNodes['resource_model_class']);
 
         if ($this->configNodes['resource_deprecated_mysql4_node'] === true) {
-            $simpleXml->global->models->$resourceNamespace->deprecatedNode ? null : $resourceModelNode->addChild('deprecatedNode', $resourceNamespace . '_eav_mysql4');
+            $simpleXml->global->models->$resourceNamespace->deprecatedNode ? null : $resourceModelNode->addChild(
+                'deprecatedNode',
+                $resourceNamespace . '_eav_mysql4'
+            );
         } else {
             $this->removeChildNodeIfNotNull($resourceModelNode, 'deprecatedNode');
         }
 
-        $entitiesNode = $resourceModelNode->entities ? $resourceModelNode->entities : $resourceModelNode->addChild('entities');
+        $entitiesNode = $resourceModelNode->entities
+            ? $resourceModelNode->entities : $resourceModelNode->addChild('entities');
 
         foreach ($this->configNodes['resource_entities'] as $entity => $table) {
             $this->removeChildNodeIfNotNull($entitiesNode, $entity);
@@ -672,8 +727,8 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function addLayoutUpdate(\SimpleXMLElement $simpleXml, $area, $module)
     {
-        $areaNode    = $simpleXml->{$area} ? $simpleXml->{$area} : $simpleXml->addChild($area);
-        $layoutNode  = $areaNode->layout ? $areaNode->layout : $areaNode->addChild('layout');
+        $areaNode = $simpleXml->{$area} ? $simpleXml->{$area} : $simpleXml->addChild($area);
+        $layoutNode = $areaNode->layout ? $areaNode->layout : $areaNode->addChild('layout');
         $updatesNode = $layoutNode->updates ? $layoutNode->updates : $layoutNode->addChild('updates');
         $this->removeChildNodeIfNotNull($updatesNode, $module);
         $moduleNode = $updatesNode->addChild($module);
@@ -687,12 +742,12 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function addTranslate(\SimpleXMLElement $simpleXml, $area, $module)
     {
-        $areaNode      = $simpleXml->{$area} ? $simpleXml->{$area} : $simpleXml->addChild($area);
+        $areaNode = $simpleXml->{$area} ? $simpleXml->{$area} : $simpleXml->addChild($area);
         $translateNode = $areaNode->translate ? $areaNode->translate : $areaNode->addChild('translate');
-        $modulesNode   = $translateNode->modules ? $translateNode->modules : $translateNode->addChild('modules');
+        $modulesNode = $translateNode->modules ? $translateNode->modules : $translateNode->addChild('modules');
         $this->removeChildNodeIfNotNull($modulesNode, $module);
         $moduleNode = $modulesNode->addChild($this->configNodes['translate_module']);
-        $filesNode  = $moduleNode->addChild('files');
+        $filesNode = $moduleNode->addChild('files');
         $filesNode->addChild('default', $this->configNodes['translate_files_default']);
     }
 
@@ -702,13 +757,14 @@ class UpdateCommand extends AbstractMagentoCommand
     protected function addDefault(\SimpleXMLElement $simpleXml)
     {
         $defaultNode = $simpleXml->default ? $simpleXml->default : $simpleXml->addChild('default');
-        $sectionNode = $defaultNode->{$this->configNodes['default_section_name']} ?
-            $defaultNode->{$this->configNodes['default_section_name']} : $defaultNode->addChild($this->configNodes['default_section_name']);
-        $groupNode   = $sectionNode->{$this->configNodes['default_group_name']} ?
-            $sectionNode->{$this->configNodes['default_group_name']} : $sectionNode->addChild($this->configNodes['default_group_name']);
+        $sectionNode = $defaultNode->{$this->configNodes['default_section_name']}
+            ? $defaultNode->{$this->configNodes['default_section_name']}
+            : $defaultNode->addChild($this->configNodes['default_section_name']);
+        $groupNode = $sectionNode->{$this->configNodes['default_group_name']}
+            ? $sectionNode->{$this->configNodes['default_group_name']}
+            : $sectionNode->addChild($this->configNodes['default_group_name']);
         $this->removeChildNodeIfNotNull($groupNode, $this->configNodes['default_field_name']);
         $groupNode->addChild($this->configNodes['default_field_name'], $this->configNodes['default_field_value']);
-
     }
 
     /**
@@ -899,6 +955,7 @@ class UpdateCommand extends AbstractMagentoCommand
                 $string .= str_repeat($indent, $currIndent) . $element . "\n";
             }
         }
+
         return $string;
     }
 }

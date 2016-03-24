@@ -1,8 +1,9 @@
 <?php
-/*
+/**
+ * this file is part of magerun
+ *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
-
 namespace N98\Util\Console;
 
 use N98\Util\OperatingSystem;

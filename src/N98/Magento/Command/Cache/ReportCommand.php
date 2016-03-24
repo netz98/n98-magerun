@@ -18,8 +18,18 @@ class ReportCommand extends AbstractCacheCommand
             ->addOption('tags', 't', InputOption::VALUE_NONE, 'Output tags')
             ->addOption('mtime', 'm', InputOption::VALUE_NONE, 'Output last modification time')
             ->addOption('filter-id', '', InputOption::VALUE_OPTIONAL, 'Filter output by ID (substring)')
-            ->addOption('filter-tag', '', InputOption::VALUE_OPTIONAL, 'Filter output by TAG (seperate multiple tags by comma)')
-            ->addOption('fpc', null, InputOption::VALUE_NONE, 'Use full page cache instead of core cache (Enterprise only!)')
+            ->addOption(
+                'filter-tag',
+                '',
+                InputOption::VALUE_OPTIONAL,
+                'Filter output by TAG (seperate multiple tags by comma)'
+            )
+            ->addOption(
+                'fpc',
+                null,
+                InputOption::VALUE_NONE,
+                'Use full page cache instead of core cache (Enterprise only!)'
+            )
             ->addOption(
                 'format',
                 null,
@@ -29,7 +39,8 @@ class ReportCommand extends AbstractCacheCommand
         ;
     }
 
-    protected function isTagFiltered($metaData, $input) {
+    protected function isTagFiltered($metaData, $input)
+    {
         return (bool) count(array_intersect($metaData['tags'], explode(',', $input->getOption('filter-tag'))));
     }
 

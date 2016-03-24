@@ -11,14 +11,18 @@ use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class CompareVersionsCommand extends AbstractMagentoCommand
 {
-
     protected function configure()
     {
         $this
             ->setName('sys:setup:compare-versions')
             ->addOption('ignore-data', null, InputOption::VALUE_NONE, 'Ignore data updates')
             ->addOption('log-junit', null, InputOption::VALUE_REQUIRED, 'Log output to a JUnit xml file.')
-            ->addOption('errors-only', null, InputOption::VALUE_NONE, 'Only display Setup resources where Status equals Error.')
+            ->addOption(
+                'errors-only',
+                null,
+                InputOption::VALUE_NONE,
+                'Only display Setup resources where Status equals Error.'
+            )
             ->addOption(
                 'format',
                 null,
@@ -91,7 +95,7 @@ HELP;
             }
 
             if ($input->getOption('errors-only')) {
-                $table = array_filter($table, function($row) {
+                $table = array_filter($table, function ($row) {
                     return ($row['Status'] === 'Error');
                 });
             }
@@ -100,8 +104,7 @@ HELP;
             //highlight the status
             //and show error'd rows at bottom
             if (!$input->getOption('format')) {
-
-                usort($table, function($a, $b) {
+                usort($table, function ($a, $b) {
                     if ($a['Status'] !== 'OK' && $b['Status'] === 'OK') {
                         return 1;
                     }
@@ -111,7 +114,7 @@ HELP;
                     return strcmp($a['Setup'], $b['Setup']);
                 });
 
-                array_walk($table, function(&$row) {
+                array_walk($table, function (&$row) {
                     $status             = $row['Status'];
                     $availableStatus    = array('OK' => 'info', 'Error' => 'error');
                     $statusString       = sprintf(

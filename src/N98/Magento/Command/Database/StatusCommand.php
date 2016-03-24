@@ -32,13 +32,14 @@ class StatusCommand extends AbstractShowCommand
         ),
         'Innodb_buffer_pool_pages_dirty' => array(
             'desc' => 'Indicates the number of InnoDB buffer pool data pages that have been changed in memory,
-            but the changes are not yet written (flushed) to the InnoDB data files',
+                 but the changes are not yet written (flushed) to the InnoDB data files',
         ),
         'Key_reads'                      => array(
             'desc' => 'Number of filesystem accesses MySQL performed to fetch database indexes.',
         ),
         'Max_used_connections'           => array(
-            'desc' => 'Max number of connections MySQL has had open at the same time since the server was last restarted.',
+            'desc' => 'Max number of connections MySQL has had open at the same time since the server was
+                 last restarted.',
         ),
         'Open_tables'                    => array(
             'desc' => 'Number of tables that are currently open.',
@@ -78,7 +79,7 @@ HELP;
 
     /**
      * @param array $outputVars
-     * @param bool  $hasDescription
+     * @param bool $hasDescription
      *
      * @return array
      */
@@ -91,13 +92,21 @@ HELP;
         }
 
         if (isset($this->_allVariables['Handler_read_rnd_next'])) {
-
-            $tableScanRate = (($this->_allVariables['Handler_read_rnd_next'] + $this->_allVariables['Handler_read_rnd']) /
-                ($this->_allVariables['Handler_read_rnd_next'] +
+            $tableScanRate = (
+                (
+                    $this->_allVariables['Handler_read_rnd_next'] +
+                    $this->_allVariables['Handler_read_rnd']
+                )
+                /
+                (
+                    $this->_allVariables['Handler_read_rnd_next'] +
                     $this->_allVariables['Handler_read_rnd'] +
                     $this->_allVariables['Handler_read_first'] +
-                    $this->_allVariables['Handler_read_next'] + $this->_allVariables['Handler_read_key'] +
-                    $this->_allVariables['Handler_read_prev']));
+                    $this->_allVariables['Handler_read_next'] +
+                    $this->_allVariables['Handler_read_key'] +
+                    $this->_allVariables['Handler_read_prev']
+                )
+            );
             $rows[] = array(
                 'Full table scans',
                 sprintf('%.2f', $tableScanRate * 100) . '%',
@@ -105,7 +114,6 @@ HELP;
             );
         }
         if (isset($this->_allVariables['Innodb_buffer_pool_read_requests'])) {
-
             $bufferHitRate = $this->_allVariables['Innodb_buffer_pool_read_requests'] /
                 ($this->_allVariables['Innodb_buffer_pool_read_requests'] +
                     $this->_allVariables['Innodb_buffer_pool_reads']);
@@ -113,10 +121,13 @@ HELP;
             $rows[] = array(
                 'InnoDB Buffer Pool hit',
                 sprintf('%.2f', $bufferHitRate * 100) . '%',
-                $this->formatDesc('An InnoDB Buffer Pool hit ratio below 99.9% is a weak indicator that
-                your InnoDB Buffer Pool could be increased.')
+                $this->formatDesc(
+                    'An InnoDB Buffer Pool hit ratio below 99.9% is a weak indicator that ' .
+                    'your InnoDB Buffer Pool could be increased.'
+                )
             );
         }
+
         return $rows;
     }
 
@@ -128,11 +139,12 @@ HELP;
     protected function allowRounding($name)
     {
         $isSize = false !== strpos($name, '_size');
+
         return $isSize;
     }
 
     /**
-     * borrowed from http://stackoverflow.com/questions/1416697/converting-timestamp-to-time-ago-in-php-e-g-1-day-ago-2-days-ago
+     * borrowed from <https://stackoverflow.com/questions/1416697/>
      *
      * echo time_elapsed_string('2013-05-01 00:22:35');
      * echo time_elapsed_string('@1367367755'); # timestamp input
@@ -150,8 +162,8 @@ HELP;
             $datetime = '@' . $datetime;
         }
 
-        $now  = new \DateTime;
-        $ago  = new \DateTime($datetime);
+        $now = new \DateTime;
+        $ago = new \DateTime($datetime);
         $diff = $now->diff($ago);
 
         $diff->w = floor($diff->d / 7);

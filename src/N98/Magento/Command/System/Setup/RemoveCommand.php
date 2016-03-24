@@ -26,7 +26,6 @@ class RemoveCommand extends AbstractSetupCommand
             ->addArgument('module', InputArgument::REQUIRED, 'Module name')
             ->addArgument('setup', InputArgument::OPTIONAL, 'Setup code to remove', 'all')
             ->setDescription('Remove module setup resource entry');
-
     }
 
     /**

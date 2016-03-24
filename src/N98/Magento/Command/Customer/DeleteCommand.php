@@ -3,6 +3,8 @@
 namespace N98\Magento\Command\Customer;
 
 use Exception;
+use Mage_Customer_Model_Entity_Customer_Collection;
+use Mage_Customer_Model_Resource_Customer_Collection;
 use N98\Util\Console\Helper\ParameterHelper;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -17,7 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DeleteCommand extends AbstractCustomerCommand
 {
-
     /**
      * @var InputInterface
      */
@@ -71,7 +72,6 @@ HELP;
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-
             $this->input  = $input;
             $this->output = $output;
             /** @var DialogHelper dialog */
@@ -137,7 +137,6 @@ HELP;
                     $this->output->writeln('<error>Aborting delete</error>');
                 }
             } else {
-
                 $customers = $this->getCustomerCollection();
                 $customers
                     ->addAttributeToSelect('firstname')
@@ -245,7 +244,7 @@ HELP;
     }
 
     /**
-     * @param \Mage_Customer_Model_Entity_Customer_Collection|\Mage_Customer_Model_Resource_Customer_Collection $customers
+     * @param Mage_Customer_Model_Entity_Customer_Collection|Mage_Customer_Model_Resource_Customer_Collection $customers
      *
      * @return int
      */
@@ -290,7 +289,6 @@ HELP;
         if (null !== $default) {
             $params[] = $default;
             $pattern .= '[%s] ';
-
         }
 
         return vsprintf($pattern, $params);

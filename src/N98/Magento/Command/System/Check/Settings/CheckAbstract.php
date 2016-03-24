@@ -1,8 +1,9 @@
 <?php
-/*
- * @author Tom Klingenberg <mot@fsfe.org>
+/**
+ * this file is part of magerun
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
-
 namespace N98\Magento\Command\System\Check\Settings;
 
 use Mage;

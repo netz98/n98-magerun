@@ -56,8 +56,10 @@ class InfoCommand extends AbstractCustomerCommand
                 try {
                     $attribute = $customer->getResource()->getAttribute($key);
                     $table[] = array(
-                        $attribute instanceof \Mage_Customer_Model_Attribute ? $attribute->getFrontend()->getLabel() : $key,
-                        $attribute instanceof \Mage_Customer_Model_Attribute ? $attribute->getFrontend()->getValue($customer) : $value,
+                        $attribute instanceof \Mage_Customer_Model_Attribute
+                            ? $attribute->getFrontend()->getLabel() : $key,
+                        $attribute instanceof \Mage_Customer_Model_Attribute
+                            ? $attribute->getFrontend()->getValue($customer) : $value,
                     );
                 } catch (Exception $e) {
                     $table[] = array($key, $value);

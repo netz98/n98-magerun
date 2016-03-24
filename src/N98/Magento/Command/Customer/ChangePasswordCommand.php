@@ -24,7 +24,6 @@ class ChangePasswordCommand extends AbstractCustomerCommand
 - Website parameter must only be given if more than one websites are available.
 HELP;
         $this->setHelp($help);
-
     }
 
     /**
@@ -37,7 +36,6 @@ HELP;
     {
         $this->detectMagento($output);
         if ($this->initMagento()) {
-
             $dialog = $this->getHelperSet()->get('dialog');
             $email = $this->getHelper('parameter')->askEmail($input, $output);
 

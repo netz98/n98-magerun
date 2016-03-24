@@ -20,7 +20,9 @@ class LocalConfigAccessableCheck implements SimpleCheck
     {
         $result = $results->createResult();
         $filePath = 'app/etc/local.xml';
-        $defaultUnsecureBaseURL = (string) \Mage::getConfig()->getNode('default/' . \Mage_Core_Model_Store::XML_PATH_UNSECURE_BASE_URL);
+        $defaultUnsecureBaseURL = (string) \Mage::getConfig()->getNode(
+            'default/' . \Mage_Core_Model_Store::XML_PATH_UNSECURE_BASE_URL
+        );
 
         $http = new \Varien_Http_Adapter_Curl();
         $http->setConfig(array('timeout' => $this->_verificationTimeOut));

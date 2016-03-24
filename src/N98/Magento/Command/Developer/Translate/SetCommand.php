@@ -57,8 +57,5 @@ class SetCommand extends AbstractMagentoCommand
             $input = new StringInput('cache:flush');
             $this->getApplication()->run($input, new NullOutput());
         }
-
-
     }
-
 }

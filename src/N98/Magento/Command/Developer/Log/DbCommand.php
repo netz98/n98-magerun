@@ -21,7 +21,7 @@ class DbCommand extends AbstractLogCommand
     /**
      * @return string
      */
-    protected function  _getVarienAdapterPhpFile()
+    protected function _getVarienAdapterPhpFile()
     {
         return $this->_magentoRootFolder . '/lib/Varien/Db/Adapter/Pdo/Mysql.php';
     }
@@ -66,7 +66,7 @@ class DbCommand extends AbstractLogCommand
         $varienAdapterPhpFile = $this->_getVarienAdapterPhpFile();
         $contents = file_get_contents($varienAdapterPhpFile);
 
-        $debugLinePattern = "/protected\s" . '\\' . $variable . "\s*?=\s(false|true)/m";
+        $debugLinePattern = "/protected\\s" . '\\' . $variable . "\\s*?=\\s(false|true)/m";
         preg_match($debugLinePattern, $contents, $matches);
         if (!isset($matches[1])) {
             throw new RuntimeException("Problem finding the \$_debug parameter");
@@ -81,7 +81,9 @@ class DbCommand extends AbstractLogCommand
             $newValue = ($currentValue == 'false') ? 'true' : 'false';
         }
 
-        $output->writeln("<info>Changed <comment>" . $variable . "</comment> to <comment>" . $newValue . "</comment></info>");
+        $output->writeln(
+            "<info>Changed <comment>" . $variable . "</comment> to <comment>" . $newValue . "</comment></info>"
+        );
 
         $contents = preg_replace($debugLinePattern, "protected " . $variable . " = " . $newValue, $contents);
         file_put_contents($varienAdapterPhpFile, $contents);

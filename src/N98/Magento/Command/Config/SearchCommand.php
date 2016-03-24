@@ -32,7 +32,6 @@ EOT
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-
             $this->writeSection($output, 'Config Search');
 
             $searchString = $input->getArgument('text');
@@ -119,7 +118,6 @@ EOT
         $match = new \stdClass;
         $match->type = $this->_getNodeType($node);
         if (stristr((string) $node->label, $searchString)) {
-
             $match->match_type = 'label';
             $match->node = $node;
 
@@ -159,7 +157,6 @@ EOT
             default:
                 return 'unknown';
         }
-
     }
 
     /**
@@ -229,7 +226,5 @@ EOT
                 // @TODO Why?
                 throw new RuntimeException(__METHOD__);
         }
-
     }
-
 }

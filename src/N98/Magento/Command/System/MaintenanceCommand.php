@@ -13,7 +13,7 @@ class MaintenanceCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:maintenance')
-            ->addOption('on', null, InputOption::VALUE_NONE, 'Force maintenance mode')
+            ->addOption('on', null, InputOption::VALUE_NONE, 'Enable maintenance mode')
             ->addOption('off', null, InputOption::VALUE_NONE, 'Disable maintenance mode')
             ->setDescription('Toggles maintenance mode.')
         ;
@@ -49,8 +49,10 @@ class MaintenanceCommand extends AbstractMagentoCommand
      */
     protected function _switchOn(OutputInterface $output, $flagFile)
     {
-        if (!touch($flagFile)) {
-            throw new \RuntimeException('maintenance.flag file is not writable.');
+        if (!file_exists($flagFile)) {
+            if (!touch($flagFile)) {
+                throw new \RuntimeException('maintenance.flag file is not writable.');
+            }
         }
         $output->writeln('Maintenance mode <info>on</info>');
     }
@@ -63,7 +65,7 @@ class MaintenanceCommand extends AbstractMagentoCommand
     {
         if (file_exists($flagFile)) {
             if (!unlink($flagFile)) {
-                throw new \RuntimeException('maintenance.flag file is not writable.');
+                throw new \RuntimeException('maintenance.flag file is not removable.');
             }
         }
         $output->writeln('Maintenance mode <info>off</info>');

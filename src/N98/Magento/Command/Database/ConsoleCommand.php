@@ -14,7 +14,12 @@ class ConsoleCommand extends AbstractDatabaseCommand
         $this
             ->setName('db:console')
             ->setAliases(array('mysql-client'))
-            ->addOption('use-mycli-instead-of-mysql', null, InputOption::VALUE_NONE, 'Use `mycli` as the MySQL client instead of `mysql`')
+            ->addOption(
+                'use-mycli-instead-of-mysql',
+                null,
+                InputOption::VALUE_NONE,
+                'Use `mycli` as the MySQL client instead of `mysql`'
+            )
             ->setDescription('Opens mysql client by database config from local.xml');
     }
 

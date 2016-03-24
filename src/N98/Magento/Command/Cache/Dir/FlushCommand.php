@@ -1,8 +1,9 @@
 <?php
-/*
- * @author Tom Klingenberg <mot@fsfe.org>
+/**
+ * this file is part of magerun
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
-
 namespace N98\Magento\Command\Cache\Dir;
 
 use FilesystemIterator;
@@ -92,7 +93,9 @@ HELP;
         $dir = new FilesystemIterator($path);
         foreach ($dir as $file => $info) {
             if ($info->isDir()) {
-                $this->verbose('<debug>Filesystem::recursiveRemoveDirectory() <comment>' . $file . '</comment></debug>');
+                $this->verbose(
+                    '<debug>Filesystem::recursiveRemoveDirectory() <comment>' . $file . '</comment></debug>'
+                );
                 if (!isset($fs)) {
                     $fs = new Filesystem();
                 }
