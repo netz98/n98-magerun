@@ -6,6 +6,9 @@ RECENT CHANGES
 1.97.15
 =======
 
+* #798 Add package magento-mirror-1.9.2.4 (by Raul E Watson)
+* #797 Streamlining of N98-Magerun1 and N98-Magerun2 (by Tom Klingenberg)
+
 =======
 1.97.14
 =======

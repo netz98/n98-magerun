@@ -76,9 +76,11 @@ matrix:
     - php: 7.0
       env: BUILDSH=1
       script: ./build.sh
-    # Run with upcoming PHP 7.0 version
+    # Run with current PHP 5.6 and PHP 7.0 version
+    - php: 5.6
+      env: MAGENTO_VERSION="magento-mirror-1.9.2.4" DB=mysql INSTALL_SAMPLE_DATA=no
     - php: 7.0
-      env: MAGENTO_VERSION="magento-mirror-1.9.2.3" DB=mysql INSTALL_SAMPLE_DATA=no
+      env: MAGENTO_VERSION="magento-mirror-1.9.2.4" DB=mysql INSTALL_SAMPLE_DATA=no
 
 before_install:
   - phpenv config-rm xdebug.ini
