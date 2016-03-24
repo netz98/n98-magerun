@@ -210,7 +210,7 @@ tag_release()
         exit 2
     fi
 
-    if ! git tag -a "${VERSION_RELEASE}" -m "Tagged version ${VERSION_RELEASE}"; then
+    if ! git tag -a "${VERSION_RELEASE}" -m "Tag version ${VERSION_RELEASE}"; then
         >&2 echo "failed to create tag"
         exit 2
     fi
