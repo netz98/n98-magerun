@@ -3,6 +3,12 @@ RECENT CHANGES
 **************
 
 =======
+1.97.16
+=======
+
+* #800 Fix plugin loader to use 'n98-magerun' folder (by Rouven Alexander Rieker)
+
+=======
 1.97.15
 =======
 
