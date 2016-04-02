@@ -214,13 +214,14 @@ class ConfigurationLoader
         if ($this->_pluginConfig == null) {
             $this->_pluginConfig = array();
             $moduleBaseFolders = array();
+            $customFilename = $this->_customConfigFilename;
             if (OperatingSystem::isWindows()) {
-                $config['plugin']['folders'][] = getenv('WINDIR') . '/n98-magerun/modules';
-                $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/n98-magerun/modules';
+                $config['plugin']['folders'][] = getenv('WINDIR') . '/' . $customFilename . '/modules';
+                $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/' . $customFilename . '/modules';
             } else {
-                $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/.n98-magerun/modules';
+                $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/.' . $customFilename . '/modules';
             }
-            $config['plugin']['folders'][] = $magentoRootFolder . '/lib/n98-magerun/modules';
+            $config['plugin']['folders'][] = $magentoRootFolder . '/lib/' . $customFilename . '/modules';
             foreach ($config['plugin']['folders'] as $folder) {
                 if (is_dir($folder)) {
                     $moduleBaseFolders[] = $folder;
@@ -238,7 +239,7 @@ class ConfigurationLoader
                         ->depth(2)
                         ->followLinks()
                         ->ignoreUnreadableDirs(true)
-                        ->name($this->_customConfigFilename)
+                        ->name($customFilename)
                         ->in($this->getVendorDir());
 
                     foreach ($finder as $file) {
@@ -256,7 +257,7 @@ class ConfigurationLoader
                     ->depth(1)
                     ->followLinks()
                     ->ignoreUnreadableDirs(true)
-                    ->name($this->_customConfigFilename)
+                    ->name($customFilename)
                     ->in($moduleBaseFolders);
 
                 foreach ($finder as $file) {
