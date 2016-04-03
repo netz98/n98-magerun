@@ -95,7 +95,7 @@ class ConfigurationLoader
      * @param bool $isPharMode
      * @param OutputInterface $output
      */
-    public function __construct($config, $isPharMode, OutputInterface $output)
+    public function __construct(array $config, $isPharMode, OutputInterface $output)
     {
         $this->_initialConfig = $config;
         $this->_isPharMode = $isPharMode;
@@ -155,14 +155,14 @@ class ConfigurationLoader
      *
      * @return array
      */
-    protected function loadDistConfig($initConfig)
+    protected function loadDistConfig(array $initConfig)
     {
         if ($this->_distConfig == null) {
-            $this->_distConfig = Yaml::parse(__DIR__ . '/../../../../config.yaml');
+            $distConfigFilePath = __DIR__ . '/../../../../config.yaml';
+            $this->_distConfig = ConfigFile::createFromFile($distConfigFilePath)->toArray();
         }
-        if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
-            $this->_output->writeln('<debug>Load dist config</debug>');
-        }
+        $this->logDebug('Load dist config');
+
         $config = ArrayFunctions::mergeArrays($this->_distConfig, $initConfig);
 
         return $config;
@@ -175,7 +175,7 @@ class ConfigurationLoader
      *
      * @return array
      */
-    public function loadSystemConfig($config)
+    public function loadSystemConfig(array $config)
     {
         if ($this->_systemConfig == null) {
             if (OperatingSystem::isWindows()) {
@@ -185,11 +185,7 @@ class ConfigurationLoader
             }
 
             if ($systemWideConfigFile && file_exists($systemWideConfigFile)) {
-                if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
-                    $this->_output->writeln(
-                        '<debug>Load system config <comment>' . $systemWideConfigFile . '</comment></debug>'
-                    );
-                }
+                $this->logDebug('Load system config <comment>' . $systemWideConfigFile . '</comment>');
                 $this->_systemConfig = Yaml::parse($systemWideConfigFile);
             } else {
                 $this->_systemConfig = array();
@@ -209,7 +205,7 @@ class ConfigurationLoader
      *
      * @return array
      */
-    public function loadPluginConfig($config, $magentoRootFolder)
+    public function loadPluginConfig(array $config, $magentoRootFolder)
     {
         if ($this->_pluginConfig == null) {
             $this->_pluginConfig = array();
@@ -244,7 +240,7 @@ class ConfigurationLoader
                         ->in($this->getVendorDir());
 
                     foreach ($finder as $file) {
-                        /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                        /* @var $file SplFileInfo */
                         $this->registerPluginConfigFile($magentoRootFolder, $file);
                     }
                 }
@@ -262,7 +258,7 @@ class ConfigurationLoader
                     ->in($moduleBaseFolders);
 
                 foreach ($finder as $file) {
-                    /* @var $file \Symfony\Component\Finder\SplFileInfo */
+                    /* @var $file SplFileInfo */
                     $this->registerPluginConfigFile($magentoRootFolder, $file);
                 }
             }
@@ -274,47 +270,20 @@ class ConfigurationLoader
     }
 
     /**
-     * @param string $rawConfig
-     * @param string $magentoRootFolder
-     * @param \Symfony\Component\Finder\SplFileInfo $file
-     *
-     * @return string
-     */
-    protected function applyVariables($rawConfig, $magentoRootFolder, $file = null)
-    {
-        $replace = array(
-            '%module%' => $file ? $file->getPath() : '',
-            '%root%'   => $magentoRootFolder,
-        );
-
-        return str_replace(array_keys($replace), $replace, $rawConfig);
-    }
-
-
-    /**
      * Check if there is a user config file. ~/.n98-magerun.yaml
      *
      * @param array $config
-     * @param string $magentoRootFolder
+     * @param string $magentoRootFolder [optional]
      *
      * @return array
      */
-    public function loadUserConfig($config, $magentoRootFolder = null)
+    public function loadUserConfig(array $config, $magentoRootFolder = null)
     {
-        if ($this->_userConfig == null) {
+        if (null === $this->_userConfig) {
             $this->_userConfig = array();
-            $homeDirectory = OperatingSystem::getHomeDir();
-            if (OperatingSystem::isWindows()) {
-                $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . $this->_customConfigFilename;
-            } else {
-                $personalConfigFile = $homeDirectory . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
-            }
-
-            if ($homeDirectory && file_exists($personalConfigFile)) {
-                $userConfig = $this->applyVariables(\file_get_contents($personalConfigFile), $magentoRootFolder, null);
-                $this->_userConfig = Yaml::parse($userConfig);
-
-                return $config;
+            $locator = new ConfigLocator($this->_customConfigFilename, $magentoRootFolder);
+            if ($userConfigFile = $locator->getUserConfigFile()) {
+                $this->_userConfig = $userConfigFile->toArray();
             }
         }
 
@@ -332,35 +301,25 @@ class ConfigurationLoader
      *
      * @return array
      */
-    public function loadProjectConfig($magentoRootFolder, $magerunStopFileFolder, $config)
+    public function loadProjectConfig($magentoRootFolder, $magerunStopFileFolder, array $config)
     {
-        if ($this->_projectConfig == null) {
-            $this->_projectConfig = array();
-
-            $projectConfigFile = $magentoRootFolder . DIRECTORY_SEPARATOR . 'app/etc/' . $this->_customConfigFilename;
-            if ($projectConfigFile && file_exists($projectConfigFile)) {
-                $projectConfig = $this->applyVariables(
-                    \file_get_contents($projectConfigFile),
-                    $magentoRootFolder,
-                    null
-                );
-                $this->_projectConfig = Yaml::parse($projectConfig);
-            }
-
-            $stopFileConfigFile = $magerunStopFileFolder . DIRECTORY_SEPARATOR . '.' . $this->_customConfigFilename;
-            if (!empty($magerunStopFileFolder) && file_exists($stopFileConfigFile)) {
-                $projectConfig = $this->applyVariables(
-                    \file_get_contents($stopFileConfigFile),
-                    $magentoRootFolder,
-                    null
-                );
-                $this->_projectConfig = ArrayFunctions::mergeArrays($this->_projectConfig, Yaml::parse($projectConfig));
-            }
-
-            $config = ArrayFunctions::mergeArrays($config, $this->_projectConfig);
+        if (null !== $this->_projectConfig) {
+            return ArrayFunctions::mergeArrays($config, $this->_projectConfig);
         }
 
-        return $config;
+        $this->_projectConfig = array();
+
+        $locator = new ConfigLocator($this->_customConfigFilename, $magentoRootFolder);
+
+        if ($projectConfigFile = $locator->getProjectConfigFile()) {
+            $this->_projectConfig = $projectConfigFile->toArray();
+        }
+
+        if ($stopFileConfigFile = $locator->getStopFileConfigFile($magerunStopFileFolder)) {
+            $this->_projectConfig = $stopFileConfigFile->mergeArray($this->_projectConfig);
+        }
+
+        return ArrayFunctions::mergeArrays($config, $this->_projectConfig);
     }
 
     /**
@@ -381,20 +340,16 @@ class ConfigurationLoader
             }
 
             if ($path === false) {
-                $this->_output->writeln(sprintf("<error>Plugin config file broken link '%s'</error>", $file));
+                $this->log(sprintf("<error>Plugin config file broken link '%s'</error>", $file));
 
                 return;
             }
         }
 
-        if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
-            $this->_output->writeln('<debug>Load plugin config <comment>' . $path . '</comment></debug>');
-        }
-
-        $localPluginConfig = \file_get_contents($path);
-        $localPluginConfig = Yaml::parse($this->applyVariables($localPluginConfig, $magentoRootFolder, $file));
-
-        $this->_pluginConfig = ArrayFunctions::mergeArrays($this->_pluginConfig, $localPluginConfig);
+        $this->logDebug('Load plugin config <comment>' . $path . '</comment>');
+        $localPluginConfigFile = ConfigFile::createFromFile($path);
+        $localPluginConfigFile->applyVariables($magentoRootFolder, $file);
+        $this->_pluginConfig = $localPluginConfigFile->mergeArray($this->_pluginConfig);
     }
 
     /**
@@ -423,5 +378,23 @@ class ConfigurationLoader
     public function getConfigurationLoaderDir()
     {
         return __DIR__;
+    }
+
+    /**
+     * @param string $message
+     */
+    private function logDebug($message)
+    {
+        if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
+            $this->log('<debug>' . $message . '</debug>');
+        }
+    }
+
+    /**
+     * @param string $message
+     */
+    private function log($message)
+    {
+        $this->_output->writeln($message);
     }
 }

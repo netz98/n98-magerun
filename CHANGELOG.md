@@ -5,6 +5,7 @@ RECENT CHANGES
 -------
 
 * Update MySQL Engine Check to handle incomplete installations (by Navarr Barnier, TK)
+* Feature: Extract config-loader (by TK)
 
 1.97.19
 -------
