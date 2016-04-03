@@ -22,7 +22,7 @@ installed_magerun_cmd() {
     echo "${magerun_cmd}"
 }
 
-# obtain installed vesion of the test-setup
+# obtain installed version of the test-setup
 installed_version() {
     local magerun_cmd="$(installed_magerun_cmd)"
     local directory="${test_setup_directory}"
@@ -35,7 +35,7 @@ installed_version() {
     fi
 }
 
-# checks befor starting the setup
+# checks before starting the setup
 ensure_environment() {
     local magerun_cmd="$(installed_magerun_cmd)"
     local directory="${test_setup_directory}"
