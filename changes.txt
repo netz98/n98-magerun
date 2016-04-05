@@ -7,6 +7,7 @@ RECENT CHANGES
 =======
 
 * Upd: Stabilize composer ^1.0.0 (by TK)
+* Feature: Add dry-run mode for db:dump (TK)
 
 =======
 1.97.17

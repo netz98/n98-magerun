@@ -18,7 +18,7 @@ ${bar}=${foo}.gz
       sys:website:list
 
 # magerun command with script var
-db:dump --print-only-filename ${foo}
+db:dump --dry-run --print-only-filename ${foo}
 
 # Set a config var and change it to previous value in one "session"
 config:get web/secure/base_url

@@ -74,6 +74,7 @@ class DumpCommandTest extends TestCase
             'command' => $command->getName(),
             '--force' => true,
             '--print-only-filename' => true,
+            '--dry-run' => null,
         );
 
         $defaults = array(
@@ -82,11 +83,7 @@ class DumpCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute($mandatory + $options + $defaults);
-
-        $filename = $commandTester->getDisplay();
-        unlink(rtrim($filename));
-
-        $this->assertRegExp($regex, $filename);
+        $this->assertRegExp($regex, $commandTester->getDisplay());
     }
 
     public function testWithStripOption()
