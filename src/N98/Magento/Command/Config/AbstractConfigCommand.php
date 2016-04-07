@@ -8,6 +8,15 @@ use N98\Magento\Command\AbstractMagentoCommand;
 abstract class AbstractConfigCommand extends AbstractMagentoCommand
 {
     /**
+     * @var array strings of configuration scopes
+     */
+    protected $_scopes = array(
+        'default',
+        'websites',
+        'stores',
+    );
+
+    /**
      * @return \Mage_Core_Model_Encryption
      */
     protected function getEncryptionModel()
@@ -45,28 +54,44 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
 
     /**
      * @param string $scope
+     *
+     * @return string
      */
     protected function _validateScopeParam($scope)
     {
         if (!in_array($scope, $this->_scopes)) {
             throw new InvalidArgumentException(
-                'Invalid scope parameter. It must be one of ' . implode(',', $this->_scopes)
+                sprintf('Invalid scope parameter, must be one of: %s.', implode(', ', $this->_scopes))
             );
         }
+
+        return $scope;
     }
 
     /**
      * @param string $scope
      * @param string $scopeId
      *
-     * @return string
+     * @return string non-negative integer number
      */
     protected function _convertScopeIdParam($scope, $scopeId)
     {
+        if ($scope === 'default') {
+            if ("$scopeId" !== "0") {
+                throw new InvalidArgumentException(
+                    sprintf("Invalid scope ID %d in scope '%s', must be 0", $scopeId, $scope)
+                );
+            }
+
+            return $scopeId;
+        }
+
         if ($scope == 'websites' && !is_numeric($scopeId)) {
             $website = \Mage::app()->getWebsite($scopeId);
             if (!$website) {
-                throw new InvalidArgumentException('Invalid scope parameter. Website does not exist.');
+                throw new InvalidArgumentException(
+                    sprintf("Invalid scope parameter, website '%s' does not exist.", $scopeId)
+                );
             }
 
             return $website->getId();
@@ -75,10 +100,24 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
         if ($scope == 'stores' && !is_numeric($scopeId)) {
             $store = \Mage::app()->getStore($scopeId);
             if (!$store) {
-                throw new InvalidArgumentException('Invalid scope parameter. Store does not exist.');
+                throw new InvalidArgumentException(
+                    sprintf("Invalid scope parameter. store '%s' does not exist.", $scopeId)
+                );
             }
 
             return $store->getId();
+        }
+
+        if ($scopeId !== (string)(int)$scopeId) {
+            throw new InvalidArgumentException(
+                sprintf("Invalid scope parameter, %s is not an integer value", var_export($scopeId, true))
+            );
+        }
+
+        if (0 >= (int)$scopeId) {
+            throw new InvalidArgumentException(
+                sprintf("Invalid scope parameter, %s is not a positive integer value", var_export($scopeId, true))
+            );
         }
 
         return $scopeId;

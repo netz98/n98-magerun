@@ -28,7 +28,12 @@ is the same as
 EOT
             )
             ->addArgument('path', InputArgument::OPTIONAL, 'The config path')
-            ->addOption('scope', null, InputOption::VALUE_REQUIRED, 'The config value\'s scope')
+            ->addOption(
+                'scope',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The config value\'s scope (default, websites, stores)'
+            )
             ->addOption('scope-id', null, InputOption::VALUE_REQUIRED, 'The config value\'s scope ID')
             ->addOption(
                 'decrypt',
@@ -77,8 +82,8 @@ HELP;
             'like' => str_replace('*', '%', $searchPath)
         ));
 
-        if ($scopeId = $input->getOption('scope')) {
-            $collection->addFieldToFilter('scope', array('eq' => $scopeId));
+        if ($scope = $input->getOption('scope')) {
+            $collection->addFieldToFilter('scope', array('eq' => $scope));
         }
 
         if ($scopeId = $input->getOption('scope-id')) {
