@@ -9,15 +9,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SetCommand extends AbstractConfigCommand
 {
-    /**
-     * @var array
-     */
-    protected $_scopes = array(
-        'default',
-        'websites',
-        'stores',
-    );
-
     protected function configure()
     {
         $this

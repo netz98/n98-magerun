@@ -6,6 +6,8 @@ RECENT CHANGES
 1.97.17
 =======
 
+* #805 Fix config:delete (by Tom Klingenberg)
+
 =======
 1.97.16
 =======
