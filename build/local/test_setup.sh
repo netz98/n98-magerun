@@ -44,6 +44,10 @@ ensure_environment() {
 
     if [ ! -d "${directory}" ]; then
         mkdir -p "${directory}"
+        # create .gitignore one-up if it does not yet exists to allow having the install within an existing git repo
+        if [ ! -e "${directory}/../.gitignore" ]; then
+            echo "*" > "${directory}/../.gitignore"
+        fi
     fi;
     buildecho "directory: '${directory}'"
 }
@@ -77,11 +81,9 @@ ensure_magento() {
     local install_sample_data="${2:-no}"
 
     local magerun_cmd="${test_setup_magerun_cmd}"
+    local version="$(installed_version)"
 
-    local magento_local_xml="${directory}/app/etc/local.xml"
-
-    if [ -e  "${magento_local_xml}" ]; then
-        local version="$(php -dmemory_limit=1g -f "${magerun_cmd}" -- --root-dir="${directory}" sys:info -- "version")"
+    if [ "" != "$version" ]; then
         buildecho "version '${version}' already installed, skipping setup"
     else
         php -dmemory_limit=1g -f "${magerun_cmd}" -- install \
@@ -90,14 +92,6 @@ ensure_magento() {
                     --installSampleData="${install_sample_data}" --useDefaultConfigParams=yes \
                     --baseUrl="http://dev.magento.local/"
         buildecho "magento version '${magento_version}' installed."
-
-        # automatically ignore the test installation directory as this is a local and interactive development env
-        local gitignore="${directory}/.gitignore"
-        if [ ! -e "${gitignore}" ]; then
-            touch "${gitignore}"
-        fi
-
-        echo '*' > "${gitignore}"
     fi
 }
 
@@ -111,11 +105,10 @@ test_setup_db_name="magento_magerun_test"
 
 if [ "" != "$(installed_version)" ]; then
     buildecho "version '$(installed_version)' already installed, skipping setup"
-    exit 0
+else
+    ensure_environment
+    ensure_mysql_db
+    ensure_magento "magento-mirror-1.9.2.3"
 fi
-
-ensure_environment
-ensure_mysql_db
-ensure_magento "magento-mirror-1.9.2.3"
 
 buildecho "export N98_MAGERUN_TEST_MAGENTO_ROOT='${test_setup_directory}'"
