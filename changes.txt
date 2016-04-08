@@ -6,6 +6,7 @@ RECENT CHANGES
 1.97.17
 =======
 
+* Fix: Fix module loader (reported by Matthias Walter, fixed by TK)
 * #805 Fix config:delete (by Tom Klingenberg)
 
 =======
