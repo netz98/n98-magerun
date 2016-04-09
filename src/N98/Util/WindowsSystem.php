@@ -13,7 +13,7 @@ namespace N98\Util;
  *
  * @package N98\Util
  */
-class WindowsSystem
+final class WindowsSystem
 {
     const PATH_SEPARATOR = ';';
 

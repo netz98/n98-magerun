@@ -214,13 +214,15 @@ class ConfigurationLoader
         if ($this->_pluginConfig == null) {
             $this->_pluginConfig = array();
             $moduleBaseFolders = array();
+            $customFilename = $this->_customConfigFilename;
+            $customName = pathinfo($customFilename, PATHINFO_FILENAME);
             if (OperatingSystem::isWindows()) {
-                $config['plugin']['folders'][] = getenv('WINDIR') . '/n98-magerun/modules';
-                $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/n98-magerun/modules';
+                $config['plugin']['folders'][] = getenv('WINDIR') . '/' . $customName . '/modules';
+                $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/' . $customName . '/modules';
             } else {
-                $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/.n98-magerun/modules';
+                $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/.' . $customName . '/modules';
             }
-            $config['plugin']['folders'][] = $magentoRootFolder . '/lib/n98-magerun/modules';
+            $config['plugin']['folders'][] = $magentoRootFolder . '/lib/' . $customName . '/modules';
             foreach ($config['plugin']['folders'] as $folder) {
                 if (is_dir($folder)) {
                     $moduleBaseFolders[] = $folder;
@@ -238,7 +240,7 @@ class ConfigurationLoader
                         ->depth(2)
                         ->followLinks()
                         ->ignoreUnreadableDirs(true)
-                        ->name($this->_customConfigFilename)
+                        ->name($customFilename)
                         ->in($this->getVendorDir());
 
                     foreach ($finder as $file) {
@@ -256,7 +258,7 @@ class ConfigurationLoader
                     ->depth(1)
                     ->followLinks()
                     ->ignoreUnreadableDirs(true)
-                    ->name($this->_customConfigFilename)
+                    ->name($customFilename)
                     ->in($moduleBaseFolders);
 
                 foreach ($finder as $file) {

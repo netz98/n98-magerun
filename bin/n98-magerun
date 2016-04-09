@@ -5,4 +5,4 @@
 $application = require __DIR__.'/../src/bootstrap.php';
 $application->run();
 
-__HALT_COMPILER();
+__halt_compiler();
