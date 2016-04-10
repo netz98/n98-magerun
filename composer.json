@@ -18,8 +18,8 @@
         "symfony/validator": "~2.3",
         "n98/junit-xml": "~1.0",
         "fzaninotto/faker": "~1.4",
-        "composer/composer": "1.0.*@dev",
-        "twig/twig": "~1.0"
+        "twig/twig": "~1.0",
+        "composer/composer": "^1.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.1",

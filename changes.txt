@@ -6,6 +6,8 @@ RECENT CHANGES
 1.97.18
 =======
 
+* Upd: Stabilize composer ^1.0.0 (by TK)
+
 =======
 1.97.17
 =======
