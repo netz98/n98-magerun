@@ -364,24 +364,20 @@ fi
 
 # 2. check - can changes.txt be updated?
 
-line="================"
+line="----------------"
 
-CHANGES_HEAD="**************
-RECENT CHANGES
-**************
+CHANGES_HEAD="RECENT CHANGES
+==============
 
-${line:0:${#VERSION_FROM}}
 ${VERSION_FROM}
 ${line:0:${#VERSION_FROM}}"
-CHANGES_NEW="**************
-RECENT CHANGES
-**************
+CHANGES_NEW="RECENT CHANGES
+==============
 
-${line:0:${#VERSION_TO}}
 ${VERSION_TO}
 ${line:0:${#VERSION_TO}}"
 
-if [ "${CHANGES_HEAD}" != "$(head -n 8 ${FILE_CHANGES})" ]; then
+if [ "${CHANGES_HEAD}" != "$(head -n 5 ${FILE_CHANGES})" ]; then
     echo "error: can't update changes file from \"${VERSION_FROM}\""
     exit 1
 fi
@@ -413,7 +409,7 @@ fi
 # 5. uupdate cahnges file
 
 echo "${CHANGES_NEW}" > "${FILE_CHANGES}".~new
-tail -n+4 "${FILE_CHANGES}" >> "${FILE_CHANGES}".~new
+tail -n+3 "${FILE_CHANGES}" >> "${FILE_CHANGES}".~new
 mv "${FILE_CHANGES}".~new "${FILE_CHANGES}"
 
 # 6. update version file
