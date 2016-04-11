@@ -423,7 +423,7 @@ git add "${FILE_CHANGES}"
 git add "${FILE_APPLICATION}"
 
 if [ ${FLAG_GITGUI} -eq 1 ]; then
-    echo "[TASK] update version of development branch" > .git/GITGUI_MSG
+    echo "Update version of development branch" > .git/GITGUI_MSG
     git gui
 fi
 
