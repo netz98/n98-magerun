@@ -795,6 +795,26 @@ Toggles the active status of an backend user. ID can be e-mail or username. The 
 user by username first and if it cannot be found it will attempt to find the user by e-mail. If ID is omitted you
 will be prompted for it.
 
+Lock admin user
+"""""""""""""""""
+.. code-block:: sh
+
+   $ n98-magerun.phar admin:user:lock [username] [lifetime]
+
+Locks an admin user for the number of days specified in `[lifetime]`. If not provided, the lifetime will default to
+31 days.
+
+Lock all admin users
+"""""""""""""""""
+.. code-block:: sh
+
+   $ n98-magerun.phar admin:user:lockdown [lifetime] [--dry-run]
+
+Locks all admin users in the system for the number of days specified in `[lifetime]`. As above, if not provided it will
+default to 31 days.
+
+Use with caution! Use the `--dry-run` option to test first.
+
 Unlock admin user
 """""""""""""""""
 
@@ -802,7 +822,7 @@ Unlock admin user
 
    $ n98-magerun.phar admin:user:unlock [username]
 
-Releases the password lock on an admin (leave blank to unlock all admins)
+Releases the password lock on an admin (leave blank to unlock all admins).
 
 Disable admin notifications
 """""""""""""""""""""""""""
