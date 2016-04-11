@@ -67,6 +67,7 @@ class DumpCommand extends AbstractDatabaseCommand
                 InputOption::VALUE_NONE,
                 'Execute and prints no output except the dump filename'
             )
+            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'do everything but the dump')
             ->addOption(
                 'no-single-transaction',
                 null,
@@ -331,6 +332,10 @@ HELP;
                     '<comment>Start dumping database <info>' . $this->dbSettings['dbname']
                     . '</info> to file <info>' . $fileName . '</info>'
                 );
+            }
+
+            if ($input->getOption('dry-run')) {
+                $execs = array();
             }
 
             foreach ($execs as $exec) {

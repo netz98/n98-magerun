@@ -2,13 +2,14 @@
 
 namespace N98\Magento\Command\Installer;
 
-use RuntimeException;
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use RuntimeException;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\StreamOutput;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class InstallCommandTest extends TestCase
 {
-
     /**
      * @var string Installation Directory
      */
@@ -55,21 +56,22 @@ class InstallCommandTest extends TestCase
         try {
             $commandTester->execute(
                 array(
-                    'command'                   => $command->getName(),
-                    '--noDownload'              => true,
-                    '--installSampleData'       => 'no',
-                    '--useDefaultConfigParams'  => 'yes',
-                    '--installationFolder'      => $this->installDir,
-                    '--dbHost'                  => 'hostWhichDoesNotExists',
-                    '--dbUser'                  => 'user',
-                    '--dbPass'                  => 'pa$$w0rd',
-                    '--dbName'                  => 'magento',
+                    'command'                  => $command->getName(),
+                    '--noDownload'             => true,
+                    '--installSampleData'      => 'no',
+                    '--useDefaultConfigParams' => 'yes',
+                    '--installationFolder'     => $this->installDir,
+                    '--dbHost'                 => 'hostWhichDoesNotExists',
+                    '--dbUser'                 => 'user',
+                    '--dbPass'                 => 'pa$$w0rd',
+                    '--dbName'                 => 'magento',
                 )
             );
         } catch (\InvalidArgumentException $e) {
             $this->assertEquals("Database configuration is invalid", $e->getMessage());
             $display = $commandTester->getDisplay(true);
             $this->assertContains('SQLSTATE', $display);
+
             return;
         }
 
@@ -85,6 +87,4 @@ class InstallCommandTest extends TestCase
             @rmdir($this->installDir);
         }
     }
-
-
 }

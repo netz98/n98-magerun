@@ -324,7 +324,13 @@ abstract class AbstractMagentoCommand extends Command
     protected function getComposer(InputInterface $input, OutputInterface $output)
     {
         $io = new ConsoleIO($input, $output, $this->getHelperSet());
-        return ComposerFactory::create($io, array());
+        $config = array(
+            'config' => array(
+                'secure-http' => false,
+            ),
+        );
+
+        return ComposerFactory::create($io, $config);
     }
 
     /**

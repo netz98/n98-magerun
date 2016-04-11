@@ -1,91 +1,42 @@
-**************
 RECENT CHANGES
-**************
+==============
 
-=======
+1.97.18
+-------
+
+* Upd: Stabilize composer ^1.0.0 (by TK)
+* Feature: Add dry-run mode for db:dump (by TK)
+
 1.97.17
-=======
+-------
 
 * Fix: Fix module loader (reported by Matthias Walter, fixed by TK)
 * #805 Fix config:delete (by Tom Klingenberg)
 
-=======
 1.97.16
-=======
+-------
 
 * #800 Fix plugin loader to use 'n98-magerun' folder (by Rouven Alexander Rieker)
 
-=======
 1.97.15
-=======
+-------
 
 * #798 Add package magento-mirror-1.9.2.4 (by Raul E Watson)
 * #797 Streamlining of N98-Magerun1 and N98-Magerun2 (by Tom Klingenberg)
 
-=======
 1.97.14
-=======
+-------
 
 * #794 Fix crontab event observers / event area in sys:cron:run (by Tom Klingenberg)
 * #791 Add .github pull request template (by Tom Klingenberg)
 
-=======
 1.97.13
-=======
+-------
 
 * #789 Update readme with compare-versions changes  (by Luke Rodgers)
 
-=======
-1.97.12
-=======
-
-* #789 Add --errors-only and exist status in sys:setup:compare-version (by Luke Rodgers)
-* #785 fix cron expression parsing (by Dariusz Maciejewski and Tom Klingenberg)
-* #782 Improve Phpunit integration for magerun extension developers (by Jeroen Boersma)
-* #778 Move ignored tables to the end of the command in db:dump (by Luke Rodgers)
-* #771 Fix sed iconv encoding error on Mac OSX in db:dump (by Luke Rodgers)
-* #772 Fix undefined "io" helper (by Tom Klingenberg)
-* #768 Report init exceptions to stderr (by Tom Klingenberg)
-* #717 Check requirements in db:dump (by Tom Klingenberg)
-* #764 Sanitize module properties in dev:module:list (by Ben McManus)
-
-=======
-1.97.11
-=======
-
-* #758 Add Magento 1.9.2.3 (by Tom Klingenberg)
-* improved bash autocompletion file (by Tom Klingenberg)
-* #752 Fix install cmd fails using custom PHP binary (by Jacob Siefer)
-* #748 Non-zero exit status with module rewrite conflict (by Steve Robbins)
-* #747 Fix uncaught TypeError in sys:setup:incremental (by Tom Richards)
-* #746 Untry composer required version (by Tom Klingenberg)
-
-=======
-1.97.10
-=======
-
-* #746 Try composer required version (reported by Vinai Kopp)
-
-======
-1.97.9
-======
-
-* #741 Fix remove customer exec dependency (by Tom Klingenberg)
-* #745 Fix Sys:cron:run all marked with [1] (by Christian Münch)
-* Test and code improvements (by Tom Klingenberg)
-
-======
-1.97.8
-======
-
-* #727 Fix sys:cron:list cron expression display (by Robbie Averill)
-* #736 Fix missing Admin store in dev:template-hints (by Steve Robbins)
-* #733 Fix extenions:search display (by EmPeWe)
-* #732 Fix DB:console unknown variable (reported by robinero)
-* #729 Fix YAML::parse input type (by Dane MacMillan)
-
------------------------------------------
-SEE FULL CHANGELOG: http://bit.ly/10IDU1H
------------------------------------------
+------------------------------------------------------------------------
+SEE FULL CHANGELOG: https://github.com/netz98/n98-magerun/wiki/Changelog
+------------------------------------------------------------------------
 
 Visit our new blog http://magerun.net
