@@ -37,12 +37,13 @@ class UnlockCommand extends AbstractAdminUserCommand
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-*@return void
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
+            // Unlock a single admin account
             if ($username = $input->getArgument('username')) {
                 $user = \Mage::getModel('admin/user')->loadByUsername($username);
                 if (!$user || !$user->getId()) {
@@ -53,12 +54,11 @@ class UnlockCommand extends AbstractAdminUserCommand
                 $output->writeln('<info><comment>' . $username . '</comment> unlocked</info>');
                 return;
             }
-            \Mage::getResourceModel('enterprise_pci/admin_user')->unlock(
-                \Mage::getModel('admin/user')
-                    ->getCollection()
-                    ->getAllIds()
-            );
-            $output->writeln('<info><comment>All admins</comment> unlocked</info>');
+
+            // Unlock all admin accounts
+            $userIds = \Mage::getModel('admin/user')->getCollection()->getAllIds();
+            \Mage::getResourceModel('enterprise_pci/admin_user')->unlock($userIds);
+            $output->writeln(sprintf('<info><comment>All %d admins</comment> unlocked</info>', count($userIds)));
         }
     }
 }

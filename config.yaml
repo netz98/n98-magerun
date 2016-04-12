@@ -49,6 +49,8 @@ commands:
     - N98\Magento\Command\Admin\User\ListCommand
     - N98\Magento\Command\Admin\User\DeleteUserCommand
     - N98\Magento\Command\Admin\User\ChangeStatusCommand
+    - N98\Magento\Command\Admin\User\LockCommand
+    - N98\Magento\Command\Admin\User\LockdownCommand
     - N98\Magento\Command\Admin\User\UnlockCommand
     - N98\Magento\Command\Cache\CleanCommand
     - N98\Magento\Command\Cache\Dir\FlushCommand
