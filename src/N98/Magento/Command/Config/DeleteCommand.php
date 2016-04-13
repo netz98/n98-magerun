@@ -86,12 +86,12 @@ HELP;
             $deleted[] = $this->deleteConfigEntry($path, 'default', 0);
 
             // Delete websites
-            foreach (\Mage::app()->getWebsites() as $website) {
+            foreach (\Mage::app()->getWebsites(true) as $website) {
                 $deleted[] = $this->deleteConfigEntry($path, 'websites', $website->getId());
             }
 
             // Delete stores
-            foreach (\Mage::app()->getStores() as $store) {
+            foreach (\Mage::app()->getStores(true) as $store) {
                 $deleted[] = $this->deleteConfigEntry($path, 'stores', $store->getId());
             }
         } else {
