@@ -585,7 +585,7 @@ Set Config
 
 .. code-block:: sh
 
-   $ n98-magerun.phar config:set [--scope[="..."]] [--scope-id[="..."]] [--encrypt] path value
+   $ n98-magerun.phar config:set [--scope[="..."]] [--scope-id[="..."]] [--encrypt] [--force] path value
 
 Arguments:
     path        The config path
@@ -595,6 +595,7 @@ Options:
     --scope     The config value's scope (default: "default" | Can be "default", "websites", "stores")
     --scope-id  The config value's scope ID (default: "0")
     --encrypt   Encrypt the config value using local.xml's crypt key
+    --force     Allow creation of non-standard scope-id's for websites and stores
 
 Get Config
 """"""""""
