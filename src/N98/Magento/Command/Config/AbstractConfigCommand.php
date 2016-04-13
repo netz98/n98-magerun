@@ -124,6 +124,11 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
         return $scopeId;
     }
 
+    /**
+     * @param boolean $condition
+     * @param string $mask
+     * @param string $scopeId
+     */
     private function invalidScopeId($condition, $mask, $scopeId)
     {
         if (!$condition) {

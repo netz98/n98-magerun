@@ -5,12 +5,11 @@ namespace N98\Magento\Command\System\Setup;
 use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 /**
  * Class RemoveCommand
+ *
  * @package N98\Magento\Command\System\Setup
  * @author Aydin Hassan <aydin@hotmail.co.uk>
  */
@@ -29,7 +28,7 @@ class RemoveCommand extends AbstractSetupCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return void
@@ -39,12 +38,13 @@ class RemoveCommand extends AbstractSetupCommand
         $this->detectMagento($output, true);
 
         if ($this->initMagento()) {
-            $moduleName     = $this->getModule($input);
-            $setupName      = $input->getArgument('setup');
-            $moduleSetups   = $this->getModuleSetupResources($moduleName);
+            $moduleName = $this->getModule($input);
+            $setupName = $input->getArgument('setup');
+            $moduleSetups = $this->getModuleSetupResources($moduleName);
 
             if (empty($moduleSetups)) {
                 $output->writeln(sprintf('No setup resources found for module: "%s"', $moduleName));
+
                 return;
             }
 

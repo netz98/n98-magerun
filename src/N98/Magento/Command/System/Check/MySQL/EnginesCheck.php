@@ -2,9 +2,10 @@
 
 namespace N98\Magento\Command\System\Check\MySQL;
 
-use N98\Magento\Command\System\Check\SimpleCheck;
+use Mage;
 use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
+use N98\Magento\Command\System\Check\SimpleCheck;
 
 class EnginesCheck implements SimpleCheck
 {
@@ -14,7 +15,12 @@ class EnginesCheck implements SimpleCheck
     public function check(ResultCollection $results)
     {
         $result = $results->createResult();
-        $dbAdapter = \Mage::getModel('core/resource')->getConnection('core_write');
+
+        /** @var $resourceModel \Mage_Core_Model_Resource */
+        $resourceModel = Mage::getModel('core/resource');
+
+        /** @var $dbAdapter \Varien_Db_Adapter_Interface|false */
+        $dbAdapter = $resourceModel->getConnection('core_write');
 
         $engines = $dbAdapter->fetchAll('SHOW ENGINES');
         $innodbFound = false;
