@@ -12,7 +12,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 FILE_VERSION="version.txt"
-FILE_CHANGES="changes.txt"
+FILE_CHANGES="CHANGELOG.md"
 FILE_APPLICATION="src/N98/Magento/Application.php"
 
 FLAG_GITGUI=1
