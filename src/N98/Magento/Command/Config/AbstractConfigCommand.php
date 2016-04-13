@@ -115,12 +115,10 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
             );
         }
 
-        if (!$allowZeroScope) {
-            if (0 >= (int)$scopeId) {
-                throw new InvalidArgumentException(
-                    sprintf("Invalid scope parameter, %s is not a positive integer value", var_export($scopeId, true))
-                );
-            }
+        if (0 - (bool)$allowZeroScope >= (int)$scopeId) {
+            throw new InvalidArgumentException(
+                sprintf("Invalid scope parameter, %s is not a positive integer value", var_export($scopeId, true))
+            );
         }
 
         return $scopeId;

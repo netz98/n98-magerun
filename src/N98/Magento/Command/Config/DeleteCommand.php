@@ -84,17 +84,18 @@ HELP;
     protected function _deletePath(InputInterface $input, $path, $scopeId)
     {
         $deleted = array();
+        $force = $input->getOption('force');
         if ($input->getOption('all')) {
             // Default
             $deleted[] = $this->deleteConfigEntry($path, 'default', 0);
 
             // Delete websites
-            foreach (\Mage::app()->getWebsites() as $website) {
+            foreach (\Mage::app()->getWebsites($force) as $website) {
                 $deleted[] = $this->deleteConfigEntry($path, 'websites', $website->getId());
             }
 
             // Delete stores
-            foreach (\Mage::app()->getStores() as $store) {
+            foreach (\Mage::app()->getStores($force) as $store) {
                 $deleted[] = $this->deleteConfigEntry($path, 'stores', $store->getId());
             }
         } else {
