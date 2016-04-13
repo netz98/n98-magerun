@@ -3,6 +3,8 @@
 namespace N98\Magento\Command\System\Setup;
 
 use InvalidArgumentException;
+use Mage_Core_Model_Resource;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -68,9 +70,13 @@ class RemoveCommand extends AbstractSetupCommand
      */
     public function removeSetupResource($moduleName, $setupResource, OutputInterface $output)
     {
-        $model          = $this->_getModel('core/resource', 'Mage_Core_Model_Resource');
-        $table          = $model->getTableName('core_resource');
-        $writeAdapter   = $model->getConnection('core_write');
+        /** @var Mage_Core_Model_Resource $model */
+        $model = $this->_getModel('core/resource', 'Mage_Core_Model_Resource');
+        $writeAdapter = $model->getConnection('core_write');
+        if (!$writeAdapter) {
+            throw new RuntimeException('Database not configured');
+        }
+        $table = $model->getTableName('core_resource');
 
         if ($writeAdapter->delete($table, array('code = ?' => $setupResource)) > 0) {
             $output->writeln(

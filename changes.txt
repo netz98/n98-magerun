@@ -4,6 +4,8 @@ RECENT CHANGES
 1.97.20
 -------
 
+* Update MySQL Engine Check to handle incomplete installations (by Navarr Barnier, TK)
+
 1.97.19
 -------
 

@@ -1,42 +1,54 @@
 <?php
+/*
+ * this file is part of magerun
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
+ */
 
 namespace N98\Magento\Command\System\Check\MySQL;
 
-use Mage;
 use N98\Magento\Command\System\Check\Result;
-use N98\Magento\Command\System\Check\ResultCollection;
-use N98\Magento\Command\System\Check\SimpleCheck;
+use Varien_Db_Adapter_Interface;
 
-class EnginesCheck implements SimpleCheck
+class EnginesCheck extends ResourceCheck
 {
     /**
-     * @param ResultCollection $results
+     * @param Result $result
+     * @param Varien_Db_Adapter_Interface $dbAdapter
+     * @return void
      */
-    public function check(ResultCollection $results)
+    protected function checkImplementation(Result $result, Varien_Db_Adapter_Interface $dbAdapter)
     {
-        $result = $results->createResult();
+        $innodbFound = $this->checkInnodbEngine($dbAdapter);
 
-        /** @var $resourceModel \Mage_Core_Model_Resource */
-        $resourceModel = Mage::getModel('core/resource');
+        if ($innodbFound) {
+            $result->setStatus(Result::STATUS_OK);
+            $result->setMessage("<info>Required MySQL Storage Engine <comment>InnoDB</comment> found.</info>");
+        } else {
+            $result->setStatus(Result::STATUS_ERROR);
+            $result->setMessage(
+                "<error>Required MySQL Storage Engine <comment>InnoDB</comment> not found!</error>"
+            );
+        }
+    }
 
-        /** @var $dbAdapter \Varien_Db_Adapter_Interface|false */
-        $dbAdapter = $resourceModel->getConnection('core_write');
+    /**
+     * @param Varien_Db_Adapter_Interface $dbAdapter
+     * @return bool
+     */
+    private function checkInnodbEngine(Varien_Db_Adapter_Interface $dbAdapter)
+    {
+        $innodbFound = false;
 
         $engines = $dbAdapter->fetchAll('SHOW ENGINES');
-        $innodbFound = false;
+
         foreach ($engines as $engine) {
-            if (strtolower($engine['Engine']) == 'innodb') {
+            if (strtolower($engine['Engine']) === 'innodb') {
                 $innodbFound = true;
                 break;
             }
         }
 
-        $result->setStatus($innodbFound ? Result::STATUS_OK : Result::STATUS_ERROR);
-
-        if ($innodbFound) {
-            $result->setMessage("<info>Required MySQL Storage Engine <comment>InnoDB</comment> found.</info>");
-        } else {
-            $result->setMessage("<error>Required MySQL Storage Engine \"InnoDB\" not found!</error>");
-        }
+        return $innodbFound;
     }
 }
