@@ -23,6 +23,12 @@ class DeleteCommand extends AbstractConfigCommand
                 'default'
             )
             ->addOption('scope-id', null, InputOption::VALUE_OPTIONAL, 'The config value\'s scope ID', '0')
+            ->addOption(
+                'force',
+                null,
+                InputOption::VALUE_NONE,
+                'Allow deletion of non-standard scope-id\'s for websites and stores'
+            )
             ->addOption('all', null, InputOption::VALUE_NONE, 'Delete all entries by path')
         ;
 
@@ -48,8 +54,10 @@ HELP;
 
         $deleted = array();
 
+        $allowZeroScope = $input->getOption('force');
+
         $scope = $this->_validateScopeParam($input->getOption('scope'));
-        $scopeId = $this->_convertScopeIdParam($scope, $input->getOption('scope-id'));
+        $scopeId = $this->_convertScopeIdParam($scope, $input->getOption('scope-id'), $allowZeroScope);
 
         $path = $input->getArgument('path');
 
@@ -81,17 +89,18 @@ HELP;
     protected function _deletePath(InputInterface $input, $path, $scopeId)
     {
         $deleted = array();
+        $force = $input->getOption('force');
         if ($input->getOption('all')) {
             // Default
             $deleted[] = $this->deleteConfigEntry($path, 'default', 0);
 
             // Delete websites
-            foreach (\Mage::app()->getWebsites() as $website) {
+            foreach (\Mage::app()->getWebsites($force) as $website) {
                 $deleted[] = $this->deleteConfigEntry($path, 'websites', $website->getId());
             }
 
             // Delete stores
-            foreach (\Mage::app()->getStores() as $store) {
+            foreach (\Mage::app()->getStores($force) as $store) {
                 $deleted[] = $this->deleteConfigEntry($path, 'stores', $store->getId());
             }
         } else {

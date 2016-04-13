@@ -30,6 +30,12 @@ class SetCommand extends AbstractConfigCommand
                 InputOption::VALUE_NONE,
                 'The config value should be encrypted using local.xml\'s crypt key'
             )
+            ->addOption(
+                'force',
+                null,
+                InputOption::VALUE_NONE,
+                'Allow creation of non-standard scope-id\'s for websites and stores'
+            )
         ;
 
         $help = <<<HELP
@@ -59,8 +65,11 @@ HELP;
             return;
         }
 
-        $this->_validateScopeParam($input->getOption('scope'));
-        $scopeId = $this->_convertScopeIdParam($input->getOption('scope'), $input->getOption('scope-id'));
+        $allowZeroScope = $input->getOption('force');
+
+        $scope = $input->getOption('scope');
+        $this->_validateScopeParam($scope);
+        $scopeId = $this->_convertScopeIdParam($scope, $input->getOption('scope-id'), $allowZeroScope);
 
         $value = str_replace(array('\n', '\r'), array("\n", "\r"), $input->getArgument('value'));
         $value = $this->_formatValue($value, ($input->getOption('encrypt') ? 'encrypt' : false));
@@ -68,7 +77,7 @@ HELP;
         $config->saveConfig(
             $input->getArgument('path'),
             $value,
-            $input->getOption('scope'),
+            $scope,
             $scopeId
         );
 

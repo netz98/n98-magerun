@@ -71,10 +71,11 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     /**
      * @param string $scope
      * @param string $scopeId
+     * @param boolean $allowZeroScope
      *
      * @return string non-negative integer number
      */
-    protected function _convertScopeIdParam($scope, $scopeId)
+    protected function _convertScopeIdParam($scope, $scopeId, $allowZeroScope = false)
     {
         if ($scope === 'default') {
             if ("$scopeId" !== "0") {
@@ -108,19 +109,30 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
             return $store->getId();
         }
 
-        if ($scopeId !== (string)(int)$scopeId) {
-            throw new InvalidArgumentException(
-                sprintf("Invalid scope parameter, %s is not an integer value", var_export($scopeId, true))
-            );
-        }
+        $this->invalidScopeId(
+            $scopeId !== (string)(int)$scopeId,
+            "Invalid scope parameter, %s is not an integer value",
+            $scopeId
+        );
 
-        if (0 >= (int)$scopeId) {
-            throw new InvalidArgumentException(
-                sprintf("Invalid scope parameter, %s is not a positive integer value", var_export($scopeId, true))
-            );
-        }
+        $this->invalidScopeId(
+            0 - (bool)$allowZeroScope >= (int)$scopeId,
+            "Invalid scope parameter, %s is not a positive integer value",
+            $scopeId
+        );
 
         return $scopeId;
+    }
+
+    private function invalidScopeId($condition, $mask, $scopeId)
+    {
+        if (!$condition) {
+            return;
+        }
+
+        throw new InvalidArgumentException(
+            sprintf($mask, var_export($scopeId, true))
+        );
     }
 
     /**
