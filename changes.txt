@@ -4,6 +4,7 @@ RECENT CHANGES
 1.97.19
 -------
 
+* Add config:delete and config:set --force option (by Robert Coleman)
 * Add prompt when unlocking all admin users (by Ben Robie and Robbie Averill)
 * Add admin:user:lock and lockdown commands (by Robbie Averill)
 
