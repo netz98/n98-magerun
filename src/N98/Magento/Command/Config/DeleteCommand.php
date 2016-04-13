@@ -23,6 +23,7 @@ class DeleteCommand extends AbstractConfigCommand
                 'default'
             )
             ->addOption('scope-id', null, InputOption::VALUE_OPTIONAL, 'The config value\'s scope ID', '0')
+            ->addOption('force', null, InputOption::VALUE_NONE, 'Allow deletion of non-standard scope-id\'s for websites and stores')
             ->addOption('all', null, InputOption::VALUE_NONE, 'Delete all entries by path')
         ;
 
@@ -48,8 +49,10 @@ HELP;
 
         $deleted = array();
 
+        $allowZeroScope = $input->getOption('force');
+
         $scope = $this->_validateScopeParam($input->getOption('scope'));
-        $scopeId = $this->_convertScopeIdParam($scope, $input->getOption('scope-id'));
+        $scopeId = $this->_convertScopeIdParam($scope, $input->getOption('scope-id'), $allowZeroScope);
 
         $path = $input->getArgument('path');
 

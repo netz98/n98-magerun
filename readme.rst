@@ -628,7 +628,7 @@ Delete Config
 
 .. code-block:: sh
 
-   $ n98-magerun.phar config:delete [--scope[="..."]] [--scope-id[="..."]] [--all] path
+   $ n98-magerun.phar config:delete [--scope[="..."]] [--scope-id[="..."]] [--all] [--force] path
 
 Arguments:
     path        The config path
@@ -637,6 +637,7 @@ Options:
     --scope     The config scope (default, websites, stores)
     --scope-id  The config value's scope ID
     --all       Deletes all entries of a path (ignores --scope and --scope-id)
+    --force     Allow deletion of non-standard scope-id's for websites and stores
 
 Config Search
 """""""""""""
