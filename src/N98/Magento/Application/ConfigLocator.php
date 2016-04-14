@@ -48,13 +48,18 @@ class ConfigLocator
      */
     public function getUserConfigFile()
     {
-        $personalConfigFilePath = $this->getUserConfigFilePath();
+        $userConfigFile = null;
 
-        try {
-            $userConfigFile = ConfigFile::createFromFile($personalConfigFilePath);
-            $userConfigFile->applyVariables($this->magentoRootFolder);
-        } catch (InvalidArgumentException $e) {
-            $userConfigFile = null;
+        $personalConfigFilePaths = $this->getUserConfigFilePaths();
+
+        foreach ($personalConfigFilePaths as $personalConfigFilePath) {
+            try {
+                $userConfigFile = ConfigFile::createFromFile($personalConfigFilePath);
+                $userConfigFile->applyVariables($this->magentoRootFolder);
+                break;
+            } catch (InvalidArgumentException $e) {
+                $userConfigFile = null;
+            }
         }
 
         return $userConfigFile;
@@ -113,9 +118,9 @@ class ConfigLocator
     }
 
     /**
-     * @return string
+     * @return array
      */
-    private function getUserConfigFilePath()
+    private function getUserConfigFilePaths()
     {
         $homeDirectory = OperatingSystem::getHomeDir();
         if (!$homeDirectory) {
@@ -127,10 +132,13 @@ class ConfigLocator
         }
 
         $basename = $this->customConfigFilename;
-        if (!OperatingSystem::isWindows()) {
-            $basename = ".$basename";
-        }
 
-        return $homeDirectory . DIRECTORY_SEPARATOR . $basename;
+        $paths = array();
+        if (OperatingSystem::isWindows()) {
+            $paths[] = $homeDirectory . '/' . $basename;
+        }
+        $paths[] = $homeDirectory . '/.' . $basename;
+
+        return $paths;
     }
 }
