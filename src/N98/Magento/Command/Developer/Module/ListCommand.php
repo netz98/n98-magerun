@@ -63,21 +63,15 @@ class ListCommand extends AbstractMagentoCommand
     {
         $modules = \Mage::app()->getConfig()->getNode('modules')->asArray();
         foreach ($modules as $moduleName => $moduleInfo) {
-
-            // skip modules which don't have a codePool or an active definition
-            if (!array_key_exists('codePool', $moduleInfo)
-                || !array_key_exists('active', $moduleInfo)
-            ) {
-                continue;
-            }
+            $codePool = isset($moduleInfo['codePool']) ? $moduleInfo['codePool'] : '';
+            $version  = isset($moduleInfo['version'])  ? $moduleInfo['version']  : '';
+            $active   = isset($moduleInfo['active'])   ? $moduleInfo['active']   : '';
 
             $this->infos[] = array(
-                'codePool' => $this->sanitizeModuleProperty($moduleInfo['codePool']),
+                'codePool' => $this->sanitizeModuleProperty($codePool),
                 'Name'     => $this->sanitizeModuleProperty($moduleName),
-                'Version'  => isset($moduleInfo['version'])
-                    ? $this->sanitizeModuleProperty($moduleInfo['version'])
-                    : '',
-                'Status'   => $this->formatActive($moduleInfo['active']),
+                'Version'  => $this->sanitizeModuleProperty($version),
+                'Status'   => $this->formatActive($active),
             );
         }
     }
