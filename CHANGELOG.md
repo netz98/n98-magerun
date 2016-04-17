@@ -4,6 +4,7 @@ RECENT CHANGES
 1.97.20
 -------
 
+* Fix unset index usage in dev:module:list (by Pieter Hoste)
 * Fallback to .n98-magerun.yaml in homedir on windows (by TK)
 * Update MySQL Engine Check to handle incomplete installations (by Navarr Barnier, TK)
 * Feature: Extract config-loader (by TK)
