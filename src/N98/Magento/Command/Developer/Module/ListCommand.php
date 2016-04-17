@@ -52,7 +52,7 @@ class ListCommand extends AbstractMagentoCommand
 
         if (!empty($this->infos)) {
             $this->getHelper('table')
-                ->setHeaders(array('codePool', 'Name', 'Version', 'Status'))
+                ->setHeaders(array('Code pool', 'Name', 'Version', 'Status'))
                 ->renderByFormat($output, $this->infos, $input->getOption('format'));
         } else {
             $output->writeln("No modules match the specified criteria.");
@@ -68,10 +68,10 @@ class ListCommand extends AbstractMagentoCommand
             $active   = isset($moduleInfo['active'])   ? $moduleInfo['active']   : '';
 
             $this->infos[] = array(
-                'codePool' => $this->sanitizeModuleProperty($codePool),
-                'Name'     => $this->sanitizeModuleProperty($moduleName),
-                'Version'  => $this->sanitizeModuleProperty($version),
-                'Status'   => $this->formatActive($active),
+                'Code pool' => $this->sanitizeModuleProperty($codePool),
+                'Name'      => $this->sanitizeModuleProperty($moduleName),
+                'Version'   => $this->sanitizeModuleProperty($version),
+                'Status'    => $this->formatActive($active),
             );
         }
     }
