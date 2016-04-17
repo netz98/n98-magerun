@@ -37,4 +37,15 @@ class TemplateHintsCommand extends AbstractMagentoStoreConfigCommand
      * @var bool
      */
     protected $withAdminStore = true;
+
+    /**
+     * If required, handle the output and possible change of the developer IP restrictions
+     *
+     * @param \Mage_Core_Model_Store $store
+     * @param bool $disabled
+     */
+    protected function _afterSave(\Mage_Core_Model_Store $store, $disabled)
+    {
+        $this->detectAskAndSetDeveloperIp($store, $disabled);
+    }
 }
