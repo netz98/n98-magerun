@@ -71,6 +71,7 @@ class ParameterHelper extends AbstractHelper
             }
 
             $stores = array();
+            $question = array();
             $i = 0;
 
             foreach ($storeManager->getStores($withDefaultStore) as $store) {

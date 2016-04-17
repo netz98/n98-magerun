@@ -3,10 +3,10 @@
 namespace N98\Magento\Command\Developer\Module;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class ListCommand extends AbstractMagentoCommand
 {
@@ -22,19 +22,18 @@ class ListCommand extends AbstractMagentoCommand
             ->addOption('codepool', null, InputOption::VALUE_OPTIONAL, 'Show modules in a specific codepool')
             ->addOption('status', null, InputOption::VALUE_OPTIONAL, 'Show modules with a specific status')
             ->addOption('vendor', null, InputOption::VALUE_OPTIONAL, 'Show modules of a specified vendor')
-            ->setAliases(array('sys:modules:list')) // deprecated
+            ->setAliases(array('sys:modules:list'))// deprecated
             ->setDescription('List all installed modules')
             ->addOption(
                 'format',
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
-        ;
+            );
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int|void
@@ -64,8 +63,8 @@ class ListCommand extends AbstractMagentoCommand
         $modules = \Mage::app()->getConfig()->getNode('modules')->asArray();
         foreach ($modules as $moduleName => $moduleInfo) {
             $codePool = isset($moduleInfo['codePool']) ? $moduleInfo['codePool'] : '';
-            $version  = isset($moduleInfo['version'])  ? $moduleInfo['version']  : '';
-            $active   = isset($moduleInfo['active'])   ? $moduleInfo['active']   : '';
+            $version = isset($moduleInfo['version']) ? $moduleInfo['version'] : '';
+            $active = isset($moduleInfo['active']) ? $moduleInfo['active'] : '';
 
             $this->infos[] = array(
                 'Code pool' => $this->sanitizeModuleProperty($codePool),
