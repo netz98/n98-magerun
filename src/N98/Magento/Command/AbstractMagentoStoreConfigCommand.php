@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command;
 
+use N98\Util\Console\Helper\ParameterHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -220,9 +221,12 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      *
      * @return mixed
      */
-    protected function _initStore($input, $output)
+    protected function _initStore(InputInterface $input, OutputInterface $output)
     {
-        return $this->getHelperSet()->get('parameter')->askStore($input, $output, 'store', $this->withAdminStore);
+        /** @var ParameterHelper $parameterHelper */
+        $parameterHelper = $this->getHelper('parameter');
+
+        return $parameterHelper->askStore($input, $output, 'store', $this->withAdminStore);
     }
 
     /**
