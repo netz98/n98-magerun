@@ -1,14 +1,20 @@
 <?php
-
+/**
+ * this file is part of magerun
+ *
+ * @author Mike Parkin <https://github.com/MikeParkin>
+ * @author Tom Klingenberg <https://github.com/ktomk>
+ */
 namespace N98\Magento\Command\Developer\EmailTemplate;
 
+use Mage;
+use Mage_Adminhtml_Model_Email_Template;
+use Mage_Core_Model_Template;
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use Mage;
-use Mage_Adminhtml_Model_Email_Template;
 
 class UsageCommand extends AbstractMagentoCommand
 {
@@ -22,12 +28,11 @@ class UsageCommand extends AbstractMagentoCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
-        ;
+            );
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int|void
@@ -49,6 +54,7 @@ class UsageCommand extends AbstractMagentoCommand
 
     protected function findEmailTemplates()
     {
+        /** @var Mage_Core_Model_Template[] $templates */
         $templates = Mage::getModel('adminhtml/email_template')->getCollection();
 
         $return = array();
@@ -67,10 +73,10 @@ class UsageCommand extends AbstractMagentoCommand
             $configPaths = $template->getSystemConfigPathsWhereUsedCurrently();
 
             if (!count($configPaths)) {
-                $configPaths[]  = array(
-                    'scope'         => 'Unused',
-                    'scope_id'      => 'Unused',
-                    'path'          => 'Unused',
+                $configPaths[] = array(
+                    'scope'    => 'Unused',
+                    'scope_id' => 'Unused',
+                    'path'     => 'Unused',
                 );
             }
 
