@@ -86,6 +86,7 @@ commands:
     - N98\Magento\Command\Database\Maintain\CheckTablesCommand
     - N98\Magento\Command\Design\DemoNoticeCommand
     - N98\Magento\Command\Developer\Code\Model\MethodCommand
+    - N98\Magento\Command\Developer\EmailTemplate\UsageCommand
     - N98\Magento\Command\Developer\Ide\PhpStorm\MetaCommand
     - N98\Magento\Command\Developer\Setup\Script\AttributeCommand
     - N98\Magento\Command\Developer\ConsoleCommand

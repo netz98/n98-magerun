@@ -1111,6 +1111,15 @@ Toggle profiler for debugging a store:
 
    $ n98-magerun.phar dev:profiler [--on] [--off] [--global] [store]
 
+Email Template Usage
+""""""""""""""""""""
+
+Display a report of use transactional email templates:
+
+.. code-block:: sh
+
+   $ n98-magerun.phar dev:email-template:usage --format[=FORMAT]
+
 Development Logs
 """"""""""""""""
 
