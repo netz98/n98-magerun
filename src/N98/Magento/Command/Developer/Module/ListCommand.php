@@ -2,19 +2,17 @@
 
 namespace N98\Magento\Command\Developer\Module;
 
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\ArrayFunctions;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ListCommand extends AbstractMagentoCommand
 {
-    /**
-     * @var array
-     */
-    protected $infos;
-
     protected function configure()
     {
         $this
@@ -46,88 +44,67 @@ class ListCommand extends AbstractMagentoCommand
             $this->writeSection($output, 'Magento Modules');
         }
         $this->initMagento();
-        $this->findInstalledModules();
-        $this->filterModules($input);
+        $modules = $this->findInstalledModules();
+        $modules = $this->filterModules($modules, $input);
 
-        if (!empty($this->infos)) {
-            $this->getHelper('table')
-                ->setHeaders(array('Code pool', 'Name', 'Version', 'Status'))
-                ->renderByFormat($output, $this->infos, $input->getOption('format'));
-        } else {
+        if (empty($modules)) {
             $output->writeln("No modules match the specified criteria.");
+
+            return;
         }
+
+        /** @var TableHelper $table */
+        $table = $this->getHelper('table');
+        $table
+            ->setHeaders(array('Code pool', 'Name', 'Version', 'Status'))
+            ->renderByFormat($output, $modules, $input->getOption('format'));
     }
 
-    protected function findInstalledModules()
+    /**
+     * @return array
+     */
+    private function findInstalledModules()
     {
-        $modules = \Mage::app()->getConfig()->getNode('modules')->asArray();
+        $return = array();
+
+        $modules = Mage::app()->getConfig()->getNode('modules')->asArray();
         foreach ($modules as $moduleName => $moduleInfo) {
             $codePool = isset($moduleInfo['codePool']) ? $moduleInfo['codePool'] : '';
             $version = isset($moduleInfo['version']) ? $moduleInfo['version'] : '';
             $active = isset($moduleInfo['active']) ? $moduleInfo['active'] : '';
 
-            $this->infos[] = array(
-                'Code pool' => $this->sanitizeModuleProperty($codePool),
-                'Name'      => $this->sanitizeModuleProperty($moduleName),
-                'Version'   => $this->sanitizeModuleProperty($version),
+            $return[] = array(
+                'Code pool' => trim($codePool),
+                'Name'      => trim($moduleName),
+                'Version'   => trim($version),
                 'Status'    => $this->formatActive($active),
             );
         }
+
+        return $return;
     }
 
     /**
      * Filter modules by codepool, status and vendor if such options were inputted by user
      *
+     * @param array $modules
      * @param InputInterface $input
+     * @return array
      */
-    protected function filterModules(InputInterface $input)
+    private function filterModules(array $modules, InputInterface $input)
     {
         if ($input->getOption('codepool')) {
-            $this->filterByField("codePool", $input->getOption('codepool'));
+            $modules = ArrayFunctions::matrixFilterByValue($modules, "codePool", $input->getOption('codepool'));
         }
 
         if ($input->getOption('status')) {
-            $this->filterByField('Status', $input->getOption('status'));
+            $modules = ArrayFunctions::matrixFilterByValue($modules, 'Status', $input->getOption('status'));
         }
 
         if ($input->getOption('vendor')) {
-            $this->filterByFieldStartsWith('Name', $input->getOption('vendor'));
+            $modules = ArrayFunctions::matrixFilterStartswith($modules, 'Name', $input->getOption('vendor'));
         }
-    }
 
-    /**
-     * @param string $field
-     * @param string $value
-     */
-    protected function filterByField($field, $value)
-    {
-        foreach ($this->infos as $k => $info) {
-            if ($info[$field] != $value) {
-                unset($this->infos[$k]);
-            }
-        }
-    }
-
-    /**
-     * @param string $field
-     * @param string $value
-     */
-    protected function filterByFieldStartsWith($field, $value)
-    {
-        foreach ($this->infos as $k => $info) {
-            if (strncmp($info[$field], $value, strlen($value))) {
-                unset($this->infos[$k]);
-            }
-        }
-    }
-
-    /**
-     * @param string $input Module property to be sanitized
-     *
-     * @return string
-     */
-    private function sanitizeModuleProperty($input)
-    {
-        return trim($input);
+        return $modules;
     }
 }
