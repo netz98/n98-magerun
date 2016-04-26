@@ -73,7 +73,7 @@ HELP;
 
         if (count($deleted) > 0) {
             $this->getHelper('table')
-                ->setHeaders(array('deleted path', 'scope', 'id'))
+                ->setHeaders(array('Deleted Path', 'Scope', 'Scope-ID'))
                 ->setRows($deleted)
                 ->render($output);
         }
