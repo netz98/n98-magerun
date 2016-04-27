@@ -40,67 +40,69 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
-            $jobCode = $input->getArgument('job');
-            if (!$jobCode) {
-                $this->writeSection($output, 'Cronjob');
-                $jobCode = $this->askJobCode($output, $this->getJobs());
-            }
+        if (!$this->initMagento()) {
+            return;
+        }
 
-            $jobsRoot = \Mage::getConfig()->getNode('crontab/jobs');
-            $defaultJobsRoot = \Mage::getConfig()->getNode('default/crontab/jobs');
+        $jobCode = $input->getArgument('job');
+        if (!$jobCode) {
+            $this->writeSection($output, 'Cronjob');
+            $jobCode = $this->askJobCode($output, $this->getJobs());
+        }
 
-            $jobConfig = $jobsRoot->{$jobCode};
+        $jobsRoot = \Mage::getConfig()->getNode('crontab/jobs');
+        $defaultJobsRoot = \Mage::getConfig()->getNode('default/crontab/jobs');
+
+        $jobConfig = $jobsRoot->{$jobCode};
+        if (!$jobConfig || !$jobConfig->run) {
+            $jobConfig = $defaultJobsRoot->{$jobCode};
             if (!$jobConfig || !$jobConfig->run) {
-                $jobConfig = $defaultJobsRoot->{$jobCode};
-                if (!$jobConfig || !$jobConfig->run) {
-                    throw new RuntimeException('No job config found!');
-                }
+                throw new RuntimeException('No job config found!');
+            }
+        }
+
+        $runConfig = $jobConfig->run;
+
+        if ($runConfig->model) {
+            if (!preg_match(self::REGEX_RUN_MODEL, (string) $runConfig->model, $run)) {
+                throw new RuntimeException('Invalid model/method definition, expecting "model/class::method".');
+            }
+            if (!($model = \Mage::getModel($run[1])) || !method_exists($model, $run[2])) {
+                throw new RuntimeException(sprintf('Invalid callback: %s::%s does not exist', $run[1], $run[2]));
+            }
+            $callback = array($model, $run[2]);
+
+            $output->write('<info>Run </info><comment>' . get_class($model) . '::' . $run[2] . '</comment> ');
+
+            \Mage::getConfig()->init()->loadEventObservers('crontab');
+            \Mage::app()->addEventArea('crontab');
+
+            try {
+                $schedule = \Mage::getModel('cron/schedule');
+                $schedule
+                    ->setJobCode($jobCode)
+                    ->setStatus(\Mage_Cron_Model_Schedule::STATUS_RUNNING)
+                    ->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
+                    ->save();
+
+                call_user_func_array($callback, array($schedule));
+
+                $schedule
+                    ->setStatus(\Mage_Cron_Model_Schedule::STATUS_SUCCESS)
+                    ->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
+                    ->save();
+            } catch (Exception $e) {
+                $schedule
+                    ->setStatus(\Mage_Cron_Model_Schedule::STATUS_ERROR)
+                    ->setMessages($e->getMessage())
+                    ->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
+                    ->save();
             }
 
-            $runConfig = $jobConfig->run;
-
-            if ($runConfig->model) {
-                if (!preg_match(self::REGEX_RUN_MODEL, (string) $runConfig->model, $run)) {
-                    throw new RuntimeException('Invalid model/method definition, expecting "model/class::method".');
-                }
-                if (!($model = \Mage::getModel($run[1])) || !method_exists($model, $run[2])) {
-                    throw new RuntimeException(sprintf('Invalid callback: %s::%s does not exist', $run[1], $run[2]));
-                }
-                $callback = array($model, $run[2]);
-
-                $output->write('<info>Run </info><comment>' . get_class($model) . '::' . $run[2] . '</comment> ');
-
-                \Mage::getConfig()->init()->loadEventObservers('crontab');
-                \Mage::app()->addEventArea('crontab');
-
-                try {
-                    $schedule = \Mage::getModel('cron/schedule');
-                    $schedule
-                        ->setJobCode($jobCode)
-                        ->setStatus(\Mage_Cron_Model_Schedule::STATUS_RUNNING)
-                        ->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
-                        ->save();
-
-                    call_user_func_array($callback, array($schedule));
-
-                    $schedule
-                        ->setStatus(\Mage_Cron_Model_Schedule::STATUS_SUCCESS)
-                        ->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
-                        ->save();
-                } catch (Exception $e) {
-                    $schedule
-                        ->setStatus(\Mage_Cron_Model_Schedule::STATUS_ERROR)
-                        ->setMessages($e->getMessage())
-                        ->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
-                        ->save();
-                }
-
-                $output->writeln('<info>done</info>');
-            }
-            if (empty($callback)) {
-                \Mage::throwException(Mage::helper('cron')->__('No callbacks found'));
-            }
+            $output->writeln('<info>done</info>');
+        }
+        if (empty($callback)) {
+            \Mage::throwException(Mage::helper('cron')->__('No callbacks found'));
         }
     }
 
