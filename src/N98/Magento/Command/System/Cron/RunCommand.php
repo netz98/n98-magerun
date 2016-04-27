@@ -67,12 +67,14 @@ HELP;
             if (!preg_match(self::REGEX_RUN_MODEL, (string) $runConfig->model, $run)) {
                 throw new RuntimeException('Invalid model/method definition, expecting "model/class::method".');
             }
-            if (!($model = \Mage::getModel($run[1])) || !method_exists($model, $run[2])) {
-                throw new RuntimeException(sprintf('Invalid callback: %s::%s does not exist', $run[1], $run[2]));
-            }
+            $model = \Mage::getModel($run[1]);
             $callback = array($model, $run[2]);
+            $callableName = vsprintf("%1\$s::%2\$s", $run);
+            if (!$model || !is_callable($callback, false, $callableName)) {
+                throw new RuntimeException(sprintf('Invalid callback: %s', $callableName));
+            }
 
-            $output->write('<info>Run </info><comment>' . get_class($model) . '::' . $run[2] . '</comment> ');
+            $output->write('<info>Run </info><comment>' . $callableName . '</comment> ');
 
             \Mage::getConfig()->init()->loadEventObservers('crontab');
             \Mage::app()->addEventArea('crontab');
