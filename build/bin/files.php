@@ -8,14 +8,22 @@ $urls = <<<JSON_URLS
 [
   {
     "channel": "unstable",
-    "url":     "https://files.magerun.net/n98-magerun-dev.phar"
+    "url":     "https://files.magerun.net/%basename%-dev.phar"
   },
   {
     "channel": "stable",
-    "url":     "https://files.magerun.net/n98-magerun.phar"
+    "url":     "https://files.magerun.net/%basename%.phar"
   }
 ]
 JSON_URLS;
+
+$basename = '';
+if (is_readable('build.xml') && $build = simplexml_load_file('build.xml')) {
+    $basename = trim($build['name']);
+}
+$basename = $basename ?: 'n98-magerun';
+
+$urls = strtr($urls, array('%basename%' => $basename));
 
 $urlHeaders = function ($url) {
     return function ($name = null) use ($url) {
