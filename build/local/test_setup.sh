@@ -7,7 +7,7 @@ IFS=$'\n\t'
 
 buildecho()
 {
-    echo -en "\e[44m[TEST-SETUP]\e[49m "
+    echo -en "\e[1;44;97m[TEST-SETUP]\e[0m "
     echo "${1}"
 }
 
@@ -55,15 +55,12 @@ ensure_environment() {
 # create mysql database if it does not yet exists
 ensure_mysql_db() {
     local db_host="${test_setup_db_host}"
+    local db_port="${test_setup_db_port}"
     local db_user="${test_setup_db_user}"
     local db_pass="${test_setup_db_pass}"
     local db_name="${test_setup_db_name}"
 
-    if [ "" == "${db_pass}" ]; then
-        mysql -u"${db_user}" -h"${db_host}" -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`;"
-    else
-        mysql -u"${db_user}" -p"${db_pass}" -h"${db_host}" -e "'CREATE DATABASE IF NOT EXISTS \`${db_name}\`;'"
-    fi;
+    mysql -u"${db_user}" --password="${db_pass}" -h"${db_host}" -P"${db_port}" -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`;"
 
     buildecho "mysql database: '${db_name}' (${db_user}@${db_host})"
 }
@@ -72,6 +69,7 @@ ensure_mysql_db() {
 ensure_magento() {
     local directory="${test_setup_directory}"
     local db_host="${test_setup_db_host}"
+    local db_port="${test_setup_db_port}"
     local db_user="${test_setup_db_user}"
     local db_pass="${test_setup_db_pass}"
     local db_name="${test_setup_db_name}"
@@ -87,7 +85,8 @@ ensure_magento() {
     else
         php -dmemory_limit=1g -f "${magerun_cmd}" -- install \
                     --magentoVersionByName="${magento_version}" --installationFolder="${directory}" \
-                    --dbHost="${db_host}" --dbUser="${db_user}" --dbPass="${db_pass}" --dbName="${db_name}" \
+                    --dbHost="${db_host}" --dbPort="${db_port}" --dbUser="${db_user}" --dbPass="${db_pass}" \
+                    --dbName="${db_name}" \
                     --installSampleData="${install_sample_data}" --useDefaultConfigParams=yes \
                     --baseUrl="http://dev.magento.local/"
         buildecho "magento version '${magento_version}' installed."
@@ -98,6 +97,7 @@ test_setup_basename="n98-magerun"
 test_setup_magerun_cmd="bin/${test_setup_basename}"
 test_setup_directory="./magento/www"
 test_setup_db_host="127.0.0.1"
+test_setup_db_port="${test_setup_db_port:-3306}"
 test_setup_db_user="root"
 test_setup_db_pass=""
 test_setup_db_name="magento_magerun_test"
