@@ -2,9 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Module;
 
-use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\ArrayFunctions;
+use N98\Magento\Modules;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,12 +43,11 @@ class ListCommand extends AbstractMagentoCommand
             $this->writeSection($output, 'Magento Modules');
         }
         $this->initMagento();
-        $modules = $this->findInstalledModules();
-        $modules = $this->filterModules($modules, $input);
 
-        if (empty($modules)) {
+        $modules = $this->filterModules($input);
+
+        if (!count($modules)) {
             $output->writeln("No modules match the specified criteria.");
-
             return;
         }
 
@@ -57,53 +55,19 @@ class ListCommand extends AbstractMagentoCommand
         $table = $this->getHelper('table');
         $table
             ->setHeaders(array('Code pool', 'Name', 'Version', 'Status'))
-            ->renderByFormat($output, $modules, $input->getOption('format'));
+            ->renderByFormat($output, iterator_to_array($modules), $input->getOption('format'));
     }
 
     /**
-     * @return array
-     */
-    private function findInstalledModules()
-    {
-        $return = array();
-
-        $modules = Mage::app()->getConfig()->getNode('modules')->asArray();
-        foreach ($modules as $moduleName => $moduleInfo) {
-            $codePool = isset($moduleInfo['codePool']) ? $moduleInfo['codePool'] : '';
-            $version = isset($moduleInfo['version']) ? $moduleInfo['version'] : '';
-            $active = isset($moduleInfo['active']) ? $moduleInfo['active'] : '';
-
-            $return[] = array(
-                'Code pool' => trim($codePool),
-                'Name'      => trim($moduleName),
-                'Version'   => trim($version),
-                'Status'    => $this->formatActive($active),
-            );
-        }
-
-        return $return;
-    }
-
-    /**
-     * Filter modules by codepool, status and vendor if such options were inputted by user
-     *
-     * @param array $modules
      * @param InputInterface $input
-     * @return array
+     *
+     * @return Modules
      */
-    private function filterModules(array $modules, InputInterface $input)
+    private function filterModules(InputInterface $input)
     {
-        if ($input->getOption('codepool')) {
-            $modules = ArrayFunctions::matrixFilterByValue($modules, "codePool", $input->getOption('codepool'));
-        }
-
-        if ($input->getOption('status')) {
-            $modules = ArrayFunctions::matrixFilterByValue($modules, 'Status', $input->getOption('status'));
-        }
-
-        if ($input->getOption('vendor')) {
-            $modules = ArrayFunctions::matrixFilterStartswith($modules, 'Name', $input->getOption('vendor'));
-        }
+        $modules = new Modules();
+        $modules = $modules->findInstalledModules()
+            ->filterModules($input);
 
         return $modules;
     }
