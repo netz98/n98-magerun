@@ -58,10 +58,7 @@ class Modules implements IteratorAggregate, Countable
             );
         }
 
-        $installed = new Modules();
-        $installed->list = $list;
-
-        return $installed;
+        return new Modules($list);
     }
 
     /**
@@ -72,24 +69,21 @@ class Modules implements IteratorAggregate, Countable
      */
     public function filterModules(InputInterface $input)
     {
-        $list = $this->list;
+        $filtered = $this->list;
 
         if ($input->getOption('codepool')) {
-            $list = ArrayFunctions::matrixFilterByValue($list, "Code pool", $input->getOption('codepool'));
+            $filtered = ArrayFunctions::matrixFilterByValue($filtered, "Code pool", $input->getOption('codepool'));
         }
 
         if ($input->getOption('status')) {
-            $list = ArrayFunctions::matrixFilterByValue($list, 'Status', $input->getOption('status'));
+            $filtered = ArrayFunctions::matrixFilterByValue($filtered, 'Status', $input->getOption('status'));
         }
 
         if ($input->getOption('vendor')) {
-            $list = ArrayFunctions::matrixFilterStartswith($list, 'Name', $input->getOption('vendor'));
+            $filtered = ArrayFunctions::matrixFilterStartswith($filtered, 'Name', $input->getOption('vendor'));
         }
 
-        $filtered = new self();
-        $filtered->list = $list;
-
-        return $filtered;
+        return new self($filtered);
     }
 
     ### Traversable Interface ###

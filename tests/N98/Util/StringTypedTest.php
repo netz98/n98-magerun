@@ -13,6 +13,7 @@ use PHPUnit_Framework_TestCase as TestCase;
  * Class StringTypedTest
  *
  * @package N98\Util
+ * @covers N98\Util\StringTyped
  */
 class StringTypedTest extends TestCase
 {
