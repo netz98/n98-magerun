@@ -64,7 +64,7 @@ HELP;
         $runConfig = $jobConfig->run;
 
         if ($runConfig->model) {
-            if (!preg_match(self::REGEX_RUN_MODEL, (string) $runConfig->model, $run)) {
+            if (!preg_match(self::REGEX_RUN_MODEL, (string)$runConfig->model, $run)) {
                 throw new RuntimeException('Invalid model/method definition, expecting "model/class::method".');
             }
             $model = \Mage::getModel($run[1]);
@@ -110,7 +110,7 @@ HELP;
 
     /**
      * @param OutputInterface $output
-     * @param array           $jobs array of array containing "job" keyed string entries of job-codes
+     * @param array $jobs array of array containing "job" keyed string entries of job-codes
      *
      * @return string         job-code
      * @throws InvalidArgumentException when user selects invalid job interactively
@@ -136,6 +136,7 @@ HELP;
                 if (!isset($jobs[$key])) {
                     throw new InvalidArgumentException('Invalid job');
                 }
+
                 return $jobs[$key]['Job'];
             }
         );
