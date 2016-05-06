@@ -1,6 +1,18 @@
 RECENT CHANGES
 ==============
 
+1.97.20
+-------
+
+* Fix ask store endless loop in non-interactive mode (by TK)
+* Fix unset index usage in dev:module:list (by Pieter Hoste)
+* Support magic \__call calls for sys:cron:run (by Sam Tay)
+* Fallback to .n98-magerun.yaml in homedir on windows (by TK)
+* Update MySQL Engine Check to handle incomplete installations (by Navarr Barnier, TK)
+* Feature: New dev:email-template:usage command (by Mike Parkin)
+* Feature: Notify of developer IP on changing template hints; closes #23 (by Robbie Averill)
+* Feature: Extract config-loader (by TK)
+
 1.97.19
 -------
 

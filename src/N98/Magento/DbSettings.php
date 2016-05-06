@@ -97,8 +97,8 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             'password'    => null,
         );
 
-        $config           = ((array) $resources->default_setup->connection) + $config;
-        $config['prefix'] = (string) $resources->db->table_prefix;
+        $config = ((array)$resources->default_setup->connection) + $config;
+        $config['prefix'] = (string)$resources->db->table_prefix;
 
         // known parameters: host, port, unix_socket, dbname, username, password, options, charset, persistent,
         //                   driver_options
@@ -108,7 +108,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
 
         /* @see Varien_Db_Adapter_Pdo_Mysql::_connect */
         if (strpos($config['host'], '/') !== false) {
-            $config['unix_socket'] = (string) $config['host'];
+            $config['unix_socket'] = (string)$config['host'];
             $config['host'] = null;
             $config['port'] = null;
         } elseif (strpos($config['host'], ':') !== false) {
@@ -116,15 +116,15 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             $config['unix_socket'] = null;
         }
 
-        $this->config      = $config;
+        $this->config = $config;
 
         $this->tablePrefix = $config['prefix'];
-        $this->host        = $config['host'];
-        $this->port        = $config['port'];
-        $this->unixSocket  = $config['unix_socket'];
-        $this->dbName      = $config['dbname'];
-        $this->username    = $config['username'];
-        $this->password    = $config['password'];
+        $this->host = $config['host'];
+        $this->port = $config['port'];
+        $this->unixSocket = $config['unix_socket'];
+        $this->dbName = $config['dbname'];
+        $this->username = $config['username'];
+        $this->password = $config['password'];
     }
 
     /**
@@ -183,9 +183,8 @@ class DbSettings implements ArrayAccess, IteratorAggregate
         try {
             $connection->query('USE ' . $this->quoteIdentifier($database));
         } catch (PDOException $e) {
-            throw new RuntimeException(
-                sprintf("Unable to use database '%s': %s %s", $database, get_class($e), $e->getMessage()), 0, $e
-            );
+            $message = sprintf("Unable to use database '%s': %s %s", $database, get_class($e), $e->getMessage());
+            throw new RuntimeException($message, 0, $e);
         }
 
         $connection->query("SET NAMES utf8");

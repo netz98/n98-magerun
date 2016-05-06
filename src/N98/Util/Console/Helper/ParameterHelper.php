@@ -66,7 +66,12 @@ class ParameterHelper extends AbstractHelper
             /** @var $store \Mage_Core_Model_Store */
             $store = $storeManager->getStore($input->getArgument($argumentName));
         } catch (Exception $e) {
+            if (!$input->isInteractive()) {
+                throw new RuntimeException(sprintf('Require %s parameter', $argumentName));
+            }
+
             $stores = array();
+            $question = array();
             $i = 0;
 
             foreach ($storeManager->getStores($withDefaultStore) as $store) {
@@ -230,7 +235,7 @@ class ParameterHelper extends AbstractHelper
 
     /**
      * @param OutputInterface $output
-     * @param                 $question
+     * @param string|array $question
      * @param callable $callback
      *
      * @return string

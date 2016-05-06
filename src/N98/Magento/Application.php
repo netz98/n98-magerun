@@ -4,14 +4,15 @@ namespace N98\Magento;
 
 use Composer\Autoload\ClassLoader;
 use Exception;
+use Mage;
 use Magento\Mtf\EntryPoint\EntryPoint;
 use N98\Magento\Application\ConfigurationLoader;
 use N98\Util\ArrayFunctions;
 use N98\Util\AutoloadRestorer;
-use N98\Util\Console\Helper\TwigHelper;
-use N98\Util\Console\Helper\MagentoHelper;
-use N98\Util\OperatingSystem;
 use N98\Util\BinaryString;
+use N98\Util\Console\Helper\MagentoHelper;
+use N98\Util\Console\Helper\TwigHelper;
+use N98\Util\OperatingSystem;
 use RuntimeException;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
@@ -37,7 +38,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.97.19';
+    const APP_VERSION = '1.97.20';
 
     /**
      * @var int
@@ -190,6 +191,7 @@ class Application extends BaseApplication
 
     /**
      * Get names of sub-folders to be scanned during Magento detection
+     *
      * @return array
      */
     public function getDetectSubFolders()
@@ -197,6 +199,7 @@ class Application extends BaseApplication
         if (isset($this->partialConfig['detect']) && isset($this->partialConfig['detect']['subFolders'])) {
             return $this->partialConfig['detect']['subFolders'];
         }
+
         return array();
     }
 
@@ -460,6 +463,7 @@ class Application extends BaseApplication
                 'for more information.',
                 '',
             ));
+
             return false;
         }
     }
@@ -473,17 +477,18 @@ class Application extends BaseApplication
      */
     public function initMagento($soft = false)
     {
-        if ($this->getMagentoRootFolder() !== null) {
-            if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-                $this->_initMagento2();
-            } else {
-                $this->_initMagento1($soft);
-            }
-
-            return true;
+        if ($this->getMagentoRootFolder() === null) {
+            return false;
         }
 
-        return false;
+        $isMagento2 = $this->_magentoMajorVersion === self::MAGENTO_MAJOR_VERSION_2;
+        if ($isMagento2) {
+            $this->_initMagento2();
+        } else {
+            $this->_initMagento1($soft);
+        }
+
+        return true;
     }
 
     /**
@@ -626,8 +631,10 @@ class Application extends BaseApplication
                     }
                 }
             }
+
             return $input;
         }
+
         return $input;
     }
 
@@ -698,8 +705,8 @@ class Application extends BaseApplication
         }
 
         // initialize config
-        $configLoader        = $this->getConfigurationLoader($initConfig, $output);
-        $loadExternalConfig  = !$this->_checkSkipConfigOption($input);
+        $configLoader = $this->getConfigurationLoader($initConfig, $output);
+        $loadExternalConfig = !$this->_checkSkipConfigOption($input);
         $this->partialConfig = $configLoader->getPartialConfig($loadExternalConfig);
         $this->detectMagento($input, $output);
         $configLoader->loadStageTwo($this->_magentoRootFolder, $loadExternalConfig, $this->_magerunStopFileFolder);
@@ -795,7 +802,7 @@ class Application extends BaseApplication
 
         $initSettings = $this->config['init'];
 
-        \Mage::app($initSettings['code'], $initSettings['type'], $initSettings['options']);
+        Mage::app($initSettings['code'], $initSettings['type'], $initSettings['options']);
     }
 
     /**
@@ -807,7 +814,7 @@ class Application extends BaseApplication
     private function requireOnce($path)
     {
         $requireOnce = function () {
-            require_once  func_get_arg(0);
+            require_once func_get_arg(0);
         };
         if (50400 <= PHP_VERSION_ID) {
             $requireOnce->bindTo(null);

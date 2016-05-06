@@ -86,6 +86,7 @@ commands:
     - N98\Magento\Command\Database\Maintain\CheckTablesCommand
     - N98\Magento\Command\Design\DemoNoticeCommand
     - N98\Magento\Command\Developer\Code\Model\MethodCommand
+    - N98\Magento\Command\Developer\EmailTemplate\UsageCommand
     - N98\Magento\Command\Developer\Ide\PhpStorm\MetaCommand
     - N98\Magento\Command\Developer\Setup\Script\AttributeCommand
     - N98\Magento\Command\Developer\ConsoleCommand
@@ -172,66 +173,111 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
+      - name: magento-ce-1.9.2.4
+        version: 1.9.2.4
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.9.2.1/magento-1.9.2.3.zip
+          type: zip
+          shasum: 219fe2b88068cf73953b90ce01186cb1f19affea
+        extra:
+          sample-data: sample-data-1.9.1.0
+
+      - name: magento-ce-1.9.2.3
+        version: 1.9.2.3
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.9.2.1/magento-1.9.2.3.zip
+          type: zip
+          shasum: c211c1d31468dfbc45decd7d00266281fdc97b20
+        extra:
+          sample-data: sample-data-1.9.1.0
+
+      - name: magento-ce-1.9.2.2
+        version: 1.9.2.2
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.9.2.1/magento-1.9.2.2.zip
+          type: zip
+          shasum: 6b6de6bee57a2992affa1fad01444cb6c05e0788
+        extra:
+          sample-data: sample-data-1.9.1.0
+
+      - name: magento-ce-1.9.2.1
+        version: 1.9.2.1
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.9.2.1/magento-1.9.2.1.zip
+          type: zip
+          shasum: b158de5c3bc587931d99af1bd11f3235e75d1191
+        extra:
+          sample-data: sample-data-1.9.1.0
+
+      - name: magento-ce-1.9.2.0
+        version: 1.9.2.0
+        dist:
+          url: http://www.magentocommerce.com/downloads/assets/1.9.2.0/magento-1.9.2.0.zip
+          type: zip
+          shasum: f5cd7053c41f19e9007ce6817ad12344e6fc0263
+        extra:
+          sample-data: sample-data-1.9.1.0
+
       - name: magento-ce-1.9.1.1
         version: 1.9.1.1
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.1.1/magento-1.9.1.1.tar.gz
-          type: tar
-          shasum: 170e4b9019f43477d2f2a074ef551a05009da724
+          url: http://www.magentocommerce.com/downloads/assets/1.9.1.1/magento-1.9.1.1.zip
+          type: zip
+          shasum: c9074bf9646b28c035d369db7189aec9733ea978
         extra:
           sample-data: sample-data-1.9.1.0
 
       - name: magento-ce-1.9.1.0
         version: 1.9.1.0
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.1.0/magento-1.9.1.0.tar.gz
-          type: tar
-          shasum: 4f7064f4a5bc46298979e8b37208be6fdaf20002
+          url: http://www.magentocommerce.com/downloads/assets/1.9.1.0/magento-1.9.1.0.zip
+          type: zip
+          shasum: ef2da3723033614d4f10c3a12e8392d1730ade30
         extra:
           sample-data: sample-data-1.9.1.0
 
       - name: magento-ce-1.9.0.1
         version: 1.9.0.1
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.0.1/magento-1.9.0.1.tar.gz
-          type: tar
-          shasum: 5100c4dab56cf587d5478b9bf8b5d4a0fa411179
+          url: http://www.magentocommerce.com/downloads/assets/1.9.0.1/magento-1.9.0.1.zip
+          type: zip
+          shasum: ff84a32100598cff43d765e3d6cb0bc1a5a414b3
         extra:
           sample-data: sample-data-1.9.0.0
 
       - name: magento-ce-1.8.1.0
         version: 1.8.1.0
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.8.1.0/magento-1.8.1.0.tar.gz
-          type: tar
-          shasum: 024a6173003e4f6814e7fb7e84ca8b08a18db4c1
+          url: http://www.magentocommerce.com/downloads/assets/1.8.1.0/magento-1.8.1.0.zip
+          type: zip
+          shasum: 9b47925c8e68a4eea0963e32af884944e3b90ee0
         extra:
           sample-data: sample-data-1.6.1.0
 
       - name: magento-ce-1.8.0.0
         version: 1.8.0.0
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.8.0.0/magento-1.8.0.0.tar.gz
-          type: tar
-          shasum: 31a52e9522d09065ff6f939faa1289023db2eff5
+          url: http://www.magentocommerce.com/downloads/assets/1.8.0.0/magento-1.8.0.0.zip
+          type: zip
+          shasum: 51a140dc651e1d2e3693571f86963a01c168f740
         extra:
           sample-data: sample-data-1.6.1.0
 
       - name: magento-ce-1.7.0.2
         version: 1.7.0.2
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.7.0.2/magento-1.7.0.2.tar.gz
-          type: tar
-          shasum: 8d2a378e92ee917a3b74b1a51a8d3e6874dc6ab9
+          url: http://www.magentocommerce.com/downloads/assets/1.7.0.2/magento-1.7.0.2.zip
+          type: zip
+          shasum: 0183fac38b6c5a6ff13b9363304eb70d9298b759
         extra:
           sample-data: sample-data-1.6.1.0
 
       - name: magento-ce-1.6.2.0
         version: 1.6.2.0
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.6.2.0/magento-1.6.2.0.tar.gz
-          type: tar
-          shasum: 897050f0c08480ab6531eead5a5caadfef673340
+          url: http://www.magentocommerce.com/downloads/assets/1.6.2.0/magento-1.6.2.0.zip
+          type: zip
+          shasum: 136a5ce5d49cc7d4fd6a43452aafcfbac97722be
         extra:
           sample-data: sample-data-1.6.1.0
 

@@ -34,7 +34,7 @@ class DeleteCommandTest extends TestCase
                 'path'    => 'n98_magerun/foo/bar',
             )
         );
-        $this->assertContains('| n98_magerun/foo/bar | default | 0  |', $commandTester->getDisplay());
+        $this->assertContains('| n98_magerun/foo/bar | default | 0        |', $commandTester->getDisplay());
 
 
         /**
@@ -65,7 +65,7 @@ class DeleteCommandTest extends TestCase
         );
 
         foreach (\Mage::app()->getStores() as $store) {
-            $this->assertContains('| n98_magerun/foo/bar | stores   | ' . $store->getId() . '  |', $commandTester->getDisplay());
+            $this->assertContains('| n98_magerun/foo/bar | stores   | ' . $store->getId() . '        |', $commandTester->getDisplay());
         }
 
     }

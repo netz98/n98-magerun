@@ -153,9 +153,10 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function initMagento($soft = false)
     {
-        $init = $this->getApplication()->initMagento($soft);
+        $application = $this->getApplication();
+        $init = $application->initMagento($soft);
         if ($init) {
-            $this->_magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
+            $this->_magentoRootFolder = $application->getMagentoRootFolder();
         }
 
         return $init;

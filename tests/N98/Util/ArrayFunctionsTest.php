@@ -19,7 +19,7 @@ class ArrayFunctionsTest extends \PHPUnit_Framework_TestCase
     /**
      * @return array
      */
-    public static function mergeArraysProvider()
+    public function mergeArraysProvider()
     {
         return array(
             array(
@@ -52,5 +52,46 @@ class ArrayFunctionsTest extends \PHPUnit_Framework_TestCase
                 array('Foo', 'Bar' => array('Bar' => 2))
             ),
         );
+    }
+
+    /**
+     * @return array
+     * @see filterMatrixByValue
+     */
+    public function provideMatrix()
+    {
+        return array(
+            array(
+                array(
+                    array('foo' => 'bar'),
+                    array('foo' => 'baz'),
+                    array('foo' => 'zaz'),
+                )
+            )
+        );
+    }
+
+    /**
+     * @param array $matrix
+     * @test
+     * @dataProvider provideMatrix
+     */
+    public function matrixFilterByValue(array $matrix)
+    {
+        $this->assertCount(3, $matrix);
+        $filtered = ArrayFunctions::matrixFilterByValue($matrix, 'foo', 'bar');
+        $this->assertCount(1, $filtered);
+    }
+
+    /**
+     * @param array $matrix
+     * @test
+     * @dataProvider provideMatrix
+     */
+    public function matrixFilterStartsWith(array $matrix)
+    {
+        $this->assertCount(3, $matrix);
+        $filtered = ArrayFunctions::matrixFilterStartswith($matrix, 'foo', 'ba');
+        $this->assertCount(2, $filtered);
     }
 }

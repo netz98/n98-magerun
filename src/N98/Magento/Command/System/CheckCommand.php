@@ -38,8 +38,7 @@ class CheckCommand extends AbstractMagentoCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
-        ;
+            );
 
         $help = <<<HELP
 - Checks missing files and folders
@@ -51,37 +50,39 @@ HELP;
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->detectMagento($output);
+        if (!$this->initMagento()) {
+            return;
+        }
+
         $this->config = $this->getCommandConfig();
 
-        $this->detectMagento($output);
-        if ($this->initMagento()) {
-            $results = new ResultCollection();
+        $results = new ResultCollection();
 
-            foreach ($this->config['checks'] as $checkGroup => $checkGroupClasses) {
-                $results->setResultGroup($checkGroup);
-                foreach ($checkGroupClasses as $checkGroupClass) {
-                    $this->_invokeCheckClass($results, $checkGroupClass);
-                }
+        foreach ($this->config['checks'] as $checkGroup => $checkGroupClasses) {
+            $results->setResultGroup($checkGroup);
+            foreach ($checkGroupClasses as $checkGroupClass) {
+                $this->_invokeCheckClass($results, $checkGroupClass);
             }
+        }
 
-            if ($input->getOption('format')) {
-                $this->_printTable($input, $output, $results);
-            } else {
-                $this->_printResults($output, $results);
-            }
+        if ($input->getOption('format')) {
+            $this->_printTable($input, $output, $results);
+        } else {
+            $this->_printResults($output, $results);
         }
     }
 
     /**
      * @param ResultCollection $results
-     * @param string           $checkGroupClass name
+     * @param string $checkGroupClass name
      */
     protected function _invokeCheckClass(ResultCollection $results, $checkGroupClass)
     {
@@ -108,7 +109,7 @@ HELP;
     }
 
     /**
-     * @param OutputInterface  $output
+     * @param OutputInterface $output
      * @param ResultCollection $results
      */
     protected function _printResults(OutputInterface $output, ResultCollection $results)
@@ -140,8 +141,8 @@ HELP;
     }
 
     /**
-     * @param InputInterface   $input
-     * @param OutputInterface  $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @param ResultCollection $results
      */
     protected function _printTable(InputInterface $input, OutputInterface $output, ResultCollection $results)
@@ -184,8 +185,8 @@ HELP;
 
     /**
      * @param ResultCollection $results
-     * @param string           $context
-     * @param string           $checkGroupClass
+     * @param string $context
+     * @param string $checkGroupClass
      */
     private function _markCheckWarning(ResultCollection $results, $context, $checkGroupClass)
     {
