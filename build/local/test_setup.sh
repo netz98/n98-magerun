@@ -52,13 +52,12 @@ ensure_environment() {
     buildecho "directory: '${directory}'"
 }
 
-# create mysql database ($1) if it does not yet exists
+# create mysql database if it does not yet exists
 ensure_mysql_db() {
     local db_host="${test_setup_db_host}"
     local db_user="${test_setup_db_user}"
     local db_pass="${test_setup_db_pass}"
     local db_name="${test_setup_db_name}"
-
 
     if [ "" == "${db_pass}" ]; then
         mysql -u"${db_user}" -h"${db_host}" -e "CREATE DATABASE IF NOT EXISTS \`${db_name}\`;"
@@ -69,7 +68,7 @@ ensure_mysql_db() {
     buildecho "mysql database: '${db_name}' (${db_user}@${db_host})"
 }
 
-# install into a directory ($1) a Magento version ($2) with or w/o sample-data ($3)
+# install into a directory a Magento version with or w/o sample-data
 ensure_magento() {
     local directory="${test_setup_directory}"
     local db_host="${test_setup_db_host}"
