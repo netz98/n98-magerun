@@ -768,12 +768,18 @@ HELP;
             return $input;
         };
 
-        $baseUrl = ($input->getOption('baseUrl') !== null) ? $input->getOption('baseUrl') : $dialog->askAndValidate(
-            $output,
-            '<question>Please enter the base url:</question> ',
-            $validateBaseUrl,
-            3
-        );
+        $baseUrl = $input->getOption('baseUrl');
+        if (null === $baseUrl) {
+            if (!$input->isInteractive()) {
+                throw new InvalidArgumentException('Installation base url is mandatory, use --baseUrl.');
+            }
+            $baseUrl = $dialog->askAndValidate(
+                $output,
+                '<question>Please enter the base url:</question> ',
+                $validateBaseUrl
+            );
+        }
+        $validateBaseUrl($baseUrl);
         $baseUrl = rtrim($baseUrl, '/') . '/'; // normalize baseUrl
 
         /**
