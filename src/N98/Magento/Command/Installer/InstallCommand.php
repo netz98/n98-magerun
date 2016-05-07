@@ -505,19 +505,23 @@ HELP;
 
                 return $db;
             }
-
-            if ($input->getOption('noDownload') && !$input->getOption('forceUseDb')) {
-                $output->writeln("<error>Database {$this->config['db_name']} already exists.</error>");
-
-                return false;
-            }
-
-            return $db;
         } catch (PDOException $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
+            return false;
         }
 
-        return false;
+        if ($input->getOption('noDownload') && !$input->getOption('forceUseDb')) {
+            $output->writeln(
+                sprintf(
+                    "<error>Database '%s' already exists, use --forceUseDb in combination with --noDownload" .
+                    " to use an existing database</error>",
+                    $this->config['db_name']
+                )
+            );
+            return false;
+        }
+
+        return $db;
     }
 
     /**
