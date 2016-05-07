@@ -660,6 +660,7 @@ HELP;
     protected function installMagento(InputInterface $input, OutputInterface $output)
     {
         $this->getApplication()->setAutoExit(false);
+        /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
         $dialog = $this->getHelperSet()->get('dialog');
 
         $defaults = $this->commandConfig['installation']['defaults'];
@@ -754,7 +755,9 @@ HELP;
 
         $validateBaseUrl = function ($input) {
             if (!preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $input)) {
-                throw new InvalidArgumentException('Please enter a valid URL');
+                throw new InvalidArgumentException(
+                    sprintf('Invalid URL %s. Please enter a valid URL', var_export($input, true))
+                );
             }
             if (parse_url($input, \PHP_URL_HOST) == 'localhost') {
                 throw new InvalidArgumentException(
@@ -769,7 +772,7 @@ HELP;
             $output,
             '<question>Please enter the base url:</question> ',
             $validateBaseUrl,
-            false
+            3
         );
         $baseUrl = rtrim($baseUrl, '/') . '/'; // normalize baseUrl
 
