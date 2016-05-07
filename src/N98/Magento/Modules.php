@@ -51,10 +51,10 @@ class Modules implements IteratorAggregate, Countable
             $active = isset($moduleInfo['active']) ? $moduleInfo['active'] : '';
 
             $list[] = array(
-                'Code pool' => trim($codePool),
-                'Name'      => trim($moduleName),
-                'Version'   => trim($version),
-                'Status'    => StringTyped::formatActive($active),
+                'codePool' => trim($codePool),
+                'Name'     => trim($moduleName),
+                'Version'  => trim($version),
+                'Status'   => StringTyped::formatActive($active),
             );
         }
 
@@ -72,7 +72,7 @@ class Modules implements IteratorAggregate, Countable
         $filtered = $this->list;
 
         if ($input->getOption('codepool')) {
-            $filtered = ArrayFunctions::matrixFilterByValue($filtered, "Code pool", $input->getOption('codepool'));
+            $filtered = ArrayFunctions::matrixFilterByValue($filtered, "codePool", $input->getOption('codepool'));
         }
 
         if ($input->getOption('status')) {

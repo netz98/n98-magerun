@@ -54,7 +54,7 @@ class ListCommand extends AbstractMagentoCommand
         /** @var TableHelper $table */
         $table = $this->getHelper('table');
         $table
-            ->setHeaders(array('Code pool', 'Name', 'Version', 'Status'))
+            ->setHeaders(array('codePool', 'Name', 'Version', 'Status'))
             ->renderByFormat($output, iterator_to_array($modules), $input->getOption('format'));
     }
 
