@@ -1,6 +1,11 @@
 RECENT CHANGES
 ==============
 
+1.97.21
+-------
+
+* Fix: codePool header regression in 1.97.20(reported by Jeroen Boersma)
+
 1.97.20
 -------
 

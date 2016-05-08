@@ -505,19 +505,23 @@ HELP;
 
                 return $db;
             }
-
-            if ($input->getOption('noDownload') && !$input->getOption('forceUseDb')) {
-                $output->writeln("<error>Database {$this->config['db_name']} already exists.</error>");
-
-                return false;
-            }
-
-            return $db;
         } catch (PDOException $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
+            return false;
         }
 
-        return false;
+        if ($input->getOption('noDownload') && !$input->getOption('forceUseDb')) {
+            $output->writeln(
+                sprintf(
+                    "<error>Database '%s' already exists, use --forceUseDb in combination with --noDownload" .
+                    " to use an existing database</error>",
+                    $this->config['db_name']
+                )
+            );
+            return false;
+        }
+
+        return $db;
     }
 
     /**
@@ -660,6 +664,7 @@ HELP;
     protected function installMagento(InputInterface $input, OutputInterface $output)
     {
         $this->getApplication()->setAutoExit(false);
+        /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
         $dialog = $this->getHelperSet()->get('dialog');
 
         $defaults = $this->commandConfig['installation']['defaults'];
@@ -754,7 +759,9 @@ HELP;
 
         $validateBaseUrl = function ($input) {
             if (!preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $input)) {
-                throw new InvalidArgumentException('Please enter a valid URL');
+                throw new InvalidArgumentException(
+                    sprintf('Invalid URL %s. Please enter a valid URL', var_export($input, true))
+                );
             }
             if (parse_url($input, \PHP_URL_HOST) == 'localhost') {
                 throw new InvalidArgumentException(
@@ -765,12 +772,18 @@ HELP;
             return $input;
         };
 
-        $baseUrl = ($input->getOption('baseUrl') !== null) ? $input->getOption('baseUrl') : $dialog->askAndValidate(
-            $output,
-            '<question>Please enter the base url:</question> ',
-            $validateBaseUrl,
-            false
-        );
+        $baseUrl = $input->getOption('baseUrl');
+        if (null === $baseUrl) {
+            if (!$input->isInteractive()) {
+                throw new InvalidArgumentException('Installation base url is mandatory, use --baseUrl.');
+            }
+            $baseUrl = $dialog->askAndValidate(
+                $output,
+                '<question>Please enter the base url:</question> ',
+                $validateBaseUrl
+            );
+        }
+        $validateBaseUrl($baseUrl);
         $baseUrl = rtrim($baseUrl, '/') . '/'; // normalize baseUrl
 
         /**

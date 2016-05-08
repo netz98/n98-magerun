@@ -5,6 +5,7 @@ namespace N98\Magento\Command;
 use Composer\Package\PackageInterface;
 use InvalidArgumentException;
 use N98\Util\OperatingSystem;
+use N98\Util\StringTyped;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -414,7 +415,7 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function _parseBoolOption($value)
     {
-        return in_array(strtolower($value), array('y', 'yes', 1, 'true'));
+        return StringTyped::parseBoolOption($value);
     }
 
     /**
@@ -423,11 +424,7 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function formatActive($value)
     {
-        if (in_array($value, array(1, 'true'))) {
-            return 'active';
-        }
-
-        return 'inactive';
+        return StringTyped::formatActive($value);
     }
 
     /**
