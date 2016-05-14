@@ -4,6 +4,8 @@ RECENT CHANGES
 1.97.22
 -------
 
+* Fix: Install option --forceUseDb has no value, fixes #822 (reported by Adam Johnson, fix by TK)
+
 1.97.21
 -------
 
