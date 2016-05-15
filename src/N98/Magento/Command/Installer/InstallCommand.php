@@ -32,6 +32,9 @@ use Symfony\Component\Finder\Finder;
 class InstallCommand extends AbstractMagentoCommand
 {
     const EXEC_STATUS_OK = 0;
+
+    const MAGENTO_INSTALL_SCRIPT_PATH = 'install.php';
+
     /**
      * @var array
      */
@@ -904,7 +907,7 @@ HELP;
      */
     protected function getInstallScriptPath()
     {
-        $magento1InstallScriptPath = $this->config['installationFolder'] . '/install.php';
+        $magento1InstallScriptPath = $this->config['installationFolder'] . '/' . MAGENTO_INSTALL_SCRIPT_PATH;
         $magento2InstallScriptPath = $this->config['installationFolder'] . '/dev/shell/install.php';
         if (file_exists($magento2InstallScriptPath)) {
             return $magento2InstallScriptPath;
