@@ -37,6 +37,8 @@ class InstallCommand extends AbstractMagentoCommand
      */
     const EXEC_STATUS_OK = 0;
 
+    const DEFAULT_SESSION_PATH = 'var/session';
+
     const MAGENTO_INSTALL_SCRIPT_PATH = 'install.php';
 
     /**
@@ -803,7 +805,7 @@ HELP;
         /**
          * Try to create session folder
          */
-        $defaultSessionFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'var/session';
+        $defaultSessionFolder = $this->config['installationFolder'] . '/' . self::DEFAULT_SESSION_PATH;
         if ($sessionSave == 'files' && !is_dir($defaultSessionFolder)) {
             @mkdir($defaultSessionFolder);
         }
