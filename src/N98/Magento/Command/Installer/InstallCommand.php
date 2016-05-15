@@ -31,6 +31,10 @@ use Symfony\Component\Finder\Finder;
  */
 class InstallCommand extends AbstractMagentoCommand
 {
+    /**
+     * @deprecated since since 1.97.22; Use constant from Exec-Utility instead
+     * @see Exec::CODE_CLEAN_EXIT
+     */
     const EXEC_STATUS_OK = 0;
 
     const MAGENTO_INSTALL_SCRIPT_PATH = 'install.php';
