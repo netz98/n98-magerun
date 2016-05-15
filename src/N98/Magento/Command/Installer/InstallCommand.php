@@ -991,7 +991,7 @@ HELP;
         $output->writeln('<info>Start installation process.</info>');
 
         $installCommand = sprintf(
-            '%s -f %s -- %s',
+            '%s -ddisplay_startup_errors=1 -ddisplay_errors=1 -derror_reporting=-1 -f %s -- %s',
             OperatingSystem::getPhpBinary(),
             escapeshellarg($installationFolder . '/' . self::MAGENTO_INSTALL_SCRIPT_PATH),
             $installArgs
