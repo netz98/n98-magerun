@@ -38,26 +38,28 @@ class ChangeVersionCommand extends AbstractSetupCommand
     {
         $this->detectMagento($output, true);
 
-        if ($this->initMagento()) {
-            $moduleVersion  = $input->getArgument('version');
-            $moduleName     = $this->getModule($input);
-            $setupName      = $input->getArgument('setup');
-            $moduleSetups   = $this->getModuleSetupResources($moduleName);
+        if (!$this->initMagento()) {
+            return;
+        }
 
-            if (empty($moduleSetups)) {
-                $output->writeln(sprintf('No setup resources found for module: "%s"', $moduleName));
-                return;
-            }
+        $moduleVersion  = $input->getArgument('version');
+        $moduleName     = $this->getModule($input);
+        $setupName      = $input->getArgument('setup');
+        $moduleSetups   = $this->getModuleSetupResources($moduleName);
 
-            if ($setupName === 'all') {
-                foreach ($moduleSetups as $setupCode => $setup) {
-                    $this->updateSetupResource($moduleName, $setupCode, $moduleVersion, $output);
-                }
-            } elseif (array_key_exists($setupName, $moduleSetups)) {
-                $this->updateSetupResource($moduleName, $setupName, $moduleVersion, $output);
-            } else {
-                throw new InvalidArgumentException(sprintf('Error no setup found with the name: "%s"', $setupName));
+        if (empty($moduleSetups)) {
+            $output->writeln(sprintf('No setup resources found for module: "%s"', $moduleName));
+            return;
+        }
+
+        if ($setupName === 'all') {
+            foreach ($moduleSetups as $setupCode => $setup) {
+                $this->updateSetupResource($moduleName, $setupCode, $moduleVersion, $output);
             }
+        } elseif (array_key_exists($setupName, $moduleSetups)) {
+            $this->updateSetupResource($moduleName, $setupName, $moduleVersion, $output);
+        } else {
+            throw new InvalidArgumentException(sprintf('Error no setup found with the name: "%s"', $setupName));
         }
     }
 

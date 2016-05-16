@@ -40,42 +40,44 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
-            $config = $this->getCommandConfig();
+        if (!$this->initMagento()) {
+            return;
+        }
 
-            $collection = $this->getCustomerCollection();
-            $collection->addAttributeToSelect(array('entity_id', 'email', 'firstname', 'lastname', 'website_id'));
+        $config = $this->getCommandConfig();
 
-            if ($input->getArgument('search')) {
-                $collection->addAttributeToFilter(
-                    array(
-                        array('attribute' => 'email', 'like' => '%' . $input->getArgument('search') . '%'),
-                        array('attribute' => 'firstname', 'like' => '%' . $input->getArgument('search') . '%'),
-                        array('attribute' => 'lastname', 'like' => '%' . $input->getArgument('search') . '%'),
-                    )
-                );
-            }
+        $collection = $this->getCustomerCollection();
+        $collection->addAttributeToSelect(array('entity_id', 'email', 'firstname', 'lastname', 'website_id'));
 
-            $collection->setPageSize($config['limit']);
+        if ($input->getArgument('search')) {
+            $collection->addAttributeToFilter(
+                array(
+                    array('attribute' => 'email', 'like' => '%' . $input->getArgument('search') . '%'),
+                    array('attribute' => 'firstname', 'like' => '%' . $input->getArgument('search') . '%'),
+                    array('attribute' => 'lastname', 'like' => '%' . $input->getArgument('search') . '%'),
+                )
+            );
+        }
 
-            $table = array();
-            foreach ($collection as $customer) {
-                $table[] = array(
-                    $customer->getId(),
-                    $customer->getEmail(),
-                    $customer->getFirstname(),
-                    $customer->getLastname(),
-                    $this->_getWebsiteCodeById($customer->getwebsiteId()),
-                );
-            }
+        $collection->setPageSize($config['limit']);
 
-            if (count($table) > 0) {
-                $this->getHelper('table')
-                    ->setHeaders(array('id', 'email', 'firstname', 'lastname', 'website'))
-                    ->renderByFormat($output, $table, $input->getOption('format'));
-            } else {
-                $output->writeln('<comment>No customers found</comment>');
-            }
+        $table = array();
+        foreach ($collection as $customer) {
+            $table[] = array(
+                $customer->getId(),
+                $customer->getEmail(),
+                $customer->getFirstname(),
+                $customer->getLastname(),
+                $this->_getWebsiteCodeById($customer->getwebsiteId()),
+            );
+        }
+
+        if (count($table) > 0) {
+            $this->getHelper('table')
+                ->setHeaders(array('id', 'email', 'firstname', 'lastname', 'website'))
+                ->renderByFormat($output, $table, $input->getOption('format'));
+        } else {
+            $output->writeln('<comment>No customers found</comment>');
         }
     }
 }

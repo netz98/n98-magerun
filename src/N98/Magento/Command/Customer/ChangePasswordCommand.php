@@ -35,36 +35,38 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento()) {
-            $dialog = $this->getHelper('dialog');
-            $email = $this->getHelper('parameter')->askEmail($input, $output);
+        if (!$this->initMagento()) {
+            return;
+        }
 
-            // Password
-            if (($password = $input->getArgument('password')) == null) {
-                $password = $dialog->ask($output, '<question>Password:</question>');
+        $dialog = $this->getHelper('dialog');
+        $email = $this->getHelper('parameter')->askEmail($input, $output);
+
+        // Password
+        if (($password = $input->getArgument('password')) == null) {
+            $password = $dialog->ask($output, '<question>Password:</question>');
+        }
+
+        $website = $this->getHelper('parameter')->askWebsite($input, $output);
+
+        $customer = $this->getCustomerModel()
+            ->setWebsiteId($website->getId())
+            ->loadByEmail($email);
+        if ($customer->getId() <= 0) {
+            $output->writeln('<error>Customer was not found</error>');
+            return;
+        }
+
+        try {
+            $result = $customer->validate();
+            if (is_array($result)) {
+                throw new RuntimeException(implode(PHP_EOL, $result));
             }
-
-            $website = $this->getHelper('parameter')->askWebsite($input, $output);
-
-            $customer = $this->getCustomerModel()
-                ->setWebsiteId($website->getId())
-                ->loadByEmail($email);
-            if ($customer->getId() <= 0) {
-                $output->writeln('<error>Customer was not found</error>');
-                return;
-            }
-
-            try {
-                $result = $customer->validate();
-                if (is_array($result)) {
-                    throw new RuntimeException(implode(PHP_EOL, $result));
-                }
-                $customer->setPassword($password);
-                $customer->save();
-                $output->writeln('<info>Password successfully changed</info>');
-            } catch (Exception $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
-            }
+            $customer->setPassword($password);
+            $customer->save();
+            $output->writeln('<info>Password successfully changed</info>');
+        } catch (Exception $e) {
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
     }
 }

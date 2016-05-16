@@ -64,29 +64,31 @@ class PublishCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
         $this->requireEnterprise($output);
-        if ($this->initMagento()) {
-            $this->writeSection($output, 'CMS Publish');
-            $pageId = $input->getArgument('page_id');
-            $revisionId = $input->getArgument('revision_id');
-
-            $revision = $this->_getPageRevisionModel()->load($revisionId);
-
-            if (!$revision->getId()) {
-                $output->writeln('<error>Revision was not found</error>');
-
-                return;
-            }
-
-            if ($revision->getPageId() != $pageId) {
-                $output->writeln(sprintf(
-                    '<error>Revision\'s page id (%d) does not match the given page id</error>',
-                    $revision->getPageId()
-                ));
-
-                return;
-            }
-            $revision->publish();
-            $output->writeln('<info>Page published</info>');
+        if (!$this->initMagento()) {
+            return;
         }
+
+        $this->writeSection($output, 'CMS Publish');
+        $pageId = $input->getArgument('page_id');
+        $revisionId = $input->getArgument('revision_id');
+
+        $revision = $this->_getPageRevisionModel()->load($revisionId);
+
+        if (!$revision->getId()) {
+            $output->writeln('<error>Revision was not found</error>');
+
+            return;
+        }
+
+        if ($revision->getPageId() != $pageId) {
+            $output->writeln(sprintf(
+                '<error>Revision\'s page id (%d) does not match the given page id</error>',
+                $revision->getPageId()
+            ));
+
+            return;
+        }
+        $revision->publish();
+        $output->writeln('<info>Page published</info>');
     }
 }

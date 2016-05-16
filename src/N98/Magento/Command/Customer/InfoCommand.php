@@ -35,41 +35,43 @@ class InfoCommand extends AbstractCustomerCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento()) {
-            $email = $this->getHelper('parameter')->askEmail($input, $output);
-            $website = $this->getHelper('parameter')->askWebsite($input, $output);
-
-            $customer = $this->getCustomerModel()
-                ->setWebsiteId($website->getId())
-                ->loadByEmail($email);
-            if ($customer->getId() <= 0) {
-                $output->writeln('<error>Customer was not found</error>');
-                return;
-            }
-
-            $customer->load();
-            $table = array();
-            foreach ($customer->toArray() as $key => $value) {
-                if (in_array($key, $this->blacklist)) {
-                    continue;
-                }
-                try {
-                    $attribute = $customer->getResource()->getAttribute($key);
-                    $table[] = array(
-                        $attribute instanceof \Mage_Customer_Model_Attribute
-                            ? $attribute->getFrontend()->getLabel() : $key,
-                        $attribute instanceof \Mage_Customer_Model_Attribute
-                            ? $attribute->getFrontend()->getValue($customer) : $value,
-                    );
-                } catch (Exception $e) {
-                    $table[] = array($key, $value);
-                }
-            }
-
-            $this->getHelper('table')
-                ->setHeaders(array('Attribute', 'Value'))
-                ->setRows($table)
-                ->render($output);
+        if (!$this->initMagento()) {
+            return;
         }
+
+        $email = $this->getHelper('parameter')->askEmail($input, $output);
+        $website = $this->getHelper('parameter')->askWebsite($input, $output);
+
+        $customer = $this->getCustomerModel()
+            ->setWebsiteId($website->getId())
+            ->loadByEmail($email);
+        if ($customer->getId() <= 0) {
+            $output->writeln('<error>Customer was not found</error>');
+            return;
+        }
+
+        $customer->load();
+        $table = array();
+        foreach ($customer->toArray() as $key => $value) {
+            if (in_array($key, $this->blacklist)) {
+                continue;
+            }
+            try {
+                $attribute = $customer->getResource()->getAttribute($key);
+                $table[] = array(
+                    $attribute instanceof \Mage_Customer_Model_Attribute
+                        ? $attribute->getFrontend()->getLabel() : $key,
+                    $attribute instanceof \Mage_Customer_Model_Attribute
+                        ? $attribute->getFrontend()->getValue($customer) : $value,
+                );
+            } catch (Exception $e) {
+                $table[] = array($key, $value);
+            }
+        }
+
+        $this->getHelper('table')
+            ->setHeaders(array('Attribute', 'Value'))
+            ->setRows($table)
+            ->render($output);
     }
 }

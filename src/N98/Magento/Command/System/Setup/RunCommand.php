@@ -26,51 +26,51 @@ HELP;
     /**
      * @param InputInterface   $input
      * @param OutputInterface $output
-     * @return int
+     * @return int|null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->getApplication()->setAutoExit(false);
         $this->detectMagento($output);
-        if ($this->initMagento()) {
-            try {
-                /**
-                 * Get events before cache flush command is called.
-                 */
-                $reflectionApp = new \ReflectionObject(\Mage::app());
-                $appEventReflectionProperty = $reflectionApp->getProperty('_events');
-                $appEventReflectionProperty->setAccessible(true);
-                $eventsBeforeCacheFlush = $appEventReflectionProperty->getValue(\Mage::app());
-
-                $this->getApplication()->run(new StringInput('cache:flush'), new NullOutput());
-
-                /**
-                 * Restore initially loaded events which was reset during setup script run
-                 */
-                $appEventReflectionProperty->setValue(\Mage::app(), $eventsBeforeCacheFlush);
-
-                /**
-                 * Put output in buffer. \Mage_Core_Model_Resource_Setup::_modifyResourceDb should print any error
-                 * directly to stdout. Use execption which will be thrown to show error
-                 */
-                \ob_start();
-                \Mage_Core_Model_Resource_Setup::applyAllUpdates();
-                if (is_callable(array('\Mage_Core_Model_Resource_Setup', 'applyAllDataUpdates'))) {
-                    \Mage_Core_Model_Resource_Setup::applyAllDataUpdates();
-                }
-                \ob_end_clean();
-                $output->writeln('<info>done</info>');
-            } catch (Exception $e) {
-                \ob_end_clean();
-                $this->printException($output, $e);
-                $this->printStackTrace($output, $e->getTrace());
-                $this->printFile($output, $e);
-
-                return 1; // exit with error status
-            }
+        if (!$this->initMagento()) {
+            return;
         }
 
-        return 0;
+        try {
+            /**
+             * Get events before cache flush command is called.
+             */
+            $reflectionApp = new \ReflectionObject(\Mage::app());
+            $appEventReflectionProperty = $reflectionApp->getProperty('_events');
+            $appEventReflectionProperty->setAccessible(true);
+            $eventsBeforeCacheFlush = $appEventReflectionProperty->getValue(\Mage::app());
+
+            $this->getApplication()->run(new StringInput('cache:flush'), new NullOutput());
+
+            /**
+             * Restore initially loaded events which was reset during setup script run
+             */
+            $appEventReflectionProperty->setValue(\Mage::app(), $eventsBeforeCacheFlush);
+
+            /**
+             * Put output in buffer. \Mage_Core_Model_Resource_Setup::_modifyResourceDb should print any error
+             * directly to stdout. Use execption which will be thrown to show error
+             */
+            \ob_start();
+            \Mage_Core_Model_Resource_Setup::applyAllUpdates();
+            if (is_callable(array('\Mage_Core_Model_Resource_Setup', 'applyAllDataUpdates'))) {
+                \Mage_Core_Model_Resource_Setup::applyAllDataUpdates();
+            }
+            \ob_end_clean();
+            $output->writeln('<info>done</info>');
+        } catch (Exception $e) {
+            \ob_end_clean();
+            $this->printException($output, $e);
+            $this->printStackTrace($output, $e->getTrace());
+            $this->printFile($output, $e);
+
+            return 1; // exit with error status
+        }
     }
 
     /**

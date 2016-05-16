@@ -62,71 +62,73 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
-            $res = $this->getCustomerModel()->getResource();
+        if (!$this->initMagento()) {
+            return;
+        }
 
-            $faker = \Faker\Factory::create($input->getArgument('locale'));
-            $faker->addProvider(new \N98\Util\Faker\Provider\Internet($faker));
+        $res = $this->getCustomerModel()->getResource();
 
-            $website = $this->getHelper('parameter')->askWebsite($input, $output);
+        $faker = \Faker\Factory::create($input->getArgument('locale'));
+        $faker->addProvider(new \N98\Util\Faker\Provider\Internet($faker));
 
-            $res->beginTransaction();
-            $count = $input->getArgument('count');
-            $outputPlain = $input->getOption('format') === null;
+        $website = $this->getHelper('parameter')->askWebsite($input, $output);
 
-            $table = array();
-            for ($i = 0; $i < $count; $i++) {
-                $customer = $this->getCustomerModel();
+        $res->beginTransaction();
+        $count = $input->getArgument('count');
+        $outputPlain = $input->getOption('format') === null;
 
-                $email = $faker->safeEmail;
+        $table = array();
+        for ($i = 0; $i < $count; $i++) {
+            $customer = $this->getCustomerModel();
 
+            $email = $faker->safeEmail;
+
+            $customer->setWebsiteId($website->getId());
+            $customer->loadByEmail($email);
+            $password = $customer->generatePassword();
+
+            if (!$customer->getId()) {
                 $customer->setWebsiteId($website->getId());
-                $customer->loadByEmail($email);
-                $password = $customer->generatePassword();
+                $customer->setEmail($email);
+                $customer->setFirstname($faker->firstName);
+                $customer->setLastname($faker->lastName);
+                $customer->setPassword($password);
 
-                if (!$customer->getId()) {
-                    $customer->setWebsiteId($website->getId());
-                    $customer->setEmail($email);
-                    $customer->setFirstname($faker->firstName);
-                    $customer->setLastname($faker->lastName);
-                    $customer->setPassword($password);
+                if ($input->hasOption('with-addresses')) {
+                    $address = $this->createAddress($faker);
+                    $customer->addAddress($address);
+                }
 
-                    if ($input->hasOption('with-addresses')) {
-                        $address = $this->createAddress($faker);
-                        $customer->addAddress($address);
-                    }
+                $customer->save();
+                $customer->setConfirmation(null);
+                $customer->save();
 
-                    $customer->save();
-                    $customer->setConfirmation(null);
-                    $customer->save();
-
-                    if ($outputPlain) {
-                        $output->writeln(
-                            '<info>Customer <comment>' . $email . '</comment> with password <comment>' . $password .
-                            '</comment> successfully created</info>'
-                        );
-                    } else {
-                        $table[] = array(
-                            $email, $password, $customer->getFirstname(), $customer->getLastname(),
-                        );
-                    }
+                if ($outputPlain) {
+                    $output->writeln(
+                        '<info>Customer <comment>' . $email . '</comment> with password <comment>' . $password .
+                        '</comment> successfully created</info>'
+                    );
                 } else {
-                    if ($outputPlain) {
-                        $output->writeln('<error>Customer ' . $email . ' already exists</error>');
-                    }
+                    $table[] = array(
+                        $email, $password, $customer->getFirstname(), $customer->getLastname(),
+                    );
                 }
-                if ($i % 1000 == 0) {
-                    $res->commit();
-                    $res->beginTransaction();
+            } else {
+                if ($outputPlain) {
+                    $output->writeln('<error>Customer ' . $email . ' already exists</error>');
                 }
             }
-            $res->commit();
+            if ($i % 1000 == 0) {
+                $res->commit();
+                $res->beginTransaction();
+            }
+        }
+        $res->commit();
 
-            if (!$outputPlain) {
-                $this->getHelper('table')
-                    ->setHeaders(array('email', 'password', 'firstname', 'lastname'))
-                    ->renderByFormat($output, $table, $input->getOption('format'));
-            }
+        if (!$outputPlain) {
+            $this->getHelper('table')
+                ->setHeaders(array('email', 'password', 'firstname', 'lastname'))
+                ->renderByFormat($output, $table, $input->getOption('format'));
         }
     }
 

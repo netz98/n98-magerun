@@ -32,21 +32,23 @@ class ListCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento()) {
-            $packages = $this->getThemes();
-            $table = array();
-            foreach ($packages as $package => $themes) {
-                foreach ($themes as $theme) {
-                    $table[] = array(
-                        ($package ? $package . '/' : '') . $theme
-                    );
-                }
-            }
-
-            $this->getHelper('table')
-                ->setHeaders(array('Theme'))
-                ->renderByFormat($output, $table, $input->getOption('format'));
+        if (!$this->initMagento()) {
+            return;
         }
+
+        $packages = $this->getThemes();
+        $table = array();
+        foreach ($packages as $package => $themes) {
+            foreach ($themes as $theme) {
+                $table[] = array(
+                    ($package ? $package . '/' : '') . $theme
+                );
+            }
+        }
+
+        $this->getHelper('table')
+            ->setHeaders(array('Theme'))
+            ->renderByFormat($output, $table, $input->getOption('format'));
     }
 
     /**

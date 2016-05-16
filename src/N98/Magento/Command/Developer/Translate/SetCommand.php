@@ -31,31 +31,33 @@ class SetCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento($output)) {
-            $store = $this->getHelper('parameter')->askStore($input, $output);
-
-            $locale = \Mage::getStoreConfig('general/locale/code', $store->getId());
-
-            /* @var $store \Mage_Core_Model_Store */
-            $resource = \Mage::getResourceModel('core/translate_string');
-            $resource->saveTranslate(
-                $input->getArgument('string'),
-                $input->getArgument('translate'),
-                $locale,
-                $store->getId()
-            );
-
-            $output->writeln(
-                sprintf(
-                    'Translated (<info>%s</info>): <comment>%s</comment> => <comment>%s</comment>',
-                    $locale,
-                    $input->getArgument('string'),
-                    $input->getArgument('translate')
-                )
-            );
-
-            $input = new StringInput('cache:flush');
-            $this->getApplication()->run($input, new NullOutput());
+        if (!$this->initMagento($output)) {
+            return;
         }
+
+        $store = $this->getHelper('parameter')->askStore($input, $output);
+
+        $locale = \Mage::getStoreConfig('general/locale/code', $store->getId());
+
+        /* @var $store \Mage_Core_Model_Store */
+        $resource = \Mage::getResourceModel('core/translate_string');
+        $resource->saveTranslate(
+            $input->getArgument('string'),
+            $input->getArgument('translate'),
+            $locale,
+            $store->getId()
+        );
+
+        $output->writeln(
+            sprintf(
+                'Translated (<info>%s</info>): <comment>%s</comment> => <comment>%s</comment>',
+                $locale,
+                $input->getArgument('string'),
+                $input->getArgument('translate')
+            )
+        );
+
+        $input = new StringInput('cache:flush');
+        $this->getApplication()->run($input, new NullOutput());
     }
 }

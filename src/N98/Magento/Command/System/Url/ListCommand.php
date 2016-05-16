@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * - Create a list of product urls only
  *     ./n98-magerun.phar system:urls:list --add-products 4
  *
- * - Create a list of all products, categories and cms pages of store 4 and 5 separating host and path (e.g. to feed a 
+ * - Create a list of all products, categories and cms pages of store 4 and 5 separating host and path (e.g. to feed a
  *   jmeter csv sampler)
  *     ./n98-magerun.phar system:urls:list --add-all 4,5 '{host},{path}' > urls.csv
  *
@@ -76,50 +76,52 @@ HELP;
         }
 
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
-            $stores = explode(',', $input->getArgument('stores'));
+        if (!$this->initMagento()) {
+            return;
+        }
 
-            $urls = array();
+        $stores = explode(',', $input->getArgument('stores'));
 
-            foreach ($stores as $storeId) {
-                $currentStore = \Mage::app()->getStore($storeId); /* @var $currentStore \Mage_Core_Model_Store */
+        $urls = array();
 
-                // base url
-                $urls[] = $currentStore->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_WEB);
+        foreach ($stores as $storeId) {
+            $currentStore = \Mage::app()->getStore($storeId); /* @var $currentStore \Mage_Core_Model_Store */
 
-                $linkBaseUrl = $currentStore->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK);
+            // base url
+            $urls[] = $currentStore->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_WEB);
 
-                if ($input->getOption('add-categories')) {
-                    $urls = $this->getUrls('sitemap/catalog_category', $linkBaseUrl, $storeId, $urls);
-                }
+            $linkBaseUrl = $currentStore->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK);
 
-                if ($input->getOption('add-products')) {
-                    $urls = $this->getUrls('sitemap/catalog_product', $linkBaseUrl, $storeId, $urls);
-                }
-
-                if ($input->getOption('add-cmspages')) {
-                    $urls = $this->getUrls('sitemap/cms_page', $linkBaseUrl, $storeId, $urls);
-                }
+            if ($input->getOption('add-categories')) {
+                $urls = $this->getUrls('sitemap/catalog_category', $linkBaseUrl, $storeId, $urls);
             }
 
-            if (count($urls) === 0) {
-                return;
+            if ($input->getOption('add-products')) {
+                $urls = $this->getUrls('sitemap/catalog_product', $linkBaseUrl, $storeId, $urls);
             }
 
-            foreach ($urls as $url) {
-
-                // pre-process
-                $line = $input->getArgument('linetemplate');
-                $line = str_replace('{url}', $url, $line);
-
-                $parts = parse_url($url);
-                foreach ($parts as $key => $value) {
-                    $line = str_replace('{' . $key . '}', $value, $line);
-                }
-
-                // ... and output
-                $output->writeln($line);
+            if ($input->getOption('add-cmspages')) {
+                $urls = $this->getUrls('sitemap/cms_page', $linkBaseUrl, $storeId, $urls);
             }
+        }
+
+        if (count($urls) === 0) {
+            return;
+        }
+
+        foreach ($urls as $url) {
+
+            // pre-process
+            $line = $input->getArgument('linetemplate');
+            $line = str_replace('{url}', $url, $line);
+
+            $parts = parse_url($url);
+            foreach ($parts as $key => $value) {
+                $line = str_replace('{' . $key . '}', $value, $line);
+            }
+
+            // ... and output
+            $output->writeln($line);
         }
     }
 

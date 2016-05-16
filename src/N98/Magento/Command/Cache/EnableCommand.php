@@ -27,17 +27,19 @@ class EnableCommand extends AbstractCacheCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
-            $codeArgument = BinaryString::trimExplodeEmpty(',', $input->getArgument('code'));
-            $this->saveCacheStatus($codeArgument, true);
+        if (!$this->initMagento()) {
+            return;
+        }
 
-            if (count($codeArgument) > 0) {
-                foreach ($codeArgument as $code) {
-                    $output->writeln('<info>Cache <comment>' . $code . '</comment> enabled</info>');
-                }
-            } else {
-                $output->writeln('<info>Caches enabled</info>');
+        $codeArgument = BinaryString::trimExplodeEmpty(',', $input->getArgument('code'));
+        $this->saveCacheStatus($codeArgument, true);
+
+        if (count($codeArgument) > 0) {
+            foreach ($codeArgument as $code) {
+                $output->writeln('<info>Cache <comment>' . $code . '</comment> enabled</info>');
             }
+        } else {
+            $output->writeln('<info>Caches enabled</info>');
         }
     }
 }
