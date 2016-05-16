@@ -75,7 +75,7 @@ HELP;
             $this->input  = $input;
             $this->output = $output;
             /** @var DialogHelper dialog */
-            $this->dialog = $this->getHelperSet()->get('dialog');
+            $this->dialog = $this->getHelper('dialog');
 
             // Defaults
             $range = $all = false;
@@ -210,7 +210,7 @@ HELP;
         $customer = $this->getCustomerModel()->load($id);
         if (!$customer->getId()) {
             /** @var $parameterHelper ParameterHelper */
-            $parameterHelper = $this->getHelperSet()->get('parameter');
+            $parameterHelper = $this->getHelper('parameter');
             $website = $parameterHelper->askWebsite($this->input, $this->output);
             $customer = $this->getCustomerModel()
                 ->setWebsiteId($website->getId())

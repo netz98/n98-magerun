@@ -2,13 +2,12 @@
 
 namespace N98\Magento\Command;
 
-use N98\Magento\Command\AbstractMagentoCommand;
-use RuntimeException;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\OperatingSystem;
 use N98\Util\Exec;
+use N98\Util\OperatingSystem;
+use RuntimeException;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class OpenBrowserCommand extends AbstractMagentoCommand
 {
@@ -59,7 +58,7 @@ class OpenBrowserCommand extends AbstractMagentoCommand
 
         $this->detectMagento($output);
         if ($this->initMagento($output)) {
-            $store = $this->getHelperSet()->get('parameter')->askStore($input, $output, 'store', true);
+            $store = $this->getHelper('parameter')->askStore($input, $output, 'store', true);
             if ($store->getId() == \Mage_Core_Model_App::ADMIN_STORE_ID) {
                 $adminFrontName = (string) \Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
                 $url = rtrim($store->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_WEB), '/') . '/' . $adminFrontName;

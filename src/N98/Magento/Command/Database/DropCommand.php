@@ -35,7 +35,7 @@ HELP;
     {
         $this->detectDbSettings($output);
 
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dialog = $this->getHelper('dialog');
         $dbHelper = $this->getHelper('database');
 
         if ($input->getOption('force')) {

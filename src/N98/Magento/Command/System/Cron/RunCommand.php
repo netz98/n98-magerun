@@ -127,7 +127,7 @@ HELP;
         $question[] = '<question>Please select job: </question>' . PHP_EOL;
 
         /** @var $dialogHelper DialogHelper */
-        $dialogHelper = $this->getHelperSet()->get('dialog');
+        $dialogHelper = $this->getHelper('dialog');
         $jobCode = $dialogHelper->askAndValidate(
             $output,
             $question,

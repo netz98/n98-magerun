@@ -36,7 +36,7 @@ HELP;
     {
         $this->detectMagento($output);
         if ($this->initMagento()) {
-            $dialog = $this->getHelperSet()->get('dialog');
+            $dialog = $this->getHelper('dialog');
             $email = $this->getHelper('parameter')->askEmail($input, $output);
 
             // Password

@@ -3,15 +3,14 @@
 namespace N98\Magento\Command;
 
 use InvalidArgumentException;
-use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\BinaryString;
 use N98\Util\Exec;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ScriptCommand extends AbstractMagentoCommand
@@ -217,7 +216,7 @@ HELP;
                 }
 
                 /* @var $dialog DialogHelper */
-                $dialog = $this->getHelperSet()->get('dialog');
+                $dialog = $this->getHelper('dialog');
 
                 /**
                  * Check for select "?["

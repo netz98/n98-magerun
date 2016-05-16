@@ -5,9 +5,9 @@ namespace N98\Magento\Command\Developer\Translate;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class SetCommand extends AbstractMagentoCommand
 {
@@ -32,7 +32,7 @@ class SetCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output);
         if ($this->initMagento($output)) {
-            $store = $this->getHelperSet()->get('parameter')->askStore($input, $output);
+            $store = $this->getHelper('parameter')->askStore($input, $output);
 
             $locale = \Mage::getStoreConfig('general/locale/code', $store->getId());
 

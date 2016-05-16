@@ -5,9 +5,10 @@ namespace N98\Magento\Command\Installer;
 use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Filesystem;
-use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -51,8 +52,8 @@ HELP;
         $this->chooseInstallationFolder($input, $output);
         $this->detectMagento($output);
         $this->getApplication()->setAutoExit(false);
-        $dialog = $this->getHelperSet()->get('dialog');
-        /* @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
+        /* @var $dialog DialogHelper */
+        $dialog = $this->getHelper('dialog');
 
         $shouldUninstall = $input->getOption('force');
         if (!$shouldUninstall) {

@@ -6,7 +6,7 @@ use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
 use SimpleXMLElement;
-use Symfony\Component\Console\Helper\HelperInterface;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -220,11 +220,11 @@ class UpdateCommand extends AbstractMagentoCommand
 
 
     /**
-     * @return HelperInterface
+     * @return DialogHelper
      */
     protected function getDialog()
     {
-        return $this->getHelperSet()->get('dialog');
+        return $this->getHelper('dialog');
     }
 
     /**

@@ -54,7 +54,7 @@ HELP
         }
 
         /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dialog = $this->getHelper('dialog');
         $confirm = $dialog->askConfirmation(
             $output,
             sprintf('<question>Really lock all %d admin users?</question> <comment>[n]</comment>: ', count($userIds)),

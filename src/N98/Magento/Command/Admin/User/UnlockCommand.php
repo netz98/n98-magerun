@@ -69,7 +69,7 @@ class UnlockCommand extends AbstractAdminUserCommand
             }
 
             /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
-            $dialog = $this->getHelperSet()->get('dialog');
+            $dialog = $this->getHelper('dialog');
             $shouldUnlockAll = $dialog->askConfirmation(
                 $output,
                 sprintf(

@@ -189,7 +189,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
         );
 
         /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dialog = $this->getHelper('dialog');
         $newDeveloperIp = $dialog->ask(
             $output,
             '<question>Change developer IP? Enter a new IP to change or leave blank</question>: '

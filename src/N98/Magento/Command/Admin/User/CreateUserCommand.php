@@ -34,7 +34,7 @@ class CreateUserCommand extends AbstractAdminUserCommand
             $username = $this->getOrAskForArgument('username', $input, $output);
             $email = $this->getOrAskForArgument('email', $input, $output);
             if (($password = $input->getArgument('password')) === null) {
-                $dialog = $this->getHelperSet()->get('dialog');
+                $dialog = $this->getHelper('dialog');
                 $password = $dialog->askHiddenResponse($output, '<question>Password:</question>');
             }
 

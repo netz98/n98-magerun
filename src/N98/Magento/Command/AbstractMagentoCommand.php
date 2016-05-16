@@ -141,7 +141,7 @@ abstract class AbstractMagentoCommand extends Command
     {
         $output->writeln(array(
             '',
-            $this->getHelperSet()->get('formatter')->formatBlock($text, $style, true),
+            $this->getHelper('formatter')->formatBlock($text, $style, true),
             '',
         ));
     }
@@ -544,7 +544,7 @@ abstract class AbstractMagentoCommand extends Command
             $message = $this->getArgumentMessage($argument, $message);
 
             /** @var  $dialog  \Symfony\Component\Console\Helper\DialogHelper */
-            $dialog = $this->getHelperSet()->get('dialog');
+            $dialog = $this->getHelper('dialog');
             return $dialog->ask($output, $message);
         }
 

@@ -38,13 +38,13 @@ class CreateCommand extends AbstractCustomerCommand
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
-            $dialog = $this->getHelperSet()->get('dialog');
+            $dialog = $this->getHelper('dialog');
 
             // Email
-            $email = $this->getHelperSet()->get('parameter')->askEmail($input, $output);
+            $email = $this->getHelper('parameter')->askEmail($input, $output);
 
             // Password
-            $password = $this->getHelperSet()->get('parameter')->askPassword($input, $output, 'password', false);
+            $password = $this->getHelper('parameter')->askPassword($input, $output, 'password', false);
 
             // Firstname
             if (($firstname = $input->getArgument('firstname')) == null) {
@@ -56,7 +56,7 @@ class CreateCommand extends AbstractCustomerCommand
                 $lastname = $dialog->ask($output, '<question>Lastname:</question>');
             }
 
-            $website = $this->getHelperSet()->get('parameter')->askWebsite($input, $output);
+            $website = $this->getHelper('parameter')->askWebsite($input, $output);
 
             // create new customer
             $customer = $this->getCustomerModel();

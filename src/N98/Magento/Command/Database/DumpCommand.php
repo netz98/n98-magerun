@@ -409,7 +409,7 @@ HELP;
             && !$input->getOption('stdout')
         ) {
             /** @var DialogHelper $dialog */
-            $dialog = $this->getHelperSet()->get('dialog');
+            $dialog = $this->getHelper('dialog');
             $defaultName = VerifyOrDie::filename(
                 $namePrefix . $this->dbSettings['dbname'] . $nameSuffix . $nameExtension
             );

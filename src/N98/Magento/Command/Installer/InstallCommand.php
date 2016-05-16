@@ -435,7 +435,7 @@ HELP;
             }
         } else {
             /** @var DialogHelper $dialog */
-            $dialog = $this->getHelperSet()->get('dialog');
+            $dialog = $this->getHelper('dialog');
             do {
                 $dbHostDefault = $input->getOption('dbHost') ? $input->getOption('dbHost') : 'localhost';
                 $this->config['db_host'] = $dialog->askAndValidate(
@@ -546,7 +546,7 @@ HELP;
             return;
         }
 
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dialog = $this->getHelper('dialog');
 
         $installSampleData = ($input->getOption('installSampleData') !== null)
             ? $this->_parseBoolOption($input->getOption('installSampleData'))
@@ -674,7 +674,7 @@ HELP;
     {
         $this->getApplication()->setAutoExit(false);
         /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dialog = $this->getHelper('dialog');
 
         $defaults = $this->commandConfig['installation']['defaults'];
 
@@ -855,7 +855,8 @@ HELP;
 
         $this->runInstallScriptCommand($output, $this->config['installationFolder'], $argv);
 
-        $dialog = $this->getHelperSet()->get('dialog');
+        /* @var $dialog DialogHelper */
+        $dialog = $this->getHelper('dialog');
 
         /**
          * Htaccess file

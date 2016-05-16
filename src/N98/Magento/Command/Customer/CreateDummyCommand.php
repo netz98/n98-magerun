@@ -68,7 +68,7 @@ HELP;
             $faker = \Faker\Factory::create($input->getArgument('locale'));
             $faker->addProvider(new \N98\Util\Faker\Provider\Internet($faker));
 
-            $website = $this->getHelperSet()->get('parameter')->askWebsite($input, $output);
+            $website = $this->getHelper('parameter')->askWebsite($input, $output);
 
             $res->beginTransaction();
             $count = $input->getArgument('count');
