@@ -2,12 +2,12 @@
 
 namespace N98\Magento\Command\System\Setup;
 
-use N98\Magento\Command\AbstractMagentoCommand;
 use N98\JUnitXml\Document as JUnitXmlDocument;
+use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class CompareVersionsCommand extends AbstractMagentoCommand
 {
@@ -65,11 +65,11 @@ HELP;
         $errorCounter = 0;
         $table = array();
         foreach ($setups as $setupName => $setup) {
-            $moduleName     = (string) $setup->setup->module;
-            $moduleVersion  = (string) $modules->{$moduleName}->version;
-            $dbVersion      = (string) $resourceModel->getDbVersion($setupName);
+            $moduleName    = (string)$setup->setup->module;
+            $moduleVersion = (string)$modules->{$moduleName}->version;
+            $dbVersion     = (string)$resourceModel->getDbVersion($setupName);
             if (!$ignoreDataUpdate) {
-                $dataVersion = (string) $resourceModel->getDataVersion($setupName);
+                $dataVersion = (string)$resourceModel->getDataVersion($setupName);
             }
             $ok = $dbVersion == $moduleVersion;
             if ($ok && !$ignoreDataUpdate) {
