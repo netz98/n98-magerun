@@ -512,7 +512,7 @@ commands:
 
       - id: customers
         description: Customer data - Should not be used without @sales
-        tables: customer_address* customer_entity* wishlist*
+        tables: customer_address* customer_entity* wishlist* salesrule_coupon_usage salesrule_customer
 
       - id: newsletter
         description: Newsletter subscriber data
