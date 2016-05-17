@@ -40,7 +40,7 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
      * Returns a readable runtime
      *
      * @param $indexer
-     * @return mixed
+     * @return string
      */
     protected function getRuntime($indexer)
     {

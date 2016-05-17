@@ -88,11 +88,11 @@ class InfoCommand extends AbstractMagentoCommand
                     $node,
                     AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW,
                     $store->getCode()
-                )
+                ),
             );
             if ($withExceptions) {
                 $result[] = array(
-                    $nodeLabel . ' exceptions', $this->_parseException($node, $store)
+                    $nodeLabel . ' exceptions', $this->_parseException($node, $store),
                 );
             }
         }

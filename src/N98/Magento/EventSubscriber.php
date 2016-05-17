@@ -23,7 +23,7 @@ class EventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'n98-magerun.application.console.run.before' => 'checkRunningAsRootUser'
+            'n98-magerun.application.console.run.before' => 'checkRunningAsRootUser',
         );
     }
 

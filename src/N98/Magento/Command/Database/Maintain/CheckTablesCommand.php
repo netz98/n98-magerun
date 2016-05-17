@@ -143,10 +143,10 @@ HELP;
                     array('@check'),
                     array(
                         'check' => array(
-                            'tables' => $input->getOption('table')
-                        )
+                            'tables' => $input->getOption('table'),
+                        ),
                     )
-                )
+                ),
             );
             $tables = $resolvedTables[0];
         } else {
@@ -209,9 +209,9 @@ HELP;
             array(
                 'table'     => $tableName,
                 'operation' => 'ENGINE ' . $engine,
-                'type'      => sprintf('%15s rows', (string)$affectedRows),
+                'type'      => sprintf('%15s rows', (string) $affectedRows),
                 'status'    => sprintf('%.3f secs', microtime(true) - $start),
-            )
+            ),
         );
     }
 

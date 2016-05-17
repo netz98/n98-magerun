@@ -133,7 +133,6 @@ HELP;
                 return false;
             }
 
-
             if ($this->shouldRemove()) {
                 $this->deleteCustomer($customer);
             } else {
@@ -170,7 +169,7 @@ HELP;
                 // Range delete, takes precedence over --all
                 $customers->addAttributeToFilter('entity_id', array(
                     'from'  => $ranges[0],
-                    'to'    => $ranges[1]
+                    'to'    => $ranges[1],
                 ));
             }
 

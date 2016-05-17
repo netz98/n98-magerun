@@ -61,7 +61,7 @@ class StatusCommand extends AbstractShowCommand
      * @var array
      */
     protected $_specialFormat = array(
-        'Uptime' => 'timeElapsedString'
+        'Uptime' => 'timeElapsedString',
     );
 
     protected function configure()
@@ -109,8 +109,10 @@ HELP;
             );
             $rows[] = array(
                 'Full table scans',
-                sprintf('%.2f', $tableScanRate * 100) . '%',
-                $this->formatDesc('HINT: "Handler_read_rnd_next" is reset to zero when reached the value of 2^32 (4G).')
+                sprintf('%.2f%%', $tableScanRate * 100),
+                $this->formatDesc(
+                    'HINT: "Handler_read_rnd_next" is reset to zero when reached the value of 2^32 (4G).'
+                ),
             );
         }
         if (isset($this->_allVariables['Innodb_buffer_pool_read_requests'])) {
@@ -124,7 +126,7 @@ HELP;
                 $this->formatDesc(
                     'An InnoDB Buffer Pool hit ratio below 99.9% is a weak indicator that ' .
                     'your InnoDB Buffer Pool could be increased.'
-                )
+                ),
             );
         }
 

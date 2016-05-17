@@ -63,7 +63,7 @@ class OpenBrowserCommand extends AbstractMagentoCommand
 
         $store = $this->getHelper('parameter')->askStore($input, $output, 'store', true);
         if ($store->getId() == \Mage_Core_Model_App::ADMIN_STORE_ID) {
-            $adminFrontName = (string)\Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
+            $adminFrontName = (string) \Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
             $url = rtrim($store->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_WEB), '/') . '/' . $adminFrontName;
         } else {
             $url = $store->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK) . '?___store=' . $store->getCode();

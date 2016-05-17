@@ -232,7 +232,6 @@ HELP;
 
             $commandConfig = $this->commandConfig;
 
-
             $type = $this->getHelper('dialog')->askAndValidate(
                 $output,
                 $question,
@@ -249,7 +248,7 @@ HELP;
 
             if ($input->getOption('magentoVersion')) {
                 $type = $input->getOption('magentoVersion');
-                if ($type !== (string)(int)$type) {
+                if ($type !== (string) (int) $type) {
                     $type = $this->getPackageNumberByName($type);
                 }
             } elseif ($input->getOption('magentoVersionByName')) {
@@ -277,7 +276,6 @@ HELP;
         $this->config['magentoVersionData'] = $magentoPackages[$index];
     }
 
-
     /**
      * @param $name
      *
@@ -286,8 +284,8 @@ HELP;
     private function getPackageNumberByName($name)
     {
         // directly filter integer strings
-        if ($name === (string)(int)$name) {
-            return (int)$name;
+        if ($name === (string) (int) $name) {
+            return (int) $name;
         }
 
         $magentoPackages = $this->commandConfig['magento-packages'];
@@ -298,7 +296,7 @@ HELP;
             }
         }
 
-        return null;
+        return;
     }
 
     /**

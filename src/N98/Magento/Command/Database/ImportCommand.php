@@ -3,11 +3,11 @@
 namespace N98\Magento\Command\Database;
 
 use InvalidArgumentException;
+use N98\Util\Exec;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\Exec;
 
 class ImportCommand extends AbstractDatabaseCommand
 {

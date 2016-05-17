@@ -7,7 +7,7 @@ namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
  *
  * @package N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType
  */
-abstract class AbstractEntityType
+abstract class AbstractEntityType implements EntityType
 {
     /**
      * @var \Varien_Db_Adapter_Interface
@@ -100,11 +100,13 @@ abstract class AbstractEntityType
      */
     protected function getOptions(\Mage_Eav_Model_Entity_Attribute $attribute)
     {
+        $resourceModel = \Mage::getSingleton('core/resource');
         $select = $this->readConnection->select()
-            ->from(array('o' => \Mage::getSingleton('core/resource')->getTableName('eav_attribute_option')))
+            ->from(array('o' => $resourceModel->getTableName('eav_attribute_option')))
             ->join(
-                array('ov' => \Mage::getSingleton('core/resource')->getTableName('eav_attribute_option_value')),
-                'o.option_id = ov.option_id')
+                array('ov' => $resourceModel->getTableName('eav_attribute_option_value')),
+                'o.option_id = ov.option_id'
+            )
             ->where('o.attribute_id = ?', $attribute->getId())
             ->where('ov.store_id = 0')
             ->order('ov.option_id');

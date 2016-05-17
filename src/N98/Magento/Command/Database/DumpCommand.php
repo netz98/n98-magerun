@@ -390,7 +390,6 @@ HELP;
             $nameExtension = '.sql';
         }
 
-
         if ($input->getOption('add-time') !== false) {
             $timeStamp = date('Y-m-d_His');
 

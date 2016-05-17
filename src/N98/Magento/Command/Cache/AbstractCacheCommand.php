@@ -3,10 +3,10 @@
 namespace N98\Magento\Command\Cache;
 
 use InvalidArgumentException;
-use RuntimeException;
 use Mage_Core_Model_Cache;
-use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Application;
+use N98\Magento\Command\AbstractMagentoCommand;
+use RuntimeException;
 
 class AbstractCacheCommand extends AbstractMagentoCommand
 {

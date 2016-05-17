@@ -2,11 +2,11 @@
 
 namespace N98\Magento\Command\Cache;
 
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class ReportCommand extends AbstractCacheCommand
 {
@@ -72,7 +72,6 @@ class ReportCommand extends AbstractCacheCommand
             if ($input->getOption('filter-id') !== null && !stristr($cacheId, $input->getOption('filter-id'))) {
                 continue;
             }
-
 
             $metaData = $cacheInstance->getMetadatas($cacheId);
             if ($input->getOption('filter-tag') !== null && !$this->isTagFiltered($metaData, $input)) {

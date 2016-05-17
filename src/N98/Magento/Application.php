@@ -260,7 +260,7 @@ class Application extends BaseApplication
 
         // Twig
         $twigBaseDirs = array(
-            __DIR__ . '/../../../res/twig'
+            __DIR__ . '/../../../res/twig',
         );
         if (isset($this->config['twig']['baseDirs']) && is_array($this->config['twig']['baseDirs'])) {
             $twigBaseDirs = array_merge(array_reverse($this->config['twig']['baseDirs']), $twigBaseDirs);
@@ -848,14 +848,13 @@ MAGENTO2HINT;
 
         $output = new ConsoleOutput();
 
-
         /** @var $formatter FormatterHelper */
         $formatter = $this->getHelperSet()->get('formatter');
 
         $output->writeln(array(
             '',
             $formatter->formatBlock('Compatibility Notice', 'bg=blue;fg=white', true),
-            ''
+            '',
         ));
 
         $output->writeln($magento2Hint);

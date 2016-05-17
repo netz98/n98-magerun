@@ -6,8 +6,8 @@ use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\RuntimeException;
 
@@ -63,8 +63,10 @@ class ViewCommand extends AbstractMagentoCommand
             array('Cache-ID-Tags', $attribute->getCacheIdTags() ? implode(',', $attribute->getCacheIdTags()) : ''),
             array('Cache-Tags', $attribute->getCacheTags() ? implode(',', $attribute->getCacheTags()) : ''),
             array('Default-Value', $attribute->getDefaultValue() ? $attribute->getDefaultValue() : ''),
-            array('Flat-Columns', $attribute->getFlatColumns()
-                ? implode(',', array_keys($attribute->getFlatColumns())) : ''),
+            array(
+                'Flat-Columns',
+                $attribute->getFlatColumns() ? implode(',', array_keys($attribute->getFlatColumns())) : '',
+            ),
             array('Flat-Indexes', $attribute->getFlatIndexes() ? implode(',', $attribute->getFlatIndexes()) : ''),
         );
 
@@ -72,8 +74,10 @@ class ViewCommand extends AbstractMagentoCommand
             $table[] = array('Frontend-Label', $attribute->getFrontend()->getLabel());
             $table[] = array('Frontend-Class', trim($attribute->getFrontend()->getClass()));
             $table[] = array('Frontend-Input', trim($attribute->getFrontend()->getInputType()));
-            $table[] = array('Frontend-Input-Renderer-Class',
-                trim($attribute->getFrontend()->getInputRendererClass()));
+            $table[] = array(
+                'Frontend-Input-Renderer-Class',
+                trim($attribute->getFrontend()->getInputRendererClass()),
+            );
         }
 
         $this

@@ -65,11 +65,11 @@ HELP;
         $errorCounter = 0;
         $table = array();
         foreach ($setups as $setupName => $setup) {
-            $moduleName    = (string)$setup->setup->module;
-            $moduleVersion = (string)$modules->{$moduleName}->version;
-            $dbVersion     = (string)$resourceModel->getDbVersion($setupName);
+            $moduleName    = (string) $setup->setup->module;
+            $moduleVersion = (string) $modules->{$moduleName}->version;
+            $dbVersion     = (string) $resourceModel->getDbVersion($setupName);
             if (!$ignoreDataUpdate) {
-                $dataVersion = (string)$resourceModel->getDataVersion($setupName);
+                $dataVersion = (string) $resourceModel->getDataVersion($setupName);
             }
             $ok = $dbVersion == $moduleVersion;
             if ($ok && !$ignoreDataUpdate) {

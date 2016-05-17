@@ -61,6 +61,9 @@ class VerifyOrDie
         }
     }
 
+    /**
+     * @param string $message
+     */
     private static function violation($message)
     {
         throw new RuntimeException($message);

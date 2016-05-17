@@ -2,12 +2,12 @@
 
 namespace N98\Magento\Command\Developer\Theme;
 
-use N98\Magento\Command\AbstractMagentoCommand;
 use N98\JUnitXml\Document as JUnitXmlDocument;
+use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Finder\Finder;
 
 class DuplicatesCommand extends AbstractMagentoCommand

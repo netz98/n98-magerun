@@ -32,17 +32,17 @@ class MetaCommand extends AbstractMagentoCommand
      */
     protected $groupFactories = array(
         'blocks' => array(
-            '\Mage::getBlockSingleton'
+            '\Mage::getBlockSingleton',
         ),
         'helpers' => array(
-            '\Mage::helper'
+            '\Mage::helper',
         ),
         'models' => array(
             '\Mage::getModel',
             '\Mage::getSingleton',
         ),
         'resource helpers' => array(
-            '\Mage::getResourceHelper'
+            '\Mage::getResourceHelper',
         ),
         'resource models' => array(
             '\Mage::getResourceModel',

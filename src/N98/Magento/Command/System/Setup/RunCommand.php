@@ -4,9 +4,9 @@ namespace N98\Magento\Command\System\Setup;
 
 use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class RunCommand extends AbstractMagentoCommand
@@ -99,7 +99,7 @@ HELP;
             $rows[] = array(
                 $i++,
                 $row['file'] . ':' . $row['line'],
-                $row['class'] . '::' . $row['function']
+                $row['class'] . '::' . $row['function'],
             );
         }
         $table->setHeaders(array('#', 'File/Line', 'Method'));

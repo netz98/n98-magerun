@@ -98,11 +98,9 @@ final class WindowsSystem
 
         $isExecutable = self::isExecutableName($program);
 
-
         $paths = explode(self::PATH_SEPARATOR, getenv('PATH'));
         array_unshift($paths, getcwd());
         $exts = self::getInstance()->getExecuteableExtesions();
-
 
         foreach ($paths as $path) {
             if (!is_dir($path)) {

@@ -35,7 +35,6 @@ class ExportCommand extends AbstractMagentoCommand
             return;
         }
 
-
         /** @var DatabaseHelper $helper */
         $helper = $this->getHelper('database');
         $db = $helper->getConnection();

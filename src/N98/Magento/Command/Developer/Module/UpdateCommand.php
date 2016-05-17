@@ -218,7 +218,6 @@ class UpdateCommand extends AbstractMagentoCommand
         $this->moduleDirectory = $moduleDir;
     }
 
-
     /**
      * @return DialogHelper
      */
@@ -249,7 +248,6 @@ class UpdateCommand extends AbstractMagentoCommand
 
         $output->writeln('<info>Edited file: <comment>' . $this->getOutFile() . '<comment></info>');
     }
-
 
     /**
      * @param InputInterface $input
@@ -314,7 +312,6 @@ class UpdateCommand extends AbstractMagentoCommand
                 ->{$this->getLowercaseModuleNamespace()}->addChild('resourceModel', $resourceModel);
         }
     }
-
 
     /**
      * @param InputInterface $input
@@ -649,7 +646,6 @@ class UpdateCommand extends AbstractMagentoCommand
         $moduleNamespaceNode->addChild('class', $this->getModuleNamespace() . $classSuffix);
     }
 
-
     /**
      * @param SimpleXMLElement $simpleXml
      */
@@ -888,7 +884,6 @@ class UpdateCommand extends AbstractMagentoCommand
     {
         return $input->getOption('add-all');
     }
-
 
     /**
      * Gets module namespace e.g. Company_Modulename

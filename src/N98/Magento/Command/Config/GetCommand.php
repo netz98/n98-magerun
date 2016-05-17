@@ -79,7 +79,7 @@ HELP;
         }
 
         $collection->addFieldToFilter('path', array(
-            'like' => str_replace('*', '%', $searchPath)
+            'like' => str_replace('*', '%', $searchPath),
         ));
 
         if ($scope = $input->getOption('scope')) {

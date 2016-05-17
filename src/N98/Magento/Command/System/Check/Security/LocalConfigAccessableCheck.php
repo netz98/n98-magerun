@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\System\Check\Security;
 
-use N98\Magento\Command\System\Check\SimpleCheck;
 use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
+use N98\Magento\Command\System\Check\SimpleCheck;
 
 class LocalConfigAccessableCheck implements SimpleCheck
 {

@@ -2,10 +2,10 @@
 
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class ListCommand extends AbstractRewriteCommand
 {
@@ -45,7 +45,7 @@ class ListCommand extends AbstractRewriteCommand
                     $table[] = array(
                         $type,
                         $class,
-                        implode(', ', $rewriteClass)
+                        implode(', ', $rewriteClass),
                     );
                 }
             }

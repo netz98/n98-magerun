@@ -97,8 +97,8 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             'password'    => null,
         );
 
-        $config = ((array)$resources->default_setup->connection) + $config;
-        $config['prefix'] = (string)$resources->db->table_prefix;
+        $config = ((array) $resources->default_setup->connection) + $config;
+        $config['prefix'] = (string) $resources->db->table_prefix;
 
         // known parameters: host, port, unix_socket, dbname, username, password, options, charset, persistent,
         //                   driver_options
@@ -108,7 +108,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
 
         /* @see Varien_Db_Adapter_Pdo_Mysql::_connect */
         if (strpos($config['host'], '/') !== false) {
-            $config['unix_socket'] = (string)$config['host'];
+            $config['unix_socket'] = (string) $config['host'];
             $config['host'] = null;
             $config['port'] = null;
         } elseif (strpos($config['host'], ':') !== false) {
@@ -337,7 +337,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             return $this->config[$offset];
         }
 
-        return null;
+        return;
     }
 
     /**

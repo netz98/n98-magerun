@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\System\Check;
 
+use Mage_Core_Model_Store;
+
 /**
  * Interface StoreCheck
  *
@@ -10,10 +12,10 @@ namespace N98\Magento\Command\System\Check;
 interface StoreCheck
 {
     /**
-     * @param ResultCollection       $results
-     * @param \Mage_Core_Model_Store $store
+     * @param ResultCollection $results
+     * @param Mage_Core_Model_Store $store
      *
-     * @return
+     * @return void
      */
-    public function check(ResultCollection $results, \Mage_Core_Model_Store $store);
+    public function check(ResultCollection $results, Mage_Core_Model_Store $store);
 }

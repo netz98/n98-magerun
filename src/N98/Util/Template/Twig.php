@@ -3,9 +3,9 @@
 namespace N98\Util\Template;
 
 use Twig_Environment;
+use Twig_Extension_Debug;
 use Twig_Loader_Filesystem;
 use Twig_Loader_String;
-use Twig_Extension_Debug;
 use Twig_SimpleFilter;
 
 class Twig

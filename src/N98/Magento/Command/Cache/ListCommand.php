@@ -2,10 +2,10 @@
 
 namespace N98\Magento\Command\Cache;
 
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class ListCommand extends AbstractCacheCommand
 {
@@ -40,7 +40,7 @@ class ListCommand extends AbstractCacheCommand
         foreach ($cacheTypes as $cacheCode => $cacheInfo) {
             $table[] = array(
                 $cacheCode,
-                $cacheInfo['status'] ? 'enabled' : 'disabled'
+                $cacheInfo['status'] ? 'enabled' : 'disabled',
             );
         }
 
