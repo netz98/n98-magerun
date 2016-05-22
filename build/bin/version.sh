@@ -524,6 +524,6 @@ operational_switches() {
 }
 
 operational_switches $@
-version_main
+version_main $@
 exit
 }
