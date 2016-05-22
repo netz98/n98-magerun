@@ -1,6 +1,9 @@
 RECENT CHANGES
 ==============
 
+1.97.23
+-------
+
 1.97.22
 -------
 * Fix: Fix open command detection (by Tom Klingenberg)
