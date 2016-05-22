@@ -8,6 +8,7 @@ interface CommandAware
 {
     /**
      * @param Command $command
+     * @return void
      */
     public function setCommand(Command $command);
 }

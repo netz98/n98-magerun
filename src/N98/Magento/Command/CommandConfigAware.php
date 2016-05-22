@@ -6,6 +6,7 @@ interface CommandConfigAware
 {
     /**
      * @param array $commandConfig
+     * @return void
      */
     public function setCommandConfig(array $commandConfig);
 }

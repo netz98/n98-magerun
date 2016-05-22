@@ -11,6 +11,7 @@ interface SimpleCheck
 {
     /**
      * @param ResultCollection $results
+     * @return void
      */
     public function check(ResultCollection $results);
 }
