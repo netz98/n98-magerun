@@ -69,15 +69,15 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->detectMagento($output, true);
+        if (!$this->initMagento()) {
+            return;
+        }
+
         if ($input->getOption('add-all')) {
             $input->setOption('add-categories', true);
             $input->setOption('add-products', true);
             $input->setOption('add-cmspages', true);
-        }
-
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return;
         }
 
         $stores = explode(',', $input->getArgument('stores'));
