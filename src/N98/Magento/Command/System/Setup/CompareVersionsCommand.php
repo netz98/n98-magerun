@@ -2,12 +2,12 @@
 
 namespace N98\Magento\Command\System\Setup;
 
-use N98\Magento\Command\AbstractMagentoCommand;
 use N98\JUnitXml\Document as JUnitXmlDocument;
+use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 
 class CompareVersionsCommand extends AbstractMagentoCommand
 {
@@ -45,120 +45,122 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento()) {
-            $time = microtime(true);
-            $modules            = \Mage::getConfig()->getNode('modules');
-            $resourceModel      = $this->_getResourceSingleton('core/resource', 'Mage_Core_Model_Resource_Resource');
-            $setups             = \Mage::getConfig()->getNode('global/resources')->children();
-            $ignoreDataUpdate   = $input->getOption('ignore-data');
+        if (!$this->initMagento()) {
+            return;
+        }
 
-            $headers = array('Setup', 'Module', 'DB', 'Data', 'Status');
-            if ($ignoreDataUpdate) {
-                unset($headers[array_search('Data', $headers)]);
+        $time = microtime(true);
+        $modules            = \Mage::getConfig()->getNode('modules');
+        $resourceModel      = $this->_getResourceSingleton('core/resource', 'Mage_Core_Model_Resource_Resource');
+        $setups             = \Mage::getConfig()->getNode('global/resources')->children();
+        $ignoreDataUpdate   = $input->getOption('ignore-data');
+
+        $headers = array('Setup', 'Module', 'DB', 'Data', 'Status');
+        if ($ignoreDataUpdate) {
+            unset($headers[array_search('Data', $headers)]);
+        }
+
+        $hasStatusErrors = false;
+
+        $errorCounter = 0;
+        $table = array();
+        foreach ($setups as $setupName => $setup) {
+            $moduleName    = (string) $setup->setup->module;
+            $moduleVersion = (string) $modules->{$moduleName}->version;
+            $dbVersion     = (string) $resourceModel->getDbVersion($setupName);
+            if (!$ignoreDataUpdate) {
+                $dataVersion = (string) $resourceModel->getDataVersion($setupName);
+            }
+            $ok = $dbVersion == $moduleVersion;
+            if ($ok && !$ignoreDataUpdate) {
+                $ok = $dataVersion == $moduleVersion;
+            }
+            if (!$ok) {
+                $errorCounter++;
             }
 
-            $hasStatusErrors = false;
+            $row = array(
+                'Setup'     => $setupName,
+                'Module'    => $moduleVersion,
+                'DB'        => $dbVersion,
+            );
 
-            $errorCounter = 0;
-            $table = array();
-            foreach ($setups as $setupName => $setup) {
-                $moduleName     = (string) $setup->setup->module;
-                $moduleVersion  = (string) $modules->{$moduleName}->version;
-                $dbVersion      = (string) $resourceModel->getDbVersion($setupName);
-                if (!$ignoreDataUpdate) {
-                    $dataVersion = (string) $resourceModel->getDataVersion($setupName);
-                }
-                $ok = $dbVersion == $moduleVersion;
-                if ($ok && !$ignoreDataUpdate) {
-                    $ok = $dataVersion == $moduleVersion;
-                }
-                if (!$ok) {
-                    $errorCounter++;
-                }
+            if (!$ignoreDataUpdate) {
+                $row['Data-Version'] = $dataVersion;
+            }
+            $row['Status'] = $ok ? 'OK' : 'Error';
 
-                $row = array(
-                    'Setup'     => $setupName,
-                    'Module'    => $moduleVersion,
-                    'DB'        => $dbVersion,
+            if (!$ok) {
+                $hasStatusErrors = true;
+            }
+
+            $table[] = $row;
+        }
+
+        if ($input->getOption('errors-only')) {
+            $table = array_filter($table, function ($row) {
+                return ($row['Status'] === 'Error');
+            });
+        }
+
+        //if there is no output format
+        //highlight the status
+        //and show error'd rows at bottom
+        if (!$input->getOption('format')) {
+            usort($table, function ($a, $b) {
+                if ($a['Status'] !== 'OK' && $b['Status'] === 'OK') {
+                    return 1;
+                }
+                if ($a['Status'] === 'OK' && $b['Status'] !== 'OK') {
+                    return -1;
+                }
+                return strcmp($a['Setup'], $b['Setup']);
+            });
+
+            array_walk($table, function (&$row) {
+                $status             = $row['Status'];
+                $availableStatus    = array('OK' => 'info', 'Error' => 'error');
+                $statusString       = sprintf(
+                    '<%s>%s</%s>',
+                    $availableStatus[$status],
+                    $status,
+                    $availableStatus[$status]
                 );
+                $row['Status'] = $statusString;
+            });
+        }
 
-                if (!$ignoreDataUpdate) {
-                    $row['Data-Version'] = $dataVersion;
-                }
-                $row['Status'] = $ok ? 'OK' : 'Error';
+        if ($input->getOption('log-junit')) {
+            $this->logJUnit($table, $input->getOption('log-junit'), microtime($time) - $time);
+        } else {
+            $this->getHelper('table')
+                ->setHeaders($headers)
+                ->renderByFormat($output, $table, $input->getOption('format'));
 
-                if (!$ok) {
-                    $hasStatusErrors = true;
-                }
-
-                $table[] = $row;
-            }
-
-            if ($input->getOption('errors-only')) {
-                $table = array_filter($table, function ($row) {
-                    return ($row['Status'] === 'Error');
-                });
-            }
-
-            //if there is no output format
-            //highlight the status
-            //and show error'd rows at bottom
+            //if no output format specified - output summary line
             if (!$input->getOption('format')) {
-                usort($table, function ($a, $b) {
-                    if ($a['Status'] !== 'OK' && $b['Status'] === 'OK') {
-                        return 1;
-                    }
-                    if ($a['Status'] === 'OK' && $b['Status'] !== 'OK') {
-                        return -1;
-                    }
-                    return strcmp($a['Setup'], $b['Setup']);
-                });
-
-                array_walk($table, function (&$row) {
-                    $status             = $row['Status'];
-                    $availableStatus    = array('OK' => 'info', 'Error' => 'error');
-                    $statusString       = sprintf(
-                        '<%s>%s</%s>',
-                        $availableStatus[$status],
-                        $status,
-                        $availableStatus[$status]
+                if ($errorCounter > 0) {
+                    $this->writeSection(
+                        $output,
+                        sprintf(
+                            '%s error%s %s found!',
+                            $errorCounter,
+                            $errorCounter === 1 ? '' : 's',
+                            $errorCounter === 1 ? 'was' : 'were'
+                        ),
+                        'error'
                     );
-                    $row['Status'] = $statusString;
-                });
-            }
-
-            if ($input->getOption('log-junit')) {
-                $this->logJUnit($table, $input->getOption('log-junit'), microtime($time) - $time);
-            } else {
-                $this->getHelper('table')
-                    ->setHeaders($headers)
-                    ->renderByFormat($output, $table, $input->getOption('format'));
-
-                //if no output format specified - output summary line
-                if (!$input->getOption('format')) {
-                    if ($errorCounter > 0) {
-                        $this->writeSection(
-                            $output,
-                            sprintf(
-                                '%s error%s %s found!',
-                                $errorCounter,
-                                $errorCounter === 1 ? '' : 's',
-                                $errorCounter === 1 ? 'was' : 'were'
-                            ),
-                            'error'
-                        );
-                    } else {
-                        $this->writeSection($output, 'No setup problems were found.', 'info');
-                    }
+                } else {
+                    $this->writeSection($output, 'No setup problems were found.', 'info');
                 }
             }
+        }
 
-            if ($hasStatusErrors) {
-                //Return a non-zero status to indicate there is an error in the setup scripts.
-                return 1;
-            } else {
-                return 0;
-            }
+        if ($hasStatusErrors) {
+            //Return a non-zero status to indicate there is an error in the setup scripts.
+            return 1;
+        } else {
+            return 0;
         }
     }
 

@@ -32,17 +32,17 @@ class MetaCommand extends AbstractMagentoCommand
      */
     protected $groupFactories = array(
         'blocks' => array(
-            '\Mage::getBlockSingleton'
+            '\Mage::getBlockSingleton',
         ),
         'helpers' => array(
-            '\Mage::helper'
+            '\Mage::helper',
         ),
         'models' => array(
             '\Mage::getModel',
             '\Mage::getSingleton',
         ),
         'resource helpers' => array(
-            '\Mage::getResourceHelper'
+            '\Mage::getResourceHelper',
         ),
         'resource models' => array(
             '\Mage::getResourceModel',
@@ -112,24 +112,26 @@ class MetaCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento()) {
-            if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_1) {
-                $classMaps = array();
+        if (!$this->initMagento()) {
+            return;
+        }
 
-                foreach ($this->groups as $group) {
-                    $classMaps[$group] = $this->getClassMapForGroup($group, $output);
+        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_1) {
+            $classMaps = array();
 
-                    if (!$input->getOption('stdout') && count($classMaps[$group]) > 0) {
-                        $output->writeln(
-                            '<info>Generated definitions for <comment>' . $group . '</comment> group</info>'
-                        );
-                    }
+            foreach ($this->groups as $group) {
+                $classMaps[$group] = $this->getClassMapForGroup($group, $output);
+
+                if (!$input->getOption('stdout') && count($classMaps[$group]) > 0) {
+                    $output->writeln(
+                        '<info>Generated definitions for <comment>' . $group . '</comment> group</info>'
+                    );
                 }
-
-                $this->writeToOutput($input, $output, $classMaps);
-            } else {
-                $output->write('Magento 2 is currently not supported');
             }
+
+            $this->writeToOutput($input, $output, $classMaps);
+        } else {
+            $output->write('Magento 2 is currently not supported');
         }
     }
 

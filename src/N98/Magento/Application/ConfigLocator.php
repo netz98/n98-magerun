@@ -73,7 +73,7 @@ class ConfigLocator
     public function getProjectConfigFile()
     {
         if (!strlen($this->magentoRootFolder)) {
-            return null;
+            return;
         }
 
         $projectConfigFilePath = $this->magentoRootFolder . '/app/etc/' . $this->customConfigFilename;
@@ -98,13 +98,13 @@ class ConfigLocator
     public function getStopFileConfigFile($magerunStopFileFolder)
     {
         if (empty($magerunStopFileFolder)) {
-            return null;
+            return;
         }
 
         $stopFileConfigFilePath = $magerunStopFileFolder . '/.' . $this->customConfigFilename;
 
         if (!file_exists($stopFileConfigFilePath)) {
-            return null;
+            return;
         }
 
         try {

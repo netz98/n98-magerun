@@ -5,8 +5,8 @@ namespace N98\Magento\Command\Script\Repository;
 use InvalidArgumentException;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class RunCommand extends AbstractRepositoryCommand
@@ -82,7 +82,6 @@ HELP;
             }
             $selectedFile = $files[$script]['fileinfo']->getPathname();
         }
-
 
         $scriptArray = array(
             'command'  => 'script',

@@ -16,7 +16,7 @@ class PhpView implements View
 
     /**
      * @param string $template
-     * @return Php
+     * @return PhpView
      */
     public function setTemplate($template)
     {
@@ -29,7 +29,7 @@ class PhpView implements View
      * @param string $key
      * @param mixed $value
      *
-     * @return Php
+     * @return PhpView
      */
     public function assign($key, $value)
     {

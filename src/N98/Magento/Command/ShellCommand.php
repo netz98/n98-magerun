@@ -3,9 +3,9 @@
 namespace N98\Magento\Command;
 
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Shell;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Shell;
 
 class ShellCommand extends AbstractMagentoCommand
 {

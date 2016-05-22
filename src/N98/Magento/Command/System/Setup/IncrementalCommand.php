@@ -260,8 +260,8 @@ class IncrementalCommand extends AbstractMagentoCommand
             $config_ver = $this->_getConfiguredVersionFromResourceObject($setupResource);
 
             if (
-                (string)$config_ver == (string)$db_ver && //structure
-                (string)$config_ver == (string)$db_data_ver //data
+                (string) $config_ver == (string) $db_ver && //structure
+                (string) $config_ver == (string) $db_data_ver //data
             ) {
                 continue;
             }
@@ -315,14 +315,14 @@ class IncrementalCommand extends AbstractMagentoCommand
                     'Class:                     ' . get_class($setupResource),
                     'Current Structure Version: ' . $dbVersion,
                     'Current Data Version:      ' . $dbDataVersion,
-                    'Configured Version:        ' . $configVersion
+                    'Configured Version:        ' . $configVersion,
                 )
             );
 
             $args = array(
                 '',
-                (string)$dbVersion,
-                (string)$configVersion,
+                (string) $dbVersion,
+                (string) $configVersion,
             );
 
             $args[0] = $dbVersion

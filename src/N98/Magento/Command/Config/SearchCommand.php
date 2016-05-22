@@ -31,34 +31,36 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
-            $this->writeSection($output, 'Config Search');
+        if (!$this->initMagento()) {
+            return;
+        }
 
-            $searchString = $input->getArgument('text');
-            $system = \Mage::getConfig()->loadModulesConfiguration('system.xml');
-            $matches = $this->_searchConfiguration($searchString, $system);
+        $this->writeSection($output, 'Config Search');
 
-            if (count($matches) > 0) {
-                foreach ($matches as $match) {
-                    $output->writeln('Found a <comment>' . $match->type . '</comment> with a match');
-                    $output->writeln('  ' . $this->_getPhpMageStoreConfigPathFromMatch($match));
-                    $output->writeln('  ' . $this->_getPathFromMatch($match));
+        $searchString = $input->getArgument('text');
+        $system = \Mage::getConfig()->loadModulesConfiguration('system.xml');
+        $matches = $this->_searchConfiguration($searchString, $system);
 
-                    if ($match->match_type == 'comment') {
-                        $output->writeln(
-                            '  ' .
-                            str_ireplace(
-                                $searchString,
-                                '<info>' . $searchString . '</info>',
-                                (string) $match->node->comment
-                            )
-                        );
-                    }
-                    $output->writeln('');
+        if (count($matches) > 0) {
+            foreach ($matches as $match) {
+                $output->writeln('Found a <comment>' . $match->type . '</comment> with a match');
+                $output->writeln('  ' . $this->_getPhpMageStoreConfigPathFromMatch($match));
+                $output->writeln('  ' . $this->_getPathFromMatch($match));
+
+                if ($match->match_type == 'comment') {
+                    $output->writeln(
+                        '  ' .
+                        str_ireplace(
+                            $searchString,
+                            '<info>' . $searchString . '</info>',
+                            (string) $match->node->comment
+                        )
+                    );
                 }
-            } else {
-                $output->writeln('<info>No matches for <comment>' . $searchString . '</comment></info>');
+                $output->writeln('');
             }
+        } else {
+            $output->writeln('<info>No matches for <comment>' . $searchString . '</comment></info>');
         }
     }
 
@@ -73,7 +75,7 @@ EOT
         $xpathSections = array(
             'sections/*',
             'sections/*/groups/*',
-            'sections/*/groups/*/fields/*'
+            'sections/*/groups/*/fields/*',
         );
 
         $matches = array();

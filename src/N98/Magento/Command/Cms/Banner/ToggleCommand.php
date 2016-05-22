@@ -52,24 +52,26 @@ class ToggleCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
         $this->requireEnterprise($output);
-        if ($this->initMagento()) {
-            $this->writeSection($output, 'Banner Toggle');
-            $bannerId = $input->getArgument('banner_id');
-
-            $banner = $this->_getBannerModel()->load($bannerId);
-
-            if (!$banner->getId()) {
-                $output->writeln('<error>Banner was not found</error>');
-                return;
-            }
-
-            $disabled = !$banner->getIsEnabled();
-            $comment = '<comment>Banner</comment> '
-            . '<info>' . (!$disabled ? 'disabled' : 'enabled') . '</info>';
-
-            $banner->setIsEnabled($disabled);
-            $banner->save();
-            $output->writeln($comment);
+        if (!$this->initMagento()) {
+            return;
         }
+
+        $this->writeSection($output, 'Banner Toggle');
+        $bannerId = $input->getArgument('banner_id');
+
+        $banner = $this->_getBannerModel()->load($bannerId);
+
+        if (!$banner->getId()) {
+            $output->writeln('<error>Banner was not found</error>');
+            return;
+        }
+
+        $disabled = !$banner->getIsEnabled();
+        $comment = '<comment>Banner</comment> '
+        . '<info>' . (!$disabled ? 'disabled' : 'enabled') . '</info>';
+
+        $banner->setIsEnabled($disabled);
+        $banner->save();
+        $output->writeln($comment);
     }
 }

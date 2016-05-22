@@ -190,8 +190,8 @@ class ParameterHelper extends AbstractHelper
             array(
                 'email' => array(
                     new Constraints\NotBlank(),
-                    new Constraints\Email()
-                )
+                    new Constraints\Email(),
+                ),
             )
         );
 
@@ -217,7 +217,7 @@ class ParameterHelper extends AbstractHelper
         if ($needDigits) {
             $regex = array(
                 'pattern' => '/^(?=.*\d)(?=.*[a-zA-Z])/',
-                'message' => 'Password must contain letters and at least one digit'
+                'message' => 'Password must contain letters and at least one digit',
             );
             $validators[] = new Constraints\Regex($regex);
         }
@@ -226,7 +226,7 @@ class ParameterHelper extends AbstractHelper
 
         $constraints = new Constraints\Collection(
             array(
-                'password' => $validators
+                'password' => $validators,
             )
         );
 

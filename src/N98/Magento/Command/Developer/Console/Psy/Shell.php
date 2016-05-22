@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Console\Psy;
 
-use Psy\Shell as BaseShell;
 use Psy\Configuration;
+use Psy\Shell as BaseShell;
 
 class Shell extends BaseShell
 {

@@ -36,19 +36,21 @@ class ClassLookupCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
-            $resolved = $this->_getConfig()->getGroupedClassName(
-                $input->getArgument('type'),
-                $input->getArgument('name')
-            );
-            $output->writeln(
-                ucfirst($input->getArgument('type')) . ' <comment>' . $input->getArgument('name') . "</comment> " .
-                "resolves to <comment>" . $resolved . '</comment>'
-            );
-            
-            if (!class_exists('\\' . $resolved)) {
-                $output->writeln('<info>Note:</info> Class <comment>' . $resolved . '</comment> does not exist!');
-            }
+        if (!$this->initMagento()) {
+            return;
+        }
+
+        $resolved = $this->_getConfig()->getGroupedClassName(
+            $input->getArgument('type'),
+            $input->getArgument('name')
+        );
+        $output->writeln(
+            ucfirst($input->getArgument('type')) . ' <comment>' . $input->getArgument('name') . "</comment> " .
+            "resolves to <comment>" . $resolved . '</comment>'
+        );
+
+        if (!class_exists('\\' . $resolved)) {
+            $output->writeln('<info>Note:</info> Class <comment>' . $resolved . '</comment> does not exist!');
         }
     }
 }

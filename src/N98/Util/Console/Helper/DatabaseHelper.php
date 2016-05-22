@@ -170,7 +170,7 @@ class DatabaseHelper extends AbstractHelper
         if (null === $type) {
             $type = "@@";
         } else {
-            $type = (string)$type;
+            $type = (string) $type;
         }
 
         if (!in_array($type, array("@@", "@"), true)) {
@@ -302,7 +302,7 @@ class DatabaseHelper extends AbstractHelper
      */
     public function getTables($withoutPrefix = null)
     {
-        $withoutPrefix = (bool)$withoutPrefix;
+        $withoutPrefix = (bool) $withoutPrefix;
 
         $db = $this->getConnection();
         $prefix = $this->dbSettings['prefix'];
@@ -588,8 +588,8 @@ class DatabaseHelper extends AbstractHelper
         }
 
         if ($this->getHelperSet()->has('io')) {
-            $helper = $this->getHelperSet()->get('io');
             /** @var $helper IoHelper */
+            $helper = $this->getHelperSet()->get('io');
             $output = $helper->getOutput();
         }
 

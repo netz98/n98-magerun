@@ -31,7 +31,16 @@ use Symfony\Component\Finder\Finder;
  */
 class InstallCommand extends AbstractMagentoCommand
 {
+    /**
+     * @deprecated since since 1.97.22; Use constant from Exec-Utility instead
+     * @see Exec::CODE_CLEAN_EXIT
+     */
     const EXEC_STATUS_OK = 0;
+
+    const DEFAULT_SESSION_PATH = 'var/session';
+
+    const MAGENTO_INSTALL_SCRIPT_PATH = 'install.php';
+
     /**
      * @var array
      */
@@ -98,7 +107,7 @@ class InstallCommand extends AbstractMagentoCommand
             ->addOption(
                 'forceUseDb',
                 null,
-                InputOption::VALUE_OPTIONAL,
+                InputOption::VALUE_NONE,
                 'If --noDownload passed, force to use given database if it already exists.'
             )->setDescription('Install magento');
 
@@ -223,7 +232,6 @@ HELP;
 
             $commandConfig = $this->commandConfig;
 
-
             $type = $this->getHelper('dialog')->askAndValidate(
                 $output,
                 $question,
@@ -240,7 +248,7 @@ HELP;
 
             if ($input->getOption('magentoVersion')) {
                 $type = $input->getOption('magentoVersion');
-                if ($type !== (string)(int)$type) {
+                if ($type !== (string) (int) $type) {
                     $type = $this->getPackageNumberByName($type);
                 }
             } elseif ($input->getOption('magentoVersionByName')) {
@@ -268,7 +276,6 @@ HELP;
         $this->config['magentoVersionData'] = $magentoPackages[$index];
     }
 
-
     /**
      * @param $name
      *
@@ -277,8 +284,8 @@ HELP;
     private function getPackageNumberByName($name)
     {
         // directly filter integer strings
-        if ($name === (string)(int)$name) {
-            return (int)$name;
+        if ($name === (string) (int) $name) {
+            return (int) $name;
         }
 
         $magentoPackages = $this->commandConfig['magento-packages'];
@@ -289,7 +296,7 @@ HELP;
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -426,7 +433,7 @@ HELP;
             }
         } else {
             /** @var DialogHelper $dialog */
-            $dialog = $this->getHelperSet()->get('dialog');
+            $dialog = $this->getHelper('dialog');
             do {
                 $dbHostDefault = $input->getOption('dbHost') ? $input->getOption('dbHost') : 'localhost';
                 $this->config['db_host'] = $dialog->askAndValidate(
@@ -537,7 +544,7 @@ HELP;
             return;
         }
 
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dialog = $this->getHelper('dialog');
 
         $installSampleData = ($input->getOption('installSampleData') !== null)
             ? $this->_parseBoolOption($input->getOption('installSampleData'))
@@ -665,7 +672,7 @@ HELP;
     {
         $this->getApplication()->setAutoExit(false);
         /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dialog = $this->getHelper('dialog');
 
         $defaults = $this->commandConfig['installation']['defaults'];
 
@@ -796,7 +803,7 @@ HELP;
         /**
          * Try to create session folder
          */
-        $defaultSessionFolder = $this->config['installationFolder'] . DIRECTORY_SEPARATOR . 'var/session';
+        $defaultSessionFolder = $this->config['installationFolder'] . '/' . self::DEFAULT_SESSION_PATH;
         if ($sessionSave == 'files' && !is_dir($defaultSessionFolder)) {
             @mkdir($defaultSessionFolder);
         }
@@ -843,29 +850,11 @@ HELP;
                 $argv['use_rewrites'] = $defaults['use_rewrites'];
             }
         }
-        $installArgs = '';
-        foreach ($argv as $argName => $argValue) {
-            $installArgs .= '--' . $argName . ' ' . escapeshellarg($argValue) . ' ';
-        }
 
-        $output->writeln('<info>Start installation process.</info>');
+        $this->runInstallScriptCommand($output, $this->config['installationFolder'], $argv);
 
-        $phpExec = OperatingSystem::getPhpBinary();
-        $installCommand = $phpExec . ' -f ' . escapeshellarg($this->getInstallScriptPath()) . ' -- ' . $installArgs;
-
-
-        $output->writeln('<comment>' . $installCommand . '</comment>');
-        Exec::run($installCommand, $installationOutput, $returnStatus);
-        if ($returnStatus !== self::EXEC_STATUS_OK) {
-            $this->getApplication()->setAutoExit(true);
-            throw new RuntimeException('Installation failed.' . $installationOutput, 1);
-        } else {
-            $output->writeln('<info>Successfully installed Magento</info>');
-            $encryptionKey = trim(substr($installationOutput, strpos($installationOutput, ':') + 1));
-            $output->writeln('<comment>Encryption Key:</comment> <info>' . $encryptionKey . '</info>');
-        }
-
-        $dialog = $this->getHelperSet()->get('dialog');
+        /* @var $dialog DialogHelper */
+        $dialog = $this->getHelper('dialog');
 
         /**
          * Htaccess file
@@ -904,7 +893,7 @@ HELP;
      */
     protected function getInstallScriptPath()
     {
-        $magento1InstallScriptPath = $this->config['installationFolder'] . '/install.php';
+        $magento1InstallScriptPath = $this->config['installationFolder'] . '/' . MAGENTO_INSTALL_SCRIPT_PATH;
         $magento2InstallScriptPath = $this->config['installationFolder'] . '/dev/shell/install.php';
         if (file_exists($magento2InstallScriptPath)) {
             return $magento2InstallScriptPath;
@@ -981,5 +970,51 @@ HELP;
     public function setCliArguments($args)
     {
         $this->_argv = $args;
+    }
+
+    /**
+     * Invoke Magento PHP install script shell/install.php
+     *
+     * @param OutputInterface $output
+     * @param string $installationFolder folder where magento is installed in, must exists setup script in
+     * @param array $argv
+     * @return void
+     */
+    private function runInstallScriptCommand(OutputInterface $output, $installationFolder, array $argv)
+    {
+        $installArgs = '';
+        foreach ($argv as $argName => $argValue) {
+            $installArgs .= '--' . $argName . ' ' . escapeshellarg($argValue) . ' ';
+        }
+
+        $output->writeln('<info>Start installation process.</info>');
+
+        $installCommand = sprintf(
+            '%s -ddisplay_startup_errors=1 -ddisplay_errors=1 -derror_reporting=-1 -f %s -- %s',
+            OperatingSystem::getPhpBinary(),
+            escapeshellarg($installationFolder . '/' . self::MAGENTO_INSTALL_SCRIPT_PATH),
+            $installArgs
+        );
+
+        $output->writeln('<comment>' . $installCommand . '</comment>');
+        $installException = null;
+        $installationOutput = null;
+        $returnStatus = null;
+        try {
+            Exec::run($installCommand, $installationOutput, $returnStatus);
+        } catch (Exception $installException) {
+        }
+
+        if (isset($installException) || $returnStatus !== Exec::CODE_CLEAN_EXIT) {
+            $this->getApplication()->setAutoExit(true);
+            throw new RuntimeException(
+                sprintf('Installation failed (Exit code %s). %s', $returnStatus, $installationOutput),
+                1,
+                $installException
+            );
+        }
+        $output->writeln('<info>Successfully installed Magento</info>');
+        $encryptionKey = trim(substr(strstr($installationOutput, ':'), 1));
+        $output->writeln('<comment>Encryption Key:</comment> <info>' . $encryptionKey . '</info>');
     }
 }

@@ -17,8 +17,10 @@ class TestDummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento()) {
-            $output->writeln('dummy');
+        if (!$this->initMagento()) {
+            return;
         }
+
+        $output->writeln('dummy');
     }
 }

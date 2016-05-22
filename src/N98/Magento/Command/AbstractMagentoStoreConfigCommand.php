@@ -6,9 +6,9 @@ use N98\Util\Console\Helper\ParameterHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 {
@@ -189,7 +189,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
         );
 
         /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
-        $dialog = $this->getHelperSet()->get('dialog');
+        $dialog = $this->getHelper('dialog');
         $newDeveloperIp = $dialog->ask(
             $output,
             '<question>Change developer IP? Enter a new IP to change or leave blank</question>: '

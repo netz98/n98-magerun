@@ -5,10 +5,10 @@ namespace N98\Util\Console\Helper;
 use N98\Magento\Application;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Class MagentoHelper
@@ -114,7 +114,6 @@ class MagentoHelper extends AbstractHelper
 
         return false;
     }
-
 
     /**
      * @return string

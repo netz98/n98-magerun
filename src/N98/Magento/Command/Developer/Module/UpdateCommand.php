@@ -6,7 +6,7 @@ use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
 use SimpleXMLElement;
-use Symfony\Component\Console\Helper\HelperInterface;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -218,13 +218,12 @@ class UpdateCommand extends AbstractMagentoCommand
         $this->moduleDirectory = $moduleDir;
     }
 
-
     /**
-     * @return HelperInterface
+     * @return DialogHelper
      */
     protected function getDialog()
     {
-        return $this->getHelperSet()->get('dialog');
+        return $this->getHelper('dialog');
     }
 
     /**
@@ -249,7 +248,6 @@ class UpdateCommand extends AbstractMagentoCommand
 
         $output->writeln('<info>Edited file: <comment>' . $this->getOutFile() . '<comment></info>');
     }
-
 
     /**
      * @param InputInterface $input
@@ -314,7 +312,6 @@ class UpdateCommand extends AbstractMagentoCommand
                 ->{$this->getLowercaseModuleNamespace()}->addChild('resourceModel', $resourceModel);
         }
     }
-
 
     /**
      * @param InputInterface $input
@@ -649,7 +646,6 @@ class UpdateCommand extends AbstractMagentoCommand
         $moduleNamespaceNode->addChild('class', $this->getModuleNamespace() . $classSuffix);
     }
 
-
     /**
      * @param SimpleXMLElement $simpleXml
      */
@@ -888,7 +884,6 @@ class UpdateCommand extends AbstractMagentoCommand
     {
         return $input->getOption('add-all');
     }
-
 
     /**
      * Gets module namespace e.g. Company_Modulename

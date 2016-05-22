@@ -49,16 +49,18 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
-            $config = \Mage::app()->getConfig()->getNode($input->getArgument('xpath'));
-            if (!$config) {
-                throw new InvalidArgumentException('xpath was not found');
-            }
-            $dom = new \DOMDocument();
-            $dom->preserveWhiteSpace = false;
-            $dom->formatOutput = true;
-            $dom->loadXML($config->asXml());
-            $output->writeln($dom->saveXML(), OutputInterface::OUTPUT_RAW);
+        if (!$this->initMagento()) {
+            return;
         }
+
+        $config = \Mage::app()->getConfig()->getNode($input->getArgument('xpath'));
+        if (!$config) {
+            throw new InvalidArgumentException('xpath was not found');
+        }
+        $dom = new \DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = true;
+        $dom->loadXML($config->asXml());
+        $output->writeln($dom->saveXML(), OutputInterface::OUTPUT_RAW);
     }
 }

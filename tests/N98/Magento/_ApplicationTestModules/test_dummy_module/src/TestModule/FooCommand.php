@@ -10,22 +10,21 @@ class FooCommand extends AbstractMagentoCommand
 {
     protected function configure()
     {
-      $this
-          ->setName('testmodule:foo')
-          ->setDescription('Test command registered in a module')
-      ;
+        $this
+            ->setName('testmodule:foo')
+            ->setDescription('Test command registered in a module');
     }
 
-   /**
-    * @param \Symfony\Component\Console\Input\InputInterface $input
-    * @param \Symfony\Component\Console\Output\OutputInterface $output
-    * @return int|void
-    */
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return int|void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento()) {
-            
+        if (!$this->initMagento()) {
+            return;
         }
     }
 }

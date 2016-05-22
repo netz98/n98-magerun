@@ -64,7 +64,7 @@ HELP;
         $runConfig = $jobConfig->run;
 
         if ($runConfig->model) {
-            if (!preg_match(self::REGEX_RUN_MODEL, (string)$runConfig->model, $run)) {
+            if (!preg_match(self::REGEX_RUN_MODEL, (string) $runConfig->model, $run)) {
                 throw new RuntimeException('Invalid model/method definition, expecting "model/class::method".');
             }
             $model = \Mage::getModel($run[1]);
@@ -127,7 +127,7 @@ HELP;
         $question[] = '<question>Please select job: </question>' . PHP_EOL;
 
         /** @var $dialogHelper DialogHelper */
-        $dialogHelper = $this->getHelperSet()->get('dialog');
+        $dialogHelper = $this->getHelper('dialog');
         $jobCode = $dialogHelper->askAndValidate(
             $output,
             $question,

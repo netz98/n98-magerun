@@ -10,7 +10,6 @@ class DeleteCommandTest extends TestCase
     protected $command;
     protected $customerModel;
     protected $customerCollection;
-    protected $helperSet;
     protected $dialog;
     protected $parameter;
     protected $website;
@@ -72,13 +71,9 @@ class DeleteCommandTest extends TestCase
                 'getCustomerCollection',
                 'ask',
                 'askConfirmation',
-                'getHelperSet',
+                'getHelper',
                 'batchDelete'
             ))
-            ->getMock();
-
-        $this->helperSet = $this->getMockBuilder('Symfony\Component\Console\Helper\HelperSet')
-            ->setMethods(array('get'))
             ->getMock();
 
         $this->dialog = $this->getMockBuilder('Symfony\Component\Console\Helper\DialogHelper')
@@ -105,12 +100,7 @@ class DeleteCommandTest extends TestCase
 
         $this->command
             ->expects($this->any())
-            ->method('getHelperSet')
-            ->will($this->returnValue($this->helperSet));
-
-        $this->helperSet
-            ->expects($this->any())
-            ->method('get')
+            ->method('getHelper')
             ->will($this->returnValueMap(array(
                 array('dialog', $this->dialog),
                 array('parameter', $this->parameter)

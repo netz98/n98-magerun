@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\LocalConfig;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -99,7 +100,8 @@ HELP;
      */
     protected function askForArguments(InputInterface $input, OutputInterface $output)
     {
-        $dialog = $this->getHelperSet()->get('dialog');
+        /* @var $dialog DialogHelper */
+        $dialog = $this->getHelper('dialog');
         $dialog->setInput($input);
         $messagePrefix = 'Please enter the ';
 
@@ -119,7 +121,7 @@ HELP;
                     $dialog->ask(
                         $output,
                         sprintf('<question>%s%s:</question>', $messagePrefix, $options['prompt']),
-                        $options['default']
+                        (string) $options['default']
                     )
                 );
             } else {

@@ -390,7 +390,6 @@ HELP;
             $nameExtension = '.sql';
         }
 
-
         if ($input->getOption('add-time') !== false) {
             $timeStamp = date('Y-m-d_His');
 
@@ -409,7 +408,7 @@ HELP;
             && !$input->getOption('stdout')
         ) {
             /** @var DialogHelper $dialog */
-            $dialog = $this->getHelperSet()->get('dialog');
+            $dialog = $this->getHelper('dialog');
             $defaultName = VerifyOrDie::filename(
                 $namePrefix . $this->dbSettings['dbname'] . $nameSuffix . $nameExtension
             );

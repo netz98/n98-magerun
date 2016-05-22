@@ -43,22 +43,24 @@ HELP;
     {
         $this->banUseCache();
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
-            \Mage::app()->loadAreaPart('adminhtml', 'events');
-            $allTypes = \Mage::app()->getCacheInstance()->getTypes();
-            $typesToClean = $input->getArgument('type');
-            $this->validateCacheCodes($typesToClean);
-            $typeKeys = array_keys($allTypes);
-
-            foreach ($typeKeys as $type) {
-                if (count($typesToClean) == 0 || in_array($type, $typesToClean)) {
-                    \Mage::app()->getCacheInstance()->cleanType($type);
-                    \Mage::dispatchEvent('adminhtml_cache_refresh_type', array('type' => $type));
-                    $output->writeln('<info>Cache <comment>' . $type . '</comment> cleaned</info>');
-                }
-            }
-
-            $this->reinitCache();
+        if (!$this->initMagento()) {
+            return;
         }
+
+        \Mage::app()->loadAreaPart('adminhtml', 'events');
+        $allTypes = \Mage::app()->getCacheInstance()->getTypes();
+        $typesToClean = $input->getArgument('type');
+        $this->validateCacheCodes($typesToClean);
+        $typeKeys = array_keys($allTypes);
+
+        foreach ($typeKeys as $type) {
+            if (count($typesToClean) == 0 || in_array($type, $typesToClean)) {
+                \Mage::app()->getCacheInstance()->cleanType($type);
+                \Mage::dispatchEvent('adminhtml_cache_refresh_type', array('type' => $type));
+                $output->writeln('<info>Cache <comment>' . $type . '</comment> cleaned</info>');
+            }
+        }
+
+        $this->reinitCache();
     }
 }

@@ -23,7 +23,6 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      */
     protected $isSocketConnect = false;
 
-
     /**
      * @param OutputInterface $output
      */

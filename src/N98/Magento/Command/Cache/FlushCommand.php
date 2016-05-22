@@ -27,26 +27,28 @@ class FlushCommand extends AbstractCacheCommand
 
         $this->banUseCache();
 
-        if ($this->initMagento()) {
-            \Mage::app()->loadAreaPart('adminhtml', 'events');
-            \Mage::dispatchEvent('adminhtml_cache_flush_all', array('output' => $output));
-            $result = \Mage::app()->getCacheInstance()->flush();
+        if (!$this->initMagento()) {
+            return;
+        }
+
+        \Mage::app()->loadAreaPart('adminhtml', 'events');
+        \Mage::dispatchEvent('adminhtml_cache_flush_all', array('output' => $output));
+        $result = \Mage::app()->getCacheInstance()->flush();
+        if ($result) {
+            $output->writeln('<info>Cache cleared</info>');
+        } else {
+            $output->writeln('<error>Failed to clear Cache</error>');
+        }
+
+        $this->reinitCache();
+
+        /* Since Magento 1.10 we have an own cache handler for FPC */
+        if ($this->isEnterpriseFullPageCachePresent()) {
+            $result = \Enterprise_PageCache_Model_Cache::getCacheInstance()->flush();
             if ($result) {
-                $output->writeln('<info>Cache cleared</info>');
+                $output->writeln('<info>FPC cleared</info>');
             } else {
-                $output->writeln('<error>Failed to clear Cache</error>');
-            }
-
-            $this->reinitCache();
-
-            /* Since Magento 1.10 we have an own cache handler for FPC */
-            if ($this->isEnterpriseFullPageCachePresent()) {
-                $result = \Enterprise_PageCache_Model_Cache::getCacheInstance()->flush();
-                if ($result) {
-                    $output->writeln('<info>FPC cleared</info>');
-                } else {
-                    $output->writeln('<error>Failed to clear FPC</error>');
-                }
+                $output->writeln('<error>Failed to clear FPC</error>');
             }
         }
     }

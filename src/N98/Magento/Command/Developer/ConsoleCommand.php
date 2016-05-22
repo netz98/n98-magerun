@@ -4,10 +4,10 @@ namespace N98\Magento\Command\Developer;
 
 use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\Developer\Console\Psy\Shell;
 use N98\Util\Unicode\Charset;
 use Psy\Command\ListCommand;
 use Psy\Configuration;
-use N98\Magento\Command\Developer\Console\Psy\Shell;
 use Psy\Output\ShellOutput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

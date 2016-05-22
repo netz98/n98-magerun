@@ -71,112 +71,113 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if ($this->initMagento()) {
-            $this->input  = $input;
-            $this->output = $output;
-            /** @var DialogHelper dialog */
-            $this->dialog = $this->getHelperSet()->get('dialog');
+        if (!$this->initMagento()) {
+            return;
+        }
 
-            // Defaults
-            $range = $all = false;
+        $this->input  = $input;
+        $this->output = $output;
+        /** @var DialogHelper dialog */
+        $this->dialog = $this->getHelper('dialog');
 
-            $id = $this->input->getArgument('id');
-            $range = $this->input->getOption('range');
-            $all = $this->input->getOption('all');
-            // Get args required
-            if (!($id) && !($range) && !($all)) {
+        // Defaults
+        $range = $all = false;
 
-                // Delete more than one customer ?
-                $batchDelete = $this->dialog->askConfirmation(
+        $id = $this->input->getArgument('id');
+        $range = $this->input->getOption('range');
+        $all = $this->input->getOption('all');
+        // Get args required
+        if (!($id) && !($range) && !($all)) {
+
+            // Delete more than one customer ?
+            $batchDelete = $this->dialog->askConfirmation(
+                $this->output,
+                $this->getQuestion('Delete more than 1 customer?', 'n'),
+                false
+            );
+
+            if ($batchDelete) {
+                // Batch deletion
+                $all = $this->dialog->askConfirmation(
                     $this->output,
-                    $this->getQuestion('Delete more than 1 customer?', 'n'),
+                    $this->getQuestion('Delete all customers?', 'n'),
                     false
                 );
 
-                if ($batchDelete) {
-                    // Batch deletion
-                    $all = $this->dialog->askConfirmation(
+                if (!$all) {
+                    $range = $this->dialog->askConfirmation(
                         $this->output,
-                        $this->getQuestion('Delete all customers?', 'n'),
+                        $this->getQuestion('Delete a range of customers?', 'n'),
                         false
                     );
 
-                    if (!$all) {
-                        $range = $this->dialog->askConfirmation(
-                            $this->output,
-                            $this->getQuestion('Delete a range of customers?', 'n'),
-                            false
-                        );
-
-                        if (!$range) {
-                            // Nothing to do
-                            $this->output->writeln('<error>Finished nothing to do</error>');
-                            return false;
-                        }
+                    if (!$range) {
+                        // Nothing to do
+                        $this->output->writeln('<error>Finished nothing to do</error>');
+                        return false;
                     }
                 }
             }
+        }
 
-            if (!$range && !$all) {
-                // Single customer deletion
-                if (!$id) {
-                    $id = $this->dialog->ask($this->output, $this->getQuestion('Customer Id'), null);
-                }
+        if (!$range && !$all) {
+            // Single customer deletion
+            if (!$id) {
+                $id = $this->dialog->ask($this->output, $this->getQuestion('Customer Id'), null);
+            }
 
-                try {
-                    $customer = $this->getCustomer($id);
-                } catch (Exception $e) {
-                    $this->output->writeln('<error>No customer found!</error>');
-                    return false;
-                }
+            try {
+                $customer = $this->getCustomer($id);
+            } catch (Exception $e) {
+                $this->output->writeln('<error>No customer found!</error>');
+                return false;
+            }
 
-
-                if ($this->shouldRemove()) {
-                    $this->deleteCustomer($customer);
-                } else {
-                    $this->output->writeln('<error>Aborting delete</error>');
-                }
+            if ($this->shouldRemove()) {
+                $this->deleteCustomer($customer);
             } else {
-                $customers = $this->getCustomerCollection();
-                $customers
-                    ->addAttributeToSelect('firstname')
-                    ->addAttributeToSelect('lastname')
-                    ->addAttributeToSelect('email');
+                $this->output->writeln('<error>Aborting delete</error>');
+            }
+        } else {
+            $customers = $this->getCustomerCollection();
+            $customers
+                ->addAttributeToSelect('firstname')
+                ->addAttributeToSelect('lastname')
+                ->addAttributeToSelect('email');
 
-                if ($range) {
-                    // Get Range
-                    $ranges = array();
-                    $ranges[0] = $this->dialog->askAndValidate(
-                        $this->output,
-                        $this->getQuestion('Range start Id', '1'),
-                        array($this, 'validateInt'),
-                        false,
-                        '1'
-                    );
-                    $ranges[1] = $this->dialog->askAndValidate(
-                        $this->output,
-                        $this->getQuestion('Range end Id', '1'),
-                        array($this, 'validateInt'),
-                        false,
-                        '1'
-                    );
+            if ($range) {
+                // Get Range
+                $ranges = array();
+                $ranges[0] = $this->dialog->askAndValidate(
+                    $this->output,
+                    $this->getQuestion('Range start Id', '1'),
+                    array($this, 'validateInt'),
+                    false,
+                    '1'
+                );
+                $ranges[1] = $this->dialog->askAndValidate(
+                    $this->output,
+                    $this->getQuestion('Range end Id', '1'),
+                    array($this, 'validateInt'),
+                    false,
+                    '1'
+                );
 
-                    // Ensure ascending order
-                    sort($ranges);
+                // Ensure ascending order
+                sort($ranges);
 
-                    // Range delete, takes precedence over --all
-                    $customers->addAttributeToFilter('entity_id', array(
-                        'from'  => $ranges[0],
-                        'to'    => $ranges[1]
-                    ));
-                }
+                // Range delete, takes precedence over --all
+                $customers->addAttributeToFilter('entity_id', array(
+                    'from'  => $ranges[0],
+                    'to'    => $ranges[1],
+                ));
+            }
 
-                if ($this->shouldRemove()) {
-                    $count = $this->batchDelete($customers);
-                    $this->output->writeln('<info>Successfully deleted ' . $count . ' customer/s</info>');
-                } else {
-                    $this->output->writeln('<error>Aborting delete</error>');
-                }
+            if ($this->shouldRemove()) {
+                $count = $this->batchDelete($customers);
+                $this->output->writeln('<info>Successfully deleted ' . $count . ' customer/s</info>');
+            } else {
+                $this->output->writeln('<error>Aborting delete</error>');
             }
         }
     }
@@ -210,7 +211,7 @@ HELP;
         $customer = $this->getCustomerModel()->load($id);
         if (!$customer->getId()) {
             /** @var $parameterHelper ParameterHelper */
-            $parameterHelper = $this->getHelperSet()->get('parameter');
+            $parameterHelper = $this->getHelper('parameter');
             $website = $parameterHelper->askWebsite($this->input, $this->output);
             $customer = $this->getCustomerModel()
                 ->setWebsiteId($website->getId())

@@ -46,13 +46,15 @@ class InfoCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output);
-        if ($this->initMagento()) {
-            foreach (\Mage::app()->getWebsites() as $website) {
-                /* @var $website \Mage_Core_Model_Website */
-                foreach ($website->getStores() as $store) {
-                    /* @var $store \Mage_Core_Model_Store */
-                    $this->_displayTable($output, $store);
-                }
+        if (!$this->initMagento()) {
+            return;
+        }
+
+        foreach (\Mage::app()->getWebsites() as $website) {
+            /* @var $website \Mage_Core_Model_Website */
+            foreach ($website->getStores() as $store) {
+                /* @var $store \Mage_Core_Model_Store */
+                $this->_displayTable($output, $store);
             }
         }
     }
@@ -86,11 +88,11 @@ class InfoCommand extends AbstractMagentoCommand
                     $node,
                     AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW,
                     $store->getCode()
-                )
+                ),
             );
             if ($withExceptions) {
                 $result[] = array(
-                    $nodeLabel . ' exceptions', $this->_parseException($node, $store)
+                    $nodeLabel . ' exceptions', $this->_parseException($node, $store),
                 );
             }
         }

@@ -2,18 +2,18 @@
 
 namespace N98\Magento\Command;
 
+use Composer\Factory as ComposerFactory;
+use Composer\IO\ConsoleIO;
+use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Package\PackageInterface;
 use InvalidArgumentException;
+use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\OperatingSystem;
 use N98\Util\StringTyped;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Composer\Package\Loader\ArrayLoader as PackageLoader;
-use Composer\Factory as ComposerFactory;
-use Composer\IO\ConsoleIO;
-use N98\Util\Console\Helper\MagentoHelper;
 
 /**
  * Class AbstractMagentoCommand
@@ -129,7 +129,7 @@ abstract class AbstractMagentoCommand extends Command
             return $configArray['commands'][$commandClass];
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -141,7 +141,7 @@ abstract class AbstractMagentoCommand extends Command
     {
         $output->writeln(array(
             '',
-            $this->getHelperSet()->get('formatter')->formatBlock($text, $style, true),
+            $this->getHelper('formatter')->formatBlock($text, $style, true),
             '',
         ));
     }
@@ -544,7 +544,7 @@ abstract class AbstractMagentoCommand extends Command
             $message = $this->getArgumentMessage($argument, $message);
 
             /** @var  $dialog  \Symfony\Component\Console\Helper\DialogHelper */
-            $dialog = $this->getHelperSet()->get('dialog');
+            $dialog = $this->getHelper('dialog');
             return $dialog->ask($output, $message);
         }
 
