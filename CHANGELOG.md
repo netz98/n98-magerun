@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.97.22
 -------
+* Fix: Fix open command detection (by Tom Klingenberg)
 * Fix: Add customer data stripping tables, fixes #825 (by Matthew O'Loughlin)
 * Fix: Install option --forceUseDb has no value, fixes #822 (report by Adam Johnson, fix by Tom Klingenberg)
 

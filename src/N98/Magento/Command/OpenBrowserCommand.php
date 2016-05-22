@@ -50,14 +50,15 @@ class OpenBrowserCommand extends AbstractMagentoCommand
         }
         $output->writeln('Opening URL <comment>' . $url . '</comment> in browser');
 
-        $opener = $this->resolveOpenerCommand();
+        $opener = $this->resolveOpenerCommand($output);
         Exec::run(escapeshellcmd($opener . ' ' . $url));
     }
 
     /**
+     * @param OutputInterface $output
      * @return string
      */
-    private function resolveOpenerCommand()
+    private function resolveOpenerCommand(OutputInterface $output)
     {
         $opener = '';
         if (OperatingSystem::isMacOs()) {
@@ -66,7 +67,7 @@ class OpenBrowserCommand extends AbstractMagentoCommand
             $opener = 'start';
         } else {
             // Linux
-            if (exec('which xde-open')) {
+            if (exec('which xdg-open')) {
                 $opener = 'xdg-open';
             } elseif (exec('which gnome-open')) {
                 $opener = 'gnome-open';
@@ -76,7 +77,14 @@ class OpenBrowserCommand extends AbstractMagentoCommand
         }
 
         if (empty($opener)) {
-            throw new RuntimeException('No opener command like xde-open, gnome-open, kde-open was found.');
+            throw new RuntimeException('No opener command like xdg-open, gnome-open, kde-open was found.');
+        }
+
+        if (OutputInterface::VERBOSITY_DEBUG <= $output->getVerbosity()) {
+            $message = sprintf('open command is "%s"', $opener);
+            $output->writeln(
+                '<debug>' . $message . '</debug>'
+            );
         }
 
         return $opener;
