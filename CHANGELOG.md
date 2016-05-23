@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.97.23
 -------
+* Add: Integration test for db:dump (by Tom Klingenberg)
 
 1.97.22
 -------
