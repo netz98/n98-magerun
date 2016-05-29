@@ -38,7 +38,7 @@ fi
 
 if [ ! -e "composer.phar" ]; then
     echo "Downloading composer.phar..."
-    wget http://getcomposer.org/composer.phar
+    wget https://getcomposer.org/download/1.1.1/composer.phar
     chmod +x composer.phar
 fi
 
