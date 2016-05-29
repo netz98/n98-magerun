@@ -6,6 +6,8 @@ phpunit.xml
 
 # Build files
 composer.phar
+n98-magerun.phar
+build/out/
 
 # Magerun stopfile
 .n98-magerun
