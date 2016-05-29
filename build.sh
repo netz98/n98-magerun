@@ -28,6 +28,10 @@ fi
 
 git clone -l -- . "${build_dir}"
 
+if [ -a "composer.phar" ]; then
+    rm composer.phar
+fi
+
 if [ ! -e "composer.phar" ]; then
     echo "Downloading composer.phar..."
     wget http://getcomposer.org/composer.phar
