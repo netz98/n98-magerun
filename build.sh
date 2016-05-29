@@ -26,6 +26,10 @@ if [ ! -d "${build_dir}" ]; then
     echo "Can not create build-dir '${build_dir}'"
 fi
 
+if ! git fetch --unshallow; then
+    git fetch
+fi
+
 git clone -l -- . "${build_dir}"
 
 if [ -a "composer.phar" ]; then
