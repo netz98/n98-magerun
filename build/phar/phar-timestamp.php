@@ -15,9 +15,10 @@ require __DIR__ . '/../vendor/seld/phar-utils/src/Timestamps.php';
 
 $projectDir = __DIR__ . '/../..';
 
-$file = $projectDir . '/n98-magerun.phar';
-
 $build = new SimpleXMLElement($projectDir . '/build.xml', 0, true);
+
+$file = $projectDir . '/' . $build['name'] . '.phar';
+
 list($signature) = $build->xpath('//patched-pharpackage/@signature') + array(null);
 
 echo "Signature: ", $signature, " (from build.xml) \n";
