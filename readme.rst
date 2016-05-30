@@ -39,7 +39,7 @@ The tool partially works with Magento 2 development branch.
 Installation
 ------------
 
-There are two ways to install the tools:
+There are three ways to install the tools:
 
 Download and Install Phar File
 """"""""""""""""""""""""""""""
@@ -108,6 +108,25 @@ Install with Composer
 """""""""""""""""""""
 
 https://github.com/netz98/n98-magerun/wiki/Install-from-source-with-Composer
+
+Install with Homebrew
+"""""""""""""""""""""
+
+First you need to have homebrew installed: http://brew.sh/
+
+Install homebrew-php tap: https://github.com/Homebrew/homebrew-php#installation
+
+Once homebrew and the tap are installed, you can install the tools with it:
+
+.. code-block:: sh
+
+    brew install n98-magerun
+
+You can now use the tools:
+
+.. code-block:: sh
+
+    $ n98-magerun {command}
 
 Update
 ------
