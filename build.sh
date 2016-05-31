@@ -26,10 +26,6 @@ if [ ! -d "${build_dir}" ]; then
     echo "Can not create build-dir '${build_dir}'"
 fi
 
-if ! git fetch --unshallow; then
-    git fetch
-fi
-
 git clone -l -- . "${build_dir}"
 
 composer="${build_dir}/composer-build.phar"
@@ -63,10 +59,7 @@ fi
 cd "${build_dir}"
 
 echo "building in $(pwd -P)"
-
-git fetch origin
-
-git reset --hard "$(git rev-parse --abbrev-ref --symbolic-full-name @{u})"
+git log --oneline -1
 
 ulimit -Sn $(ulimit -Hn)
 
