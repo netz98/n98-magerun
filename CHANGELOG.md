@@ -4,7 +4,8 @@ RECENT CHANGES
 1.97.23
 -------
 * Imp: Build in clean directory (by Tom Klingenberg)
-* Add: Integration test for db:dump (by Tom Klingenberg)
+* New: Integration test for db:dump (by Tom Klingenberg)
+* New: Add Homebrew installation (by Matthéo Geoffray, #829)
 
 1.97.22
 -------
