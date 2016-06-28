@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.97.23
 -------
+* Imp: Update example to use config:search command (by Hardy Johnson, #834)
 * Imp: Build in clean directory (by Tom Klingenberg)
 * New: Integration test for db:dump (by Tom Klingenberg)
 * New: Add Homebrew installation (by Matthéo Geoffray, #829)
