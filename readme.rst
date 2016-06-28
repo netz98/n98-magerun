@@ -666,7 +666,7 @@ Search system configuration descriptions.
 
  .. code-block:: sh
 
-   $ n98-magerun.phar text
+   $ n98-magerun.phar config:search text
 
 
 List Magento cache status
