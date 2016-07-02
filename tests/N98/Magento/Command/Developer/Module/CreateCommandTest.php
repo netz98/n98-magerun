@@ -44,6 +44,7 @@ class CreateCommandTest extends TestCase
         $this->assertFileExists($root . '/N98Magerun_UnitTest/readme.md');
         $moduleBaseFolder = $root . '/N98Magerun_UnitTest/src/app/code/local/N98Magerun/UnitTest/';
         $this->assertFileExists($moduleBaseFolder . 'etc/config.xml');
+        $this->assertFileExists($moduleBaseFolder . 'controllers');
         $this->assertFileExists($moduleBaseFolder . 'Block');
         $this->assertFileExists($moduleBaseFolder . 'Model');
         $this->assertFileExists($moduleBaseFolder . 'Helper');
