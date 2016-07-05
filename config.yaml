@@ -514,6 +514,10 @@ commands:
         description: Customer data - Should not be used without @sales
         tables: customer_address* customer_entity* wishlist*
 
+      - id: emails
+        description: Email queue tables
+        tables: core_email_queue*
+
       - id: newsletter
         description: Newsletter subscriber data
         tables: newsletter_*
@@ -524,7 +528,7 @@ commands:
 
       - id: development
         description: Removes logs and trade data so developers do not have to work with real customer data
-        tables: @trade @stripped @search @newsletter
+        tables: @trade @stripped @search @newsletter @emails
 
       - id: ee_changelog
         description: Changelog tables of new indexer since EE 1.13
