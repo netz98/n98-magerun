@@ -57,7 +57,8 @@ class CreateCommand extends AbstractMagentoCommand
             ->setName('dev:module:create')
             ->addArgument('vendorNamespace', InputArgument::REQUIRED, 'Namespace (your company prefix)')
             ->addArgument('moduleName', InputArgument::REQUIRED, 'Name of your module.')
-            ->addArgument('codePool', InputArgument::OPTIONAL, 'Codepool (local,community)', 'local')
+            ->addArgument('codePool', InputArgument::OPTIONAL, 'Codepool (local, community)', 'local')
+            ->addOption('add-controllers', null, InputOption::VALUE_NONE, 'Adds controllers')
             ->addOption('add-blocks', null, InputOption::VALUE_NONE, 'Adds blocks')
             ->addOption('add-helpers', null, InputOption::VALUE_NONE, 'Adds helpers')
             ->addOption('add-models', null, InputOption::VALUE_NONE, 'Adds models')
@@ -83,6 +84,7 @@ class CreateCommand extends AbstractMagentoCommand
     {
         $this->modmanMode = $input->getOption('modman');
         if ($input->getOption('add-all')) {
+            $input->setOption('add-controllers', true);
             $input->setOption('add-blocks', true);
             $input->setOption('add-helpers', true);
             $input->setOption('add-models', true);
@@ -116,16 +118,17 @@ class CreateCommand extends AbstractMagentoCommand
     protected function initView(InputInterface $input)
     {
         $this->twigVars = array(
-            'vendorNamespace' => $this->vendorNamespace,
-            'moduleName'      => $this->moduleName,
-            'codePool'        => $this->codePool,
-            'createBlocks'    => $input->getOption('add-blocks'),
-            'createModels'    => $input->getOption('add-models'),
-            'createHelpers'   => $input->getOption('add-helpers'),
-            'createSetup'     => $input->getOption('add-setup'),
-            'authorName'      => $input->getOption('author-name'),
-            'authorEmail'     => $input->getOption('author-email'),
-            'description'     => $input->getOption('description'),
+            'vendorNamespace'   => $this->vendorNamespace,
+            'moduleName'        => $this->moduleName,
+            'codePool'          => $this->codePool,
+            'createControllers' => $input->getOption('add-controllers'),
+            'createBlocks'      => $input->getOption('add-blocks'),
+            'createModels'      => $input->getOption('add-models'),
+            'createHelpers'     => $input->getOption('add-helpers'),
+            'createSetup'       => $input->getOption('add-setup'),
+            'authorName'        => $input->getOption('author-name'),
+            'authorEmail'       => $input->getOption('author-email'),
+            'description'       => $input->getOption('description'),
         );
     }
 
@@ -162,6 +165,14 @@ class CreateCommand extends AbstractMagentoCommand
         // Add etc folder
         mkdir($this->moduleDirectory . '/etc');
         $output->writeln('<info>Created directory: <comment>' . $this->moduleDirectory . '/etc<comment></info>');
+
+        // Add controllers folder
+        if ($input->getOption('add-controllers')) {
+            mkdir($this->moduleDirectory . '/controllers');
+            $output->writeln(
+                '<info>Created directory: <comment>' . $this->moduleDirectory . '/controllers' . '<comment></info>'
+            );
+        }
 
         // Add blocks folder
         if ($input->getOption('add-blocks')) {
