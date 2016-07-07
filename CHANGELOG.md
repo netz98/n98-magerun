@@ -3,7 +3,8 @@ RECENT CHANGES
 
 1.97.23
 -------
-* Fix: strip email queue tables for development db:dump command (by Robbie Averill, #836)
+* Fix: Strip email queue tables for development db:dump command (by Robbie Averill, #836)
+* Imp: Create controllers folder in dev:module:create command (by Alexander Turiak, #835)
 * Imp: Update example to use config:search command (by Hardy Johnson, #834)
 * Imp: Build in clean directory (by Tom Klingenberg)
 * New: Integration test for db:dump (by Tom Klingenberg)
