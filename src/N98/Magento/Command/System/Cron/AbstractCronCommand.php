@@ -23,7 +23,7 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
 
         foreach ($jobs as $name => $job) {
             $model = null;
-            if (isset($job->run) && isset($job->run->model)) {
+            if (isset($job->run->model)) {
                 $model = $job->run->model;
             }
             $table[$name] = array('Job' => $name, 'Model' => $model) + $this->getSchedule($job);
