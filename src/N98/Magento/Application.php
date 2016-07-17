@@ -822,6 +822,10 @@ MAGENTOHINT;
      */
     public function getConfigurationLoader(array $initConfig, OutputInterface $output)
     {
+        trigger_error(__METHOD__ . ' moved, use getConfig()->getLoader()', E_USER_DEPRECATED);
+
+        unset($initConfig, $output);
+
         $loader = $this->config ? $this->config->getLoader() : $this->configurationLoaderInjected;
 
         if (!$loader) {
@@ -842,7 +846,7 @@ MAGENTOHINT;
             $this->config->setLoader($configurationLoader);
         } else {
             /* inject loader to be used later when config is created in */
-            /* @see N98\Magento\Application::init() */
+            /* @see N98\Magento\Application::init */
             $this->configurationLoaderInjected = $configurationLoader;
         }
 
