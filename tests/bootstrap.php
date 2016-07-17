@@ -1,6 +1,8 @@
 <?php
 
-$base = getenv('N98_MAGERUN_TEST_MAGENTO_ROOT');
+use N98\Magento\Command\PHPUnit\TestCase;
+
+$base = TestCase::getTestMagentoRootFromEnvironment('N98_MAGERUN_TEST_MAGENTO_ROOT', '.n98-magerun');
 if (FALSE === $base) {
     unset($base);
     return;

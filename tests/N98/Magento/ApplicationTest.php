@@ -152,6 +152,7 @@ class ApplicationTest extends TestCase
             )
         );
 
+        /** @var \N98\Magento\Application\ConfigurationLoader $configurationLoader */
         $configurationLoader = $this->getMock(
             '\N98\Magento\Application\ConfigurationLoader',
             array('getConfigurationLoaderDir'),

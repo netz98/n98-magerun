@@ -1,4 +1,10 @@
 #!/bin/bash
+#
+# Run project build.sh to build the phar file
+#
+# usage: build/travis/build.sh
+#
+
 set -euo pipefail
 IFS=$'\n\t'
 

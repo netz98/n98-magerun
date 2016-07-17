@@ -13,7 +13,7 @@ class ChangeVersionCommandTest extends TestCase
         $command = $this->getMockBuilder('\N98\Magento\Command\System\Setup\ChangeVersionCommand')
             ->setMethods(array('_getResourceSingleton'))
             ->getMock();
-        
+
         $resourceModel = $this->getMockBuilder('\Mage_Core_Model_Resource_Resource')
             ->disableOriginalConstructor()
             ->setMethods(array('setDbVersion', 'setDataVersion'))
@@ -152,6 +152,7 @@ class ChangeVersionCommandTest extends TestCase
         $commandTester->execute(array(
             'command'   => $command->getName(),
             'module'    => 'Mage_Weee',
+            'version'   => '1.0.0.0',
             'setup'     => 'weee_setup'
         ));
 

@@ -37,7 +37,7 @@ detect:
 
 event:
   subscriber:
-    - N98\Magento\EventSubscriber
+    - N98\Magento\Application\Console\EventSubscriber\CheckRootUser
     - N98\Magento\Command\ComposerWrapper\EventSubscriber
     - N98\Util\Console\Helper\IoHelper
 

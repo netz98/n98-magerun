@@ -1,7 +1,15 @@
-# only install magento if MAGENTO_VERSION has been set
+#
+# prepare test directory by installing the requested magento version (if any)
+#
+# this file is sourced because environment variables are exported
+#
+# usage: source build/travis/before_script.sh
+#
 
+# enable uninstall testsuite (disabled by default as it destroys data)
 grep -v 'remove uninstall test' phpunit.xml.dist > phpunit.xml
 
+# only install magento if MAGENTO_VERSION has been set
 if [ ! -z ${MAGENTO_VERSION+x} ]; then
 
     echo "installing magento ${MAGENTO_VERSION}"
@@ -25,7 +33,5 @@ if [ ! -z ${MAGENTO_VERSION+x} ]; then
                 --baseUrl="http://travis.magento.local/"
 
 else
-
     echo "no magento version to install"
-
 fi
