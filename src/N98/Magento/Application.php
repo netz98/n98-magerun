@@ -503,11 +503,31 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return array
+     * Get config array
+     *
+     * Specify one key per parameter to traverse the config. Then returns null
+     * if the path of the key(s) can not be obtained.
+     *
+     * @param string|int $key ... (optional)
+     *
+     * @return array|null
      */
-    public function getConfig()
+    public function getConfig($key = null)
     {
-        return $this->config->getConfig();
+        $array = $this->config->getConfig();
+
+        $keys = func_get_args();
+        foreach ($keys as $key) {
+            if (null === $key) {
+                continue;
+            }
+            if (!isset($array[$key])) {
+                return null;
+            }
+            $array = $array[$key];
+        }
+
+        return $array;
     }
 
     /**
