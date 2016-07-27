@@ -60,6 +60,7 @@ commands:
     - N98\Magento\Command\Cache\ListCommand
     - N98\Magento\Command\Cache\ReportCommand
     - N98\Magento\Command\Cache\ViewCommand
+    - N98\Magento\Command\Category\Create\DummyCommand
     - N98\Magento\Command\Cms\Banner\ToggleCommand
     - N98\Magento\Command\Cms\Block\ToggleCommand
     - N98\Magento\Command\Cms\Page\PublishCommand
