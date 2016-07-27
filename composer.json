@@ -34,6 +34,9 @@
         "psr-0": {
             "N98": "src",
             "Composer": "src"
+        },
+        "psr-4": {
+            "N98\\": "shared/src/N98"
         }
     },
     "autoload-dev": {
