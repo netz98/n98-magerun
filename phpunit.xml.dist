@@ -16,6 +16,7 @@
     <testsuites>
         <testsuite name="n98-magerun-tests">
             <directory>./tests</directory>
+            <directory>./shared/tests</directory>
             <exclude>tests/N98/Magento/Command/Installer/UninstallCommandTest.php</exclude>
         </testsuite>
         <!-- remove uninstall test
