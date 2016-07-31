@@ -40,6 +40,48 @@ class ArrayFunctions
     }
 
     /**
+     * @param array $matrix
+     * @param string $key key to filter
+     * @param mixed $value to compare against (strict comparison)
+     * @return array
+     */
+    public static function matrixFilterByValue(array $matrix, $key, $value)
+    {
+        return self::matrixCallbackFilter($matrix, function (array $item) use ($key, $value) {
+            return $item[$key] !== $value;
+        });
+    }
+
+    /**
+     * @param array $matrix
+     * @param string $key to filter
+     * @param string $value to compare against
+     * @return array
+     */
+    public static function matrixFilterStartswith(array $matrix, $key, $value)
+    {
+        return self::matrixCallbackFilter($matrix, function (array $item) use ($key, $value) {
+            return strncmp($item[$key], $value, strlen($value));
+        });
+    }
+
+    /**
+     * @param array $matrix
+     * @param callable $callback that when return true on the row will unset it
+     * @return array
+     */
+    private static function matrixCallbackFilter(array $matrix, $callback)
+    {
+        foreach ($matrix as $k => $item) {
+            if ($callback($item)) {
+                unset($matrix[$k]);
+            }
+        }
+
+        return $matrix;
+    }
+
+    /**
      * @param string[] $columns
      * @param array $table
      * @return array table with ordered columns
