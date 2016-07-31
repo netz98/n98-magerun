@@ -88,9 +88,17 @@ class ArrayFunctions
      */
     public static function columnOrderArrayTable(array $columns, array $table)
     {
-        return array_map(function (array $array) use ($columns) {
+        $closure = function (array $array) use ($columns) {
             return self::columnOrder($columns, $array);
-        }, $table);
+        };
+
+        if (PHP_VERSION_ID < 50400) {
+            $closure = function (array $array) use ($columns) {
+                return call_user_func(__CLASS__ . '::columnOrder', $columns, $array);
+            };
+        }
+
+        return array_map($closure, $table);
     }
 
     /**
