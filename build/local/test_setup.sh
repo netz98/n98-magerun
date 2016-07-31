@@ -8,7 +8,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-source ./build/sh/setup.sh
+source ./shared/build/sh/setup.sh
 
 # whether or not magento is already installed, normally a quick-check based on file existence.
 magento_is_installed() {
