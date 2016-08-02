@@ -43,6 +43,7 @@ class InstallCommandPackageVersionTest extends TestCase
     private function assertOngoingPackageVersions(array $packages, $namespacesMinimum, $nonVersionsMaximum)
     {
         $nonVersions = 0;
+        $nonVersionsList = array();
         $nameStack = array();
 
         foreach ($packages as $package) {
@@ -58,6 +59,7 @@ class InstallCommandPackageVersionTest extends TestCase
 
             list($namespace, $nameVersion) = $this->splitName($name);
             if ($nameVersion === null || $nameVersion !== $version) {
+                $nonVersionsList[] = $name;
                 $nonVersions++;
                 continue;
             }
@@ -65,13 +67,19 @@ class InstallCommandPackageVersionTest extends TestCase
 
             if (isset($nameStack[$namespace])) {
                 $comparison = version_compare($nameStack[$namespace], $version);
-                $this->assertGreaterThan(0, $comparison, "Check order of versions for package \"$namespace\"");
+                $message = sprintf(
+                    "Check order of versions for package \"$namespace\", highter comes first, but got %s before %s",
+                    $nameStack[$namespace],
+                    $version
+                );
+                $this->assertGreaterThan(0, $comparison, $message);
             }
             $nameStack[$namespace] = $nameVersion;
         }
 
         $this->assertGreaterThanOrEqual($namespacesMinimum, count($nameStack));
-        $this->assertLessThan($nonVersionsMaximum, $nonVersions, 'Too many non-versions');
+        $message = sprintf('Too many non-versions (%s)', implode(', ', $nonVersionsList));
+        $this->assertLessThan($nonVersionsMaximum, $nonVersions, $message);
     }
 
     /**
