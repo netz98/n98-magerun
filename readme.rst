@@ -1401,6 +1401,30 @@ Example:
 
 * If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
 
+Create dummy Category
+"""""""""""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar category:create:dummy
+
+Create dummy categories with all default vanilla magento or your custom values.
+
+**Interactive mode** or via **shell arguments** or mixed.
+
++------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------+
+| Arguments                    | Description                                                                                 | Accepted Values                                  |
++------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------+
+| `store-id`                   | Id of Store to create categories (default: 1)                                               | only integer                                     |
++------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------+
+| `category-number`            | Number of categories to create (default: 1)                                                 | only integer                                     |
++------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------+
+| `children-categories-number` | Number of children for each category created (default: 0 - use '-1' for random from 0 to 5) | only integer or -1 for random number from 0 to 5 |
++------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------+
+| `category-name-prefix`       | Category Name Prefix (default: 'My Awesome Category')                                       | any                                              |
++------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------+
+
+
 List Extensions
 """""""""""""""
 
