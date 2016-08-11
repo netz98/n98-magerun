@@ -7,6 +7,8 @@ RECENT CHANGES
 * Imp: Create controllers folder in dev:module:create command (by Alexander Turiak, #835)
 * Imp: Update example to use config:search command (by Hardy Johnson, #834)
 * Imp: Build in clean directory (by Tom Klingenberg)
+* New: Add eav:attribute:create-dummy-values command (by Giuseppe Morelli, #849)
+* New: Add category:create:dummy command (by Giuseppe Morelli, #845)
 * New: Add config classes streamlining with Magerun 2 (by Tom Klingenberg)
 * New: Add model::method to sys:cron:list command (by Steve Robbins, #838)
 * New: Integration test for db:dump (by Tom Klingenberg)
