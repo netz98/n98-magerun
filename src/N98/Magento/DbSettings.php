@@ -116,6 +116,11 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             $config['unix_socket'] = null;
         }
 
+        // use environment variables if $value has $ prefix
+        foreach ($config as $key => $value) {
+            $config[$key] = substr($value, 0, 1) == "$" ? getenv(substr($value, 1)) : $value;
+        }
+
         $this->config = $config;
 
         $this->tablePrefix = $config['prefix'];
