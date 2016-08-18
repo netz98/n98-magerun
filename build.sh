@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 #
 # build from clean checkout
 #
@@ -24,19 +24,21 @@ fi
 mkdir "${build_dir}"
 if [ ! -d "${build_dir}" ]; then
     echo "Can not create build-dir '${build_dir}'"
+    echo "aborting."
+    exit 1
 fi
 
 git clone -l -- . "${build_dir}"
 
-composer="${build_dir}/composer-build.phar"
+composer="${build_dir}/composer.phar"
 
-if [ -a "${composer}" ]; then
+if [ -e "${composer}" ]; then
     rm "${composer}"
 fi
 
 if [ ! -e "${composer}" ]; then
     echo "Downloading composer.phar..."
-    wget -O "${composer}" https://getcomposer.org/download/1.1.1/composer.phar
+    wget -O "${composer}" https://getcomposer.org/download/1.1.3/composer.phar
     chmod +x "${composer}"
 fi
 
@@ -64,7 +66,7 @@ git log --oneline -1
 ulimit -Sn $(ulimit -Hn)
 
 set +e
-php -f build/vendor/phing/phing/bin/phing -dphar.readonly=0 -- -verbose dist
+php -f build/vendor/phing/phing/bin/phing -dphar.readonly=0 -- -verbose dist_clean
 BUILD_STATUS=$?
 set -e
 if [ ${BUILD_STATUS} -ne 0 ]; then
@@ -76,7 +78,7 @@ php -f build/phar/phar-timestamp.php
 
 php -f "${phar}" -- --version
 
-ls -l "${phar}"
+ls -al "${phar}"
 
 php -r 'echo "SHA1: ", sha1_file("'"${phar}"'"), "\nMD5.: ", md5_file("'"${phar}"'"), "\n";'
 
