@@ -10,7 +10,7 @@ Build phar with:
     phing dist
 
 -->
-<project name="n98-magerun" default="dist">
+<project name="n98-magerun" default="dist" basedir=".">
     <taskdef name="patched-pharpackage" classname="build.phar.tasks.PatchedPharPackageTask" />
     <property name="phar" value="${phing.project.name}.phar"/>
 
@@ -54,23 +54,34 @@ Build phar with:
     </fileset>
 
     <target name="dist">
-        <exec command="php -f composer.phar -- install --no-dev" dir="${project.basedir}" passthru="true" />
+        <exec command="php -f composer.phar -- install --no-dev" dir="${project.basedir}" passthru="true"
+              checkreturn="true"/>
         <phingcall target="dist_unix">
             <property name="compression" value="gzip" />
         </phingcall>
 
         <!-- Revert dev settings -->
-        <exec command="php -f composer.phar -- install" dir="${project.basedir}" passthru="true" />
+        <exec command="php -f composer.phar -- install" dir="${project.basedir}" passthru="true" checkreturn="true"/>
+    </target>
+
+    <!-- like "dist" but w/o composer install afterwards as this is for the clean build and deleted anyway -->
+    <target name="dist_clean">
+        <exec command="php -f composer.phar -- install --no-dev" dir="${project.basedir}" passthru="true"
+              checkreturn="true"/>
+        <phingcall target="dist_unix">
+            <property name="compression" value="gzip" />
+        </phingcall>
     </target>
 
     <target name="dist_hhvm">
-        <exec command="php -f composer.phar -- install --no-dev" dir="${project.basedir}" passthru="true" />
+        <exec command="php -f composer.phar -- install --no-dev" dir="${project.basedir}" passthru="true"
+              checkreturn="true"/>
         <phingcall target="dist_unix">
             <property name="compression" value="none" />
         </phingcall>
 
         <!-- Revert dev settings -->
-        <exec command="php -f composer.phar -- install" dir="${project.basedir}" passthru="true" />
+        <exec command="php -f composer.phar -- install" dir="${project.basedir}" passthru="true" checkreturn="true"/>
     </target>
 
     <target name="dist_unix">
@@ -92,19 +103,16 @@ Build phar with:
 
         <!-- make phar executable -->
         <chmod file="./${phar}" mode="775" />
-        <exec command="git update-index --chmod=+x ${phar}" />
-        <!-- the phar is not updated in the repository any longer -->
-        <exec command="git reset HEAD ${phar}" />
-        <exec command="git update-index --assume-unchanged ${phar}" />
     </target>
 
     <target name="install">
-        <exec command="sudo cp ${project.basedir}/${phar} /usr/local/bin/${phar};" />
+        <exec command="sudo cp ${project.basedir}/${phar} /usr/local/bin/${phar};"/>
         <exec command="sudo chmod a+x /usr/local/bin/${phar};" />
     </target>
 
     <target name="test">
-        <exec command="vendor/bin/phpunit --debug --coverage-html ${project.basedir}/reports/coverage" passthru="true" />
+        <exec command="vendor/bin/phpunit --debug --coverage-html ${project.basedir}/reports/coverage" passthru="true"
+              checkreturn="true"/>
     </target>
 
     <target name="apigen">
