@@ -36,6 +36,14 @@ if [ -e "${composer}" ]; then
     rm "${composer}"
 fi
 
+# Set COMPOSER_HOME if HOME and COMPOSER_HOME not set (shell with no home-dir, e.g. build server with webhook)
+if [ -z ${HOME+x} ]; then
+    if [ -z ${COMPOSER_HOME+x} ]; then
+        mkdir -p "build/composer-home"
+        export COMPOSER_HOME="$(pwd -P)/build/composer-home"
+    fi
+fi
+
 if [ ! -e "${composer}" ]; then
     echo "Downloading composer.phar..."
     wget -O "${composer}" https://getcomposer.org/download/1.1.3/composer.phar
