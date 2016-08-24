@@ -122,9 +122,12 @@ class ConfigLocator
      */
     private function getUserConfigFilePaths()
     {
+        $paths = array();
+
         $homeDirectory = OperatingSystem::getHomeDir();
-        if (!$homeDirectory) {
-            throw new RuntimeException('Unable to get home-directory to obtain user-config-file.');
+
+        if (!strlen($homeDirectory)) {
+            return $paths;
         }
 
         if (!is_dir($homeDirectory)) {
@@ -133,7 +136,6 @@ class ConfigLocator
 
         $basename = $this->customConfigFilename;
 
-        $paths = array();
         if (OperatingSystem::isWindows()) {
             $paths[] = $homeDirectory . '/' . $basename;
         }
