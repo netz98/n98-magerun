@@ -43,7 +43,7 @@ print_usage() {
 validate_version() {
     local ver="${1}"
 
-    if echo "${ver}" | grep -q -e '^[1-9][0-9]\{0,4\}\.[1-9][0-9]\{0,4\}\.[1-9][0-9]\{0,4\}$'; then
+    if echo "${ver}" | grep -q -e '^[1-9]\{0,3\}[0-9]\.[1-9]\{0,3\}[0-9]\.[1-9]\{0,3\}[0-9]$'; then
         return 0
     else
         return 1
