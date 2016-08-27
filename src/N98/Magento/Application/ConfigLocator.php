@@ -32,6 +32,7 @@ class ConfigLocator
 
     /**
      * ConfigLocator constructor.
+     *
      * @param string $configFilename
      * @param string $magentoRootFolder
      */
@@ -75,8 +76,10 @@ class ConfigLocator
         if (!strlen($this->magentoRootFolder)) {
             return;
         }
-
         $projectConfigFilePath = $this->magentoRootFolder . '/app/etc/' . $this->customConfigFilename;
+        if (!is_readable($projectConfigFilePath)) {
+            return;
+        }
 
         try {
             $projectConfigFile = ConfigFile::createFromFile($projectConfigFilePath);
