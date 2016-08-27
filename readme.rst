@@ -1424,30 +1424,6 @@ Create dummy categories with all default vanilla magento or your custom values.
 | `category-name-prefix`       | Category Name Prefix (default: 'My Awesome Category')                                       | any                                              |
 +------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------+
 
-Create dummy Dropdown Attribute Values
-""""""""""""""""""""""""""""""""""""""
-
-.. code-block:: sh
-
-   $ n98-magerun.phar eav:attribute:create-dummy-values
-
-Create dummy attribute values (ONLY FOR DROPDOWN ATTRIBUTE)
-
-**Interactive mode** or via **shell arguments** or mixed.
-
-+------------------------------+----------------------------------------------+--------------------------------------------------------------+
-| Arguments                    | Description                                  | Accepted Values                                              |
-+------------------------------+----------------------------------------------+--------------------------------------------------------------+
-| `locale`                     | Locale value in ISO standard like en_US      | only string                                                  |
-+------------------------------+----------------------------------------------+--------------------------------------------------------------+
-| `attribute-id`               | Attribute ID to add values                   | only integer                                                 |
-+------------------------------+----------------------------------------------+--------------------------------------------------------------+
-| `values-type`                | Types of Values to create (default int)      | `int`<br />`string`<br />`color`<br />`size`<br />`designer` |
-+------------------------------+----------------------------------------------+--------------------------------------------------------------+
-| `values-number`              | Number of Values to create (default 1)       | only integer                                                 |
-+------------------------------+----------------------------------------------+--------------------------------------------------------------+
-
-
 List Extensions
 """""""""""""""
 
