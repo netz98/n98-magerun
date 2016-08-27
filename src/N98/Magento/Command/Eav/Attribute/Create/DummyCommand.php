@@ -2,8 +2,10 @@
 
 namespace N98\Magento\Command\Eav\Attribute\Create;
 
+use Exception;
 use Mage;
 use Mage_Eav_Model_Entity_Attribute;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,7 +41,7 @@ class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
         'Atm Anthony Thomas Melillo', 'Aurelia Probiotic Skincare', 'Aurelie Bidermann', 'Ava Adore', 'Avant Toi',
         'Avelon', 'Awake', 'B May', 'Badgley Mischka', 'Baja East', 'Bakel', 'Balenciaga Eyewear', 'Balenciaga Vintage',
         'Ballin', 'Bally', 'Balmain', 'Bao Bao Issey Miyake', 'Barbara Bui', 'Barbara Casasola', 'Barbara I Gongini',
-        'Bark', 'Barn\'s', 'Barrie',  'Bassike', 'Bata', 'Bazar Deluxe', 'Bea Bongiasca', 'Beau Souci', 'Becca',
+        'Bark', 'Barn\'s', 'Barrie', 'Bassike', 'Bata', 'Bazar Deluxe', 'Bea Bongiasca', 'Beau Souci', 'Becca',
         'Beek..', 'Bella Freud', 'Belstaff', 'Bernhard Willhelm', 'Beth Orduna', 'Bhindi Jewelers', 'Bianca Spender',
         'Biba Vintage', 'Bibi Van Der Velden', 'Bintthani', 'Bionda Castana', 'Birkenstock', 'Bjorg', 'Blancha',
         'Blk Dnm', 'Blugirl', 'Blumarine', 'Boboutic', 'Borbonese', 'Bottega Veneta Eyewear', 'Boutique Moschino',
@@ -86,7 +88,7 @@ class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
         'Gcds', 'Gedebe', 'Gemco', 'Geoffrey B. Small', 'Getting Back To Square One', 'Giada Benincasa', 'Giamba',
         'Giambattista Valli', 'Gianfranco Ferre Vintage', 'Gianluca Capannolo', 'Gianvito Rossi', 'Gig',
         'Gigi Burris Millinery', 'Gigli Vintage', 'GINGER & SMART', 'Giorgio Armani', 'Giorgio Armani Vintage',
-        'Giorgio Brato', 'Gisele For Eshvi', 'Giuliana Romanno', 'Giuseppe Zanotti Design','Givenchy',
+        'Giorgio Brato', 'Gisele For Eshvi', 'Giuliana Romanno', 'Giuseppe Zanotti Design', 'Givenchy',
         'Givenchy Vintage', 'Gold And Wood', 'Golden Goose Deluxe Brand', 'Goldfaden Md', 'Goldsign',
         'Good For Nothing Emb', 'Goti', 'Goyard Vintage', 'Greg Lauren', 'Grenson', 'Greta Constantine', 'Grey Ant',
         'Grey Jason Wu', 'G-Star', 'Gucci Eyewear', 'Guidi', 'Guild Prime', 'Guy Laroche Vintage', 'Hache',
@@ -102,7 +104,7 @@ class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
         'Isabel Benenato', 'Isabel Marant', 'Isabel Marant Étoile', 'Isabel Marant For Oliver Peoples', 'Isolda',
         'Issey Miyake', 'Issey Miyake Cauliflower', 'Issey Miyake Men', 'Issey Miyake Vintage', 'Italia Independent',
         'Ivo Scunzani', 'Ivy & Liv', 'Ivy Kirzhner', 'J Brand', 'J.W. Anderson', 'Jacob Cohen', 'Jacquemus',
-        'Jacques Marie Mage', 'Jacquie Aiche', 'Jagga', 'James Perse','James Read', 'Jamin Puech', 'Jane Bowler',
+        'Jacques Marie Mage', 'Jacquie Aiche', 'Jagga', 'James Perse', 'James Read', 'Jamin Puech', 'Jane Bowler',
         'Janis Savitt', 'Japsis Jewellery', 'Jason Wu', 'Jay Ahr', 'Jc De Castelbajac Vintage',
         'Jean Louis Scherrer Vintage', 'Jean Paul Gaultier Vintage', 'Jean-François Mimilla', 'Jean-Michel Cazabat',
         'Jeffrey Campbell', 'Jenni Kayne', 'Jeremy Deller', 'Jeremy Scott', 'Jérôme Dreyfuss', 'Jessie Harris',
@@ -136,20 +138,20 @@ class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
         'Marchesa', 'Marchesa Notte', 'Marco De Vincenzo', 'Maria Black', 'Maria Lucia Hohan', 'Maria Teresa Sottile',
         'Marie Helene De Taillac', 'Mark Cross', 'Markus Lupfer', 'Marni', 'Marsèll', 'Marshall', 'Martha Medeiros',
         'Martine Jarlgaard', 'Mary Katrantzou', 'Mary Katrantzou X Adidas Originals', 'Maryam Nassir Zadeh',
-        'Marysia', 'Masnada', 'Massimo Alba', 'Master & Dynamic', 'Masunaga', 'Matar', 'Mathilde Danglade','Maticevski',
-        'Matsuda', 'Matthew Darbyshire', 'Matthew Williamson', 'Mawi', 'Max Mara', 'Max Mara Studio', 'Max Tan',
-        'Maxime Llorens', 'Maxwell Snow', 'MCM', 'Mcm Vintage', 'McQ Alexander McQueen', 'Me&Mr.Gentleman',
+        'Marysia', 'Masnada', 'Massimo Alba', 'Master & Dynamic', 'Masunaga', 'Matar', 'Mathilde Danglade',
+        'Maticevski', 'Matsuda', 'Matthew Darbyshire', 'Matthew Williamson', 'Mawi', 'Max Mara', 'Max Mara Studio',
+        'Max Tan', 'Maxime Llorens', 'Maxwell Snow', 'MCM', 'Mcm Vintage', 'McQ Alexander McQueen', 'Me&Mr.Gentleman',
         'Melissa + Jeremy Scott', 'Melissa Joy Manning', 'Melissa Odabash', 'Mes Demoiselles', 'Miahatami', 'Miansai',
         'Michael Kors', 'Michael Michael Kors', 'Michael Schmidt', 'Michel Vivien', 'Micol Ragni', 'Mih Jeans',
         'Mihara Yasuhiro', 'Milly', 'Minimarket', 'Minjukim', 'Minna Parikka', 'Mira Mikati', 'Missoni',
-        'Missoni Vintage',  'Miu Miu Eyewear', 'Mm6 Maison Margiela', 'Moa Master Of Arts',  'Moeva', 'Monan',
-        'Moncler', 'Moncler Gamme Rouge', 'Moncler Grenoble', 'Moncler X Erdem',  'Monday Active', 'Monica Sordo',
+        'Missoni Vintage', 'Miu Miu Eyewear', 'Mm6 Maison Margiela', 'Moa Master Of Arts', 'Moeva', 'Monan',
+        'Moncler', 'Moncler Gamme Rouge', 'Moncler Grenoble', 'Moncler X Erdem', 'Monday Active', 'Monica Sordo',
         'Monies', 'Monique Lhuillier', 'Monocle Eyewear', 'Monreal London', 'Moo Piyasombatkul', 'Moohong',
         'Moratorium', 'Moreau', 'Moschino', 'Moschino Vintage', 'Mother', 'Mother Of Pearl', 'Mou', 'Movitra',
         'Mr & Mrs Italy', 'MSGM', 'Mua Mua', 'Mugler', 'Murmur', 'Musée', 'Muubaa', 'Muveil', 'Mykita',
         'Myriam Schaefer', 'Myswear', 'N.Peal', 'Nafsika Skourti', 'Narciso Rodriguez', 'Nasir Mazhar',
         'Natasha Collis', 'Natasha Zinko', 'Nathalie Trad', 'Natura Bisse', 'Neil Barrett', 'Nektar De Stagni',
-        'Neuw', 'Nevermind',  'New Balance', 'Newbark', 'Nicholas Kirkwood', 'Nicole Miller', 'Nicopanda',
+        'Neuw', 'Nevermind', 'New Balance', 'Newbark', 'Nicholas Kirkwood', 'Nicole Miller', 'Nicopanda',
         'Night Market', 'Nike', 'Nikos Koulis', 'Nili Lotan', 'Nina Ricci', 'Nina Ricci Vintage', 'Nixon', 'Niza Huang',
         'Nº21', 'Nobody Denim', 'Nomia', 'Noor Fares', 'Noritamy', 'Norma Kamali', 'Norse Projects', 'NSF', 'Nuface',
         'O&M', 'Oamc', 'Obey', 'Occulter', 'Odeeh', 'Odeur', 'Of Rare Origin', 'Officine Creative', 'Off-White',
@@ -232,16 +234,18 @@ Supported Locales:
 - en_US
 - en_GB
 HELP;
-        $this->setName('eav:attribute:create-dummy-values')->addArgument('locale', InputArgument::OPTIONAL, 'Locale')
-             ->addArgument('attribute-id', InputArgument::OPTIONAL, 'Attribute ID to add values')
-             ->addArgument('values-type', InputArgument::OPTIONAL, 'Types of Values to create (default int)')
-             ->addArgument('values-number', InputArgument::OPTIONAL, 'Number of Values to create (default 1)')
-             ->setDescription('Create a dummy values for dropdown attributes')
-             ->setHelp($help);
+        $this
+            ->setName('eav:attribute:create-dummy-values')
+            ->addArgument('locale', InputArgument::OPTIONAL, 'Locale')
+            ->addArgument('attribute-id', InputArgument::OPTIONAL, 'Attribute ID to add values')
+            ->addArgument('values-type', InputArgument::OPTIONAL, 'Types of Values to create (default int)')
+            ->addArgument('values-number', InputArgument::OPTIONAL, 'Number of Values to create (default 1)')
+            ->setDescription('Create a dummy values for dropdown attributes')
+            ->setHelp($help);
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int|void
@@ -249,16 +253,23 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->detectMagento($output, true);
-        if(!$this->initMagento()) {
+        if (!$this->initMagento()) {
             return;
         }
 
-        $output->writeln("<warning>This only create sample attribute values, do not use on production environment</warning>");
+        $output->writeln(
+            "<warning>This only create sample attribute values, do not use on production environment</warning>"
+        );
 
         // Ask for Arguments
         $_argument = $this->askForArguments($input, $output);
-        if(!in_array($input->getArgument('locale'), $this->supportedLocales)) {
-            $output->writeln(sprintf("<warning>Locale '%s' not supported, switch to default locale 'us_US'.</warning>", $input->getArgument('locale')));
+        if (!in_array($input->getArgument('locale'), $this->supportedLocales)) {
+            $output->writeln(
+                sprintf(
+                    "<warning>Locale '%s' not supported, switch to default locale 'us_US'.</warning>",
+                    $input->getArgument('locale')
+                )
+            );
             $_argument['locale'] = "en_US";
         } else {
             $_argument['locale'] = $input->getArgument('locale');
@@ -266,18 +277,18 @@ HELP;
 
         /** @var $attribute Mage_Eav_Model_Entity_Attribute */
         $attribute = Mage::getModel('eav/entity_attribute')->load($_argument['attribute-id']);
-        for($i = 0; $i < $_argument['values-number']; $i++) {
+        for ($i = 0; $i < $_argument['values-number']; $i++) {
 
             $value = $this->createValue($_argument['values-type'], $_argument['locale']);
-            if(!$this->attributeValueExists($attribute, $value)) {
+            if (!$this->attributeValueExists($attribute, $value)) {
                 try {
                     $attribute->setData('option', array('value' => array('option' => array($value, $value))));
                     $attribute->save();
-                } catch(\Exception $e) {
-                    $output->writeln("<error>".$e->getMessage()."</error>");
+                } catch (Exception $e) {
+                    $output->writeln("<error>" . $e->getMessage() . "</error>");
                     die;
                 }
-                $output->writeln("<comment>ATTRIBUTE VALUE: '".$value."' ADDED!</comment>\r");
+                $output->writeln("<comment>ATTRIBUTE VALUE: '" . $value . "' ADDED!</comment>");
             }
         }
     }
@@ -296,15 +307,15 @@ HELP;
         $_argument = array();
 
         // Attribute ID
-        if(is_null($input->getArgument('attribute-id'))) {
+        if (is_null($input->getArgument('attribute-id'))) {
             $attribute_code = Mage::getModel('eav/entity_attribute')->getCollection()->addFieldToSelect('*')
-                                  ->addFieldToFilter('entity_type_id', array('eq' => 4))
-                                  ->addFieldToFilter('backend_type', array('in' => array('int')))
-                                  ->setOrder('attribute_id', 'ASC');
+                ->addFieldToFilter('entity_type_id', array('eq' => 4))
+                ->addFieldToFilter('backend_type', array('in' => array('int')))
+                ->setOrder('attribute_id', 'ASC');
             $_attribute_codes = array();
 
-            foreach($attribute_code as $item) {
-                $_attribute_codes[$item['attribute_id']] = $item['attribute_id']."|".$item['attribute_code'];
+            foreach ($attribute_code as $item) {
+                $_attribute_codes[$item['attribute_id']] = $item['attribute_id'] . "|" . $item['attribute_code'];
             }
 
             $question = new ChoiceQuestion('Please select Attribute ID', $_attribute_codes);
@@ -312,40 +323,41 @@ HELP;
             $response = explode("|", $helper->ask($input, $output, $question));
             $input->setArgument('attribute-id', $response[0]);
         }
-        $output->writeln('<info>Attribute code selected: '.$input->getArgument('attribute-id')."</info>");
-        $_argument['attribute-id'] = (int)$input->getArgument('attribute-id');
+        $output->writeln('<info>Attribute code selected: ' . $input->getArgument('attribute-id') . "</info>");
+        $_argument['attribute-id'] = (int) $input->getArgument('attribute-id');
 
         // Type of Values
-        if(is_null($input->getArgument('values-type'))) {
+        if (is_null($input->getArgument('values-type'))) {
 
-            $valueTypes = array('int'      => 'int',
-                                'string'   => 'string',
-                                'color'    => 'color',
-                                'size'     => 'size',
-                                'designer' => 'designer'
+            $valueTypes = array(
+                'int'      => 'int',
+                'string'   => 'string',
+                'color'    => 'color',
+                'size'     => 'size',
+                'designer' => 'designer'
             );
 
             $question = new ChoiceQuestion('Please select Attribute Value Type', $valueTypes, 'int');
             $question->setErrorMessage('Attribute Value Type "%s" is invalid.');
             $input->setArgument('values-type', $helper->ask($input, $output, $question));
         }
-        $output->writeln('<info>Attribute Value Type selected: '.$input->getArgument('values-type')."</info>");
+        $output->writeln('<info>Attribute Value Type selected: ' . $input->getArgument('values-type') . "</info>");
         $_argument['values-type'] = $input->getArgument('values-type');
 
         // Number of Values
-        if(is_null($input->getArgument('values-number'))) {
+        if (is_null($input->getArgument('values-number'))) {
             $question = new Question("Please enter the number of values to create (default 1): ", 1);
-            $question->setValidator(function($answer) {
-                $answer = (int)($answer);
-                if(!is_int($answer) || $answer <= 0) {
-                    throw new \RuntimeException('Please enter an integer value or > 0');
+            $question->setValidator(function ($answer) {
+                $answer = (int) $answer;
+                if (!is_int($answer) || $answer <= 0) {
+                    throw new RuntimeException('Please enter an integer value or > 0');
                 }
 
                 return $answer;
             });
             $input->setArgument('values-number', $helper->ask($input, $output, $question));
         }
-        $output->writeln('<info>Number of values to create: '.$input->getArgument('values-number')."</info>");
+        $output->writeln('<info>Number of values to create: ' . $input->getArgument('values-number') . "</info>");
         $_argument['values-number'] = $input->getArgument('values-number');
 
         return $_argument;
@@ -360,11 +372,11 @@ HELP;
      */
     private function createValue($type, $locale)
     {
-        if(!isset($this->faker)) {
+        if (!isset($this->faker)) {
             $this->faker = \Faker\Factory::create($locale);
         }
 
-        switch($type) {
+        switch ($type) {
             case 'int':
                 $value = $this->faker->randomNumber();
                 break;
@@ -391,7 +403,7 @@ HELP;
      * Check if an option exist
      *
      * @param Mage_Eav_Model_Entity_Attribute $attribute
-     * @param string                          $arg_value
+     * @param string $arg_value
      *
      * @return bool
      */
@@ -401,8 +413,8 @@ HELP;
         $options->setAttribute($attribute);
         $options = $options->getAllOptions(false);
 
-        foreach($options as $option) {
-            if($option['label'] === $arg_value) {
+        foreach ($options as $option) {
+            if ($option['label'] === $arg_value) {
                 return true;
             }
         }
