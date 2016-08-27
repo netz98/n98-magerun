@@ -143,24 +143,24 @@ HELP;
      * @var array $classes
      * @return bool
      */
-    protected function _isInheritanceConflict($classes)
+    protected function _isInheritanceConflict(array $classes)
     {
-        $count = count($classes);
-
-        $classes = array_reverse($classes);
-
-        for ($i = 1; $i < $count; $i++) {
+        $later = null;
+        foreach (array_reverse($classes) as $class) {
+            $earlier = ClassUtil::create($class);
             try {
-                if (class_exists($classes[$i - 1])
-                    && class_exists($classes[$i])
+                if (
+                    $later instanceof ClassUtil
+                    && $later->exists()
+                    && $earlier->exists()
+                    && !$later->isA($earlier)
                 ) {
-                    if (!is_a($classes[$i - 1], $classes[$i], true)) {
-                        return true;
-                    }
+                    return true;
                 }
             } catch (Exception $e) {
                 return true;
             }
+            $later = $earlier;
         }
 
         return false;
