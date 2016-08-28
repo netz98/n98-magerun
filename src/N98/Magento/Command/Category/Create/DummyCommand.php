@@ -179,9 +179,12 @@ class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
 
         // Number of child categories
         if (is_null($input->getArgument('children-categories-number'))) {
-            $question = new Question("Number of children for each category created (default: 0 - use '-1' for random from 0 to 5): ", 0);
+            $question = new Question(
+                "Number of children for each category created (default: 0 - use '-1' for random from 0 to 5): ",
+                0
+            );
             $question->setValidator(function ($answer) {
-                $answer = (int)($answer);
+                $answer = (int) $answer;
                 if (!is_int($answer) || $answer < -1) {
                     throw new RuntimeException("Please enter an integer value or >= -1");
                 }
