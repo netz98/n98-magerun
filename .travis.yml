@@ -94,4 +94,5 @@ before_script:
   - source build/travis/before_script.sh
 
 script:
+  - vendor/bin/php-cs-fixer --diff --dry-run -v fix
   - vendor/bin/phpunit --debug --stop-on-error --stop-on-failure
