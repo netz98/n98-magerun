@@ -4,6 +4,7 @@
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
+
 namespace N98\Util;
 
 use RuntimeException;
@@ -135,7 +136,7 @@ class Filesystem
      */
     public static function humanFileSize($bytes, $decimals = 2)
     {
-        $units  = array('B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y');
+        $units = array('B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y');
         $factor = floor((strlen($bytes) - 1) / 3);
 
         return sprintf("%.{$decimals}f%s", $bytes / pow(1024, $factor), $units[$factor]);

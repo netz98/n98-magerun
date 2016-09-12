@@ -260,10 +260,10 @@ class MagentoHelper extends AbstractHelper
 
             $count = $finder->count();
             if ($count > 0) {
-                $this->_magerunStopFileFound  = true;
+                $this->_magerunStopFileFound = true;
                 $this->_magerunStopFileFolder = $searchFolder;
-                $magerunFilePath              = $searchFolder . DIRECTORY_SEPARATOR . $stopFile;
-                $magerunFileContent           = trim(file_get_contents($magerunFilePath));
+                $magerunFilePath = $searchFolder . DIRECTORY_SEPARATOR . $stopFile;
+                $magerunFileContent = trim(file_get_contents($magerunFilePath));
                 if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
                     $message = sprintf(
                         '<debug>Found stopfile \'%s\' file with content <info>%s</info></debug>', $stopFile,

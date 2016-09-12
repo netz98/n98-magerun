@@ -21,7 +21,7 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
     protected function loadRewrites()
     {
         $prototype = $this->_rewriteTypes;
-        $return    = array_combine($prototype, array_fill(0, count($prototype), array()));
+        $return = array_combine($prototype, array_fill(0, count($prototype), array()));
 
         // Load config of each module because modules can overwrite config each other. Global config is already merged
         $modules = \Mage::getConfig()->getNode('modules')->children();

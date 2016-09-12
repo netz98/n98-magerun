@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class IncrementalCommand extends AbstractMagentoCommand
 {
     const TYPE_MIGRATION_STRUCTURE = 'structure';
-    const TYPE_MIGRATION_DATA      = 'data';
+    const TYPE_MIGRATION_DATA = 'data';
 
     /**
      * @var OutputInterface

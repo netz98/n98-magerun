@@ -453,7 +453,6 @@ abstract class AbstractMagentoCommand extends Command
          * @return string
          */
         $validateInstallationFolder = function ($folderName) use ($input) {
-
             $folderName = rtrim(trim($folderName, ' '), '/');
             // resolve folder-name to current working directory if relative
             if (substr($folderName, 0, 1) == '.') {

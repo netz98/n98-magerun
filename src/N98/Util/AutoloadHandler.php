@@ -7,7 +7,6 @@
 
 namespace N98\Util;
 
-
 /**
  * Autloader with self-registration, de-registration, muting and implementation switching
  *
@@ -66,7 +65,6 @@ final class AutoloadHandler
         $this->enabled = true;
         $this->callback = $callback;
         $this->flags & self::NO_AUTO_REGISTER || $this->register();
-
     }
 
     public function register()

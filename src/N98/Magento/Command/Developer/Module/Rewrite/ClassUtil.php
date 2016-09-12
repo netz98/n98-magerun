@@ -4,8 +4,8 @@
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
-namespace N98\Magento\Command\Developer\Module\Rewrite;
 
+namespace N98\Magento\Command\Developer\Module\Rewrite;
 
 final class ClassUtil
 {

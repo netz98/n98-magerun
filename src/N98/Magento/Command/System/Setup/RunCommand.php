@@ -44,7 +44,6 @@ HELP;
         }
 
         try {
-
             if (false === $input->getOption('no-implicit-cache-flush')) {
                 $this->flushCache();
             }
