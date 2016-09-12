@@ -28,7 +28,7 @@ if [ ! -d "${build_dir}" ]; then
     exit 1
 fi
 
-git clone -l -- . "${build_dir}"
+git clone --no-local -- . "${build_dir}"
 
 composer="${build_dir}/composer.phar"
 
@@ -69,10 +69,12 @@ fi
 cd "${build_dir}"
 
 echo "building in $(pwd -P)"
-git log --oneline -1
+git  --no-pager log --oneline -1
 
+echo "setting ulimits (new setting is to $(ulimit -Hn))..."
 ulimit -Sn $(ulimit -Hn)
 
+echo "invoking phing dist_clean target..."
 set +e
 php -f build/vendor/phing/phing/bin/phing -dphar.readonly=0 -- -verbose dist_clean
 BUILD_STATUS=$?
