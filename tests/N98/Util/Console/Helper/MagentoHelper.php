@@ -2,12 +2,10 @@
 
 namespace N98\Util\Console\Helper;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
 use org\bovigo\vfs\vfsStream;
 
-
-class MagentoHelperTest extends TestCase
+class MagentoHelper extends TestCase
 {
     /**
      * @return MagentoHelper
@@ -37,8 +35,8 @@ class MagentoHelperTest extends TestCase
         vfsStream::create(
             array(
                 'app' => array(
-                    'Mage.php' => ''
-                )
+                    'Mage.php' => '',
+                ),
             )
         );
 
@@ -59,9 +57,9 @@ class MagentoHelperTest extends TestCase
             array(
                 'htdocs' => array(
                     'app' => array(
-                        'Mage.php' => ''
-                    )
-                )
+                        'Mage.php' => '',
+                    ),
+                ),
             )
         );
 
@@ -89,7 +87,7 @@ class MagentoHelperTest extends TestCase
         vfsStream::setup('root');
         vfsStream::create(
             array(
-                'htdocs' => array()
+                'htdocs' => array(),
             )
         );
 
@@ -112,13 +110,13 @@ class MagentoHelperTest extends TestCase
         vfsStream::create(
             array(
                 '.basedir' => 'root/htdocs/magento_root',
-                'htdocs' => array(
+                'htdocs'   => array(
                     'magento_root' => array(
                         'app' => array(
-                            'Mage.php' => ''
-                        )
-                    )
-                )
+                            'Mage.php' => '',
+                        ),
+                    ),
+                ),
             )
         );
 
@@ -147,8 +145,8 @@ class MagentoHelperTest extends TestCase
                     'app' => array(
                         'autoload.php'  => '',
                         'bootstrap.php' => '',
-                    )
-                )
+                    ),
+                ),
             )
         );
 

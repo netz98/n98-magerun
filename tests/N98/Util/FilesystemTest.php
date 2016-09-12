@@ -32,13 +32,13 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
      */
     public function testRecursiveCopy()
     {
-        $tmp        = sys_get_temp_dir();
-        $basePath   = $tmp . "/n98_testdir";
-        $folder1    = $basePath . "/folder1";
-        $folder2    = $basePath . "/folder2";
-        $file1      = $folder1 . "/file1.txt";
-        $file2      = $folder2 . "/file2.txt";
-        $dest       = sys_get_temp_dir() . "/n98_copy_dest";
+        $tmp = sys_get_temp_dir();
+        $basePath = $tmp . "/n98_testdir";
+        $folder1 = $basePath . "/folder1";
+        $folder2 = $basePath . "/folder2";
+        $file1 = $folder1 . "/file1.txt";
+        $file2 = $folder2 . "/file2.txt";
+        $dest = sys_get_temp_dir() . "/n98_copy_dest";
 
         @mkdir($folder1, 0777, true);
         @mkdir($folder2, 0777, true);
@@ -74,14 +74,14 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
 
     public function testRecursiveCopyWithBlacklist()
     {
-        $tmp        = sys_get_temp_dir();
-        $basePath   = $tmp . "/n98_testdir";
-        $folder1    = $basePath . "/folder1";
-        $folder2    = $basePath . "/folder2";
-        $file1      = $folder1 . "/file1.txt";
-        $ignoreMe   = $folder1 . "/ignore.me";
-        $file2      = $folder2 . "/file2.txt";
-        $dest       = sys_get_temp_dir() . "/n98_copy_dest";
+        $tmp = sys_get_temp_dir();
+        $basePath = $tmp . "/n98_testdir";
+        $folder1 = $basePath . "/folder1";
+        $folder2 = $basePath . "/folder2";
+        $file1 = $folder1 . "/file1.txt";
+        $ignoreMe = $folder1 . "/ignore.me";
+        $file2 = $folder2 . "/file2.txt";
+        $dest = sys_get_temp_dir() . "/n98_copy_dest";
         $this->fileSystem->recursiveRemoveDirectory($dest, true);
 
         @mkdir($folder1, 0777, true);
@@ -115,9 +115,9 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
      */
     public function testRecursiveDirectoryRemoveUnLinksSymLinks()
     {
-        $tmp            = sys_get_temp_dir();
-        $basePath       = $tmp . "/n98_testdir";
-        $symLinked      = $tmp . "/n98_linked";
+        $tmp = sys_get_temp_dir();
+        $basePath = $tmp . "/n98_testdir";
+        $symLinked = $tmp . "/n98_linked";
         $symLinkedFile = $symLinked . "/symlinkme.txt";
 
         @mkdir($basePath, 0777, true);
@@ -136,12 +136,12 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
 
     public function testRecursiveRemove()
     {
-        $tmp        = sys_get_temp_dir();
-        $basePath   = $tmp . "/n98_testdir";
-        $folder1    = $basePath . "/folder1";
-        $folder2    = $basePath . "/folder2";
-        $file1      = $folder1 . "/file1.txt";
-        $file2      = $folder2 . "/file2.txt";
+        $tmp = sys_get_temp_dir();
+        $basePath = $tmp . "/n98_testdir";
+        $folder1 = $basePath . "/folder1";
+        $folder2 = $basePath . "/folder2";
+        $file1 = $folder1 . "/file1.txt";
+        $file2 = $folder2 . "/file2.txt";
 
         @mkdir($folder1, 0777, true);
         @mkdir($folder2, 0777, true);
@@ -154,12 +154,12 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
 
     public function testRecursiveRemoveWithTrailingSlash()
     {
-        $tmp        = sys_get_temp_dir();
-        $basePath   = $tmp . "/n98_testdir";
-        $folder1    = $basePath . "/folder1";
-        $folder2    = $basePath . "/folder2";
-        $file1      = $folder1 . "/file1.txt";
-        $file2      = $folder2 . "/file2.txt";
+        $tmp = sys_get_temp_dir();
+        $basePath = $tmp . "/n98_testdir";
+        $folder1 = $basePath . "/folder1";
+        $folder2 = $basePath . "/folder2";
+        $file1 = $folder1 . "/file1.txt";
+        $file2 = $folder2 . "/file2.txt";
 
         @mkdir($folder1, 0777, true);
         @mkdir($folder2, 0777, true);
@@ -177,20 +177,20 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
 
     public function testFalseIsReturnedIfDirectoryNotReadable()
     {
-        $tmp        = sys_get_temp_dir();
-        $basePath   = $tmp . "/n98_testdir-never-existed";
+        $tmp = sys_get_temp_dir();
+        $basePath = $tmp . "/n98_testdir-never-existed";
 
         $this->assertFalse($this->fileSystem->recursiveRemoveDirectory($basePath));
     }
 
     public function testParentIsNotRemovedIfEmptyIsTrue()
     {
-        $tmp        = sys_get_temp_dir();
-        $basePath   = $tmp . "/n98_testdir";
-        $folder1    = $basePath . "/folder1";
-        $folder2    = $basePath . "/folder2";
-        $file1      = $folder1 . "/file1.txt";
-        $file2      = $folder2 . "/file2.txt";
+        $tmp = sys_get_temp_dir();
+        $basePath = $tmp . "/n98_testdir";
+        $folder1 = $basePath . "/folder1";
+        $folder2 = $basePath . "/folder2";
+        $file1 = $folder1 . "/file1.txt";
+        $file2 = $folder2 . "/file2.txt";
 
         @mkdir($folder1, 0777, true);
         @mkdir($folder2, 0777, true);
@@ -213,7 +213,6 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
     {
         $res = Filesystem::humanFileSize($bytes, $decimalPlaces);
         $this->assertSame($expected, $res);
-
     }
 
     /**

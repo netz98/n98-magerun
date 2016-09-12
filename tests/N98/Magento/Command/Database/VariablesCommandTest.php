@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\Database;
 
+use N98\Magento\Command\PHPUnit\TestCase;
 use N98\Util\Console\Helper\DatabaseHelper;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 class VariablesCommandTest extends TestCase
 {
@@ -39,17 +39,17 @@ class VariablesCommandTest extends TestCase
     /**
      * @return DatabaseHelper
      */
-    private function getDatabaseHelper() {
+    private function getDatabaseHelper()
+    {
         return $this->statusCommand->getHelper('database');
     }
 
     public function testExecute()
     {
-
         $commandTester = $this->getCommand(array(
             '--format' => 'csv',
         ));
-        $display       = $commandTester->getDisplay();
+        $display = $commandTester->getDisplay();
 
         $this->assertContains('have_query_cache', $display);
         $this->assertContains('innodb_log_buffer_size', $display);

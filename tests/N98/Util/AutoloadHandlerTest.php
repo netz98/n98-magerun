@@ -7,7 +7,6 @@
 
 namespace N98\Util;
 
-
 /**
  * Class AutoloadHandlerTest
  *

@@ -2,15 +2,13 @@
 
 namespace N98\Magento\Command\Database\Maintain;
 
-use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Tester\ApplicationTester;
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @see \N98\Magento\Command\Database\Maintain\CheckTablesCommand
  */
-class CheckTablesTest extends TestCase
+class CheckTablesCommandTest extends TestCase
 {
     public function testExecute()
     {
@@ -22,7 +20,7 @@ class CheckTablesTest extends TestCase
                 'command'  => $command->getName(),
                 '--format' => 'csv',
                 '--type'   => 'quick',
-                '--table'  => 'catalogsearch_*'
+                '--table'  => 'catalogsearch_*',
             )
         );
         $this->assertContains('catalogsearch_fulltext,check,quick,OK', $commandTester->getDisplay());

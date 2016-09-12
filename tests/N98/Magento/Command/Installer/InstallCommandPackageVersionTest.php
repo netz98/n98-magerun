@@ -105,7 +105,7 @@ class InstallCommandPackageVersionTest extends TestCase
 
         $parts = explode('.', $buffer);
         foreach ($parts as $part) {
-            if ($part !== (string)(int)$part) {
+            if ($part !== (string) (int) $part) {
                 return false;
             }
         }

@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\MagentoConnect;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class ListExtensionsCommandTest extends TestCase
 {
@@ -24,7 +24,7 @@ class ListExtensionsCommandTest extends TestCase
         $commandTester->execute(
             array(
                 'command' => $command->getName(),
-                'search'  => 'Mage_All_Latest'
+                'search'  => 'Mage_All_Latest',
             )
         );
     

@@ -7,8 +7,8 @@ class RenderFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \N98\Util\Console\Helper\Table\Renderer\RendererFactory::getFormats
      */
-    public function testCreate() {
-
+    public function testCreate()
+    {
         $renderFactory = new RendererFactory();
 
         $csv = $renderFactory->create('csv');
@@ -22,7 +22,5 @@ class RenderFactoryTest extends \PHPUnit_Framework_TestCase
 
         $invalidFormat = $renderFactory->create('invalid_format');
         $this->assertFalse($invalidFormat);
-   }
-
+    }
 }
-

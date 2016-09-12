@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Cache;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class ViewCommandTest extends TestCase
 {
@@ -19,7 +19,7 @@ class ViewCommandTest extends TestCase
         $commandTester->execute(
             array(
                 'command' => $command->getName(),
-                'id'      => 'n98-magerun-unittest'
+                'id'      => 'n98-magerun-unittest',
             )
         );
 
@@ -36,7 +36,7 @@ class ViewCommandTest extends TestCase
             1,
             2,
             3,
-            'foo' => array('bar')
+            'foo' => array('bar'),
         );
         \Mage::app()->getCache()->save(serialize($cacheData), 'n98-magerun-unittest');
 

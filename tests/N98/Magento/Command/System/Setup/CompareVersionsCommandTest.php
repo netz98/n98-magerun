@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\System\Setup;
 
+use N98\Magento\Command\PHPUnit\TestCase;
 use org\bovigo\vfs\vfsStream;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 class CompareVersionsCommandTest extends TestCase
 {
@@ -17,7 +17,7 @@ class CompareVersionsCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
-                'command' => $command->getName()
+                'command' => $command->getName(),
             )
         );
     

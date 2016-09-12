@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Module\Dependencies;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Class OnCommandTest
@@ -55,8 +55,7 @@ class FromCommandTest extends TestCase
                 '$moduleName'   => 'Mage_Admin',
                 '$all'          => 0,
                 '$expectations' => array('Mage_Adminhtml'),
-                '$notContains'  => array('Mage_AdminNotification')
-                ,
+                '$notContains'  => array('Mage_AdminNotification'),
             ),
             'Mage_Admin module, with --all' => array(
                 '$moduleName'   => 'Mage_Admin',
@@ -87,8 +86,8 @@ class FromCommandTest extends TestCase
         $command = $this->getApplication()->find('dev:module:dependencies:from');
 
         $commandTester = new CommandTester($command);
-        $input         = array(
-            'command' => $command->getName(), 'moduleName' => $moduleName
+        $input = array(
+            'command' => $command->getName(), 'moduleName' => $moduleName,
         );
 
         switch ($all) {

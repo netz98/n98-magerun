@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Customer;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class DeleteCommandTest extends TestCase
 {
@@ -72,7 +72,7 @@ class DeleteCommandTest extends TestCase
                 'ask',
                 'askConfirmation',
                 'getHelper',
-                'batchDelete'
+                'batchDelete',
             ))
             ->getMock();
 
@@ -103,7 +103,7 @@ class DeleteCommandTest extends TestCase
             ->method('getHelper')
             ->will($this->returnValueMap(array(
                 array('dialog', $this->dialog),
-                array('parameter', $this->parameter)
+                array('parameter', $this->parameter),
             )));
 
         $this->dialog
@@ -166,7 +166,6 @@ class DeleteCommandTest extends TestCase
 
     public function testCanDeleteByEmail()
     {
-
         $this->customerModel
             ->expects($this->once())
             ->method('load')
@@ -217,7 +216,6 @@ class DeleteCommandTest extends TestCase
 
     public function testCustomerNotFound()
     {
-
         $this->customerModel
             ->expects($this->once())
             ->method('load')
@@ -259,7 +257,6 @@ class DeleteCommandTest extends TestCase
 
     public function testDeleteFailed()
     {
-
         $this->customerModel
             ->expects($this->once())
             ->method('load')
@@ -303,7 +300,6 @@ class DeleteCommandTest extends TestCase
 
     public function testPromptForCustomerIdAndDelete()
     {
-
         $this->dialog
             ->expects($this->once())
             ->method('askConfirmation')
@@ -355,14 +351,13 @@ class DeleteCommandTest extends TestCase
 
     public function testBatchDeleteGetsCustomerCollection()
     {
-
         $this->customerCollection
             ->expects($this->atLeastOnce())
             ->method('addAttributeToSelect')
             ->will($this->returnValueMap(array(
                 array('firstname', false, $this->customerCollection),
                 array('lastname', false, $this->customerCollection),
-                array('email', false, $this->customerCollection)
+                array('email', false, $this->customerCollection),
             )));
 
         $this->dialog
@@ -378,7 +373,7 @@ class DeleteCommandTest extends TestCase
         $commandTester->execute(
             array(
                 'command'   => $command->getName(),
-                '--all'   => true
+                '--all'     => true,
             )
         );
 
@@ -387,14 +382,13 @@ class DeleteCommandTest extends TestCase
 
     public function testRangeDeleteGetsCustomerCollection()
     {
-
         $this->customerCollection
             ->expects($this->atLeastOnce())
             ->method('addAttributeToSelect')
             ->will($this->returnValueMap(array(
                 array('firstname', false, $this->customerCollection),
                 array('lastname', false, $this->customerCollection),
-                array('email', false, $this->customerCollection)
+                array('email', false, $this->customerCollection),
             )));
 
         $this->dialog
@@ -429,7 +423,7 @@ class DeleteCommandTest extends TestCase
         $commandTester->execute(
             array(
                 'command'   => $command->getName(),
-                '--range'   => true
+                '--range'   => true,
             )
         );
 
@@ -475,7 +469,7 @@ class DeleteCommandTest extends TestCase
         $commandTester->execute(
             array(
                 'command'   => $command->getName(),
-                'id'        => '1'
+                'id'        => '1',
             )
         );
 
@@ -521,7 +515,7 @@ class DeleteCommandTest extends TestCase
         $commandTester->execute(
             array(
                 'command'   => $command->getName(),
-                'id'        => '1'
+                'id'        => '1',
             )
         );
 
@@ -530,7 +524,6 @@ class DeleteCommandTest extends TestCase
 
     public function testPromptDeleteAllAndDeleteRangeAndAbort()
     {
-
         $this->dialog
             ->expects($this->exactly(3))
             ->method('askConfirmation')
@@ -543,7 +536,7 @@ class DeleteCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
-                'command'   => $command->getName()
+                'command'   => $command->getName(),
             )
         );
 
@@ -563,7 +556,7 @@ class DeleteCommandTest extends TestCase
             ->will($this->returnValueMap(array(
                 array('firstname', false, $this->customerCollection),
                 array('lastname', false, $this->customerCollection),
-                array('email', false, $this->customerCollection)
+                array('email', false, $this->customerCollection),
             )));
 
         $this->command
@@ -571,7 +564,6 @@ class DeleteCommandTest extends TestCase
             ->method('batchDelete')
             ->with($this->customerCollection)
             ->will($this->returnValue(3));
-
 
         $application = $this->getApplication();
         $application->add($this->command);
@@ -581,7 +573,7 @@ class DeleteCommandTest extends TestCase
         $commandTester->execute(
             array(
                 'command'   => $command->getName(),
-                '--force'   => true
+                '--force'   => true,
             )
         );
 
@@ -590,7 +582,6 @@ class DeleteCommandTest extends TestCase
 
     public function testPromptRangeCanDeleteRange()
     {
-
         $this->dialog
             ->expects($this->exactly(3))
             ->method('askConfirmation')
@@ -602,7 +593,7 @@ class DeleteCommandTest extends TestCase
             ->will($this->returnValueMap(array(
                 array('firstname', false, $this->customerCollection),
                 array('lastname', false, $this->customerCollection),
-                array('email', false, $this->customerCollection)
+                array('email', false, $this->customerCollection),
             )));
 
         $this->dialog
@@ -638,7 +629,7 @@ class DeleteCommandTest extends TestCase
         $commandTester->execute(
             array(
                 'command'   => $command->getName(),
-                '--force'   => true
+                '--force'   => true,
             )
         );
 
@@ -663,7 +654,7 @@ class DeleteCommandTest extends TestCase
 
         $data = new \ArrayIterator(array(
             $this->customerModel,
-            $this->customerModel
+            $this->customerModel,
         ));
 
         $collection = $this->getCustomerCollection(array('getIterator'));

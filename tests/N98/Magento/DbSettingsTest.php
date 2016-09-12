@@ -23,7 +23,7 @@ class DbSettingsTest extends TestCase
      */
     public function creation()
     {
-        $file     = $this->getTestMagentoRoot() . '/app/etc/local.xml';
+        $file = $this->getTestMagentoRoot() . '/app/etc/local.xml';
         $settings = new DbSettings($file);
         $this->assertInstanceOf(__NAMESPACE__ . '\\DbSettings', $settings);
     }

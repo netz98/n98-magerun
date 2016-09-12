@@ -37,7 +37,7 @@ class TextRendererTest extends TestCase
     public function rendering()
     {
         $renderer = new TextRenderer();
-        $output   = new StreamOutput(fopen('php://memory', 'w', false));
+        $output = new StreamOutput(fopen('php://memory', 'w', false));
 
         $rows = array(
             array('Column1' => 'Value A1', 'Column2' => 'A2 is another value that there is'),

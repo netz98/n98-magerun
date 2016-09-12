@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\System\Cron;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class HistoryCommandTest extends TestCase
 {
@@ -16,7 +16,7 @@ class HistoryCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
-                'command' => $command->getName()
+                'command' => $command->getName(),
             )
         );
     

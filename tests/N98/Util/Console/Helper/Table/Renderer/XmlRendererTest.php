@@ -43,10 +43,10 @@ class XmlRendererTest extends TestCase
             array(
                 array(
                     array(
-                        "column" => "Doors wide > open"
+                        "column" => "Doors wide > open",
                     ),
                     array(
-                        "column" => "null \0 bytes FTW"
+                        "column" => "null \0 bytes FTW",
                     ),
                 ),
                 '<?xml version="1.0" encoding="UTF-8"?>
@@ -127,7 +127,7 @@ ftw</Column2>
     <buz>here</buz>
   </row>
 </table>',
-            )
+            ),
         );
     }
 
@@ -139,7 +139,7 @@ ftw</Column2>
     public function invalidName()
     {
         $renderer = new XmlRenderer();
-        $output   = new NullOutput();
+        $output = new NullOutput();
         $renderer->render($output, array(array("foo")));
     }
 
@@ -151,7 +151,7 @@ ftw</Column2>
     public function invalidEncoding()
     {
         $renderer = new XmlRenderer();
-        $output   = new NullOutput();
+        $output = new NullOutput();
         $renderer->render($output, array(array("\xC1" => "foo")));
     }
 
@@ -162,10 +162,10 @@ ftw</Column2>
     public function tableRendering($rows, $expected)
     {
         $renderer = new XmlRenderer();
-        $output   = new StreamOutput(fopen('php://memory', 'w', false));
+        $output = new StreamOutput(fopen('php://memory', 'w', false));
 
         $renderer->render($output, $rows);
 
-        $this->assertEquals($expected .  "\n", $this->getOutputBuffer($output));
+        $this->assertEquals($expected . "\n", $this->getOutputBuffer($output));
     }
 }

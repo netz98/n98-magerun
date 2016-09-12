@@ -7,9 +7,9 @@
 
 namespace N98\Magento\Command\Cache\Dir;
 
+use N98\Magento\Command\PHPUnit\TestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 /**
  * Class FlushCommandTest

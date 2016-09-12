@@ -134,7 +134,7 @@ class ClassExistsCheckerTest extends \PHPUnit_Framework_TestCase
         // 32767 - E_ALL (Travis PHP 5.3, PHP 5.4)
         $knownErrorLevels = array(
             'E_ALL & ~E_DEPRECATED & ~E_STRICT (Deb Sury 5.6)' => 22527,
-            'E_ALL (Travis PHP 5.3, 5.4, 5.5)' => 32767,
+            'E_ALL (Travis PHP 5.3, 5.4, 5.5)'                 => 32767,
         );
         $this->assertTrue(in_array($reporting, $knownErrorLevels), "error reporting as of $reporting");
 

@@ -3,8 +3,8 @@
 namespace N98\Magento\Command\Cache;
 
 use N98\Magento\Application;
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class FlushCommandTest extends TestCase
 {

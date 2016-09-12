@@ -96,7 +96,7 @@ class CreateUserCommandTest extends TestCase
                 'lastname'  => 'Hassan',
                 'email'     => 'aydin@hotmail.co.uk',
                 'password'  => 'p4ssw0rd',
-                'is_active' => 1
+                'is_active' => 1,
             ))
             ->will($this->returnValue($this->userModel));
 
@@ -236,7 +236,7 @@ class CreateUserCommandTest extends TestCase
                 'lastname'  => 'Hassan',
                 'email'     => 'aydin@hotmail.co.uk',
                 'password'  => 'p4ssw0rd',
-                'is_active' => 1
+                'is_active' => 1,
             ))
             ->will($this->returnValue($this->userModel));
 

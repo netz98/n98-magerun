@@ -2,12 +2,11 @@
 
 namespace N98\Magento\Command\Category\Create;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class DummyCommandTest extends TestCase
 {
-
     public function testExecute()
     {
         $application = $this->getApplication();
@@ -21,7 +20,7 @@ class DummyCommandTest extends TestCase
                 'store-id'                   => 1,
                 'children-categories-number' => 1,
                 'category-name-prefix'       => 'My Awesome Category',
-                'category-number'            => 1
+                'category-number'            => 1,
             )
         );
 
@@ -43,7 +42,7 @@ class DummyCommandTest extends TestCase
 
     protected function checkifCategoryExist($_category_id)
     {
-        if(!is_null(\Mage::getModel('catalog/category')->load($_category_id)->getName())) {
+        if (!is_null(\Mage::getModel('catalog/category')->load($_category_id)->getName())) {
             return true;
         }
     }

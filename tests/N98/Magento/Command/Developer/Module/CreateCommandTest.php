@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\Developer\Module;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
 use N98\Util\Filesystem;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class CreateCommandTest extends TestCase
 {
@@ -26,7 +26,7 @@ class CreateCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
-                'command'   => $command->getName(),
+                'command'         => $command->getName(),
                 '--add-all'       => true,
                 '--add-setup'     => true,
                 '--add-readme'    => true,
@@ -36,7 +36,7 @@ class CreateCommandTest extends TestCase
                 '--author-name'   => 'Unit Test',
                 '--author-email'  => 'n98-magerun@example.com',
                 'vendorNamespace' => 'N98Magerun',
-                'moduleName'      => 'UnitTest'
+                'moduleName'      => 'UnitTest',
             )
         );
 

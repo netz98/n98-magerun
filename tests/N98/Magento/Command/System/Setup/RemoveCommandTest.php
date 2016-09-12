@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\System\Setup;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Class RemoveCommandTest
@@ -12,7 +12,6 @@ use N98\Magento\Command\PHPUnit\TestCase;
  */
 class RemoveCommandTest extends TestCase
 {
-
     public function testRemoveModule()
     {
         $mockAdapter = $this->getMockBuilder('\Varien_Db_Adapter_Pdo_Mysql')
@@ -56,7 +55,6 @@ class RemoveCommandTest extends TestCase
 
     public function testRemoveBySetupName()
     {
-
         $mockAdapter = $this->getMockBuilder('\Varien_Db_Adapter_Pdo_Mysql')
             ->disableOriginalConstructor()
             ->setMethods(array('delete'))
@@ -88,7 +86,7 @@ class RemoveCommandTest extends TestCase
         $commandTester->execute(array(
             'command'   => $command->getName(),
             'module'    => 'Mage_Weee',
-            'setup'     => 'weee_setup'
+            'setup'     => 'weee_setup',
         ));
 
         $this->assertContains(
@@ -99,7 +97,6 @@ class RemoveCommandTest extends TestCase
 
     public function testRemoveBySetupNameFailure()
     {
-
         $mockAdapter = $this->getMockBuilder('\Varien_Db_Adapter_Pdo_Mysql')
             ->disableOriginalConstructor()
             ->setMethods(array('delete'))
@@ -136,7 +133,7 @@ class RemoveCommandTest extends TestCase
         $commandTester->execute(array(
             'command'   => $command->getName(),
             'module'    => 'Mage_Weee',
-            'setup'     => 'weee_setup'
+            'setup'     => 'weee_setup',
         ));
 
         $this->assertContains(
@@ -161,7 +158,7 @@ class RemoveCommandTest extends TestCase
         $commandTester->execute(array(
             'command'   => $command->getName(),
             'module'    => 'Mage_Weee',
-            'setup'     => 'no_setup_exists'
+            'setup'     => 'no_setup_exists',
         ));
     }
 
@@ -182,7 +179,6 @@ class RemoveCommandTest extends TestCase
 
     public function testCommandReturnsEarlyIfNoSetupResourcesForModule()
     {
-
         $command = $this->getMockBuilder('\N98\Magento\Command\System\Setup\RemoveCommand')
             ->setMethods(array('getModuleSetupResources'))
             ->getMock();
@@ -200,7 +196,7 @@ class RemoveCommandTest extends TestCase
         $commandTester->execute(array(
             'command'   => $command->getName(),
             'module'    => 'Mage_Weee',
-            'setup'     => 'weee_setup'
+            'setup'     => 'weee_setup',
         ));
 
         $this->assertContains(

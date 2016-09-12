@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Config;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class GetCommandTest extends TestCase
 {
@@ -39,7 +39,7 @@ class GetCommandTest extends TestCase
             array(
                  'command'         => $getCommand->getName(),
                  'path'            => 'n98_magerun/foo/bar',
-                 '--update-script' => true
+                 '--update-script' => true,
             )
         );
         $this->assertContains(
@@ -51,7 +51,7 @@ class GetCommandTest extends TestCase
             array(
                  'command'          => $getCommand->getName(),
                  'path'             => 'n98_magerun/foo/bar',
-                 '--magerun-script' => true
+                 '--magerun-script' => true,
             )
         );
         $this->assertContains(
@@ -98,5 +98,4 @@ class GetCommandTest extends TestCase
         );
         $this->assertRegExp('/"Value":\s*"1234"/', $commandTester->getDisplay());
     }
-
 }

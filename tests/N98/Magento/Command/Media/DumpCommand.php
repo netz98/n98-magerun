@@ -2,10 +2,10 @@
 
 namespace N98\Magento\Command\Media;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
-class DumpCommandTest extends TestCase
+class DumpCommand extends TestCase
 {
     public function testExecute()
     {

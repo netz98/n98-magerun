@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Developer;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class ClassLookupCommandTest extends TestCase
 {
@@ -28,7 +28,7 @@ class ClassLookupCommandTest extends TestCase
             array(
                 'command' => $command->getName(),
                 'type'    => $type,
-                'name'    => $name
+                'name'    => $name,
             )
         );
     
@@ -50,38 +50,38 @@ class ClassLookupCommandTest extends TestCase
                 'type'     => 'model',
                 'name'     => 'catalog/product',
                 'expected' => 'Mage_Catalog_Model_Product',
-                'exists'   => true
+                'exists'   => true,
             ),
             array(
                 'type'     => 'model',
                 'name'     => 'catalog/nothing_to_see_here',
                 'expected' => 'Mage_Catalog_Model_Nothing_To_See_Here',
-                'exists'   => false
+                'exists'   => false,
             ),
             array(
                 'type'     => 'helper',
                 'name'     => 'checkout/cart',
                 'expected' => 'Mage_Checkout_Helper_Cart',
-                'exists'   => true
+                'exists'   => true,
             ),
             array(
                 'type'     => 'helper',
                 'name'     => 'checkout/stolen_creditcards',
                 'expected' => 'Mage_Checkout_Helper_Stolen_Creditcards',
-                'exists'   => false
+                'exists'   => false,
             ),
             array(
                 'type'     => 'block',
                 'name'     => 'customer/account_dashboard',
                 'expected' => 'Mage_Customer_Block_Account_Dashboard',
-                'exists'   => true
+                'exists'   => true,
             ),
             array(
                 'type'     => 'block',
                 'name'     => 'customer/my_code_snippets',
                 'expected' => 'Mage_Customer_Block_My_Code_Snippets',
-                'exists'   => false
-            )
+                'exists'   => false,
+            ),
         );
     }
 }

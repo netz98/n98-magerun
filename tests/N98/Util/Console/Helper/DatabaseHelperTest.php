@@ -2,8 +2,8 @@
 
 namespace N98\Util\Console\Helper;
 
-use N98\Magento\Command\PHPUnit\TestCase;
 use InvalidArgumentException;
+use N98\Magento\Command\PHPUnit\TestCase;
 use RuntimeException;
 
 /**
@@ -148,7 +148,7 @@ class DatabaseHelperTest extends TestCase
         $rp = $ro->getProperty('config');
         $rp->setAccessible(true);
 
-        $config   = $rp->getValue($dbSettings);
+        $config = $rp->getValue($dbSettings);
         $previous = $config['prefix'];
 
         $this->tearDownRestore[] = function () use ($rp, $dbSettings, $previous) {
@@ -182,8 +182,8 @@ class DatabaseHelperTest extends TestCase
         $this->assertNotContains('catalogrule', $tables);
 
         $definitions = array(
-            'test123' => array('tables'  => 'catalog\_*'),
-            'dataflow' => array('tables' => 'dataflow_batch_import dataflow_batch_export')
+            'test123'  => array('tables'  => 'catalog\_*'),
+            'dataflow' => array('tables' => 'dataflow_batch_import dataflow_batch_export'),
         );
 
         $tables = $this->getHelper()->resolveTables(
@@ -205,7 +205,7 @@ class DatabaseHelperTest extends TestCase
             $restore();
         }
 
-        $restore               = null;
+        $restore = null;
         $this->tearDownRestore = null;
 
         parent::tearDown();

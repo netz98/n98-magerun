@@ -2,10 +2,10 @@
 
 namespace N98\Magento\Command\Installer;
 
-use Symfony\Component\Console\Tester\CommandTester;
+use N98\Magento\Command\PHPUnit\TestCase;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\HelperSet;
-use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Class UninstallCommandTest
@@ -14,7 +14,6 @@ use N98\Magento\Command\PHPUnit\TestCase;
  */
 class UninstallCommandTest extends TestCase
 {
-
     /**
      * Check that Magento is not removed if confirmation is denied
      */
@@ -32,7 +31,7 @@ class UninstallCommandTest extends TestCase
 
         $commandTester->execute(array(
             'command'               => $command->getName(),
-            '--installationFolder'  => $this->getTestMagentoRoot()
+            '--installationFolder'  => $this->getTestMagentoRoot(),
         ));
         $this->assertEquals("Really uninstall ? [n]: ", $commandTester->getDisplay());
 
@@ -55,7 +54,7 @@ class UninstallCommandTest extends TestCase
             array(
                 'command'               => $command->getName(),
                 '--force'               => true,
-                '--installationFolder'  => $this->getTestMagentoRoot()
+                '--installationFolder'  => $this->getTestMagentoRoot(),
             )
         );
 

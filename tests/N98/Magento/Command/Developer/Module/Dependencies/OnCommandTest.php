@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Module\Dependencies;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Class OnCommandTest
@@ -86,8 +86,8 @@ class OnCommandTest extends TestCase
         $command = $this->getApplication()->find('dev:module:dependencies:on');
 
         $commandTester = new CommandTester($command);
-        $input         = array(
-            'command' => $command->getName(), 'moduleName' => $moduleName
+        $input = array(
+            'command' => $command->getName(), 'moduleName' => $moduleName,
         );
 
         switch ($all) {

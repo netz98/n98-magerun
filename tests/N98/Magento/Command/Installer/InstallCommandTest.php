@@ -4,8 +4,6 @@ namespace N98\Magento\Command\Installer;
 
 use N98\Magento\Command\PHPUnit\TestCase;
 use RuntimeException;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class InstallCommandTest extends TestCase

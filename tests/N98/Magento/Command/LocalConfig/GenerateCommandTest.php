@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\LocalConfig;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class GenerateCommandTest extends TestCase
 {
@@ -49,7 +49,7 @@ class GenerateCommandTest extends TestCase
                 'db-name'         => 'my_db_name',
                 'session-save'    => 'my_session_save',
                 'admin-frontname' => 'my_admin_frontname',
-                'encryption-key'  => 'key123456789'
+                'encryption-key'  => 'key123456789',
             )
         );
 
@@ -74,7 +74,7 @@ class GenerateCommandTest extends TestCase
                 'db-name'         => 'my_db_name',
                 'session-save'    => 'my_session_save',
                 'admin-frontname' => 'my_admin_frontname',
-                'encryption-key'  => 'key123456789'
+                'encryption-key'  => 'key123456789',
             )
         );
 
@@ -101,7 +101,7 @@ class GenerateCommandTest extends TestCase
                 'db-name'         => 'my_db_name',
                 'session-save'    => 'my_session_save',
                 'admin-frontname' => 'my_admin_frontname',
-                'encryption-key'  => 'key123456789'
+                'encryption-key'  => 'key123456789',
             )
         );
 
@@ -126,7 +126,7 @@ class GenerateCommandTest extends TestCase
                 'db-pass'         => 'my_db_pass',
                 'db-name'         => 'my_db_name',
                 'session-save'    => 'my_session_save',
-                'admin-frontname' => 'my_admin_frontname'
+                'admin-frontname' => 'my_admin_frontname',
             )
         );
 
@@ -158,7 +158,7 @@ class GenerateCommandTest extends TestCase
                 'db-name'         => 'my_db_name',
                 'session-save'    => 'my_session_save',
                 'admin-frontname' => 'my_admin_frontname',
-                'encryption-key'  => 'key123456789'
+                'encryption-key'  => 'key123456789',
             )
         );
 
@@ -188,10 +188,10 @@ class GenerateCommandTest extends TestCase
                 'db-user'         => 'my_db_user',
                 'db-pass'         => 'my_db_pass',
                 'db-name'         => 'my_db_name',
-                'encryption-key'  => 'key123456789'
+                'encryption-key'  => 'key123456789',
             ),
             array(
-                'interactive' => false
+                'interactive' => false,
             )
         );
 
@@ -226,7 +226,7 @@ class GenerateCommandTest extends TestCase
             'db-name'         => 'my_db_name',
             'session-save'    => 'my_session_save',
             'admin-frontname' => 'my_admin_frontname',
-            'encryption-key'  => 'key123456789'
+            'encryption-key'  => 'key123456789',
         );
 
         unset($options[$param]);
@@ -328,7 +328,7 @@ class GenerateCommandTest extends TestCase
                 'db-name'         => 'my_db_name',
                 'session-save'    => 'my_session_save',
                 'admin-frontname' => 'my_admin_frontname',
-                'encryption-key'  => 'key123456789'
+                'encryption-key'  => 'key123456789',
             )
         );
 
@@ -370,7 +370,7 @@ class GenerateCommandTest extends TestCase
                 'db-name'         => 'my_db_name',
                 'session-save'    => 'my_session_save',
                 'admin-frontname' => 'my_admin_frontname',
-                'encryption-key'  => 'key123456789'
+                'encryption-key'  => 'key123456789',
             )
         );
 
@@ -396,7 +396,7 @@ class GenerateCommandTest extends TestCase
         $refl = new \ReflectionClass($command);
         $method = $refl->getMethod('_wrapCData');
         $method->setAccessible(true);
-        $sujet = function($string) use ($method, $command) {
+        $sujet = function ($string) use ($method, $command) {
             return $method->invoke($command, $string);
         };
 

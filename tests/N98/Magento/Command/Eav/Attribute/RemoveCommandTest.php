@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Eav\Attribute;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Class RemoveCommandTest
@@ -12,7 +12,6 @@ use N98\Magento\Command\PHPUnit\TestCase;
  */
 class RemoveCommandTest extends TestCase
 {
-
     public function testCommandThrowsExceptionIfInvalidEntityType()
     {
         $application = $this->getApplication();
@@ -61,12 +60,12 @@ class RemoveCommandTest extends TestCase
         $application->setAutoExit(false);
         $command = $this->getApplication()->find('eav:attribute:remove');
 
-        $entityType     = 'catalog_product';
-        $attributeCode  = 'crazyCoolAttribute';
+        $entityType = 'catalog_product';
+        $attributeCode = 'crazyCoolAttribute';
         $this->createAttribute($entityType, $attributeCode, array(
-            'type'  =>'text',
-            'input' =>'text',
-            'label' =>'Test Attribute',
+            'type'  => 'text',
+            'input' => 'text',
+            'label' => 'Test Attribute',
         ));
 
         $this->assertTrue($this->attributeExists($entityType, $attributeCode));
@@ -93,11 +92,11 @@ class RemoveCommandTest extends TestCase
         $application->setAutoExit(false);
         $command = $this->getApplication()->find('eav:attribute:remove');
 
-        $attributeCode  = 'crazyCoolAttribute';
+        $attributeCode = 'crazyCoolAttribute';
         $this->createAttribute($entityTypeCode, $attributeCode, array(
-            'type'  =>'text',
-            'input' =>'text',
-            'label' =>'Test Attribute',
+            'type'  => 'text',
+            'input' => 'text',
+            'label' => 'Test Attribute',
         ));
 
         $this->assertTrue($this->attributeExists($entityTypeCode, $attributeCode));
@@ -120,18 +119,18 @@ class RemoveCommandTest extends TestCase
         $application->setAutoExit(false);
         $command = $this->getApplication()->find('eav:attribute:remove');
 
-        $attributeCode1  = 'crazyCoolAttribute1';
-        $attributeCode2  = 'crazyCoolAttribute2';
+        $attributeCode1 = 'crazyCoolAttribute1';
+        $attributeCode2 = 'crazyCoolAttribute2';
         $this->createAttribute('catalog_product', $attributeCode1, array(
-            'type'  =>'text',
-            'input' =>'text',
-            'label' =>'Test Attribute 1',
+            'type'  => 'text',
+            'input' => 'text',
+            'label' => 'Test Attribute 1',
         ));
 
         $this->createAttribute('catalog_product', $attributeCode2, array(
-            'type'  =>'text',
-            'input' =>'text',
-            'label' =>'Test Attribute 2',
+            'type'  => 'text',
+            'input' => 'text',
+            'label' => 'Test Attribute 2',
         ));
 
         $this->assertTrue($this->attributeExists('catalog_product', $attributeCode1));
@@ -166,12 +165,12 @@ class RemoveCommandTest extends TestCase
         $application->setAutoExit(false);
         $command = $this->getApplication()->find('eav:attribute:remove');
 
-        $attributeCode1  = 'crazyCoolAttribute1';
-        $attributeCode2  = 'crazyCoolAttribute2';
+        $attributeCode1 = 'crazyCoolAttribute1';
+        $attributeCode2 = 'crazyCoolAttribute2';
         $this->createAttribute('catalog_product', $attributeCode1, array(
-            'type'  =>'text',
-            'input' =>'text',
-            'label' =>'Test Attribute 1',
+            'type'  => 'text',
+            'input' => 'text',
+            'label' => 'Test Attribute 1',
         ));
 
         $this->assertTrue($this->attributeExists('catalog_product', $attributeCode1));

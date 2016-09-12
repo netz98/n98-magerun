@@ -1,6 +1,7 @@
 <?php
 
 namespace N98\Magento\Command\MagentoConnect;
+
 use N98\Magento\Command\PHPUnit\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -33,7 +34,7 @@ class ValidateExtensionCommandTest extends TestCase
             array(
                 'command'           => $commandMock->getName(),
                 'package'           => 'Mage_All_Latest',
-                '--include-default' => true
+                '--include-default' => true,
             )
         );
         

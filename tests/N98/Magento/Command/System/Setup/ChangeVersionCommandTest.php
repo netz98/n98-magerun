@@ -2,12 +2,11 @@
 
 namespace N98\Magento\Command\System\Setup;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use N98\Magento\Command\PHPUnit\TestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class ChangeVersionCommandTest extends TestCase
 {
-
     public function testChangeVersion()
     {
         $command = $this->getMockBuilder('\N98\Magento\Command\System\Setup\ChangeVersionCommand')
@@ -42,7 +41,7 @@ class ChangeVersionCommandTest extends TestCase
         $commandTester->execute(array(
             'command'   => $command->getName(),
             'module'    => 'Mage_Weee',
-            'version'   => '1.6.0.0'
+            'version'   => '1.6.0.0',
         ));
 
         $this->assertContains(
@@ -86,7 +85,7 @@ class ChangeVersionCommandTest extends TestCase
             'command'   => $command->getName(),
             'module'    => 'Mage_Weee',
             'version'   => '1.6.0.0',
-            'setup'     => 'weee_setup'
+            'setup'     => 'weee_setup',
         ));
 
         $this->assertContains(
@@ -112,7 +111,7 @@ class ChangeVersionCommandTest extends TestCase
             'command'   => $command->getName(),
             'module'    => 'Mage_Weee',
             'version'   => '1.6.0.0',
-            'setup'     => 'no_setup_exists'
+            'setup'     => 'no_setup_exists',
         ));
     }
 
@@ -128,13 +127,12 @@ class ChangeVersionCommandTest extends TestCase
         $commandTester->execute(array(
             'command'   => $command->getName(),
             'module'    => 'I_DO_NOT_EXIST',
-            'version'   => '1.0.0.0'
+            'version'   => '1.0.0.0',
         ));
     }
 
     public function testCommandReturnsEarlyIfNoSetupResourcesForModule()
     {
-
         $command = $this->getMockBuilder('\N98\Magento\Command\System\Setup\ChangeVersionCommand')
             ->setMethods(array('getModuleSetupResources'))
             ->getMock();
@@ -153,7 +151,7 @@ class ChangeVersionCommandTest extends TestCase
             'command'   => $command->getName(),
             'module'    => 'Mage_Weee',
             'version'   => '1.0.0.0',
-            'setup'     => 'weee_setup'
+            'setup'     => 'weee_setup',
         ));
 
         $this->assertContains(
