@@ -316,7 +316,7 @@ HELP;
     }
 
     /**
-     * @param array $execs
+     * @param string[] $execs
      * @param string $fileName
      * @param InputInterface $input
      * @param OutputInterface $output
