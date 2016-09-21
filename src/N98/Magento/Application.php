@@ -451,7 +451,7 @@ class Application extends BaseApplication
 
     public function getLongVersion()
     {
-        return parent::getLongVersion() . ' by <info>netz98 new media GmbH</info>';
+        return parent::getLongVersion() . ' by <info>netz98 GmbH</info>';
     }
 
     /**
