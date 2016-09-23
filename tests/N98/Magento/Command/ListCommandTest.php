@@ -13,13 +13,13 @@ class ListCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
+            [
                 'command' => 'list',
-            )
+            ]
         );
-    
+
         $this->assertContains(
-            sprintf('n98-magerun version %s by netz98 new media GmbH', $this->getApplication()->getVersion()),
+            sprintf('n98-magerun version %s by netz98 GmbH', $this->getApplication()->getVersion()),
             $commandTester->getDisplay()
         );
     }
