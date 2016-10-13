@@ -4,6 +4,7 @@ namespace N98\Magento\Command\Cache;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CleanCommand extends AbstractCacheCommand
@@ -13,6 +14,18 @@ class CleanCommand extends AbstractCacheCommand
         $this
             ->setName('cache:clean')
             ->addArgument('type', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Cache type code like "config"')
+            ->addOption(
+                'reinit',
+                null,
+                InputOption::VALUE_NONE,
+                'Reinitialise the config cache after cleaning'
+            )
+            ->addOption(
+                'no-reinit',
+                null,
+                InputOption::VALUE_NONE,
+                "Don't reinitialise the config cache after flushing"
+            )
             ->setDescription('Clean magento cache')
         ;
 
@@ -29,6 +42,9 @@ If you would like to clean multiple cache types at once use like:
 
 If you would like to remove all cache entries use `cache:flush`
 
+Options:
+    --reinit Reinitialise the config cache after cleaning (Default)
+    --no-reinit Don't reinitialise the config cache after cleaning
 HELP;
         $this->setHelp($help);
     }
@@ -41,7 +57,11 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->banUseCache();
+        $noReinitOption = $input->getOption('no-reinit');
+        if (!$noReinitOption) {
+            $this->banUseCache();
+        }
+
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
             return;
@@ -61,6 +81,8 @@ HELP;
             }
         }
 
-        $this->reinitCache();
+        if (!$noReinitOption) {
+            $this->reinitCache();
+        }
     }
 }
