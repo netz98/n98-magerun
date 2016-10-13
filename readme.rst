@@ -685,13 +685,17 @@ If you would like to clean only one cache type:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:clean [code]
+   $ n98-magerun.phar cache:clean [--reinit] [--no-reinit] [<code>]
 
 If you would like to clean multiple cache types at once:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:clean [code] [code] ...
+   $ n98-magerun.phar cache:clean [--reinit] [--no-reinit] [<code>] [<code>] ...
+
+Options:
+    --reinit Reinitialise the config cache after cleaning (Default)
+    --no-reinit Don't reinitialise the config cache after cleaning. This will override --reinit.
 
 If you would like to remove all cache entries use `cache:flush`
 
@@ -700,9 +704,15 @@ Run `cache:list` command to see all codes.
 Remove all cache entries
 """"""""""""""""""""""""
 
+Flush the entire cache.
+
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:flush
+   $ n98-magerun.phar cache:flush [--reinit] [--no-reinit]
+
+Options:
+    --reinit Reinitialise the config cache after flushing (Default)
+    --no-reinit Don't reinitialise the config cache after flushing. This will override --reinit.
 
 List Magento caches
 """""""""""""""""""

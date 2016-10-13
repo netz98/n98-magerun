@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Cache;
 
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class FlushCommand extends AbstractCacheCommand
@@ -11,8 +12,31 @@ class FlushCommand extends AbstractCacheCommand
     {
         $this
             ->setName('cache:flush')
+            ->addOption(
+                'reinit',
+                null,
+                InputOption::VALUE_NONE,
+                'Reinitialise the config cache after flushing'
+            )
+            ->addOption(
+                'no-reinit',
+                null,
+                InputOption::VALUE_NONE,
+                "Don't reinitialise the config cache after flushing"
+            )
             ->setDescription('Flush magento cache storage')
         ;
+
+        $help = <<<HELP
+Flush the entire cache.
+
+   $ n98-magerun.phar cache:flush [--reinit --no-reinit]
+
+Options:
+    --reinit Reinitialise the config cache after flushing (Default)
+    --no-reinit Don't reinitialise the config cache after flushing
+HELP;
+        $this->setHelp($help);
     }
 
     /**
@@ -25,7 +49,10 @@ class FlushCommand extends AbstractCacheCommand
     {
         $this->detectMagento($output, true);
 
-        $this->banUseCache();
+        $noReinitOption = $input->getOption('no-reinit');
+        if (!$noReinitOption) {
+            $this->banUseCache();
+        }
 
         if (!$this->initMagento()) {
             return;
@@ -40,7 +67,9 @@ class FlushCommand extends AbstractCacheCommand
             $output->writeln('<error>Failed to clear Cache</error>');
         }
 
-        $this->reinitCache();
+        if (!$noReinitOption) {
+            $this->reinitCache();
+        }
 
         /* Since Magento 1.10 we have an own cache handler for FPC */
         if ($this->isEnterpriseFullPageCachePresent()) {
