@@ -2,7 +2,6 @@
 
 namespace N98\Magento\Command;
 
-use N98\Magento\Command\PHPUnit\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class HelpCommandTest extends TestCase
@@ -17,7 +16,7 @@ class HelpCommandTest extends TestCase
                 'command' => 'help',
             )
         );
-    
+
         $this->assertContains('The help command displays help for a given command', $commandTester->getDisplay());
     }
 }

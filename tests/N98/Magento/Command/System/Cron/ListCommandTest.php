@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\System\Cron;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class ListCommandTest extends TestCase
@@ -15,7 +15,7 @@ class ListCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
-    
+
         $this->assertRegExp('/Cronjob List/', $commandTester->getDisplay());
     }
 }

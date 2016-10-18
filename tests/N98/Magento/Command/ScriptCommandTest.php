@@ -2,7 +2,6 @@
 
 namespace N98\Magento\Command;
 
-use N98\Magento\Command\PHPUnit\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class ScriptCommandTest extends TestCase

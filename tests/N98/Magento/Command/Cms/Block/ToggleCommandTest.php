@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\Cms\Block;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**

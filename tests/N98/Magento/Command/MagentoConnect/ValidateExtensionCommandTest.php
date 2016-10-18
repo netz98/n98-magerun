@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\MagentoConnect;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class ValidateExtensionCommandTest extends TestCase
@@ -37,7 +37,7 @@ class ValidateExtensionCommandTest extends TestCase
                 '--include-default' => true,
             )
         );
-        
+
         $output = $commandTester->getDisplay();
         $this->assertContains('Mage_All_Latest', $output);
     }

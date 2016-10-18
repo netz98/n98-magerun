@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Module;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use N98\Util\Filesystem;
 use Symfony\Component\Console\Tester\CommandTester;
 

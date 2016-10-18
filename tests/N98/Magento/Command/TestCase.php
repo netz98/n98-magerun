@@ -1,6 +1,6 @@
 <?php
 
-namespace N98\Magento\Command\PHPUnit;
+namespace N98\Magento\Command;
 
 use N98\Magento\Application;
 use PHPUnit_Framework_MockObject_MockObject;
@@ -12,7 +12,7 @@ use RuntimeException;
  * @codeCoverageIgnore
  * @package N98\Magento\Command\PHPUnit
  */
-class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Application
@@ -96,32 +96,32 @@ class TestCase extends \PHPUnit_Framework_TestCase
         if ($this->application === null) {
             $root = $this->getTestMagentoRoot();
 
-            $this->application = $this->getMock(
-                'N98\Magento\Application',
-                array('getMagentoRootFolder')
-            );
+            /** @var Application|PHPUnit_Framework_MockObject_MockObject $application */
+            $application = $this->getMock('N98\Magento\Application', array('getMagentoRootFolder'));
 
             // Get the composer bootstrap
             if (defined('PHPUNIT_COMPOSER_INSTALL')) {
                 $loader = require PHPUNIT_COMPOSER_INSTALL;
-            } elseif (file_exists(__DIR__ . '/../../../../../../../autoload.php')) {
+            } elseif (file_exists(__DIR__ . '/../../../../../../autoload.php')) {
                 // Installed via composer, already in vendor
-                $loader = require __DIR__ . '/../../../../../../../autoload.php';
+                $loader = require __DIR__ . '/../../../../../../autoload.php';
             } else {
                 // Check if testing root package without PHPUnit
-                $loader = require __DIR__ . '/../../../../../vendor/autoload.php';
+                $loader = require __DIR__ . '/../../../../vendor/autoload.php';
             }
 
-            $this->application->setAutoloader($loader);
-            $this->application->expects($this->any())->method('getMagentoRootFolder')->will($this->returnValue($root));
+            $application->setAutoloader($loader);
+            $application->expects($this->any())->method('getMagentoRootFolder')->will($this->returnValue($root));
 
             spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
 
-            $this->application->init();
-            $this->application->initMagento();
-            if ($this->application->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1) {
+            $application->init();
+            $application->initMagento();
+            if ($application->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1) {
                 spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
             }
+
+            $this->application = $application;
         }
 
         return $this->application;

@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\Category\Create;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class DummyCommandTest extends TestCase
@@ -51,15 +51,15 @@ class DummyCommandTest extends TestCase
     {
         \Mage::getModel('catalog/category')->load($_category_id)->delete();
     }
-    
+
     public function testmanageArguments()
     {
         $application = $this->getApplication();
         $application->add(new DummyCommand());
         $command = $application->find('category:create:dummy');
-        
+
         $dialog = $this->getMock('Symfony\Component\Console\Helper\QuestionHelper', array('ask'));
-        
+
         // ASK - store-id
         $dialog->expects($this->any())
             ->method('ask')
@@ -69,7 +69,7 @@ class DummyCommandTest extends TestCase
                 $this->isInstanceOf('Symfony\Component\Console\Question\Question')
             )
             ->will($this->returnValue(1));
-        
+
         // ASK - children-categories-number
         $dialog->expects($this->any())
             ->method('ask')
@@ -99,10 +99,10 @@ class DummyCommandTest extends TestCase
                 $this->isInstanceOf('Symfony\Component\Console\Question\Question')
             )
             ->will($this->returnValue(0));
-        
+
         // We override the standard helper with our mock
         $command->getHelperSet()->set($dialog, 'dialog');
-        
+
         $commandTester = new CommandTester($command);
 
         $commandTester->execute(

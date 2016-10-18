@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Ide\PhpStorm;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class MetaCommandTest extends TestCase

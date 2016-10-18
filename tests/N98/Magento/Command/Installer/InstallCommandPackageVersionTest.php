@@ -7,7 +7,7 @@
 
 namespace N98\Magento\Command\Installer;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 
 /**
  * Checks installer configuration to not put packages in the wrong order in config.yml

@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\Database;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class QueryCommandTest extends TestCase
@@ -20,7 +20,7 @@ class QueryCommandTest extends TestCase
                 'query'   => 'SHOW TABLES;',
             )
         );
-    
+
         $this->assertContains('admin_user', $commandTester->getDisplay());
         $this->assertContains('catalog_product_entity', $commandTester->getDisplay());
         $this->assertContains('wishlist', $commandTester->getDisplay());

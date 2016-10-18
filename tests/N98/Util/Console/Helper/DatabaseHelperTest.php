@@ -3,7 +3,7 @@
 namespace N98\Util\Console\Helper;
 
 use InvalidArgumentException;
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use RuntimeException;
 
 /**

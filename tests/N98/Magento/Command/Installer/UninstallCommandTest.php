@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\Installer;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Tester\CommandTester;

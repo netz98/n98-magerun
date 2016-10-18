@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\System\Setup;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class RunCommandTest extends TestCase
@@ -19,7 +19,7 @@ class RunCommandTest extends TestCase
                 'command' => $command->getName(),
             )
         );
-    
+
         $this->assertRegExp('/done/', $commandTester->getDisplay());
     }
 }

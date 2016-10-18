@@ -7,7 +7,7 @@
 
 namespace N98\Magento;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 
 /**
  * Class DbSettingsTest

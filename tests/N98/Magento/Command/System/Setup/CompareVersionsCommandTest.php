@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\System\Setup;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use org\bovigo\vfs\vfsStream;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -20,7 +20,7 @@ class CompareVersionsCommandTest extends TestCase
                 'command' => $command->getName(),
             )
         );
-    
+
         $this->assertRegExp('/Setup/', $commandTester->getDisplay());
         $this->assertRegExp('/Module/', $commandTester->getDisplay());
         $this->assertRegExp('/DB/', $commandTester->getDisplay());

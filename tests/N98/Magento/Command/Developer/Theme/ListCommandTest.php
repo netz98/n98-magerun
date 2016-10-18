@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Theme;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class ListCommandTest extends TestCase
@@ -19,7 +19,7 @@ class ListCommandTest extends TestCase
                 'command' => $command->getName(),
             )
         );
-    
+
         $this->assertContains('base/default', $commandTester->getDisplay());
     }
 }

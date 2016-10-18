@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\Installer;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use RuntimeException;
 use Symfony\Component\Console\Tester\CommandTester;
 

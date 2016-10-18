@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\Media;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class DumpCommand extends TestCase
@@ -21,7 +21,7 @@ class DumpCommand extends TestCase
                 '--strip'  => true,
             )
         );
-    
+
         $this->assertContains('Compress directory', $commandTester->getDisplay());
     }
 }
