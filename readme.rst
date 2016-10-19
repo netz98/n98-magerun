@@ -1326,6 +1326,8 @@ The command checks class inheritance in order of your module dependencies.
 
 * If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
 
+When a fix for a merge conflict is introduced by creating another rewrite conflict, you can mark it as completed using an annotation. The annotation should be in the form (for example) `@SolvesRewriteConflict(catalog/product,First_ModuleWithConflict_Model_Catalog_Product, Second_ModuleWithConflict_Model_Catalog_Product, X_ModuleWithConflict_Model_Catalog_Product)`.
+
 Module Dependencies
 """""""""""""""""""
 
