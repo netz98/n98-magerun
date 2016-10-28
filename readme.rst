@@ -50,6 +50,12 @@ Download the latest stable N98-Magerun phar-file from the file-server_:
 
    wget https://files.magerun.net/n98-magerun.phar
 
+or if you have problems with SSL certificate:
+
+.. code-block:: sh
+
+   curl -O https://files.magerun.net/n98-magerun.phar
+
 Verify the download by comparing the MD5 checksum with the one on the website:
 
 .. code-block:: sh
