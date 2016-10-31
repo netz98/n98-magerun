@@ -3,8 +3,10 @@ RECENT CHANGES
 
 1.97.23
 -------
+* Fix: Print exceptions on cron run (by Luke Rodgers, #862)
 * Fix: Prevent PHP fatal errors in dev:module:rewrite:conflicts (report by Simon Sprankel, fix by Tom Klingenberg, #856)
 * Fix: Strip email queue tables for development db:dump command (by Robbie Averill, #836)
+* Upd: Documentation patch (by Rafael Corrêa Gomes, #869)
 * Imp: Create controllers folder in dev:module:create command (by Alexander Turiak, #835)
 * Imp: Update example to use config:search command (by Hardy Johnson, #834)
 * Imp: Build in clean directory (by Tom Klingenberg)
