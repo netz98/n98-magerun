@@ -99,6 +99,7 @@ HELP;
                     ->setMessages($e->getMessage())
                     ->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
                     ->save();
+                throw $e;
             }
 
             $output->writeln('<info>done</info>');
