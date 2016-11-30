@@ -84,6 +84,7 @@ HELP;
                 $schedule
                     ->setJobCode($jobCode)
                     ->setStatus(\Mage_Cron_Model_Schedule::STATUS_RUNNING)
+                    ->setCreatedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
                     ->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
                     ->save();
 
