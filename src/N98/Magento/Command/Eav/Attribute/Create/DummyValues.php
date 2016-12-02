@@ -5,7 +5,7 @@ namespace N98\Magento\Command\Eav\Attribute\Create;
 class DummyValues
 {
     private $faker;
-    
+
     private $sizes = array(
         'XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46',
         '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60',
@@ -33,7 +33,7 @@ class DummyValues
         'Atm Anthony Thomas Melillo', 'Aurelia Probiotic Skincare', 'Aurelie Bidermann', 'Ava Adore', 'Avant Toi',
         'Avelon', 'Awake', 'B May', 'Badgley Mischka', 'Baja East', 'Bakel', 'Balenciaga Eyewear', 'Balenciaga Vintage',
         'Ballin', 'Bally', 'Balmain', 'Bao Bao Issey Miyake', 'Barbara Bui', 'Barbara Casasola', 'Barbara I Gongini',
-        'Bark', 'Barn\'s', 'Barrie',  'Bassike', 'Bata', 'Bazar Deluxe', 'Bea Bongiasca', 'Beau Souci', 'Becca',
+        'Bark', 'Barn\'s', 'Barrie', 'Bassike', 'Bata', 'Bazar Deluxe', 'Bea Bongiasca', 'Beau Souci', 'Becca',
         'Beek..', 'Bella Freud', 'Belstaff', 'Bernhard Willhelm', 'Beth Orduna', 'Bhindi Jewelers', 'Bianca Spender',
         'Biba Vintage', 'Bibi Van Der Velden', 'Bintthani', 'Bionda Castana', 'Birkenstock', 'Bjorg', 'Blancha',
         'Blk Dnm', 'Blugirl', 'Blumarine', 'Boboutic', 'Borbonese', 'Bottega Veneta Eyewear', 'Boutique Moschino',
@@ -130,20 +130,20 @@ class DummyValues
         'Marchesa', 'Marchesa Notte', 'Marco De Vincenzo', 'Maria Black', 'Maria Lucia Hohan', 'Maria Teresa Sottile',
         'Marie Helene De Taillac', 'Mark Cross', 'Markus Lupfer', 'Marni', 'Marsèll', 'Marshall', 'Martha Medeiros',
         'Martine Jarlgaard', 'Mary Katrantzou', 'Mary Katrantzou X Adidas Originals', 'Maryam Nassir Zadeh',
-        'Marysia', 'Masnada', 'Massimo Alba', 'Master & Dynamic', 'Masunaga', 'Matar', 'Mathilde Danglade', 'Maticevski',
-        'Matsuda', 'Matthew Darbyshire', 'Matthew Williamson', 'Mawi', 'Max Mara', 'Max Mara Studio', 'Max Tan',
-        'Maxime Llorens', 'Maxwell Snow', 'MCM', 'Mcm Vintage', 'McQ Alexander McQueen', 'Me&Mr.Gentleman',
+        'Marysia', 'Masnada', 'Massimo Alba', 'Master & Dynamic', 'Masunaga', 'Matar', 'Mathilde Danglade',
+        'Maticevski', 'Matsuda', 'Matthew Darbyshire', 'Matthew Williamson', 'Mawi', 'Max Mara', 'Max Mara Studio',
+        'Max Tan', 'Maxime Llorens', 'Maxwell Snow', 'MCM', 'Mcm Vintage', 'McQ Alexander McQueen', 'Me&Mr.Gentleman',
         'Melissa + Jeremy Scott', 'Melissa Joy Manning', 'Melissa Odabash', 'Mes Demoiselles', 'Miahatami', 'Miansai',
         'Michael Kors', 'Michael Michael Kors', 'Michael Schmidt', 'Michel Vivien', 'Micol Ragni', 'Mih Jeans',
         'Mihara Yasuhiro', 'Milly', 'Minimarket', 'Minjukim', 'Minna Parikka', 'Mira Mikati', 'Missoni',
-        'Missoni Vintage',  'Miu Miu Eyewear', 'Mm6 Maison Margiela', 'Moa Master Of Arts',  'Moeva', 'Monan',
-        'Moncler', 'Moncler Gamme Rouge', 'Moncler Grenoble', 'Moncler X Erdem',  'Monday Active', 'Monica Sordo',
+        'Missoni Vintage', 'Miu Miu Eyewear', 'Mm6 Maison Margiela', 'Moa Master Of Arts', 'Moeva', 'Monan',
+        'Moncler', 'Moncler Gamme Rouge', 'Moncler Grenoble', 'Moncler X Erdem', 'Monday Active', 'Monica Sordo',
         'Monies', 'Monique Lhuillier', 'Monocle Eyewear', 'Monreal London', 'Moo Piyasombatkul', 'Moohong',
         'Moratorium', 'Moreau', 'Moschino', 'Moschino Vintage', 'Mother', 'Mother Of Pearl', 'Mou', 'Movitra',
         'Mr & Mrs Italy', 'MSGM', 'Mua Mua', 'Mugler', 'Murmur', 'Musée', 'Muubaa', 'Muveil', 'Mykita',
         'Myriam Schaefer', 'Myswear', 'N.Peal', 'Nafsika Skourti', 'Narciso Rodriguez', 'Nasir Mazhar',
         'Natasha Collis', 'Natasha Zinko', 'Nathalie Trad', 'Natura Bisse', 'Neil Barrett', 'Nektar De Stagni',
-        'Neuw', 'Nevermind',  'New Balance', 'Newbark', 'Nicholas Kirkwood', 'Nicole Miller', 'Nicopanda',
+        'Neuw', 'Nevermind', 'New Balance', 'Newbark', 'Nicholas Kirkwood', 'Nicole Miller', 'Nicopanda',
         'Night Market', 'Nike', 'Nikos Koulis', 'Nili Lotan', 'Nina Ricci', 'Nina Ricci Vintage', 'Nixon', 'Niza Huang',
         'Nº21', 'Nobody Denim', 'Nomia', 'Noor Fares', 'Noritamy', 'Norma Kamali', 'Norse Projects', 'NSF', 'Nuface',
         'O&M', 'Oamc', 'Obey', 'Occulter', 'Odeeh', 'Odeur', 'Of Rare Origin', 'Officine Creative', 'Off-White',
@@ -220,11 +220,11 @@ class DummyValues
     public static function getValueTypeList()
     {
         return array(
-              'int'      => 'int',
-              'string'   => 'string',
-              'color'    => 'color',
-              'size'     => 'size',
-              'designer' => 'designer',
+            'int'      => 'int',
+            'string'   => 'string',
+            'color'    => 'color',
+            'size'     => 'size',
+            'designer' => 'designer',
         );
     }
 

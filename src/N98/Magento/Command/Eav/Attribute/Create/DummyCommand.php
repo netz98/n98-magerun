@@ -24,11 +24,13 @@ Supported Locales:
 - en_US
 - en_GB
 HELP;
-        $this->setName('eav:attribute:create-dummy-values')->addArgument('locale', InputArgument::OPTIONAL, 'Locale')
-             ->addArgument('attribute-id', InputArgument::OPTIONAL, 'Attribute ID to add values')
-             ->addArgument('values-type', InputArgument::OPTIONAL, 'Types of Values to create (default int)')
-             ->addArgument('values-number', InputArgument::OPTIONAL, 'Number of Values to create (default 1)')
-             ->setDescription('Create a dummy values for dropdown attributes')->setHelp($help);
+        $this
+            ->setName('eav:attribute:create-dummy-values')->addArgument('locale', InputArgument::OPTIONAL, 'Locale')
+            ->addArgument('attribute-id', InputArgument::OPTIONAL, 'Attribute ID to add values')
+            ->addArgument('values-type', InputArgument::OPTIONAL, 'Types of Values to create (default int)')
+            ->addArgument('values-number', InputArgument::OPTIONAL, 'Number of Values to create (default 1)')
+            ->setDescription('Create a dummy values for dropdown attributes')->setHelp($help)
+        ;
     }
 
     /**
@@ -44,12 +46,19 @@ HELP;
             return;
         }
 
-        $output->writeln("<warning>This only create sample attribute values, do not use on production environment</warning>");
+        $output->writeln(
+            "<warning>This only create sample attribute values, do not use on production environment</warning>"
+        );
 
         // Ask for Arguments
         $argument = $this->askForArguments($input, $output);
         if (!in_array($input->getArgument('locale'), $this->supportedLocales)) {
-            $output->writeln(sprintf("<warning>Locale '%s' not supported, switch to default locale 'us_US'.</warning>", $input->getArgument('locale')));
+            $output->writeln(
+                sprintf(
+                    "<warning>Locale '%s' not supported, switch to default locale 'us_US'.</warning>",
+                    $input->getArgument('locale')
+                )
+            );
             $argument['locale'] = "en_US";
         } else {
             $argument['locale'] = $input->getArgument('locale');
@@ -87,10 +96,12 @@ HELP;
 
         // Attribute ID
         if (is_null($input->getArgument('attribute-id'))) {
-            $attribute_code = Mage::getModel('eav/entity_attribute')->getCollection()->addFieldToSelect('*')
-                                  ->addFieldToFilter('entity_type_id', array('eq' => 4))
-                                  ->addFieldToFilter('backend_type', array('in' => array('int')))
-                                  ->setOrder('attribute_id', 'ASC');
+            $attribute_code = Mage::getModel('eav/entity_attribute')
+                ->getCollection()->addFieldToSelect('*')
+                ->addFieldToFilter('entity_type_id', array('eq' => 4))
+                ->addFieldToFilter('backend_type', array('in' => array('int')))
+                ->setOrder('attribute_id', 'ASC')
+            ;
             $attribute_codes = array();
 
             foreach ($attribute_code as $item) {
@@ -133,7 +144,7 @@ HELP;
 
         return $argument;
     }
-    
+
     /**
      * Check if an option exist
      *
