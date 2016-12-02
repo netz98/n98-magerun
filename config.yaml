@@ -176,7 +176,7 @@ commands:
       - name: magento-ce-1.9.2.4
         version: 1.9.2.4
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.1/magento-1.9.2.3.zip
+          url: http://www.magentocommerce.com/downloads/assets/1.9.2.4/magento-1.9.2.4.zip
           type: zip
           shasum: 219fe2b88068cf73953b90ce01186cb1f19affea
         extra:
@@ -185,7 +185,7 @@ commands:
       - name: magento-ce-1.9.2.3
         version: 1.9.2.3
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.1/magento-1.9.2.3.zip
+          url: http://www.magentocommerce.com/downloads/assets/1.9.2.3/magento-1.9.2.3.zip
           type: zip
           shasum: c211c1d31468dfbc45decd7d00266281fdc97b20
         extra:
@@ -194,7 +194,7 @@ commands:
       - name: magento-ce-1.9.2.2
         version: 1.9.2.2
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.1/magento-1.9.2.2.zip
+          url: http://www.magentocommerce.com/downloads/assets/1.9.2.2/magento-1.9.2.2.zip
           type: zip
           shasum: 6b6de6bee57a2992affa1fad01444cb6c05e0788
         extra:
