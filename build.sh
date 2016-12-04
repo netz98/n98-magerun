@@ -28,7 +28,7 @@ if [ ! -d "${build_dir}" ]; then
     exit 1
 fi
 
-git clone --no-local -- . "${build_dir}"
+git clone --quiet --no-local -- . "${build_dir}"
 
 composer="${build_dir}/composer.phar"
 
@@ -46,19 +46,21 @@ fi
 
 if [ ! -e "${composer}" ]; then
     echo "Downloading composer.phar..."
-    wget -O "${composer}" https://getcomposer.org/download/1.1.3/composer.phar
+    wget --quiet -O "${composer}" https://getcomposer.org/download/1.1.3/composer.phar
     chmod +x "${composer}"
 fi
 
 "${composer}" --version
 php --version
 
+echo "Composer install in '${build_dir}'..."
 if ! "${composer}" -d="${build_dir}" --profile -q install --no-dev --no-interaction; then
     echo "failed to install from composer.lock, installing without lockfile now"
     rm "${build_dir}"/composer.lock
     "${composer}" -d="${build_dir}" --profile -q install --no-dev --no-interaction
 fi
 
+echo "Composer install build requirements in '${build_dir}/build'..."
 "${composer}" -d="${build_dir}"/build --profile -q install --no-interaction
 
 if [ -e "${phar}" ]; then
@@ -76,7 +78,7 @@ ulimit -Sn $(ulimit -Hn)
 
 echo "invoking phing dist_clean target..."
 set +e
-php -f build/vendor/phing/phing/bin/phing -dphar.readonly=0 -- -verbose dist_clean
+php -f build/vendor/phing/phing/bin/phing -dphar.readonly=0 -- dist_clean
 BUILD_STATUS=$?
 set -e
 if [ ${BUILD_STATUS} -ne 0 ]; then
