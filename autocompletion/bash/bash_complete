@@ -72,7 +72,7 @@ _n98-magerun()
             opts="${opts} --format"
             ;;
             cache:clean)
-            opts="${opts} "
+            opts="${opts} --reinit --no-reinit"
             ;;
             cache:dir:flush)
             opts="${opts} "
@@ -84,7 +84,7 @@ _n98-magerun()
             opts="${opts} "
             ;;
             cache:flush)
-            opts="${opts} "
+            opts="${opts} --reinit --no-reinit"
             ;;
             cache:list)
             opts="${opts} --format"
@@ -216,7 +216,7 @@ _n98-magerun()
             opts="${opts} --on --off --global"
             ;;
             dev:module:create)
-            opts="${opts} --add-blocks --add-helpers --add-models --add-setup --add-all --modman --add-readme --add-composer --author-name --author-email --description"
+            opts="${opts} --add-controllers --add-blocks --add-helpers --add-models --add-setup --add-all --modman --add-readme --add-composer --author-name --author-email --description"
             ;;
             dev:module:dependencies:from)
             opts="${opts} --all --format"
@@ -363,7 +363,7 @@ _n98-magerun()
             opts="${opts} "
             ;;
             sys:setup:run)
-            opts="${opts} "
+            opts="${opts} --no-implicit-cache-flush"
             ;;
             sys:store:config:base-url:list)
             opts="${opts} --format"
