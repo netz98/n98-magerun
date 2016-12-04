@@ -1,6 +1,9 @@
 RECENT CHANGES
 ==============
 
+1.97.24
+-------
+
 1.97.23
 -------
 * Fix: Add missing sample-data package 1.9.2.4 (by Tom Klingenberg, #872)
