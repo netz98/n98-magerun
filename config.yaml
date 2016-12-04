@@ -180,7 +180,7 @@ commands:
           type: zip
           shasum: 219fe2b88068cf73953b90ce01186cb1f19affea
         extra:
-          sample-data: sample-data-1.9.1.0
+          sample-data: sample-data-1.9.2.4
 
       - name: magento-ce-1.9.2.3
         version: 1.9.2.3
@@ -288,7 +288,7 @@ commands:
           type: zip
           shasum: a1f18d56c03f74207a712b12b2d93d7c524d1f1d
         extra:
-          sample-data: sample-data-1.9.1.0
+          sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.2.4
         version: 1.9.2.4
@@ -297,7 +297,7 @@ commands:
           type: zip
           shasum: 4a32fb868cf8194c958e01bcd85779b7855fe36c
         extra:
-          sample-data: sample-data-1.9.1.0
+          sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.2.3
         version: 1.9.2.3
@@ -435,6 +435,13 @@ commands:
           sample-data: sample-data-1.6.1.0
 
     demo-data-packages:
+      - name: sample-data-1.9.2.4
+        version: 1.9.2.4
+        dist:
+          url: http://sourceforge.net/projects/mageloads/files/assets/1.9.2.4/magento-sample-data-1.9.2.4.tar.gz
+          type: tar
+          shasum: 5ad29dc3df38d21b2407c49f66d5308b01961d60
+
       - name: sample-data-1.9.1.0
         version: 1.9.1.0
         dist:

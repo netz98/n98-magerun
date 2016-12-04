@@ -83,6 +83,40 @@ class InstallCommandPackageVersionTest extends TestCase
     }
 
     /**
+     * @test that demo-data-packages actually exist
+     */
+    public function demoDataPackages()
+    {
+        $application = $this->getApplication();
+        $application->add(new InstallCommand());
+        /** @var InstallCommand $command */
+        $command = $this->getApplication()->find('install');
+
+        $tester = new InstallCommandTester();
+        $packages = $tester->getMagentoPackages($command);
+        $demoDataPackages = $tester->getSampleDataPackages($command);
+
+        $this->assertSampleDataPackagesExist($packages, $demoDataPackages);
+    }
+
+    private function assertSampleDataPackagesExist(array $packages, array $demoDataPackages)
+    {
+        $map = array();
+        foreach ($demoDataPackages as $index => $package) {
+            $map[$package['name']] = $index;
+        }
+
+        foreach ($packages as $index => $package) {
+            if (!isset($package['extra']['sample-data'])) {
+                continue;
+            }
+            $name = $package['extra']['sample-data'];
+            $message = sprintf('Invalid sample-data "%s" (undefined) in package "%s"', $name, $package['name']);
+            $this->assertArrayHasKey($name, $map, $message);
+        }
+    }
+
+    /**
      * @param string $name
      * @return array
      */

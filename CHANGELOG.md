@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.97.23
 -------
+* Fix: Add missing sample-data package 1.9.2.4 (by Tom Klingenberg, #872)
 * Fix: Set created_at in schedule when running a cron job (by Toon Spin,  #874)
 * Fix: Print exceptions on cron run (by Luke Rodgers, #862)
 * Fix: Prevent PHP fatal errors in dev:module:rewrite:conflicts (report by Simon Sprankel, fix by Tom Klingenberg, #856)

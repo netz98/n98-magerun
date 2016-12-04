@@ -14,14 +14,27 @@ namespace N98\Magento\Command\Installer;
  */
 class InstallCommandTester extends InstallCommand
 {
+    const COMMAND_CLASS = 'N98\Magento\Command\Installer\InstallCommand';
+
     /**
      * @param InstallCommand $command
      * @return array
      */
     public function getMagentoPackages(InstallCommand $command)
     {
-        $commandClass = 'N98\Magento\Command\Installer\InstallCommand';
+        $commandClass = self::COMMAND_CLASS;
         $commandConfig = $command->getCommandConfig($commandClass);
         return $commandConfig['magento-packages'];
+    }
+
+    /**
+     * @param InstallCommand $command
+     * @return array
+     */
+    public function getSampleDataPackages(InstallCommand $command)
+    {
+        $commandClass = self::COMMAND_CLASS;
+        $commandConfig = $command->getCommandConfig($commandClass);
+        return $commandConfig['demo-data-packages'];
     }
 }
