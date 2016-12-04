@@ -62,8 +62,11 @@ matrix:
     - php: 5.5
       env: MAGENTO_VERSION="magento-mirror-1.7.0.2" DB=mysql INSTALL_SAMPLE_DATA=no
   include:
-    # Lint PHP code with PHP 7.0
+    # Lint PHP code with future PHP versions (forward compatibility)
     - php: 7.0
+      env: LINTSH=1
+      script: find {src,tests} -name "*.php" ! -path '*/String.php' -print0 | xargs -0 -n1 -P8 php -l | grep -v '^No syntax errors detected'; test $? -eq 1
+    - php: 7.1
       env: LINTSH=1
       script: find {src,tests} -name "*.php" ! -path '*/String.php' -print0 | xargs -0 -n1 -P8 php -l | grep -v '^No syntax errors detected'; test $? -eq 1
     # Run the build script with different PHP versions
@@ -82,6 +85,9 @@ matrix:
     - php: 7.0
       env: BUILDSH=1
       script: build/travis/build.sh
+    - php: 7.1
+      env: BUILDSH=1
+      script: build/travis/build.sh
     # Run with current PHP 5.6 and PHP 7.0 version
     - php: 5.6
       env: MAGENTO_VERSION="magento-mirror-1.9.2.4" DB=mysql INSTALL_SAMPLE_DATA=no
@@ -94,6 +100,8 @@ matrix:
     - php: 7.0
       env: MAGENTO_VERSION="magento-mirror-1.9.3.0" DB=mysql INSTALL_SAMPLE_DATA=no
     - php: 7.0
+      env: MAGENTO_VERSION="magento-mirror-1.9.3.1" DB=mysql INSTALL_SAMPLE_DATA=no
+    - php: 7.1
       env: MAGENTO_VERSION="magento-mirror-1.9.3.1" DB=mysql INSTALL_SAMPLE_DATA=no
 
 before_install:
