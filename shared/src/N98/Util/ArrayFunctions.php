@@ -1,4 +1,7 @@
 <?php
+/*
+ * @author Tom Klingenberg <https://github.com/ktomk>
+ */
 
 namespace N98\Util;
 
@@ -76,5 +79,69 @@ class ArrayFunctions
         }
 
         return $matrix;
+    }
+
+    /**
+     * @param string[] $columns
+     * @param array $table
+     * @return array table with ordered columns
+     */
+    public static function columnOrderArrayTable(array $columns, array $table)
+    {
+        $closure = function (array $array) use ($columns) {
+            return self::columnOrder($columns, $array);
+        };
+
+        if (PHP_VERSION_ID < 50400) {
+            $closure = function (array $array) use ($columns) {
+                return call_user_func(__CLASS__ . '::columnOrder', $columns, $array);
+            };
+        }
+
+        return array_map($closure, $table);
+    }
+
+    /**
+     * order array entries (named and numbered) of array by the columns given as string keys.
+     *
+     * non-existent columns default to numbered entries or if no numbered entries exists any longer, to null.
+     *
+     * entries in array that could not consume any column are put after the columns.
+     *
+     * @param string[] $columns
+     * @param array $array
+     * @return array
+     */
+    public static function columnOrder(array $columns, array $array)
+    {
+        if (!$columns) {
+            return $array;
+        }
+
+        $keys = array_fill_keys($columns, null);
+
+        $keyed = array_intersect_key($array, $keys);
+
+        $arrayLeftover = array_diff_key($array, $keyed);
+        $keysLeftover = array_diff_key($keys, $keyed);
+
+        $target = array();
+        if ($keysLeftover) {
+            foreach ($arrayLeftover as $key => $value) {
+                if (is_string($key)) {
+                    continue;
+                }
+                $target[key($keysLeftover)] = $value;
+                unset($arrayLeftover[$key]);
+                next($keysLeftover);
+                if (null === key($keysLeftover)) {
+                    break;
+                }
+            }
+        }
+
+        $result = array_merge($keys, $keyed, $keysLeftover, $target, $arrayLeftover);
+
+        return $result;
     }
 }

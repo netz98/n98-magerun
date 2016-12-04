@@ -27,10 +27,10 @@ class InfoCommand extends AbstractMagentoCommand
      */
     protected $_configNodesWithExceptions = array(
         'Design Package Name' => 'design/package/name',
-        'Theme template' => 'design/theme/template',
-        'Theme skin' => 'design/theme/skin',
-        'Theme layout' => 'design/theme/layout',
-        'Theme default' => 'design/theme/default',
+        'Theme template'      => 'design/theme/template',
+        'Theme skin'          => 'design/theme/skin',
+        'Theme layout'        => 'design/theme/layout',
+        'Theme default'       => 'design/theme/default',
     );
 
     protected function configure()

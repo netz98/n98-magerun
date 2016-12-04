@@ -20,7 +20,6 @@ class WindowsSystemTest extends \PHPUnit_Framework_TestCase
      */
     public function isProgramInstalled()
     {
-
         $this->assertTrue(WindowsSystem::isProgramInstalled("notepad"));
 
         $this->assertFalse(WindowsSystem::isProgramInstalled("notepad-that-never-made-it-into-windows-kernel"));

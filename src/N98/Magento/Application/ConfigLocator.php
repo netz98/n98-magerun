@@ -32,6 +32,7 @@ class ConfigLocator
 
     /**
      * ConfigLocator constructor.
+     *
      * @param string $configFilename
      * @param string $magentoRootFolder
      */
@@ -75,8 +76,10 @@ class ConfigLocator
         if (!strlen($this->magentoRootFolder)) {
             return;
         }
-
         $projectConfigFilePath = $this->magentoRootFolder . '/app/etc/' . $this->customConfigFilename;
+        if (!is_readable($projectConfigFilePath)) {
+            return;
+        }
 
         try {
             $projectConfigFile = ConfigFile::createFromFile($projectConfigFilePath);
@@ -122,9 +125,12 @@ class ConfigLocator
      */
     private function getUserConfigFilePaths()
     {
+        $paths = array();
+
         $homeDirectory = OperatingSystem::getHomeDir();
-        if (!$homeDirectory) {
-            throw new RuntimeException('Unable to get home-directory to obtain user-config-file.');
+
+        if (!strlen($homeDirectory)) {
+            return $paths;
         }
 
         if (!is_dir($homeDirectory)) {
@@ -133,7 +139,6 @@ class ConfigLocator
 
         $basename = $this->customConfigFilename;
 
-        $paths = array();
         if (OperatingSystem::isWindows()) {
             $paths[] = $homeDirectory . '/' . $basename;
         }

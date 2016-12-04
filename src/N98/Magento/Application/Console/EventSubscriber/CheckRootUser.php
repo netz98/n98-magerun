@@ -1,12 +1,14 @@
 <?php
 
-namespace N98\Magento;
+namespace N98\Magento\Application\Console\EventSubscriber;
 
 use N98\Magento\Application\Console\Event;
+use N98\Magento\Application\Console\Events;
 use N98\Util\OperatingSystem;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class EventSubscriber implements EventSubscriberInterface
+class CheckRootUser implements EventSubscriberInterface
 {
     /**
      * @var string
@@ -23,7 +25,7 @@ class EventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'n98-magerun.application.console.run.before' => 'checkRunningAsRootUser',
+            Events::RUN_BEFORE => 'checkRunningAsRootUser',
         );
     }
 
@@ -35,29 +37,30 @@ class EventSubscriber implements EventSubscriberInterface
      */
     public function checkRunningAsRootUser(Event $event)
     {
-        if ($this->_isSkipRootCheck()) {
+        if ($this->_isSkipRootCheck($event->getInput())) {
             return;
         }
+
         $config = $event->getApplication()->getConfig();
         if (!$config['application']['check-root-user']) {
             return;
         }
 
-        $output = $event->getOutput();
         if (OperatingSystem::isRoot()) {
-            $output->writeln('');
-            $output->writeln(self::WARNING_ROOT_USER);
-            $output->writeln('');
+            $output = $event->getOutput();
+            $output->writeln(array(
+                '',
+                self::WARNING_ROOT_USER,
+                '',
+            ));
         }
     }
 
     /**
      * @return bool
      */
-    protected function _isSkipRootCheck()
+    protected function _isSkipRootCheck(InputInterface $input)
     {
-        $skipRootCheckOption = getopt('', array('skip-root-check'));
-
-        return count($skipRootCheckOption) > 0;
+        return $input->hasParameterOption('--skip-root-check');
     }
 }

@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Config;
 
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 class SearchCommandTest extends TestCase
 {
@@ -21,7 +21,6 @@ class SearchCommandTest extends TestCase
             )
         );
         $this->assertContains('Found a field with a match', $commandTester->getDisplay());
-
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(

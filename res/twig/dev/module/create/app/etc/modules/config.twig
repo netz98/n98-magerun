@@ -37,4 +37,17 @@
         </resources>
 {% endif %}
     </global>
+{% if createControllers %}
+    <frontend>
+        <routers>
+            <{{ vendorNamespace | lower }}_{{ moduleName | lower }}>
+                <use>standard</use>
+                <args>
+                    <frontName>{{ moduleName | lower }}</frontName>
+                    <module>{{ vendorNamespace }}_{{ moduleName }}</module>
+                </args>
+            </{{ vendorNamespace | lower }}_{{ moduleName | lower }}>
+        </routers>
+    </frontend>
+{% endif %}
 </config>

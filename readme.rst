@@ -39,7 +39,7 @@ The tool partially works with Magento 2 development branch.
 Installation
 ------------
 
-There are two ways to install the tools:
+There are three ways to install the tools:
 
 Download and Install Phar File
 """"""""""""""""""""""""""""""
@@ -49,6 +49,12 @@ Download the latest stable N98-Magerun phar-file from the file-server_:
 .. code-block:: sh
 
    wget https://files.magerun.net/n98-magerun.phar
+
+or if you have problems with SSL certificate:
+
+.. code-block:: sh
+
+   curl -O https://files.magerun.net/n98-magerun.phar
 
 Verify the download by comparing the MD5 checksum with the one on the website:
 
@@ -108,6 +114,25 @@ Install with Composer
 """""""""""""""""""""
 
 https://github.com/netz98/n98-magerun/wiki/Install-from-source-with-Composer
+
+Install with Homebrew
+"""""""""""""""""""""
+
+First you need to have homebrew installed: http://brew.sh/
+
+Install homebrew-php tap: https://github.com/Homebrew/homebrew-php#installation
+
+Once homebrew and the tap are installed, you can install the tools with it:
+
+.. code-block:: sh
+
+    brew install n98-magerun
+
+You can now use the tools:
+
+.. code-block:: sh
+
+    $ n98-magerun {command}
 
 Update
 ------
@@ -647,7 +672,7 @@ Search system configuration descriptions.
 
  .. code-block:: sh
 
-   $ n98-magerun.phar text
+   $ n98-magerun.phar config:search text
 
 
 List Magento cache status
@@ -666,13 +691,17 @@ If you would like to clean only one cache type:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:clean [code]
+   $ n98-magerun.phar cache:clean [--reinit] [--no-reinit] [<code>]
 
 If you would like to clean multiple cache types at once:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:clean [code] [code] ...
+   $ n98-magerun.phar cache:clean [--reinit] [--no-reinit] [<code>] [<code>] ...
+
+Options:
+    --reinit Reinitialise the config cache after cleaning (Default)
+    --no-reinit Don't reinitialise the config cache after cleaning. This will override --reinit.
 
 If you would like to remove all cache entries use `cache:flush`
 
@@ -681,9 +710,15 @@ Run `cache:list` command to see all codes.
 Remove all cache entries
 """"""""""""""""""""""""
 
+Flush the entire cache.
+
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:flush
+   $ n98-magerun.phar cache:flush [--reinit] [--no-reinit]
+
+Options:
+    --reinit Reinitialise the config cache after flushing (Default)
+    --no-reinit Don't reinitialise the config cache after flushing. This will override --reinit.
 
 List Magento caches
 """""""""""""""""""
@@ -1237,14 +1272,14 @@ Global scope can be set by not permitting store_code parameter:
 
    $ n98-magerun.phar dev:symlinks
 
-Create Module Skel
+Create Module Skeleton
 """"""""""""""""""
 
 Creates an empty module and registers it in current Magento shop:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:module:create [--add-blocks] [--add-helpers] [--add-models] [--add-setup] [--add-all] [--modman] [--add-readme] [--add-composer] [--author-name[="..."]] [--author-email[="..."]] [--description[="..."]] vendorNamespace moduleName [codePool]
+   $ n98-magerun.phar dev:module:create [--add-controllers] [--add-blocks] [--add-helpers] [--add-models] [--add-setup] [--add-all] [--modman] [--add-readme] [--add-composer] [--author-name[="..."]] [--author-email[="..."]] [--description[="..."]] vendorNamespace moduleName [codePool]
 
 Code-Pool defaults to `local`.
 
@@ -1381,6 +1416,52 @@ Example:
 
 
 * If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
+
+Create dummy Category
+"""""""""""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar category:create:dummy
+
+Create dummy categories with all default vanilla magento or your custom values.
+
+**Interactive mode** or via **shell arguments** or mixed.
+
++------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------+
+| Arguments                    | Description                                                                                 | Accepted Values                                  |
++------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------+
+| `store-id`                   | Id of Store to create categories (default: 1)                                               | only integer                                     |
++------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------+
+| `category-number`            | Number of categories to create (default: 1)                                                 | only integer                                     |
++------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------+
+| `children-categories-number` | Number of children for each category created (default: 0 - use '-1' for random from 0 to 5) | only integer or -1 for random number from 0 to 5 |
++------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------+
+| `category-name-prefix`       | Category Name Prefix (default: 'My Awesome Category')                                       | any                                              |
++------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------+
+
+Create dummy Dropdown Attribute Values
+""""""""""""""""""""""""""""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar eav:attribute:create-dummy-values
+
+Create dummy attribute values (ONLY FOR DROPDOWN ATTRIBUTE)
+
+**Interactive mode** or via **shell arguments** or mixed.
+
++------------------------------+----------------------------------------------+--------------------------------------------------------------+
+| Arguments                    | Description                                  | Accepted Values                                              |
++------------------------------+----------------------------------------------+--------------------------------------------------------------+
+| `locale`                     | Locale value in ISO standard like en_US      | only string                                                  |
++------------------------------+----------------------------------------------+--------------------------------------------------------------+
+| `attribute-id`               | Attribute ID to add values                   | only integer                                                 |
++------------------------------+----------------------------------------------+--------------------------------------------------------------+
+| `values-type`                | Types of Values to create (default int)      | `int`<br />`string`<br />`color`<br />`size`<br />`designer` |
++------------------------------+----------------------------------------------+--------------------------------------------------------------+
+| `values-number`              | Number of Values to create (default 1)       | only integer                                                 |
++------------------------------+----------------------------------------------+--------------------------------------------------------------+
 
 List Extensions
 """""""""""""""

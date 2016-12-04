@@ -3,10 +3,8 @@
 namespace N98\Magento\Command\System\Setup;
 
 use InvalidArgumentException;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -42,10 +40,10 @@ class ChangeVersionCommand extends AbstractSetupCommand
             return;
         }
 
-        $moduleVersion  = $input->getArgument('version');
-        $moduleName     = $this->getModule($input);
-        $setupName      = $input->getArgument('setup');
-        $moduleSetups   = $this->getModuleSetupResources($moduleName);
+        $moduleVersion = $input->getArgument('version');
+        $moduleName = $this->getModule($input);
+        $setupName = $input->getArgument('setup');
+        $moduleSetups = $this->getModuleSetupResources($moduleName);
 
         if (empty($moduleSetups)) {
             $output->writeln(sprintf('No setup resources found for module: "%s"', $moduleName));

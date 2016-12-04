@@ -37,7 +37,7 @@ detect:
 
 event:
   subscriber:
-    - N98\Magento\EventSubscriber
+    - N98\Magento\Application\Console\EventSubscriber\CheckRootUser
     - N98\Magento\Command\ComposerWrapper\EventSubscriber
     - N98\Util\Console\Helper\IoHelper
 
@@ -176,16 +176,16 @@ commands:
       - name: magento-ce-1.9.2.4
         version: 1.9.2.4
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.1/magento-1.9.2.3.zip
+          url: http://www.magentocommerce.com/downloads/assets/1.9.2.4/magento-1.9.2.4.zip
           type: zip
           shasum: 219fe2b88068cf73953b90ce01186cb1f19affea
         extra:
-          sample-data: sample-data-1.9.1.0
+          sample-data: sample-data-1.9.2.4
 
       - name: magento-ce-1.9.2.3
         version: 1.9.2.3
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.1/magento-1.9.2.3.zip
+          url: http://www.magentocommerce.com/downloads/assets/1.9.2.3/magento-1.9.2.3.zip
           type: zip
           shasum: c211c1d31468dfbc45decd7d00266281fdc97b20
         extra:
@@ -194,7 +194,7 @@ commands:
       - name: magento-ce-1.9.2.2
         version: 1.9.2.2
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.1/magento-1.9.2.2.zip
+          url: http://www.magentocommerce.com/downloads/assets/1.9.2.2/magento-1.9.2.2.zip
           type: zip
           shasum: 6b6de6bee57a2992affa1fad01444cb6c05e0788
         extra:
@@ -281,6 +281,24 @@ commands:
         extra:
           sample-data: sample-data-1.6.1.0
 
+      - name: magento-mirror-1.9.3.1
+        version: 1.9.3.1
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.1.zip
+          type: zip
+          shasum: e46ebd867142427b1f1587df2fd8198f73dc6595
+        extra:
+          sample-data: sample-data-1.9.2.4
+
+      - name: magento-mirror-1.9.3.0
+        version: 1.9.3.0
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.0.zip
+          type: zip
+          shasum: a1f18d56c03f74207a712b12b2d93d7c524d1f1d
+        extra:
+          sample-data: sample-data-1.9.2.4
+
       - name: magento-mirror-1.9.2.4
         version: 1.9.2.4
         dist:
@@ -288,7 +306,7 @@ commands:
           type: zip
           shasum: 4a32fb868cf8194c958e01bcd85779b7855fe36c
         extra:
-          sample-data: sample-data-1.9.1.0
+          sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.2.3
         version: 1.9.2.3
@@ -426,6 +444,13 @@ commands:
           sample-data: sample-data-1.6.1.0
 
     demo-data-packages:
+      - name: sample-data-1.9.2.4
+        version: 1.9.2.4
+        dist:
+          url: http://sourceforge.net/projects/mageloads/files/assets/1.9.2.4/magento-sample-data-1.9.2.4.tar.gz
+          type: tar
+          shasum: 5ad29dc3df38d21b2407c49f66d5308b01961d60
+
       - name: sample-data-1.9.1.0
         version: 1.9.1.0
         dist:
@@ -514,6 +539,10 @@ commands:
         description: Customer data - Should not be used without @sales
         tables: customer_address* customer_entity* wishlist*
 
+      - id: emails
+        description: Email queue tables
+        tables: core_email_queue*
+
       - id: newsletter
         description: Newsletter subscriber data
         tables: newsletter_*
@@ -524,7 +553,7 @@ commands:
 
       - id: development
         description: Removes logs and trade data so developers do not have to work with real customer data
-        tables: @trade @stripped @search @newsletter
+        tables: @trade @stripped @search @newsletter @emails
 
       - id: ee_changelog
         description: Changelog tables of new indexer since EE 1.13

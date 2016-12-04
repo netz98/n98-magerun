@@ -70,11 +70,11 @@ class CreateUserCommand extends AbstractAdminUserCommand
             // create new user
             $user = $this->getUserModel()
                 ->setData(array(
-                    'username' => $username,
+                    'username'  => $username,
                     'firstname' => $firstname,
-                    'lastname' => $lastname,
-                    'email' => $email,
-                    'password' => $password,
+                    'lastname'  => $lastname,
+                    'email'     => $email,
+                    'password'  => $password,
                     'is_active' => 1,
                 ))->save();
 

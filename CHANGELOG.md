@@ -1,6 +1,28 @@
 RECENT CHANGES
 ==============
 
+1.97.23
+-------
+* Fix: Add missing sample-data package 1.9.2.4 (by Tom Klingenberg, #872)
+* Fix: Set created_at in schedule when running a cron job (by Toon Spin,  #874)
+* Fix: Print exceptions on cron run (by Luke Rodgers, #862)
+* Fix: Prevent PHP fatal errors in dev:module:rewrite:conflicts (report by Simon Sprankel, fix by Tom Klingenberg, #856)
+* Fix: Strip email queue tables for development db:dump command (by Robbie Averill, #836)
+* Upd: Documentation patch (by Rafael Corrêa Gomes, #869)
+* Imp: Create controllers folder in dev:module:create command (by Alexander Turiak, #835)
+* Imp: Update example to use config:search command (by Hardy Johnson, #834)
+* Imp: Build in clean directory (by Tom Klingenberg)
+* New: Add Magento CE 1.9.3.1 to config.yaml (by Tom Klingenberg, #872)
+* New: Add Magento CE 1.9.3.0 to config.yaml (by Marty S/sylink, #867)
+* New: Coding standard defintion and checks (by Tom Klingenberg)
+* New: Add sys:setup:run --no-implicit-cache-flush option (report by Fabrizio Branca, fix by Tom Klingenberg, #850)
+* New: Add eav:attribute:create-dummy-values command (by Giuseppe Morelli, #849)
+* New: Add category:create:dummy command (by Giuseppe Morelli, #845)
+* New: Add config classes streamlining with Magerun 2 (by Tom Klingenberg)
+* New: Add model::method to sys:cron:list command (by Steve Robbins, #838)
+* New: Integration test for db:dump (by Tom Klingenberg)
+* New: Add Homebrew installation (by Matthéo Geoffray, #829)
+
 1.97.22
 -------
 * Fix: Fix open command detection (by Tom Klingenberg)

@@ -179,7 +179,7 @@ class ConfigurationLoader
     {
         if ($this->_systemConfig == null) {
             if (OperatingSystem::isWindows()) {
-                $systemWideConfigFile = getenv('WINDIR') . DIRECTORY_SEPARATOR . $this->_customConfigFilename;
+                $systemWideConfigFile = getenv('WINDIR') . '/' . $this->_customConfigFilename;
             } else {
                 $systemWideConfigFile = '/etc/' . $this->_customConfigFilename;
             }

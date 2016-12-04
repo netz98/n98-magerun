@@ -40,7 +40,7 @@ class OnCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $moduleName = $input->getArgument('moduleName');
-        $recursive  = $input->getOption('all');
+        $recursive = $input->getOption('all');
 
         if ($input->getOption('format') === null) {
             $this->writeSection($output, sprintf('List of module %s dependencies', $moduleName));
@@ -86,7 +86,7 @@ class OnCommand extends AbstractMagentoCommand
 
         if (isset($this->modules[$moduleName])) {
             $dependencies = array();
-            $module       = $this->modules[$moduleName];
+            $module = $this->modules[$moduleName];
             if (isset($module['depends']) && is_array($module['depends']) && count($module['depends']) > 0) {
                 foreach (array_keys($module['depends']) as $dependencyName) {
                     if (isset($this->modules[$dependencyName])) {

@@ -18,10 +18,10 @@ abstract class AbstractCommand extends AbstractMagentoCommand
      *
      * @var string
      */
-    const COMMAND_NAME               = '';
-    const COMMAND_DESCRIPTION        = '';
+    const COMMAND_NAME = '';
+    const COMMAND_DESCRIPTION = '';
     const COMMAND_SECTION_TITLE_TEXT = '';
-    const COMMAND_NO_RESULTS_TEXT    = '';
+    const COMMAND_NO_RESULTS_TEXT = '';
     /**#@-*/
 
     /**
@@ -58,7 +58,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $moduleName = $input->getArgument('moduleName');
-        $recursive  = $input->getOption('all');
+        $recursive = $input->getOption('all');
         if ($input->getOption('format') === null) {
             $this->writeSection($output, sprintf(static::COMMAND_SECTION_TITLE_TEXT, $moduleName));
         }

@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Database;
 
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 class StatusCommandTest extends TestCase
 {
@@ -29,11 +29,10 @@ class StatusCommandTest extends TestCase
 
     public function testExecute()
     {
-
         $commandTester = $this->getCommand(array(
             '--format' => 'csv',
         ));
-        $display       = $commandTester->getDisplay();
+        $display = $commandTester->getDisplay();
 
         $this->assertContains('Threads_connected', $display);
         $this->assertContains('Innodb_buffer_pool_wait_free', $display);

@@ -9,7 +9,7 @@ namespace N98\Magento\Application;
 
 use InvalidArgumentException;
 use MongoDB\Driver\Exception\RuntimeException;
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 
 /**
  * Class ConfigFileTest

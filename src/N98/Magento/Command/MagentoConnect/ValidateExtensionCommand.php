@@ -174,7 +174,7 @@ HELP;
             return $this->_getBasePathFromTargetName((string) $node['name']) . $path;
         }
 
-        $path   = '/' . $node['name'] . $path;
+        $path = '/' . $node['name'] . $path;
         $parent = $this->_getParentNode($node);
 
         return $this->_getPathOfFileNodeToTarget($parent, $path);

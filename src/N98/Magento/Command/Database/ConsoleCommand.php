@@ -43,7 +43,7 @@ class ConsoleCommand extends AbstractDatabaseCommand
 
         /* @var $database DatabaseHelper */
         $database = $this->getHelper('database');
-        $exec     = $mysqlClient . ' ' . $database->getMysqlClientToolConnectionString();
+        $exec = $mysqlClient . ' ' . $database->getMysqlClientToolConnectionString();
 
         $pipes = array();
         $process = proc_open($exec, $descriptorSpec, $pipes);

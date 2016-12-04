@@ -29,7 +29,7 @@ class AutoloadRestorerTest extends \PHPUnit_Framework_TestCase
      */
     public function restoration()
     {
-        $callbackStub = function() {
+        $callbackStub = function () {
         };
 
         $this->assertTrue(spl_autoload_register($callbackStub));

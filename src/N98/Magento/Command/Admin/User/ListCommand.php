@@ -36,7 +36,9 @@ class ListCommand extends AbstractAdminUserCommand
             return;
         }
 
-        $userList = $this->getUserModel()->getCollection();
+        /** @var $userModel \Mage_Admin_Model_User  */
+        $userModel = $this->getUserModel();
+        $userList = $userModel->getCollection();
         $table = array();
         foreach ($userList as $user) {
             $table[] = array(

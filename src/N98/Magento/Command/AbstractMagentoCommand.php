@@ -124,12 +124,9 @@ abstract class AbstractMagentoCommand extends Command
             $commandClass = get_class($this);
         }
 
-        $configArray = $this->getApplication()->getConfig();
-        if (isset($configArray['commands'][$commandClass])) {
-            return $configArray['commands'][$commandClass];
-        }
-
-        return;
+        /** @var \N98\Magento\Application $application */
+        $application = $this->getApplication();
+        return (array) $application->getConfig('commands', $commandClass);
     }
 
     /**
@@ -242,7 +239,11 @@ abstract class AbstractMagentoCommand extends Command
      * @param bool $preferSource
      * @return \Composer\Package\CompletePackage
      */
-    protected function downloadByComposerConfig(InputInterface $input, OutputInterface $output, $config, $targetFolder,
+    protected function downloadByComposerConfig(
+        InputInterface $input,
+        OutputInterface $output,
+        $config,
+        $targetFolder,
         $preferSource = true
     ) {
         $dm = $this->getComposerDownloadManager($input, $output);
@@ -452,7 +453,6 @@ abstract class AbstractMagentoCommand extends Command
          * @return string
          */
         $validateInstallationFolder = function ($folderName) use ($input) {
-
             $folderName = rtrim(trim($folderName, ' '), '/');
             // resolve folder-name to current working directory if relative
             if (substr($folderName, 0, 1) == '.') {
@@ -552,9 +552,10 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @param array           $entries zero-indexed array of entries (represented by strings) to select from
+     * @param array $entries zero-indexed array of entries (represented by strings) to select from
      * @param OutputInterface $output
-     * @param string          $question
+     * @param string $question
+     * @return mixed
      */
     protected function askForArrayEntry(array $entries, OutputInterface $output, $question)
     {

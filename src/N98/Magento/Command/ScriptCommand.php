@@ -300,7 +300,7 @@ HELP;
                 ? \Mage::getEdition() : 'Community';
         }
 
-        $this->scriptVars['${php.version}']     = substr(phpversion(), 0, strpos(phpversion(), '-'));
+        $this->scriptVars['${php.version}'] = substr(phpversion(), 0, strpos(phpversion(), '-'));
         $this->scriptVars['${magerun.version}'] = $this->getApplication()->getVersion();
         $this->scriptVars['${script.file}'] = $this->_scriptFilename;
         $this->scriptVars['${script.dir}'] = dirname($this->_scriptFilename);

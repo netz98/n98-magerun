@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckTablesCommand extends AbstractMagentoCommand
 {
-    const MESSAGE_CHECK_NOT_SUPPORTED  = 'The storage engine for the table doesn\'t support check';
+    const MESSAGE_CHECK_NOT_SUPPORTED = 'The storage engine for the table doesn\'t support check';
     const MESSAGE_REPAIR_NOT_SUPPORTED = 'The storage engine for the table doesn\'t support repair';
 
     /**

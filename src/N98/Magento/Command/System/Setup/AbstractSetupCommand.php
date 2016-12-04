@@ -18,8 +18,8 @@ class AbstractSetupCommand extends AbstractMagentoCommand
      */
     public function getModuleSetupResources($moduleName)
     {
-        $moduleSetups   = array();
-        $resources      = \Mage::getConfig()->getNode('global/resources')->children();
+        $moduleSetups = array();
+        $resources = \Mage::getConfig()->getNode('global/resources')->children();
 
         foreach ($resources as $resName => $resource) {
             $modName = (string) $resource->setup->module;

@@ -22,7 +22,11 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
         $jobs = $this->getJobConfigElements();
 
         foreach ($jobs as $name => $job) {
-            $table[$name] = array('Job' => $name) + $this->getSchedule($job);
+            $model = null;
+            if (isset($job->run->model)) {
+                $model = $job->run->model;
+            }
+            $table[$name] = array('Job' => $name, 'Model' => $model) + $this->getSchedule($job);
         }
 
         ksort($table, SORT_STRING);

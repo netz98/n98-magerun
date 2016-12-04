@@ -3,8 +3,8 @@
 namespace N98\Magento\Command\Cache;
 
 use N98\Magento\Application;
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 class DisableCommandTest extends TestCase
 {
@@ -33,7 +33,7 @@ class DisableCommandTest extends TestCase
             $commandTester->execute(
                 array(
                     'command' => $command->getName(),
-                    'code'    => 'eav,config'
+                    'code'    => 'eav,config',
                 )
             );
 

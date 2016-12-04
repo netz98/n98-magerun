@@ -60,7 +60,7 @@ class AbstractCommand extends AbstractMagentoCommand
         if (false === $this->initMagento()) {
             throw new RuntimeException('Magento could not be loaded');
         }
-        $this->config     = \Mage::getConfig();
+        $this->config = \Mage::getConfig();
         $this->modulesDir = $this->config->getOptions()->getEtcDir() . DS . 'modules' . DS;
         if ($codePool = $input->getOption('codepool')) {
             $output->writeln('<info>' . ($this->commandName == 'enable' ? 'Enabling' : 'Disabling') .

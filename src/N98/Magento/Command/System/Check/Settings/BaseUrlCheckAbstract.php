@@ -4,6 +4,7 @@
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
+
 namespace N98\Magento\Command\System\Check\Settings;
 
 use Mage_Core_Model_Store;
@@ -32,7 +33,7 @@ abstract class BaseUrlCheckAbstract extends CheckAbstract
     {
         $errorMessage = 'Wrong hostname configured. <info>Hostname must contain a dot</info>';
 
-        $host    = parse_url($baseUrl, PHP_URL_HOST);
+        $host = parse_url($baseUrl, PHP_URL_HOST);
         $isValid = (bool) strstr($host, '.');
         $result->setStatus($isValid);
         if ($isValid) {

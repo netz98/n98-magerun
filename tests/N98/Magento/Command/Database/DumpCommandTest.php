@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\Database;
 
-use N98\Magento\Command\PHPUnit\TestCase;
-use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Tester\ApplicationTester;
+use N98\Magento\Command\TestCase;
+use SplFileInfo;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -12,6 +12,23 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class DumpCommandTest extends TestCase
 {
+    /**
+     * @return Command
+     */
+    protected function getCommand()
+    {
+        $dumpCommand = new DumpCommand();
+        if (!$dumpCommand->isEnabled()) {
+            $this->markTestSkipped('DumpCommand is not enabled.');
+        }
+
+        $application = $this->getApplication();
+        $application->add($dumpCommand);
+        $command = $this->getApplication()->find('db:dump');
+
+        return $command;
+    }
+
     public function testExecute()
     {
         $command = $this->getCommand();
@@ -23,10 +40,10 @@ class DumpCommandTest extends TestCase
                 '--add-time'     => true,
                 '--only-command' => true,
                 '--force'        => true,
-                '--compression'  => 'gz'
+                '--compression'  => 'gz',
             )
         );
-    
+
         $this->assertRegExp('/mysqldump/', $commandTester->getDisplay());
         $this->assertRegExp('/\.sql/', $commandTester->getDisplay());
         $this->assertContains(".sql.gz", $commandTester->getDisplay());
@@ -71,10 +88,10 @@ class DumpCommandTest extends TestCase
         $command = $this->getCommand();
 
         $mandatory = array(
-            'command' => $command->getName(),
-            '--force' => true,
+            'command'               => $command->getName(),
+            '--force'               => true,
             '--print-only-filename' => true,
-            '--dry-run' => null,
+            '--dry-run'             => null,
         );
 
         $defaults = array(
@@ -100,7 +117,7 @@ class DumpCommandTest extends TestCase
                 '--only-command' => true,
                 '--force'        => true,
                 '--strip'        => '@development not_existing_table_1',
-                '--compression'  => 'gzip'
+                '--compression'  => 'gzip',
             )
         );
 
@@ -114,7 +131,6 @@ class DumpCommandTest extends TestCase
         $this->assertRegExp("/--ignore-table=$db.sales_flat_order_item/", $commandTester->getDisplay());
         $this->assertNotContains("not_existing_table_1", $commandTester->getDisplay());
         $this->assertContains(".sql.gz", $commandTester->getDisplay());
-
 
         /**
          * Uncompressed
@@ -130,23 +146,32 @@ class DumpCommandTest extends TestCase
             )
         );
         $this->assertNotContains(".sql.gz", $commandTester->getDisplay());
-
     }
 
     /**
-     * @return \Symfony\Component\Console\Command\Command
+     * @test
+     * @link https://github.com/netz98/n98-magerun2/issues/200
      */
-    protected function getCommand()
+    public function realDump()
     {
-        $dumpCommand = new DumpCommand();
-        if (!$dumpCommand->isEnabled()) {
-            $this->markTestSkipped('DumpCommand is not enabled.');
+        $dumpFile = new SplFileInfo($this->getTestMagentoRoot() . '/test-dump.sql');
+        if ($dumpFile->isReadable()) {
+            $this->assertTrue(unlink($dumpFile), 'Precondition to unlink that the file does not exists');
         }
+        $this->assertFalse(is_readable($dumpFile), 'Precondition that the file does not exists');
 
-        $application = $this->getApplication();
-        $application->add($dumpCommand);
-        $command = $this->getApplication()->find('db:dump');
+        $command = $this->getCommand();
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command'  => $command->getName(),
+                '--strip'  => '@stripped',
+                'filename' => $dumpFile,
+            )
+        );
 
-        return $command;
+        $this->assertTrue($dumpFile->isReadable(), 'File was created');
+        // dump should be larger than quarter a megabyte
+        $this->assertGreaterThan(250000, $dumpFile->getSize());
     }
 }

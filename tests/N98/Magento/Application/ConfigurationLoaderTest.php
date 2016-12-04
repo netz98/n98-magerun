@@ -7,7 +7,7 @@
 
 namespace N98\Magento\Application;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Output\NullOutput;
 
 class ConfigurationLoaderTest extends TestCase

@@ -2,13 +2,13 @@
 
 namespace N98\Magento;
 
+use N98\Magento\Command\TestCase;
 use N98\Util\ArrayFunctions;
+use org\bovigo\vfs\vfsStream;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 use Symfony\Component\Yaml\Yaml;
-use org\bovigo\vfs\vfsStream;
 
 class ApplicationTest extends TestCase
 {
@@ -43,19 +43,19 @@ class ApplicationTest extends TestCase
             ),
             'commands' => array(
                 'customCommands' => array(
-                    0 => 'N98MagerunTest\TestDummyCommand'
+                    0 => 'N98MagerunTest\TestDummyCommand',
                 ),
                 'aliases' => array(
                     array(
-                        'cl' => 'cache:list'
-                    )
+                        'cl' => 'cache:list',
+                    ),
                 ),
             ),
             'init' => array(
                 'options' => array(
                     'config_model' => 'N98MagerunTest\AlternativeConfigModel',
-                )
-            )
+                ),
+            ),
         );
 
         $application->setAutoExit(false);
@@ -85,7 +85,6 @@ class ApplicationTest extends TestCase
             $this->assertInstanceOf('\N98MagerunTest\AlternativeConfigModel', \Mage::getConfig());
         }
 
-
         // check alias
         $this->assertInstanceOf('\N98\Magento\Command\Cache\ListCommand', $application->find('cl'));
     }
@@ -104,9 +103,9 @@ class ApplicationTest extends TestCase
         $injectConfig = array(
             'plugin' => array(
                 'folders' => array(
-                    __DIR__ . '/_ApplicationTestModules'
-                )
-            )
+                    __DIR__ . '/_ApplicationTestModules',
+                ),
+            ),
         );
         $application->init($injectConfig);
 
@@ -121,19 +120,19 @@ class ApplicationTest extends TestCase
             array(
                 'htdocs' => array(
                     'app' => array(
-                        'Mage.php' => ''
-                    )
+                        'Mage.php' => '',
+                    ),
                 ),
                 'vendor' => array(
                     'acme' => array(
                         'magerun-test-module' => array(
                             'n98-magerun.yaml' => file_get_contents(__DIR__ . '/_ApplicationTestComposer/n98-magerun.yaml'),
-                            'src' => array(
+                            'src'              => array(
                                 'Acme' => array(
                                     'FooCommand.php' => file_get_contents(__DIR__ . '/_ApplicationTestComposer/FooCommand.php'),
-                                )
-                            )
-                        )
+                                ),
+                            ),
+                        ),
                     ),
                     'n98' => array(
                         'magerun' => array(
@@ -152,6 +151,7 @@ class ApplicationTest extends TestCase
             )
         );
 
+        /** @var \N98\Magento\Application\ConfigurationLoader $configurationLoader */
         $configurationLoader = $this->getMock(
             '\N98\Magento\Application\ConfigurationLoader',
             array('getConfigurationLoaderDir'),

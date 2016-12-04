@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\MagentoConnect;
 
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 class ListExtensionsCommandTest extends TestCase
 {
@@ -24,10 +24,10 @@ class ListExtensionsCommandTest extends TestCase
         $commandTester->execute(
             array(
                 'command' => $command->getName(),
-                'search'  => 'Mage_All_Latest'
+                'search'  => 'Mage_All_Latest',
             )
         );
-    
+
         $this->assertContains('Package', $commandTester->getDisplay());
         $this->assertContains('Version', $commandTester->getDisplay());
         $this->assertContains('Mage_All_Latest', $commandTester->getDisplay());

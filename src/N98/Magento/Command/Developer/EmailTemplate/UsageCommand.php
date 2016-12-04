@@ -5,6 +5,7 @@
  * @author Mike Parkin <https://github.com/MikeParkin>
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
+
 namespace N98\Magento\Command\Developer\EmailTemplate;
 
 use Mage;

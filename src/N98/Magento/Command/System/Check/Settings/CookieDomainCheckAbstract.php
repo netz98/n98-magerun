@@ -4,6 +4,7 @@
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
+
 namespace N98\Magento\Command\System\Check\Settings;
 
 use N98\Magento\Command\System\Check\Result;
@@ -80,14 +81,14 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
     public function validateCookieDomainAgainstUrl($cookieDomain, $siteUrl)
     {
         $siteDomain = strtolower(parse_url($siteUrl, PHP_URL_HOST));
-        $siteLen    = strlen($siteDomain);
+        $siteLen = strlen($siteDomain);
 
         if (0 === $siteLen) {
             return false;
         }
 
         $cookieDomain = strtolower($cookieDomain);
-        $cookieLen    = strlen($cookieDomain);
+        $cookieLen = strlen($cookieDomain);
 
         if (3 > $cookieLen) {
             return false;
@@ -96,7 +97,7 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
         $hasLeadingDot = $cookieDomain[0] === '.';
         if ($hasLeadingDot) {
             $cookieDomain = substr($cookieDomain, 1);
-            $cookieLen    = strlen($cookieDomain);
+            $cookieLen = strlen($cookieDomain);
         } elseif ($siteDomain === $cookieDomain) {
             return true;
         }

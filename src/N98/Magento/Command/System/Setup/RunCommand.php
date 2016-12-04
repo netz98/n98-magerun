@@ -5,6 +5,7 @@ namespace N98\Magento\Command\System\Setup;
 use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,6 +16,12 @@ class RunCommand extends AbstractMagentoCommand
     {
         $this
             ->setName('sys:setup:run')
+            ->addOption(
+                '--no-implicit-cache-flush',
+                null,
+                InputOption::VALUE_NONE,
+                'Do not flush the cache'
+            )
             ->setDescription('Runs all new setup scripts.');
         $help = <<<HELP
 Runs all setup scripts (no need to call frontend).
@@ -37,20 +44,9 @@ HELP;
         }
 
         try {
-            /**
-             * Get events before cache flush command is called.
-             */
-            $reflectionApp = new \ReflectionObject(\Mage::app());
-            $appEventReflectionProperty = $reflectionApp->getProperty('_events');
-            $appEventReflectionProperty->setAccessible(true);
-            $eventsBeforeCacheFlush = $appEventReflectionProperty->getValue(\Mage::app());
-
-            $this->getApplication()->run(new StringInput('cache:flush'), new NullOutput());
-
-            /**
-             * Restore initially loaded events which was reset during setup script run
-             */
-            $appEventReflectionProperty->setValue(\Mage::app(), $eventsBeforeCacheFlush);
+            if (false === $input->getOption('no-implicit-cache-flush')) {
+                $this->flushCache();
+            }
 
             /**
              * Put output in buffer. \Mage_Core_Model_Resource_Setup::_modifyResourceDb should print any error
@@ -135,5 +131,23 @@ HELP;
             $table->setRows($rows);
             $table->render($output);
         }
+    }
+
+    private function flushCache()
+    {
+        /**
+         * Get events before cache flush command is called.
+         */
+        $reflectionApp = new \ReflectionObject(\Mage::app());
+        $appEventReflectionProperty = $reflectionApp->getProperty('_events');
+        $appEventReflectionProperty->setAccessible(true);
+        $eventsBeforeCacheFlush = $appEventReflectionProperty->getValue(\Mage::app());
+
+        $this->getApplication()->run(new StringInput('cache:flush'), new NullOutput());
+
+        /**
+         * Restore initially loaded events which was reset during setup script run
+         */
+        $appEventReflectionProperty->setValue(\Mage::app(), $eventsBeforeCacheFlush);
     }
 }
