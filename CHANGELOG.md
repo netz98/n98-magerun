@@ -1,6 +1,9 @@
 RECENT CHANGES
 ==============
 
+1.97.25
+-------
+
 1.97.24
 -------
 * Fix: Array to string conversion notice (report by Christian Münch, fix by Tom Klingenberg)
