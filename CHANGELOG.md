@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.97.24
 -------
+* Fix: Endless download loop (report by Vinai Kopp, fix by Tom Klingenberg, #876)
 
 1.97.23
 -------

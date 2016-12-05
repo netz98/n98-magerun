@@ -2,14 +2,26 @@
 #
 # build from clean checkout
 #
+# usage: ./build.sh from project root
 set -euo pipefail
 IFS=$'\n\t'
 
-name="$(awk '/<project name="([^"]*)"/ && !done {print gensub(/<project name="([^"]*)".*/, "\\1", "g"); done=1}' build.xml
-)"
+remove_assume_unchanged() {
+  local git_dir="${1}"
+  local path="${2}"
+  (
+    cd "${git_dir}"
+    rm -f "${path}"
+    git update-index --assume-unchanged -- "${path}"
+  )
+}
+
+name="$(awk '/<project name="([^"]*)"/ && !done {print gensub(/<project name="([^"]*)".*/, "\\1", "g"); done=1}' build.xml)"
 phar="${name}.phar"
 
 echo "Building ${phar}..."
+
+remove_assume_unchanged "." "${phar}"
 
 echo "$0 executed in $(pwd -P)"
 
@@ -29,6 +41,8 @@ if [ ! -d "${build_dir}" ]; then
 fi
 
 git clone --quiet --no-local -- . "${build_dir}"
+# remove fake-phar directly after clone
+remove_assume_unchanged "${build_dir}" "n98-magerun.phar"
 
 composer="${build_dir}/composer.phar"
 
@@ -96,7 +110,7 @@ php -r 'echo "SHA1: ", sha1_file("'"${phar}"'"), "\nMD5.: ", md5_file("'"${phar}
 
 cd -
 
-cp -vip "${build_dir}"/"${phar}" "${phar}"
+cp -vp "${build_dir}"/"${phar}" "${phar}"
 
 rm -rf "${build_dir}"
 
