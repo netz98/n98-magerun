@@ -26,12 +26,18 @@ remove_assume_unchanged "." "${phar}"
 echo "$0 executed in $(pwd -P)"
 
 build_dir="build/output"
+finish() {
+  rm -rf "${build_dir}"
+}
+trap finish EXIT
 
 if [ -d "${build_dir}" ]; then
     rm -rf "${build_dir}"
 fi
 if [ -d "${build_dir}" ]; then
     echo "Can not remove build-dir '${build_dir}'"
+    echo "aborting."
+    exit 1
 fi
 mkdir "${build_dir}"
 if [ ! -d "${build_dir}" ]; then
