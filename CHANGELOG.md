@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.97.24
 -------
+* Fix: Array to string conversion notice (report by Christian Münch, fix by Tom Klingenberg)
 * Fix: Endless download loop (report by Vinai Kopp, fix by Tom Klingenberg, #876)
 
 1.97.23

@@ -185,14 +185,16 @@ class Config
     {
         $mask = '<debug>Registered %s autoloader </debug> <info>%s</info> -> <comment>%s</comment>';
 
-        foreach ($this->getArray('autoloaders') as $prefix => $path) {
-            $autoloader->add($prefix, $path);
-            $this->debugWriteln(sprintf($mask, 'PSR-2', $prefix, $path));
+        foreach ($this->getArray('autoloaders') as $prefix => $paths) {
+            $paths = (array) $paths;
+            $autoloader->add($prefix, $paths);
+            $this->debugWriteln(sprintf($mask, 'PSR-2', $prefix, implode(",", $paths)));
         }
 
-        foreach ($this->getArray('autoloaders_psr4') as $prefix => $path) {
-            $autoloader->addPsr4($prefix, $path);
-            $this->debugWriteln(sprintf($mask, 'PSR-4', OutputFormatter::escape($prefix), $path));
+        foreach ($this->getArray('autoloaders_psr4') as $prefix => $paths) {
+            $paths = (array) $paths;
+            $autoloader->addPsr4($prefix, $paths);
+            $this->debugWriteln(sprintf($mask, 'PSR-4', OutputFormatter::escape($prefix), implode(",", $paths)));
         }
     }
 
