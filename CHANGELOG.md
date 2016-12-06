@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.97.25
 -------
+* Fix: Add missing new commands to config.yaml (by Giuseppe Morelli, #877)
 
 1.97.24
 -------
