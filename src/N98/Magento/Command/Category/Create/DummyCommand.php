@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Category\Create;
 
 use Mage;
+use Mage_Catalog_Model_Category;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -74,24 +75,21 @@ class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
             }
             unset($collection);
 
-            $_category_root_id = Mage::app()->getStore($_argument['store-id'])->getRootCategoryId();
+            $storeId = $_argument['store-id'];
+            $rootCategoryId = Mage::app()->getStore($storeId)->getRootCategoryId();
 
+            /* @var $category Mage_Catalog_Model_Category */
             $category = Mage::getModel('catalog/category');
             $category->setName($name);
             $category->setIsActive(self::DEFAULT_CATEGORY_STATUS);
             $category->setDisplayMode('PRODUCTS');
             $category->setIsAnchor(self::DEFAULT_CATEGORY_ANCHOR);
-
-            if (Mage::getVersion() === "1.5.1.0") {
-                $category->setStoreId(array(0, $_argument['store-id']));
-            } else {
-                $category->setStoreId($_argument['store-id']);
-            }
-            $parentCategory = Mage::getModel('catalog/category')->load($_category_root_id);
+            $this->setCategoryStoreId($category, $storeId);
+            $parentCategory = Mage::getModel('catalog/category')->load($rootCategoryId);
             $category->setPath($parentCategory->getPath());
 
             $category->save();
-            $_parent_id = $category->getId();
+            $parentCategoryId = $category->getId();
             $output->writeln(
                 "<comment>CATEGORY: '" . $category->getName() . "' WITH ID: '" . $category->getId() .
                 "' CREATED!</comment>"
@@ -102,18 +100,14 @@ class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
             for ($j = 0; $j < $_argument['children-categories-number']; $j++) {
                 $name_child = $name . " child " . $j;
 
+                /* @var $category Mage_Catalog_Model_Category */
                 $category = Mage::getModel('catalog/category');
                 $category->setName($name_child);
                 $category->setIsActive(self::DEFAULT_CATEGORY_STATUS);
                 $category->setDisplayMode('PRODUCTS');
                 $category->setIsAnchor(self::DEFAULT_CATEGORY_ANCHOR);
-
-                if (Mage::getVersion() === "1.5.1.0") {
-                    $category->setStoreId(array(0, $_argument['store-id']));
-                } else {
-                    $category->setStoreId($_argument['store-id']);
-                }
-                $parentCategory = Mage::getModel('catalog/category')->load($_parent_id);
+                $this->setCategoryStoreId($category, $storeId);
+                $parentCategory = Mage::getModel('catalog/category')->load($parentCategoryId);
                 $category->setPath($parentCategory->getPath());
 
                 $category->save();
@@ -215,5 +209,20 @@ class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
         $_argument['category-name-prefix'] = $input->getArgument('category-name-prefix');
 
         return $_argument;
+    }
+
+    /**
+     * Setting the store-ID of a category requires a compatibility layer for Magento 1.5.1.0
+     *
+     * @param Mage_Catalog_Model_Category $category
+     * @param string|int $storeId
+     */
+    private function setCategoryStoreId(Mage_Catalog_Model_Category $category, $storeId)
+    {
+        if (Mage::getVersion() === "1.5.1.0") {
+            $category->setStoreId(array(0, $storeId));
+        } else {
+            $category->setStoreId($storeId);
+        }
     }
 }
