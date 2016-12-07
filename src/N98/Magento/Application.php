@@ -297,6 +297,7 @@ class Application extends BaseApplication
         trigger_error(__METHOD__ . ' moved, use config directly instead', E_USER_DEPRECATED);
 
         $config = $this->config->getConfig();
+
         return isset($config['commands']['customCommands']) && is_array($config['commands']['customCommands']);
     }
 
@@ -319,6 +320,7 @@ class Application extends BaseApplication
         trigger_error(__METHOD__ . ' moved, use config directly instead', E_USER_DEPRECATED);
 
         $config = $this->config->getConfig();
+
         return in_array($class, $config['commands']['disabled']);
     }
 
@@ -632,19 +634,14 @@ class Application extends BaseApplication
         $this->dispatcher = new EventDispatcher();
         $this->setDispatcher($this->dispatcher);
 
-        if (null === $input) {
-            $input = new ArgvInput();
-        }
-
-        if (null === $output) {
-            $output = new ConsoleOutput();
-        }
+        $input = $input ?: new ArgvInput();
+        $output = $output ?: new ConsoleOutput();
 
         if (null !== $this->config) {
             throw new UnexpectedValueException(sprintf('Config already initialized'));
         }
 
-        $loadExternalConfig = !$this->_checkSkipConfigOption($input);
+        $loadExternalConfig = !$input->hasParameterOption('--skip-config');
 
         $this->config = $config = new Config($initConfig, $this->isPharMode(), $output);
         if ($this->configurationLoaderInjected) {
@@ -697,9 +694,15 @@ class Application extends BaseApplication
     /**
      * @param InputInterface $input
      * @return bool
+     * @deprecated 1.97.27
      */
     protected function _checkSkipConfigOption(InputInterface $input)
     {
+        trigger_error(
+            __METHOD__ . ' removed, use $input->hasParameterOption(\'--skip-config\') instead',
+            E_USER_DEPRECATED
+        );
+
         return $input->hasParameterOption('--skip-config');
     }
 
