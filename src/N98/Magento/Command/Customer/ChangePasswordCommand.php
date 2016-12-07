@@ -4,6 +4,7 @@ namespace N98\Magento\Command\Customer;
 
 use Exception;
 use RuntimeException;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,12 +40,13 @@ HELP;
             return;
         }
 
+        /* @var $dialog DialogHelper */
         $dialog = $this->getHelper('dialog');
         $email = $this->getHelper('parameter')->askEmail($input, $output);
 
         // Password
         if (($password = $input->getArgument('password')) == null) {
-            $password = $dialog->ask($output, '<question>Password:</question>');
+            $password = $dialog->askHiddenResponse($output, '<question>Password:</question>');
         }
 
         $website = $this->getHelper('parameter')->askWebsite($input, $output);

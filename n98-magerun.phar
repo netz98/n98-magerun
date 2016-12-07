@@ -7,8 +7,8 @@
 
 echo "Info: Magerun has not been downloaded yet, downloading it ...\n";
 
-$url = 'https://files.magerun.net/n98-magerun.phar';
 $target = 'n98-magerun.phar';
+$old = md5_file($target);
 $file = @fopen($url, 'r');
 if ($file === false) {
     fputs(STDERR, "Error downloading magerun phar file\n");
@@ -22,6 +22,13 @@ if (false === $result) {
     fputs(STDERR, "Please install manually\n");
     exit(1);
 }
+if ($old === md5_file($target)) {
+    fputs(STDERR, "Error downloading magerun phar file\n");
+    fputs(STDERR, "File is of same content\n");
+    fputs(STDERR, "Please install manually\n");
+    exit(1);
+}
+
 echo "Info: Download done, executing it with original parameters ...\n";
 
 $args = implode(' ', array_map('escapeshellarg', array_slice($argv, 1)));
@@ -30,4 +37,3 @@ if (0 !== $status) {
     fputs(STDERR, "Error executing downloaded phar file\n");
 }
 exit($status);
-
