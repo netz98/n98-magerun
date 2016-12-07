@@ -7,7 +7,9 @@
 
 echo "Info: Magerun has not been downloaded yet, downloading it ...\n";
 
+$url = 'https://files.magerun.net/n98-magerun.phar';
 $target = 'n98-magerun.phar';
+
 $old = md5_file($target);
 $file = @fopen($url, 'r');
 if ($file === false) {

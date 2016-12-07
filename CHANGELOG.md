@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.97.27
 -------
+* Fix: self-check in fake phar (reported by Liviu Panainte, thanks!)
 
 1.97.26
 -------
