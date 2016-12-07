@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.97.26
 -------
+* Upd: bash autocomplete-file
 * Imp: Hide password when asked by admin:user:change-password (reported by Faisal Mirza, #873)
 
 1.97.25
