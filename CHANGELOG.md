@@ -1,6 +1,9 @@
 RECENT CHANGES
 ==============
 
+1.97.27
+-------
+
 1.97.26
 -------
 * Upd: bash autocomplete-file
