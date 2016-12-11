@@ -1,6 +1,9 @@
 RECENT CHANGES
 ==============
 
+1.97.28
+-------
+
 1.97.27
 -------
 * Fix: Sourceforge moved to https (by Tom Klingenberg)
