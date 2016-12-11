@@ -3,12 +3,14 @@ RECENT CHANGES
 
 1.97.27
 -------
-* Fix: self-check in fake phar (reported by Liviu Panainte, thanks!)
+* Fix: Sourceforge moved to https (by Tom Klingenberg)
+* Fix: Broken sample-data tar.gz file (report by AreDubya, #879)
+* Fix: Self-check in fake phar (report by Liviu Panainte, thanks!)
 
 1.97.26
 -------
 * Upd: bash autocomplete-file
-* Imp: Hide password when asked by admin:user:change-password (reported by Faisal Mirza, #873)
+* Imp: Hide password when asked by admin:user:change-password (report by Faisal Mirza, #873)
 
 1.97.25
 -------
