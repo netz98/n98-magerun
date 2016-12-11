@@ -159,9 +159,11 @@ class ConfigurationLoader
     {
         if ($this->_distConfig == null) {
             $distConfigFilePath = __DIR__ . '/../../../../config.yaml';
+            $this->logDebug('Load dist config <comment>' . $distConfigFilePath . '</comment>');
             $this->_distConfig = ConfigFile::createFromFile($distConfigFilePath)->toArray();
+        } else {
+            $this->logDebug('Load dist config <comment>cached</comment>');
         }
-        $this->logDebug('Load dist config');
 
         $config = ArrayFunctions::mergeArrays($this->_distConfig, $initConfig);
 

@@ -23,11 +23,13 @@ echo "Building ${phar}..."
 
 remove_assume_unchanged "." "${phar}"
 
-echo "$0 executed in $(pwd -P)"
+base_dir="$(pwd -P)"
+echo "$0 executed in ${base_dir}"
 
 build_dir="build/output"
 finish() {
-  rm -rf "${build_dir}"
+  echo "trap exit removing '${build_dir}'.."
+  rm -rf "${base_dir}/${build_dir}"
 }
 trap finish EXIT
 

@@ -27,6 +27,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Config
 {
+    const PSR_0 = 'PSR-0';
+    const PSR_4 = 'PSR-4';
+
+    const COMMAND_CLASS = 'Symfony\Component\Console\Command\Command';
+
     /**
      * @var array config data
      */
@@ -141,15 +146,28 @@ class Config
                 $commandName = key($commandClass);
                 $commandClass = current($commandClass);
             }
-            $command = $this->newCommand($commandClass, $commandName);
-            $this->debugWriteln(
-                sprintf(
-                    '<debug>Add command </debug> <info>%s</info> -> <comment>%s</comment>',
-                    $command->getName(),
-                    get_class($command)
-                )
-            );
-            $application->add($command);
+            if (null === $command = $this->newCommand($commandClass, $commandName)) {
+                $this->output->writeln(
+                    sprintf(
+                        '<error>Can not add nonexistent command class "%s" as command to the application</error>',
+                        $commandClass,
+                        $commandName
+                    )
+                );
+                $this->debugWriteln(
+                    'Please check the configuration files contain the correct class-name. If the ' .
+                    'class-name is correct, check autoloader configurations.'
+                );
+            } else {
+                $this->debugWriteln(
+                    sprintf(
+                        '<debug>Add command </debug> <info>%s</info> -> <comment>%s</comment>',
+                        $command->getName(),
+                        get_class($command)
+                    )
+                );
+                $application->add($command);
+            }
         }
     }
 
@@ -165,6 +183,16 @@ class Config
         if (!(is_string($className) || is_object($className))) {
             throw new InvalidArgumentException(
                 sprintf('Command classname must be string, %s given', gettype($className))
+            );
+        }
+
+        if (!class_exists($className)) {
+            return null;
+        }
+
+        if (false === is_subclass_of($className, self::COMMAND_CLASS, true)) {
+            throw new InvalidArgumentException(
+                sprintf('Class "%s" is not a Command (subclass of "%s")', $className, self::COMMAND_CLASS)
             );
         }
 
@@ -187,14 +215,14 @@ class Config
 
         foreach ($this->getArray('autoloaders') as $prefix => $paths) {
             $paths = (array) $paths;
+            $this->debugWriteln(sprintf($mask, self::PSR_0, OutputFormatter::escape($prefix), implode(",", $paths)));
             $autoloader->add($prefix, $paths);
-            $this->debugWriteln(sprintf($mask, 'PSR-2', $prefix, implode(",", $paths)));
         }
 
         foreach ($this->getArray('autoloaders_psr4') as $prefix => $paths) {
             $paths = (array) $paths;
+            $this->debugWriteln(sprintf($mask, self::PSR_4, OutputFormatter::escape($prefix), implode(",", $paths)));
             $autoloader->addPsr4($prefix, $paths);
-            $this->debugWriteln(sprintf($mask, 'PSR-4', OutputFormatter::escape($prefix), implode(",", $paths)));
         }
     }
 
