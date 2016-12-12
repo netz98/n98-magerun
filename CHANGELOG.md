@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.97.28
 -------
+* Fix: Empty database hostname for mysql cli (report by Seansan, fix by Tom Klingenberg, #880)
 
 1.97.27
 -------
