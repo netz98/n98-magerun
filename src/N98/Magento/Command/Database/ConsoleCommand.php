@@ -47,11 +47,11 @@ class ConsoleCommand extends AbstractDatabaseCommand
         );
 
         $mysqlClient = $input->getOption('use-mycli-instead-of-mysql') ? 'mycli' : 'mysql';
-        $noAutoRehash = $input->getOption('no-auto-rehash') ? '--no-auto-rehash ' : ' ';
+        $noAutoRehash = $input->getOption('no-auto-rehash') ? '--no-auto-rehash ' : '';
 
         /* @var $database DatabaseHelper */
         $database = $this->getHelper('database');
-        $exec = $mysqlClient . $noAutoRehash . $database->getMysqlClientToolConnectionString();
+        $exec = $mysqlClient . ' ' . $noAutoRehash . $database->getMysqlClientToolConnectionString();
 
         $pipes = array();
         $process = proc_open($exec, $descriptorSpec, $pipes);

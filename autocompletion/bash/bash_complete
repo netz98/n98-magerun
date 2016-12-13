@@ -156,7 +156,7 @@ _n98-magerun()
             opts="${opts} --format"
             ;;
             db:console)
-            opts="${opts} --use-mycli-instead-of-mysql"
+            opts="${opts} --use-mycli-instead-of-mysql --no-auto-rehash"
             ;;
             db:create)
             opts="${opts} "
