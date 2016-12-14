@@ -419,7 +419,10 @@ Opens the MySQL console client with your database settings from local.xml
 
 .. code-block:: sh
 
-   $ n98-magerun.phar db:console
+   $ n98-magerun.phar db:console [--no-auto-rehash]
+
+  --no-auto-rehash
+      synonym for calling *mysql* client with the -A parameter to skip hashing for object auto-completion.
 
 Database Create
 """""""""""""""
