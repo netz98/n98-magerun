@@ -31,7 +31,7 @@ class ConsoleCommand extends AbstractDatabaseCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int|void
@@ -40,24 +40,48 @@ class ConsoleCommand extends AbstractDatabaseCommand
     {
         $this->detectDbSettings($output);
 
+        $args = array(
+            $input->getOption('use-mycli-instead-of-mysql') ? 'mycli' : 'mysql'
+        );
+
+        if ($input->getOption('no-auto-rehash')) {
+            $args[] = '--no-auto-rehash';
+        }
+
+        $args[] = $this->getMysqlClientToolConnection();
+
+        $this->processCommand(implode(' ', $args));
+    }
+
+    /**
+     * execute a command
+     *
+     * @param string $command
+     */
+    private function processCommand($command)
+    {
         $descriptorSpec = array(
             0 => STDIN,
             1 => STDOUT,
             2 => STDERR,
         );
 
-        $mysqlClient = $input->getOption('use-mycli-instead-of-mysql') ? 'mycli' : 'mysql';
-        $noAutoRehash = $input->getOption('no-auto-rehash') ? '--no-auto-rehash ' : '';
-
-        /* @var $database DatabaseHelper */
-        $database = $this->getHelper('database');
-        $exec = $mysqlClient . ' ' . $noAutoRehash . $database->getMysqlClientToolConnectionString();
-
         $pipes = array();
-        $process = proc_open($exec, $descriptorSpec, $pipes);
+        $process = proc_open($command, $descriptorSpec, $pipes);
 
         if (is_resource($process)) {
             proc_close($process);
         }
+    }
+
+    /**
+     * @return string
+     */
+    private function getMysqlClientToolConnection()
+    {
+        /* @var $database DatabaseHelper */
+        $database = $this->getHelper('database');
+
+        return $database->getMysqlClientToolConnectionString();
     }
 }
