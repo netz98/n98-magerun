@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.97.28
 -------
+* Fix: Warning db:import sprintf too few arguments (report by Peter Jaap Blaakmeer, fix by Tom Klingenberg, #884)
 * Fix: Empty database hostname for mysql cli (report by Seansan, fix by Tom Klingenberg, #880)
 
 1.97.27
