@@ -41,7 +41,7 @@ class ConsoleCommand extends AbstractDatabaseCommand
         $this->detectDbSettings($output);
 
         $args = array(
-            $input->getOption('use-mycli-instead-of-mysql') ? 'mycli' : 'mysql'
+            $input->getOption('use-mycli-instead-of-mysql') ? 'mycli' : 'mysql',
         );
 
         if ($input->getOption('no-auto-rehash')) {
