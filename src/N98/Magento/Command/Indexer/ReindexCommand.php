@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Indexer;
 
-use Exception;
 use InvalidArgumentException;
+use Mage_Index_Model_Process;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -52,80 +52,78 @@ HELP;
         $this->writeSection($output, 'Reindex');
         $this->disableObservers();
         $indexCode = $input->getArgument('index_code');
-        $indexerList = $this->getIndexerList();
         if ($indexCode === null) {
-            $question = array();
-            foreach ($indexerList as $key => $indexer) {
-                $question[] = '<comment>' . str_pad('[' . ($key + 1) . ']', 4, ' ', STR_PAD_RIGHT) . '</comment> ' .
-                    str_pad($indexer['code'], 40, ' ', STR_PAD_RIGHT) . ' <info>(last runtime: ' .
-                    $indexer['last_runtime'] . ')</info>' . "\n";
-            }
-            $question[] = '<question>Please select a indexer:</question>';
-
-            /** @var  DialogHelper $dialog */
-            $dialog = $this->getHelper('dialog');
-            $indexCodes = $dialog->askAndValidate($output, $question, function ($typeInput) use ($indexerList) {
-                if (strstr($typeInput, ',')) {
-                    $typeInputs = \N98\Util\BinaryString::trimExplodeEmpty(',', $typeInput);
-                } else {
-                    $typeInputs = array($typeInput);
-                }
-
-                $returnCodes = array();
-                foreach ($typeInputs as $typeInput) {
-                    if (!isset($indexerList[$typeInput - 1])) {
-                        throw new InvalidArgumentException('Invalid indexer');
-                    }
-
-                    $returnCodes[] = $indexerList[$typeInput - 1]['code'];
-                }
-
-                return $returnCodes;
-            });
+            $indexCodes = $this->askForIndexCodes($output);
         } else {
             // take cli argument
             $indexCodes = \N98\Util\BinaryString::trimExplodeEmpty(',', $indexCode);
         }
 
+        $processes = $this->getProcessesByIndexCodes($indexCodes);
+        $this->executeProcesses($output, $processes);
+    }
+
+    /**
+     * @param $indexCodes
+     *
+     * @return array
+     */
+    private function getProcessesByIndexCodes($indexCodes)
+    {
+        $processes = array();
         foreach ($indexCodes as $indexCode) {
-            try {
-                \Mage::dispatchEvent('shell_reindex_init_process');
-                $process = $this->_getIndexerModel()->getProcessByCode($indexCode);
-                if (!$process) {
-                    throw new InvalidArgumentException('Indexer was not found!');
-                }
-                $output->writeln('<info>Started reindex of: <comment>' . $indexCode . '</comment></info>');
-
-                /**
-                 * Try to estimate runtime. If index was aborted or never created we have a timestamp < 0
-                 */
-                $runtimeInSeconds = $this->getRuntimeInSeconds($process);
-                if ($runtimeInSeconds > 0) {
-                    $estimatedEnd = new \DateTime('now', new \DateTimeZone('UTC'));
-                    $estimatedEnd->add(new \DateInterval('PT' . $runtimeInSeconds . 'S'));
-                    $output->writeln(
-                        '<info>Estimated end: <comment>' . $estimatedEnd->format('Y-m-d H:i:s T') .
-                        '</comment></info>'
-                    );
-                }
-
-                $startTime = new \DateTime('now');
-                $dateTimeUtils = new \N98\Util\DateTime();
-                $process->reindexEverything();
-                \Mage::dispatchEvent($process->getIndexerCode() . '_shell_reindex_after');
-                $endTime = new \DateTime('now');
-                $output->writeln(
-                    '<info>Successfully reindexed <comment>' . $indexCode . '</comment> (Runtime: <comment>' .
-                    $dateTimeUtils->getDifferenceAsString(
-                        $startTime,
-                        $endTime
-                    ) . '</comment>)</info>'
-                );
-                \Mage::dispatchEvent('shell_reindex_finalize_process');
-            } catch (Exception $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
-                \Mage::dispatchEvent('shell_reindex_finalize_process');
+            /* @var $process Mage_Index_Model_Process */
+            $process = $this->getIndexerModel()->getProcessByCode($indexCode);
+            if (!$process) {
+                throw new InvalidArgumentException(sprintf('Indexer "%s" was not found!', $indexCode));
             }
+            $processes[] = $process;
         }
+        return $processes;
+    }
+
+    /**
+     * @param OutputInterface $output
+     *
+     * @return array
+     */
+    private function askForIndexCodes(OutputInterface $output)
+    {
+        $indexerList = $this->getIndexerList();
+        $question = array();
+        foreach ($indexerList as $key => $indexer) {
+            $question[] = sprintf(
+                "<comment>%-4s</comment> %-40s <info>(last runtime: %s)</info>\n",
+                '[' . ($key + 1) . ']',
+                $indexer['code'],
+                $indexer['last_runtime']
+            );
+        }
+        $question[] = '<question>Please select a indexer:</question>';
+
+        $validator = function ($typeInput) use ($indexerList) {
+            if (strstr($typeInput, ',')) {
+                $typeInputs = \N98\Util\BinaryString::trimExplodeEmpty(',', $typeInput);
+            } else {
+                $typeInputs = array($typeInput);
+            }
+
+            $returnCodes = array();
+            foreach ($typeInputs as $typeInput) {
+                if (!isset($indexerList[$typeInput - 1])) {
+                    throw new InvalidArgumentException('Invalid indexer');
+                }
+
+                $returnCodes[] = $indexerList[$typeInput - 1]['code'];
+            }
+
+            return $returnCodes;
+        };
+
+        /** @var  DialogHelper $dialog */
+        $dialog = $this->getHelper('dialog');
+        $indexCodes = $dialog->askAndValidate($output, $question, $validator);
+
+        return $indexCodes;
     }
 }
