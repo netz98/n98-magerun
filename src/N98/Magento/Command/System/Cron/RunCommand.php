@@ -147,6 +147,9 @@ HELP;
             throw new RuntimeException('Failed to create new Mage_Cron_Model_Schedule model');
         }
 
+        $environment = new ServerEnvironment();
+        $environment->initalize();
+
         try {
             $timestamp = strftime('%Y-%m-%d %H:%M:%S', time());
             $schedule

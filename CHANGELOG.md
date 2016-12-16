@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.97.28
 -------
+* Fix: URL generation in sys:cron:run (report by Ash Smith, fix by Tom Klingenberg, #871)
 * Fix: Indexer dies on error (report by Henry Hirsch, fix by Tom Klingenberg, #701)
 * Fix: Incompatibilities with PHP 7.1 (report by Don Bosco van Hoi, fix by Tom Klingenberg, #881)
 * Fix: Warning db:import sprintf too few arguments (report by Peter Jaap Blaakmeer, fix by Tom Klingenberg, #884)
