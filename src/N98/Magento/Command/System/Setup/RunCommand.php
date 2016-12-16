@@ -31,13 +31,12 @@ HELP;
     }
 
     /**
-     * @param InputInterface   $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getApplication()->setAutoExit(false);
         $this->detectMagento($output);
         if (!$this->initMagento()) {
             return;
@@ -50,7 +49,7 @@ HELP;
 
             /**
              * Put output in buffer. \Mage_Core_Model_Resource_Setup::_modifyResourceDb should print any error
-             * directly to stdout. Use execption which will be thrown to show error
+             * directly to stdout. Use exception which will be thrown to show error
              */
             \ob_start();
             \Mage_Core_Model_Resource_Setup::applyAllUpdates();
@@ -61,8 +60,8 @@ HELP;
             $output->writeln('<info>done</info>');
         } catch (Exception $e) {
             \ob_end_clean();
-            $this->printException($output, $e);
-            $this->printStackTrace($output, $e->getTrace());
+            $this->getApplication()->renderException($e, $output);
+            $this->printStackTrace($output, $e);
             $this->printFile($output, $e);
 
             return 1; // exit with error status
@@ -71,14 +70,14 @@ HELP;
 
     /**
      * @param OutputInterface $output
-     * @param array           $trace
+     * @param Exception $e
      *
      * @return void
      */
-    protected function printStackTrace(OutputInterface $output, array $trace)
+    protected function printStackTrace(OutputInterface $output, Exception $e)
     {
         $rootFolder = $this->getApplication()->getMagentoRootFolder();
-        $trace = array_filter($trace, function (&$row) use ($rootFolder) {
+        $trace = array_filter($e->getTrace(), function (&$row) use ($rootFolder) {
             if (!strstr($row['file'], $rootFolder)) {
                 return false;
             }
@@ -100,24 +99,14 @@ HELP;
         }
         $table->setHeaders(array('#', 'File/Line', 'Method'));
         $table->setRows($rows);
-
         $table->render($output);
     }
 
     /**
      * @param OutputInterface $output
-     * @param                 $e
+     * @param Exception $e
      */
-    protected function printException(OutputInterface $output, $e)
-    {
-        $output->writeln('<error>' . $e->getMessage() . '</error>');
-    }
-
-    /**
-     * @param OutputInterface $output
-     * @param                 $e
-     */
-    protected function printFile(OutputInterface $output, $e)
+    protected function printFile(OutputInterface $output, Exception $e)
     {
         if (preg_match('/Error\sin\sfile\:\s"(.+)\"\s-/', $e->getMessage(), $matches)) {
             $table = $this->getHelper('table');
@@ -143,7 +132,10 @@ HELP;
         $appEventReflectionProperty->setAccessible(true);
         $eventsBeforeCacheFlush = $appEventReflectionProperty->getValue(\Mage::app());
 
-        $this->getApplication()->run(new StringInput('cache:flush'), new NullOutput());
+        $application = $this->getApplication();
+        $application->setAutoExit(false);
+        $application->run(new StringInput('cache:flush'), new NullOutput());
+        $application->setAutoExit(true);
 
         /**
          * Restore initially loaded events which was reset during setup script run

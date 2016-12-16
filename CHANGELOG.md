@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.97.28
 -------
+* Fix: sys:setup:run exists with code 0 on error (report by Matías Montes, fix by Tom Klingenberg, #854)
 * Fix: URL generation in sys:cron:run (report by Ash Smith, fix by Tom Klingenberg, #871)
 * Fix: Indexer dies on error (report by Henry Hirsch, fix by Tom Klingenberg, #701)
 * Fix: Incompatibilities with PHP 7.1 (report by Don Bosco van Hoi, fix by Tom Klingenberg, #881)
