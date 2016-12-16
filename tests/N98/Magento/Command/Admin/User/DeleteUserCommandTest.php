@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\Admin\User;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -239,7 +239,6 @@ class DeleteUserCommandTest extends TestCase
         // We override the standard helper with our mock
         $command->getHelperSet()->set($dialog, 'dialog');
 
-
         $commandTester = new CommandTester($command);
         $commandTester->execute(array(
             'command'   => $command->getName(),
@@ -289,7 +288,6 @@ class DeleteUserCommandTest extends TestCase
         // We override the standard helper with our mock
         $command->getHelperSet()->set($dialog, 'dialog');
 
-
         $commandTester = new CommandTester($command);
         $commandTester->execute(array(
             'command'   => $command->getName(),
@@ -305,7 +303,6 @@ class DeleteUserCommandTest extends TestCase
         $dialog->expects($this->once())
             ->method('ask')
             ->will($this->returnValue('aydin@hotmail.co.uk'));
-
 
         $this->userModel
             ->expects($this->once())

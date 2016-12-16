@@ -2,26 +2,23 @@
 
 namespace N98\Magento\Command\Admin\User;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- *  * Class UnlockUserCommandTest
- *   */
+ * Class UnlockUserCommandTest
+ */
 class UnlockUserCommandTest extends TestCase
 {
-
     private function getCommand()
     {
         $command = new UnlockCommand();
         $command->setApplication($this->getApplication());
         if (!$command->isEnabled()) {
             $this->markTestSkipped('UnlockCommand is not enabled.');
-
         }
         return $command;
     }
-
 
     public function testUnlockAllUsersPromptNo()
     {
@@ -61,4 +58,3 @@ class UnlockUserCommandTest extends TestCase
         $this->assertContains('All admins unlocked', $commandTester->getDisplay());
     }
 }
-

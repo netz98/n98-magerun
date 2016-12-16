@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Config;
 
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 class DumpCommandTest extends TestCase
 {
@@ -17,7 +17,7 @@ class DumpCommandTest extends TestCase
         $commandTester->execute(
             array(
                 'command'   => $command->getName(),
-                'xpath'  => 'global/install',
+                'xpath'     => 'global/install',
             )
         );
         $this->assertContains('date', $commandTester->getDisplay());

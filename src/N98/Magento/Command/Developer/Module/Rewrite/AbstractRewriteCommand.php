@@ -21,7 +21,7 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
     protected function loadRewrites()
     {
         $prototype = $this->_rewriteTypes;
-        $return    = array_combine($prototype, array_fill(0, count($prototype), array()));
+        $return = array_combine($prototype, array_fill(0, count($prototype), array()));
 
         // Load config of each module because modules can overwrite config each other. Global config is already merged
         $modules = \Mage::getConfig()->getNode('modules')->children();
@@ -44,17 +44,15 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
 
             $rewriteElements = $xml->xpath('//*/*/rewrite');
             foreach ($rewriteElements as $element) {
-                $type = \simplexml_import_dom(dom_import_simplexml($element)->parentNode->parentNode)->getName();
+                $type = dom_import_simplexml($element)->parentNode->parentNode->nodeName;
                 if (!isset($return[$type])) {
                     continue;
                 }
 
                 foreach ($element->children() as $child) {
-                    $groupClassName = \simplexml_import_dom(dom_import_simplexml($element)->parentNode)->getName();
-                    if (!isset($return[$type][$groupClassName . '/' . $child->getName()])) {
-                        $return[$type][$groupClassName . '/' . $child->getName()] = array();
-                    }
-                    $return[$type][$groupClassName . '/' . $child->getName()][] = (string) $child;
+                    $groupClassName = dom_import_simplexml($element)->parentNode->nodeName;
+                    $modelName = $child->getName();
+                    $return[$type][$groupClassName . '/' . $modelName][] = (string) $child;
                 }
             }
         }

@@ -11,6 +11,7 @@
  *
  * @author Dusan Lukic <ldusan84@gmail.com>
  */
+
 namespace N98\Magento\Command\Developer\Setup\Script;
 
 use Exception;

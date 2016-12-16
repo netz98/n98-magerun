@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Theme;
 
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 class DuplicatesCommandTest extends TestCase
 {
@@ -41,7 +41,7 @@ class DuplicatesCommandTest extends TestCase
         $separator = '([/\\\\])';
 
         $segmentCount = 0;
-        $pattern      = '~';
+        $pattern = '~';
         while ($segment = array_shift($segments)) {
             $pattern .= preg_quote($segment, '~');
             if ($segments) {

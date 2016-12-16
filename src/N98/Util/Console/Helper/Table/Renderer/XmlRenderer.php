@@ -4,6 +4,7 @@
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
+
 namespace N98\Util\Console\Helper\Table\Renderer;
 
 use DOMDocument;
@@ -20,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class XmlRenderer implements RendererInterface
 {
     const NAME_ROOT = 'table';
-    const NAME_ROW  = 'row';
+    const NAME_ROW = 'row';
 
     private $headers;
 
@@ -71,7 +72,7 @@ class XmlRenderer implements RendererInterface
     {
         $index = 0;
         foreach ($fields as $key => $value) {
-            $header  = $this->getHeader($index++, $key);
+            $header = $this->getHeader($index++, $key);
             $element = $this->createField($row->ownerDocument, $header, $value);
             $row->appendChild($element);
         }

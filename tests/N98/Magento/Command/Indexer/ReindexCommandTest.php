@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Indexer;
 
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 class ReindexCommandTest extends TestCase
 {
@@ -20,7 +20,7 @@ class ReindexCommandTest extends TestCase
                 'index_code' => 'tag_summary,tag_summary', // run index twice
             )
         );
-    
+
         $this->assertContains('Successfully reindexed tag_summary', $commandTester->getDisplay());
     }
 }

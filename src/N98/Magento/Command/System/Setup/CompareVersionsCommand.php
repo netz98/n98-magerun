@@ -50,10 +50,10 @@ HELP;
         }
 
         $time = microtime(true);
-        $modules            = \Mage::getConfig()->getNode('modules');
-        $resourceModel      = $this->_getResourceSingleton('core/resource', 'Mage_Core_Model_Resource_Resource');
-        $setups             = \Mage::getConfig()->getNode('global/resources')->children();
-        $ignoreDataUpdate   = $input->getOption('ignore-data');
+        $modules = \Mage::getConfig()->getNode('modules');
+        $resourceModel = $this->_getResourceSingleton('core/resource', 'Mage_Core_Model_Resource_Resource');
+        $setups = \Mage::getConfig()->getNode('global/resources')->children();
+        $ignoreDataUpdate = $input->getOption('ignore-data');
 
         $headers = array('Setup', 'Module', 'DB', 'Data', 'Status');
         if ($ignoreDataUpdate) {
@@ -65,9 +65,9 @@ HELP;
         $errorCounter = 0;
         $table = array();
         foreach ($setups as $setupName => $setup) {
-            $moduleName    = (string) $setup->setup->module;
+            $moduleName = (string) $setup->setup->module;
             $moduleVersion = (string) $modules->{$moduleName}->version;
-            $dbVersion     = (string) $resourceModel->getDbVersion($setupName);
+            $dbVersion = (string) $resourceModel->getDbVersion($setupName);
             if (!$ignoreDataUpdate) {
                 $dataVersion = (string) $resourceModel->getDataVersion($setupName);
             }
@@ -118,9 +118,9 @@ HELP;
             });
 
             array_walk($table, function (&$row) {
-                $status             = $row['Status'];
-                $availableStatus    = array('OK' => 'info', 'Error' => 'error');
-                $statusString       = sprintf(
+                $status = $row['Status'];
+                $availableStatus = array('OK' => 'info', 'Error' => 'error');
+                $statusString = sprintf(
                     '<%s>%s</%s>',
                     $availableStatus[$status],
                     $status,

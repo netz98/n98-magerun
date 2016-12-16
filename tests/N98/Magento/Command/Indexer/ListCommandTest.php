@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Indexer;
 
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 class ListCommandTest extends TestCase
 {

@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Config;
 
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 class DeleteCommandTest extends TestCase
 {
@@ -36,7 +36,6 @@ class DeleteCommandTest extends TestCase
         );
         $this->assertContains('| n98_magerun/foo/bar | default | 0        |', $commandTester->getDisplay());
 
-
         /**
          * Delete all
          */
@@ -46,11 +45,11 @@ class DeleteCommandTest extends TestCase
             $commandTester = new CommandTester($setCommand);
             $commandTester->execute(
                 array(
-                     'command'    => $setCommand->getName(),
-                     'path'       => 'n98_magerun/foo/bar',
-                     '--scope'    => 'stores',
+                     'command'     => $setCommand->getName(),
+                     'path'        => 'n98_magerun/foo/bar',
+                     '--scope'     => 'stores',
                      '--scope-id'  => $store->getId(),
-                     'value'      => 'store-' . $store->getId(),
+                     'value'       => 'store-' . $store->getId(),
                 )
             );
         }
@@ -67,6 +66,5 @@ class DeleteCommandTest extends TestCase
         foreach (\Mage::app()->getStores() as $store) {
             $this->assertContains('| n98_magerun/foo/bar | stores   | ' . $store->getId() . '        |', $commandTester->getDisplay());
         }
-
     }
 }

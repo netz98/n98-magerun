@@ -26,37 +26,37 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
             array(
                 new \DateTime('2013-12-01', new \DateTimeZone('UTC')),
                 new \DateTime('2013-12-01', new \DateTimeZone('UTC')),
-                '0'
+                '0',
             ),
             array(
                 new \DateTime('2013-12-01 00:00:00', new \DateTimeZone('UTC')),
                 new \DateTime('2013-12-01 00:00:01', new \DateTimeZone('UTC')),
-                '1s'
+                '1s',
             ),
             array(
                 new \DateTime('2013-12-01 00:00:00', new \DateTimeZone('UTC')),
                 new \DateTime('2013-12-01 00:01:01', new \DateTimeZone('UTC')),
-                '1m 1s'
+                '1m 1s',
             ),
             array(
                 new \DateTime('2013-12-01 00:00:00', new \DateTimeZone('UTC')),
                 new \DateTime('2013-12-01 01:01:01', new \DateTimeZone('UTC')),
-                '1h 1m 1s'
+                '1h 1m 1s',
             ),
             array(
                 new \DateTime('2013-12-01 00:00:00', new \DateTimeZone('UTC')),
                 new \DateTime('2013-12-02 01:01:01', new \DateTimeZone('UTC')),
-                '1d 1h 1m 1s'
+                '1d 1h 1m 1s',
             ),
             array(
                 new \DateTime('2013-12-01 00:00:00', new \DateTimeZone('UTC')),
                 new \DateTime('2014-01-02 01:01:01', new \DateTimeZone('UTC')),
-                '1M 1d 1h 1m 1s'
+                '1M 1d 1h 1m 1s',
             ),
             array(
                 new \DateTime('2013-12-01 00:00:00', new \DateTimeZone('UTC')),
                 new \DateTime('2015-01-02 01:01:01', new \DateTimeZone('UTC')),
-                '1Y 1M 1d 1h 1m 1s'
+                '1Y 1M 1d 1h 1m 1s',
             ),
         );
     }

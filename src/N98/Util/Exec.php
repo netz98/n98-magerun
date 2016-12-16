@@ -39,9 +39,9 @@ class Exec
         $output = self::parseCommandOutput($outputArray);
 
         if ($returnCode !== self::CODE_CLEAN_EXIT) {
-            throw new RuntimeException(sprintf(
+            throw new RuntimeException(
                 sprintf("Exit status %d for command %s. Output was: %s", $returnCode, $command, $output)
-            ));
+            );
         }
     }
 

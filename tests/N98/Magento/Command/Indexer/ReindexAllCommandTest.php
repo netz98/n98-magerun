@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Indexer;
 
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 class ReindexAllCommandTest extends TestCase
 {
@@ -18,7 +18,7 @@ class ReindexAllCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
-                'command' => $command->getName()
+                'command' => $command->getName(),
             )
         );
 

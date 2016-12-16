@@ -50,6 +50,12 @@ Download the latest stable N98-Magerun phar-file from the file-server_:
 
    wget https://files.magerun.net/n98-magerun.phar
 
+or if you have problems with SSL certificate:
+
+.. code-block:: sh
+
+   curl -O https://files.magerun.net/n98-magerun.phar
+
 Verify the download by comparing the MD5 checksum with the one on the website:
 
 .. code-block:: sh
@@ -413,7 +419,10 @@ Opens the MySQL console client with your database settings from local.xml
 
 .. code-block:: sh
 
-   $ n98-magerun.phar db:console
+   $ n98-magerun.phar db:console [--no-auto-rehash]
+
+  --no-auto-rehash
+      synonym for calling *mysql* client with the -A parameter to skip hashing for object auto-completion.
 
 Database Create
 """""""""""""""
@@ -685,13 +694,17 @@ If you would like to clean only one cache type:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:clean [code]
+   $ n98-magerun.phar cache:clean [--reinit] [--no-reinit] [<code>]
 
 If you would like to clean multiple cache types at once:
 
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:clean [code] [code] ...
+   $ n98-magerun.phar cache:clean [--reinit] [--no-reinit] [<code>] [<code>] ...
+
+Options:
+    --reinit Reinitialise the config cache after cleaning (Default)
+    --no-reinit Don't reinitialise the config cache after cleaning. This will override --reinit.
 
 If you would like to remove all cache entries use `cache:flush`
 
@@ -700,9 +713,15 @@ Run `cache:list` command to see all codes.
 Remove all cache entries
 """"""""""""""""""""""""
 
+Flush the entire cache.
+
 .. code-block:: sh
 
-   $ n98-magerun.phar cache:flush
+   $ n98-magerun.phar cache:flush [--reinit] [--no-reinit]
+
+Options:
+    --reinit Reinitialise the config cache after flushing (Default)
+    --no-reinit Don't reinitialise the config cache after flushing. This will override --reinit.
 
 List Magento caches
 """""""""""""""""""
@@ -1424,6 +1443,28 @@ Create dummy categories with all default vanilla magento or your custom values.
 | `category-name-prefix`       | Category Name Prefix (default: 'My Awesome Category')                                       | any                                              |
 +------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------+
 
+Create dummy Dropdown Attribute Values
+""""""""""""""""""""""""""""""""""""""
+
+.. code-block:: sh
+
+   $ n98-magerun.phar eav:attribute:create-dummy-values
+
+Create dummy attribute values (ONLY FOR DROPDOWN ATTRIBUTE)
+
+**Interactive mode** or via **shell arguments** or mixed.
+
++------------------------------+----------------------------------------------+--------------------------------------------------------------+
+| Arguments                    | Description                                  | Accepted Values                                              |
++------------------------------+----------------------------------------------+--------------------------------------------------------------+
+| `locale`                     | Locale value in ISO standard like en_US      | only string                                                  |
++------------------------------+----------------------------------------------+--------------------------------------------------------------+
+| `attribute-id`               | Attribute ID to add values                   | only integer                                                 |
++------------------------------+----------------------------------------------+--------------------------------------------------------------+
+| `values-type`                | Types of Values to create (default int)      | `int`<br />`string`<br />`color`<br />`size`<br />`designer` |
++------------------------------+----------------------------------------------+--------------------------------------------------------------+
+| `values-number`              | Number of Values to create (default 1)       | only integer                                                 |
++------------------------------+----------------------------------------------+--------------------------------------------------------------+
 
 List Extensions
 """""""""""""""

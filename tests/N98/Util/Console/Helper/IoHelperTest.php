@@ -7,7 +7,7 @@
 
 namespace N98\Util\Console\Helper;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 
 /**
  * Class IoHelperTest

@@ -55,8 +55,8 @@ class HistoryCommand extends AbstractMagentoCommand
 
         $output->writeln('<info>Times shown in <comment>' . $timezone . '</comment></info>');
 
-        $date       = \Mage::getSingleton('core/date');
-        $offset     = $date->calculateOffset($timezone);
+        $date = \Mage::getSingleton('core/date');
+        $offset = $date->calculateOffset($timezone);
         $collection = \Mage::getModel('cron/schedule')->getCollection();
         $collection
             ->addFieldToFilter('status', array('neq' => \Mage_Cron_Model_Schedule::STATUS_PENDING))

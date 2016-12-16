@@ -4,6 +4,7 @@
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
+
 namespace N98\Magento\Command\Cache\Dir;
 
 use FilesystemIterator;
@@ -67,9 +68,9 @@ HELP;
             return;
         }
 
-        $workingDirectory  = getcwd();
+        $workingDirectory = getcwd();
         $magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
-        $cacheDir          = $magentoRootFolder . '/var/cache';
+        $cacheDir = $magentoRootFolder . '/var/cache';
 
         $output->writeln(sprintf('<info>Flushing cache directory <comment>%s</comment></info>', $cacheDir));
 

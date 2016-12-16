@@ -75,7 +75,7 @@ HELP;
             return;
         }
 
-        $this->input  = $input;
+        $this->input = $input;
         $this->output = $output;
         /** @var DialogHelper dialog */
         $this->dialog = $this->getHelper('dialog');
@@ -284,7 +284,7 @@ HELP;
      */
     private function getQuestion($message, $default = null)
     {
-        $params  = array($message);
+        $params = array($message);
         $pattern = '%s: ';
 
         if (null !== $default) {

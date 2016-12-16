@@ -37,10 +37,6 @@ class ConfigFile
      */
     public static function createFromFile($path)
     {
-        if (!is_readable($path)) {
-            throw new InvalidArgumentException(sprintf("Config-file is not readable: '%s'", $path));
-        }
-
         $configFile = new static();
         $configFile->loadFile($path);
 
@@ -53,9 +49,17 @@ class ConfigFile
     public function loadFile($path)
     {
         $this->path = $path;
+
+        if (
+            'data://' !== substr($path, 0, 7)
+            && !is_readable($path)
+        ) {
+            throw new InvalidArgumentException(sprintf("Config-file is not readable: '%s'", $path));
+        }
+
         $buffer = file_get_contents($path);
         if (!is_string($buffer)) {
-            throw new InvalidArgumentException(sprintf("Invalid path for config file: '%s'", $path));
+            throw new InvalidArgumentException(sprintf("Fail while reading config-file: '%s'", $path));
         }
 
         $this->setBuffer($buffer);

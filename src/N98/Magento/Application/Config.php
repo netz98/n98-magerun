@@ -21,12 +21,17 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class Config
  *
  * Class representing the application configuration. Created to factor out configuration related application
- * functionality from @see N98\Magento\Application
+ * functionality from @see \N98\Magento\Application
  *
  * @package N98\Magento\Application
  */
 class Config
 {
+    const PSR_0 = 'PSR-0';
+    const PSR_4 = 'PSR-4';
+
+    const COMMAND_CLASS = 'Symfony\Component\Console\Command\Command';
+
     /**
      * @var array config data
      */
@@ -45,7 +50,7 @@ class Config
     /**
      * @var array
      */
-    private $initConfig;
+    private $initConfig = array();
 
     /**
      * @var boolean
@@ -91,15 +96,18 @@ class Config
                 BinaryString::trimExplodeEmpty(' ', $alias[$aliasCommandName]),
                 1
             );
-            if (count($aliasCommandParams) > 0) {
-                // replace with aliased data
-                $mergedParams = array_merge(
-                    array_slice($_SERVER['argv'], 0, 2),
-                    $aliasCommandParams,
-                    array_slice($_SERVER['argv'], 2)
-                );
-                $input = new ArgvInput($mergedParams);
+            if (0 === count($aliasCommandParams)) {
+                continue;
             }
+
+            // replace command (?) with aliased data
+            $oldArgv = $_SERVER['argv'];
+            $newArgv = array_merge(
+                array_slice($oldArgv, 0, 2),
+                $aliasCommandParams,
+                array_slice($oldArgv, 2)
+            );
+            $input = new ArgvInput($newArgv);
         }
 
         return $input;
@@ -138,15 +146,28 @@ class Config
                 $commandName = key($commandClass);
                 $commandClass = current($commandClass);
             }
-            $command = $this->newCommand($commandClass, $commandName);
-            $this->debugWriteln(
-                sprintf(
-                    '<debug>Add command </debug> <info>%s</info> -> <comment>%s</comment>',
-                    $command->getName(),
-                    get_class($command)
-                )
-            );
-            $application->add($command);
+            if (null === $command = $this->newCommand($commandClass, $commandName)) {
+                $this->output->writeln(
+                    sprintf(
+                        '<error>Can not add nonexistent command class "%s" as command to the application</error>',
+                        $commandClass,
+                        $commandName
+                    )
+                );
+                $this->debugWriteln(
+                    'Please check the configuration files contain the correct class-name. If the ' .
+                    'class-name is correct, check autoloader configurations.'
+                );
+            } else {
+                $this->debugWriteln(
+                    sprintf(
+                        '<debug>Add command </debug> <info>%s</info> -> <comment>%s</comment>',
+                        $command->getName(),
+                        get_class($command)
+                    )
+                );
+                $application->add($command);
+            }
         }
     }
 
@@ -162,6 +183,16 @@ class Config
         if (!(is_string($className) || is_object($className))) {
             throw new InvalidArgumentException(
                 sprintf('Command classname must be string, %s given', gettype($className))
+            );
+        }
+
+        if (!class_exists($className)) {
+            return null;
+        }
+
+        if (false === is_subclass_of($className, self::COMMAND_CLASS, true)) {
+            throw new InvalidArgumentException(
+                sprintf('Class "%s" is not a Command (subclass of "%s")', $className, self::COMMAND_CLASS)
             );
         }
 
@@ -182,14 +213,16 @@ class Config
     {
         $mask = '<debug>Registered %s autoloader </debug> <info>%s</info> -> <comment>%s</comment>';
 
-        foreach ($this->getArray('autoloaders') as $prefix => $path) {
-            $autoloader->add($prefix, $path);
-            $this->debugWriteln(sprintf($mask, 'PSR-2', $prefix, $path));
+        foreach ($this->getArray('autoloaders') as $prefix => $paths) {
+            $paths = (array) $paths;
+            $this->debugWriteln(sprintf($mask, self::PSR_0, OutputFormatter::escape($prefix), implode(",", $paths)));
+            $autoloader->add($prefix, $paths);
         }
 
-        foreach ($this->getArray('autoloaders_psr4') as $prefix => $path) {
-            $autoloader->addPsr4($prefix, $path);
-            $this->debugWriteln(sprintf($mask, 'PSR-4', OutputFormatter::escape($prefix), $path));
+        foreach ($this->getArray('autoloaders_psr4') as $prefix => $paths) {
+            $paths = (array) $paths;
+            $this->debugWriteln(sprintf($mask, self::PSR_4, OutputFormatter::escape($prefix), implode(",", $paths)));
+            $autoloader->addPsr4($prefix, $paths);
         }
     }
 
@@ -224,7 +257,7 @@ class Config
     {
         if (!$this->loader) {
             $this->loader = $this->createLoader($this->initConfig, $this->isPharMode, $this->output);
-            $this->initConfig = null;
+            $this->initConfig = array();
         }
 
         return $this->loader;

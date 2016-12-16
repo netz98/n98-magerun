@@ -8,13 +8,12 @@ namespace N98\Magento\Application;
 use Composer\Autoload\ClassLoader;
 use ErrorException;
 use N98\Magento\Application;
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Output\NullOutput;
 
 /**
  * Class ConfigTest
@@ -81,7 +80,7 @@ class ConfigTest extends TestCase
     public function configCommandAlias()
     {
         $config = new Config();
-        $input  = new ArgvInput();
+        $input = new ArgvInput();
         $actual = $config->checkConfigCommandAlias($input);
         $this->assertInstanceOf('Symfony\Component\Console\Input\InputInterface', $actual);
 
@@ -91,9 +90,9 @@ class ConfigTest extends TestCase
             $definition = new InputDefinition();
             $definition->addArgument(new InputArgument('command'));
 
-            $argv            = array('/path/to/command', 'list-help');
+            $argv = array('/path/to/command', 'list-help');
             $_SERVER['argv'] = $argv;
-            $input           = new ArgvInput($argv, $definition);
+            $input = new ArgvInput($argv, $definition);
             $this->assertSame('list-help', (string) $input);
             $actual = $config->checkConfigCommandAlias($input);
             $this->assertSame('list-help', $actual->getFirstArgument());
@@ -118,8 +117,8 @@ class ConfigTest extends TestCase
                 'customCommands' => array(
                     'N98\Magento\Command\Config\GetCommand',
                     array('name' => 'N98\Magento\Command\Config\GetCommand'),
-                )
-            )
+                ),
+            ),
         );
 
         $output = new BufferedOutput();

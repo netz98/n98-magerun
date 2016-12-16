@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\Developer\Module;
 
-use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 use N98\Util\Filesystem;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class UpdateCommandTest extends TestCase
 {
@@ -22,14 +22,14 @@ class UpdateCommandTest extends TestCase
 
         $commandTester->execute(
             array(
-                'command'   => $createCommand->getName(),
+                'command'         => $createCommand->getName(),
                 '--add-all'       => true,
                 '--modman'        => true,
                 '--description'   => 'Unit Test Description',
                 '--author-name'   => 'Unit Test',
                 '--author-email'  => 'n98-magerun@example.com',
                 'vendorNamespace' => 'N98Magerun',
-                'moduleName'      => 'UnitTest'
+                'moduleName'      => 'UnitTest',
             )
         );
         $commandTester = new CommandTester($updateCommand);
@@ -93,13 +93,12 @@ class UpdateCommandTest extends TestCase
     {
         $commandTester->execute(
             array(
-                'command' => $updateCommand->getName(),
-                '--set-version' => true,
+                'command'         => $updateCommand->getName(),
+                '--set-version'   => true,
                 'vendorNamespace' => 'N98Magerun',
-                'moduleName' => 'UnitTest'
+                'moduleName'      => 'UnitTest',
             )
         );
-
 
         $this->assertFileExists($moduleBaseFolder . 'etc/config.xml');
 
@@ -119,10 +118,10 @@ class UpdateCommandTest extends TestCase
         $dialog->setInputStream($this->getInputStream("y\nentity1\nentity1table\nentity2\nentity2table\n\n"));
         $commandTester->execute(
             array(
-                'command' => $updateCommand->getName(),
+                'command'              => $updateCommand->getName(),
                 '--add-resource-model' => true,
-                'vendorNamespace' => 'N98Magerun',
-                'moduleName' => 'UnitTest'
+                'vendorNamespace'      => 'N98Magerun',
+                'moduleName'           => 'UnitTest',
             )
         );
 
@@ -148,10 +147,10 @@ class UpdateCommandTest extends TestCase
         $dialog->setInputStream($this->getInputStream("admin\nstandard\nn98magerun\n"));
         $commandTester->execute(
             array(
-                'command' => $updateCommand->getName(),
-                '--add-routers' => true,
+                'command'         => $updateCommand->getName(),
+                '--add-routers'   => true,
                 'vendorNamespace' => 'N98Magerun',
-                'moduleName' => 'UnitTest'
+                'moduleName'      => 'UnitTest',
             )
         );
 
@@ -176,10 +175,10 @@ class UpdateCommandTest extends TestCase
         $dialog->setInputStream($this->getInputStream("frontend\ncontroller_action_postdispatch\nn98mageruntest_observer\nn98magerun_unittest/observer\ncontrollerActionPostdispatch"));
         $commandTester->execute(
             array(
-                'command' => $updateCommand->getName(),
-                '--add-events' => true,
+                'command'         => $updateCommand->getName(),
+                '--add-events'    => true,
                 'vendorNamespace' => 'N98Magerun',
-                'moduleName' => 'UnitTest'
+                'moduleName'      => 'UnitTest',
             )
         );
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
@@ -189,7 +188,6 @@ class UpdateCommandTest extends TestCase
         $this->assertContains('<class>n98magerun_unittest/observer</class>', $configXmlContent);
         $this->assertContains('<method>controllerActionPostdispatch</method>', $configXmlContent);
     }
-
 
     /**
      * @param $dialog
@@ -202,10 +200,10 @@ class UpdateCommandTest extends TestCase
         $dialog->setInputStream($this->getInputStream("adminhtml\nn98magerun_unittest\nn98magerun_unittest.xml"));
         $commandTester->execute(
             array(
-                'command' => $updateCommand->getName(),
+                'command'              => $updateCommand->getName(),
                 '--add-layout-updates' => true,
-                'vendorNamespace' => 'N98Magerun',
-                'moduleName' => 'UnitTest'
+                'vendorNamespace'      => 'N98Magerun',
+                'moduleName'           => 'UnitTest',
             )
         );
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
@@ -227,10 +225,10 @@ class UpdateCommandTest extends TestCase
         $dialog->setInputStream($this->getInputStream("adminhtml\nN98magerun_UnitTest.csv"));
         $commandTester->execute(
             array(
-                'command' => $updateCommand->getName(),
+                'command'         => $updateCommand->getName(),
                 '--add-translate' => true,
                 'vendorNamespace' => 'N98Magerun',
-                'moduleName' => 'UnitTest'
+                'moduleName'      => 'UnitTest',
             )
         );
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
@@ -241,7 +239,6 @@ class UpdateCommandTest extends TestCase
         $this->assertContains('<files>', $configXmlContent);
         $this->assertContains('<default>N98magerun_UnitTest.csv</default>', $configXmlContent);
     }
-
 
     /**
      * @param $dialog
@@ -254,10 +251,10 @@ class UpdateCommandTest extends TestCase
         $dialog->setInputStream($this->getInputStream("sectiontest\ngrouptest\nfieldname\nfieldvalue"));
         $commandTester->execute(
             array(
-                'command' => $updateCommand->getName(),
-                '--add-default' => true,
+                'command'         => $updateCommand->getName(),
+                '--add-default'   => true,
                 'vendorNamespace' => 'N98Magerun',
-                'moduleName' => 'UnitTest'
+                'moduleName'      => 'UnitTest',
             )
         );
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
@@ -266,5 +263,4 @@ class UpdateCommandTest extends TestCase
         $this->assertContains('<grouptest>', $configXmlContent);
         $this->assertContains('<fieldname>fieldvalue</fieldname>', $configXmlContent);
     }
-
 }

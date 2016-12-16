@@ -4,6 +4,9 @@ vendor/
 # Phpunit
 phpunit.xml
 
+# PHP-CS-Fixer
+/.php_cs.cache
+
 # Build files
 composer.phar
 n98-magerun.phar

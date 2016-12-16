@@ -206,7 +206,7 @@ HELP;
 
         Exec::run($exec, $commandOutput, $returnValue);
 
-        if ($returnValue <> 0) {
+        if ($returnValue != 0) {
             $output->writeln('<error>' . $commandOutput . '</error>');
         }
         $output->writeln('<info>Finished</info>');

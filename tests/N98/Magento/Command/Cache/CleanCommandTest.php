@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Cache;
 
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 class CleanCommandTest extends TestCase
 {
@@ -58,7 +58,7 @@ class CleanCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array(
             'command' => $command->getName(),
-            'type' => array('config', 'layout')
+            'type'    => array('config', 'layout'),
         ));
 
         $display = $commandTester->getDisplay();

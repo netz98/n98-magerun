@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Database;
 
 use InvalidArgumentException;
+use N98\Util\Console\Helper\DatabaseHelper;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -87,7 +88,9 @@ HELP;
         }
         $settings['JDBC-Connection-String'] = $jdbcConnectionString;
 
-        $mysqlCliString = 'mysql ' . $this->getHelper('database')->getMysqlClientToolConnectionString();
+        /* @var $database DatabaseHelper */
+        $database = $this->getHelper('database');
+        $mysqlCliString = 'mysql ' . $database->getMysqlClientToolConnectionString();
         $settings['MySQL-Cli-String'] = $mysqlCliString;
 
         $rows = array();

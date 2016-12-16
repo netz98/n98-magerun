@@ -2,9 +2,9 @@
 
 namespace Acme;
 
+use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use N98\Magento\Command\AbstractMagentoCommand;
 
 class FooCommand extends AbstractMagentoCommand
 {
@@ -15,6 +15,5 @@ class FooCommand extends AbstractMagentoCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
     }
 }

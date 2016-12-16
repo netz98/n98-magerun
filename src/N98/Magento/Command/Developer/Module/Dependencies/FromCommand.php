@@ -11,10 +11,10 @@ class FromCommand extends AbstractCommand
      *
      * @var string
      */
-    const COMMAND_NAME               = 'dev:module:dependencies:from';
-    const COMMAND_DESCRIPTION        = 'Show list of modules which depend on %s module';
+    const COMMAND_NAME = 'dev:module:dependencies:from';
+    const COMMAND_DESCRIPTION = 'Show list of modules which depend on %s module';
     const COMMAND_SECTION_TITLE_TEXT = "List of modules which depend on %s module";
-    const COMMAND_NO_RESULTS_TEXT    = "No modules depend on %s module";
+    const COMMAND_NO_RESULTS_TEXT = "No modules depend on %s module";
     /**#@-*/
 
     /**

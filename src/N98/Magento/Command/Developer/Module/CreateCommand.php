@@ -228,7 +228,7 @@ class CreateCommand extends AbstractMagentoCommand
         /** @var $helper TwigHelper */
         $helper = $this->getHelper('twig');
         $buffer = $helper->render('dev/module/create/app/etc/modules/definition.twig', $this->twigVars);
-        $size   = file_put_contents($outFile, $buffer);
+        $size = file_put_contents($outFile, $buffer);
 
         $output->writeln('<info>Created file: <comment>' . $outFile . '<comment> (' . $size . ' bytes)</info>');
     }

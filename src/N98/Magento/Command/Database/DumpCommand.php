@@ -218,6 +218,9 @@ HELP;
 
         $this->detectDbSettings($output);
 
+        /* @var $dbHelper DatabaseHelper */
+        $dbHelper = $this->getHelper('database');
+
         if (!$input->getOption('stdout') && !$input->getOption('only-command')
             && !$input->getOption('print-only-filename')
         ) {
@@ -230,10 +233,10 @@ HELP;
         $stripTables = array();
         if ($input->getOption('strip')) {
             /* @var $database DatabaseHelper */
-            $database = $this->getHelper('database');
+            $database = $dbHelper;
             $stripTables = $database->resolveTables(
                 explode(' ', $input->getOption('strip')),
-                $this->getTableDefinitions()
+                $dbHelper->getTableDefinitions($this->getCommandConfig())
             );
             if (!$input->getOption('stdout') && !$input->getOption('only-command')
                 && !$input->getOption('print-only-filename')
@@ -250,9 +253,9 @@ HELP;
 
         $excludeTables = array();
         if ($input->getOption('exclude')) {
-            $excludeTables = $this->getHelper('database')->resolveTables(
+            $excludeTables = $dbHelper->resolveTables(
                 explode(' ', $input->getOption('exclude')),
-                $this->getTableDefinitions()
+                $dbHelper->getTableDefinitions($this->getCommandConfig())
             );
             if (!$input->getOption('stdout') && !$input->getOption('only-command')
                 && !$input->getOption('print-only-filename')
@@ -308,7 +311,7 @@ HELP;
             $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $tableName . ' ';
         }
 
-        $mysqlClientToolConnectionString = $this->getHelper('database')->getMysqlClientToolConnectionString();
+        $mysqlClientToolConnectionString = $dbHelper->getMysqlClientToolConnectionString();
 
         if (count($stripTables) > 0) {
             // dump structure for strip-tables
@@ -335,7 +338,7 @@ HELP;
     }
 
     /**
-     * @param array $execs
+     * @param string[] $execs
      * @param string $fileName
      * @param InputInterface $input
      * @param OutputInterface $output

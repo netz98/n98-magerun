@@ -70,7 +70,7 @@ HELP;
 
         /** @var $helper \N98\Util\Console\Helper\DatabaseHelper */
         $helper = $this->getHelper('database');
-        $exec   = sprintf('mysql %s -e %s', $helper->getMysqlClientToolConnectionString(), escapeshellarg($query));
+        $exec = sprintf('mysql %s -e %s', $helper->getMysqlClientToolConnectionString(), escapeshellarg($query));
 
         if ($input->getOption('only-command')) {
             $output->writeln($exec);

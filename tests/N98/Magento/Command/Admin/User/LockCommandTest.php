@@ -2,8 +2,7 @@
 
 namespace N98\Magento\Command\Admin\User;
 
-use N98\Magento\Command\PHPUnit\TestCase;
-use Symfony\Component\Console\Tester\CommandTester;
+use N98\Magento\Command\TestCase;
 
 class LockCommandTest extends TestCase
 {
@@ -29,7 +28,7 @@ class LockCommandTest extends TestCase
     {
         return array(
             array(1, 86400),
-            array(31, 2678400)
+            array(31, 2678400),
         );
     }
 }

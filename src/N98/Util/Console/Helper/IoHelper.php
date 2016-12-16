@@ -4,6 +4,7 @@
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
+
 namespace N98\Util\Console\Helper;
 
 use Symfony\Component\Console\ConsoleEvents;
@@ -65,7 +66,7 @@ class IoHelper implements HelperInterface, EventSubscriberInterface
      */
     public function initializeIo(InputInterface $input, OutputInterface $output)
     {
-        $this->input  = $input;
+        $this->input = $input;
         $this->output = $output;
     }
 

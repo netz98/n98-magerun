@@ -1,12 +1,52 @@
 RECENT CHANGES
 ==============
 
+1.97.28
+-------
+* Fix: URL generation in sys:cron:run (report by Ash Smith, fix by Tom Klingenberg, #871)
+* Fix: Indexer dies on error (report by Henry Hirsch, fix by Tom Klingenberg, #701)
+* Fix: Incompatibilities with PHP 7.1 (report by Don Bosco van Hoi, fix by Tom Klingenberg, #881)
+* Fix: Warning db:import sprintf too few arguments (report by Peter Jaap Blaakmeer, fix by Tom Klingenberg, #884)
+* Fix: Empty database hostname for mysql cli (report by Seansan, fix by Tom Klingenberg, #880)
+
+1.97.27
+-------
+* Fix: Sourceforge moved to https (by Tom Klingenberg)
+* Fix: Broken sample-data tar.gz file (report by AreDubya, #879)
+* Fix: Self-check in fake phar (report by Liviu Panainte, thanks!)
+
+1.97.26
+-------
+* Upd: bash autocomplete-file
+* Imp: Hide password when asked by admin:user:change-password (report by Faisal Mirza, #873)
+
+1.97.25
+-------
+* Fix: Add missing new commands to config.yaml (by Giuseppe Morelli, #877)
+
+1.97.24
+-------
+* Fix: Array to string conversion notice (report by Christian Münch, fix by Tom Klingenberg)
+* Fix: Endless download loop (report by Vinai Kopp, fix by Tom Klingenberg, #876)
+
 1.97.23
 -------
+* Fix: Add missing sample-data package 1.9.2.4 (by Tom Klingenberg, #872)
+* Fix: Set created_at in schedule when running a cron job (by Toon Spin,  #874)
+* Fix: Print exceptions on cron run (by Luke Rodgers, #862)
+* Fix: Prevent PHP fatal errors in dev:module:rewrite:conflicts (report by Simon Sprankel, fix by Tom Klingenberg, #856)
 * Fix: Strip email queue tables for development db:dump command (by Robbie Averill, #836)
+* Upd: Documentation patch (by Rafael Corrêa Gomes, #869)
 * Imp: Create controllers folder in dev:module:create command (by Alexander Turiak, #835)
 * Imp: Update example to use config:search command (by Hardy Johnson, #834)
 * Imp: Build in clean directory (by Tom Klingenberg)
+* New: Add --reinit and --no-reninit options for cache:clean and cache:flush (by arollason, #863)
+* New: Add Magento CE 1.9.3.1 to config.yaml (by Tom Klingenberg, #872)
+* New: Add Magento CE 1.9.3.0 to config.yaml (by Marty S/sylink, #867)
+* New: Coding standard defintion and checks (by Tom Klingenberg)
+* New: Add sys:setup:run --no-implicit-cache-flush option (report by Fabrizio Branca, fix by Tom Klingenberg, #850)
+* New: Add eav:attribute:create-dummy-values command (by Giuseppe Morelli, #849)
+* New: Add category:create:dummy command (by Giuseppe Morelli, #845)
 * New: Add config classes streamlining with Magerun 2 (by Tom Klingenberg)
 * New: Add model::method to sys:cron:list command (by Steve Robbins, #838)
 * New: Integration test for db:dump (by Tom Klingenberg)

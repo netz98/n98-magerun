@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Module\Observer;
 
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 class ListCommandTest extends TestCase
 {
@@ -20,7 +20,7 @@ class ListCommandTest extends TestCase
                 'type'    => 'global',
             )
         );
-    
+
         $this->assertContains('controller_front_init_routers', $commandTester->getDisplay());
     }
 }

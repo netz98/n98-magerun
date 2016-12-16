@@ -7,7 +7,7 @@
 
 namespace N98\Magento;
 
-use N98\Magento\Command\PHPUnit\TestCase;
+use N98\Magento\Command\TestCase;
 
 /**
  * Class DbSettingsTest
@@ -23,7 +23,7 @@ class DbSettingsTest extends TestCase
      */
     public function creation()
     {
-        $file     = $this->getTestMagentoRoot() . '/app/etc/local.xml';
+        $file = $this->getTestMagentoRoot() . '/app/etc/local.xml';
         $settings = new DbSettings($file);
         $this->assertInstanceOf(__NAMESPACE__ . '\\DbSettings', $settings);
     }

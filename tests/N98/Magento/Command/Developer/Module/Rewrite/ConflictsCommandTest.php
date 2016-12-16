@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
+use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use N98\Magento\Command\PHPUnit\TestCase;
 
 /**
  * Class ConflictsCommandTest
@@ -29,7 +29,6 @@ class ConflictsCommandTest extends TestCase
             )
         );
         $this->assertContains('No rewrite conflicts were found', $commandTester->getDisplay());
-
 
         /**
          * Junit Log without any output
@@ -57,8 +56,8 @@ class ConflictsCommandTest extends TestCase
                 'n98/mock_conflict' => array(
                     'Mage_Customer_Block_Account',
                     'Mage_Tag_Block_All',
-                )
-            )
+                ),
+            ),
         );
         $command = $this->getCommandWithMockLoadRewrites($rewrites);
         $commandTester = new CommandTester($command);
@@ -68,7 +67,7 @@ class ConflictsCommandTest extends TestCase
     }
 
     /**
-     * This is made to look like a conflict (2 rewrites for the same class) but 
+     * This is made to look like a conflict (2 rewrites for the same class) but
      * because Bundle extends Catalog, it's valid.  Note that we're implying
      * Bundle depends on Catalog by passing it as the second value in the array.
      */
@@ -79,8 +78,8 @@ class ConflictsCommandTest extends TestCase
                 'n98/mock_conflict' => array(
                     'Mage_Catalog_Block_Product_Price',
                     'Mage_Bundle_Block_Catalog_Product_Price',
-                )
-            )
+                ),
+            ),
         );
         $command = $this->getCommandWithMockLoadRewrites($rewrites);
         $commandTester = new CommandTester($command);

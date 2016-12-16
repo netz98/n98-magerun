@@ -34,7 +34,8 @@ class OperatingSystemTest extends \PHPUnit_Framework_TestCase
     /**
      * @requires OS Linux
      */
-    public function testIsLinux() {
+    public function testIsLinux()
+    {
         $this->assertTrue(OperatingSystem::isLinux());
         $this->assertFalse(OperatingSystem::isWindows());
         $this->assertFalse(OperatingSystem::isMacOs());
@@ -44,7 +45,8 @@ class OperatingSystemTest extends \PHPUnit_Framework_TestCase
     /**
      * @requires OS ^Win
      */
-    public function testIsWindows() {
+    public function testIsWindows()
+    {
         $this->assertTrue(OperatingSystem::isWindows());
         $this->assertFalse(OperatingSystem::isLinux());
         $this->assertFalse(OperatingSystem::isMacOs());
@@ -54,7 +56,8 @@ class OperatingSystemTest extends \PHPUnit_Framework_TestCase
     /**
      * @requires OS Darwin|Mac
      */
-    public function testIsMacOs() {
+    public function testIsMacOs()
+    {
         $this->assertTrue(OperatingSystem::isMacOs());
         $this->assertFalse(OperatingSystem::isLinux());
         $this->assertFalse(OperatingSystem::isWindows());
@@ -64,7 +67,8 @@ class OperatingSystemTest extends \PHPUnit_Framework_TestCase
     /**
      * @requires OS netware
      */
-    public function testIsNetware() {
+    public function testIsNetware()
+    {
         $this->assertTrue(OperatingSystem::isNetware());
         $this->assertFalse(OperatingSystem::isLinux());
         $this->assertFalse(OperatingSystem::isWindows());
