@@ -148,6 +148,70 @@ class DumpCommandTest extends TestCase
         $this->assertNotContains(".sql.gz", $commandTester->getDisplay());
     }
 
+    public function testWithIncludeExcludeOptions()
+    {
+        $command = $this->getCommand();
+        $this->getApplication()->initMagento();
+        $dbConfig = $this->getDatabaseConnection()->getConfig();
+        $db = $dbConfig['dbname'];
+
+        /**
+         * Exclude
+         */
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command'        => $command->getName(),
+                '--add-time'     => true,
+                '--only-command' => true,
+                '--force'        => true,
+                '--exclude'      => 'core_config_data',
+                '--compression'  => 'gzip',
+            )
+        );
+        $this->assertRegExp("/--ignore-table=$db\.core_config_data/", $commandTester->getDisplay());
+
+        /**
+         * Include
+         */
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command'        => $command->getName(),
+                '--add-time'     => true,
+                '--only-command' => true,
+                '--force'        => true,
+                '--include'      => 'core_config_data',
+                '--compression'  => 'gzip',
+            )
+        );
+        $this->assertNotRegExp("/--ignore-table=$db\.core_config_data/", $commandTester->getDisplay());
+        $this->assertRegExp("/--ignore-table=$db\.catalog_product_entity/", $commandTester->getDisplay());
+    }
+
+    public function testIncludeExcludeMutualExclusivity()
+    {
+        /**
+         * Both include and exclude.
+         */
+        $command = $this->getCommand();
+        $this->getApplication()->initMagento();
+        $this->setExpectedException('InvalidArgumentException', 'Cannot specify both include and exclude parameters.');
+
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command'        => $command->getName(),
+                '--add-time'     => true,
+                '--only-command' => true,
+                '--force'        => true,
+                '--include'      => 'core_config_data',
+                '--exclude'      => 'catalog_product_entity',
+                '--compression'  => 'gzip',
+            )
+        );
+    }
+
     /**
      * @test
      * @link https://github.com/netz98/n98-magerun2/issues/200

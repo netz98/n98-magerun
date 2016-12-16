@@ -95,6 +95,7 @@ class DumpCommand extends AbstractDatabaseCommand
                 'Tables to strip (dump only structure of those tables)'
             )
             ->addOption('exclude', 'e', InputOption::VALUE_OPTIONAL, 'Tables to exclude from the dump')
+            ->addOption('include', 'i', InputOption::VALUE_OPTIONAL, 'Tables to include in the dump')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not prompt if all options are defined')
             ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml');
 
@@ -246,6 +247,10 @@ HELP;
             }
         }
 
+        if ($input->getOption('exclude') && $input->getOption('include')) {
+            throw new \InvalidArgumentException('Cannot specify both include and exclude parameters.');
+        }
+
         $excludeTables = array();
         if ($input->getOption('exclude')) {
             $excludeTables = $dbHelper->resolveTables(
@@ -257,6 +262,23 @@ HELP;
             ) {
                 $output->writeln(
                     '<comment>Excluded: <info>' . implode(' ', $excludeTables) . '</info></comment>'
+                );
+            }
+        }
+        if ($input->getOption('include')) {
+            /* @var $database DatabaseHelper */
+            $database = $this->getHelper('database');
+            $includeTables = $database->resolveTables(
+                explode(' ', $input->getOption('include')),
+                $this->getTableDefinitions()
+            );
+            $excludeTables = array_diff($database->getTables(), $includeTables);
+
+            if (!$input->getOption('stdout') && !$input->getOption('only-command')
+                && !$input->getOption('print-only-filename')
+            ) {
+                $output->writeln(
+                    '<comment>Included: <info>' . implode(' ', $includeTables) . '</info></comment>'
                 );
             }
         }
