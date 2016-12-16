@@ -165,7 +165,7 @@ _n98-magerun()
             opts="${opts} --tables --force"
             ;;
             db:dump)
-            opts="${opts} --add-time --compression --xml --hex-blob --only-command --print-only-filename --dry-run --no-single-transaction --human-readable --add-routines --stdout --strip --exclude --force"
+            opts="${opts} --add-time --compression --xml --hex-blob --only-command --print-only-filename --dry-run --no-single-transaction --human-readable --add-routines --stdout --strip --exclude --include --force"
             ;;
             db:import)
             opts="${opts} --compression --only-command --only-if-empty --optimize --drop --drop-tables"
