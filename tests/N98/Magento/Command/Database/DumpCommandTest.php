@@ -148,7 +148,7 @@ class DumpCommandTest extends TestCase
         $this->assertNotContains(".sql.gz", $commandTester->getDisplay());
     }
 
-    public function testWithIncludeOption()
+    public function testWithIncludeExcludeOptions()
     {
         $command = $this->getCommand();
         $this->getApplication()->initMagento();
@@ -196,7 +196,7 @@ class DumpCommandTest extends TestCase
          */
         $command = $this->getCommand();
         $this->getApplication()->initMagento();
-        $this->setExpectedException(\InvalidArgumentException::class, 'Cannot specify both include and exclude parameters.');
+        $this->setExpectedException('InvalidArgumentException', 'Cannot specify both include and exclude parameters.');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
