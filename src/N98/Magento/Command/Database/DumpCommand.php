@@ -272,7 +272,7 @@ HELP;
                 explode(' ', $input->getOption('include')),
                 $this->getTableDefinitions()
             );
-            $excludeTables  = array_diff($database->getTables(), $includeTables);
+            $excludeTables = array_diff($database->getTables(), $includeTables);
 
             if (!$input->getOption('stdout') && !$input->getOption('only-command')
                 && !$input->getOption('print-only-filename')
