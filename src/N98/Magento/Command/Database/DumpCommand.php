@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Database;
 
+use InvalidArgumentException;
 use N98\Magento\Command\Database\Compressor\Compressor;
 use N98\Util\Console\Enabler;
 use N98\Util\Console\Helper\DatabaseHelper;
@@ -218,12 +219,16 @@ HELP;
 
         $this->detectDbSettings($output);
 
-        /* @var $dbHelper DatabaseHelper */
-        $dbHelper = $this->getHelper('database');
+        /* @var $database DatabaseHelper */
+        $database = $this->getHelper('database');
 
-        if (!$input->getOption('stdout') && !$input->getOption('only-command')
+        $canOutputInformation =
+            !$input->getOption('stdout')
+            && !$input->getOption('only-command')
             && !$input->getOption('print-only-filename')
-        ) {
+            ;
+
+        if ($canOutputInformation) {
             $this->writeSection($output, 'Dump MySQL Database');
         }
 
@@ -232,53 +237,45 @@ HELP;
 
         $stripTables = array();
         if ($input->getOption('strip')) {
-            /* @var $database DatabaseHelper */
-            $database = $dbHelper;
             $stripTables = $database->resolveTables(
                 explode(' ', $input->getOption('strip')),
-                $dbHelper->getTableDefinitions($this->getCommandConfig())
+                $database->getTableDefinitions($this->getCommandConfig())
             );
-            if (!$input->getOption('stdout') && !$input->getOption('only-command')
-                && !$input->getOption('print-only-filename')
-            ) {
+            if ($canOutputInformation) {
                 $output->writeln(
-                    '<comment>No-data export for: <info>' . implode(' ', $stripTables) . '</info></comment>'
+                    sprintf('<comment>No-data export for: <info>%s</info></comment>', implode(' ', $stripTables))
                 );
             }
         }
 
         if ($input->getOption('exclude') && $input->getOption('include')) {
-            throw new \InvalidArgumentException('Cannot specify both include and exclude parameters.');
+            throw new InvalidArgumentException('Cannot specify --include with --exclude');
         }
 
         $excludeTables = array();
         if ($input->getOption('exclude')) {
-            $excludeTables = $dbHelper->resolveTables(
+            $excludeTables = $database->resolveTables(
                 explode(' ', $input->getOption('exclude')),
-                $dbHelper->getTableDefinitions($this->getCommandConfig())
+                $database->getTableDefinitions($this->getCommandConfig())
             );
-            if (!$input->getOption('stdout') && !$input->getOption('only-command')
-                && !$input->getOption('print-only-filename')
-            ) {
+            if ($canOutputInformation) {
                 $output->writeln(
-                    '<comment>Excluded: <info>' . implode(' ', $excludeTables) . '</info></comment>'
+                    sprintf('<comment>Excluded: <info>%s</info></comment>', implode(' ', $excludeTables))
                 );
             }
         }
+
         if ($input->getOption('include')) {
             /* @var $database DatabaseHelper */
             $database = $this->getHelper('database');
             $includeTables = $database->resolveTables(
                 explode(' ', $input->getOption('include')),
-                $this->getTableDefinitions()
+                $database->getTableDefinitions($this->getCommandConfig())
             );
             $excludeTables = array_diff($database->getTables(), $includeTables);
-
-            if (!$input->getOption('stdout') && !$input->getOption('only-command')
-                && !$input->getOption('print-only-filename')
-            ) {
+            if ($canOutputInformation) {
                 $output->writeln(
-                    '<comment>Included: <info>' . implode(' ', $includeTables) . '</info></comment>'
+                    sprintf('<comment>Included: <info>%s</info></comment>', implode(' ', $includeTables))
                 );
             }
         }
@@ -311,7 +308,7 @@ HELP;
             $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $tableName . ' ';
         }
 
-        $mysqlClientToolConnectionString = $dbHelper->getMysqlClientToolConnectionString();
+        $mysqlClientToolConnectionString = $database->getMysqlClientToolConnectionString();
 
         if (count($stripTables) > 0) {
             // dump structure for strip-tables

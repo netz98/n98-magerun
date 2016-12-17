@@ -212,11 +212,13 @@ class DatabaseHelper extends AbstractHelper
             foreach ($tableGroups as $index => $definition) {
                 $description = isset($definition['description']) ? $definition['description'] : '';
                 if (!isset($definition['id'])) {
-                    throw new RuntimeException('Invalid definition of table-groups (id missing) Index: ' . $index);
+                    throw new RuntimeException(
+                        sprintf('Invalid definition of table-groups (id missing) Index: %s', $index)
+                    );
                 }
                 if (!isset($definition['tables'])) {
-                    throw new RuntimeException('Invalid definition of table-groups (tables missing) Id: '
-                        . $definition['id']
+                    throw new RuntimeException(
+                        sprintf('Invalid definition of table-groups (tables missing) Id: "%s"', $definition['id'])
                     );
                 }
 

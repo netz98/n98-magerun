@@ -80,9 +80,10 @@ class IncrementalCommand extends AbstractMagentoCommand
         }
         $needsUpdate = $this->_analyzeSetupResourceClasses();
 
-        if (count($needsUpdate) == 0) {
-            // return;
+        if (count($needsUpdate) === 0) {
+            return;
         }
+
         $this->_listDetailedUpdateInformation($needsUpdate);
         $this->_runAllStructureUpdates($needsUpdate);
         $output->writeln('We have run all the setup resource scripts.');
