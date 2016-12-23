@@ -17,7 +17,6 @@ class InfoCommand extends AbstractDatabaseCommand
         $this
             ->setName('db:info')
             ->addArgument('setting', InputArgument::OPTIONAL, 'Only output value of named setting')
-            ->addDeprecatedAlias('database:info', 'Please use db:info')
             ->setDescription('Dumps database informations')
             ->addOption(
                 'format',
@@ -26,6 +25,7 @@ class InfoCommand extends AbstractDatabaseCommand
                 'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
             )
         ;
+        $this->addDeprecatedAlias('database:info', 'Please use db:info');
 
         $help = <<<HELP
 This command is useful to print all informations about the current configured database in app/etc/local.xml.

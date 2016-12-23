@@ -192,6 +192,11 @@ HELP;
             $messages .= sprintf(" <info>%s</info>%s  %s\n", $name, $spacer, $buffer);
         }
 
+        $messages .= <<<HELP
+
+Extended: https://github.com/netz98/n98-magerun/wiki/Stripped-Database-Dumps
+HELP;
+
         return $messages;
     }
 

@@ -16,7 +16,7 @@ use Symfony\Component\Console\Command\Command;
  *
  * Utility class to check console command requirements to be "enabled".
  *
- * @see N98\Magento\Command\Database\DumpCommand::execute()
+ * @see \N98\Magento\Command\Database\DumpCommand::execute()
  *
  * @package N98\Util\Console
  */
