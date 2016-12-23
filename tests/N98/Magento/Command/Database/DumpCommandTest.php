@@ -196,7 +196,7 @@ class DumpCommandTest extends TestCase
          */
         $command = $this->getCommand();
         $this->getApplication()->initMagento();
-        $this->setExpectedException('InvalidArgumentException', 'Cannot specify both include and exclude parameters.');
+        $this->setExpectedException('InvalidArgumentException', 'Cannot specify --include with --exclude');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
