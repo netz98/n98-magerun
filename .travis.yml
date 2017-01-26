@@ -6,7 +6,6 @@ branches:
     - master
     - develop
     - /^(bugfix|feature)\/.*$/
-    - interop
 
 php:
   - 5.3
@@ -17,6 +16,8 @@ env:
   global:
     - DB=mysql
   matrix:
+    - SCRIPT_JOB="PHP-CS-FIXER"
+    - SCRIPT_JOB="BUILDSH"
     - MAGENTO_VERSION="magento-mirror-1.4.2.0" INSTALL_SAMPLE_DATA=yes
     - MAGENTO_VERSION="magento-mirror-1.5.1.0" INSTALL_SAMPLE_DATA=yes
     - MAGENTO_VERSION="magento-mirror-1.6.2.0" INSTALL_SAMPLE_DATA=yes
@@ -64,31 +65,27 @@ matrix:
   include:
     # Lint PHP code with future PHP versions (forward compatibility)
     - php: 7.0
-      env: LINTSH=1
-      script: find {src,tests} -name "*.php" ! -path '*/String.php' -print0 | xargs -0 -n1 -P8 php -l | grep -v '^No syntax errors detected'; test $? -eq 1
+      env: SCRIPT_JOB=LINTSH
+      script: find {src,tests} -name "*.php" ! -path '*/String.php' -print0 | xargs
+        -0 -n1 -P8 php -l | grep -v '^No syntax errors detected'; test $? -eq 1
     - php: 7.1
-      env: LINTSH=1
-      script: find {src,tests} -name "*.php" ! -path '*/String.php' -print0 | xargs -0 -n1 -P8 php -l | grep -v '^No syntax errors detected'; test $? -eq 1
-    # Run the build script with different PHP versions
-    - php: 5.3
-      env: BUILDSH=1
-      script: build/travis/build.sh
-    - php: 5.4
-      env: BUILDSH=1
-      script: build/travis/build.sh
-    - php: 5.5
-      env: BUILDSH=1
-      script: build/travis/build.sh
+      env: SCRIPT_JOB=LINTSH
+      script: find {src,tests} -name "*.php" ! -path '*/String.php' -print0 | xargs
+        -0 -n1 -P8 php -l | grep -v '^No syntax errors detected'; test $? -eq 1
+    # Run the cs-fixer and build script with different PHP versions
     - php: 5.6
-      env: BUILDSH=1
-      script: build/travis/build.sh
+      env: SCRIPT_JOB="PHP-CS-FIXER"
+    - php: 5.6
+      env: SCRIPT_JOB="BUILDSH"
     - php: 7.0
-      env: BUILDSH=1
-      script: build/travis/build.sh
+      env: SCRIPT_JOB="PHP-CS-FIXER"
+    - php: 7.0
+      env: SCRIPT_JOB="BUILDSH"
     - php: 7.1
-      env: BUILDSH=1
-      script: build/travis/build.sh
-    # Run with current PHP 5.6 and PHP 7.0 version
+      env: SCRIPT_JOB="PHP-CS-FIXER"
+    - php: 7.1
+      env: SCRIPT_JOB="BUILDSH"
+    # Run with current PHP 5.6 and PHP 7.0 version (as not set in matrix)
     - php: 5.6
       env: MAGENTO_VERSION="magento-mirror-1.9.2.4" DB=mysql INSTALL_SAMPLE_DATA=no
     - php: 5.6
@@ -110,11 +107,10 @@ before_install:
   - travis_retry composer global require hirak/prestissimo
 
 install:
-  - travis_retry composer install --prefer-source --no-interaction --ignore-platform-reqs
+  - travis_retry composer install --prefer-dist --no-interaction --ignore-platform-reqs
 
 before_script:
   - source build/travis/before_script.sh
 
 script:
-  - vendor/bin/php-cs-fixer --diff --dry-run -v fix
-  - vendor/bin/phpunit --debug --stop-on-error --stop-on-failure
+  - build/travis/script.sh

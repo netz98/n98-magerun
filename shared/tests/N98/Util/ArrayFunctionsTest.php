@@ -30,22 +30,22 @@ class ArrayFunctionsTest extends \PHPUnit_Framework_TestCase
             array(
                 array(),
                 array('Foo', 'Bar'),
-                array('Foo', 'Bar')
+                array('Foo', 'Bar'),
             ),
             array(
                 array('Foo', 'Bar'),
                 array(),
-                array('Foo', 'Bar')
+                array('Foo', 'Bar'),
             ),
             array(
                 array('Foo'),
                 array('Bar'),
-                array('Foo', 'Bar')
+                array('Foo', 'Bar'),
             ),
             array(
                 array('Foo', array('Bar')),
                 array('Bar'),
-                array('Foo', array('Bar'), 'Bar')
+                array('Foo', array('Bar'), 'Bar'),
             ),
 
             /**
@@ -54,7 +54,7 @@ class ArrayFunctionsTest extends \PHPUnit_Framework_TestCase
             array(
                 array('Foo', 'Bar' => array('Bar' => 1)),
                 array('Bar' => array('Bar' => 2)),
-                array('Foo', 'Bar' => array('Bar' => 2))
+                array('Foo', 'Bar' => array('Bar' => 2)),
             ),
         );
     }
@@ -148,8 +148,8 @@ class ArrayFunctionsTest extends \PHPUnit_Framework_TestCase
                     array('foo' => 'bar'),
                     array('foo' => 'baz'),
                     array('foo' => 'zaz'),
-                )
-            )
+                ),
+            ),
         );
     }
 
