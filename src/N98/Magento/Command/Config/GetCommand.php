@@ -6,7 +6,6 @@ use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class GetCommand extends AbstractConfigCommand
@@ -143,13 +142,39 @@ HELP;
                 $row['path'],
                 $row['scope'],
                 $row['scope_id'],
-                $row['value'],
+                $this->renderTableValue($row['value'], $format),
             );
         }
-        $this->getHelper('table')
+
+        /* @var $tableHelper \N98\Util\Console\Helper\TableHelper */
+        $tableHelper = $this->getHelper('table');
+        $tableHelper
             ->setHeaders(array('Path', 'Scope', 'Scope-ID', 'Value'))
             ->setRows($formattedTable)
             ->renderByFormat($output, $formattedTable, $format);
+    }
+
+    private function renderTableValue($value, $format)
+    {
+        if ($value === null) {
+            switch ($format) {
+                case null:
+                    $value = self::DISPLAY_NULL_UNKOWN_VALUE;
+                    break;
+                case 'json':
+                    break;
+                case 'csv':
+                case 'xml':
+                    $value = 'NULL';
+                    break;
+                default:
+                    throw new \UnexpectedValueException(
+                        sprintf("Unhandled format %s", var_export($value, true))
+                    );
+            }
+        }
+
+        return $value;
     }
 
     /**
@@ -192,13 +217,21 @@ HELP;
     protected function renderAsMagerunScript(OutputInterface $output, $table)
     {
         foreach ($table as $row) {
-            $value = str_replace(array("\n", "\r"), array('\n', '\r'), $row['value']);
+            $value = $row['value'];
+            if ($value !== null) {
+                $value = str_replace(array("\n", "\r"), array('\n', '\r'), $value);
+            }
+
+            $disaplayValue = $value === null ? "NULL" : escapeshellarg($value);
+            $protectNullString = $value === "NULL" ? '--no-null ' : '';
+
             $line = sprintf(
-                'config:set --scope-id=%s --scope=%s -- %s %s',
+                'config:set %s--scope-id=%s --scope=%s -- %s %s',
+                $protectNullString,
                 $row['scope_id'],
                 $row['scope'],
                 escapeshellarg($row['path']),
-                escapeshellarg($value)
+                $disaplayValue
             );
             $output->writeln($line);
         }

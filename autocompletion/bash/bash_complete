@@ -135,7 +135,7 @@ _n98-magerun()
             opts="${opts} "
             ;;
             config:set)
-            opts="${opts} --scope --scope-id --encrypt --force"
+            opts="${opts} --scope --scope-id --encrypt --force --no-null"
             ;;
             customer:change-password)
             opts="${opts} "
