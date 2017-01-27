@@ -29,6 +29,7 @@ return Symfony\CS\Config::create()
                 'newline_after_open_tag',
                 'ordered_use',
                 'standardize_not_equal',
+                /* php 5.3 compat */ 'class_keyword_remove', 'long_array_syntax ',
             )
         )
     )
