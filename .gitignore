@@ -1,26 +1,9 @@
 # Composer
-vendor/
+/vendor/
 
-# Phpunit
-phpunit.xml
-
-# PHP-CS-Fixer
-/.php_cs.cache
-
-# Build files
-composer.phar
-n98-magerun.phar
-build/output/
+# Build
+/n98-magerun.phar
+/build/output/
 
 # Magerun stopfile
-.n98-magerun
-
-# Miscellaneous (Kraut und Rueben)
-.DS_Store
-.idea
-example-magento
-clover.xml
-clover
-/.project
-doc/**
-reports/**
+/.n98-magerun
