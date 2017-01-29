@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "09ef0063b23b2b4794b602e0ea168b48",
+    "content-hash": "cf8a6587a6c5930bff371a8f41d92d01",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -1533,6 +1533,44 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "bamarni/symfony-console-autocomplete",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bamarni/symfony-console-autocomplete.git",
+                "reference": "0f224ae25d13b79aef353767af43d420d1f96b13"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bamarni/symfony-console-autocomplete/zipball/0f224ae25d13b79aef353767af43d420d1f96b13",
+                "reference": "0f224ae25d13b79aef353767af43d420d1f96b13",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/console": "^2.5|3.*",
+                "symfony/process": "^2.3|3.*"
+            },
+            "require-dev": {
+                "symfony/console": "2.8.*"
+            },
+            "bin": [
+                "symfony-autocomplete"
+            ],
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bilal Amarni",
+                    "email": "bilal.amarni@gmail.com"
+                }
+            ],
+            "description": "Shell completion for Symfony Console based scripts",
+            "time": "2016-02-14T10:55:22+00:00"
+        },
         {
             "name": "doctrine/instantiator",
             "version": "1.0.5",

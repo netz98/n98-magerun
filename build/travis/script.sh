@@ -30,4 +30,8 @@ case "${SCRIPT_JOB}" in
     build/travis/build.sh
     ;;
 
+    "BASH-AUTOCOMPLETION" )
+    bin/compile-bash-autocompletion
+    ;;
+
 esac

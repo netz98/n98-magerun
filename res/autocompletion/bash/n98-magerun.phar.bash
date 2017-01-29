@@ -108,16 +108,16 @@ _n98-magerun()
             opts="${opts} --name --description --author --type --homepage --require --require-dev --stability --license --repository"
             ;;
             composer:install)
-            opts="${opts} --prefer-source --prefer-dist --dry-run --dev --no-dev --no-plugins --no-custom-installers --no-autoloader --no-scripts --no-progress --optimize-autoloader --classmap-authoritative --ignore-platform-reqs"
+            opts="${opts} --prefer-source --prefer-dist --dry-run --dev --no-dev --no-custom-installers --no-autoloader --no-scripts --no-progress --no-suggest --optimize-autoloader --classmap-authoritative --apcu-autoloader --ignore-platform-reqs"
             ;;
             composer:require)
-            opts="${opts} --dev --prefer-source --prefer-dist --no-plugins --no-progress --no-update --update-no-dev --update-with-dependencies --ignore-platform-reqs --sort-packages --optimize-autoloader --classmap-authoritative"
+            opts="${opts} --dev --prefer-source --prefer-dist --no-progress --no-suggest --no-update --no-scripts --update-no-dev --update-with-dependencies --ignore-platform-reqs --prefer-stable --prefer-lowest --sort-packages --optimize-autoloader --classmap-authoritative --apcu-autoloader"
             ;;
             composer:search)
-            opts="${opts} --only-name"
+            opts="${opts} --only-name --type"
             ;;
             composer:update)
-            opts="${opts} --prefer-source --prefer-dist --dry-run --dev --no-dev --lock --no-plugins --no-custom-installers --no-autoloader --no-scripts --no-progress --with-dependencies --optimize-autoloader --classmap-authoritative --ignore-platform-reqs --prefer-stable --prefer-lowest --interactive --root-reqs"
+            opts="${opts} --prefer-source --prefer-dist --dry-run --dev --no-dev --lock --no-custom-installers --no-autoloader --no-scripts --no-progress --no-suggest --with-dependencies --optimize-autoloader --classmap-authoritative --apcu-autoloader --ignore-platform-reqs --prefer-stable --prefer-lowest --interactive --root-reqs"
             ;;
             composer:validate)
             opts="${opts} --no-check-all --no-check-lock --no-check-publish --with-dependencies --strict"

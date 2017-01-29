@@ -18,6 +18,7 @@ env:
   matrix:
     - SCRIPT_JOB="PHP-CS-FIXER"
     - SCRIPT_JOB="BUILDSH"
+    - SCRIPT_JOB="BASH-AUTOCOMPLETION"
     - MAGENTO_VERSION="magento-mirror-1.4.2.0" INSTALL_SAMPLE_DATA=yes
     - MAGENTO_VERSION="magento-mirror-1.5.1.0" INSTALL_SAMPLE_DATA=yes
     - MAGENTO_VERSION="magento-mirror-1.6.2.0" INSTALL_SAMPLE_DATA=yes
@@ -77,14 +78,20 @@ matrix:
       env: SCRIPT_JOB="PHP-CS-FIXER"
     - php: 5.6
       env: SCRIPT_JOB="BUILDSH"
+    - php: 5.6
+      env: SCRIPT_JOB="BASH-AUTOCOMPLETION"
     - php: 7.0
       env: SCRIPT_JOB="PHP-CS-FIXER"
     - php: 7.0
       env: SCRIPT_JOB="BUILDSH"
+    - php: 7.0
+      env: SCRIPT_JOB="BASH-AUTOCOMPLETION"
     - php: 7.1
       env: SCRIPT_JOB="PHP-CS-FIXER"
     - php: 7.1
       env: SCRIPT_JOB="BUILDSH"
+    - php: 7.1
+      env: SCRIPT_JOB="BASH-AUTOCOMPLETION"
     # Run with current PHP 5.6 and PHP 7.0 version (as not set in matrix)
     - php: 5.6
       env: MAGENTO_VERSION="magento-mirror-1.9.2.4" DB=mysql INSTALL_SAMPLE_DATA=no

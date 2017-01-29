@@ -27,7 +27,8 @@ Build phar with:
         <include name="**/**" />
     </fileset>
     <fileset dir="res" id="res_folder">
-        <include name="**/**" />
+        <include name="dev/**" />
+        <include name="twig/**" />
     </fileset>
     <fileset dir="vendor" id="vendor_folder">
         <include name="**/**" />
