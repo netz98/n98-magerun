@@ -9,6 +9,7 @@ RECENT CHANGES
 * Fix: Incompatibilities with PHP 7.1 (report by Don Bosco van Hoi, fix by Tom Klingenberg, #881)
 * Fix: Warning db:import sprintf too few arguments (report by Peter Jaap Blaakmeer, fix by Tom Klingenberg, #884)
 * Fix: Empty database hostname for mysql cli (report by Seansan, fix by Tom Klingenberg, #880)
+* Imp: Build phar reproduceable and from dev requirements (by Tom Klingenberg)
 * Imp: Support NULL values in config:set and config:get (by Tom Klingenberg)
 * New: Add --include parameter to db:dump command (by Jarod Hayes, #848)
 

@@ -11,7 +11,7 @@ use Seld\PharUtils\Timestamps;
 echo "reset phar file timestamps to latest commit timestamp (reproduceable build)\n";
 
 # seld/phar-utils via build requirements
-require __DIR__ . '/../vendor/seld/phar-utils/src/Timestamps.php';
+require __DIR__ . '/../../vendor/seld/phar-utils/src/Timestamps.php';
 
 $projectDir = __DIR__ . '/../..';
 
@@ -32,13 +32,12 @@ if (!is_file($file) || !is_readable($file)) {
 }
 
 $timestamp = (int) `git log --format=format:%ct HEAD -1`;
-$threshold = 1343826993;
+printf("Timestamp: %d (%s, date of last commit)\n", $timestamp, date(DATE_RFC3339), $timestamp);
+$threshold = 1343826993; # 2012-08-01T15:14:33Z
 if ($timestamp < $threshold) {
-    $message = sprintf(
-        'Timestamp %d (%s) below threshold %d (%s).', $timestamp, date(DATE_RFC3339, $timestamp), $threshold,
-        date(DATE_RFC3339, $threshold)
+    throw new RuntimeException(
+        sprintf('Timestamp older than %d (%s).', $threshold, date(DATE_RFC3339, $threshold))
     );
-    throw new RuntimeException($message);
 }
 
 $tmp = $file . '.tmp';
@@ -61,7 +60,6 @@ $timestamps = new Timestamps($tmp);
 $timestamps->updateTimestamps($timestamp);
 $timestamps->save($file, $sig);
 
-printf("Timestamp: %d (%s)\n", $timestamp, date(DATE_RFC3339, $timestamp));
 echo "SHA1.....: ", sha1_file($file), "\nMD5......: ", md5_file($file), "\n";
 
 if (!unlink($tmp)) {
