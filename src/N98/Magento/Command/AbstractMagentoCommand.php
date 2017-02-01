@@ -383,6 +383,38 @@ abstract class AbstractMagentoCommand extends Command
      *
      * @param string $mage1code Magento 1 class code
      * @param string $mage2class Magento 2 class name
+     * @return \Mage_Core_Helper_Abstract
+     */
+    protected function _getHelper($mage1code, $mage2class)
+    {
+        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
+            return \Mage::helper($mage2class);
+        } else {
+            return \Mage::helper($mage1code);
+        }
+    }
+
+    /**
+     * Magento 1 / 2 switches
+     *
+     * @param string $mage1code Magento 1 class code
+     * @param string $mage2class Magento 2 class name
+     * @return \Mage_Core_Model_Abstract
+     */
+    protected function _getSingleton($mage1code, $mage2class)
+    {
+        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
+            return \Mage::getModel($mage2class);
+        } else {
+            return \Mage::getModel($mage1code);
+        }
+    }
+
+    /**
+     * Magento 1 / 2 switches
+     *
+     * @param string $mage1code Magento 1 class code
+     * @param string $mage2class Magento 2 class name
      * @return \Mage_Core_Model_Abstract
      */
     protected function _getResourceModel($mage1code, $mage2class)
