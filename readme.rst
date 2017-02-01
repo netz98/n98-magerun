@@ -568,6 +568,25 @@ Loops all Magento indexes and triggers reindex.
 
    $ n98-magerun.phar index:reindex:all
 
+List Enterprise Mview Changelog Indexes
+"""""""""""""""""""""""""""""""""""""""
+
+Lists the Mview indexers available, as well as their current version and how many are in the changelog queue .
+
+.. code-block:: sh
+
+   $ n98-magerun.phar index:list:mview [--format[="..."]]
+
+Reindex an Enterprise Mview Changelog Index
+"""""""""""""""""""""""""""""""""""""""""""
+
+Index by Mview table code. This will ignore all locks and trigger the changelog indexer.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar index:reindex:mview [table_code]
+
+
 Generate local.xml file
 """""""""""""""""""""""
 
