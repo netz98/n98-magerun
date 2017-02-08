@@ -11,6 +11,7 @@ RECENT CHANGES
 * Fix: Empty database hostname for mysql cli (report by Seansan, fix by Tom Klingenberg, #880)
 * Imp: Build phar reproduceable and from dev requirements (by Tom Klingenberg)
 * Imp: Support NULL values in config:set and config:get (by Tom Klingenberg)
+* New: Add index:list:mview and index:reindex:mview commands (by Luke Rodgers, #891)
 * New: Add --include parameter to db:dump command (by Jarod Hayes, #848)
 
 1.97.27
