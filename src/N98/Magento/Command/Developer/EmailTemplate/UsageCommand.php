@@ -13,6 +13,7 @@ use Mage_Adminhtml_Model_Email_Template;
 use Mage_Core_Model_Template;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -45,7 +46,9 @@ class UsageCommand extends AbstractMagentoCommand
         $templates = $this->findEmailTemplates();
 
         if (!empty($templates)) {
-            $this->getHelper('table')
+            /* @var $tableHelper TableHelper */
+            $tableHelper = $this->getHelper('table');
+            $tableHelper
                 ->setHeaders(array('id', 'Name', 'Scope', 'Scope Id', 'Path'))
                 ->renderByFormat($output, $templates, $input->getOption('format'));
         } else {

@@ -4,6 +4,7 @@ namespace N98\Magento\Command\GiftCard;
 
 use Enterprise_GiftCardAccount_Model_Giftcardaccount as Giftcardaccount;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -57,7 +58,9 @@ class InfoCommand extends AbstractGiftCardCommand
             array('State', $card->getStateText()),
             array('Is Redeemable', $card->getIsRedeemable()),
         );
-        $this->getHelper('table')
+        /* @var $tableHelper TableHelper */
+        $tableHelper = $this->getHelper('table');
+        $tableHelper
             ->setHeaders(array('Name', 'Value'))
             ->setRows($data)
             ->renderByFormat($output, $data, $input->getOption('format'));

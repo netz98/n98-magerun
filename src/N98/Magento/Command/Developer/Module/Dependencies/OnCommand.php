@@ -6,6 +6,7 @@ use Exception;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -59,7 +60,9 @@ class OnCommand extends AbstractMagentoCommand
             if ($input->getOption('format') === null && count($dependencies) === 0) {
                 $output->writeln(sprintf("Module %s doesn't have dependencies", $moduleName));
             } else {
-                $this->getHelper('table')
+                /* @var $tableHelper TableHelper */
+                $tableHelper = $this->getHelper('table');
+                $tableHelper
                     ->setHeaders(array('Name', 'Status', 'Current installed version', 'Code pool'))
                     ->setPadType(STR_PAD_LEFT)
                     ->renderByFormat($output, $dependencies, $input->getOption('format'));

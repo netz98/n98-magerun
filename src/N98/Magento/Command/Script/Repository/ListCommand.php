@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Script\Repository;
 
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -63,7 +64,9 @@ HELP;
             $output->writeln('<info>no script file found</info>');
         }
 
-        $this->getHelper('table')
+        /* @var $tableHelper TableHelper */
+        $tableHelper = $this->getHelper('table');
+        $tableHelper
             ->setHeaders(array('Script', 'Location', 'Description'))
             ->renderByFormat($output, $table, $input->getOption('format'));
     }

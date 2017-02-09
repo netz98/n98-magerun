@@ -4,6 +4,7 @@ namespace N98\Magento\Command\Developer\Theme;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
+use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -67,7 +68,9 @@ class InfoCommand extends AbstractMagentoCommand
         $storeInfoLines = $this->_parse($this->_configNodesWithExceptions, $store, true);
         $storeInfoLines = array_merge($storeInfoLines, $this->_parse($this->_configNodes, $store));
 
-        $this->getHelper('table')
+        /* @var $tableHelper TableHelper */
+        $tableHelper = $this->getHelper('table');
+        $tableHelper
             ->setHeaders(array('Parameter', 'Value'))
             ->renderByFormat($output, $storeInfoLines);
 

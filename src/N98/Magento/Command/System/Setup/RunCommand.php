@@ -4,6 +4,7 @@ namespace N98\Magento\Command\System\Setup;
 
 use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
@@ -87,7 +88,8 @@ HELP;
             return $row;
         });
 
-        $table = $this->getHelper('table');
+        /* @var $tableHelper TableHelper */
+        $tableHelper = $this->getHelper('table');
         $rows = array();
         $i = 1;
         foreach ($trace as $row) {
@@ -97,9 +99,9 @@ HELP;
                 $row['class'] . '::' . $row['function'],
             );
         }
-        $table->setHeaders(array('#', 'File/Line', 'Method'));
-        $table->setRows($rows);
-        $table->render($output);
+        $tableHelper->setHeaders(array('#', 'File/Line', 'Method'));
+        $tableHelper->setRows($rows);
+        $tableHelper->render($output);
     }
 
     /**
@@ -109,16 +111,17 @@ HELP;
     protected function printFile(OutputInterface $output, Exception $e)
     {
         if (preg_match('/Error\sin\sfile\:\s"(.+)\"\s-/', $e->getMessage(), $matches)) {
-            $table = $this->getHelper('table');
+            /* @var $tableHelper TableHelper */
+            $tableHelper = $this->getHelper('table');
             $lines = \file($matches[1]);
             $rows = array();
             $i = 0;
             foreach ($lines as $line) {
                 $rows[] = array(++$i, rtrim($line));
             }
-            $table->setHeaders(array('Line', 'Code'));
-            $table->setRows($rows);
-            $table->render($output);
+            $tableHelper->setHeaders(array('Line', 'Code'));
+            $tableHelper->setRows($rows);
+            $tableHelper->render($output);
         }
     }
 

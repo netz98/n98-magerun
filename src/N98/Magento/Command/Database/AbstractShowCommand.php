@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Database;
 
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Console\Helper\TableHelper;
 use N98\Util\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -163,9 +164,9 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
      */
     protected function renderTable(array $header, array $rows)
     {
-        /** @var \N98\Util\Console\Helper\TableHelper $t */
-        $t = $this->getHelper('table');
-        $t->setHeaders($header)
+        /** @var TableHelper $tableHelper */
+        $tableHelper = $this->getHelper('table');
+        $tableHelper->setHeaders($header)
             ->renderByFormat($this->_output, $rows, $this->_input->getOption('format'));
     }
 

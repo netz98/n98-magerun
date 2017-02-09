@@ -6,6 +6,7 @@ use Exception;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -69,7 +70,9 @@ abstract class AbstractCommand extends AbstractMagentoCommand
             $dependencies = $this->findModuleDependencies($moduleName, $recursive);
             if (!empty($dependencies)) {
                 usort($dependencies, array($this, 'sortDependencies'));
-                $this->getHelper('table')
+                /* @var $tableHelper TableHelper */
+                $tableHelper = $this->getHelper('table');
+                $tableHelper
                     ->setHeaders(array('Name', 'Status', 'Current installed version', 'Code pool'))
                     ->setPadType(STR_PAD_LEFT)
                     ->renderByFormat($output, $dependencies, $input->getOption('format'));

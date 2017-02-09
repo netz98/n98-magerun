@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Cache;
 
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,7 +45,9 @@ class ListCommand extends AbstractCacheCommand
             );
         }
 
-        $this->getHelper('table')
+        /* @var $tableHelper TableHelper */
+        $tableHelper = $this->getHelper('table');
+        $tableHelper
             ->setHeaders(array('code', 'status'))
             ->renderByFormat($output, $table, $input->getOption('format'));
     }

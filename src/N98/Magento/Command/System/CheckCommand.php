@@ -9,6 +9,7 @@ use N98\Magento\Command\CommandConfigAware;
 use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Console\Helper\TableHelper;
 use N98\Util\Unicode\Charset;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -157,7 +158,9 @@ HELP;
             );
         }
 
-        $this->getHelper('table')
+        /* @var $tableHelper TableHelper */
+        $tableHelper = $this->getHelper('table');
+        $tableHelper
             ->setHeaders(array('Group', 'Message', 'Result'))
             ->renderByFormat($output, $table, $input->getOption('format'));
     }
