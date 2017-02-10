@@ -6,6 +6,7 @@ use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use ReflectionClass;
 use RuntimeException;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -79,9 +80,10 @@ class IncrementalCommand extends AbstractMagentoCommand
         }
         $needsUpdate = $this->_analyzeSetupResourceClasses();
 
-        if (count($needsUpdate) == 0) {
+        if (count($needsUpdate) === 0) {
             return;
         }
+
         $this->_listDetailedUpdateInformation($needsUpdate);
         $this->_runAllStructureUpdates($needsUpdate);
         $output->writeln('We have run all the setup resource scripts.');
@@ -484,7 +486,9 @@ class IncrementalCommand extends AbstractMagentoCommand
         ));
 
         if ($magentoExceptionOutput) {
-            $this->getHelper('dialog')->askAndValidate(
+            /* @var  $dialog DialogHelper */
+            $dialog = $this->getHelper('dialog');
+            $dialog->ask(
                 $output,
                 '<question>Press Enter to view raw Magento error text:</question> '
             );
@@ -521,7 +525,9 @@ class IncrementalCommand extends AbstractMagentoCommand
     {
         $output = $this->_output;
         $output->writeln('The next ' . $type . ' update to run is <info>' . $toUpdate . '</info>');
-        $this->getHelper('dialog')->askAndValidate(
+        /* @var  $dialog DialogHelper */
+        $dialog = $this->getHelper('dialog');
+        $dialog->ask(
             $output,
             '<question>Press Enter to Run this update: </question>'
         );
@@ -605,7 +611,9 @@ class IncrementalCommand extends AbstractMagentoCommand
     protected function _listDetailedUpdateInformation(array $needsUpdate)
     {
         $output = $this->_output;
-        $this->getHelper('dialog')->askAndValidate(
+        /* @var  $dialog DialogHelper */
+        $dialog = $this->getHelper('dialog');
+        $dialog->ask(
             $output,
             '<question>Press Enter to View Update Information: </question>'
         );

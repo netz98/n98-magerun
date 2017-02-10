@@ -5,6 +5,7 @@ namespace N98\Magento\Command\Eav\Attribute;
 use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -82,7 +83,9 @@ class ListCommand extends AbstractMagentoCommand
             $headers[] = 'backend_type';
         }
 
-        $this->getHelper('table')
+        /* @var $tableHelper TableHelper */
+        $tableHelper = $this->getHelper('table');
+        $tableHelper
             ->setHeaders($headers)
             ->renderByFormat($output, $table, $input->getOption('format'));
     }

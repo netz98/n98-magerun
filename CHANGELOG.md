@@ -1,6 +1,19 @@
 RECENT CHANGES
 ==============
 
+1.97.28
+-------
+* Fix: sys:setup:run exists with code 0 on error (report by Matías Montes, fix by Tom Klingenberg, #854)
+* Fix: URL generation in sys:cron:run (report by Ash Smith, fix by Tom Klingenberg, #871)
+* Fix: Indexer dies on error (report by Henry Hirsch, fix by Tom Klingenberg, #701)
+* Fix: Incompatibilities with PHP 7.1 (report by Don Bosco van Hoi, fix by Tom Klingenberg, #881)
+* Fix: Warning db:import sprintf too few arguments (report by Peter Jaap Blaakmeer, fix by Tom Klingenberg, #884)
+* Fix: Empty database hostname for mysql cli (report by Seansan, fix by Tom Klingenberg, #880)
+* Imp: Build phar reproduceable and from dev requirements (by Tom Klingenberg)
+* Imp: Support NULL values in config:set and config:get (by Tom Klingenberg)
+* New: Add index:list:mview and index:reindex:mview commands (by Luke Rodgers, #891)
+* New: Add --include parameter to db:dump command (by Jarod Hayes, #848)
+
 1.97.27
 -------
 * Fix: Sourceforge moved to https (by Tom Klingenberg)
@@ -32,6 +45,7 @@ RECENT CHANGES
 * Imp: Create controllers folder in dev:module:create command (by Alexander Turiak, #835)
 * Imp: Update example to use config:search command (by Hardy Johnson, #834)
 * Imp: Build in clean directory (by Tom Klingenberg)
+* New: Add --reinit and --no-reninit options for cache:clean and cache:flush (by arollason, #863)
 * New: Add Magento CE 1.9.3.1 to config.yaml (by Tom Klingenberg, #872)
 * New: Add Magento CE 1.9.3.0 to config.yaml (by Marty S/sylink, #867)
 * New: Coding standard defintion and checks (by Tom Klingenberg)

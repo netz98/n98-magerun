@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Config;
 
+use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -72,7 +73,9 @@ HELP;
         }
 
         if (count($deleted) > 0) {
-            $this->getHelper('table')
+            /* @var $tableHelper TableHelper */
+            $tableHelper = $this->getHelper('table');
+            $tableHelper
                 ->setHeaders(array('Deleted Path', 'Scope', 'Scope-ID'))
                 ->setRows($deleted)
                 ->render($output);

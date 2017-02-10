@@ -69,7 +69,9 @@ class InfoCommand extends AbstractCustomerCommand
             }
         }
 
-        $this->getHelper('table')
+        /* @var $tableHelper TableHelper */
+        $tableHelper = $this->getHelper('table');
+        $tableHelper
             ->setHeaders(array('Attribute', 'Value'))
             ->setRows($table)
             ->render($output);

@@ -98,7 +98,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             'password'    => null,
         );
 
-        $config = ((array) $resources->default_setup->connection) + $config;
+        $config = array_merge($config, (array) $resources->default_setup->connection);
         $config['prefix'] = (string) $resources->db->table_prefix;
 
         // known parameters: host, port, unix_socket, dbname, username, password, options, charset, persistent,
@@ -203,7 +203,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
         if (null !== $this->config['unix_socket']) {
             $segments[] = '--socket=' . escapeshellarg($this->config['unix_socket']);
         } else {
-            $segments[] = '-h' . escapeshellarg($this->config['host']);
+            $segments[] = '-h ' . escapeshellarg($this->config['host']);
         }
 
         $segments[] = '-u' . escapeshellarg($this->config['username']);

@@ -7,14 +7,14 @@ use DateTime as PhpDateTime;
 class DateTime
 {
     /**
-     * Returns a readable string with time difference
+     * Human-readable string with time difference
      *
      * @param PhpDateTime $time1
      * @param PhpDateTime $time2
      *
      * @return string
      */
-    public function getDifferenceAsString(PhpDateTime $time1, PhpDateTime $time2)
+    public static function difference(PhpDateTime $time1, PhpDateTime $time2)
     {
         if ($time1 == $time2) {
             return '0';
@@ -37,5 +37,18 @@ class DateTime
             . ($seconds ? $seconds . 's ' : '');
 
         return trim($differenceString);
+    }
+
+    /**
+     * Returns a readable string with time difference
+     *
+     * @param PhpDateTime $time1
+     * @param PhpDateTime $time2
+     *
+     * @return string
+     */
+    public function getDifferenceAsString(PhpDateTime $time1, PhpDateTime $time2)
+    {
+        return self::difference($time1, $time2);
     }
 }

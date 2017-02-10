@@ -16,26 +16,31 @@ remove_assume_unchanged() {
   )
 }
 
-name="$(awk '/<project name="([^"]*)"/ && !done {print gensub(/<project name="([^"]*)".*/, "\\1", "g"); done=1}' build.xml)"
-phar="${name}.phar"
+exit_trap() {
+  local status=$?
+  if [[ -d "${base_dir}/${build_dir}" ]]; then
+    echo "trap: removing '${build_dir}'.."
+    rm -rf "${base_dir}/${build_dir}"
+  fi
+  echo "exit ($status)."
+}
 
+name="$(awk '/<project name="([^"]*)"/ && !done {print gensub(/<project name="([^"]*)".*/, "\\1", "g"); done=1}' build.xml)"
+nice_name="$(php -r "echo str_replace(' ', '', ucwords(strtr('${name}', '-', ' ')));")"
+phar="${name}.phar"
 echo "Building ${phar}..."
 
+# remove stub which is also the build result destination, so if build fails the file does not exists
 remove_assume_unchanged "." "${phar}"
 
 base_dir="$(pwd -P)"
+build_dir="build/output"
+
 echo "$0 executed in ${base_dir}"
 
-build_dir="build/output"
-finish() {
-  echo "trap exit removing '${build_dir}'.."
-  rm -rf "${base_dir}/${build_dir}"
-}
-trap finish EXIT
+trap exit_trap EXIT
 
-if [[ -d "${build_dir}" ]]; then
-  rm -rf "${build_dir}"
-fi
+rm -rf "${build_dir}"
 if [[ -d "${build_dir}" ]]; then
   >&2 echo "Error: Can not remove build-dir '${build_dir}'"
   echo "aborting."
@@ -48,79 +53,48 @@ if [[ ! -d "${build_dir}" ]]; then
   exit 1
 fi
 
-git clone --quiet --no-local -- . "${build_dir}"
+git clone --quiet --no-local --depth 1 -- . "${build_dir}"
 # remove fake-phar directly after clone
 remove_assume_unchanged "${build_dir}" "n98-magerun.phar"
 
-composer="${build_dir}/composer.phar"
-
-if [[ -e "${composer}" ]]; then
-  rm "${composer}"
-fi
+composer_bin="${base_dir}/vendor/bin/composer"
+phing_bin="${base_dir}/vendor/bin/phing"
 
 # Set COMPOSER_HOME if HOME and COMPOSER_HOME not set (shell with no home-dir, e.g. build server with webhook)
-if [[ -z ${HOME+x} ]]; then
-  if [ -z ${COMPOSER_HOME+x} ]; then
-    mkdir -p "build/composer-home"
-    export COMPOSER_HOME="$(pwd -P)/build/composer-home"
-  fi
+if [[ -z ${HOME+x} && -z ${COMPOSER_HOME+x} ]]; then
+  echo "provision: create COMPOSER_HOME directory for composer (no HOME)"
+  mkdir -p "build/composer-home"
+  export COMPOSER_HOME="$(pwd -P)/build/composer-home"
 fi
 
-if [[ ! -e "${composer}" ]]; then
-  echo "Downloading composer.phar..."
-  wget --quiet -O "${composer}" https://getcomposer.org/download/1.1.3/composer.phar
-  chmod +x "${composer}"
-fi
-
-"${composer}" --version
-php --version
-
-echo "Composer install in '${build_dir}'..."
-if ! "${composer}" -d="${build_dir}" --profile -q install --no-dev --no-interaction; then
-  echo "failed to install from composer.lock, installing without lockfile now"
-  rm "${build_dir}"/composer.lock
-  "${composer}" -d="${build_dir}" --profile -q install --no-dev --no-interaction
-fi
-
-echo "Composer install build requirements in '${build_dir}/build'..."
-"${composer}" -d="${build_dir}"/build --profile -q install --no-interaction
-
-if [[ -e "${phar}" ]]; then
-  echo "Remove earlier created ${phar} file"
-  rm "${phar}"
-fi
+echo "with: $(php --version|head -n 1)"
+echo "with: $("${composer_bin}" --version)"
+echo "with: $("${phing_bin}" -version)"
 
 cd "${build_dir}"
 
 echo "building in $(pwd -P)"
-git  --no-pager log --oneline -1
+echo "build version: $(git  --no-pager log --oneline -1)"
 
-echo "setting ulimits (new setting is to $(ulimit -Hn))..."
+echo "provision: ulimits (soft) set from $(ulimit -Sn) to $(ulimit -Hn) (hard) for faster phar builds..."
 ulimit -Sn $(ulimit -Hn)
+timestamp="$(git log --format=format:%ct HEAD -1)" # reproduceable build
+echo "build timestamp: ${timestamp}"
 
-echo "invoking phing dist_clean target..."
-set +e
-php -f build/vendor/phing/phing/bin/phing -dphar.readonly=0 -- dist_clean
-BUILD_STATUS=$?
-set -e
-if [[ ${BUILD_STATUS} -ne 0 ]]; then
-  >&2 echo "error: phing build failed with exit status ${BUILD_STATUS}"
-  echo "aborting."
-  exit ${BUILD_STATUS}
-fi
+php -f "${phing_bin}" -dphar.readonly=0 -- \
+  -Dcomposer_suffix="${nice_name}${timestamp}" \
+  -Dcomposer_bin="${composer_bin}" \
+  dist_clean
 
 php -f build/phar/phar-timestamp.php
 
 php -f "${phar}" -- --version
-
 ls -al "${phar}"
 
-php -r 'echo "SHA1: ", sha1_file("'"${phar}"'"), "\nMD5.: ", md5_file("'"${phar}"'"), "\n";'
-
 cd -
-
 cp -vp "${build_dir}"/"${phar}" "${phar}"
-
 rm -rf "${build_dir}"
+
+trap - EXIT
 
 echo "done."

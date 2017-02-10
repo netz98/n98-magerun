@@ -36,6 +36,12 @@ class SetCommand extends AbstractConfigCommand
                 InputOption::VALUE_NONE,
                 'Allow creation of non-standard scope-id\'s for websites and stores'
             )
+            ->addOption(
+                "no-null",
+                null,
+                InputOption::VALUE_NONE,
+                "Do not treat value NULL as " . self::DISPLAY_NULL_UNKOWN_VALUE . " value"
+            )
         ;
 
         $help = <<<HELP
@@ -71,8 +77,18 @@ HELP;
         $this->_validateScopeParam($scope);
         $scopeId = $this->_convertScopeIdParam($scope, $input->getOption('scope-id'), $allowZeroScope);
 
-        $value = str_replace(array('\n', '\r'), array("\n", "\r"), $input->getArgument('value'));
-        $value = $this->_formatValue($value, ($input->getOption('encrypt') ? 'encrypt' : false));
+        $valueDisplay = $value = $input->getArgument('value');
+
+        if ($value === "NULL" && !$input->getOption('no-null')) {
+            if ($input->getOption('encrypt')) {
+                throw new \InvalidArgumentException("Encryption is not possbile for NULL values");
+            }
+            $value = null;
+            $valueDisplay = self::DISPLAY_NULL_UNKOWN_VALUE;
+        } else {
+            $value = str_replace(array('\n', '\r'), array("\n", "\r"), $value);
+            $value = $this->_formatValue($value, ($input->getOption('encrypt') ? 'encrypt' : false));
+        }
 
         $config->saveConfig(
             $input->getArgument('path'),
@@ -82,7 +98,7 @@ HELP;
         );
 
         $output->writeln(
-            '<comment>' . $input->getArgument('path') . "</comment> => <comment>" . $input->getArgument('value') .
+            '<comment>' . $input->getArgument('path') . "</comment> => <comment>" . $valueDisplay .
             '</comment>'
         );
     }

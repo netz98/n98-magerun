@@ -108,16 +108,16 @@ _n98-magerun()
             opts="${opts} --name --description --author --type --homepage --require --require-dev --stability --license --repository"
             ;;
             composer:install)
-            opts="${opts} --prefer-source --prefer-dist --dry-run --dev --no-dev --no-plugins --no-custom-installers --no-autoloader --no-scripts --no-progress --optimize-autoloader --classmap-authoritative --ignore-platform-reqs"
+            opts="${opts} --prefer-source --prefer-dist --dry-run --dev --no-dev --no-custom-installers --no-autoloader --no-scripts --no-progress --no-suggest --optimize-autoloader --classmap-authoritative --apcu-autoloader --ignore-platform-reqs"
             ;;
             composer:require)
-            opts="${opts} --dev --prefer-source --prefer-dist --no-plugins --no-progress --no-update --update-no-dev --update-with-dependencies --ignore-platform-reqs --sort-packages --optimize-autoloader --classmap-authoritative"
+            opts="${opts} --dev --prefer-source --prefer-dist --no-progress --no-suggest --no-update --no-scripts --update-no-dev --update-with-dependencies --ignore-platform-reqs --prefer-stable --prefer-lowest --sort-packages --optimize-autoloader --classmap-authoritative --apcu-autoloader"
             ;;
             composer:search)
-            opts="${opts} --only-name"
+            opts="${opts} --only-name --type"
             ;;
             composer:update)
-            opts="${opts} --prefer-source --prefer-dist --dry-run --dev --no-dev --lock --no-plugins --no-custom-installers --no-autoloader --no-scripts --no-progress --with-dependencies --optimize-autoloader --classmap-authoritative --ignore-platform-reqs --prefer-stable --prefer-lowest --interactive --root-reqs"
+            opts="${opts} --prefer-source --prefer-dist --dry-run --dev --no-dev --lock --no-custom-installers --no-autoloader --no-scripts --no-progress --no-suggest --with-dependencies --optimize-autoloader --classmap-authoritative --apcu-autoloader --ignore-platform-reqs --prefer-stable --prefer-lowest --interactive --root-reqs"
             ;;
             composer:validate)
             opts="${opts} --no-check-all --no-check-lock --no-check-publish --with-dependencies --strict"
@@ -135,7 +135,7 @@ _n98-magerun()
             opts="${opts} "
             ;;
             config:set)
-            opts="${opts} --scope --scope-id --encrypt --force"
+            opts="${opts} --scope --scope-id --encrypt --force --no-null"
             ;;
             customer:change-password)
             opts="${opts} "
@@ -156,7 +156,7 @@ _n98-magerun()
             opts="${opts} --format"
             ;;
             db:console)
-            opts="${opts} --use-mycli-instead-of-mysql"
+            opts="${opts} --use-mycli-instead-of-mysql --no-auto-rehash"
             ;;
             db:create)
             opts="${opts} "
@@ -165,7 +165,7 @@ _n98-magerun()
             opts="${opts} --tables --force"
             ;;
             db:dump)
-            opts="${opts} --add-time --compression --xml --hex-blob --only-command --print-only-filename --dry-run --no-single-transaction --human-readable --add-routines --stdout --strip --exclude --force"
+            opts="${opts} --add-time --compression --xml --hex-blob --only-command --print-only-filename --dry-run --no-single-transaction --human-readable --add-routines --stdout --strip --exclude --include --force"
             ;;
             db:import)
             opts="${opts} --compression --only-command --only-if-empty --optimize --drop --drop-tables"

@@ -3,8 +3,9 @@
 namespace N98\Magento\Command;
 
 use N98\Magento\Application;
+use N98\Magento\MagerunCommandTester;
+use N98\Magento\TestApplication;
 use PHPUnit_Framework_MockObject_MockObject;
-use RuntimeException;
 
 /**
  * Class TestCase
@@ -15,51 +16,9 @@ use RuntimeException;
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Application
+     * @var TestApplication
      */
-    private $application = null;
-
-    /**
-     * @var string|null
-     */
-    private $root;
-
-    /**
-     * @param string $varname name of the environment variable containing the test-root
-     * @param string $basename name of the stopfile containing the test-root
-     *
-     * @return string|null
-     */
-    public static function getTestMagentoRootFromEnvironment($varname, $basename)
-    {
-        $root = getenv($varname);
-        if (empty($root) && strlen($basename)) {
-            $stopfile = getcwd() . '/' . $basename;
-            if (is_readable($stopfile) && $buffer = rtrim(file_get_contents($stopfile))) {
-                $root = $buffer;
-            }
-        }
-        if (empty($root)) {
-            return;
-        }
-
-        # directory test
-        if (!is_dir($root)) {
-            throw new RuntimeException(
-                sprintf("%s path '%s' is not a directory", $varname, $root)
-            );
-        }
-
-        # resolve root to realpath to be independent to current working directory
-        $rootRealpath = realpath($root);
-        if (false === $rootRealpath) {
-            throw new RuntimeException(
-                sprintf("Failed to resolve %s path '%s' with realpath()", $varname, $root)
-            );
-        }
-
-        return $rootRealpath;
-    }
+    private $testApplication;
 
     /**
      * getter for the magento root directory of the test-suite
@@ -70,22 +29,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     public function getTestMagentoRoot()
     {
-        if ($this->root) {
-            return $this->root;
-        }
-
-        $varname = 'N98_MAGERUN_TEST_MAGENTO_ROOT';
-        $basename = '.n98-magerun';
-
-        $root = self::getTestMagentoRootFromEnvironment($varname, $basename);
-
-        if (null === $root) {
-            $this->markTestSkipped(
-                "Please specify environment variable $varname with path to your test magento installation!"
-            );
-        }
-
-        return $this->root = $root;
+        return $this->getTestApplication()->getTestMagentoRoot();
     }
 
     /**
@@ -93,38 +37,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     public function getApplication()
     {
-        if ($this->application === null) {
-            $root = $this->getTestMagentoRoot();
-
-            /** @var Application|PHPUnit_Framework_MockObject_MockObject $application */
-            $application = $this->getMock('N98\Magento\Application', array('getMagentoRootFolder'));
-
-            // Get the composer bootstrap
-            if (defined('PHPUNIT_COMPOSER_INSTALL')) {
-                $loader = require PHPUNIT_COMPOSER_INSTALL;
-            } elseif (file_exists(__DIR__ . '/../../../../../../autoload.php')) {
-                // Installed via composer, already in vendor
-                $loader = require __DIR__ . '/../../../../../../autoload.php';
-            } else {
-                // Check if testing root package without PHPUnit
-                $loader = require __DIR__ . '/../../../../vendor/autoload.php';
-            }
-
-            $application->setAutoloader($loader);
-            $application->expects($this->any())->method('getMagentoRootFolder')->will($this->returnValue($root));
-
-            spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
-
-            $application->init();
-            $application->initMagento();
-            if ($application->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1) {
-                spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
-            }
-
-            $this->application = $application;
-        }
-
-        return $this->application;
+        return $this->getTestApplication()->getApplication();
     }
 
     /**
@@ -135,5 +48,103 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $resource = \Mage::getSingleton('core/resource');
 
         return $resource->getConnection('write');
+    }
+
+    /**
+     * @return TestApplication
+     */
+    private function getTestApplication()
+    {
+        if (null === $this->testApplication) {
+            $this->testApplication = new TestApplication();
+        }
+
+        return $this->testApplication;
+    }
+
+    /**
+     * @var array
+     */
+    private $testers = array();
+
+    /**
+     * @param string|array $command name or input
+     * @return MagerunCommandTester
+     */
+    private function getMagerunTester($command)
+    {
+        if (is_string($command)) {
+            $input = array(
+                'command' => $command,
+            );
+        } else {
+            $input = $command;
+        }
+
+        $hash = md5(json_encode($input));
+        if (!isset($this->testers[$hash])) {
+            $this->testers[$hash] = new MagerunCommandTester($this, $input);
+        }
+
+        return $this->testers[$hash];
+    }
+
+    /**
+     * @param string|array $command actual command to execute and obtain the display (output) from
+     * @param string $needle string within the display
+     * @param string $message [optional]
+     */
+    protected function assertDisplayContains($command, $needle, $message = "")
+    {
+        $display = $this->getMagerunTester($command)->getDisplay();
+
+        $this->assertContains($needle, $display, $message);
+    }
+
+    /**
+     * @param string|array $command actual command to execute and obtain the display (output) from
+     * @param string $needle string within the display
+     * @param string $message [optional]
+     */
+    protected function assertDisplayNotContains($command, $needle, $message = "")
+    {
+        $display = $this->getMagerunTester($command)->getDisplay();
+
+        $this->assertNotContains($needle, $display, $message);
+    }
+
+    /**
+     * @param string|array $command
+     * @param string $pattern
+     * @param string $message [optional]
+     */
+    protected function assertDisplayRegExp($command, $pattern, $message = "")
+    {
+        $display = $this->getMagerunTester($command)->getDisplay();
+
+        $this->assertRegExp($pattern, $display, $message);
+    }
+
+    /**
+     * Command executes with a status code of zero
+     *
+     * @param string|array $command
+     * @param string $message
+     * @return MagerunCommandTester
+     */
+    protected function assertExecute($command, $message = "")
+    {
+        $tester = $this->getMagerunTester($command);
+        $status = $tester->getStatus();
+
+        if (strlen($message)) {
+            $message .= "\n";
+        }
+
+        $message .= "Command executes with a status code of zero";
+
+        $this->assertSame(0, $status, $message);
+
+        return $tester;
     }
 }

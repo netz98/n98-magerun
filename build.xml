@@ -13,6 +13,8 @@ Build phar with:
 <project name="n98-magerun" default="dist" basedir=".">
     <taskdef name="patched-pharpackage" classname="build.phar.tasks.PatchedPharPackageTask" />
     <property name="phar" value="${phing.project.name}.phar"/>
+    <property name="composer_bin" value="composer"/>
+    <property name="composer_suffix" value="N98MagerunNTS"/>
 
     <fileset dir="." id="root_folder">
         <include name="config.yaml" />
@@ -25,80 +27,106 @@ Build phar with:
         <include name="**/**" />
     </fileset>
     <fileset dir="res" id="res_folder">
-        <include name="**/**" />
+        <include name="dev/**" />
+        <include name="twig/**" />
     </fileset>
     <fileset dir="vendor" id="vendor_folder">
         <include name="**/**" />
 
-        <!-- VCS -->
-        <exclude name=".git/**" />
-        <exclude name=".svn/**" />
+        <!-- binary symlinks and binaries -->
+        <exclude name="bin/**" />
+        <exclude name="*/*/bin/**" />
+
+        <!-- vcs, development -->
+        <exclude name="**/.github/**" />
+        <exclude name="**/.editorconfig"/>
+        <exclude name="**/.php_cs*"/>
+        <exclude name="**/appveyor.yml"/>
+        <exclude name="**/composer.lock"/>
+        <exclude name="**/travis.yml*"/>
 
         <!-- Docs -->
         <exclude name="**/doc/**" />
         <exclude name="**/docs/**" />
+        <exclude name="**/CHANGELOG*"/>
+        <exclude name="**/README*"/>
+        <exclude name="**/PORTING_INFO*"/>
 
-        <!-- unused libs -->
+        <!-- Unused libs -->
         <exclude name="fzaninotto/faker/src/Faker/ORM/**" />
+        <exclude name="twig/twig/ext/**" />
 
         <!-- Tests -->
         <exclude name="**/Tests/**" />
         <exclude name="**/tests/**" />
-        <exclude name="**/test/**" />
-        <exclude name="twig/twig/ext/**" />
+        <exclude name="**/test/**"/>
+        <exclude name="**/phpunit.xml*"/>
 
-        <!-- Test utils -->
-        <exclude name="phpunit/**" />
-        <exclude name="sebastian/**" />
-        <exclude name="mikey179/**" />
+        <!-- Test and build utils -->
+        <exclude name="friendsofphp/php-cs-fixer/**"/>
+        <exclude name="mikey179/**"/>
+        <exclude name="phing/phing/**"/>
+        <exclude name="phpunit/**"/>
+        <exclude name="seld/phar-utils/**"/>
+        <exclude name="sebastian/**"/>
+
     </fileset>
 
-    <target name="dist">
-        <exec command="php -f composer.phar -- install --no-dev" dir="${project.basedir}" passthru="true"
+    <target name="composer_install" hidden="true">
+        <exec command="${composer_bin} config autoloader-suffix ${composer_suffix}" dir="${project.basedir}" passthru="true"
               checkreturn="true"/>
-        <phingcall target="dist_unix">
-            <property name="compression" value="gzip" />
-        </phingcall>
+        <exec command="${composer_bin} install -q --no-dev 2>&amp;1" dir="${project.basedir}" passthru="true"
+              checkreturn="true"/>
+        <exec command="${composer_bin} config autoloader-suffix --unset" dir="${project.basedir}" passthru="true"
+              checkreturn="true"/>
+    </target>
 
+    <target name="dist">
+        <phingcall target="composer_install"/>
+        <phingcall target="create_phar">
+            <property name="compression" value="gzip"/>
+        </phingcall>
         <!-- Revert dev settings -->
-        <exec command="php -f composer.phar -- install" dir="${project.basedir}" passthru="true" checkreturn="true"/>
+        <exec command="${composer_bin} install" dir="${project.basedir}" passthru="true" checkreturn="true"/>
     </target>
 
     <!-- like "dist" but w/o composer install afterwards as this is for the clean build and deleted anyway -->
     <target name="dist_clean">
-        <exec command="php -f composer.phar -- install --no-dev" dir="${project.basedir}" passthru="true"
-              checkreturn="true"/>
-        <phingcall target="dist_unix">
-            <property name="compression" value="gzip" />
+        <phingcall target="composer_install"/>
+        <phingcall target="create_phar">
+            <property name="compression" value="gzip"/>
         </phingcall>
     </target>
 
     <target name="dist_hhvm">
-        <exec command="php -f composer.phar -- install --no-dev" dir="${project.basedir}" passthru="true"
-              checkreturn="true"/>
-        <phingcall target="dist_unix">
+        <phingcall target="composer_install"/>
+        <phingcall target="create_phar">
             <property name="compression" value="none" />
         </phingcall>
-
         <!-- Revert dev settings -->
-        <exec command="php -f composer.phar -- install" dir="${project.basedir}" passthru="true" checkreturn="true"/>
+        <exec command="${composer_bin} install" dir="${project.basedir}" passthru="true" checkreturn="true"/>
     </target>
 
     <target name="dist_unix">
+        <phingcall target="composer_install"/>
+        <phingcall target="dist_unix">
+            <property name="compression" value="gzip" />
+        </phingcall>
+        <!-- Revert dev settings -->
+        <exec command="${composer_bin} install" dir="${project.basedir}" passthru="true" checkreturn="true"/>
+    </target>
+
+    <target name="create_phar">
         <patched-pharpackage basedir="./" stub="build/phar/_cli_stub.php" signature="sha512" compression="${compression}" destfile="./${phar}">
             <metadata>
-                <element name="version" value="1.0.0" />
-                <element name="authors">
-                    <element name="Christian Münch">
-                        <element name="e-mail" value="c.muench@netz98.de" />
-                    </element>
-                </element>
+                <element name="name" value="${phing.project.name}"/>
+                <element name="suffix" value="${composer_suffix}"/>
             </metadata>
-            <fileset refid="root_folder" />
-            <fileset refid="src_folder" />
-            <fileset refid="shared_src_folder" />
-            <fileset refid="res_folder" />
-            <fileset refid="vendor_folder" />
+            <fileset refid="root_folder"/>
+            <fileset refid="src_folder"/>
+            <fileset refid="shared_src_folder"/>
+            <fileset refid="res_folder"/>
+            <fileset refid="vendor_folder"/>
         </patched-pharpackage>
 
         <!-- make phar executable -->

@@ -419,7 +419,10 @@ Opens the MySQL console client with your database settings from local.xml
 
 .. code-block:: sh
 
-   $ n98-magerun.phar db:console
+   $ n98-magerun.phar db:console [--no-auto-rehash]
+
+  --no-auto-rehash
+      synonym for calling *mysql* client with the -A parameter to skip hashing for object auto-completion.
 
 Database Create
 """""""""""""""
@@ -564,6 +567,25 @@ Loops all Magento indexes and triggers reindex.
 .. code-block:: sh
 
    $ n98-magerun.phar index:reindex:all
+
+List Enterprise Mview Changelog Indexes
+"""""""""""""""""""""""""""""""""""""""
+
+Lists the Mview indexers available, as well as their current version and how many are in the changelog queue .
+
+.. code-block:: sh
+
+   $ n98-magerun.phar index:list:mview [--format[="..."]]
+
+Reindex an Enterprise Mview Changelog Index
+"""""""""""""""""""""""""""""""""""""""""""
+
+Index by Mview table code. This will ignore all locks and trigger the changelog indexer.
+
+.. code-block:: sh
+
+   $ n98-magerun.phar index:reindex:mview [table_code]
+
 
 Generate local.xml file
 """""""""""""""""""""""
@@ -769,7 +791,7 @@ Prints stored cache entry by ID.
 If value is serialized you can force a pretty output with --unserialize option.
 
 Toggle CMS Block
-"""""""""""
+""""""""""""""""
 
 Toggle "is_active" on a cms block
 
@@ -1688,19 +1710,36 @@ Script argument is optional. If you don't specify any you can select one from a 
 Autocompletion
 --------------
 
+Files for autocompletion with Magerun can be found inside the folder `res/autocompletion`, In
+the following some more information about two specific ones (Bash, Phpstorm), there are
+more (e.g. Fish, Zsh).
+
 Bash
 """"
 
-Copy the file **bash_complete** to **n98-magerun.phar** in your bash autocomplete folder.
-In my Ubuntu system this can be done with the following command:
+Bash completion is available pre-generated, all commands and their respective
+options are availble on tab. To get completion for an otion type two dashes
+("--") and then tab.
+
+To install the completion files, copy **n98-magerun.phar.bash** to your bash
+compatdir folder for autocompletion.
+
+On my Ubuntu system this can be done with the following command:
 
 .. code-block:: sh
 
-   $ sudo cp autocompletion/bash/bash_complete /etc/bash_completion.d/n98-magerun.phar
+   # cp res/autocompletion/bash/n98-magerun.phar.bash /etc/bash_completion.d
 
+The concrete folder can be obtained via pkg-config::
+
+.. code-block:: sh
+
+   # pkg-config --variable=compatdir bash-completion
+
+Detailed information is available in the bash-completions FAQ: https://github.com/scop/bash-completion#faq
 
 PHPStorm 8.0.*
-""""""""
+""""""""""""""
 
 A commandline tool autocompletion XML file for PHPStorm exists in subfolder **autocompletion/phpstorm**.
 Copy **n98_magerun.xml** into your phpstorm config folder.

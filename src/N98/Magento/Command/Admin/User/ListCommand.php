@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Admin\User;
 
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -48,7 +49,10 @@ class ListCommand extends AbstractAdminUserCommand
                 $user->getIsActive() ? 'active' : 'inactive',
             );
         }
-        $this->getHelper('table')
+
+        /* @var $tableHelper TableHelper */
+        $tableHelper = $this->getHelper('table');
+        $tableHelper
             ->setHeaders(array('id', 'username', 'email', 'status'))
             ->renderByFormat($output, $table, $input->getOption('format'));
     }

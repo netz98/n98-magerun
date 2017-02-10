@@ -3,7 +3,9 @@
 namespace N98\Magento\Command\Database;
 
 use InvalidArgumentException;
+use N98\Util\Console\Helper\DatabaseHelper;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,7 +18,6 @@ class InfoCommand extends AbstractDatabaseCommand
         $this
             ->setName('db:info')
             ->addArgument('setting', InputArgument::OPTIONAL, 'Only output value of named setting')
-            ->addDeprecatedAlias('database:info', 'Please use db:info')
             ->setDescription('Dumps database informations')
             ->addOption(
                 'format',
@@ -25,6 +26,7 @@ class InfoCommand extends AbstractDatabaseCommand
                 'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
             )
         ;
+        $this->addDeprecatedAlias('database:info', 'Please use db:info');
 
         $help = <<<HELP
 This command is useful to print all informations about the current configured database in app/etc/local.xml.
@@ -87,7 +89,9 @@ HELP;
         }
         $settings['JDBC-Connection-String'] = $jdbcConnectionString;
 
-        $mysqlCliString = 'mysql ' . $this->getHelper('database')->getMysqlClientToolConnectionString();
+        /* @var $database DatabaseHelper */
+        $database = $this->getHelper('database');
+        $mysqlCliString = 'mysql ' . $database->getMysqlClientToolConnectionString();
         $settings['MySQL-Cli-String'] = $mysqlCliString;
 
         $rows = array();
@@ -101,7 +105,9 @@ HELP;
             }
             $output->writeln((string) $settings[$settingArgument]);
         } else {
-            $this->getHelper('table')
+            /* @var $tableHelper TableHelper */
+            $tableHelper = $this->getHelper('table');
+            $tableHelper
                 ->setHeaders(array('Name', 'Value'))
                 ->renderByFormat($output, $rows, $input->getOption('format'));
         }

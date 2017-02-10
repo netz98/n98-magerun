@@ -432,19 +432,47 @@ class PatchedPharPackageTask
                 Project::MSG_VERBOSE
             );
 
+            $sortedFiles = $this->getSortedFilesFromFileSet($fileset);
             if (Phar::NONE != $this->compression) {
-                foreach ($fileset as $file) {
+                foreach ($sortedFiles as $file) {
                     $localName = substr($file, strlen($baseDirectory) + 1);
                     $this->log($localName . "... ", Project::MSG_VERBOSE);
                     $phar->addFile($file, $localName);
                     $phar[$localName]->compress($this->compression);
                 }
             } else {
-                $phar->buildFromIterator($fileset, $baseDirectory);
+                $phar->buildFromIterator($sortedFiles, $baseDirectory);
             }
         }
 
         $phar->stopBuffering();
+    }
+
+    /**
+     * Obtain ArrayIterator with keys preserved from IterableFileSet
+     *
+     * @param IterableFileSet $fileset
+     * @return ArrayIterator
+     */
+    private function getSortedFilesFromFileSet(IterableFileSet $fileset)
+    {
+        $files = iterator_to_array($fileset, true);
+        $keys = array_keys($files);
+        usort($files, array($this, 'sortFilesCallback'));
+        $array = array_combine($keys, $files);
+
+        return new ArrayIterator($array);
+    }
+
+    /**
+     * @param string $a
+     * @param string $b
+     * @return int
+     * @see getSortedFilesFromFileSet
+     */
+    private function sortFilesCallback($a, $b)
+    {
+        return strcmp(strtr($a, '\\', '/'), strtr($b, '\\', '/'));
     }
 
     /**
@@ -458,10 +486,11 @@ class PatchedPharPackageTask
         $phar->startBuffering();
 
         foreach ($this->filesets as $fileset) {
+            /* @var $fileset IterableFileSet */
             $dir = $fileset->getDir($this->project);
             $msg = sprintf("Fileset %s ...", $dir);
             $this->log($msg, Project::MSG_VERBOSE);
-            $added = $phar->buildFromIterator($fileset, $baseDirectory);
+            $added = $phar->buildFromIterator($this->getSortedFilesFromFileSet($fileset), $baseDirectory);
             $total += count($added);
         }
 
