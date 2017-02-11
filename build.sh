@@ -74,7 +74,7 @@ echo "with: $("${phing_bin}" -version)"
 cd "${build_dir}"
 
 echo "building in $(pwd -P)"
-echo "build version: $(git  --no-pager log --oneline -1)"
+echo "build version: $(git --no-pager log --oneline -1)"
 
 echo "provision: ulimits (soft) set from $(ulimit -Sn) to $(ulimit -Hn) (hard) for faster phar builds..."
 ulimit -Sn $(ulimit -Hn)

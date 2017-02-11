@@ -8,7 +8,7 @@
 
 use Seld\PharUtils\Timestamps;
 
-echo "reset phar file timestamps to latest commit timestamp (reproduceable build)\n";
+echo "reset phar file timestamps to latest commit timestamp (reproducible builds)\n";
 
 # seld/phar-utils via build requirements
 require __DIR__ . '/../../vendor/seld/phar-utils/src/Timestamps.php';
@@ -31,8 +31,10 @@ if (!is_file($file) || !is_readable($file)) {
     throw new RuntimeException(sprintf('Is not a file or not readable: %s', var_export($file, true)));
 }
 
+$commitHash = `git log --format=format:%H HEAD -1`;
 $timestamp = (int) `git log --format=format:%ct HEAD -1`;
-printf("Timestamp: %d (%s, date of last commit)\n", $timestamp, date(DATE_RFC3339, $timestamp));
+printf("Commit...: %s\n", $commitHash);
+printf("Timestamp: %d (%s, date of commit)\n", $timestamp, date(DATE_RFC3339, $timestamp));
 $threshold = 1343826993; # 2012-08-01T15:14:33Z
 if ($timestamp < $threshold) {
     throw new RuntimeException(

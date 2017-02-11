@@ -145,6 +145,48 @@ If file was installed system wide do not forget "sudo".
 
 See it in action: http://youtu.be/wMHpfKD9vjM
 
+Autocompletion
+--------------
+
+Files for autocompletion with Magerun can be found inside the folder `res/autocompletion`, In
+the following some more information about two specific ones (Bash, Phpstorm), there are
+more (e.g. Fish, Zsh).
+
+Bash
+""""
+
+Bash completion is available pre-generated, all commands and their respective
+options are availble on tab. To get completion for an otion type two dashes
+("--") and then tab.
+
+To install the completion files, copy **n98-magerun.phar.bash** to your bash
+compatdir folder for autocompletion.
+
+On my Ubuntu system this can be done with the following command:
+
+.. code-block:: sh
+
+   # cp res/autocompletion/bash/n98-magerun.phar.bash /etc/bash_completion.d
+
+The concrete folder can be obtained via pkg-config::
+
+.. code-block:: sh
+
+# pkg-config --variable=compatdir bash-completion
+
+Detailed information is available in the bash-completions FAQ: https://github.com/scop/bash-completion#faq
+
+PHPStorm 8.0.*
+""""""""""""""
+
+A commandline tool autocompletion XML file for PHPStorm exists in subfolder **autocompletion/phpstorm**.
+Copy **n98_magerun.xml** into your phpstorm config folder.
+
+Linux and Mac: ~/.WebIde80/config/componentVersions
+
+You can also add the XML content over settings menu.
+For further instructions read this blog post: http://blog.jetbrains.com/webide/2012/10/integrating-composer-command-line-tool-with-phpstorm/
+
 Usage / Commands
 ----------------
 
@@ -1706,48 +1748,6 @@ If you want to execute a script from the repository this can be done by *script:
    $ n98-magerun.phar script:repo:run [-d|--define[="..."]] [--stop-on-error] [script]
 
 Script argument is optional. If you don't specify any you can select one from a list.
-
-Autocompletion
---------------
-
-Files for autocompletion with Magerun can be found inside the folder `res/autocompletion`, In
-the following some more information about two specific ones (Bash, Phpstorm), there are
-more (e.g. Fish, Zsh).
-
-Bash
-""""
-
-Bash completion is available pre-generated, all commands and their respective
-options are availble on tab. To get completion for an otion type two dashes
-("--") and then tab.
-
-To install the completion files, copy **n98-magerun.phar.bash** to your bash
-compatdir folder for autocompletion.
-
-On my Ubuntu system this can be done with the following command:
-
-.. code-block:: sh
-
-   # cp res/autocompletion/bash/n98-magerun.phar.bash /etc/bash_completion.d
-
-The concrete folder can be obtained via pkg-config::
-
-.. code-block:: sh
-
-   # pkg-config --variable=compatdir bash-completion
-
-Detailed information is available in the bash-completions FAQ: https://github.com/scop/bash-completion#faq
-
-PHPStorm 8.0.*
-""""""""""""""
-
-A commandline tool autocompletion XML file for PHPStorm exists in subfolder **autocompletion/phpstorm**.
-Copy **n98_magerun.xml** into your phpstorm config folder.
-
-Linux and Mac: ~/.WebIde80/config/componentVersions
-
-You can also add the XML content over settings menu.
-For further instructions read this blog post: http://blog.jetbrains.com/webide/2012/10/integrating-composer-command-line-tool-with-phpstorm/
 
 Advanced usage
 --------------

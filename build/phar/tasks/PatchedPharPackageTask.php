@@ -449,33 +449,6 @@ class PatchedPharPackageTask
     }
 
     /**
-     * Obtain ArrayIterator with keys preserved from IterableFileSet
-     *
-     * @param IterableFileSet $fileset
-     * @return ArrayIterator
-     */
-    private function getSortedFilesFromFileSet(IterableFileSet $fileset)
-    {
-        $files = iterator_to_array($fileset, true);
-        $keys = array_keys($files);
-        usort($files, array($this, 'sortFilesCallback'));
-        $array = array_combine($keys, $files);
-
-        return new ArrayIterator($array);
-    }
-
-    /**
-     * @param string $a
-     * @param string $b
-     * @return int
-     * @see getSortedFilesFromFileSet
-     */
-    private function sortFilesCallback($a, $b)
-    {
-        return strcmp(strtr($a, '\\', '/'), strtr($b, '\\', '/'));
-    }
-
-    /**
      * @param Phar   $phar
      * @param string $baseDirectory
      */
@@ -522,5 +495,32 @@ class PatchedPharPackageTask
             }
             throw $e;
         }
+    }
+
+    /**
+     * Obtain ArrayIterator with keys preserved from IterableFileSet
+     *
+     * @param IterableFileSet $fileset
+     * @return ArrayIterator
+     */
+    private function getSortedFilesFromFileSet(IterableFileSet $fileset)
+    {
+        $files = iterator_to_array($fileset, true);
+        $keys = array_keys($files);
+        usort($files, array($this, 'sortFilesCallback'));
+        $array = array_combine($keys, $files);
+
+        return new ArrayIterator($array);
+    }
+
+    /**
+     * @param string $a
+     * @param string $b
+     * @return int
+     * @see getSortedFilesFromFileSet
+     */
+    private function sortFilesCallback($a, $b)
+    {
+        return strcmp(strtr($a, '\\', '/'), strtr($b, '\\', '/'));
     }
 }
