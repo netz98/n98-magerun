@@ -9,7 +9,7 @@ use RuntimeException;
 /**
  * Class DatabaseHelperTest
  *
- * @covers  N98\Util\Console\Helper\DatabaseHelper
+ * @covers  \N98\Util\Console\Helper\DatabaseHelper
  */
 class DatabaseHelperTest extends TestCase
 {
@@ -117,7 +117,10 @@ class DatabaseHelperTest extends TestCase
             $this->fail('An expected Exception has not been thrown');
         } catch (RuntimeException $e) {
             // test against the mysql error message
-            $this->assertStringEndsWith("SQLSTATE[HY000]: 1193: Unknown system variable 'nonexistent'", $e->getMessage());
+            $this->assertStringEndsWith(
+                "SQLSTATE[HY000]: 1193: Unknown system variable 'nonexistent'",
+                $e->getMessage()
+            );
         }
 
         // invalid variable type
@@ -127,7 +130,8 @@ class DatabaseHelperTest extends TestCase
         } catch (InvalidArgumentException $e) {
             // test against the mysql error message
             $this->assertEquals(
-                'Invalid mysql variable type "@@@", must be "@@" (system) or "@" (session)', $e->getMessage()
+                'Invalid mysql variable type "@@@", must be "@@" (system) or "@" (session)',
+                $e->getMessage()
             );
         }
     }
@@ -182,8 +186,8 @@ class DatabaseHelperTest extends TestCase
         $this->assertNotContains('catalogrule', $tables);
 
         $definitions = array(
-            'test123'  => array('tables'  => 'catalog\_*'),
-            'dataflow' => array('tables' => 'dataflow_batch_import dataflow_batch_export'),
+            'test123'  => array('tables' => array('catalog\_*')),
+            'dataflow' => array('tables' => array('dataflow_batch_import', 'dataflow_batch_export')),
         );
 
         $tables = $this->getHelper()->resolveTables(

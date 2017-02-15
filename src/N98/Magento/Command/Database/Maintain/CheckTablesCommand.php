@@ -144,7 +144,7 @@ HELP;
                     array('@check'),
                     array(
                         'check' => array(
-                            'tables' => $input->getOption('table'),
+                            'tables' => explode(' ', $input->getOption('table')),
                         ),
                     )
                 ),

@@ -45,6 +45,7 @@ class DatabaseHelper extends AbstractHelper
      * @param OutputInterface $output
      *
      * @throws RuntimeException
+     * @return void
      */
     public function detectDbSettings(OutputInterface $output)
     {
@@ -202,39 +203,53 @@ class DatabaseHelper extends AbstractHelper
     /**
      * @param array $commandConfig
      *
+     * @throws RuntimeException
      * @return array
      */
     public function getTableDefinitions(array $commandConfig)
     {
         $tableDefinitions = array();
-        if (isset($commandConfig['table-groups'])) {
-            $tableGroups = $commandConfig['table-groups'];
-            foreach ($tableGroups as $index => $definition) {
-                $description = isset($definition['description']) ? $definition['description'] : '';
-                if (!isset($definition['id'])) {
-                    throw new RuntimeException(
-                        sprintf('Invalid definition of table-groups (id missing) Index: %s', $index)
-                    );
-                }
-                if (!isset($definition['tables'])) {
-                    throw new RuntimeException(
-                        sprintf('Invalid definition of table-groups (tables missing) Id: "%s"', $definition['id'])
-                    );
-                }
+        if (!isset($commandConfig['table-groups'])) {
+            return $tableDefinitions;
+        }
 
-                $tableDefinitions[$definition['id']] = array(
-                    'tables'      => $definition['tables'],
-                    'description' => $description,
-                );
+        $tableGroups = $commandConfig['table-groups'];
+        foreach ($tableGroups as $index => $definition) {
+            if (!isset($definition['id'])) {
+                throw new RuntimeException("Invalid definition of table-groups (id missing) at index: $index");
             }
+            $id = $definition['id'];
+            if (isset($tableDefinitions[$id])) {
+                throw new RuntimeException("Invalid definition of table-groups (duplicate id) id: $id");
+            }
+
+            if (!isset($definition['tables'])) {
+                throw new RuntimeException("Invalid definition of table-groups (tables missing) id: $id");
+            }
+            $tables = $definition['tables'];
+
+            if (is_string($tables)) {
+                $tables = preg_split('~\s+~', $tables, -1, PREG_SPLIT_NO_EMPTY);
+            }
+            if (!is_array($tables)) {
+                throw new RuntimeException("Invalid tables definition of table-groups id: $id");
+            }
+            $tables = array_map('trim', $tables);
+
+            $description = isset($definition['description']) ? $definition['description'] : '';
+
+            $tableDefinitions[$id] = array(
+                'tables'      => $tables,
+                'description' => $description,
+            );
         }
 
         return $tableDefinitions;
     }
 
     /**
-     * @param array $list
-     * @param array $definitions
+     * @param array $list to resolve
+     * @param array $definitions from to resolve
      * @param array $resolved Which definitions where already resolved -> prevent endless loops
      *
      * @return array
@@ -256,7 +271,7 @@ class DatabaseHelper extends AbstractHelper
                 if (!isset($resolved[$code])) {
                     $resolved[$code] = true;
                     $tables = $this->resolveTables(
-                        explode(' ', $definitions[$code]['tables']),
+                        $this->resolveRetrieveDefinitionsTablesByCode($definitions, $code),
                         $definitions,
                         $resolved
                     );
@@ -294,6 +309,50 @@ class DatabaseHelper extends AbstractHelper
     }
 
     /**
+     * @param array $definitions
+     * @param string $code
+     * @return array tables
+     */
+    private function resolveRetrieveDefinitionsTablesByCode(array $definitions, $code)
+    {
+        $tables = $definitions[$code]['tables'];
+
+        if (is_string($tables)) {
+            $tables = preg_split('~\s+~', $tables, -1, PREG_SPLIT_NO_EMPTY);
+        }
+        if (!is_array($tables)) {
+            throw new RuntimeException("Invalid tables definition of table-groups code: @$code");
+        }
+
+        $tables = array_reduce((array) $tables, array($this, 'resolveTablesArray'), null);
+
+        return $tables;
+    }
+
+    /**
+     * @param array|null $carry [optional]
+     * @param $item [optional]
+     * @return array
+     * @throws InvalidArgumentException if item is not an array or string
+     */
+    private function resolveTablesArray(array $carry = null, $item = null)
+    {
+        if (is_string($item)) {
+            $item = preg_split('~\s+~', $item, -1, PREG_SPLIT_NO_EMPTY);
+        }
+
+        if (is_array($item)) {
+            if (count($item) > 1) {
+                $item = array_reduce($item, array($this, 'resolveTablesArray'), (array) $carry);
+            }
+        } else {
+            throw new InvalidArgumentException(sprintf('Unable to handle %s', var_export($item, true)));
+        }
+
+        return array_merge((array) $carry, $item);
+    }
+
+    /**
      * Get list of database tables
      *
      * @param bool $withoutPrefix [optional] remove prefix from the returned table names. prefix is obtained from
@@ -308,21 +367,20 @@ class DatabaseHelper extends AbstractHelper
 
         $db = $this->getConnection();
         $prefix = $this->dbSettings['prefix'];
-        $length = strlen($prefix);
+        $prefixLength = strlen($prefix);
 
-        $columnName = 'table_name';
-        $column = $columnName;
+        $column = $columnName = 'table_name';
 
         $input = array();
 
-        if ($withoutPrefix && $length) {
+        if ($withoutPrefix && $prefixLength) {
             $column = sprintf('SUBSTRING(%1$s FROM 1 + CHAR_LENGTH(:name)) %1$s', $columnName);
             $input[':name'] = $prefix;
         }
 
         $condition = 'table_schema = database()';
 
-        if ($length) {
+        if ($prefixLength) {
             $escape = '=';
             $condition .= sprintf(" AND %s LIKE :like ESCAPE '%s'", $columnName, $escape);
             $input[':like'] = $this->quoteLike($prefix, $escape) . '%';

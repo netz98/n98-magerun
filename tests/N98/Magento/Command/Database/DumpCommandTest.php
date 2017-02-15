@@ -69,7 +69,7 @@ class DumpCommandTest extends TestCase
                 array('filename' => 'foo.sql', '--add-time' => 'prefix', ),
             ),
             # testAddTimeOffFilenameSpecified
-            array('/^foo.sql$/', array('filename' => 'foo.sql', '--add-time' => false, )),
+            array('/^foo.sql$/', array('filename' => 'foo.sql', '--add-time' => 'no', )),
             # testAddTimeFilenameSpecifiedRelative
             array('/^..\/foo_[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{6}\.sql$/', array('filename' => '../foo.sql', )),
         );
@@ -98,9 +98,7 @@ class DumpCommandTest extends TestCase
             '--add-time' => true,
         );
 
-        $commandTester = new CommandTester($command);
-        $commandTester->execute($mandatory + $options + $defaults);
-        $this->assertRegExp($regex, $commandTester->getDisplay());
+        $this->assertDisplayRegExp($mandatory + $options + $defaults, $regex);
     }
 
     public function testWithStripOption()
