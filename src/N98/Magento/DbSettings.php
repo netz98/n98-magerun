@@ -235,7 +235,8 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             throw new InvalidArgumentException(
                 sprintf(
                     'Invalid identifier, must not contain NUL and must be UTF-8 encoded in the BMP: %s (hex: %s)',
-                    var_export($identifier), bin2hex($identifier)
+                    var_export($identifier, true),
+                    bin2hex($identifier)
                 )
             );
         }

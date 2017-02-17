@@ -1003,6 +1003,7 @@ HELP;
         try {
             Exec::run($installCommand, $installationOutput, $returnStatus);
         } catch (Exception $installException) {
+            /* fall-through intended */
         }
 
         if (isset($installException) || $returnStatus !== Exec::CODE_CLEAN_EXIT) {

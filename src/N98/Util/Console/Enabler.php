@@ -32,11 +32,19 @@ class Enabler
         $this->command = $command;
     }
 
+    /**
+     * @param $name
+     *
+     * @return void
+     */
     public function functionExists($name)
     {
         $this->assert(function_exists($name), sprintf('function "%s" is not available', $name));
     }
 
+    /**
+     * @return void
+     */
     public function operatingSystemIsNotWindows()
     {
         $this->assert(!OperatingSystem::isWindows(), "operating system is windows");

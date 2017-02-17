@@ -23,7 +23,7 @@ class Exec
 
     /**
      * @param string $command
-     * @param string $output
+     * @param string|null $output
      * @param int $returnCode
      */
     public static function run($command, &$output = null, &$returnCode = null)
@@ -36,7 +36,7 @@ class Exec
         $command = $command . self::REDIRECT_STDERR_TO_STDOUT;
 
         exec($command, $outputArray, $returnCode);
-        $output = self::parseCommandOutput($outputArray);
+        $output = self::parseCommandOutput((array) $outputArray);
 
         if ($returnCode !== self::CODE_CLEAN_EXIT) {
             throw new RuntimeException(

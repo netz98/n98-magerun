@@ -2,11 +2,9 @@
 
 namespace N98\Magento\Command\Database;
 
-use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\Database\Compressor\AbstractCompressor;
 use N98\Magento\Command\Database\Compressor\Compressor;
-use N98\Magento\Command\Database\Compressor\Gzip;
-use N98\Magento\Command\Database\Compressor\Uncompressed;
 use N98\Magento\DbSettings;
 use N98\Util\Console\Helper\DatabaseHelper;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,8 +26,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      */
     protected function detectDbSettings(OutputInterface $output)
     {
-        /* @var $database DatabaseHelper */
-        $database = $this->getHelper('database');
+        $database = $database = $this->getDatabaseHelper();
         $this->dbSettings = $database->getDbSettings($output);
     }
 
@@ -41,7 +38,8 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
     public function __get($name)
     {
         if ($name == '_connection') {
-            return $this->getHelper('database')->getConnection();
+            // TODO(tk): deprecate
+            return $this->getDatabaseHelper()->getConnection();
         }
     }
 
@@ -65,23 +63,11 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
     /**
      * @param string $type
      * @return Compressor
-     * @throws InvalidArgumentException
+     * @deprecated Since 1.97.29; use AbstractCompressor::create() instead
      */
     protected function getCompressor($type)
     {
-        switch ($type) {
-            case null:
-                return new Uncompressed;
-
-            case 'gz':
-            case 'gzip':
-                return new Gzip;
-
-            default:
-                throw new InvalidArgumentException(
-                    "Compression type '{$type}' is not supported. Known values are: gz, gzip"
-                );
-        }
+        return AbstractCompressor::create($type);
     }
 
     /**
@@ -91,8 +77,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      */
     protected function getMysqlClientToolConnectionString()
     {
-        /** @see DatabaseHelper::getMysqlClientToolConnectionString */
-        return $this->getHelper('database')->getMysqlClientToolConnectionString();
+        return $this->getDatabaseHelper()->getMysqlClientToolConnectionString();
     }
 
     /**
@@ -105,7 +90,15 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      */
     protected function _dsn()
     {
-        return $this->getHelper('database')->dsn();
+        return $this->getDatabaseHelper()->dsn();
+    }
+
+    /**
+     * @return DatabaseHelper
+     */
+    protected function getDatabaseHelper()
+    {
+        return $this->getHelper('database');
     }
 
     /**

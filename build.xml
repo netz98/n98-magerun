@@ -33,11 +33,11 @@ Build phar with:
     <fileset dir="vendor" id="vendor_folder">
         <include name="**/**" />
 
-        <!-- binary symlinks and binaries -->
+        <!-- Binary symlinks and binaries -->
         <exclude name="bin/**" />
         <exclude name="*/*/bin/**" />
 
-        <!-- vcs, development -->
+        <!-- Vcs, development -->
         <exclude name="**/.github/**" />
         <exclude name="**/.editorconfig"/>
         <exclude name="**/.php_cs*"/>
@@ -67,8 +67,8 @@ Build phar with:
         <exclude name="mikey179/**"/>
         <exclude name="phing/phing/**"/>
         <exclude name="phpunit/**"/>
-        <exclude name="seld/phar-utils/**"/>
         <exclude name="sebastian/**"/>
+        <exclude name="seld/phar-utils/**"/>
 
     </fileset>
 

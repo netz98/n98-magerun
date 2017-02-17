@@ -25,7 +25,7 @@ name=n98-${base}
 outfile=res/autocompletion/bash/n98-magerun.phar.bash
 
 if [[ ! -e "bin/${name}" ]]; then
-	echo >2 "error: could not find 'bin/${name}' script"
+	>&2 echo "error: could not find 'bin/${name}' script"
 	exit 1
 fi
 
