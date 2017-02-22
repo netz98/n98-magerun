@@ -136,9 +136,9 @@ HELP;
         $eventsBeforeCacheFlush = $appEventReflectionProperty->getValue(\Mage::app());
 
         $application = $this->getApplication();
-        $application->setAutoExit(false);
+        $saved = $application->setAutoExit(false);
         $application->run(new StringInput('cache:flush'), new NullOutput());
-        $application->setAutoExit(true);
+        $application->setAutoExit($saved);
 
         /**
          * Restore initially loaded events which was reset during setup script run

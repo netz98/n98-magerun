@@ -60,6 +60,12 @@ class Application extends BaseApplication
 |_||_/_/\\___/   |_|_|_\\__,_\\__, \\___|_|  \\_,_|_||_|
                            |___/
 ";
+
+    /**
+     * @var bool
+     */
+    private $autoExit = true;
+
     /**
      * @var ClassLoader
      */
@@ -140,6 +146,19 @@ class Application extends BaseApplication
     {
         $this->autoloader = $autoloader;
         parent::__construct(self::APP_NAME, self::APP_VERSION);
+    }
+
+    /**
+     * @param bool $boolean
+     * @return bool previous auto-exit state
+     */
+    public function setAutoExit($boolean)
+    {
+        $previous = $this->autoExit;
+        $this->autoExit = $boolean;
+        parent::setAutoExit($boolean);
+
+        return $previous;
     }
 
     /**
