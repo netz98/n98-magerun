@@ -62,9 +62,12 @@ class Application extends BaseApplication
 ";
 
     /**
+     * Shadow copy of the Application parent when using this concrete setAutoExit() implementation
+     *
+     * @see \Symfony\Component\Console\Application::$autoExit
      * @var bool
      */
-    private $autoExit = true;
+    private $autoExitShadow = true;
 
     /**
      * @var ClassLoader
@@ -154,8 +157,8 @@ class Application extends BaseApplication
      */
     public function setAutoExit($boolean)
     {
-        $previous = $this->autoExit;
-        $this->autoExit = $boolean;
+        $previous = $this->autoExitShadow;
+        $this->autoExitShadow = $boolean;
         parent::setAutoExit($boolean);
 
         return $previous;
