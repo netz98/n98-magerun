@@ -56,11 +56,11 @@ or if you have problems with SSL certificate:
 
    curl -O https://files.magerun.net/n98-magerun.phar
 
-Verify the download by comparing the MD5 checksum with the one on the website:
+Verify the download by comparing the SHA256 checksum with the one on the website:
 
 .. code-block:: sh
 
-    md5sum n98-magerun.phar
+    shasum -a256 n98-magerun.phar
 
 If it shows the same checksum as on the website, you downloaded the file successfully.
 
