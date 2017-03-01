@@ -121,7 +121,7 @@ HELP;
         $script = $this->_getContent($this->_scriptFilename);
         $commands = explode("\n", $script);
         $this->initScriptVars();
-
+        $this->getApplication()->setScriptEnvironment(true);
         foreach ($commands as $commandString) {
             $commandString = trim($commandString);
             if (empty($commandString)) {

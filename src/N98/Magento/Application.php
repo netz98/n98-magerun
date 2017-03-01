@@ -134,6 +134,11 @@ class Application extends BaseApplication
     protected $_magentoDetected = false;
 
     /**
+     * @var bool
+     */
+    private static $_isScriptEnvironment = false;
+
+    /**
      * @param ClassLoader $autoloader
      */
     public function __construct($autoloader = null)
@@ -883,5 +888,20 @@ MAGENTOHINT;
     {
         $output->getFormatter()->setStyle('debug', new OutputFormatterStyle('magenta', 'white'));
         $output->getFormatter()->setStyle('warning', new OutputFormatterStyle('red', 'yellow', array('bold')));
+    }
+    /**
+     * @return bool
+     */
+    public function isScriptEnvironment()
+    {
+        return self::$_isScriptEnvironment;
+    }
+
+    /**
+     * @param $state bool
+     */
+    public function setScriptEnvironment($state)
+    {
+        self::$_isScriptEnvironment = $state;
     }
 }
