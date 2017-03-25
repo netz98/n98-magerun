@@ -3,6 +3,7 @@
 namespace N98\Util\Console\Helper;
 
 use N98\Magento\Application;
+use N98\Magento\Initialiser;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -316,6 +317,7 @@ class MagentoHelper extends AbstractHelper
             }
 
             $this->_magentoRootFolder = $searchFolder;
+            Initialiser::bootstrap($this->_magentoRootFolder);
 
             // Magento 2 does not have a god class and thus if this file is not there it is version 2
             if ($hasMageFile == false) {

@@ -9,7 +9,6 @@ use Magento\Mtf\EntryPoint\EntryPoint;
 use N98\Magento\Application\Config;
 use N98\Magento\Application\ConfigurationLoader;
 use N98\Magento\Application\Console\Events;
-use N98\Util\AutoloadRestorer;
 use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\OperatingSystem;
 use RuntimeException;
@@ -756,46 +755,21 @@ class Application extends BaseApplication
     }
 
     /**
-     * use require-once inside a function with it's own variable scope w/o any other variables
-     * and $this unbound.
-     *
-     * @param string $path
-     */
-    private function requireOnce($path)
-    {
-        $requireOnce = function () {
-            require_once func_get_arg(0);
-        };
-        if (50400 <= PHP_VERSION_ID) {
-            $requireOnce->bindTo(null);
-        }
-
-        $requireOnce($path);
-    }
-
-    /**
      * @param bool $soft
      *
      * @return void
      */
     protected function _initMagento1($soft = false)
     {
-        if (!class_exists('Mage', false)) {
-            // Create a new AutoloadRestorer to capture currenjt auto-öpaders
-            $restorer = new AutoloadRestorer();
-            // require app/Mage.php from Magento in a function of it's own to have it's own variable scope
-            $this->requireOnce($this->_magentoRootFolder . '/app/Mage.php');
-            // Restore auto-loaders that might be removed by extensions that overwrite Varien/Autoload
-            $restorer->restore();
-        }
+        // Load Mage class definition
+        Initialiser::bootstrap($this->_magentoRootFolder);
 
         // skip Mage::app init routine and return
         if ($soft === true) {
             return;
         }
 
-        $config = $this->config->getConfig();
-        $initSettings = $config['init'];
+        $initSettings = $this->config->getConfig('init');
 
         Mage::app($initSettings['code'], $initSettings['type'], $initSettings['options']);
     }
