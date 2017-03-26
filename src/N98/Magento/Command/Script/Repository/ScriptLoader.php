@@ -9,12 +9,18 @@ use Symfony\Component\Finder\SplFileInfo;
 class ScriptLoader
 {
     /**
+     * @var string
+     */
+    private $homeDir;
+
+    /**
      * @var array
      */
     protected $_scriptFiles = array();
 
     /**
      * @var string
+     * @deprecated since 1.97.29
      */
     protected $_homeScriptFolder = '';
 
@@ -34,45 +40,58 @@ class ScriptLoader
      */
     public function __construct(array $scriptFolders, $magentoRootFolder = null)
     {
+        $this->homeDir = OperatingSystem::getHomeDir();
+
         $this->_magentoRootFolder = $magentoRootFolder;
+
         if (OperatingSystem::isWindows()) {
-            $this->_homeScriptFolder = OperatingSystem::getHomeDir() . '/n98-magerun/scripts';
-        } else {
-            $this->_homeScriptFolder = OperatingSystem::getHomeDir() . '/.n98-magerun/scripts';
+            $scriptFolders[] = $this->homeDir . '/n98-magerun/scripts';
         }
+        $scriptFolders[] = $this->homeDir . '/.n98-magerun/scripts';
 
-        $this->_scriptFolders = $scriptFolders;
-        $this->_scriptFolders[] = $this->_homeScriptFolder;
-        foreach ($this->_scriptFolders as $key => $scriptFolder) {
-            if (!is_dir($scriptFolder)) {
-                unset($this->_scriptFolders[$key]);
-            }
-        }
-
-        if (count($this->_scriptFolders)) {
-            $this->findScripts();
-        }
+        $this->findScripts($scriptFolders);
     }
 
-    protected function findScripts()
+    /**
+     * @return array
+     */
+    public function getFiles()
     {
+        return $this->_scriptFiles;
+    }
+
+    protected function findScripts(array $scriptFolders = null)
+    {
+        if (null === $scriptFolders) {
+            $scriptFolders = $this->_scriptFolders;
+        }
+
+        $scriptFolders = array_filter(array_filter($scriptFolders, 'strlen'), 'is_dir');
+
+        $this->_scriptFolders = $scriptFolders;
+        $this->_scriptFiles = array();
+        if (1 > count($scriptFolders)) {
+            return;
+        }
+
         $finder = Finder::create()
             ->files()
             ->followLinks(true)
             ->ignoreUnreadableDirs(true)
             ->name('*.magerun')
-            ->in($this->_scriptFolders);
+            ->in($scriptFolders);
 
-        $this->_scriptFiles = array();
+        $scriptFiles = array();
         foreach ($finder as $file) { /* @var $file SplFileInfo */
-            $this->_scriptFiles[$file->getFilename()] = array(
+            $scriptFiles[$file->getFilename()] = array(
                 'fileinfo'    => $file,
                 'description' => $this->_readFirstLineOfFile($file->getPathname()),
                 'location'    => $this->_getLocation($file->getPathname()),
             );
         }
 
-        ksort($this->_scriptFiles);
+        ksort($scriptFiles);
+        $this->_scriptFiles = $scriptFiles;
     }
 
     /**
@@ -109,7 +128,7 @@ class ScriptLoader
             return 'project';
         }
 
-        if (dirname($pathname) == $this->_homeScriptFolder) {
+        if (strstr($pathname, $this->homeDir)) {
             return 'personal';
         }
 
@@ -118,13 +137,5 @@ class ScriptLoader
         }
 
         return 'system';
-    }
-
-    /**
-     * @return array
-     */
-    public function getFiles()
-    {
-        return $this->_scriptFiles;
     }
 }

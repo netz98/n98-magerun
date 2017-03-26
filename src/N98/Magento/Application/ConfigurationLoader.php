@@ -3,7 +3,6 @@
 namespace N98\Magento\Application;
 
 use N98\Util\ArrayFunctions;
-use N98\Util\BinaryString;
 use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
@@ -209,66 +208,55 @@ class ConfigurationLoader
      */
     public function loadPluginConfig(array $config, $magentoRootFolder)
     {
-        if ($this->_pluginConfig == null) {
+        if (null === $this->_pluginConfig) {
             $this->_pluginConfig = array();
-            $moduleBaseFolders = array();
-            $customFilename = $this->_customConfigFilename;
-            $customName = pathinfo($customFilename, PATHINFO_FILENAME);
+            $customName = pathinfo($this->_customConfigFilename, PATHINFO_FILENAME);
             if (OperatingSystem::isWindows()) {
                 $config['plugin']['folders'][] = getenv('WINDIR') . '/' . $customName . '/modules';
                 $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/' . $customName . '/modules';
-            } else {
-                $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/.' . $customName . '/modules';
             }
+            $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/.' . $customName . '/modules';
             $config['plugin']['folders'][] = $magentoRootFolder . '/lib/' . $customName . '/modules';
-            foreach ($config['plugin']['folders'] as $folder) {
-                if (is_dir($folder)) {
-                    $moduleBaseFolders[] = $folder;
-                }
+
+            # Modules placed in vendor folder
+            $vendorDir = $this->getVendorDir();
+            if (strlen($vendorDir)) {
+                $this->logDebug('Vendor directory <comment>' . $vendorDir . '</comment>');
+                $this->traversePluginFoldersForConfigFile($magentoRootFolder, $vendorDir, 2);
             }
 
-            /**
-             * Allow modules to be placed vendor folder if not in phar mode
-             */
-            if (!$this->_isPharMode) {
-                if (is_dir($this->getVendorDir())) {
-                    $finder = Finder::create();
-                    $finder
-                        ->files()
-                        ->depth(2)
-                        ->followLinks()
-                        ->ignoreUnreadableDirs(true)
-                        ->name($customFilename)
-                        ->in($this->getVendorDir());
-
-                    foreach ($finder as $file) {
-                        /* @var $file SplFileInfo */
-                        $this->registerPluginConfigFile($magentoRootFolder, $file);
-                    }
-                }
-            }
-
-            if (count($moduleBaseFolders) > 0) {
-                // Glob plugin folders
-                $finder = Finder::create();
-                $finder
-                    ->files()
-                    ->depth(1)
-                    ->followLinks()
-                    ->ignoreUnreadableDirs(true)
-                    ->name($customFilename)
-                    ->in($moduleBaseFolders);
-
-                foreach ($finder as $file) {
-                    /* @var $file SplFileInfo */
-                    $this->registerPluginConfigFile($magentoRootFolder, $file);
-                }
-            }
+            # Glob plugin folders
+            $this->traversePluginFoldersForConfigFile($magentoRootFolder, $config['plugin']['folders'], 1);
         }
 
         $config = ArrayFunctions::mergeArrays($config, $this->_pluginConfig);
 
         return $config;
+    }
+
+    /**
+     * @param string $magentoRootFolder
+     * @param string|array $in
+     * @param integer $depth
+     */
+    private function traversePluginFoldersForConfigFile($magentoRootFolder, $in, $depth)
+    {
+        $basename = $this->_customConfigFilename;
+        if (1 > count($in = array_filter(array_filter((array) $in, 'strlen'), 'is_dir'))) {
+            return;
+        }
+
+        $finder = Finder::create()
+            ->files()
+            ->depth($depth)
+            ->followLinks()
+            ->ignoreUnreadableDirs(true)
+            ->name($basename)
+            ->in($in);
+
+        foreach ($finder as $file) {
+            $this->registerPluginConfigFile($magentoRootFolder, $file);
+        }
     }
 
     /**
@@ -332,21 +320,7 @@ class ConfigurationLoader
      */
     protected function registerPluginConfigFile($magentoRootFolder, $file)
     {
-        if (BinaryString::startsWith($file->getPathname(), 'vfs://')) {
-            $path = $file->getPathname();
-        } else {
-            $path = $file->getRealPath();
-
-            if ($path === "") {
-                throw new \UnexpectedValueException(sprintf("Realpath for '%s' did return an empty string.", $file));
-            }
-
-            if ($path === false) {
-                $this->log(sprintf("<error>Plugin config file broken link '%s'</error>", $file));
-
-                return;
-            }
-        }
+        $path = $file->getPathname();
 
         $this->logDebug('Load plugin config <comment>' . $path . '</comment>');
         $localPluginConfigFile = ConfigFile::createFromFile($path);
@@ -359,14 +333,16 @@ class ConfigurationLoader
      */
     public function getVendorDir()
     {
-        /* old vendor folder to give backward compatibility */
-        $vendorFolder = $this->getConfigurationLoaderDir() . '/../../../../vendor';
+        $configurationLoaderDir = $this->getConfigurationLoaderDir();
+
+        /* source version vendor folder (also in phar archive) */
+        $vendorFolder = $configurationLoaderDir . '/../../../../vendor';
         if (is_dir($vendorFolder)) {
             return $vendorFolder;
         }
 
-        /* correct vendor folder for composer installations */
-        $vendorFolder = $this->getConfigurationLoaderDir() . '/../../../../../../../vendor';
+        /* composer installed vendor folder */
+        $vendorFolder = $configurationLoaderDir . '/../../../../../../../vendor';
         if (is_dir($vendorFolder)) {
             return $vendorFolder;
         }
