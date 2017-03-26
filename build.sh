@@ -18,9 +18,9 @@ remove_assume_unchanged() {
 
 exit_trap() {
   local status=$?
-  if [[ -d "${base_dir}/${build_dir}" ]]; then
+  if [[ -d "${base_dir:?}/${build_dir}" ]]; then
     echo "trap: removing '${build_dir}'.."
-    rm -rf "${base_dir}/${build_dir}"
+    rm -rf "${base_dir:?}/${build_dir}"
   fi
   echo "exit ($status)."
 }
@@ -54,6 +54,16 @@ if [[ ! -d "${build_dir}" ]]; then
 fi
 
 git clone --quiet --no-local --depth 1 -- . "${build_dir}"
+
+# --changes : incorporate changes into the build, w/o builds latest revision
+if [[ "${1-}" == "--changes" ]]; then
+  echo "apply changes and copy untracked files..."
+  git diff HEAD | (cd "${build_dir}" && git apply)
+  # copy over files that are not tracked
+  git status --porcelain | awk 'match($1, "\\?\\?"){print "cp " $2 " '"${build_dir}"'/" $2}' | sh
+  (cd "${build_dir}" && git status --short)
+fi
+
 # remove fake-phar directly after clone
 remove_assume_unchanged "${build_dir}" "n98-magerun.phar"
 
@@ -64,7 +74,8 @@ phing_bin="${base_dir}/vendor/bin/phing"
 if [[ -z ${HOME+x} && -z ${COMPOSER_HOME+x} ]]; then
   echo "provision: create COMPOSER_HOME directory for composer (no HOME)"
   mkdir -p "build/composer-home"
-  export COMPOSER_HOME="$(pwd -P)/build/composer-home"
+  export COMPOSER_HOME
+  COMPOSER_HOME="$(pwd -P)/build/composer-home"
 fi
 
 echo "with: $(php --version|head -n 1)"
@@ -77,7 +88,7 @@ echo "building in $(pwd -P)"
 echo "build version: $(git --no-pager log --oneline -1)"
 
 echo "provision: ulimits (soft) set from $(ulimit -Sn) to $(ulimit -Hn) (hard) for faster phar builds..."
-ulimit -Sn $(ulimit -Hn)
+ulimit -Sn "$(ulimit -Hn)"
 timestamp="$(git log --format=format:%ct HEAD -1)" # reproduceable build
 echo "build timestamp: ${timestamp}"
 
