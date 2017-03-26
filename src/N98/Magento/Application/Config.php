@@ -235,11 +235,18 @@ class Config
     }
 
     /**
+     * Get config array (whole or in part)
+     *
+     * @param string|array $key
      * @return array
      */
-    public function getConfig()
+    public function getConfig($key = null)
     {
-        return $this->config;
+        if (null === $key) {
+            return $this->config;
+        }
+
+        return $this->getArray($key);
     }
 
     /**
@@ -340,11 +347,11 @@ class Config
         $anchor = &$this->config;
         foreach ($keys as $key) {
             if (!is_array($anchor)) {
-                return;
+                return null;
             }
 
             if (!isset($anchor[$key])) {
-                return;
+                return null;
             }
             $anchor = &$anchor[$key];
         }

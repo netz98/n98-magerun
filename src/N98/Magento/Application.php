@@ -11,7 +11,6 @@ use N98\Magento\Application\ConfigurationLoader;
 use N98\Magento\Application\Console\Events;
 use N98\Util\AutoloadRestorer;
 use N98\Util\Console\Helper\MagentoHelper;
-use N98\Util\Console\Helper\TwigHelper;
 use N98\Util\OperatingSystem;
 use RuntimeException;
 use Symfony\Component\Console\Application as BaseApplication;
@@ -263,22 +262,19 @@ class Application extends BaseApplication
         $helperSet = $this->getHelperSet();
         $config = $this->config->getConfig();
 
-        // Twig
-        $twigBaseDirs = array(
-            __DIR__ . '/../../../res/twig',
-        );
-        if (isset($config['twig']['baseDirs']) && is_array($config['twig']['baseDirs'])) {
-            $twigBaseDirs = array_merge(array_reverse($config['twig']['baseDirs']), $twigBaseDirs);
-        }
-        $helperSet->set(new TwigHelper($twigBaseDirs), 'twig');
-
         foreach ($config['helpers'] as $helperName => $helperClass) {
             if (!class_exists($helperClass)) {
                 throw new RuntimeException(
                     sprintf('Nonexistent helper class: "%s", check helpers configuration', $helperClass)
                 );
             }
-            $helperSet->set(new $helperClass(), $helperName);
+
+            // Twig helper needs the config-file
+            $helper = 'N98\Util\Console\Helper\TwigHelper' === $helperClass
+                ? new $helperClass($this->config)
+                : new $helperClass()
+            ;
+            $helperSet->set($helper, $helperName);
         }
     }
 
@@ -321,9 +317,7 @@ class Application extends BaseApplication
     {
         trigger_error(__METHOD__ . ' moved, use config directly instead', E_USER_DEPRECATED);
 
-        $config = $this->config->getConfig();
-
-        return isset($config['commands']['customCommands']) && is_array($config['commands']['customCommands']);
+        return 0 < count($this->config->getConfig(array('commands', 'customCommands')));
     }
 
     /**
