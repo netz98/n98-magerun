@@ -273,9 +273,12 @@ class Application extends BaseApplication
         $helperSet->set(new TwigHelper($twigBaseDirs), 'twig');
 
         foreach ($config['helpers'] as $helperName => $helperClass) {
-            if (class_exists($helperClass)) {
-                $helperSet->set(new $helperClass(), $helperName);
+            if (!class_exists($helperClass)) {
+                throw new RuntimeException(
+                    sprintf('Nonexistent helper class: "%s", check helpers configuration', $helperClass)
+                );
             }
+            $helperSet->set(new $helperClass(), $helperName);
         }
     }
 
