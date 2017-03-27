@@ -3,7 +3,9 @@ RECENT CHANGES
 
 1.97.29
 -------
+* Fix: Enterprise Edition detection / enabling commands (report by Luke Rodgers, fix by Tom Klingenberg, #902)
 * Fix: Nonexistent class reference in config (by Tom Klingenberg)
+* Fix: File integrity checking guide (by Max Chadwick, #896)
 * Fix: Prevent sys:setup:run from ending script (report by Tjerk Ameel, #895)
 * New: Add package magento-mirror-1.9.3.2 (by Peter O'Callaghan, #894)
 * New: Streamlining of N98-Magerun1 and N98-Magerun2 (by Tom Klingenberg)
