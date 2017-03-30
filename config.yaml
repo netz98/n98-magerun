@@ -597,6 +597,7 @@ commands:
       php:
         - N98\Magento\Command\System\Check\PHP\ExtensionsCheck
         - N98\Magento\Command\System\Check\PHP\BytecodeCacheExtensionsCheck
+        - N98\Magento\Command\System\Check\PHP\MemorylimitCheck
       security:
         - N98\Magento\Command\System\Check\Security\LocalConfigAccessableCheck
       mysql:
@@ -633,6 +634,7 @@ commands:
         - xcache
         - Zend Optimizer
         - Zend OPcache
+      recommend-memory-limit: 512
 
   N98\Magento\Command\Media\DumpCommand:
     strip:
