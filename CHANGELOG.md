@@ -1,7 +1,7 @@
 RECENT CHANGES
 ==============
 
-1.97.30
+1.97.31
 -------
 * Fix: Enterprise Edition detection / enabling commands (report by Luke Rodgers, fix by Tom Klingenberg, #902)
 * Fix: Nonexistent class reference in config (by Tom Klingenberg)
@@ -9,6 +9,10 @@ RECENT CHANGES
 * Fix: Prevent sys:setup:run from ending script (report by Tjerk Ameel, #895)
 * New: Add package magento-mirror-1.9.3.2 (by Peter O'Callaghan, #894)
 * New: Streamlining of N98-Magerun1 and N98-Magerun2 (by Tom Klingenberg)
+
+1.97.30
+-------
+* Fix: Corrected wrong package name in installation source
 
 1.97.29
 -------
