@@ -1,6 +1,11 @@
 RECENT CHANGES
 ==============
 
+1.97.29
+-------
+* Fix: Install command fails (Reported by Eugen Wesseloh, #906)
+
+
 1.97.28
 -------
 * Fix: sys:setup:run exists with code 0 on error (report by Matías Montes, fix by Tom Klingenberg, #854)
