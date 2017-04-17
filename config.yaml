@@ -321,7 +321,7 @@ commands:
         extra:
           sample-data: sample-data-1.6.1.0
 
-      - name: magento-mirror-1.5.1.0
+      - name: magento-ce-1.5.1.0
         version: 1.5.1.0
         source:
           url: git://github.com/OpenMage/magento-mirror.git
@@ -330,7 +330,7 @@ commands:
         extra:
           sample-data: sample-data-1.1.2
 
-      - name: magento-mirror-1.4.2.0
+      - name: magento-ce-1.4.2.0
         version: 1.4.2.0
         source:
           url: git://github.com/OpenMage/magento-mirror.git

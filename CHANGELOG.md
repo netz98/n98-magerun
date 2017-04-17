@@ -1,6 +1,11 @@
 RECENT CHANGES
 ==============
 
+1.97.30
+-------
+* Fix: Corrected wrong package name in installation source
+
+
 1.97.29
 -------
 * Fix: Install command fails (Reported by Eugen Wesseloh, #906)
