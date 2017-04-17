@@ -178,113 +178,184 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
+      - name: magento-ce-1.9.3.2
+        version: 1.9.3.2
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.2.zip
+          type: zip
+          shasum: 8dccfa5a8ab6131f0e536e8c7269e5fb8559e03d
+        extra:
+          sample-data: sample-data-1.9.2.4
+
+      - name: magento-ce-1.9.3.1
+        version: 1.9.3.1
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.1.zip
+          type: zip
+          shasum: e46ebd867142427b1f1587df2fd8198f73dc6595
+        extra:
+          sample-data: sample-data-1.9.2.4
+
+      - name: magento-ce-1.9.3.0
+        version: 1.9.3.0
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.0.zip
+          type: zip
+          shasum: a1f18d56c03f74207a712b12b2d93d7c524d1f1d
+        extra:
+          sample-data: sample-data-1.9.2.4
+
       - name: magento-ce-1.9.2.4
         version: 1.9.2.4
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.4/magento-1.9.2.4.zip
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.2.4.zip
           type: zip
-          shasum: 219fe2b88068cf73953b90ce01186cb1f19affea
+          shasum: 4a32fb868cf8194c958e01bcd85779b7855fe36c
         extra:
           sample-data: sample-data-1.9.2.4
 
       - name: magento-ce-1.9.2.3
         version: 1.9.2.3
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.3/magento-1.9.2.3.zip
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.2.3.zip
           type: zip
-          shasum: c211c1d31468dfbc45decd7d00266281fdc97b20
+          shasum: 8a93762d4897203dd77e3a527887199f66620678
         extra:
           sample-data: sample-data-1.9.1.0
 
       - name: magento-ce-1.9.2.2
         version: 1.9.2.2
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.2/magento-1.9.2.2.zip
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.2.2.zip
           type: zip
-          shasum: 6b6de6bee57a2992affa1fad01444cb6c05e0788
+          shasum: 4abf582992311935cf1edcd888bf9024bc752cdf
         extra:
           sample-data: sample-data-1.9.1.0
 
       - name: magento-ce-1.9.2.1
         version: 1.9.2.1
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.1/magento-1.9.2.1.zip
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.2.1.zip
           type: zip
-          shasum: b158de5c3bc587931d99af1bd11f3235e75d1191
+          shasum: ce0c435a7320c4cac47290337b64861c2674e3f8
         extra:
           sample-data: sample-data-1.9.1.0
 
       - name: magento-ce-1.9.2.0
         version: 1.9.2.0
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.0/magento-1.9.2.0.zip
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.2.0.zip
           type: zip
-          shasum: f5cd7053c41f19e9007ce6817ad12344e6fc0263
+          shasum: 019538c04b6359ad61e4c6d2f54c835bd76f7141
         extra:
           sample-data: sample-data-1.9.1.0
 
       - name: magento-ce-1.9.1.1
         version: 1.9.1.1
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.1.1/magento-1.9.1.1.zip
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.1.1.zip
           type: zip
-          shasum: c9074bf9646b28c035d369db7189aec9733ea978
+          shasum: 3aa497d245affb273cc55851163f5133cecef650
         extra:
           sample-data: sample-data-1.9.1.0
 
       - name: magento-ce-1.9.1.0
         version: 1.9.1.0
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.1.0/magento-1.9.1.0.zip
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.1.0.zip
           type: zip
-          shasum: ef2da3723033614d4f10c3a12e8392d1730ade30
+          shasum: e3dcfea601ada21ce84ee4836d801dd2feeb08d1
         extra:
           sample-data: sample-data-1.9.1.0
 
       - name: magento-ce-1.9.0.1
         version: 1.9.0.1
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.0.1/magento-1.9.0.1.zip
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.0.1.zip
           type: zip
-          shasum: ff84a32100598cff43d765e3d6cb0bc1a5a414b3
+          shasum: 9c87abc997957ebbf646e1a4d87d3d09e4d773f5
+        extra:
+          sample-data: sample-data-1.9.0.0
+
+      - name: magento-ce-1.9.0.0
+        version: 1.9.0.0
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.0.0.zip
+          type: zip
+          shasum: 98dc5a70d0d12fa595032a7e4257e9a8ee8e293c
         extra:
           sample-data: sample-data-1.9.0.0
 
       - name: magento-ce-1.8.1.0
         version: 1.8.1.0
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.8.1.0/magento-1.8.1.0.zip
+          url: https://github.com/OpenMage/magento-mirror/archive/1.8.1.0.zip
           type: zip
-          shasum: 9b47925c8e68a4eea0963e32af884944e3b90ee0
+          shasum: 3fbff399799177e8048cc4048f66213fedd132c1
         extra:
           sample-data: sample-data-1.6.1.0
 
       - name: magento-ce-1.8.0.0
         version: 1.8.0.0
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.8.0.0/magento-1.8.0.0.zip
+          url: https://github.com/OpenMage/magento-mirror/archive/1.8.0.0.zip
           type: zip
-          shasum: 51a140dc651e1d2e3693571f86963a01c168f740
+          shasum: 9b1dee54d0b047b66d7ad6b8ea1ff414b7773093
         extra:
           sample-data: sample-data-1.6.1.0
 
       - name: magento-ce-1.7.0.2
         version: 1.7.0.2
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.7.0.2/magento-1.7.0.2.zip
+          url: https://github.com/OpenMage/magento-mirror/archive/1.7.0.2.zip
           type: zip
-          shasum: 0183fac38b6c5a6ff13b9363304eb70d9298b759
+          shasum: e7f761d1ca60d16db867e24b5219de8815d0ea25
         extra:
           sample-data: sample-data-1.6.1.0
 
       - name: magento-ce-1.6.2.0
         version: 1.6.2.0
         dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.6.2.0/magento-1.6.2.0.zip
+          url: https://github.com/OpenMage/magento-mirror/archive/1.6.2.0.zip
           type: zip
-          shasum: 136a5ce5d49cc7d4fd6a43452aafcfbac97722be
+          shasum: db0de6d0d82427d997a206554bcd7e5874099671
         extra:
           sample-data: sample-data-1.6.1.0
+
+      - name: magento-mirror-1.5.1.0
+        version: 1.5.1.0
+        source:
+          url: git://github.com/OpenMage/magento-mirror.git
+          type: git
+          reference: magento-1.5
+        extra:
+          sample-data: sample-data-1.1.2
+
+      - name: magento-mirror-1.4.2.0
+        version: 1.4.2.0
+        source:
+          url: git://github.com/OpenMage/magento-mirror.git
+          type: git
+          reference: magento-1.4
+        extra:
+          sample-data: sample-data-1.1.2
+
+      - name: mageplus-master
+        version: dev-master
+        source:
+          url: https://github.com/mageplus/mageplus.git
+          type: git
+          reference: master
+        extra:
+          sample-data: sample-data-1.6.1.0
+      - name: magento-mirror-1.9.3.2
+        version: 1.9.3.2
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.2.zip
+          type: zip
+          shasum: 8dccfa5a8ab6131f0e536e8c7269e5fb8559e03d
+        extra:
+          sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.3.2
         version: 1.9.3.2
