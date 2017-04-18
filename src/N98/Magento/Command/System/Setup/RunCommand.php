@@ -138,7 +138,9 @@ HELP;
         $application = $this->getApplication();
         $application->setAutoExit(false);
         $application->run(new StringInput('cache:flush'), new NullOutput());
-        $application->setAutoExit(true);
+        if (!$application->isScriptEnvironment()){
+            $application->setAutoExit(true);
+        }
 
         /**
          * Restore initially loaded events which was reset during setup script run
