@@ -266,7 +266,8 @@ HELP;
         $input = new StringInput($commandString);
         $exitCode = $this->getApplication()->run($input, $output);
         if ($exitCode !== 0 && $this->_stopOnError) {
-            throw new RuntimeException('Script stopped with errors');
+            $this->getApplication()->setAutoExit(true);
+            throw new RuntimeException('Script stopped with errors', $exitCode);
         }
     }
 
