@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "cf8a6587a6c5930bff371a8f41d92d01",
+    "content-hash": "431b823872ddb9701c73a952ecc8e8b5",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -533,6 +533,62 @@
             ],
             "description": "JUnit XML Document generation library",
             "time": "2013-11-23T13:11:26+00:00"
+        },
+        {
+            "name": "n98/util",
+            "version": "1.2.0",
+            "dist": {
+                "type": "path",
+                "url": "./shared",
+                "reference": "57e4fd6c4edb83d766d5d88b5e6506cf6bc118bf",
+                "shasum": null
+            },
+            "require": {
+                "composer/composer": "^1.3.0",
+                "fzaninotto/faker": "~1.4",
+                "n98/junit-xml": "~1.0",
+                "n98/util": "^1.0",
+                "php": ">=5.3.9",
+                "psy/psysh": "~0.4",
+                "symfony/console": "~2.3",
+                "symfony/event-dispatcher": "~2.3",
+                "symfony/finder": "~2.3",
+                "symfony/process": "~2.3",
+                "symfony/validator": "~2.3",
+                "symfony/yaml": "~2.3",
+                "twig/twig": "~1.0"
+            },
+            "require-dev": {
+                "bamarni/symfony-console-autocomplete": "^1.2.0",
+                "friendsofphp/php-cs-fixer": "~1.12.0",
+                "mikey179/vfsstream": "~1.4",
+                "phing/phing": "~2.10.0",
+                "phpunit/phpunit": "~4.1",
+                "seld/phar-utils": "1.0.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "N98\\Util\\": [
+                        "src/N98/Util",
+                        "tests/N98/Util"
+                    ]
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Münch",
+                    "email": "c.muench@netz98.de"
+                },
+                {
+                    "name": "Alexander Menk",
+                    "email": "a.menk@netz98.de"
+                }
+            ],
+            "description": "Shared utils"
         },
         {
             "name": "nikic/php-parser",
