@@ -147,24 +147,57 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
 
     /**
      * @param OutputInterface $output
-     * @param array $processes
+     * @param Mage_Index_Model_Process $process
+     * @param \DateTime $startTime
+     * @param \DateTime $endTime
+     * @param string $errorMessage
      */
-    protected function executeProcesses(OutputInterface $output, array $processes)
-    {
-        try {
-            \Mage::dispatchEvent('shell_reindex_init_process');
-            foreach ($processes as $process) {
-                $this->executeProcess($output, $process);
-            }
-            \Mage::dispatchEvent('shell_reindex_finalize_process');
-        } catch (Exception $e) {
-            \Mage::dispatchEvent('shell_reindex_finalize_process');
-        }
+    protected function writeFailedResult(
+        OutputInterface $output,
+        Mage_Index_Model_Process $process,
+        \DateTime $startTime,
+        \DateTime $endTime,
+        $errorMessage
+    ) {
+        $output->writeln(
+            sprintf(
+                '<error>Reindex finished with error message "%s". %s</error> (Runtime: <comment>%s</comment>)</error>',
+                $errorMessage,
+                $process->getIndexerCode(),
+                DateTimeUtils::difference($startTime, $endTime)
+            )
+        );
     }
 
     /**
      * @param OutputInterface $output
-     * @param $process
+     * @param array $processes
+     * @return bool
+     */
+    protected function executeProcesses(OutputInterface $output, array $processes)
+    {
+        $isSuccessful = true;
+
+        try {
+            \Mage::dispatchEvent('shell_reindex_init_process');
+            foreach ($processes as $process) {
+                if (!$this->executeProcess($output, $process)) {
+                    $isSuccessful = false;
+                }
+            }
+            \Mage::dispatchEvent('shell_reindex_finalize_process');
+        } catch (Exception $e) {
+            $isSuccessful = false;
+            \Mage::dispatchEvent('shell_reindex_finalize_process');
+        }
+
+        return $isSuccessful;
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param Mage_Index_Model_Process $process
+     * @return bool
      */
     private function executeProcess(OutputInterface $output, Mage_Index_Model_Process $process)
     {
@@ -174,9 +207,26 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
         $this->writeEstimatedEnd($output, $process);
 
         $startTime = new \DateTime('now');
-        $process->reindexEverything();
-        \Mage::dispatchEvent($process->getIndexerCode() . '_shell_reindex_after');
+
+        $isSuccessful = true;
+        $errorMessage = '';
+
+        try {
+            $process->reindexEverything();
+            \Mage::dispatchEvent($process->getIndexerCode() . '_shell_reindex_after');
+        } catch (Exception $e) {
+            $errorMessage = $e->getMessage();
+            $isSuccessful = false;
+        }
+
         $endTime = new \DateTime('now');
-        $this->writeSuccessResult($output, $process, $startTime, $endTime);
+
+        if ($isSuccessful) {
+            $this->writeSuccessResult($output, $process, $startTime, $endTime);
+        } else {
+            $this->writeFailedResult($output, $process, $startTime, $endTime, $errorMessage);
+        }
+
+        return $isSuccessful;
     }
 }

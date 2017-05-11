@@ -60,7 +60,11 @@ HELP;
         }
 
         $processes = $this->getProcessesByIndexCodes($indexCodes);
-        $this->executeProcesses($output, $processes);
+        if (!$this->executeProcesses($output, $processes)) {
+            return 1; // end with error
+        }
+
+        return 0;
     }
 
     /**

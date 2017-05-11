@@ -37,6 +37,10 @@ class ReindexAllCommand extends AbstractIndexerCommand
         /* @var $processes Mage_Index_Model_Resource_Process_Collection|Mage_Index_Model_Process[] */
         $processes = $this->getIndexerModel()->getProcessesCollection();
 
-        $this->executeProcesses($output, iterator_to_array($processes, false));
+        if (!$this->executeProcesses($output, iterator_to_array($processes, false))) {
+            return 1;
+        }
+
+        return 0;
     }
 }
