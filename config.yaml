@@ -473,6 +473,14 @@ commands:
         extra:
           sample-data: sample-data-1.6.1.0
 
+      - name: magento-mirror-1.9.2.0
+        version: 1.9.2.0
+        dist:
+          url: https://github.com/LokeyCoding/magento-mirror/archive/1.9.2.0.tar.gz
+          type: tar
+        extra:
+          sample-data: sample-data-1.9.1.0
+
       - name: magento-mirror-1.7.0.2
         version: 1.7.0.2
         dist:
