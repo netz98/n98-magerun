@@ -113,6 +113,9 @@ class OperatingSystem
      */
     public static function getCwd()
     {
+        if (self::isLinux() || self::isMacOs()) {
+            return exec('pwd');
+        }
         return getcwd();
     }
 
