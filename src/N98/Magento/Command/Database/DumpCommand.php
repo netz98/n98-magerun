@@ -35,7 +35,8 @@ class DumpCommand extends AbstractDatabaseCommand
                 'add-time',
                 't',
                 InputOption::VALUE_OPTIONAL,
-                'Adds time to filename (only if filename was not provided)'
+                'Append or prepend a timestamp to filename if a filename is provided. ' .
+                'Possible values are "suffix", "prefix" or "no".'
             )
             ->addOption(
                 'compression',
@@ -67,7 +68,12 @@ class DumpCommand extends AbstractDatabaseCommand
                 InputOption::VALUE_NONE,
                 'Execute and prints no output except the dump filename'
             )
-            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'do everything but the dump')
+            ->addOption(
+                'dry-run',
+                null,
+                InputOption::VALUE_NONE,
+                'do everything but the dump'
+            )
             ->addOption(
                 'no-single-transaction',
                 null,
@@ -94,10 +100,25 @@ class DumpCommand extends AbstractDatabaseCommand
                 InputOption::VALUE_OPTIONAL,
                 'Tables to strip (dump only structure of those tables)'
             )
-            ->addOption('exclude', 'e', InputOption::VALUE_OPTIONAL, 'Tables to exclude from the dump')
-            ->addOption('include', 'i', InputOption::VALUE_OPTIONAL, 'Tables to include in the dump')
-            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not prompt if all options are defined')
-            ->setDescription('Dumps database with mysqldump cli client according to informations from local.xml');
+            ->addOption(
+                'exclude',
+                'e',
+                InputOption::VALUE_OPTIONAL,
+                'Tables to exclude from the dump'
+            )
+            ->addOption(
+                'include',
+                'i',
+                InputOption::VALUE_OPTIONAL,
+                'Tables to include in the dump'
+            )
+            ->addOption(
+                'force',
+                'f',
+                InputOption::VALUE_NONE,
+                'Do not prompt if all options are defined'
+            )
+            ->setDescription('Dumps database with mysqldump cli client');
 
         $help = <<<HELP
 Dumps configured magento database with `mysqldump`. You must have installed
@@ -241,44 +262,9 @@ HELP;
     {
         $execs = array();
 
-        $stripTables = $this->stripTables($input, $output);
-
-        /* @var $database DatabaseHelper */
-        $database = $this->getDatabaseHelper();
-
-        if ($input->getOption('exclude') && $input->getOption('include')) {
-            throw new InvalidArgumentException('Cannot specify --include with --exclude');
-        }
-
-        $excludeTables = array();
-        if ($input->getOption('exclude')) {
-            $excludeTables = $database->resolveTables(
-                explode(' ', $input->getOption('exclude')),
-                $database->getTableDefinitions($this->getCommandConfig())
-            );
-            if ($this->nonCommandOutput($input)) {
-                $output->writeln(
-                    sprintf('<comment>Excluded: <info>%s</info></comment>', implode(' ', $excludeTables))
-                );
-            }
-        }
-
-        if ($input->getOption('include')) {
-            $includeTables = $database->resolveTables(
-                explode(' ', $input->getOption('include')),
-                $database->getTableDefinitions($this->getCommandConfig())
-            );
-            $excludeTables = array_diff($database->getTables(), $includeTables);
-            if ($this->nonCommandOutput($input)) {
-                $output->writeln(
-                    sprintf('<comment>Included: <info>%s</info></comment>', implode(' ', $includeTables))
-                );
-            }
-        }
-
         $dumpOptions = '';
         if (!$input->getOption('no-single-transaction')) {
-            $dumpOptions = '--single-transaction --quick ';
+            $dumpOptions .= '--single-transaction --quick ';
         }
 
         if ($input->getOption('human-readable')) {
@@ -297,17 +283,16 @@ HELP;
             $dumpOptions .= '--hex-blob ';
         }
 
-        $ignore = '';
-        foreach (array_merge($excludeTables, $stripTables) as $tableName) {
-            $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $tableName . ' ';
-        }
-
-        $mysqlClientToolConnectionString = $database->getMysqlClientToolConnectionString();
-
         $compressor = $this->getCompressor($input->getOption('compression'));
         $fileName = $this->getFileName($input, $output, $compressor);
 
-        if (count($stripTables) > 0) {
+        /* @var $database DatabaseHelper */
+        $database = $this->getDatabaseHelper();
+
+        $mysqlClientToolConnectionString = $database->getMysqlClientToolConnectionString();
+
+        $stripTables = $this->stripTables($input, $output);
+        if ($stripTables) {
             // dump structure for strip-tables
             $exec = 'mysqldump ' . $dumpOptions . '--no-data ' . $mysqlClientToolConnectionString;
             $exec .= ' ' . implode(' ', $stripTables);
@@ -316,18 +301,24 @@ HELP;
             if (!$input->getOption('stdout')) {
                 $exec .= ' > ' . escapeshellarg($fileName);
             }
-            $execsArray[] = $exec;
+            $execs[] = $exec;
         }
 
+        $excludeTables = $this->excludeTables($input, $output);
+
         // dump data for all other tables
+        $ignore = '';
+        foreach (array_merge($excludeTables, $stripTables) as $ignoreTable) {
+            $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $ignoreTable . ' ';
+        }
         $exec = 'mysqldump ' . $dumpOptions . $mysqlClientToolConnectionString . ' ' . $ignore;
         $exec .= $this->postDumpPipeCommands();
         $exec = $compressor->getCompressingCommand($exec);
         if (!$input->getOption('stdout')) {
             $exec .= (count($stripTables) > 0 ? ' >> ' : ' > ') . escapeshellarg($fileName);
         }
-        $execsArray[] = $exec;
-        return array($fileName, $execsArray);
+        $execs[] = $exec;
+        return array($fileName, $execs);
     }
 
     /**
@@ -405,10 +396,7 @@ HELP;
             return array();
         }
 
-        $stripTables = $this->getDatabaseHelper()->resolveTables(
-            explode(' ', $input->getOption('strip')),
-            $this->getDatabaseHelper()->getTableDefinitions($this->getCommandConfig())
-        );
+        $stripTables = $this->resolveDatabaseTables($input->getOption('strip'));
 
         if ($this->nonCommandOutput($input)) {
             $output->writeln(
@@ -417,6 +405,56 @@ HELP;
         }
 
         return $stripTables;
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return array
+     */
+    private function excludeTables(InputInterface $input, OutputInterface $output)
+    {
+        if ($input->getOption('exclude') && $input->getOption('include')) {
+            throw new InvalidArgumentException('Cannot specify --include with --exclude');
+        }
+
+        if (!$input->getOption('exclude')) {
+            $excludeTables = array();
+        } else {
+            $excludeTables = $this->resolveDatabaseTables($input->getOption('exclude'));
+
+            if ($this->nonCommandOutput($input)) {
+                $output->writeln(
+                    sprintf('<comment>Excluded: <info>%s</info></comment>', implode(' ', $excludeTables))
+                );
+            }
+        }
+
+        if ($input->getOption('include')) {
+            $includeTables = $this->resolveDatabaseTables($input->getOption('include'));
+            $excludeTables = array_diff($this->getDatabaseHelper()->getTables(), $includeTables);
+            if ($this->nonCommandOutput($input)) {
+                $output->writeln(
+                    sprintf('<comment>Included: <info>%s</info></comment>', implode(' ', $includeTables))
+                );
+            }
+        }
+
+        return $excludeTables;
+    }
+
+    /**
+     * @param string $list space separated list of tables
+     * @return array
+     */
+    private function resolveDatabaseTables($list)
+    {
+        $database = $this->getDatabaseHelper();
+
+        return $database->resolveTables(
+            explode(' ', $list),
+            $database->getTableDefinitions($this->getCommandConfig())
+        );
     }
 
     /**
@@ -445,24 +483,7 @@ HELP;
         }
 
         $optionAddTime = $input->getOption('add-time');
-        $namePrefix = '';
-        $nameSuffix = '';
-        if ($optionAddTime !== null) {
-            $timeStamp = date('Y-m-d_His');
-
-            if (in_array($optionAddTime, array('suffix', true), true)) {
-                $nameSuffix = '_' . $timeStamp;
-            } elseif ($optionAddTime === 'prefix') {
-                $namePrefix = $timeStamp . '_';
-            } elseif ($optionAddTime !== 'no') {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Invalid --add-time value %s, possible values are none (for) "suffix", "prefix" or "no"',
-                        var_export($optionAddTime, true)
-                    )
-                );
-            }
-        }
+        list($namePrefix, $nameSuffix) = $this->getFileNamePrefixSuffix($optionAddTime);
 
         if (
             (
@@ -499,6 +520,36 @@ HELP;
         $fileName = $compressor->getFileName($fileName);
 
         return $fileName;
+    }
+
+    /**
+     * @param null|bool|string $optionAddTime [optional] true for default "suffix", other string values: "prefix", "no"
+     * @return array
+     */
+    private function getFileNamePrefixSuffix($optionAddTime = null)
+    {
+        $namePrefix = '';
+        $nameSuffix = '';
+        if ($optionAddTime === null) {
+            return array($namePrefix, $nameSuffix);
+        }
+
+        $timeStamp = date('Y-m-d_His');
+
+        if (in_array($optionAddTime, array('suffix', true), true)) {
+            $nameSuffix = '_' . $timeStamp;
+        } elseif ($optionAddTime === 'prefix') {
+            $namePrefix = $timeStamp . '_';
+        } elseif ($optionAddTime !== 'no') {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid --add-time value %s, possible values are none (for) "suffix", "prefix" or "no"',
+                    var_export($optionAddTime, true)
+                )
+            );
+        }
+
+        return array($namePrefix, $nameSuffix);
     }
 
     /**
