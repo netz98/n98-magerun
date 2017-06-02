@@ -45,14 +45,24 @@ class InstallCommandPackageVersionTest extends TestCase
         $nonVersions = 0;
         $nonVersionsList = array();
         $nameStack = array();
+        $nameConstraint = array();
 
         foreach ($packages as $package) {
             $this->assertArrayHasKey('name', $package);
             $this->assertArrayHasKey('version', $package);
             $name = $package['name'];
             $version = $package['version'];
+            $nameAndVersion = "$name $version";
+
+            $this->assertArrayNotHasKey(
+                $name,
+                $nameConstraint,
+                sprintf('duplicate package "%s"', $name)
+            );
+            $nameConstraint[$name] = 1;
 
             if (!$this->isQuadripartiteVersionNumber($version)) {
+                $nonVersionsList[] = $nameAndVersion;
                 $nonVersions++;
                 continue;
             }
@@ -68,7 +78,7 @@ class InstallCommandPackageVersionTest extends TestCase
             if (isset($nameStack[$namespace])) {
                 $comparison = version_compare($nameStack[$namespace], $version);
                 $message = sprintf(
-                    "Check order of versions for package \"$namespace\", highter comes first, but got %s before %s",
+                    "Check order of versions for package \"$namespace\", higher comes first, but got %s before %s",
                     $nameStack[$namespace],
                     $version
                 );
