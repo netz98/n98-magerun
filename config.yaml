@@ -340,15 +340,6 @@ commands:
         extra:
           sample-data: sample-data-1.1.2
 
-      - name: mageplus-master
-        version: dev-master
-        source:
-          url: https://github.com/mageplus/mageplus.git
-          type: git
-          reference: master
-        extra:
-          sample-data: sample-data-1.6.1.0
-
       - name: magento-mirror-1.9.3.2
         version: 1.9.3.2
         dist:

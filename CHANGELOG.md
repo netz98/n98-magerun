@@ -16,7 +16,7 @@ RECENT CHANGES
 
 1.97.29
 -------
-* Fix: Install command fails (Reported by Eugen Wesseloh, #906)
+* Fix: Install command fails (report by Eugen Wesseloh, #906)
 
 
 1.97.28
