@@ -1,6 +1,6 @@
-========================
-netz98 magerun CLI tools
-========================
+======================================
+netz98 magerun CLI tools for Magento 1
+======================================
 
 The n98 magerun cli tools provides some handy tools to work with Magento from command line.
 
@@ -28,13 +28,16 @@ Build Status
 |                        |    :target: https://codecov.io/github/netz98/n98-magerun?branch=develop                       |
 +------------------------+-----------------------------------------------------------------------------------------------+
 
+Development is done in **develop** branch.
+
+This software is only running with Magento 1.
+
+If you use Magento 2 please use another stable version (https://github.com/netz98/n98-magerun2).
+
 Compatibility
 -------------
-The tools will automatically be tested for multiple PHP versions (5.3, 5.4, 5.5). It's currently running in various Linux distributions and Mac OS X.
+The tools will automatically be tested for multiple PHP versions. It's currently running in various Linux distributions and Mac OS X.
 Microsoft Windows is not fully supported (some Commands like `db:dump` or `install` are excluded).
-
-The tool partially works with Magento 2 development branch.
-
 
 Installation
 ------------
@@ -50,7 +53,7 @@ Download the latest stable N98-Magerun phar-file from the file-server_:
 
    wget https://files.magerun.net/n98-magerun.phar
 
-or if you have problems with SSL certificate:
+or if you prefer to use Curl:
 
 .. code-block:: sh
 
@@ -112,6 +115,17 @@ be useful if you exchange scripts that are making use of magerun with other user
 
 Install with Composer
 """""""""""""""""""""
+Require Magerun within the Magento (or any other) project and you can then
+execute it from the vendor’s bin folder:
+
+.. code-block:: sh
+
+    composer require n98/magerun
+    # ...
+    ./vendor/bin/n98-magerun --version
+    n98-magerun version 1.97.0 by netz98 new media GmbH
+
+Alternative source install:
 
 https://github.com/netz98/n98-magerun/wiki/Install-from-source-with-Composer
 
@@ -176,8 +190,8 @@ The concrete folder can be obtained via pkg-config::
 
 Detailed information is available in the bash-completions FAQ: https://github.com/scop/bash-completion#faq
 
-PHPStorm 8.0.*
-""""""""""""""
+PHPStorm
+""""""""
 
 A commandline tool autocompletion XML file for PHPStorm exists in subfolder **autocompletion/phpstorm**.
 Copy **n98_magerun.xml** into your phpstorm config folder.
