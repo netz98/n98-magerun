@@ -72,7 +72,8 @@ class TwigHelper extends Helper
      */
     private function getBaseDirsFromConfig(Config $config)
     {
-        $baseDir = __DIR__ . '/../../../../..'; # root of project source tree
+        // FIXME: base dir should be injected from magerun
+        $baseDir = __DIR__ . '/../../../../../../'; # root of project source tree
 
         $baseDirs = array();
 
