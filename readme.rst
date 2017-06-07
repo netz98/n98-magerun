@@ -193,7 +193,7 @@ Detailed information is available in the bash-completions FAQ: https://github.co
 PHPStorm
 """"""""
 
-A commandline tool autocompletion XML file for PHPStorm exists in subfolder **autocompletion/phpstorm**.
+A commandline tool autocompletion XML file for PHPStorm exists in subfolder **res/autocompletion/phpstorm**.
 Copy **n98_magerun.xml** into your phpstorm config folder.
 
 Linux and Mac: ~/.WebIde80/config/componentVersions
