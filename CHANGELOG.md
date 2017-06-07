@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.97.31
 -------
+* New: Add package magento-mirror-1.9.3.3 (#920)
 * Fix: Enterprise Edition detection / enabling commands (report by Luke Rodgers, fix by Tom Klingenberg, #902)
 * Fix: Nonexistent class reference in config (by Tom Klingenberg)
 * Fix: File integrity checking guide (by Max Chadwick, #896)
