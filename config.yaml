@@ -35,6 +35,7 @@ detect:
     - webroot
     - web-root
     - wwwroot
+    - magento
 
 event:
   subscriber:
