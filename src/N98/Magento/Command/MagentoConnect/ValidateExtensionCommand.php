@@ -228,7 +228,9 @@ HELP;
             if (file_exists($path)) {
                 $this->_optionOutput('    Path: OK', array('full-report', 'file'), $output, $input);
 
-                if (md5(file_get_contents($path)) == $hash) {
+                if ("" === $hash) {
+                    $this->_optionOutput('    Hash: EMPTY', array('full-report', 'hash'), $output, $input);
+                } elseif (md5(file_get_contents($path)) === $hash) {
                     $this->_optionOutput('    Hash: OK', array('full-report', 'hash'), $output, $input);
                 } else {
                     $this->_optionOutput('Problem: ' . $path, 'hash', $output, $input);
