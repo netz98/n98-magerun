@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.97.31
 -------
+* Fix: Check Suhosin phar support (report by Decorate, fix by Tom Klingenberg, #926)
 * Fix: File hash is optional in package.xml (report by Viktor Szépe, fix by Tom Klingenberg, #927)
 * Fix: Show full path for phpstorm autocompletion folder (by Carlos Reynosa, #922)
 * Fix: Enterprise Edition detection / enabling commands (report by Luke Rodgers, fix by Tom Klingenberg, #902)
