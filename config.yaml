@@ -178,6 +178,24 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
+      - name: magento-ce-1.9.3.4
+        version: 1.9.3.4
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.4.zip
+          type: zip
+          shasum: 6dadf8de337ae7033839839caeb15cbb2e98e4b8
+        extra:
+          sample-data: sample-data-1.9.2.4
+
+      - name: magento-ce-1.9.3.3
+        version: 1.9.3.3
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.3.zip
+          type: zip
+          shasum: f613968e1ea667ec1a0f0198b7c1d319e2598580
+        extra:
+          sample-data: sample-data-1.9.2.4
+
       - name: magento-ce-1.9.3.2
         version: 1.9.3.2
         dist:
