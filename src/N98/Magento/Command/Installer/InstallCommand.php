@@ -119,13 +119,16 @@ class InstallCommand extends AbstractMagentoCommand
 * Starts Magento installer
 * Sets rewrite base in .htaccess file
 
-Example of an unattended Magento CE 1.7.0.2 installation:
+Example of an unattended Magento CE/ Open Source 1.9.3.4 installation:
 
    $ n98-magerun.phar install --dbHost="localhost" --dbUser="mydbuser" \
      --dbPass="mysecret" --dbName="magentodb" --installSampleData=yes \
      --useDefaultConfigParams=yes \
-     --magentoVersionByName="magento-ce-1.7.0.2" \
+     --magentoVersionByName="magento-mirror-1.9.3.4" \
      --installationFolder="magento" --baseUrl="http://magento.localdomain/"
+
+(Magento is only freely available via Github with Magerun, it uses the best
+community mirror)
 
 Additionally, with --noDownload option you can install Magento working 
 copy already stored in --installationFolder on the given database.
