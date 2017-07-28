@@ -141,6 +141,8 @@ commands:
     - N98\Magento\Command\MagentoConnect\ListExtensionsCommand
     - N98\Magento\Command\MagentoConnect\UpgradeExtensionCommand
     - N98\Magento\Command\MagentoConnect\ValidateExtensionCommand
+    - N98\Magento\Command\Media\Cache\Image\ClearCommand
+    - N98\Magento\Command\Media\Cache\JsCss\ClearCommand
     - N98\Magento\Command\Media\DumpCommand
     - N98\Magento\Command\OpenBrowserCommand
     - N98\Magento\Command\ScriptCommand
