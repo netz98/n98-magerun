@@ -59,7 +59,7 @@ or if you prefer to use Curl:
 
    curl -O https://files.magerun.net/n98-magerun.phar
 
-Verify the download by comparing the SHA256 checksum with the one on the website:
+Verify the download by comparing the SHA256 checksum with the one on the website at https://files.magerun.net/:
 
 .. code-block:: sh
 
