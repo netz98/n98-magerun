@@ -5,6 +5,7 @@ branches:
   only:
     - master
     - develop
+    - /^(release)\/.*$/
     - /^(bugfix|feature)\/.*$/
 
 php:
