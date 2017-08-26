@@ -11,7 +11,7 @@ RECENT CHANGES
 * Fix: Nonexistent class reference in config (by Tom Klingenberg)(by Chris Potter, #909)
 * Fix: File integrity checking guide (by Max Chadwick, #896)
 * Fix: Prevent sys:setup:run from ending script (report by Tjerk Ameel, #895)
-* Fix: Updates script command to have non-zero exit code 
+* Fix: Update script command to have non-zero exit code (by Chris Potter, #908)
 * Fix: Remove duplicate entry in config.yaml (by Alexander Menk, #914)
 * Fix: Restore historic packages for install command (by Tom Klingenberg)
 * Fix: Compatibility for installed Symfony 3 components (by Christian Münch)
