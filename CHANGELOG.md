@@ -1,18 +1,26 @@
 RECENT CHANGES
 ==============
 
-1.97.31
--------
+1.98.0
+------
 * Fix: Borken image Bitdeli.com badge in readme (by Tom Klingenberg)
 * Fix: Check Suhosin phar support (report by Decorate, fix by Tom Klingenberg, #926)
 * Fix: File hash is optional in package.xml (report by Viktor Szépe, fix by Tom Klingenberg, #927)
 * Fix: Show full path for phpstorm autocompletion folder (by Carlos Reynosa, #922)
 * Fix: Enterprise Edition detection / enabling commands (report by Luke Rodgers, fix by Tom Klingenberg, #902)
-* Fix: Nonexistent class reference in config (by Tom Klingenberg)
+* Fix: Nonexistent class reference in config (by Tom Klingenberg)(by Chris Potter, #909)
 * Fix: File integrity checking guide (by Max Chadwick, #896)
 * Fix: Prevent sys:setup:run from ending script (report by Tjerk Ameel, #895)
-* New: Add current Magento version 1.9.3.3 (by Will-B, #920)
+* Fix: Updates script command to have non-zero exit code 
+* Fix: Remove duplicate entry in config.yaml (by Alexander Menk, #914)
+* Fix: Restore historic packages for install command (by Tom Klingenberg)
+* Fix: Compatibility for installed Symfony 3 components (by Christian Münch)
+* Fix: Update readme (by Goose)
 * New: Add package magento-mirror-1.9.3.2 (by Peter O'Callaghan, #894)
+* New: Add current Magento version 1.9.3.3 (by Jonas Hüning, #920)
+* New: Add current Magento version 1.9.3.4 (by Will-B, #930)
+* New: Check Suhosin phar support (by Tom Klingenberg, #926)
+* New: New commands to clear media and css cache (by Christian Münch, #932)
 * New: Streamlining of N98-Magerun1 and N98-Magerun2 (by Tom Klingenberg)
 
 1.97.30
