@@ -228,6 +228,9 @@ Global config parameters:
       Do not load any custom config.
   --skip-root-check
       Do not check if n98-magerun runs as root.
+  --developer-mode
+      Instantiate Magento in Developer Mode
+
 
 Open Shop in Browser
 """"""""""""""""""""
