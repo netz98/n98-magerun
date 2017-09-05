@@ -119,6 +119,11 @@ class Application extends BaseApplication
     protected $_magerunStopFileFolder = null;
 
     /**
+     * @var null
+     */
+    protected $_magerunUseDeveloperMode = null;
+
+    /**
      * @var bool
      */
     protected $_isInitialized = false;
@@ -202,6 +207,17 @@ class Application extends BaseApplication
         );
         $inputDefinition->addOption($skipExternalConfig);
 
+        /**
+         * Developer Mode
+         */
+        $rootDirOption = new InputOption(
+            '--developer-mode',
+            '',
+            InputOption::VALUE_NONE,
+            'Instantiate Magento in Developer Mode'
+        );
+        $inputDefinition->addOption($rootDirOption);
+
         return $inputDefinition;
     }
 
@@ -249,6 +265,7 @@ class Application extends BaseApplication
         $this->_magentoMajorVersion = $magentoHelper->getMajorVersion();
         $this->_magerunStopFileFound = $magentoHelper->isMagerunStopFileFound();
         $this->_magerunStopFileFolder = $magentoHelper->getMagerunStopFileFolder();
+        $this->_magerunUseDeveloperMode = ($input->getParameterOption('--developer-mode'));
     }
 
     /**
@@ -772,6 +789,9 @@ class Application extends BaseApplication
         $initSettings = $this->config->getConfig('init');
 
         Mage::app($initSettings['code'], $initSettings['type'], $initSettings['options']);
+        if ($this->_magerunUseDeveloperMode) {
+            Mage::setIsDeveloperMode(true);
+        }
     }
 
     /**
