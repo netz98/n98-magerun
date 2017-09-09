@@ -9,6 +9,9 @@
 # enable uninstall testsuite (disabled by default as it destroys data)
 grep -v 'remove uninstall test' phpunit.xml.dist > phpunit.xml
 
+# print php debug informations
+php -m
+
 # only install magento if MAGENTO_VERSION has been set
 if [ ! -z ${MAGENTO_VERSION+x} ]; then
 
@@ -17,9 +20,13 @@ if [ ! -z ${MAGENTO_VERSION+x} ]; then
     db_pass="${SETUP_DB_PASS:-}"
 
     if [ "" == "${db_pass}" ]; then
+        mysql -uroot -e 'SELECT VERSION();'
         mysql -uroot -e 'CREATE DATABASE IF NOT EXISTS `magento_travis`;'
+        mysql -uroot -e 'SHOW ENGINES;'
     else
+        mysql -uroot -p"${db_pass}" -e 'SELECT VERSION();'
         mysql -uroot -p"${db_pass}" -e 'CREATE DATABASE IF NOT EXISTS `magento_travis`;'
+        mysql -uroot -p"${db_pass}" -e 'SHOW ENGINES;'
     fi;
 
     target_directory="${SETUP_DIR:-./}${MAGENTO_VERSION}"
