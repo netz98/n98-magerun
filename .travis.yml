@@ -1,5 +1,6 @@
 language: php
 sudo: false
+dist: precise
 
 branches:
   only:
@@ -7,8 +8,10 @@ branches:
     - develop
     - /^(bugfix|feature|release)\/.*$/
 
+services:
+  - mysql
+
 php:
-  - 5.3
   - 5.4
   - 5.5
 
@@ -39,27 +42,6 @@ env:
 matrix:
   fast_finish: true
   exclude:
-    # Newer Magento versions uses newer PHP versions
-    - php: 5.3
-      env: MAGENTO_VERSION="magento-mirror-1.9.0.1" DB=mysql INSTALL_SAMPLE_DATA=no
-    - php: 5.3
-      env: MAGENTO_VERSION="magento-mirror-1.9.1.1" DB=mysql INSTALL_SAMPLE_DATA=no
-    - php: 5.3
-      env: MAGENTO_VERSION="magento-mirror-1.9.2.1" DB=mysql INSTALL_SAMPLE_DATA=no
-    - php: 5.3
-      env: MAGENTO_VERSION="magento-mirror-1.9.2.2" DB=mysql INSTALL_SAMPLE_DATA=no
-    - php: 5.3
-      env: MAGENTO_VERSION="magento-mirror-1.9.2.3" DB=mysql INSTALL_SAMPLE_DATA=no
-    - php: 5.3
-      env: MAGENTO_VERSION="magento-mirror-1.9.2.4" DB=mysql INSTALL_SAMPLE_DATA=no
-    - php: 5.3
-      env: MAGENTO_VERSION="magento-mirror-1.9.3.0" DB=mysql INSTALL_SAMPLE_DATA=no
-    - php: 5.3
-      env: MAGENTO_VERSION="magento-mirror-1.9.3.1" DB=mysql INSTALL_SAMPLE_DATA=no
-    - php: 5.3
-      env: MAGENTO_VERSION="magento-mirror-1.9.3.2" DB=mysql INSTALL_SAMPLE_DATA=no
-    - php: 5.3
-      env: MAGENTO_VERSION="magento-mirror-1.9.3.4" DB=mysql INSTALL_SAMPLE_DATA=no
     # Old Magento Versions are not officially supported to run with PHP 5.5
     - php: 5.5
       env: MAGENTO_VERSION="magento-mirror-1.4.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes
