@@ -1,6 +1,9 @@
 RECENT CHANGES
 ==============
 
+1.98.1
+------
+
 1.98.0
 ------
 * Fix: Borken image Bitdeli.com badge in readme (by Tom Klingenberg)
