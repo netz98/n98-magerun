@@ -3,6 +3,7 @@ RECENT CHANGES
 
 1.98.1
 ------
+* Fix: Fatal error w/ Magento Composer Installer (by Luke Rodgers and Tom Klingenberg, #938)
 
 1.98.0
 ------
