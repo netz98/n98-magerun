@@ -28,15 +28,21 @@ class DateTime
         $minutes = $interval->format('%i');
         $seconds = $interval->format('%s');
 
-        $differenceString
-            = ($years ? $years . 'Y ' : '')
+        $differenceString = trim(
+            ($years ? $years . 'Y ' : '')
             . ($months ? $months . 'M ' : '')
             . ($days ? $days . 'd ' : '')
             . ($hours ? $hours . 'h ' : '')
             . ($minutes ? $minutes . 'm ' : '')
-            . ($seconds ? $seconds . 's ' : '');
+            . ($seconds ? $seconds . 's ' : '')
+        );
 
-        return trim($differenceString);
+        if (!strlen($differenceString)) {
+            $milliseconds = max(0, $time2->format("u") / 1000 - $time1->format("u") / 1000);
+            $differenceString = $milliseconds ? sprintf('%0.2fms', $milliseconds) : '';
+        }
+
+        return $differenceString;
     }
 
     /**
