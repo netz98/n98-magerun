@@ -2,7 +2,12 @@
 #
 # build from clean checkout
 #
-# usage: ./build.sh from project root
+# usage: ./build.sh [--changes]
+#
+# options: --changes    build with local changes
+#
+# note:    run from project root
+#
 set -euo pipefail
 IFS=$'\n\t'
 

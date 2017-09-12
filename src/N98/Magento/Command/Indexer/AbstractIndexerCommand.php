@@ -134,7 +134,10 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
      * @param \DateTime $endTime
      */
     protected function writeSuccessResult(
-        OutputInterface $output, Mage_Index_Model_Process $process, \DateTime $startTime, \DateTime $endTime
+        OutputInterface $output,
+        Mage_Index_Model_Process $process,
+        \DateTime $startTime,
+        \DateTime $endTime
     ) {
         $output->writeln(
             sprintf(

@@ -511,8 +511,9 @@ abstract class AbstractMagentoCommand extends Command
                 if ($magentoHelper->getRootFolder() !== $folderName) {
                     throw new InvalidArgumentException(
                         sprintf(
-                            'Folder %s is not a Magento working copy.',
-                            $folderName
+                            'Folder "%s" is not a Magento working copy (%s)',
+                            $folderName,
+                            var_export($magentoHelper->getRootFolder(), true)
                         )
                     );
                 }

@@ -310,7 +310,7 @@ class MagentoHelper extends AbstractHelper
 
             $hasMageFile = false;
             foreach ($files as $file) {
-                if ($file->getFilename() == 'Mage.php') {
+                if ($file->getFilename() === 'Mage.php') {
                     $hasMageFile = true;
                 }
             }

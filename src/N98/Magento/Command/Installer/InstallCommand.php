@@ -313,14 +313,21 @@ HELP;
             $package = $this->createComposerPackageByConfig($this->config['magentoVersionData']);
             $this->config['magentoPackage'] = $package;
 
-            if (file_exists($this->config['installationFolder'] . '/app/Mage.php')) {
-                $output->writeln('<error>A magento installation already exists in this folder </error>');
+            $installationFolder = $this->config['installationFolder'];
+
+            if (file_exists($installationFolder . '/app/Mage.php')) {
+                $output->writeln(
+                    sprintf(
+                        '<error>A magento installation already exists in this folder "%s"</error>',
+                        $installationFolder
+                    )
+                );
 
                 return false;
             }
 
             $composer = $this->getComposer($input, $output);
-            $targetFolder = $this->getTargetFolderByType($composer, $package, $this->config['installationFolder']);
+            $targetFolder = $this->getTargetFolderByType($composer, $package, $installationFolder);
             $this->config['magentoPackage'] = $this->downloadByComposerConfig(
                 $input,
                 $output,
@@ -331,18 +338,18 @@ HELP;
 
             if ($this->isSourceTypeRepository($package->getSourceType())) {
                 $filesystem = new \N98\Util\Filesystem;
-                $filesystem->recursiveCopy($targetFolder, $this->config['installationFolder'], array('.git', '.hg'));
+                $filesystem->recursiveCopy($targetFolder, $installationFolder, array('.git', '.hg'));
             } else {
                 $filesystem = new \Composer\Util\Filesystem();
                 $filesystem->copyThenRemove(
-                    $this->config['installationFolder'] . '/_n98_magerun_download',
-                    $this->config['installationFolder']
+                    $installationFolder . '/_n98_magerun_download',
+                    $installationFolder
                 );
             }
 
             if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
                 // Patch installer
-                $this->patchMagentoInstallerForPHP54($this->config['installationFolder']);
+                $this->patchMagentoInstallerForPHP54($installationFolder);
             }
         } catch (Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
