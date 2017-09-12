@@ -318,7 +318,7 @@ class MagentoHelper extends AbstractHelper
             $this->_magentoRootFolder = $searchFolder;
 
             // Magento 2 does not have a god class and thus if this file is not there it is version 2
-            if ($hasMageFile == false) {
+            if ($hasMageFile === false) {
                 $this->_magentoMajorVersion = Application::MAGENTO_MAJOR_VERSION_2;
                 return true; // the rest of this does not matter since we are simply exiting with a notice
             }
