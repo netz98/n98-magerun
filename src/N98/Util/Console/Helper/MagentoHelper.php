@@ -326,7 +326,8 @@ class MagentoHelper extends AbstractHelper
             if (is_callable(array('\Mage', 'getEdition'))) {
                 $this->_magentoEnterprise = (\Mage::getEdition() == 'Enterprise');
             } else {
-                $this->_magentoEnterprise = is_dir($this->_magentoRootFolder . '/app/code/core/Enterprise');
+                $this->_magentoEnterprise = is_dir($this->_magentoRootFolder . '/app/code/core/Enterprise') ||
+                    is_dir($this->_magentoRootFolder . '/app/design/frontend/enterprise/default/layout');
             }
 
             if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
