@@ -1,9 +1,14 @@
 RECENT CHANGES
 ==============
 
-1.98.1
+1.99.1
+------
+
+1.99.0
 ------
 * Fix: Fatal error w/ Magento Composer Installer (by Luke Rodgers and Tom Klingenberg, #938)
+* Remove PHP 5.3 after travis ended support (by Christian Münch, #941)
+* Support for Magento developer mode (by Luke Rodgers, #940)
 
 1.98.0
 ------
