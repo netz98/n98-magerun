@@ -1,9 +1,6 @@
 RECENT CHANGES
 ==============
 
-1.99.1
-------
-
 1.99.0
 ------
 * Fix: Fatal error w/ Magento Composer Installer (by Luke Rodgers and Tom Klingenberg, #938)
