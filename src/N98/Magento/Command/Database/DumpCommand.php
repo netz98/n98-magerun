@@ -45,6 +45,12 @@ class DumpCommand extends AbstractDatabaseCommand
                 'Compress the dump file using one of the supported algorithms'
             )
             ->addOption(
+                'dump-option',
+                null,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'Option(s) to pass to mysqldump command. E.g. --dump-option="--set-gtid-purged=off"'
+            )
+            ->addOption(
                 'xml',
                 null,
                 InputOption::VALUE_NONE,
@@ -281,6 +287,11 @@ HELP;
 
         if ($input->getOption('hex-blob')) {
             $dumpOptions .= '--hex-blob ';
+        }
+
+        $options = $input->getOption('dump-option');
+        if (count($options) > 0) {
+            $dumpOptions .= implode(' ', $options) . ' ';
         }
 
         $compressor = $this->getCompressor($input->getOption('compression'));
