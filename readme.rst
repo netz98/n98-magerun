@@ -428,7 +428,7 @@ Available Table Groups:
 * @customers Customer data
 * @trade Current trade data (customers and orders). You usally do not want those in developer systems.
 * @search Search related tables (catalogsearch_)
-* @development Removes logs, sessions and trade data so developers do not have to work with real customer data
+* @development Removes logs, sessions, trade data and admin users so developers do not have to work with real customer data or admin user accounts
 * @idx Tables with _idx suffix and index event tables
 
 Extended: https://github.com/netz98/n98-magerun/wiki/Stripped-Database-Dumps
