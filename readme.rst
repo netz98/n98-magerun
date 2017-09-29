@@ -860,6 +860,15 @@ Toggle "is_active" on a cms block
 
 "block_id" can be an entity id or an "identifier"
 
+List CMS Blocks
+""""""""""""""""
+
+List all CMS blocks
+
+.. code-block:: sh
+
+   $ n98-magerun.phar cms:block:list [--format[="..."]]
+
 Demo Notice
 """""""""""
 
