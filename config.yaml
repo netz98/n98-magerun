@@ -548,51 +548,51 @@ commands:
     table-groups:
       - id: admin
         description: Admin tables
-        tables: admin*
+        tables: "admin*"
 
       - id: log
         description: Log tables
-        tables: log_url log_url_info log_visitor log_visitor_info log_visitor_online report_event report_compared_product_index report_viewed_*
+        tables: "log_url log_url_info log_visitor log_visitor_info log_visitor_online report_event report_compared_product_index report_viewed_*"
 
       - id: dataflowtemp
         description: Temporary tables of the dataflow import/export tool
-        tables: dataflow_batch dataflow_batch_export dataflow_batch_import dataflow_import_data dataflow_session
+        tables: "dataflow_batch dataflow_batch_export dataflow_batch_import dataflow_import_data dataflow_session"
 
       - id: importexporttemp
         description: Temporary tables of the Import/Export module
-        tables: importexport_importdata
+        tables: "importexport_importdata"
 
       - id: sessions
         description: Database session tables
-        tables: core_session
+        tables: "core_session"
 
       - id: stripped
         description: Standard definition for a stripped dump (logs, sessions and dataflow)
-        tables: @log @dataflowtemp @importexporttemp @sessions
+        tables: "@log @dataflowtemp @importexporttemp @sessions"
 
       - id: sales
         description: Sales data (orders, invoices, creditmemos etc)
-        tables: sales_order_aggregated* sales_order_tax* sales_flat* sales_recurring_* sales_refunded_* sales_payment_* enterprise_sales_* enterprise_customer_sales_* sales_bestsellers_* salesrule_coupon_usage salesrule_customer
+        tables: "sales_order_aggregated* sales_order_tax* sales_flat* sales_recurring_* sales_refunded_* sales_payment_* enterprise_sales_* enterprise_customer_sales_* sales_bestsellers_* salesrule_coupon_usage salesrule_customer"
 
       - id: customers
         description: Customer data - Should not be used without @sales
-        tables: customer_address* customer_entity* wishlist*
+        tables: "customer_address* customer_entity* wishlist*"
 
       - id: emails
         description: Email queue tables
-        tables: core_email_queue*
+        tables: "core_email_queue*"
 
       - id: newsletter
         description: Newsletter subscriber data
-        tables: newsletter_*
+        tables: "newsletter_*"
 
       - id: trade
         description: Current trade data (customers and orders). You usally do not want those in developer systems.
-        tables: @customers @sales
+        tables: "@customers @sales"
 
       - id: development
         description: Removes logs and trade data so developers do not have to work with real customer data
-        tables: @admin @trade @stripped @search @newsletter @emails
+        tables: "@admin @trade @stripped @search @newsletter @emails"
 
       - id: ee_changelog
         description: Changelog tables of new indexer since EE 1.13
