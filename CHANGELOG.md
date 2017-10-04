@@ -1,6 +1,10 @@
 RECENT CHANGES
 ==============
 
+1.99.1
+------
+* Change dev:ide:phpstorm:meta to be compatible with newer versions (> 2016.1) and rename old command to dev:ide:phpstorm-deprecated:meta (by Guillaume Gill) 
+
 1.99.0
 ------
 * Fix: Fatal error w/ Magento Composer Installer (by Luke Rodgers and Tom Klingenberg, #938)
