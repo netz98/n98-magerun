@@ -90,6 +90,7 @@ commands:
     - N98\Magento\Command\Developer\Code\Model\MethodCommand
     - N98\Magento\Command\Developer\EmailTemplate\UsageCommand
     - N98\Magento\Command\Developer\Ide\PhpStorm\MetaCommand
+    - N98\Magento\Command\Developer\Ide\PhpStorm2017\MetaCommand
     - N98\Magento\Command\Developer\Setup\Script\AttributeCommand
     - N98\Magento\Command\Developer\ConsoleCommand
     - N98\Magento\Command\Developer\Log\DbCommand

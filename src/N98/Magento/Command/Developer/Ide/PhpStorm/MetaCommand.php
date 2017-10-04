@@ -96,9 +96,9 @@ class MetaCommand extends AbstractMagentoCommand
     protected function configure()
     {
         $this
-            ->setName('dev:ide:phpstorm:meta')
+            ->setName('dev:ide:phpstorm-deprecated:meta')
             ->addOption('stdout', null, InputOption::VALUE_NONE, 'Print to stdout instead of file .phpstorm.meta.php')
-            ->setDescription('Generates meta data file for PhpStorm auto completion')
+            ->setDescription('Generates meta data file for PhpStorm <= 2016.1 auto completion')
         ;
     }
 
