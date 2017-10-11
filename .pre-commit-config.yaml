@@ -1,0 +1,23 @@
+repos:
+-   repo: git://github.com/pre-commit/pre-commit-hooks
+    sha: v0.9.5
+    hooks:
+    -   id: check-json
+    -   id: check-xml
+    -   id: check-merge-conflict
+    -   id: check-byte-order-marker
+-   repo: git://github.com/netz98/pre-commit-php.git
+    sha: 1.3.0
+    hooks:
+    -   id: php-cs-fixer
+        args:
+        - -q
+        - --config-file=.php_cs
+    -   id: php-lint-all
+    -   id: php-unit
+        args:
+            - "-c"
+            - "tests/unit"
+            - "--debug"
+
+
