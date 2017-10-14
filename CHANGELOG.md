@@ -4,6 +4,7 @@ RECENT CHANGES
 dev
 ------
 * New: Add cms:block:list command (by Luke Rodgers, #948)
+* New: Add current Magento version 1.9.3.6 (by Simon Sprankel, #951)
 
 1.99.0
 ------
