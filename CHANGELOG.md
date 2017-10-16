@@ -1,10 +1,16 @@
 RECENT CHANGES
 ==============
 
-dev
-------
+1.100.0
+-------
+
+* New: db:dump - allow arbitrary mysqldump options (by Brice Burgess, #945)
+* strip admin tables (by Max Chadwick, #946)
 * New: Add cms:block:list command (by Luke Rodgers, #948)
 * New: Add current Magento version 1.9.3.6 (by Simon Sprankel, #951)
+* New: config for pre-commit framework (by Christian Münch)
+* Fix: Codecov settings (by Christian Münch)
+* Imp: Add yaml quoting (by Tom Klingenberg)
 
 1.99.0
 ------
