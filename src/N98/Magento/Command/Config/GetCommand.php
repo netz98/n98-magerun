@@ -160,7 +160,7 @@ HELP;
         if ($value === null) {
             switch ($format) {
                 case null:
-                    $value = self::DISPLAY_NULL_UNKOWN_VALUE;
+                    $value = self::DISPLAY_NULL_UNKNOWN_VALUE;
                     break;
                 case 'json':
                     break;

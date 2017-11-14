@@ -7,7 +7,7 @@ use N98\Magento\Command\AbstractMagentoCommand;
 
 abstract class AbstractConfigCommand extends AbstractMagentoCommand
 {
-    const DISPLAY_NULL_UNKOWN_VALUE = "NULL (NULL/\"unkown\" value)";
+    const DISPLAY_NULL_UNKNOWN_VALUE = "NULL (NULL/\"unknown\" value)";
 
     /**
      * @var array strings of configuration scopes
