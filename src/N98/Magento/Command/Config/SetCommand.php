@@ -40,7 +40,7 @@ class SetCommand extends AbstractConfigCommand
                 "no-null",
                 null,
                 InputOption::VALUE_NONE,
-                "Do not treat value NULL as " . self::DISPLAY_NULL_UNKOWN_VALUE . " value"
+                "Do not treat value NULL as " . self::DISPLAY_NULL_UNKNOWN_VALUE . " value"
             )
         ;
 
@@ -84,7 +84,7 @@ HELP;
                 throw new \InvalidArgumentException("Encryption is not possbile for NULL values");
             }
             $value = null;
-            $valueDisplay = self::DISPLAY_NULL_UNKOWN_VALUE;
+            $valueDisplay = self::DISPLAY_NULL_UNKNOWN_VALUE;
         } else {
             $value = str_replace(array('\n', '\r'), array("\n", "\r"), $value);
             $value = $this->_formatValue($value, ($input->getOption('encrypt') ? 'encrypt' : false));
