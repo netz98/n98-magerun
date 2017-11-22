@@ -61,6 +61,7 @@ class InfoCommand extends AbstractMagentoCommand
 
         $this->infos['Version'] = \Mage::getVersion();
         $this->infos['Edition'] = ($this->_magentoEnterprise ? 'Enterprise' : 'Community');
+        $this->infos['Root'] = $this->_magentoRootFolder;
 
         if ($softInitMode === false) {
             $config = \Mage::app()->getConfig();
