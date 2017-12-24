@@ -7,3 +7,7 @@
 
 # Magerun stopfile
 /.n98-magerun
+
+# IDEs
+/.idea/
+/nbproject/
