@@ -10,6 +10,7 @@ use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
 
@@ -26,6 +27,7 @@ class RunCommand extends AbstractCronCommand
         $this
             ->setName('sys:cron:run')
             ->addArgument('job', InputArgument::OPTIONAL, 'Job code')
+            ->addOption('schedule', InputOption::VALUE_NONE, 'Schedule cron instead of run with current user')
             ->setDescription('Runs a cronjob by job code');
         $help = <<<HELP
 If no `job` argument is passed you can select a job from a list.
@@ -59,7 +61,11 @@ HELP;
 
         $output->write('<info>Run </info><comment>' . $callableName . '</comment> ');
 
-        $this->executeConfigModel($callback, $jobCode);
+        if (!$input->hasOption('schedule')) {
+            $this->executeConfigModel($callback, $jobCode);
+        } else {
+            $this->scheduleConfigModel($callback, $jobCode);
+        }
 
         $output->writeln('<info>done</info>');
     }
@@ -178,6 +184,39 @@ HELP;
 
         if (empty($callback)) {
             Mage::throwException(Mage::helper('cron')->__('No callbacks found'));
+        }
+    }
+
+    /**
+     * @param array $callback
+     * @param string $jobCode
+     */
+    private function scheduleConfigModel($callback, $jobCode)
+    {
+        /* @var $schedule Mage_Cron_Model_Schedule */
+        $schedule = Mage::getModel('cron/schedule');
+        if (false === $schedule) {
+            throw new RuntimeException('Failed to create new Mage_Cron_Model_Schedule model');
+        }
+
+        if (empty($callback)) {
+            Mage::throwException(Mage::helper('cron')->__('No callbacks found'));
+        }
+
+        try {
+            $timestamp = strftime('%Y-%m-%d %H:%M:%S', time());
+            $schedule
+                ->setJobCode($jobCode)
+                ->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING)
+                ->setCreatedAt($timestamp)
+                ->setScheduledAt($timestamp)
+                ->save();
+        } catch (Exception $cronException) {
+            throw new RuntimeException(
+                sprintf('Cron-job "%s" threw exception %s', $jobCode, get_class($cronException)),
+                0,
+                $cronException
+            );
         }
     }
 
