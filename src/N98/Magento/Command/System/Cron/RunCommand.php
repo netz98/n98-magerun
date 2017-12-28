@@ -27,7 +27,7 @@ class RunCommand extends AbstractCronCommand
         $this
             ->setName('sys:cron:run')
             ->addArgument('job', InputArgument::OPTIONAL, 'Job code')
-            ->addOption('schedule', InputOption::VALUE_NONE, 'Schedule cron instead of run with current user')
+            ->addOption('schedule', 's', InputOption::VALUE_NONE, 'Schedule cron instead of run with current user')
             ->setDescription('Runs a cronjob by job code');
         $help = <<<HELP
 If no `job` argument is passed you can select a job from a list.
