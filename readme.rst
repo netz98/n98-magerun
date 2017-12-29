@@ -1319,8 +1319,9 @@ Development IDE Support
 
 .. code-block:: sh
 
-   $ n98-magerun.phar dev:ide:phpstorm:meta [--stdout]
+   $ n98-magerun.phar dev:ide:phpstorm:meta [--meta-version=(old|2016.2+)] [--stdout]
 
+Generates meta data file for PhpStorm auto completion (default version : 2016.2+)
 
 Reports
 """""""

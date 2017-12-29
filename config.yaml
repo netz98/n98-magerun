@@ -91,7 +91,6 @@ commands:
     - N98\Magento\Command\Developer\Code\Model\MethodCommand
     - N98\Magento\Command\Developer\EmailTemplate\UsageCommand
     - N98\Magento\Command\Developer\Ide\PhpStorm\MetaCommand
-    - N98\Magento\Command\Developer\Ide\PhpStorm2017\MetaCommand
     - N98\Magento\Command\Developer\Setup\Script\AttributeCommand
     - N98\Magento\Command\Developer\ConsoleCommand
     - N98\Magento\Command\Developer\Log\DbCommand
@@ -178,8 +177,7 @@ commands:
   disabled:
     - dummy
 
-  aliases:
-    - "dev:ide:phpstorm:meta": "dev:ide:phpstorm-2017:meta"
+  aliases: []
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
