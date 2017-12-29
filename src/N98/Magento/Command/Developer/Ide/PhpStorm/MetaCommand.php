@@ -138,7 +138,12 @@ class MetaCommand extends AbstractMagentoCommand
                 }
             }
 
-            $this->writeToOutput($input, $output, $classMaps);
+            $version = $input->getOption('meta-version');
+            if ($version == self::VERSION_OLD) {
+                $this->writeToOutputOld($input, $output, $classMaps);
+            } else if ($version == self::VERSION_2017) {
+                $this->writeToOutputV2017($input, $output, $classMaps);
+            }
         } else {
             $output->write('Magento 2 is currently not supported');
         }
