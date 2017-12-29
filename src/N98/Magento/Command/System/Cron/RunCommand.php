@@ -32,6 +32,7 @@ class RunCommand extends AbstractCronCommand
         $help = <<<HELP
 If no `job` argument is passed you can select a job from a list.
 See it in action: http://www.youtube.com/watch?v=QkzkLgrfNaM
+If option schedule is present, cron is not launched, but just scheduled immediately in magento crontab.
 HELP;
         $this->setHelp($help);
     }
