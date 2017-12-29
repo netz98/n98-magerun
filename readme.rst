@@ -1027,10 +1027,11 @@ Runs a cronjob by code.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar sys:cron:run [job]
+   $ n98-magerun.phar sys:cron:run [--schedule] [job]
 
 If no `job` argument is passed you can select a job from a list.
 See it in action: http://www.youtube.com/watch?v=QkzkLgrfNaM
+If option schedule is present, cron is not launched, but just scheduled immediately in magento crontab.
 
 Cronjob History
 """""""""""""""
