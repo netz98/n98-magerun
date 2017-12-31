@@ -104,11 +104,11 @@ class MetaCommand extends AbstractMagentoCommand
                 'meta-version',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'PhpStorm Meta version ('.self::VERSION_OLD.', '.self::VERSION_2017.')',
+                'PhpStorm Meta version (' . self::VERSION_OLD . ', ' . self::VERSION_2017 . ')',
                 self::VERSION_2017
             )
             ->addOption('stdout', null, InputOption::VALUE_NONE, 'Print to stdout instead of file .phpstorm.meta.php')
-            ->setDescription('Generates meta data file for PhpStorm auto completion (default version : '.self::VERSION_2017.')');
+            ->setDescription('Generates meta data file for PhpStorm auto completion (default version : ' . self::VERSION_2017 . ')');
     }
 
     /**
@@ -141,7 +141,7 @@ class MetaCommand extends AbstractMagentoCommand
             $version = $input->getOption('meta-version');
             if ($version == self::VERSION_OLD) {
                 $this->writeToOutputOld($input, $output, $classMaps);
-            } else if ($version == self::VERSION_2017) {
+            } elseif ($version == self::VERSION_2017) {
                 $this->writeToOutputV2017($input, $output, $classMaps);
             }
         } else {
@@ -366,7 +366,7 @@ PHP;
                     if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $class)) {
                         $map .= "            '$classPrefix' instanceof \\$class,\n";
                     } else {
-                        $output->writeln('<warning>Invalid class name <comment>'.$class.'</comment> ignored</warning>');
+                        $output->writeln('<warning>Invalid class name <comment>' . $class . '</comment> ignored</warning>');
                     }
                 }
                 $map .= "        ], \n";
@@ -409,7 +409,7 @@ PHP;
                     if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $class)) {
                         $map .= "            '$classPrefix' instanceof \\$class,\n";
                     } else {
-                        $output->writeln('<warning>Invalid class name <comment>'.$class.'</comment> ignored</warning>');
+                        $output->writeln('<warning>Invalid class name <comment>' . $class . '</comment> ignored</warning>');
                     }
                 }
                 $map .= "        ], \n";
@@ -433,8 +433,8 @@ PHP;
                     }
                 }
                 $group = str_replace(array(' ', '/'), '_', $group);
-                if (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php/magento_'.$group.'.meta.php', $map)) {
-                    $output->writeln('<info>File <comment>.phpstorm.meta.php/magento_'.$group.'.meta.php</comment> generated</info>');
+                if (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php/magento_' . $group . '.meta.php', $map)) {
+                    $output->writeln('<info>File <comment>.phpstorm.meta.php/magento_' . $group . '.meta.php</comment> generated</info>');
                 }
             }
         }
