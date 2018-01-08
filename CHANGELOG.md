@@ -1,6 +1,11 @@
 RECENT CHANGES
 ==============
 
+dev
+------
+
+* New: Add current Magento version 1.9.3.7 (by Brad Berger, #967)
+
 1.100.0
 -------
 

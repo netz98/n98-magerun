@@ -181,6 +181,15 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
+      - name: magento-mirror-1.9.3.7
+        version: 1.9.3.7
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.7.zip
+          type: zip
+          shasum: 018b9c8a21c05fcb67e78202cb2331ec2862b7a2
+        extra:
+          sample-data: sample-data-1.9.2.4
+
       - name: magento-mirror-1.9.3.6
         version: 1.9.3.6
         dist:

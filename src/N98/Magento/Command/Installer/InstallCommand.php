@@ -112,25 +112,25 @@ class InstallCommand extends AbstractMagentoCommand
             )->setDescription('Install magento');
 
         $help = <<<HELP
-* Download Magento by a list of git repos and zip files (mageplus, 
+* Download Magento by a list of git repos and zip files (mageplus,
   magelte, official community packages).
 * Try to create database if it does not exist.
 * Installs Magento sample data if available (since version 1.2.0).
 * Starts Magento installer
 * Sets rewrite base in .htaccess file
 
-Example of an unattended Magento CE/ Open Source 1.9.3.6 installation:
+Example of an unattended Magento CE/ Open Source 1.9.3.7 installation:
 
    $ n98-magerun.phar install --dbHost="localhost" --dbUser="mydbuser" \
      --dbPass="mysecret" --dbName="magentodb" --installSampleData=yes \
      --useDefaultConfigParams=yes \
-     --magentoVersionByName="magento-mirror-1.9.3.6" \
+     --magentoVersionByName="magento-mirror-1.9.3.7" \
      --installationFolder="magento" --baseUrl="http://magento.localdomain/"
 
 (Magento is only freely available via Github with Magerun, it uses the best
 community mirror)
 
-Additionally, with --noDownload option you can install Magento working 
+Additionally, with --noDownload option you can install Magento working
 copy already stored in --installationFolder on the given database.
 
 See it in action: http://youtu.be/WU-CbJ86eQc
