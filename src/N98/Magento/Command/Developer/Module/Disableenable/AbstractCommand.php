@@ -101,28 +101,69 @@ class AbstractCommand extends AbstractMagentoCommand
      */
     protected function enableModule($module, OutputInterface $output)
     {
-        $decFile = $this->modulesDir . $module . '.xml';
-        if (!is_file($decFile)) {
-            $output->writeln('<error><comment>' . $module . ': </comment>Couldn\'t find declaration file</error>');
-        } elseif (!is_writable($decFile)) {
-            $output->writeln('<error><comment>' . $module . ': </comment>Can\'t write to declaration file</error>');
-        } else {
+        $validDecFile = false;
+        foreach ($this->getDeclaredModuleFiles() as $decFile) {
             $xml = new \Varien_Simplexml_Element(file_get_contents($decFile));
+            if ($xml->modules->{$module}) {
+                $validDecFile = $decFile;
+                break;
+            }
+        }
+
+        if (!$validDecFile) {
+            $msg = sprintf('<error><comment>%s: </comment>Couldn\'t find declaration file</error>', $module);
+        } elseif (!is_writable($validDecFile)) {
+            $msg = sprintf('<error><comment>%s: </comment>Can\'t write to declaration file</error>', $module);
+        } else {
             $setTo = $this->commandName == 'enable' ? 'true' : 'false';
             if ((string) $xml->modules->{$module}->active != $setTo) {
                 $xml->modules->{$module}->active = $setTo;
-                if (file_put_contents($decFile, $xml->asXML()) !== false) {
-                    $output->writeln('<info><comment>' . $module . ': </comment>' . $this->commandName . 'd</info>');
+                if (file_put_contents($validDecFile, $xml->asXML()) !== false) {
+                    $msg = sprintf('<info><comment>%s: </comment>%sd</info>', $module, $this->commandName);
                 } else {
-                    $output->writeln(
-                        '<error><comment>' . $module . ': </comment>Failed to update declaration file</error>'
+                    $msg = sprintf(
+                        '<error><comment>%s: </comment>Failed to update declaration file [%s]</error>', $module, $validDecFile
                     );
                 }
             } else {
-                $output->writeln(
-                    '<info><comment>' . $module . ': already ' . $this->commandName . 'd</comment></info>'
-                );
+                $msg = sprintf('<info><comment>%s: already %sd</comment></info>', $module, $this->commandName);
             }
         }
+
+        $output->writeln($msg);
+    }
+
+    /**
+     * Load module files in the opposite order to core Magento, so that we find the last loaded declaration
+     * of a module first.
+     *
+     * @return array
+     */
+    protected function getDeclaredModuleFiles()
+    {
+        $collectModuleFiles = array(
+            'base'   => array(),
+            'mage'   => array(),
+            'custom' => array(),
+        );
+
+        foreach (glob($this->modulesDir . '*.xml')  as $v) {
+            $name = explode(DIRECTORY_SEPARATOR, $v);
+            $name = substr($name[count($name) - 1], 0, -4);
+
+            if ($name == 'Mage_All') {
+                $collectModuleFiles['base'][] = $v;
+            } elseif (substr($name, 0, 5) == 'Mage_') {
+                $collectModuleFiles['mage'][] = $v;
+            } else {
+                $collectModuleFiles['custom'][] = $v;
+            }
+        }
+
+        return array_reverse(array_merge(
+            $collectModuleFiles['base'],
+            $collectModuleFiles['mage'],
+            $collectModuleFiles['custom']
+        ));
     }
 }
