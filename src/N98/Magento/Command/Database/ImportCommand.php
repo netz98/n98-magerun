@@ -26,6 +26,7 @@ class ImportCommand extends AbstractDatabaseCommand
                 'Convert verbose INSERTs to short ones before import (not working with compression)'
             )
             ->addOption('drop', null, InputOption::VALUE_NONE, 'Drop and recreate database before import')
+            ->addOption('stdin', null, InputOption::VALUE_NONE, 'Import data from STDIN rather than file')
             ->addOption('drop-tables', null, InputOption::VALUE_NONE, 'Drop tables before import')
             ->setDescription('Imports database with mysql cli client according to database defined in local.xml');
 
@@ -124,6 +125,9 @@ HELP;
         $compressor = $this->getCompressor($input->getOption('compression'));
 
         if ($input->getOption('optimize')) {
+            if ($fileName === '-') {
+                throw new InvalidArgumentException('Option --optimize not compatible with STDIN import');
+            }
             if ($input->getOption('only-command')) {
                 throw new InvalidArgumentException('Options --only-command and --optimize are not compatible');
             }
@@ -135,10 +139,11 @@ HELP;
         }
 
         // create import command
-        $exec = $compressor->getDecompressingCommand(
-            'mysql ' . $dbHelper->getMysqlClientToolConnectionString(),
-            $fileName
-        );
+        $exec = 'mysql ' . $dbHelper->getMysqlClientToolConnectionString();
+        if ($fileName !== '-') {
+            $exec = $compressor->getDecompressingCommand($exec, $fileName);
+        }
+
         if ($input->getOption('only-command')) {
             $output->writeln($exec);
             return;
@@ -181,6 +186,9 @@ HELP;
      */
     protected function checkFilename(InputInterface $input)
     {
+        if ($input->getOption('stdin')) {
+            return '-';
+        }
         $fileName = $input->getArgument('filename');
         if (!file_exists($fileName)) {
             throw new InvalidArgumentException('File does not exist');
