@@ -1,10 +1,16 @@
 RECENT CHANGES
 ==============
 
-dev
-------
+1.101.0
+-------
 
+* Fix: Typo in config:get command (by Ari Molzer, #958)
+* New: Meta generator for phpstorm > 2016.1 (by Guillaume Gill, #965)
+* Imp: Option to schedule cron in magento crontab instead of running with current user (by Guillaume Gill, #966)
 * New: Add current Magento version 1.9.3.7 (by Brad Berger, #967)
+* Imp: Support for multi module decleration in module:enable command (by Peter O'Callaghan, #969)
+* Imp: Ability to import db from STDIN (by Peter O'Callaghan, #970)
+* Imp: Add Magento-Root to sys:info command (by Christian Münch)
 
 1.100.0
 -------
