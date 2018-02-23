@@ -62,10 +62,10 @@ HELP;
 
         $output->write('<info>Run </info><comment>' . $callableName . '</comment> ');
 
-        if (!$input->hasOption('schedule')) {
-            $this->executeConfigModel($callback, $jobCode);
-        } else {
+        if ($input->hasOption('schedule') && $input->getOption('schedule')) {
             $this->scheduleConfigModel($callback, $jobCode);
+        } else {
+            $this->executeConfigModel($callback, $jobCode);
         }
 
         $output->writeln('<info>done</info>');
