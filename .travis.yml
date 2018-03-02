@@ -40,6 +40,7 @@ env:
     - MAGENTO_VERSION="magento-mirror-1.9.3.4" INSTALL_SAMPLE_DATA=no
     - MAGENTO_VERSION="magento-mirror-1.9.3.6" INSTALL_SAMPLE_DATA=no
     - MAGENTO_VERSION="magento-mirror-1.9.3.7" INSTALL_SAMPLE_DATA=no
+    - MAGENTO_VERSION="magento-mirror-1.9.3.8" INSTALL_SAMPLE_DATA=no
 
 matrix:
   fast_finish: true
@@ -97,6 +98,8 @@ matrix:
       env: MAGENTO_VERSION="magento-mirror-1.9.3.6" DB=mysql INSTALL_SAMPLE_DATA=no
     - php: 5.6
       env: MAGENTO_VERSION="magento-mirror-1.9.3.7" DB=mysql INSTALL_SAMPLE_DATA=no
+    - php: 5.6
+      env: MAGENTO_VERSION="magento-mirror-1.9.3.8" DB=mysql INSTALL_SAMPLE_DATA=no
     - php: 7.0
       env: MAGENTO_VERSION="magento-mirror-1.9.2.4" DB=mysql INSTALL_SAMPLE_DATA=no
     - php: 7.0
@@ -111,6 +114,8 @@ matrix:
       env: MAGENTO_VERSION="magento-mirror-1.9.3.6" DB=mysql INSTALL_SAMPLE_DATA=no
     - php: 7.0
       env: MAGENTO_VERSION="magento-mirror-1.9.3.7" DB=mysql INSTALL_SAMPLE_DATA=no
+    - php: 7.0
+      env: MAGENTO_VERSION="magento-mirror-1.9.3.8" DB=mysql INSTALL_SAMPLE_DATA=no
     - php: 7.1
       env: MAGENTO_VERSION="magento-mirror-1.9.3.1" DB=mysql INSTALL_SAMPLE_DATA=no
     - php: 7.1
@@ -121,6 +126,8 @@ matrix:
       env: MAGENTO_VERSION="magento-mirror-1.9.3.6" DB=mysql INSTALL_SAMPLE_DATA=no
     - php: 7.1
       env: MAGENTO_VERSION="magento-mirror-1.9.3.7" DB=mysql INSTALL_SAMPLE_DATA=no
+    - php: 7.1
+      env: MAGENTO_VERSION="magento-mirror-1.9.3.8" DB=mysql INSTALL_SAMPLE_DATA=no
 
 before_install:
   - phpenv config-rm xdebug.ini
