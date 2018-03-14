@@ -1,6 +1,12 @@
 RECENT CHANGES
 ==============
 
+1.101.1
+-------
+
+* New: Magento 1.9.3.8 support for installer (by Brad Berger, #979)
+* Fix: Execution of sys:cron:run (by Ricardo Velhote, #977)
+
 1.101.0
 -------
 
