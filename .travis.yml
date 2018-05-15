@@ -16,8 +16,6 @@ php:
   - 5.5
 
 env:
-  global:
-    - DB=mysql
   matrix:
     - SCRIPT_JOB="PHP-CS-FIXER"
     - SCRIPT_JOB="BUILDSH"
