@@ -610,7 +610,7 @@ commands:
 
       - id: newsletter
         description: Newsletter subscriber data
-        tables: "newsletter_*"
+        tables: "newsletter_problem newsletter_queue* newsletter_subscriber"
 
       - id: trade
         description: Current trade data (customers and orders). You usally do not want those in developer systems.
