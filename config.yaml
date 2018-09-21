@@ -186,7 +186,7 @@ commands:
         dist:
           url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.10.zip
           type: zip
-          shasum:
+          shasum: c4eb4a0728154cfdae2781c15d9a1405136efa1e
         extra:
           sample-data: sample-data-1.9.2.4
 
