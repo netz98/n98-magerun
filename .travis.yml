@@ -64,6 +64,10 @@ matrix:
       env: SCRIPT_JOB=LINTSH
       script: find {src,tests} -name "*.php" ! -path '*/String.php' -print0 | xargs
         -0 -n1 -P8 php -l | grep -v '^No syntax errors detected'; test $? -eq 1
+    - php: 7.2
+      env: SCRIPT_JOB=LINTSH
+      script: find {src,tests} -name "*.php" ! -path '*/String.php' -print0 | xargs
+          -0 -n1 -P8 php -l | grep -v '^No syntax errors detected'; test $? -eq 1
     # Run the cs-fixer and build script with different PHP versions
     - php: 5.6
       env: SCRIPT_JOB="PHP-CS-FIXER"
@@ -82,6 +86,12 @@ matrix:
     - php: 7.1
       env: SCRIPT_JOB="BUILDSH"
     - php: 7.1
+      env: SCRIPT_JOB="BASH-AUTOCOMPLETION"
+    - php: 7.2
+      env: SCRIPT_JOB="PHP-CS-FIXER"
+    - php: 7.2
+      env: SCRIPT_JOB="BUILDSH"
+    - php: 7.2
       env: SCRIPT_JOB="BASH-AUTOCOMPLETION"
     # Run with current PHP 5.6 and PHP 7.0 version (as not set in matrix)
     - php: 5.6
@@ -139,6 +149,8 @@ matrix:
     - php: 7.1
       env: MAGENTO_VERSION="magento-mirror-1.9.3.9" DB=mysql INSTALL_SAMPLE_DATA=no
     - php: 7.1
+      env: MAGENTO_VERSION="magento-mirror-1.9.3.10" DB=mysql INSTALL_SAMPLE_DATA=no
+    - php: 7.2
       env: MAGENTO_VERSION="magento-mirror-1.9.3.10" DB=mysql INSTALL_SAMPLE_DATA=no
 
 before_install:
