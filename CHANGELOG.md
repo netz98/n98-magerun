@@ -1,6 +1,16 @@
 RECENT CHANGES
 ==============
 
+1.102.0
+-------
+
+* New: Magento 1.9.3.10 (by Bono de Visser, #997)
+* New: Magento 1.9.3.9 (by Joel Lupfer, #999)
+* New: dry-run flag for self-update command (port of M2 project)
+* Fix: Avoid stripping newsletter templates when stripping subscribers (by Scott Buchanan, #993)
+* Fix: Remove obsolete global DB env variabe (by Daniel Ruf, #988)
+* Imp: Add database setting to travis test matrix (by Daniel Ruf, #986)
+
 1.101.1
 -------
 
