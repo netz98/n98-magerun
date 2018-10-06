@@ -576,7 +576,6 @@ commands:
             - spl
             - dom
             - simplexml
-            - mcrypt
             - hash
             - curl
             - iconv
