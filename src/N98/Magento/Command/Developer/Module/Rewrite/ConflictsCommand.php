@@ -63,6 +63,10 @@ HELP;
                     continue;
                 }
 
+                if ($this->_isARewriteFixingTheConflict($rewriteClasses, $class)) {
+                    continue;
+                }
+
                 $conflicts[] = array(
                     'Type'         => $type,
                     'Class'        => $class,
@@ -161,6 +165,45 @@ HELP;
                 return true;
             }
             $later = $earlier;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if one of the rewritten classes actually is written to fix the conflict.
+     * We can check by checking for an annotation in the PHPDOC block (@SolvesRewriteConflict)
+     *
+     * @var array $rewriteClasses
+     * @var string $rewrittenClass
+     * @return bool
+     */
+    protected function _isARewriteFixingTheConflict($rewriteClasses, $rewrittenClass)
+    {
+        foreach ($rewriteClasses as $rewriteClass) {
+            $r = new \ReflectionClass($rewriteClass);
+            $doc = $r->getDocComment();
+            preg_match_all('#@(.*?)\n#s', $doc, $annotations);
+
+            foreach ($annotations as $annotation) {
+                if (stripos($annotation[0], 'SolvesRewriteConflict') === 0) {
+                    preg_match('/SolvesRewriteConflict\((.*)\)/', $annotation[0], $matches);
+
+                    $classesInAnnotation = array_map('trim', explode(',', $matches[1]));
+                    $firstClassInAnnotation = array_shift($classesInAnnotation);
+                    $rewriteClassesWithoutCurrentClass = array_diff($rewriteClasses, array($rewriteClass));
+
+                    /* Check if all the conflicted classes are actually mentioned in the annotation,
+                     * another conflict could later have been introduced.
+                     */
+                    if (count($classesInAnnotation) > 1
+                        && $firstClassInAnnotation == $rewrittenClass
+                        && count(array_diff($rewriteClassesWithoutCurrentClass, $classesInAnnotation)) === 0
+                    ) {
+                        return true;
+                    }
+                }
+            }
         }
 
         return false;
