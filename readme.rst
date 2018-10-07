@@ -418,6 +418,7 @@ Example: "dataflow_batch_export unimportant_module_* @log
 
 Available Table Groups:
 
+* @admin Admin tables
 * @log Log tables
 * @dataflowtemp Temporary tables of the dataflow import/export tool
 * @importexporttemp Temporary tables of the Import/Export module
