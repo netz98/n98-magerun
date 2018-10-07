@@ -11,8 +11,6 @@ Build Status
 +------------------------+-----------------------------------------------------------------------------------------------+
 | **Latest Release**     | .. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=master                         |
 |                        |    :target: https://travis-ci.org/netz98/n98-magerun                                          |
-|                        | .. image:: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5/badge.png        |
-|                        |    :target: https://www.versioneye.com/user/projects/51236c8b294edc00020064c5                 |
 |                        | .. image:: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=master  |
 |                        |    :target: https://scrutinizer-ci.com/g/netz98/n98-magerun/                                  |
 |                        | .. image:: https://poser.pugx.org/n98/magerun/v/stable.png                                    |
