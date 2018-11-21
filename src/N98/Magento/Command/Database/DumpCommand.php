@@ -36,7 +36,8 @@ class DumpCommand extends AbstractDatabaseCommand
                 't',
                 InputOption::VALUE_OPTIONAL,
                 'Append or prepend a timestamp to filename if a filename is provided. ' .
-                'Possible values are "suffix", "prefix" or "no".'
+                'Possible values are "suffix", "prefix" or "no".',
+                true
             )
             ->addOption(
                 'compression',
