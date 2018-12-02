@@ -1,6 +1,6 @@
-Copyright (c) 2012 netz98 new media GmbH
+Copyright (c) netz98 GmbH
 
-http://www.netz98.de
+https://www.netz98.de
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
