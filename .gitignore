@@ -3,6 +3,7 @@
 
 # Build
 /n98-magerun.phar
+/n98-magerun.phar.asc
 /build/output/
 
 # Magerun stopfile
