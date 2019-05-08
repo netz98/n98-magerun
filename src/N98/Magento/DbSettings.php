@@ -38,12 +38,19 @@ class DbSettings implements ArrayAccess, IteratorAggregate
      */
     private $config;
 
+    /** @var string Connection Node from Local Xml */
+    private $connectionNode = 'default_setup';
+
     /**
      * @param string $file path to app/etc/local.xml
+     * @param null $connectionNode
      */
-    public function __construct($file)
+    public function __construct($file, $connectionNode = null)
     {
         $this->setFile($file);
+        if (!is_null($connectionNode)) {
+            $this->connectionNode = $connectionNode;
+        }
     }
 
     /**
@@ -74,8 +81,14 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             throw new InvalidArgumentException('DB global resources was not found in "app/etc/local.xml"-file');
         }
 
-        if (!$resources->default_setup->connection) {
-            throw new InvalidArgumentException('DB settings (default_setup) was not found in "app/etc/local.xml"-file');
+        $connectionNode = $this->connectionNode;
+        if (!$resources->$connectionNode->connection) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'DB settings (%s) was not found in "app/etc/local.xml"-file',
+                    $connectionNode
+                )
+            );
         }
 
         $this->parseResources($resources);
@@ -98,7 +111,8 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             'password'    => null,
         );
 
-        $config = array_merge($config, (array) $resources->default_setup->connection);
+        $connectionNode = $this->connectionNode;
+        $config = array_merge($config, (array) $resources->$connectionNode->connection);
         $config['prefix'] = (string) $resources->db->table_prefix;
 
         // known parameters: host, port, unix_socket, dbname, username, password, options, charset, persistent,

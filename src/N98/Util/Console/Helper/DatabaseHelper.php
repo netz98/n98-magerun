@@ -44,10 +44,10 @@ class DatabaseHelper extends AbstractHelper
     /**
      * @param OutputInterface $output
      *
-     * @throws RuntimeException
+     * @param null $connectionNode
      * @return void
      */
-    public function detectDbSettings(OutputInterface $output)
+    public function detectDbSettings(OutputInterface $output, $connectionNode = null)
     {
         if (null !== $this->dbSettings) {
             return;
@@ -65,7 +65,7 @@ class DatabaseHelper extends AbstractHelper
         }
 
         try {
-            $this->dbSettings = new DbSettings($configFile);
+            $this->dbSettings = new DbSettings($configFile, $connectionNode);
         } catch (InvalidArgumentException $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
             throw new RuntimeException('Failed to load database settings from config file', 0, $e);

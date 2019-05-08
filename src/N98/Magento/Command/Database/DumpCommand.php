@@ -124,6 +124,12 @@ class DumpCommand extends AbstractDatabaseCommand
                 InputOption::VALUE_NONE,
                 'Do not prompt if all options are defined'
             )
+            ->addOption(
+                'connection',
+                'con',
+                InputOption::VALUE_OPTIONAL,
+                'Specify local.xml connection node, default to default_setup'
+            )
             ->setDescription('Dumps database with mysqldump cli client');
 
         $help = <<<HELP
@@ -248,7 +254,7 @@ HELP;
         $enabler->operatingSystemIsNotWindows();
 
         // TODO(tk): Merge the DatabaseHelper, detectDbSettings is within abstract database command base class
-        $this->detectDbSettings($output);
+        $this->detectDbSettings($output, $input->getOption('connection'));
 
         if ($this->nonCommandOutput($input)) {
             $this->writeSection($output, 'Dump MySQL Database');
