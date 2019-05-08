@@ -23,11 +23,12 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
 
     /**
      * @param OutputInterface $output
+     * @param null $connectionNode
      */
-    protected function detectDbSettings(OutputInterface $output)
+    protected function detectDbSettings(OutputInterface $output, $connectionNode = null)
     {
         $database = $database = $this->getDatabaseHelper();
-        $this->dbSettings = $database->getDbSettings($output);
+        $this->dbSettings = $database->getDbSettings($output, $connectionNode);
     }
 
     /**
