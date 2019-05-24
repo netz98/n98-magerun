@@ -1679,7 +1679,7 @@ Run multiple commands from a script file.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar [-d|--define[="..."]] [--stop-on-error] [filename]
+   $ n98-magerun.phar script [-d|--define[="..."]] [--stop-on-error] [filename]
 
 Example:
 
