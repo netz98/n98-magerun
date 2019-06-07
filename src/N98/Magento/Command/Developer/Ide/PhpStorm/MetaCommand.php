@@ -491,17 +491,6 @@ PHP;
             if ($input->getOption('stdout')) {
                 $output->writeln($map);
             } else {
-                $metaPath = $this->_magentoRootFolder . '/.phpstorm.meta.php';
-                if (is_file($metaPath)) {
-                    if (\unlink($metaPath)) {
-                        $output->writeln('<info>Deprecated file <comment>.phpstorm.meta.php</comment> removed</info>');
-                    }
-                }
-                if (!is_dir($metaPath)) {
-                    if (\mkdir($metaPath)) {
-                        $output->writeln('<info>Directory <comment>.phpstorm.meta.php</comment> created</info>');
-                    }
-                }
                 $group = str_replace(array(' ', '/'), '_', $group);
                 if (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php/magento_' . $group . '_methods.meta.php', $map)) {
                     $output->writeln('<info>File <comment>.phpstorm.meta.php/magento_' . $group . '_methods.meta.php</comment> generated</info>');
