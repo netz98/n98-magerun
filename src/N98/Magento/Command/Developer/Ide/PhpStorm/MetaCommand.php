@@ -56,6 +56,9 @@ class MetaCommand extends AbstractMagentoCommand
      * @var array
      */
     protected $methodFactories = array(
+        'blocks' => array(
+            '\Mage_Core_Model_Layout::createBlock',
+        ),
         'helpers' => array(
             '\Mage_Admin_Model_User::_getHelper',
             '\Mage_Adminhtml_Controller_Rss_Abstract::_getHelper',
