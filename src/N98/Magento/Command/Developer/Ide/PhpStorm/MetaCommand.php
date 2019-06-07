@@ -51,6 +51,30 @@ class MetaCommand extends AbstractMagentoCommand
     );
 
     /**
+     * List of supported helper methods
+     *
+     * @var array
+     */
+    protected $methodFactories = array(
+        'helpers' => array(
+            '\Mage_Admin_Model_User::_getHelper',
+            '\Mage_Adminhtml_Controller_Rss_Abstract::_getHelper',
+            '\Mage_Api_Model_User::_getHelper',
+            '\Mage_Core_Block_Abstract::helper',
+            '\Mage_Core_Model_App::getHelper',
+            '\Mage_Core_Model_Factory::getHelper',
+            '\Mage_Core_Model_Layout::helper',
+            '\Mage_Customer_AccountController::_getHelper',
+            '\Mage_Customer_Model_Customer::_getHelper',
+            '\Mage_ImportExport_Model_Import_Entity_Product::getHelper',
+            '\Mage_Rss_Controller_Abstract::_getHelper',
+            '\Mage_SalesRule_Model_Validator::_getHelper',
+            '\Mage_Weee_Helper_Data::_getHelper',
+            '\Mage_Weee_Model_Config_Source_Fpt_Tax::_getHelper',
+        ),
+    );
+
+    /**
      * @var array
      */
     protected $missingHelperDefinitionModules = array(
@@ -239,7 +263,7 @@ class MetaCommand extends AbstractMagentoCommand
      * @param string $group
      * @param OutputInterface $output
      *
-*@return array
+     *@return array
      */
     protected function getClassMapForGroup($group, OutputInterface $output)
     {
@@ -405,6 +429,7 @@ PHP;
             $map = $baseMap;
             foreach ($methods as $method) {
                 $map .= "        " . $method . "('') => [\n";
+                asort($classMaps[$group]);
                 foreach ($classMaps[$group] as $classPrefix => $class) {
                     if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $class)) {
                         $map .= "            '$classPrefix' instanceof \\$class,\n";
@@ -435,6 +460,51 @@ PHP;
                 $group = str_replace(array(' ', '/'), '_', $group);
                 if (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php/magento_' . $group . '.meta.php', $map)) {
                     $output->writeln('<info>File <comment>.phpstorm.meta.php/magento_' . $group . '.meta.php</comment> generated</info>');
+                }
+            }
+        }
+
+        $baseMap = <<<PHP
+<?php
+namespace PHPSTORM_META {
+PHP;
+        $baseMap .= "\n";
+        foreach ($this->methodFactories as $group => $methods) {
+            $map = $baseMap;
+            foreach ($methods as $method) {
+                $map .= "    override( " . $method . "(0),\n";
+                $map .= "        map( [\n";
+                asort($classMaps[$group]);
+                foreach ($classMaps[$group] as $classPrefix => $class) {
+                    if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $class)) {
+                        $map .= "            '$classPrefix' => \\$class::class,\n";
+                    } else {
+                        $output->writeln('<warning>Invalid class name <comment>' . $class . '</comment> ignored</warning>');
+                    }
+                }
+                $map .= "        ])\n";
+                $map .= "    );\n";
+            }
+            $map .= <<<PHP
+}
+PHP;
+            if ($input->getOption('stdout')) {
+                $output->writeln($map);
+            } else {
+                $metaPath = $this->_magentoRootFolder . '/.phpstorm.meta.php';
+                if (is_file($metaPath)) {
+                    if (\unlink($metaPath)) {
+                        $output->writeln('<info>Deprecated file <comment>.phpstorm.meta.php</comment> removed</info>');
+                    }
+                }
+                if (!is_dir($metaPath)) {
+                    if (\mkdir($metaPath)) {
+                        $output->writeln('<info>Directory <comment>.phpstorm.meta.php</comment> created</info>');
+                    }
+                }
+                $group = str_replace(array(' ', '/'), '_', $group);
+                if (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php/magento_' . $group . '_methods.meta.php', $map)) {
+                    $output->writeln('<info>File <comment>.phpstorm.meta.php/magento_' . $group . '_methods.meta.php</comment> generated</info>');
                 }
             }
         }
