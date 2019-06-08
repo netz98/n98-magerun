@@ -22,6 +22,11 @@ class Exec
     const CODE_CLEAN_EXIT = 0;
 
     /**
+     * Every error in a pipe will be exited with an error code
+     */
+    const SET_O_PIPEFAIL = 'set -o pipefail; ';
+
+    /**
      * @param string $command
      * @param string|null $output
      * @param int $returnCode
@@ -33,7 +38,7 @@ class Exec
             throw new RuntimeException($message);
         }
 
-        $command = $command . self::REDIRECT_STDERR_TO_STDOUT;
+        $command = self::SET_O_PIPEFAIL . $command . self::REDIRECT_STDERR_TO_STDOUT;
 
         exec($command, $outputArray, $returnCode);
         $output = self::parseCommandOutput((array) $outputArray);
