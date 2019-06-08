@@ -134,4 +134,15 @@ class OperatingSystem
 
         return '/usr/bin/env php';
     }
+
+    /**
+     * @return bool
+     */
+    public static function isBashCompatibleShell()
+    {
+        return in_array(
+            basename(getenv('SHELL')),
+            ['bash', 'zsh']
+        );
+    }
 }
