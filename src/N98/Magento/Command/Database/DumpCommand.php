@@ -262,7 +262,9 @@ HELP;
 
         list($fileName, $execs) = $this->createExecsArray($input, $output);
 
-        $this->runExecs($execs, $fileName, $input, $output);
+        $success = $this->runExecs($execs, $fileName, $input, $output);
+
+        return $success ? 0 : 1; // return with correct exec code
     }
 
     /**
@@ -343,6 +345,7 @@ HELP;
      * @param string $fileName
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return bool
      */
     private function runExecs(array $execs, $fileName, InputInterface $input, OutputInterface $output)
     {
@@ -362,7 +365,7 @@ HELP;
 
             foreach ($commands as $command) {
                 if (!$this->runExec($command, $input, $output)) {
-                    return;
+                    return false;
                 }
             }
 
@@ -374,6 +377,8 @@ HELP;
         if ($input->getOption('print-only-filename')) {
             $output->writeln($fileName);
         }
+
+        return true;
     }
 
     /**
@@ -387,14 +392,14 @@ HELP;
         $commandOutput = '';
 
         if ($input->getOption('stdout')) {
-            passthru($command, $returnValue);
+            passthru($command, $returnCode);
         } else {
-            Exec::run($command, $commandOutput, $returnValue);
+            Exec::run($command, $commandOutput, $returnCode);
         }
 
-        if ($returnValue > 0) {
+        if ($returnCode > 0) {
             $output->writeln('<error>' . $commandOutput . '</error>');
-            $output->writeln('<error>Return Code: ' . $returnValue . '. ABORTED.</error>');
+            $output->writeln('<error>Return Code: ' . $returnCode . '. ABORTED.</error>');
 
             return false;
         }
