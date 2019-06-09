@@ -4,8 +4,10 @@ namespace N98\Util\Console\Helper;
 
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\Table\Renderer\RendererInterface;
-use Symfony\Component\Console\Helper\TableHelper as BaseTableHelper;
+use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Helper\HelperInterface;
 
 /**
  * Text Table Helper
@@ -14,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Based on draw_text_table by Paul Maunders
  * Available at http://www.pyrosoft.co.uk/blog/2007/07/01/php-array-to-text-table-function/
  */
-class TableHelper extends BaseTableHelper
+class TableHelper extends Table implements HelperInterface
 {
     /**
      * @var string
@@ -45,15 +47,12 @@ class TableHelper extends BaseTableHelper
         return $this->format;
     }
 
-    /**
-     * @param OutputInterface $output
-     */
-    public function render(OutputInterface $output)
+    public function render()
     {
         if ($this->format == 'csv') {
             $this->renderCsv();
         } else {
-            parent::render($output);
+            parent::render();
         }
     }
 
@@ -102,5 +101,20 @@ class TableHelper extends BaseTableHelper
         $this->setHeaders(array_keys($rows[0]));
         $this->setRows($rows);
         $this->render($output);
+    }
+
+    public function setHelperSet(HelperSet $helperSet = null)
+    {
+
+    }
+
+    public function getHelperSet()
+    {
+
+    }
+
+    public function getName()
+    {
+
     }
 }

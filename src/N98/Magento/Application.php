@@ -288,7 +288,7 @@ class Application extends BaseApplication
             // Twig helper needs the config-file
             $helper = 'N98\Util\Console\Helper\TwigHelper' === $helperClass
                 ? new $helperClass($this->config)
-                : new $helperClass()
+                : new $helperClass(new ConsoleOutput)
             ;
             $helperSet->set($helper, $helperName);
         }
