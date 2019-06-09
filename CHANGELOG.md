@@ -1,6 +1,18 @@
 RECENT CHANGES
 ==============
 
+1.103.0
+-------
+
+* New: Add connection option for db:dump command (by Igor Mursa)
+* New: Removed support for PHP < 5.4
+* Imp: Hide password in interactive mode (reported by Simon Sprankel)
+* Imp: Phpstorm meta files compatibility for latest PhpStorm (by Sven Reichel)
+* Fix: Updated twig (security)
+* Fix: db:dump returns exit code 0 on fail (by Christian Münch)
+* Fix: Documentation about script command (by Hardy Johnson)
+* Fix: Readme formatting (by Danila Vershini)
+
 1.102.0
 -------
 
