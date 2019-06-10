@@ -4,10 +4,10 @@ namespace N98\Util\Console\Helper;
 
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\Table\Renderer\RendererInterface;
+use Symfony\Component\Console\Helper\HelperInterface;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\HelperInterface;
 
 /**
  * Text Table Helper
