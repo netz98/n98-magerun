@@ -18,6 +18,13 @@ use Symfony\Component\Console\Helper\HelperInterface;
  */
 class TableHelper extends Table implements HelperInterface
 {
+    const HELPER_NAME = 'table';
+
+    /**
+     * @var HelperSet
+     */
+    private $helperSet;
+
     /**
      * @var string
      */
@@ -103,18 +110,39 @@ class TableHelper extends Table implements HelperInterface
         $this->render($output);
     }
 
+    /**
+     * Sets the helper set associated with this helper.
+     *
+     * @param HelperSet $helperSet A HelperSet instance
+     *
+     * @api
+     */
     public function setHelperSet(HelperSet $helperSet = null)
     {
-
+        $this->helperSet = $helperSet;
     }
 
+    /**
+     * Gets the helper set associated with this helper.
+     *
+     * @return HelperSet A HelperSet instance
+     *
+     * @api
+     */
     public function getHelperSet()
     {
-
+        return $this->helperSet;
     }
 
+    /**
+     * Returns the canonical name of this helper.
+     *
+     * @return string The canonical name
+     *
+     * @api
+     */
     public function getName()
     {
-
+        return self::HELPER_NAME;
     }
 }

@@ -74,7 +74,6 @@ abstract class AbstractCommand extends AbstractMagentoCommand
                 $tableHelper = $this->getHelper('table');
                 $tableHelper
                     ->setHeaders(array('Name', 'Status', 'Current installed version', 'Code pool'))
-                    ->setPadType(STR_PAD_LEFT)
                     ->renderByFormat($output, $dependencies, $input->getOption('format'));
             } else {
                 $output->writeln(sprintf(static::COMMAND_NO_RESULTS_TEXT, $moduleName));
