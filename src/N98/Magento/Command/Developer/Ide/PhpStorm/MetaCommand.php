@@ -75,6 +75,18 @@ class MetaCommand extends AbstractMagentoCommand
             '\Mage_Weee_Helper_Data::_getHelper',
             '\Mage_Weee_Model_Config_Source_Fpt_Tax::_getHelper',
         ),
+        'models' => array(
+            '\Mage_Catalog_Block_Product_Abstract::_getSingletonModel',
+            '\Mage_Checkout_Helper_Cart::_getSingletonModel',
+            '\Mage_Core_Model_Factory::getModel',
+            '\Mage_Core_Model_Factory::getSingleton',
+            '\Mage_Customer_AccountController::_getModel',
+            '\Mage_SalesRule_Model_Validator::_getSingleton',
+            '\Mage_Wishlist_Helper_Data::_getSingletonModel',
+        ),
+        'resource models' => array(
+            '\Mage_Core_Model_Factory::getResourceModel',
+        ),
     );
 
     /**
