@@ -424,6 +424,15 @@ commands:
         extra:
           sample-data: sample-data-1.1.2
 
+      - name: openmage-lts-1.9.4.x
+        version: dev-1.9.4.x
+        source:
+          url: https://github.com/OpenMage/magento-lts.git
+          type: git
+          reference: 1.9.4.x
+        extra:
+          sample-data: sample-data-1.9.2.4
+
       - name: openmage-lts-1.9.3.x
         version: dev-1.9.3.x
         source:
