@@ -433,24 +433,6 @@ commands:
         extra:
           sample-data: sample-data-1.9.2.4
 
-      - name: openmage-lts-1.9.3.x
-        version: dev-1.9.3.x
-        source:
-          url: https://github.com/OpenMage/magento-lts.git
-          type: git
-          reference: 1.9.3.x
-        extra:
-          sample-data: sample-data-1.9.2.4
-
-      - name: mageplus-master
-        version: dev-master
-        source:
-          url: https://github.com/mageplus/mageplus.git
-          type: git
-          reference: master
-        extra:
-          sample-data: sample-data-1.6.1.0
-
       - name: magento-ce-1.9.2.4
         version: 1.9.2.4
         dist:
