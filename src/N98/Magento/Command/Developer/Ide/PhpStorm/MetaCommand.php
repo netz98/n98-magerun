@@ -62,7 +62,9 @@ class MetaCommand extends AbstractMagentoCommand
         'helpers' => array(
             '\Mage_Admin_Model_User::_getHelper',
             '\Mage_Adminhtml_Controller_Rss_Abstract::_getHelper',
+            '\Mage_Adminhtml_Tax_RuleController::_getHelperModel',
             '\Mage_Api_Model_User::_getHelper',
+            '\Mage_Bundle_Model_Product_Price::_getHelperData',
             '\Mage_Core_Block_Abstract::helper',
             '\Mage_Core_Model_App::getHelper',
             '\Mage_Core_Model_Factory::getHelper',
@@ -76,12 +78,14 @@ class MetaCommand extends AbstractMagentoCommand
             '\Mage_Weee_Model_Config_Source_Fpt_Tax::_getHelper',
         ),
         'models' => array(
+            '\Mage_Adminhtml_Tax_RuleController::_getSingletonModel',
             '\Mage_Catalog_Block_Product_Abstract::_getSingletonModel',
             '\Mage_Checkout_Helper_Cart::_getSingletonModel',
             '\Mage_Core_Model_Factory::getModel',
             '\Mage_Core_Model_Factory::getSingleton',
             '\Mage_Customer_AccountController::_getModel',
             '\Mage_SalesRule_Model_Validator::_getSingleton',
+            '\Mage_Shipping_Model_Carrier_Tablerate::_getModel',
             '\Mage_Wishlist_Helper_Data::_getSingletonModel',
         ),
         'resource models' => array(
