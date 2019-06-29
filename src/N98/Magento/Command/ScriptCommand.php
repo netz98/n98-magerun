@@ -127,13 +127,13 @@ HELP;
             if (empty($commandString)) {
                 continue;
             }
+
             $firstChar = substr($commandString, 0, 1);
 
             switch ($firstChar) {
 
                 // comment
                 case '#':
-                    continue;
                     break;
 
                 // set var
