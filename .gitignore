@@ -12,3 +12,5 @@
 # IDEs
 /.idea/
 /nbproject/
+
+/phpunit.xml

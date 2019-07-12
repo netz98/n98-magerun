@@ -1,6 +1,13 @@
 RECENT CHANGES
 ==============
 
+1.103.1
+-------
+
+* Compatibility for PHP 7.3 (by Achim Rosenhagen)
+* Adding OpenMage Magento LTS 1.9.4.x (by Sven Reichel)
+
+
 1.103.0
 -------
 
