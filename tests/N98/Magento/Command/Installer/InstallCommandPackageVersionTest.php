@@ -29,7 +29,7 @@ class InstallCommandPackageVersionTest extends TestCase
         $tester = new InstallCommandTester();
         $packages = $tester->getMagentoPackages($command);
 
-        $this->assertOngoingPackageVersions($packages, 2, 3);
+        $this->assertOngoingPackageVersions($packages, 2, 5);
     }
 
     /**
