@@ -83,8 +83,7 @@ class AbstractCacheCommand extends AbstractMagentoCommand
         }
 
         \Mage::getConfig()->getOptions()->setData('global_ban_use_cache', false);
-        \Mage::app()->baseInit(array()); // Re-init cache
-        \Mage::getConfig()->loadModules()->loadDb()->saveCache();
+        \Mage::getConfig()->reinit();
     }
 
     /**
