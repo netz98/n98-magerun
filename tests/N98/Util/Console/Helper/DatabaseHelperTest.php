@@ -186,8 +186,8 @@ class DatabaseHelperTest extends TestCase
         $this->assertNotContains('catalogrule', $tables);
 
         $definitions = array(
-            'wild_1'  => array('tables' => array('catalog_*')),
-            'wild_2'  => array('tables' => array('core_config_dat?')),
+            'wild_1'   => array('tables' => array('catalog_*')),
+            'wild_2'   => array('tables' => array('core_config_dat?')),
             'dataflow' => array('tables' => array('dataflow_batch_import', 'dataflow_batch_export')),
         );
 
