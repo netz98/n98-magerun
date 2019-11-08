@@ -281,7 +281,7 @@ class DatabaseHelper extends AbstractHelper
             }
 
             // resolve wildcards
-            if (strpos($entry, '*') !== false) {
+            if (strpos($entry, '*') !== false || strpos($entry, '?') !== false) {
                 $connection = $this->getConnection();
                 $sth = $connection->prepare(
                     'SHOW TABLES LIKE :like',
@@ -289,6 +289,7 @@ class DatabaseHelper extends AbstractHelper
                 );
                 $entry = str_replace('_', '\\_', $entry);
                 $entry = str_replace('*', '%', $entry);
+                $entry = str_replace('?', '_', $entry);
                 $sth->execute(
                     array(':like' => $this->dbSettings['prefix'] . $entry)
                 );
