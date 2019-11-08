@@ -410,7 +410,7 @@ Dumps your database and excludes some tables. This is useful i.e. for developmen
 Separate each table to strip by a space.
 You can use wildcards like * and ? in the table names to strip multiple tables.
 In addition you can specify pre-defined table groups, that start with an @
-Example: "dataflow_batch_export unimportant_module_* @log
+Example: "dataflow_batch_export unimportant_module_* @log"
 
 .. code-block:: sh
 
