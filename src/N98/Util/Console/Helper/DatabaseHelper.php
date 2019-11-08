@@ -287,8 +287,10 @@ class DatabaseHelper extends AbstractHelper
                     'SHOW TABLES LIKE :like',
                     array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY)
                 );
+                $entry = str_replace('_', '\\_', $entry);
+                $entry = str_replace('*', '%', $entry);
                 $sth->execute(
-                    array(':like' => str_replace('*', '%', $this->dbSettings['prefix'] . $entry))
+                    array(':like' => $this->dbSettings['prefix'] . $entry)
                 );
                 $rows = $sth->fetchAll();
                 foreach ($rows as $row) {

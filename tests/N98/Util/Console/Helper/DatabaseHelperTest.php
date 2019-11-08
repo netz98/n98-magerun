@@ -181,12 +181,12 @@ class DatabaseHelperTest extends TestCase
      */
     public function resolveTables()
     {
-        $tables = $this->getHelper()->resolveTables(array('catalog\_*'));
+        $tables = $this->getHelper()->resolveTables(array('catalog_*'));
         $this->assertContains('catalog_product_entity', $tables);
         $this->assertNotContains('catalogrule', $tables);
 
         $definitions = array(
-            'test123'  => array('tables' => array('catalog\_*')),
+            'test123'  => array('tables' => array('catalog_*')),
             'dataflow' => array('tables' => array('dataflow_batch_import', 'dataflow_batch_export')),
         );
 
