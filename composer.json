@@ -29,10 +29,10 @@
     "require-dev": {
         "bamarni/symfony-console-autocomplete": "^1.2.0",
         "friendsofphp/php-cs-fixer": "~1.12.0",
-        "mikey179/vfsStream": "~1.4",
         "phing/phing": "~2.10.0",
         "phpunit/phpunit": "~4.1",
-        "seld/phar-utils": "1.0.1"
+        "seld/phar-utils": "1.0.1",
+        "mikey179/vfsstream": "^1.6"
     },
     "autoload": {
         "psr-0": {
