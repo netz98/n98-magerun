@@ -87,7 +87,7 @@ HELP;
     protected function getPendingChangelogsCount($tableName, $currentVersionId)
     {
         /** @var \Mage_Core_Model_Resource $resource */
-        $resource = $this->_getSingleton('core/resource');
+        $resource = $this->_getSingleton('core/resource', '\Mage_Core_Model_Resource');
         $readConnection = $resource->getConnection('core_read');
 
         $select = $readConnection->select()
