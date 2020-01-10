@@ -63,11 +63,16 @@ HELP;
         }
 
         $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
+        if (!$this->initMagento(true)) {
             return;
         }
 
-        \Mage::app()->loadAreaPart('adminhtml', 'events');
+        try {
+            \Mage::app()->loadAreaPart('adminhtml', 'events');
+        } catch (\Exception $e) {
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
+        }
+
         $allTypes = \Mage::app()->getCacheInstance()->getTypes();
         $typesToClean = $input->getArgument('type');
         $this->validateCacheCodes($typesToClean);
