@@ -58,7 +58,12 @@ HELP;
             return;
         }
 
-        \Mage::app()->loadAreaPart('adminhtml', 'events');
+        try {
+            \Mage::app()->loadAreaPart('adminhtml', 'events');
+        } catch (\Exception $e) {
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
+        }
+
         \Mage::dispatchEvent('adminhtml_cache_flush_all', array('output' => $output));
         $result = \Mage::app()->getCacheInstance()->flush();
         if ($result) {
