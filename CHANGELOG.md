@@ -1,6 +1,15 @@
 RECENT CHANGES
 ==============
 
+1.103.2
+-------
+
+* Imp: Change config init to Magento's reinit function (by Thomas Wiringa)
+* Fix: Cache clean won't work if database user is wrong (reprted by Izzulmakin, #1046)
+* Fix: Wildcards in db:dump strip option (by Dan Wallis,#1042)
+* Fix: invalid composer package name (by Christian Münch, #1043)
+* Fix: Instances of PHP Fatal error: Uncaught ArgumentCountError (by Luke Rodgers, #1044)
+
 1.103.1
 -------
 
