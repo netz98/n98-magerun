@@ -36,7 +36,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_VERSION = '1.103.2';
+    const APP_VERSION = '1.103.3';
 
     /**
      * @var int
