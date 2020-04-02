@@ -7,6 +7,14 @@ use N98\Magento\Command\AbstractMagentoCommand;
 class AbstractMviewIndexerCommand extends AbstractMagentoCommand
 {
     /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->getApplication()->isMagentoEnterprise();
+    }
+
+    /**
      * @return \Enterprise_Mview_Model_Resource_Metadata_Collection
      */
     public function getMetaDataCollection()
