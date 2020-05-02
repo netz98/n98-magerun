@@ -157,21 +157,22 @@ class ParameterHelper extends AbstractHelper
 
     /**
      * @see askWebsite
-     * @return array websites (integers if website IDs, 0-indexed) and question array (strings)
+     * @return array websites (integers with website IDs, 0-indexed) and question array (strings)
      */
     private function websitesQuestion($storeManager)
     {
         $i = 0;
         $websites = array();
         $question = array();
+        /* @var $website Mage_Core_Model_Website */
         foreach ($storeManager->getWebsites() as $website) {
-            /* @var $website Mage_Core_Model_Website */
-            $value = $website->getId();
-            $label = sprintf('%s - %s', $website->getCode(), $website->getName());
-            $position = $i + 1;
-
-            $websites[$i] = $value;
-            $question[$i] = sprintf('<comment>[%d]</comment> %s' . PHP_EOL, $position, $label);
+            $position = $i++;
+            $websites[$position] = $website->getId();
+            $question[$position] = sprintf(
+                '<comment>[%d]</comment> %s' . PHP_EOL,
+                $position + 1,
+                sprintf('%s - %s', $website->getCode(), $website->getName())
+            );
         }
 
         return array($websites, $question);
