@@ -1693,22 +1693,22 @@
     "packages-dev": [
         {
             "name": "bamarni/symfony-console-autocomplete",
-            "version": "v1.3.4",
+            "version": "v1.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bamarni/symfony-console-autocomplete.git",
-                "reference": "f361cdaa64e186203f61486dcc0d7448c10e2cdf"
+                "reference": "a121f7919c96f1fbefc6c5823b55ee5b3160a3ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bamarni/symfony-console-autocomplete/zipball/f361cdaa64e186203f61486dcc0d7448c10e2cdf",
-                "reference": "f361cdaa64e186203f61486dcc0d7448c10e2cdf",
+                "url": "https://api.github.com/repos/bamarni/symfony-console-autocomplete/zipball/a121f7919c96f1fbefc6c5823b55ee5b3160a3ea",
+                "reference": "a121f7919c96f1fbefc6c5823b55ee5b3160a3ea",
                 "shasum": ""
             },
             "require": {
                 "ext-simplexml": "*",
-                "symfony/console": "^2.5|^3|^4",
-                "symfony/process": "^2.5|^3|^4"
+                "symfony/console": "^2.5|^3|^4|^5",
+                "symfony/process": "^2.5|^3|^4|^5"
             },
             "require-dev": {
                 "symfony/console": "2.8.*"
@@ -1739,7 +1739,7 @@
                 }
             ],
             "description": "Shell completion for Symfony Console based scripts",
-            "time": "2018-04-25T16:31:58+00:00"
+            "time": "2020-03-04T17:14:27+00:00"
         },
         {
             "name": "doctrine/instantiator",
