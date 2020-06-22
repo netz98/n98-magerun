@@ -31,7 +31,13 @@ class DbSettings implements ArrayAccess, IteratorAggregate
     /**
      * @var string|null known field members
      */
-    private $tablePrefix, $host, $port, $unixSocket, $dbName, $username, $password;
+    private $tablePrefix;
+    private $host;
+    private $port;
+    private $unixSocket;
+    private $dbName;
+    private $username;
+    private $password;
 
     /**
      * @var array field array

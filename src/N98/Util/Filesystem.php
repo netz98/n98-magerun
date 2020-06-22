@@ -109,7 +109,7 @@ class Filesystem
                 // we call this function with the new path
                 $this->recursiveRemoveDirectory($path);
 
-                // if the new path is a file
+            // if the new path is a file
             } else {
                 // we remove the file
                 unlink($path);
