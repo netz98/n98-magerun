@@ -11,41 +11,16 @@ branches:
 services:
   - mysql
 
-php:
-  - 5.4
-  - 5.5
-
 env:
   matrix:
     - SCRIPT_JOB="PHP-CS-FIXER"
     - SCRIPT_JOB="BUILDSH"
     - SCRIPT_JOB="BASH-AUTOCOMPLETION"
-    - MAGENTO_VERSION="magento-mirror-1.4.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes
-    - MAGENTO_VERSION="magento-mirror-1.5.1.0" DB=mysql INSTALL_SAMPLE_DATA=yes
-    - MAGENTO_VERSION="magento-mirror-1.6.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes
-    - MAGENTO_VERSION="magento-mirror-1.7.0.2" DB=mysql INSTALL_SAMPLE_DATA=yes
-    - MAGENTO_VERSION="magento-mirror-1.8.1.0" DB=mysql INSTALL_SAMPLE_DATA=yes
     # Do not download sample data of 1.9 -> The file is too big
-    - MAGENTO_VERSION="magento-mirror-1.9.0.1" DB=mysql INSTALL_SAMPLE_DATA=no
-    - MAGENTO_VERSION="magento-mirror-1.9.1.1" DB=mysql INSTALL_SAMPLE_DATA=no
-    - MAGENTO_VERSION="magento-mirror-1.9.2.4" DB=mysql INSTALL_SAMPLE_DATA=no
     - MAGENTO_VERSION="magento-mirror-1.9.3.10" DB=mysql INSTALL_SAMPLE_DATA=no
 
 matrix:
   fast_finish: true
-  exclude:
-    # Old Magento Versions are not officially supported to run with PHP 5.5
-    - php: 5.5
-      env: MAGENTO_VERSION="magento-mirror-1.4.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes
-    - php: 5.5
-      env: MAGENTO_VERSION="magento-mirror-1.5.1.0" DB=mysql INSTALL_SAMPLE_DATA=yes
-    - php: 5.5
-      env: MAGENTO_VERSION="magento-mirror-1.6.2.0" DB=mysql INSTALL_SAMPLE_DATA=yes
-    - php: 5.5
-      env: MAGENTO_VERSION="magento-mirror-1.7.0.2" DB=mysql INSTALL_SAMPLE_DATA=no
-    - php: 7.2
-      env: SCRIPT_JOB="PHP-CS-FIXER"
-
   include:
     # Lint PHP code with future PHP versions (forward compatibility)
     - php: 7.0
@@ -83,16 +58,12 @@ matrix:
       env: SCRIPT_JOB="BUILDSH"
     - php: 7.2
       env: SCRIPT_JOB="BASH-AUTOCOMPLETION"
-    # Run with current PHP 5.6 and PHP 7.0 version (as not set in matrix)
+    # Run with current PHP 5.6 and PHP 7.0, PHP 7.1 version (as not set in matrix)
     - php: 5.6
-      env: MAGENTO_VERSION="magento-mirror-1.9.2.4" DB=mysql INSTALL_SAMPLE_DATA=no
-    - php: 5.6
-      env: MAGENTO_VERSION="magento-mirror-1.9.3.10" DB=mysql INSTALL_SAMPLE_DATA=no
-    - php: 7.0
-      env: MAGENTO_VERSION="magento-mirror-1.9.2.4" DB=mysql INSTALL_SAMPLE_DATA=no
-    - php: 7.0
-      env: MAGENTO_VERSION="magento-mirror-1.9.3.10" DB=mysql INSTALL_SAMPLE_DATA=no
+      env: MAGENTO_VERSION="magento-mirror-1.9.3.10" DB=mysql INSTALL_SAMPLE_DATA=n
     - php: 7.1
+      env: MAGENTO_VERSION="magento-mirror-1.9.3.10" DB=mysql INSTALL_SAMPLE_DATA=no
+    - php: 7.2
       env: MAGENTO_VERSION="magento-mirror-1.9.3.10" DB=mysql INSTALL_SAMPLE_DATA=no
 
 before_install:
