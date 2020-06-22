@@ -30,7 +30,7 @@
         "bamarni/symfony-console-autocomplete": "^1.2.0",
         "friendsofphp/php-cs-fixer": "~2.2.20",
         "phing/phing": "~2.16.3",
-        "phpunit/phpunit": "~4.1",
+        "phpunit/phpunit": "^6",
         "seld/phar-utils": "1.0.1",
         "mikey179/vfsstream": "^1.6"
     },
