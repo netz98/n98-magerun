@@ -1,6 +1,9 @@
 language: php
 sudo: false
 
+services:
+  - mysql
+
 branches:
   only:
     - master
