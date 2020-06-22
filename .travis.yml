@@ -1,6 +1,5 @@
 language: php
 sudo: false
-dist: precise
 
 branches:
   only:
