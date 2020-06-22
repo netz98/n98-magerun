@@ -8,32 +8,26 @@ branches:
     - develop
     - /^(bugfix|feature|release)\/.*$/
 
-services:
-  - mysql
-
-env:
-  matrix:
-    - SCRIPT_JOB="PHP-CS-FIXER"
-    - SCRIPT_JOB="BUILDSH"
-    - SCRIPT_JOB="BASH-AUTOCOMPLETION"
-    # Do not download sample data of 1.9 -> The file is too big
-    - MAGENTO_VERSION="magento-mirror-1.9.3.10" DB=mysql INSTALL_SAMPLE_DATA=no
-
 matrix:
   fast_finish: true
   include:
-    # Lint PHP code with future PHP versions (forward compatibility)
-    - php: 7.2
+    - name: SH lint
+      php: 7.2
       env: SCRIPT_JOB=LINTSH
       script: find {src,tests} -name "*.php" ! -path '*/String.php' -print0 | xargs
           -0 -n1 -P8 php -l | grep -v '^No syntax errors detected'; test $? -eq 1
-    # Run the cs-fixer and build script with different PHP versions
-    - php: 7.2
+
+    - name: buildsh
+      php: 7.2
       env: SCRIPT_JOB="BUILDSH"
-    - php: 7.2
+
+    - name: Bash Autocompletion
+      php: 7.2
       env: SCRIPT_JOB="BASH-AUTOCOMPLETION"
-    - php: 7.2
-      env: MAGENTO_VERSION="magento-mirror-1.9.3.10" DB=mysql INSTALL_SAMPLE_DATA=no
+
+    - name: Magento 1.9.4.1 PHP 7.2
+      php: 7.2
+      env: MAGENTO_VERSION="magento-mirror-1.9.4.1" DB=mysql INSTALL_SAMPLE_DATA=no
 
 before_install:
   - phpenv config-rm xdebug.ini
