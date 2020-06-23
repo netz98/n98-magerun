@@ -13,7 +13,7 @@ namespace N98\Util;
  * @package N98\Util
  * @requires OS win
  */
-class WindowsSystemTest extends \PHPUnit_Framework_TestCase
+class WindowsSystemTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test

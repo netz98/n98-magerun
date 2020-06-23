@@ -12,7 +12,7 @@ namespace N98\Util;
  *
  * @package N98\Util
  */
-class AutoloadRestorerTest extends \PHPUnit_Framework_TestCase
+class AutoloadRestorerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test

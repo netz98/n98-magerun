@@ -13,7 +13,7 @@ namespace N98\Util;
  * @package N98\Util
  * @covers N98\Util\OperatingSystem
  */
-class OperatingSystemTest extends \PHPUnit_Framework_TestCase
+class OperatingSystemTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test

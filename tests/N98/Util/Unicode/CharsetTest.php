@@ -2,7 +2,7 @@
 
 namespace N98\Util\Unicode;
 
-class CharsetTest extends \PHPUnit_Framework_TestCase
+class CharsetTest extends \PHPUnit\Framework\TestCase
 {
     public function testConvertInteger()
     {

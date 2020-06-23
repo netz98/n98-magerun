@@ -13,7 +13,7 @@ namespace N98\Util;
  * @covers \N98\Util\AutoloadHandler
  * @package N98\Util
  */
-class AutoloadHandlerTest extends \PHPUnit_Framework_TestCase
+class AutoloadHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var array

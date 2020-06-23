@@ -10,7 +10,7 @@ use RuntimeException;
  *
  * @package N98\Util
  */
-class ExecTest extends \PHPUnit_Framework_TestCase
+class ExecTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test

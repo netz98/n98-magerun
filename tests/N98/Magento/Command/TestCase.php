@@ -13,7 +13,7 @@ use PHPUnit_Framework_MockObject_MockObject;
  * @codeCoverageIgnore
  * @package N98\Magento\Command\PHPUnit
  */
-abstract class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var TestApplication

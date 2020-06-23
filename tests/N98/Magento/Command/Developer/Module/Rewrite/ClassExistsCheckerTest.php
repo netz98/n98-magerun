@@ -15,7 +15,7 @@ use PHPUnit_Framework_Error_Warning;
  *
  * @covers \N98\Magento\Command\Developer\Module\Rewrite\ClassExistsChecker
  */
-class ClassExistsCheckerTest extends \PHPUnit_Framework_TestCase
+class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var array
