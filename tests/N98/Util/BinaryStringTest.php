@@ -7,7 +7,7 @@ namespace N98\Util;
  *
  * @covers \N98\Util\BinaryString
  */
-class BinaryStringTest extends \PHPUnit_Framework_TestCase
+class BinaryStringTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test

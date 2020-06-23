@@ -12,7 +12,7 @@ namespace N98\Magento\Command\System\Check\Settings;
  *
  * @covers N98\Magento\Command\System\Check\Settings\CookieDomainCheckAbstract
  */
-class CookieDomainCheckAbstractTest extends \PHPUnit_Framework_TestCase
+class CookieDomainCheckAbstractTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @see validateCookieDomainAgainstUrl

@@ -7,7 +7,7 @@
 
 namespace N98\Magento;
 
-class TestApplicationTest extends \PHPUnit_Framework_TestCase
+class TestApplicationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test

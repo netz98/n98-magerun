@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\StreamOutput;
  *
  * @package N98\Util\Console\Helper\Table\Renderer
  */
-abstract class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     /**
      * helper method to get output as string out of a StreamOutput
