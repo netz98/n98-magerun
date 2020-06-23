@@ -2,7 +2,7 @@
 
 namespace N98\Util\Console\Helper\Table\Renderer;
 
-class RenderFactoryTest extends \PHPUnit_Framework_TestCase
+class RenderFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers \N98\Util\Console\Helper\Table\Renderer\RendererFactory::getFormats
