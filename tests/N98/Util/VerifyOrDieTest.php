@@ -8,7 +8,7 @@
 namespace N98\Util;
 
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase as TestCase;
 use RuntimeException;
 
 /**
