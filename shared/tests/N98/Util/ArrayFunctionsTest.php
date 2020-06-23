@@ -7,7 +7,7 @@ namespace N98\Util;
  *
  * @covers N98\Util\ArrayFunctions
  */
-class ArrayFunctionsTest extends \PHPUnit_Framework_TestCase
+class ArrayFunctionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test
