@@ -610,7 +610,7 @@ commands:
         admin_username: admin
         admin_firstname: John
         admin_lastname: Doe
-        admin_password: password123
+        admin_password: passwordpassword123
         admin_frontname: admin
         admin_email: john.doe@example.com
         encryption_key:
