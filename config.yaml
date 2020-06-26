@@ -182,6 +182,39 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
+      - name: magento-mirror-1.9.4.5
+        version: 1.9.4.5
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.4.5.zip
+          type: zip
+          shasum: 5a80d32ff1486722d5eb5cc4926b3171b10449d7
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: magento-mirror-1.9.4.4
+        version: 1.9.4.4
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.4.4.zip
+          type: zip
+          shasum: 9f2a91503546213d287819e644aee0d1c8ab89d0
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: magento-mirror-1.9.4.3
+        version: 1.9.4.3
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.4.3.zip
+          type: zip
+          shasum: d063cf051972fa6dd1befff1929907b991cf3829
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: magento-mirror-1.9.4.2
+        version: 1.9.4.2
+        dist:
+          url: https://github.com/OpenMage/magento-mirror/archive/1.9.4.2.zip
+          type: zip
+          shasum: b553b16d9469bdf33cf8a96803531e08154814cc
+        extra:
+          sample-data: sample-data-1.9.2.4
+
       - name: magento-mirror-1.9.4.1
         version: 1.9.4.1
         dist:
