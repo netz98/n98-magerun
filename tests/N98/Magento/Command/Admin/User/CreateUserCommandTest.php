@@ -19,28 +19,28 @@ class CreateUserCommandTest extends TestCase
     public function setUp()
     {
         $this->command = $this->getMockBuilder('\N98\Magento\Command\Admin\User\CreateUserCommand')
-            ->setMethods(array('getUserModel', 'getRoleModel', 'getRulesModel'))
+            ->setMethods(['getUserModel', 'getRoleModel', 'getRulesModel'])
             ->getMock();
 
         $this->userModel = $this->getMockBuilder('Mage_Admin_Model_User')
-            ->setMethods(array('setData', 'save', 'setRoleIds', 'getUserId', 'setRoleUserId', 'saveRelations'))
+            ->setMethods(['setData', 'save', 'setRoleIds', 'getUserId', 'setRoleUserId', 'saveRelations'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->command
             ->expects($this->any())
             ->method('getUserModel')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->roleModel = $this->getMockBuilder('Mage_Admin_Model_Role')
-            ->setMethods(array('load', 'getId', 'setName', 'setRoleType', 'save'))
+            ->setMethods(['load', 'getId', 'setName', 'setRoleType', 'save'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->command
             ->expects($this->any())
             ->method('getRoleModel')
-            ->will($this->returnValue($this->roleModel));
+            ->willReturn($this->roleModel);
 
         $this->rulesModel = $this->getMockBuilder('Mage_Admin_Model_Rules')
             ->setMethods(array('setRoleId', 'setResources', 'saveRel'))
@@ -50,12 +50,15 @@ class CreateUserCommandTest extends TestCase
         $this->command
             ->expects($this->any())
             ->method('getRulesModel')
-            ->will($this->returnValue($this->rulesModel));
+            ->willReturn($this->rulesModel);
     }
 
     public function testArgumentPromptsWhenNotPresent()
     {
-        $dialog = $this->getMock(\Symfony\Component\Console\Helper\DialogHelper::class, ['ask', 'askHiddenResponse']);
+        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\DialogHelper::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['ask', 'askHiddenResponse'])
+            ->getMock();
 
         $dialog->expects($this->at(0))
             ->method('ask')

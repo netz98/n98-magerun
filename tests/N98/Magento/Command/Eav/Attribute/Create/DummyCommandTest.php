@@ -33,7 +33,10 @@ class DummyCommandTest extends TestCase
         $application->add(new DummyCommand());
         $command = $application->find('eav:attribute:create-dummy-values');
 
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\QuestionHelper', array('ask'));
+        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\QuestionHelper::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['ask'])
+            ->getMock();
 
         // ASK - attribute-id
         $dialog->expects($this->any())
@@ -43,7 +46,7 @@ class DummyCommandTest extends TestCase
                    $this->isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
                    $this->isInstanceOf('Symfony\Component\Console\Question\Question')
                )
-               ->will($this->returnValue(92));
+               ->willReturn(92);
 
         // ASK - values-type
         $dialog->expects($this->any())
@@ -53,7 +56,7 @@ class DummyCommandTest extends TestCase
                    $this->isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
                    $this->isInstanceOf('Symfony\Component\Console\Question\Question')
                )
-               ->will($this->returnValue('int'));
+               ->willReturn('int');
 
         // ASK - values-number
         $dialog->expects($this->any())
@@ -63,7 +66,7 @@ class DummyCommandTest extends TestCase
                    $this->isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
                    $this->isInstanceOf('Symfony\Component\Console\Question\Question')
                )
-               ->will($this->returnValue(1));
+               ->willReturn(1);
 
         // We override the standard helper with our mock
         $command->getHelperSet()->set($dialog, 'dialog');

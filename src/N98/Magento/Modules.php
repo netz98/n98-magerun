@@ -72,7 +72,7 @@ class Modules implements IteratorAggregate, Countable
         $filtered = $this->list;
 
         if ($input->getOption('codepool')) {
-            $filtered = ArrayFunctions::matrixFilterByValue($filtered, "codePool", $input->getOption('codepool'));
+            $filtered = ArrayFunctions::matrixFilterByValue($filtered, 'codePool', $input->getOption('codepool'));
         }
 
         if ($input->getOption('status')) {

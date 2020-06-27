@@ -264,7 +264,7 @@ class ChangeStatusCommandTest extends TestCase
         $userEmail = 'aydin@hotmail.co.uk';
         $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\DialogHelper::class)
             ->disableOriginalConstructor()
-            ->setMethods('ask')
+            ->setMethods(['ask'])
             ->getMock();
 
         $dialog->expects($this->once())

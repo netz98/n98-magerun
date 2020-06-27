@@ -23,7 +23,7 @@ class RemoveCommandTest extends TestCase
             ->method('delete')
             ->willReturn(1);
 
-        $coreResource = $this->getMock('\Mage_Core_Model_Resource');
+        $coreResource = $this->createMock('\Mage_Core_Model_Resource');
         $coreResource->expects($this->once())
             ->method('getConnection')
             ->willReturn($mockAdapter);
@@ -64,7 +64,7 @@ class RemoveCommandTest extends TestCase
             ->method('delete')
             ->willReturn(1);
 
-        $coreResource = $this->getMock('\Mage_Core_Model_Resource');
+        $coreResource = $this->createMock('\Mage_Core_Model_Resource');
         $coreResource->expects($this->once())
             ->method('getConnection')
             ->willReturn($mockAdapter);
@@ -99,14 +99,14 @@ class RemoveCommandTest extends TestCase
     {
         $mockAdapter = $this->getMockBuilder('\Varien_Db_Adapter_Pdo_Mysql')
             ->disableOriginalConstructor()
-            ->setMethods(array('delete'))
+            ->setMethods(['delete'])
             ->getMock();
 
         $mockAdapter->expects($this->once())
             ->method('delete')
             ->willReturn(0);
 
-        $coreResource = $this->getMock('\Mage_Core_Model_Resource');
+        $coreResource = $this->createMock('\Mage_Core_Model_Resource');
         $coreResource->expects($this->once())
             ->method('getConnection')
             ->willReturn($mockAdapter);
@@ -117,7 +117,6 @@ class RemoveCommandTest extends TestCase
             ->willReturn('core_resource');
 
         $command = $this->getMockBuilder(\N98\Magento\Command\System\Setup\RemoveCommand::class)
-            ->disableOriginalConstructor()
             ->setMethods(['_getModel'])
             ->getMock();
 

@@ -112,23 +112,25 @@ class ConfigTest extends TestCase
      */
     public function customCommands()
     {
-        $array = array(
-            'commands' => array(
-                'customCommands' => array(
+        $configArray = [
+            'commands' => [
+                'customCommands' => [
                     'N98\Magento\Command\Config\GetCommand',
-                    array('name' => 'N98\Magento\Command\Config\GetCommand'),
-                ),
-            ),
-        );
+                    ['name' => 'N98\Magento\Command\Config\GetCommand'],
+                ],
+            ],
+        ];
 
         $output = new BufferedOutput();
         $output->setVerbosity($output::VERBOSITY_DEBUG);
 
-        $config = new Config(array(), false, $output);
-        $config->setConfig($array);
+        $config = new Config([], false, $output);
+        $config->setConfig($configArray);
 
-        /** @var Application $application */
+        /** @var \PHPUnit_Framework_MockObject_MockObject $application */
         $application = $this->createMock(\N98\Magento\Application::class);
+        $application->expects($this->exactly(2))->method('add');
+
         $config->registerCustomCommands($application);
     }
 
