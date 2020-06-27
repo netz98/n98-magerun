@@ -102,7 +102,7 @@ class ChangeVersionCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
 
-        $this->setExpectedException(
+        $this->expectException(
             'InvalidArgumentException',
             'Error no setup found with the name: "no_setup_exists"'
         );
@@ -123,7 +123,7 @@ class ChangeVersionCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
 
-        $this->setExpectedException('InvalidArgumentException', 'No module found with name: "I_DO_NOT_EXIST"');
+        $this->expectException('InvalidArgumentException', 'No module found with name: "I_DO_NOT_EXIST"');
         $commandTester->execute(array(
             'command'   => $command->getName(),
             'module'    => 'I_DO_NOT_EXIST',

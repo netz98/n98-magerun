@@ -27,7 +27,7 @@ class DeleteUserCommandTest extends TestCase
         $this->command
             ->expects($this->any())
             ->method('getUserModel')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
     }
 
     public function testCanDeleteByUserName()
@@ -36,17 +36,17 @@ class DeleteUserCommandTest extends TestCase
             ->expects($this->once())
             ->method('loadByUsername')
             ->with('aydin')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(1))
             ->method('getId')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $this->userModel
             ->expects($this->at(2))
             ->method('getId')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $this->userModel
             ->expects($this->never())
@@ -78,23 +78,23 @@ class DeleteUserCommandTest extends TestCase
             ->expects($this->once())
             ->method('loadByUsername')
             ->with('aydin@hotmail.co.uk')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(1))
             ->method('getId')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         $this->userModel
             ->expects($this->once())
             ->method('load')
             ->with('aydin@hotmail.co.uk', 'email')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(3))
             ->method('getId')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $this->userModel
             ->expects($this->once())
@@ -122,23 +122,23 @@ class DeleteUserCommandTest extends TestCase
             ->expects($this->once())
             ->method('loadByUsername')
             ->with('notauser')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(1))
             ->method('getId')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         $this->userModel
             ->expects($this->once())
             ->method('load')
             ->with('notauser', 'email')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(2))
             ->method('getId')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         $application = $this->getApplication();
         $application->add($this->command);
@@ -159,23 +159,23 @@ class DeleteUserCommandTest extends TestCase
             ->expects($this->once())
             ->method('loadByUsername')
             ->with('aydin@hotmail.co.uk')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(1))
             ->method('getId')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         $this->userModel
             ->expects($this->once())
             ->method('load')
             ->with('aydin@hotmail.co.uk', 'email')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(3))
             ->method('getId')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $exception = new \Exception("Error!");
         $this->userModel
@@ -205,23 +205,23 @@ class DeleteUserCommandTest extends TestCase
             ->expects($this->once())
             ->method('loadByUsername')
             ->with('notauser')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(1))
             ->method('getId')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         $this->userModel
             ->expects($this->once())
             ->method('load')
             ->with('notauser', 'email')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(3))
             ->method('getId')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $this->userModel
             ->expects($this->once())
@@ -231,10 +231,13 @@ class DeleteUserCommandTest extends TestCase
         $application->add($this->command);
         $command = $this->getApplication()->find('admin:user:delete');
 
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('askConfirmation'));
+        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\DialogHelper::class)
+            ->setMethods(['askConfirmation'])
+            ->getMock();
+
         $dialog->expects($this->once())
             ->method('askConfirmation')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         // We override the standard helper with our mock
         $command->getHelperSet()->set($dialog, 'dialog');
@@ -254,23 +257,23 @@ class DeleteUserCommandTest extends TestCase
             ->expects($this->once())
             ->method('loadByUsername')
             ->with('notauser')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(1))
             ->method('getId')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         $this->userModel
             ->expects($this->once())
             ->method('load')
             ->with('notauser', 'email')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(3))
             ->method('getId')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $this->userModel
             ->expects($this->never())
@@ -280,51 +283,57 @@ class DeleteUserCommandTest extends TestCase
         $application->add($this->command);
         $command = $this->getApplication()->find('admin:user:delete');
 
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('askConfirmation'));
+        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\DialogHelper::class)
+            ->setMethods(['askConfirmation'])
+            ->getMock();
+
         $dialog->expects($this->once())
             ->method('askConfirmation')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         // We override the standard helper with our mock
         $command->getHelperSet()->set($dialog, 'dialog');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
+        $commandTester->execute([
             'command'   => $command->getName(),
             'id'        => 'notauser',
-        ));
+        ]);
 
         $this->assertContains('Aborting delete', $commandTester->getDisplay());
     }
 
     public function testIfNoIdIsPresentItIsPromptedFor()
     {
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('ask'));
+        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\DialogHelper::class)
+            ->setMethods(['ask'])
+            ->getMock();
+
         $dialog->expects($this->once())
             ->method('ask')
-            ->will($this->returnValue('aydin@hotmail.co.uk'));
+            ->willReturn('aydin@hotmail.co.uk');
 
         $this->userModel
             ->expects($this->once())
             ->method('loadByUsername')
             ->with('aydin@hotmail.co.uk')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(1))
             ->method('getId')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         $this->userModel
             ->expects($this->once())
             ->method('load')
             ->with('aydin@hotmail.co.uk', 'email')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(3))
             ->method('getId')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $this->userModel
             ->expects($this->once())

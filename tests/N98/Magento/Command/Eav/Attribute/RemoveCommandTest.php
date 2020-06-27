@@ -19,7 +19,7 @@ class RemoveCommandTest extends TestCase
         $application->setAutoExit(false);
         $command = $this->getApplication()->find('eav:attribute:remove');
 
-        $this->setExpectedException('\InvalidArgumentException', 'Invalid entity_type specified: not_a_valid_type');
+        $this->expectException('\InvalidArgumentException', 'Invalid entity_type specified: not_a_valid_type');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(

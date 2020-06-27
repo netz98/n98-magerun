@@ -58,7 +58,10 @@ class DummyCommandTest extends TestCase
         $application->add(new DummyCommand());
         $command = $application->find('category:create:dummy');
 
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\QuestionHelper', array('ask'));
+        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\QuestionHelper::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['ask'])
+            ->getMock();
 
         // ASK - store-id
         $dialog->expects($this->any())
@@ -68,7 +71,7 @@ class DummyCommandTest extends TestCase
                 $this->isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
                 $this->isInstanceOf('Symfony\Component\Console\Question\Question')
             )
-            ->will($this->returnValue(1));
+            ->willReturn(1);
 
         // ASK - children-categories-number
         $dialog->expects($this->any())
@@ -78,7 +81,7 @@ class DummyCommandTest extends TestCase
                 $this->isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
                 $this->isInstanceOf('Symfony\Component\Console\Question\Question')
             )
-            ->will($this->returnValue(0));
+            ->willReturn(0);
 
         // ASK - category-name-prefix
         $dialog->expects($this->any())
@@ -88,7 +91,7 @@ class DummyCommandTest extends TestCase
                 $this->isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
                 $this->isInstanceOf('Symfony\Component\Console\Question\Question')
             )
-            ->will($this->returnValue('My Awesome Category '));
+            ->willReturn('My Awesome Category ');
 
         // ASK - category-number
         $dialog->expects($this->any())
@@ -98,7 +101,7 @@ class DummyCommandTest extends TestCase
                 $this->isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
                 $this->isInstanceOf('Symfony\Component\Console\Question\Question')
             )
-            ->will($this->returnValue(0));
+            ->willReturn(0);
 
         // We override the standard helper with our mock
         $command->getHelperSet()->set($dialog, 'dialog');

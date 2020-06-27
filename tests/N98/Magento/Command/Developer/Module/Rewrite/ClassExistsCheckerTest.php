@@ -8,7 +8,7 @@
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
 use N98\Util\AutoloadHandler;
-use PHPUnit_Framework_Error_Warning;
+use \PHPUnit\Framework\Error\Warning;
 
 /**
  * Class ClassExistsCheckerTest
@@ -216,13 +216,13 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
         $logErrorsOrig = ini_get('log_errors');
         $includeIni && ini_set('log_errors', false);
 
-        $warningEnabledOrig = PHPUnit_Framework_Error_Warning::$enabled;
-        PHPUnit_Framework_Error_Warning::$enabled = false;
+        $warningEnabledOrig = \PHPUnit\Framework\Error\Warning::$enabled;
+        \PHPUnit\Framework\Error\Warning::$enabled = false;
 
         $restore = function () use ($displayErrorsOrig, $logErrorsOrig, $warningEnabledOrig) {
             ini_set('display_errors', $displayErrorsOrig);
             ini_set('log_errors', $logErrorsOrig);
-            PHPUnit_Framework_Error_Warning::$enabled = $warningEnabledOrig;
+            \PHPUnit\Framework\Error\Warning::$enabled = $warningEnabledOrig;
         };
 
         $this->cleanup[] = $restore;

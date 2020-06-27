@@ -16,19 +16,19 @@ class ChangeStatusCommandTest extends TestCase
 
     public function setUp()
     {
-        $this->command = $this->getMockBuilder('\N98\Magento\Command\Admin\User\ChangeStatusCommand')
-            ->setMethods(array('getUserModel'))
+        $this->command = $this->getMockBuilder(\N98\Magento\Command\Admin\User\ChangeStatusCommand::class)
+            ->setMethods(['getUserModel'])
             ->getMock();
 
         $this->userModel = $this->getMockBuilder('Mage_Admin_Model_User')
-            ->setMethods(array('loadByUsername', 'load', 'getId', 'validate', 'getIsActive', 'setIsActive', 'save', 'getUsername'))
+            ->setMethods(['loadByUsername', 'load', 'getId', 'validate', 'getIsActive', 'setIsActive', 'save', 'getUsername'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->command
             ->expects($this->any())
             ->method('getUserModel')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
     }
 
     public function testCanEnableByUser()
@@ -38,17 +38,17 @@ class ChangeStatusCommandTest extends TestCase
             ->expects($this->once())
             ->method('loadByUsername')
             ->with($username)
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(1))
             ->method('getId')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $this->userModel
             ->expects($this->at(2))
             ->method('getId')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $this->userModel
             ->expects($this->once())
@@ -57,7 +57,7 @@ class ChangeStatusCommandTest extends TestCase
         $this->userModel
             ->expects($this->at(4))
             ->method('getIsActive')
-            ->will($this->returnValue(0));
+            ->willReturn(0);
 
         $this->userModel
             ->expects($this->once())
@@ -71,12 +71,12 @@ class ChangeStatusCommandTest extends TestCase
         $this->userModel
             ->expects($this->at(7))
             ->method('getIsActive')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
 
         $this->userModel
             ->expects($this->once())
             ->method('getUsername')
-            ->will($this->returnValue($username));
+            ->willReturn($username);
 
         $application = $this->getApplication();
         $application->add($this->command);
@@ -100,17 +100,17 @@ class ChangeStatusCommandTest extends TestCase
             ->expects($this->once())
             ->method('loadByUsername')
             ->with($username)
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(1))
             ->method('getId')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $this->userModel
             ->expects($this->at(2))
             ->method('getId')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $this->userModel
             ->expects($this->once())
@@ -119,7 +119,7 @@ class ChangeStatusCommandTest extends TestCase
         $this->userModel
             ->expects($this->at(4))
             ->method('getIsActive')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
 
         $this->userModel
             ->expects($this->once())
@@ -133,12 +133,12 @@ class ChangeStatusCommandTest extends TestCase
         $this->userModel
             ->expects($this->at(7))
             ->method('getIsActive')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $this->userModel
             ->expects($this->once())
             ->method('getUsername')
-            ->will($this->returnValue($username));
+            ->willReturn($username);
 
         $application = $this->getApplication();
         $application->add($this->command);
@@ -162,22 +162,22 @@ class ChangeStatusCommandTest extends TestCase
             ->expects($this->once())
             ->method('loadByUsername')
             ->with($username)
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(1))
             ->method('getId')
-            ->will($this->returnValue(0));
+            ->willReturn(0);
 
         $this->userModel
             ->expects($this->once())
             ->method('load')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(3))
             ->method('getId')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $this->userModel
             ->expects($this->once())
@@ -186,7 +186,7 @@ class ChangeStatusCommandTest extends TestCase
         $this->userModel
             ->expects($this->at(5))
             ->method('getIsActive')
-            ->will($this->returnValue(0));
+            ->willReturn(0);
 
         $this->userModel
             ->expects($this->once())
@@ -200,12 +200,12 @@ class ChangeStatusCommandTest extends TestCase
         $this->userModel
             ->expects($this->at(8))
             ->method('getIsActive')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
 
         $this->userModel
             ->expects($this->once())
             ->method('getUsername')
-            ->will($this->returnValue($username));
+            ->willReturn($username);
 
         $application = $this->getApplication();
         $application->add($this->command);
@@ -228,23 +228,23 @@ class ChangeStatusCommandTest extends TestCase
             ->expects($this->once())
             ->method('loadByUsername')
             ->with('notauser')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(1))
             ->method('getId')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         $this->userModel
             ->expects($this->once())
             ->method('load')
             ->with('notauser', 'email')
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects($this->at(2))
             ->method('getId')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         $application = $this->getApplication();
         $application->add($this->command);
@@ -262,24 +262,28 @@ class ChangeStatusCommandTest extends TestCase
     public function testIfNoIdIsPresentItIsPromptedFor()
     {
         $userEmail = 'aydin@hotmail.co.uk';
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('ask'));
+        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\DialogHelper::class)
+            ->disableOriginalConstructor()
+            ->setMethods('ask')
+            ->getMock();
+
         $dialog->expects($this->once())
             ->method('ask')
-            ->will($this->returnValue($userEmail));
+            ->willReturn($userEmail);
 
         $this->userModel
             ->expects($this->once())
             ->method('loadByUsername')
             ->with($userEmail)
-            ->will($this->returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->method('getId')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $this->userModel
             ->method('getUsername')
-            ->will($this->returnValue('aydin'));
+            ->willReturn('aydin');
 
         $application = $this->getApplication();
         $application->add($this->command);
