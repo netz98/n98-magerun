@@ -41,11 +41,12 @@ class AutoloadHandlerTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @test
-     * @expectedException \BadMethodCallException
-     * @expectedExceptionMessage Autoload callback is not callable
      */
     public function noRegistrationOnCreation()
     {
+        $this->expectException(\BadMethodCallException::class);
+        $this->expectExceptionMessage('Autoload callback is not callable');
+
         $handler = $this->create(null, AutoloadHandler::NO_AUTO_REGISTER);
         $handler->disable(); // assertions require a disabled handler b/c of exceptions
 
@@ -125,7 +126,7 @@ class AutoloadHandlerTest extends \PHPUnit\Framework\TestCase
         $handler->setEnabled(false);
         $this->assertFalse($handler->__invoke("Test"));
         $handler->setEnabled(true);
-        $this->setExpectedException('BadMethodCallException');
+        $this->expectException(\BadMethodCallException::class);
         $this->assertFalse($handler->__invoke("Test"));
         $this->fail('An expected exception has not been thrown');
     }
