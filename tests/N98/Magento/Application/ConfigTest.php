@@ -128,7 +128,7 @@ class ConfigTest extends TestCase
         $config->setConfig($array);
 
         /** @var Application $application */
-        $application = $this->getMock('N98\Magento\Application');
+        $application = $this->createMock(\N98\Magento\Application::class);
         $config->registerCustomCommands($application);
     }
 

@@ -22,11 +22,14 @@ class UnlockUserCommandTest extends TestCase
 
     public function testUnlockAllUsersPromptNo()
     {
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('ask'));
+        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\DialogHelper::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['ask'])
+            ->getMock();
 
         $dialog->expects($this->once())
             ->method('ask')
-            ->will($this->returnValue("n"));
+            ->willReturn('n');
 
         $application = $this->getApplication();
         $application->add($this->getCommand());
@@ -41,11 +44,14 @@ class UnlockUserCommandTest extends TestCase
 
     public function testUnlockAllUsersPromptYes()
     {
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('ask'));
+        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\DialogHelper::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['ask'])
+            ->getMock();
 
         $dialog->expects($this->once())
             ->method('ask')
-            ->will($this->returnValue("y"));
+            ->willReturn('y');
 
         $application = $this->getApplication();
         $application->add($this->getCommand());

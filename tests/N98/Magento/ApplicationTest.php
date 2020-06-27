@@ -151,16 +151,16 @@ class ApplicationTest extends TestCase
             )
         );
 
-        /** @var \N98\Magento\Application\ConfigurationLoader $configurationLoader */
-        $configurationLoader = $this->getMock(
-            '\N98\Magento\Application\ConfigurationLoader',
-            array('getConfigurationLoaderDir'),
-            array(array(), false, new NullOutput())
-        );
+        /** @var \PHPUnit_Framework_MockObject_MockObject $configurationLoader */
+        $configurationLoader = $this->getMockBuilder(\N98\Magento\Application\ConfigurationLoader::class)
+            ->setMethods(['getConfigurationLoaderDir'])
+            ->setConstructorArgs([], false, new NullOutput())
+            ->getMock();
+
         $configurationLoader
             ->expects($this->any())
             ->method('getConfigurationLoaderDir')
-            ->will($this->returnValue(vfsStream::url('root/vendor/n98/magerun/src/N98/Magento/Command')));
+            ->willReturn(vfsStream::url('root/vendor/n98/magerun/src/N98/Magento/Command'));
 
         /* @var $application Application */
         $application = require __DIR__ . '/../../../src/bootstrap.php';

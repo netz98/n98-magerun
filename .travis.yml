@@ -27,9 +27,9 @@ matrix:
       php: 7.2
       env: SCRIPT_JOB="BASH-AUTOCOMPLETION"
 
-    - name: Magento 1.9.4.1 PHP 7.2
+    - name: Magento 1.9.4.5 PHP 7.2
       php: 7.2
-      env: MAGENTO_VERSION="magento-mirror-1.9.4.1" DB=mysql INSTALL_SAMPLE_DATA=no
+      env: MAGENTO_VERSION="magento-mirror-1.9.4.5" DB=mysql INSTALL_SAMPLE_DATA=no
 
 before_install:
   - phpenv config-rm xdebug.ini
