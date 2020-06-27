@@ -17,7 +17,6 @@ class GenerateCommandTest extends TestCase
         $this->configFile = sprintf('%s/%s/local.xml', sys_get_temp_dir(), $this->getName());
         mkdir(dirname($this->configFile), 0777, true);
         $commandMock = $this->getMockBuilder(\N98\Magento\Command\LocalConfig\GenerateCommand::class)
-            ->disableOriginalConstructor()
             ->setMethods(['_getLocalConfigFilename'])
             ->getMock();
 
@@ -32,6 +31,8 @@ class GenerateCommandTest extends TestCase
             sprintf('%s/app/etc/local.xml.template', $this->getTestMagentoRoot()),
             sprintf('%s/local.xml.template', dirname($this->configFile))
         );
+
+        parent::setUp();
     }
 
     public function testErrorIsPrintedIfConfigFileExists()
@@ -231,7 +232,11 @@ class GenerateCommandTest extends TestCase
 
         unset($options[$param]);
 
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('ask'));
+        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\DialogHelper::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['ask'])
+            ->getMock();
+
         $dialog->expects($this->once())
             ->method('ask')
             ->with(

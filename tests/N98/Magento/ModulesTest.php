@@ -36,7 +36,9 @@ class ModulesTest extends TestCase
     {
         $modules = new Modules();
 
-        $result = $modules->filterModules($this->filter());
+        $result = $modules->filterModules(
+            $this->filter()
+        );
         $this->assertInstanceOf(__NAMESPACE__ . '\Modules', $result);
         $this->assertCount(0, $result);
         $this->assertCount(0, iterator_to_array($result));
@@ -74,8 +76,8 @@ class ModulesTest extends TestCase
     private function filter($option = null, $value = null)
     {
         $defaultOptions = ['codepool' => false, 'status' => false, 'vendor' => false];
-
         $options = $defaultOptions;
+
         if (null !== $option) {
             if (!array_key_exists($option, $defaultOptions)) {
                 throw new InvalidArgumentException(sprintf('Invalid option "%s"', $option));
@@ -91,16 +93,19 @@ class ModulesTest extends TestCase
 
         $i = 0;
         foreach ($options as $opt => $val) {
-            $input->expects($this->at($i++))
+            $input
+                ->expects($this->at($i++))
                 ->method('getOption')
-                ->with([$opt])
+                ->with($opt)
                 ->willReturn($val);
+
             if (!$val) {
                 continue;
             }
+
             $input->expects($this->at($i++))
                 ->method('getOption')
-                ->with([$opt])
+                ->with($opt)
                 ->willReturn($val);
         }
 

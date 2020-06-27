@@ -109,9 +109,9 @@ class DummyCommandTest extends TestCase
         $commandTester = new CommandTester($command);
 
         $commandTester->execute(
-            array(
+            [
                 'command'                    => $command->getName(),
-            )
+            ]
         );
 
         $arguments = $commandTester->getInput()->getArguments();
