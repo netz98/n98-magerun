@@ -19,7 +19,7 @@
         "php": ">=5.4.0",
         "psy/psysh": "~0.4",
         "symfony/console": "~2.3",
-        "symfony/event-dispatcher": "~2.3",
+        "symfony/event-dispatcher": "~4.4",
         "symfony/finder": "~2.3",
         "symfony/process": "~2.3",
         "symfony/validator": "~2.3",
