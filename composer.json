@@ -22,7 +22,7 @@
         "symfony/event-dispatcher": "~2.3",
         "symfony/finder": "~2.3",
         "symfony/process": "~2.3",
-        "symfony/validator": "~2.3",
+        "symfony/validator": "~3.2",
         "symfony/yaml": "~2.3",
         "twig/twig": "~1.42"
     },
