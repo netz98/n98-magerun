@@ -23,7 +23,7 @@
         "symfony/finder": "~2.3",
         "symfony/process": "~2.3",
         "symfony/validator": "~2.3",
-        "symfony/yaml": "~2.3",
+        "symfony/yaml": "~3.3",
         "twig/twig": "~1.42"
     },
     "require-dev": {
