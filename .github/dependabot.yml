@@ -4,13 +4,4 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-      
-    # We only want minor & revision upgrades, unless it is a security upgrade.
-    # Then we are fine receiving major version increases too.
-    allowed_updates:
-      - match:
-        update_type: "security:patch"
-      - match:
-        update_type: "semver:patch"
-      - match:
-        update_type: "semver:minor"
+
