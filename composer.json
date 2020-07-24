@@ -21,7 +21,7 @@
         "symfony/console": "~2.3",
         "symfony/event-dispatcher": "~2.3",
         "symfony/finder": "~2.3",
-        "symfony/process": "~2.3",
+        "symfony/process": "~4.4",
         "symfony/validator": "~2.3",
         "symfony/yaml": "~2.3",
         "twig/twig": "~1.42"
