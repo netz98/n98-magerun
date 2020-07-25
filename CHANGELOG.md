@@ -1,7 +1,15 @@
 RECENT CHANGES
 ==============
 
-DEVELOPMENT VERSION
+2.0.0
+-----
+
+* New: Magento 1.9.4.2 - 1.9.4.5 (by Fabian Blechschmidt)
+* New: PHPUnit 6 compatiblity (by Christian Münch)
+* New: Update Symfony, PHPCS, Twig, psy/psysh, Phing, Composer, Faker dependencies (by Christian Münch)
+* New: Remove old Magento Versions in test setup (by Christian Münch)
+* New: Remove test support for PHP <7.0 (by Christian Münch)
+* Imp: Increase default password length (by Fabian Blechschmidt)
 
 1.103.3
 -------
