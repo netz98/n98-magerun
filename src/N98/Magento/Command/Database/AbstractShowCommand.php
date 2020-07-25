@@ -187,23 +187,33 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
      */
     protected function formatVariables(array $vars)
     {
+        $isStandardFormat = $this->_input->getOption('format') === null;
         $rounding = (int) $this->_input->getOption('rounding');
         if ($rounding > -1) {
             foreach ($vars as $k => &$v) {
+                $v = trim($v);
                 if (true === $this->allowRounding($k)) {
                     $v = Filesystem::humanFileSize($v, $rounding);
                 }
                 if (isset($this->_specialFormat[$k])) {
-                    $v = $this->{$this->_specialFormat[$k]}($v);
+                    $formatter = $this->_specialFormat[$k];
+                    if (is_string($formatter) && method_exists($this, $formatter)) {
+                        $formatter = [$this, $formatter];
+                    }
+                    $v = call_user_func($formatter, $v);
                 }
             }
             unset($v);
         }
-        $maxWidth = $this->getMaxValueWidth($vars);
-        // align=right
-        foreach ($vars as &$v) {
-            $v = str_pad($v, $maxWidth, ' ', STR_PAD_LEFT);
+
+        if ($isStandardFormat) {
+            // align=right
+            $maxWidth = $this->getMaxValueWidth($vars);
+            foreach ($vars as &$v) {
+                $v = str_pad($v, $maxWidth, ' ', STR_PAD_LEFT);
+            }
         }
+
         return $vars;
     }
 

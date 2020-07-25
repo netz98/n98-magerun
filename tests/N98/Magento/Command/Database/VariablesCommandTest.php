@@ -95,11 +95,11 @@ class VariablesCommandTest extends TestCase
 
         $display = $commandTester->getDisplay();
 
-        $this->assertRegExp('~myisam_max_sort_file_size,"? *[0-9\.]+[A-Z]"?~', $commandTester->getDisplay());
+        $this->assertRegExp('~myisam_max_sort_file_size,[0-9\.]+[A-Z]~', $commandTester->getDisplay());
 
         // max_binlog_stmt_cache_size Introduced in 5.5.9
         if (-1 < version_compare($dbHelper->getMysqlVariable('version'), '5.5.9')) {
-            $this->assertRegExp('~max_binlog_stmt_cache_size," +[0-9\.]+[A-Z]"~', $display);
+            $this->assertRegExp('~max_binlog_stmt_cache_size,[0-9\.]+[A-Z]~', $display);
         }
     }
 }
