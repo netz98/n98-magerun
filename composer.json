@@ -24,7 +24,7 @@
         "symfony/process": "~2.3",
         "symfony/validator": "~2.3",
         "symfony/yaml": "~2.3",
-        "twig/twig": "~1.42"
+        "twig/twig": "~2.13"
     },
     "require-dev": {
         "bamarni/symfony-console-autocomplete": "^1.2.0",
