@@ -34,7 +34,7 @@ class DeleteCommand extends AbstractConfigCommand
         ;
 
         $help = <<<HELP
-To delete all entries if a path you can set the option --all.
+To delete all entries of a path you can set the option --all.
 HELP;
         $this->setHelp($help);
     }
