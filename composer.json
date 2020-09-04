@@ -20,7 +20,7 @@
         "psy/psysh": "~0.4",
         "symfony/console": "~2.3",
         "symfony/event-dispatcher": "~2.3",
-        "symfony/finder": "~2.3",
+        "symfony/finder": "~4.4",
         "symfony/process": "~2.3",
         "symfony/validator": "~2.3",
         "symfony/yaml": "~2.3",
