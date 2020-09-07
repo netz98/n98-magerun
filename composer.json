@@ -18,7 +18,7 @@
         "n98/junit-xml": "~1.0",
         "php": ">=5.4.0",
         "psy/psysh": "~0.4",
-        "symfony/console": "~2.3",
+        "symfony/console": "~4.4",
         "symfony/event-dispatcher": "~4.4",
         "symfony/finder": "~4.4",
         "symfony/process": "~4.4",
