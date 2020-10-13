@@ -746,7 +746,6 @@ commands:
     php:
       required-extensions:
         - simplexml
-        - mcrypt
         - hash
         - gd
         - dom
