@@ -185,7 +185,7 @@ commands:
       - name: openmage-20.0.3
         version: 20.0.3
         dist:
-          url: https://github.com/OpenMage/magento-lts/archive/20.0.3.zip
+          url: https://github.com/OpenMage/magento-lts/archive/v20.0.3.zip
           type: zip
           shasum: f7e9241c8b246518d84942de78c031228cb4e3f1
         extra:
