@@ -33,24 +33,6 @@ class FromCommandTest extends TestCase
                 '$expectations' => array("Module NotExistentModule was not found"),
                 '$notContains'  => array(),
             ),
-            'Mage_Compiler module, no --all' => array(
-                '$moduleName'   => 'Mage_Compiler',
-                '$all'          => 0,
-                '$expectations' => array("No modules depend on Mage_Compiler module"),
-                '$notContains'  => array(),
-            ),
-            'Mage_Compiler module, with --all' => array(
-                '$moduleName'   => 'Mage_Compiler',
-                '$all'          => 1,
-                '$expectations' => array("No modules depend on Mage_Compiler module"),
-                '$notContains'  => array(),
-            ),
-            'Mage_Compiler module, with -a' => array(
-                '$moduleName'   => 'Mage_Compiler',
-                '$all'          => 2,
-                '$expectations' => array("No modules depend on Mage_Compiler module"),
-                '$notContains'  => array(),
-            ),
             'Mage_Admin module, no --all' => array(
                 '$moduleName'   => 'Mage_Admin',
                 '$all'          => 0,
