@@ -25,17 +25,17 @@ class MetaCommandTest extends TestCase
 
         $this->assertContains('\'catalog\' => \Mage_Catalog_Helper_Data', $fileContent);
         $this->assertContains('\'core/config\' => \Mage_Core_Model_Config', $fileContent);
+
         if (class_exists('\Mage_Core_Model_Resource_Config')) { // since magento 1.7
             $this->assertContains('\'core/config\' => \Mage_Core_Model_Resource_Config', $fileContent);
         }
+
         $this->assertContains('\'wishlist\' => \Mage_Wishlist_Helper_Data', $fileContent);
+
         if (class_exists('\Mage_Core_Model_Resource_Helper_Mysql4')) {
             $this->assertContains('\'core\' => \Mage_Core_Model_Resource_Helper_Mysql4', $fileContent);
         }
-        $this->assertNotContains(
-            '\'core/mysql4_design_theme_collection\' => \Mage_Core_Model_Mysql4_Design_Theme_Collection',
-            $fileContent
-        );
+
         $this->assertNotContains(
             '\'payment/paygate_request\' => \Mage_Payment_Model_Paygate_Request',
             $fileContent
