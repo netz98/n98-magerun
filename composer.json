@@ -19,12 +19,12 @@
         "php": ">=5.4.0",
         "psy/psysh": "~0.4",
         "symfony/console": "~2.3",
-        "symfony/event-dispatcher": "~2.3",
-        "symfony/finder": "~2.3",
-        "symfony/process": "~2.3",
+        "symfony/event-dispatcher": "~4.4",
+        "symfony/finder": "~4.4",
+        "symfony/process": "~4.4",
         "symfony/validator": "~2.3",
         "symfony/yaml": "~2.3",
-        "twig/twig": "~1.42"
+        "twig/twig": "~2.13"
     },
     "require-dev": {
         "bamarni/symfony-console-autocomplete": "^1.2.0",

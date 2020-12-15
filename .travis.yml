@@ -31,9 +31,13 @@ matrix:
       php: 7.2
       env: MAGENTO_VERSION="magento-mirror-1.9.4.5" DB=mysql INSTALL_SAMPLE_DATA=no
 
+    - name: OpenMage LTS 20.0.3 PHP 7.3
+      php: 7.3
+      env: MAGENTO_VERSION="openmage-20.0.3" DB=mysql INSTALL_SAMPLE_DATA=no
+
 before_install:
   - phpenv config-rm xdebug.ini
-  - travis_retry composer self-update
+  - travis_retry composer self-update --1
   - travis_retry composer global require hirak/prestissimo
 
 install:

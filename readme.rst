@@ -37,6 +37,11 @@ Compatibility
 The tools will automatically be tested for multiple PHP versions. It's currently running in various Linux distributions and Mac OS X.
 Microsoft Windows is not fully supported (some Commands like `db:dump` or `install` are excluded).
 
+We test the tool agains this versions:
+
+- Magento 1.9.4.5 PHP 7.2
+- OpenMage LTS 20.0.3 PHP 7.3
+
 Installation
 ------------
 

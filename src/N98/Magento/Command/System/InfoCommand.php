@@ -59,7 +59,7 @@ class InfoCommand extends AbstractMagentoCommand
 
         $this->initMagento($softInitMode);
 
-        $this->infos['Version'] = \Mage::getVersion();
+        $this->infos['Version'] = $this->magentoVersion();
         $this->infos['Edition'] = ($this->_magentoEnterprise ? 'Enterprise' : 'Community');
         $this->infos['Root'] = $this->_magentoRootFolder;
 
@@ -102,6 +102,15 @@ class InfoCommand extends AbstractMagentoCommand
                 ->setHeaders(array('name', 'value'))
                 ->renderByFormat($output, $table, $input->getOption('format'));
         }
+    }
+
+    protected function magentoVersion()
+    {
+        if (method_exists('Mage', 'getOpenMageVersion')) {
+            return 'OpenMage LTS ' . \Mage::getOpenMageVersion();
+        }
+
+        return \Mage::getVersion();
     }
 
     protected function addCacheInfos()

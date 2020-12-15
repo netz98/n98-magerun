@@ -27,6 +27,8 @@ class InfoCommandTest extends TestCase
                 'key'     => 'version',
             )
         );
-        $this->assertRegExp('/\d+\.\d+\.\d+\.\d+/', $commandTester->getDisplay());
+
+        $commandResult = $commandTester->getDisplay();
+        $this->assertRegExp('/\d+\.\d+\.\d+/', $commandResult);
     }
 }

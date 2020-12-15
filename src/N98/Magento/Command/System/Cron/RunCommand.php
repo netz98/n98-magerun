@@ -42,6 +42,7 @@ HELP;
      * @param OutputInterface $output
      *
      * @return int|void
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -76,7 +77,7 @@ HELP;
      * @param array $jobs array of array containing "job" keyed string entries of job-codes
      *
      * @return string         job-code
-     * @throws InvalidArgumentException when user selects invalid job interactively
+     * @throws InvalidArgumentException|Exception when user selects invalid job interactively
      */
     protected function askJobCode(OutputInterface $output, array $jobs)
     {
@@ -91,7 +92,8 @@ HELP;
 
         /** @var $dialogHelper DialogHelper */
         $dialogHelper = $this->getHelper('dialog');
-        $jobCode = $dialogHelper->askAndValidate(
+
+        return $dialogHelper->askAndValidate(
             $output,
             $question,
             function ($typeInput) use ($keyMap, $jobs) {
@@ -103,8 +105,6 @@ HELP;
                 return $jobs[$key]['Job'];
             }
         );
-
-        return $jobCode;
     }
 
     /**
@@ -142,6 +142,7 @@ HELP;
     /**
      * @param array $callback
      * @param string $jobCode
+     * @throws Exception
      */
     private function executeConfigModel($callback, $jobCode)
     {
@@ -164,9 +165,10 @@ HELP;
                 ->setStatus(Mage_Cron_Model_Schedule::STATUS_RUNNING)
                 ->setCreatedAt($timestamp)
                 ->setExecutedAt($timestamp)
+                ->setScheduledAt($timestamp)
                 ->save();
 
-            call_user_func_array($callback, array($schedule));
+            $callback($schedule);
 
             $schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS);
         } catch (Exception $cronException) {
@@ -245,8 +247,6 @@ HELP;
             throw new RuntimeException(sprintf('No run-config found for job "%s"!', $jobCode));
         }
 
-        $runConfigModel = (string) $runConfig->model;
-
-        return $runConfigModel;
+        return (string) $runConfig->model;
     }
 }
