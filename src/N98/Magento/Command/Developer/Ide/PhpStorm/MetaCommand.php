@@ -138,6 +138,7 @@ class MetaCommand extends AbstractMagentoCommand
 
     const VERSION_OLD = 'old';
     const VERSION_2017 = '2016.2+';
+    const VERSION_2019 = '2019.1+';
 
     protected function configure()
     {
@@ -147,11 +148,11 @@ class MetaCommand extends AbstractMagentoCommand
                 'meta-version',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'PhpStorm Meta version (' . self::VERSION_OLD . ', ' . self::VERSION_2017 . ')',
-                self::VERSION_2017
+                'PhpStorm Meta version (' . self::VERSION_OLD . ', ' . self::VERSION_2017 . ', ' . self::VERSION_2019 . ')',
+                self::VERSION_2019
             )
             ->addOption('stdout', null, InputOption::VALUE_NONE, 'Print to stdout instead of file .phpstorm.meta.php')
-            ->setDescription('Generates meta data file for PhpStorm auto completion (default version : ' . self::VERSION_2017 . ')');
+            ->setDescription('Generates meta data file for PhpStorm auto completion (default version : ' . self::VERSION_2019 . ')');
     }
 
     /**
@@ -186,6 +187,8 @@ class MetaCommand extends AbstractMagentoCommand
                 $this->writeToOutputOld($input, $output, $classMaps);
             } elseif ($version == self::VERSION_2017) {
                 $this->writeToOutputV2017($input, $output, $classMaps);
+            } elseif ($version == self::VERSION_2019) {
+                $this->writeToOutputV2019($input, $output, $classMaps);
             }
         } else {
             $output->write('Magento 2 is currently not supported');
@@ -460,6 +463,88 @@ PHP;
             }
             $map .= <<<PHP
     ];
+}
+PHP;
+            if ($input->getOption('stdout')) {
+                $output->writeln($map);
+            } else {
+                $metaPath = $this->_magentoRootFolder . '/.phpstorm.meta.php';
+                if (is_file($metaPath)) {
+                    if (\unlink($metaPath)) {
+                        $output->writeln('<info>Deprecated file <comment>.phpstorm.meta.php</comment> removed</info>');
+                    }
+                }
+                if (!is_dir($metaPath)) {
+                    if (\mkdir($metaPath)) {
+                        $output->writeln('<info>Directory <comment>.phpstorm.meta.php</comment> created</info>');
+                    }
+                }
+                $group = str_replace(array(' ', '/'), '_', $group);
+                if (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php/magento_' . $group . '.meta.php', $map)) {
+                    $output->writeln('<info>File <comment>.phpstorm.meta.php/magento_' . $group . '.meta.php</comment> generated</info>');
+                }
+            }
+        }
+
+        $baseMap = <<<PHP
+<?php
+namespace PHPSTORM_META {
+PHP;
+        $baseMap .= "\n";
+        foreach ($this->methodFactories as $group => $methods) {
+            $map = $baseMap;
+            foreach ($methods as $method) {
+                $map .= "    override( " . $method . "(0),\n";
+                $map .= "        map( [\n";
+                asort($classMaps[$group]);
+                foreach ($classMaps[$group] as $classPrefix => $class) {
+                    if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $class)) {
+                        $map .= "            '$classPrefix' => \\$class::class,\n";
+                    } else {
+                        $output->writeln('<warning>Invalid class name <comment>' . $class . '</comment> ignored</warning>');
+                    }
+                }
+                $map .= "        ])\n";
+                $map .= "    );\n";
+            }
+            $map .= <<<PHP
+}
+PHP;
+            if ($input->getOption('stdout')) {
+                $output->writeln($map);
+            } else {
+                $group = str_replace(array(' ', '/'), '_', $group);
+                if (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php/magento_' . $group . '_methods.meta.php', $map)) {
+                    $output->writeln('<info>File <comment>.phpstorm.meta.php/magento_' . $group . '_methods.meta.php</comment> generated</info>');
+                }
+            }
+        }
+    }
+
+    protected function writeToOutputV2019(InputInterface $input, OutputInterface $output, $classMaps)
+    {
+        $baseMap = <<<PHP
+<?php
+namespace PHPSTORM_META {
+PHP;
+        $baseMap .= "\n";
+        foreach ($this->groupFactories as $group => $methods) {
+            $map = $baseMap;
+            foreach ($methods as $method) {
+                $map .= "    override( " . $method . "(0),\n";
+                $map .= "        map( [\n";
+                asort($classMaps[$group]);
+                foreach ($classMaps[$group] as $classPrefix => $class) {
+                    if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $class)) {
+                        $map .= "            '$classPrefix' => \\$class::class,\n";
+                    } else {
+                        $output->writeln('<warning>Invalid class name <comment>' . $class . '</comment> ignored</warning>');
+                    }
+                }
+                $map .= "        ])\n";
+                $map .= "    );\n";
+            }
+            $map .= <<<PHP
 }
 PHP;
             if ($input->getOption('stdout')) {
