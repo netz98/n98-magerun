@@ -23,21 +23,21 @@ class MetaCommandTest extends TestCase
 
         $fileContent = $commandTester->getDisplay(true);
 
-        $this->assertContains('\'catalog\' instanceof \Mage_Catalog_Helper_Data', $fileContent);
-        $this->assertContains('\'core/config\' instanceof \Mage_Core_Model_Config', $fileContent);
+        $this->assertContains('\'catalog\' => \Mage_Catalog_Helper_Data', $fileContent);
+        $this->assertContains('\'core/config\' => \Mage_Core_Model_Config', $fileContent);
 
         if (class_exists('\Mage_Core_Model_Resource_Config')) { // since magento 1.7
-            $this->assertContains('\'core/config\' instanceof \Mage_Core_Model_Resource_Config', $fileContent);
+            $this->assertContains('\'core/config\' => \Mage_Core_Model_Resource_Config', $fileContent);
         }
 
-        $this->assertContains('\'wishlist\' instanceof \Mage_Wishlist_Helper_Data', $fileContent);
+        $this->assertContains('\'wishlist\' => \Mage_Wishlist_Helper_Data', $fileContent);
 
         if (class_exists('\Mage_Core_Model_Resource_Helper_Mysql4')) {
-            $this->assertContains('\'core\' instanceof \Mage_Core_Model_Resource_Helper_Mysql4', $fileContent);
+            $this->assertContains('\'core\' => \Mage_Core_Model_Resource_Helper_Mysql4', $fileContent);
         }
 
         $this->assertNotContains(
-            '\'payment/paygate_request\' instanceof \Mage_Payment_Model_Paygate_Request',
+            '\'payment/paygate_request\' => \Mage_Payment_Model_Paygate_Request',
             $fileContent
         );
     }
