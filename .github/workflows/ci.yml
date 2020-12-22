@@ -46,7 +46,7 @@ jobs:
     name: ${{ matrix.run-job }}
     runs-on: ${{ matrix.machine }}
     continue-on-error: ${{ matrix.experimental }}
-    needs: build
+    needs: [build, test-setup]
 
     strategy:
       fail-fast: false
@@ -75,3 +75,30 @@ jobs:
       - uses: ktomk/run-travis-yml@v1
         with:
           run-job: ${{ matrix.run-job }}
+
+
+  test-setup:
+    name: Test Setup
+    runs-on: ubuntu-18.04
+    steps:
+      - {name: mysqld,shell: bash,run: 'sudo systemctl start mysql.service'}
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/composer
+            vendor
+          key: composer-${{ hashFiles('composer.lock') }}-test-setup-${{ runner.os }}-
+          restore-keys: |
+            composer-${{ hashFiles('composer.lock') }}-test-setup-${{ runner.os }}-
+            composer-${{ hashFiles('composer.lock') }}-test-setup-
+            composer-${{ hashFiles('composer.lock') }}-
+            composer-
+
+      - name: test_setup.sh
+        shell: bash
+        run: |
+          composer install --ignore-platform-reqs --prefer-dist --no-progress --no-suggest
+          test_setup_db_pass=root \
+          test_setup_magento_version=openmage-20.0.4 \
+              build/local/test_setup.sh
