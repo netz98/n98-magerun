@@ -59,7 +59,7 @@ jobs:
         include:
           - machine: 'ubuntu-18.04'
             php-version: '7.3'
-            run-job: 'OpenMage LTS 20.0.3 PHP 7.3'
+            run-job: 'OpenMage LTS 20.0.4 PHP 7.3'
             experimental: false
 
     env:
