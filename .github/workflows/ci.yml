@@ -25,8 +25,7 @@ jobs:
         with:
           php-version: '7.3'
 
-      - id: composer-cache
-        uses: actions/cache@v2
+      - uses: actions/cache@v2
         with:
           path: |
             ~/.cache/composer
