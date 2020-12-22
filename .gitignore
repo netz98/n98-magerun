@@ -5,6 +5,7 @@
 /n98-magerun.phar
 /n98-magerun.phar.asc
 /build/output/
+/build/vendor/
 
 # Magerun stopfile
 /.n98-magerun
@@ -13,4 +14,5 @@
 /.idea/
 /nbproject/
 
+# Phpunit configuration
 /phpunit.xml
