@@ -3,21 +3,51 @@ name: CI
 on:
   push:
     branches:
-      - 'master'
+      - $default-branch
       - 'develop'
       - 'bugfix/*'
       - 'feature/*'
       - 'release/*'
   pull_request:
     branches:
+      - $default-branch
       - 'develop'
-      - 'master'
 
 jobs:
+  build:
+    name: PHP Composer
+    runs-on: 'ubuntu-18.04'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: symfonycorp/security-checker-action@v2
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.3'
+
+      - id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/composer
+            vendor
+          key: composer-${{ hashFiles('composer.lock') }}-${{ runner.os }}-
+          restore-keys: |
+            composer-${{ hashFiles('composer.lock') }}-${{ runner.os }}-
+            composer-${{ hashFiles('composer.lock') }}-
+            composer-
+
+      - run: composer install --prefer-dist --no-progress --no-suggest
+      - run: composer validate --strict
+      - run: composer validate --with-dependencies
+      - run: composer validate --with-dependencies --strict || echo "failure intentionally allowed"
+
+
   travis-ci-migration:
     name: ${{ matrix.run-job }}
     runs-on: ${{ matrix.machine }}
     continue-on-error: ${{ matrix.experimental }}
+    needs: build
 
     strategy:
       fail-fast: false
