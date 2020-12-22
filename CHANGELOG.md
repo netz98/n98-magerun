@@ -6,7 +6,7 @@ RECENT CHANGES
 
 * New: Github Actions Workflow for QA (by Tom Klingenberg)
 * New: Detect correct OpenMage version in sys:info command (by Sven Reichel)
-* Add: OpenMage LTS 20.0.3 to installer and QA (by Christian Münch)
+* Add: OpenMage LTS 20.0.3 and 20.0.4 to installer (by Christian Münch)
 * Imp: Update for new standard phpstorm.meta used by the JetBrains/phpstorm-stubs library (by Francesco Boes)
 : Imp: Remove mcrypt from required PHP extension (by Simon Sprankel)
 * Fix: Typo in help (by Rico Neitzel)
