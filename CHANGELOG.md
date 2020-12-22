@@ -1,11 +1,23 @@
 RECENT CHANGES
 ==============
 
+2.1.0
+-----
+
+* New: Github Actions Workflow for QA (by Tom Klingenberg)
+* New: Detect correct OpenMage version in sys:info command (by Sven Reichel)
+* Add: OpenMage LTS 20.0.3 to installer and QA (by Christian Münch)
+* Imp: Update for new standard phpstorm.meta used by the JetBrains/phpstorm-stubs library (by Francesco Boes)
+: Imp: Remove mcrypt from required PHP extension (by Simon Sprankel)
+* Fix: Typo in help (by Rico Neitzel)
+* Fix: Add scheduled_at to fix issue with Aoe_Scheduler (by Christian Münch)
+* New: Update Dependencies: Symfony, faker, composer, psysh
+
 2.0.0
 -----
 
 * New: Magento 1.9.4.2 - 1.9.4.5 (by Fabian Blechschmidt)
-* New: PHPUnit 6 compatiblity (by Christian Münch)
+* New: PHPUnit 6 compatibility (by Christian Münch)
 * New: Update Symfony, PHPCS, Twig, psy/psysh, Phing, Composer, Faker dependencies (by Christian Münch)
 * New: Remove old Magento Versions in test setup (by Christian Münch)
 * New: Remove test support for PHP <7.0 (by Christian Münch)
