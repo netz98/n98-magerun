@@ -22,21 +22,22 @@ magento_is_installed() {
     fi
 }
 
-test_setup_basename="n98-magerun"
-test_setup_magerun_cmd="bin/${test_setup_basename}"
-test_setup_directory="./magento/www"
-test_setup_db_host="127.0.0.1"
+test_setup_basename="${test_setup_basename-n98-magerun}"
+test_setup_magerun_cmd="${test_setup_magerun_cmd-bin/$test_setup_basename}"
+test_setup_directory="${test_setup_directory-./magento/www}"
+test_setup_db_host="${test_setup_db_host-127.0.0.1}"
 test_setup_db_port="${test_setup_db_port:-3306}"
-test_setup_db_user="root"
-test_setup_db_pass=""
-test_setup_db_name="magento_magerun_test"
+test_setup_db_user="${test_setup_db_user-root}"
+test_setup_db_pass="${test_setup_db_pass-}"
+test_setup_db_name="${test_setup_db_name-magento_magerun_test}"
+test_setup_magento_version="${test_setup_magento_version-magento-mirror-1.9.4.5}"
 
 if [ "" != "$(installed_version)" ]; then
     buildecho "version '$(installed_version)' already installed, skipping setup"
 else
     ensure_environment
     ensure_mysql_db
-    ensure_magento "magento-mirror-1.9.2.3"
+    ensure_magento "$test_setup_magento_version"
 fi
 
 # create stopfile if it does not yet exists
