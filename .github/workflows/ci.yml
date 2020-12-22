@@ -75,4 +75,4 @@ jobs:
       - {name: mysqld,shell: bash,run: 'sudo systemctl start mysql.service'}
       - uses: ktomk/run-travis-yml@v1
         with:
-          run_job: ${{ matrix.run-job }}
+          run-job: ${{ matrix.run-job }}
