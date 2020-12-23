@@ -3,14 +3,14 @@ name: CI
 on:
   push:
     branches:
-      - $default-branch
+      - 'master'
       - 'develop'
       - 'bugfix/*'
       - 'feature/*'
       - 'release/*'
   pull_request:
     branches:
-      - $default-branch
+      - 'master'
       - 'develop'
 
 jobs:
