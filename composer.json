@@ -39,7 +39,6 @@
             "N98": "src"
         },
         "psr-4": {
-            "N98\\": "shared/src/N98"
         }
     },
     "autoload-dev": {

@@ -1,7 +1,7 @@
 <?php
 
 if (!class_exists('N98\MagerunBootstrap')) {
-    require_once __DIR__ . '/../shared/src/N98/MagerunBootstrap.php';
+    require_once __DIR__ . '/N98/MagerunBootstrap.php';
 }
 
 try {
