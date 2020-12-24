@@ -32,8 +32,8 @@ class ApplicationTest extends TestCase
         $this->assertEquals(Application::APP_VERSION, trim(file_get_contents(__DIR__ . '/../../../version.txt')));
 
         /* @var $loader \Composer\Autoload\ClassLoader */
-        $prefixes = $loader->getPrefixes();
-        $this->assertArrayHasKey('N98', $prefixes);
+        $prefixes = $loader->getPrefixesPsr4();
+        $this->assertArrayHasKey('N98\\', $prefixes);
 
         $distConfigArray = Yaml::parse(file_get_contents(__DIR__ . '/../../../config.yaml'));
 

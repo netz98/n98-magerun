@@ -35,15 +35,13 @@
         "mikey179/vfsstream": "^1.6"
     },
     "autoload": {
-        "psr-0": {
-            "N98": "src"
-        },
         "psr-4": {
+            "N98\\": "src/N98"
         }
     },
     "autoload-dev": {
-        "psr-0": {
-            "N98": "tests"
+        "psr-4": {
+            "N98\\": "tests/N98"
         }
     },
     "authors": [
