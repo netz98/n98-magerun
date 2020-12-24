@@ -23,9 +23,6 @@ Build phar with:
     <fileset dir="src"  id="src_folder">
         <include name="**/**" />
     </fileset>
-    <fileset dir="shared/src"  id="shared_src_folder">
-        <include name="**/**" />
-    </fileset>
     <fileset dir="res" id="res_folder">
         <include name="dev/**" />
         <include name="twig/**" />
@@ -124,7 +121,6 @@ Build phar with:
             </metadata>
             <fileset refid="root_folder"/>
             <fileset refid="src_folder"/>
-            <fileset refid="shared_src_folder"/>
             <fileset refid="res_folder"/>
             <fileset refid="vendor_folder"/>
         </patched-pharpackage>
