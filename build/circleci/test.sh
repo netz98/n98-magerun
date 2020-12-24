@@ -16,7 +16,7 @@ buildsmokerun
 
 buildecho "run magerun phpunit testsuite:"
 php -f vendor/phpunit/phpunit/phpunit -- --coverage-clover "${CLOVER_XML}"  \
-        --log-junit "${CIRCLE_TEST_REPORTS}/junit/junit.xml"
+        --log-junit "./build/coverage/junit/junit.xml"
 
 buildecho "check coverage percentage:"
 php -f tests/check-coverage.php -- "${CLOVER_XML}" "${COVERAGE}"

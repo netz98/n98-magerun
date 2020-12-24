@@ -14,10 +14,10 @@ buildsmokerun()
     build/circleci/smoke.sh
 }
 
-export CLOVER_XML="${CIRCLE_ARTIFACTS:-.}/clover.xml"
+export CLOVER_XML="./build/coverage/clover.xml"
 buildecho "clover.xml: '${CLOVER_XML}', exported as \$CLOVER_XML."
 
-export MAGENTO_VERSION="magento-mirror-1.9.2.1"
+export MAGENTO_VERSION="${MAGENTO_VERSION-magento-mirror-1.9.2.1}"
 export DB=mysql
 export INSTALL_SAMPLE_DATA=yes
 export COVERAGE=65
