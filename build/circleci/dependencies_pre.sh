@@ -17,16 +17,10 @@ magerun_install()
 
     php -dmemory_limit=1g -f bin/n98-magerun -- install \
             --magentoVersionByName="${version}" --installationFolder="${dir}" \
-            --dbHost=127.0.0.1 --dbUser=root --dbPass="" --dbName="magento_travis" \
+            --dbHost=127.0.0.1 --dbUser=root --dbPass="${SETUP_DB_PASS-}" --dbName="magento_travis" \
             --installSampleData=${data} --useDefaultConfigParams=yes \
             --baseUrl="http://travis.magento.local/"
 }
-
-# enable xdebug
-sed -i 's/^;//' ~/.phpenv/versions/$(phpenv global)/etc/conf.d/xdebug.ini
-
-# php.ini (memory limit)
-cp build/circleci/php.ini ~/.phpenv/versions/$(phpenv global)/etc/conf.d/
 
 # warumup composer dist packages
 composer install --prefer-dist --no-interaction --quiet

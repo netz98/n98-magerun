@@ -102,3 +102,41 @@ jobs:
           test_setup_db_pass=root \
           test_setup_magento_version=openmage-20.0.4 \
               build/local/test_setup.sh
+
+
+  codecov: # previously codecov was bound via circleci which paused for ~two years
+    name: Code Coverage
+    runs-on: ubuntu-18.04
+    steps:
+      - {name: mysqld,shell: bash,run: 'sudo systemctl start mysql.service'}
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.3'
+          coverage: xdebug
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/composer
+            vendor
+          key: composer-${{ hashFiles('composer.lock') }}-codecov-${{ runner.os }}-
+          restore-keys: |
+            composer-${{ hashFiles('composer.lock') }}-codecov-${{ runner.os }}-
+            composer-${{ hashFiles('composer.lock') }}-codecov-
+            composer-${{ hashFiles('composer.lock') }}-
+            composer-
+
+      - name: run circle.yml scripts
+        env:
+          SETUP_DB_PASS: root
+          MAGENTO_VERSION: magento-mirror-1.9.4.5
+        run: |
+          build/circleci/dependencies_pre.sh
+          build/circleci/test.sh
+      - uses: codecov/codecov-action@v1
+        with:
+          file: ./clover.xml # $CLOVER_XML
