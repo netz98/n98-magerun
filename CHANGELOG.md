@@ -10,8 +10,9 @@ RECENT CHANGES
 * New: Github Actions Workflow for QA (by Tom Klingenberg)
 * New: Detect correct OpenMage version in sys:info command (by Sven Reichel)
 * Add: OpenMage LTS 20.0.3 and 20.0.4 to installer (by Christian Münch)
+* Add: add "no-tablespaces" option (by Tony MageMega)
 * Imp: Update for new standard phpstorm.meta used by the JetBrains/phpstorm-stubs library (by Francesco Boes)
-: Imp: Remove mcrypt from required PHP extension (by Simon Sprankel)
+* Imp: Remove mcrypt from required PHP extension (by Simon Sprankel)
 * Fix: Typo in help (by Rico Neitzel)
 * Fix: Add scheduled_at to fix issue with Aoe_Scheduler (by Christian Münch)
 * New: Update Dependencies: Symfony, faker, composer, psysh
