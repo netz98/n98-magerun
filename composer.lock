@@ -529,25 +529,25 @@
         },
         {
             "name": "n98/junit-xml",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cmuench/junit-xml.git",
-                "reference": "7df0dbaf413fcaa1a63ffbcef18654e7a4cceb46"
+                "reference": "0017dd92ac8cb619f02e32f4cffd768cfe327c73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cmuench/junit-xml/zipball/7df0dbaf413fcaa1a63ffbcef18654e7a4cceb46",
-                "reference": "7df0dbaf413fcaa1a63ffbcef18654e7a4cceb46",
+                "url": "https://api.github.com/repos/cmuench/junit-xml/zipball/0017dd92ac8cb619f02e32f4cffd768cfe327c73",
+                "reference": "0017dd92ac8cb619f02e32f4cffd768cfe327c73",
                 "shasum": ""
             },
             "require-dev": {
-                "phpunit/phpunit": "3.7.*"
+                "phpunit/phpunit": "^9.5.0"
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "N98\\JUnitXml": "src/"
+                "psr-4": {
+                    "N98\\JUnitXml\\": "src/N98/JUnitXml"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -561,7 +561,11 @@
                 }
             ],
             "description": "JUnit XML Document generation library",
-            "time": "2013-11-23T13:11:26+00:00"
+            "support": {
+                "issues": "https://github.com/cmuench/junit-xml/issues",
+                "source": "https://github.com/cmuench/junit-xml/tree/1.1.0"
+            },
+            "time": "2020-12-25T09:08:58+00:00"
         },
         {
             "name": "nikic/php-parser",
