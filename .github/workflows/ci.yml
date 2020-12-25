@@ -139,4 +139,4 @@ jobs:
           build/circleci/test.sh
       - uses: codecov/codecov-action@v1
         with:
-          file: ./clover.xml # $CLOVER_XML
+          file: ./build/coverage/clover.xml # $CLOVER_XML
