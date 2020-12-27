@@ -61,7 +61,7 @@ class InstallCommandPackageVersionTest extends TestCase
             );
             $nameConstraint[$name] = 1;
 
-            if (!$this->isQuadripartiteVersionNumber($version)) {
+            if (!$this->isVersionNumber($version)) {
                 $nonVersionsList[] = $nameAndVersion;
                 $nonVersions++;
                 continue;
@@ -135,6 +135,37 @@ class InstallCommandPackageVersionTest extends TestCase
         list($nameSuffix, $nameVersion) = preg_split('~-(?=[^-]+$)~', $name) + array(1 => null);
 
         return array($nameSuffix, $nameVersion);
+    }
+
+    /**
+     * @param string $buffer
+     * @return bool
+     */
+    private function isVersionNumber($buffer)
+    {
+        return $this->isQuadripartiteVersionNumber($buffer)
+            || $this->isTripartiteOpenMageVersionNumber($buffer);
+    }
+
+    /**
+     * Openmage version numbers start with the year (tenth) by
+     * their release cycle.
+     *
+     * @param string $buffer
+     * @return bool
+     */
+    private function isTripartiteOpenMageVersionNumber($buffer) {
+        if (!preg_match('~^(?:19|2\d)\.\d+\.\d+$~', $buffer)) {
+            return false;
+        }
+
+        foreach (explode('.', $buffer) as $part) {
+            if ($part !== (string) (int) $part) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
