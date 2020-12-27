@@ -56,7 +56,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     private function getTestApplication()
     {
         if (null === $this->testApplication) {
-            $this->testApplication = new TestApplication();
+            $this->testApplication = new TestApplication($this);
         }
 
         return $this->testApplication;

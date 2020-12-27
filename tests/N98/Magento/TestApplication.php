@@ -7,11 +7,8 @@
 
 namespace N98\Magento;
 
-use PHPUnit_Framework_MockObject_Generator;
-use PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount;
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_MockObject_Stub_Return;
-use PHPUnit_Framework_SkippedTestError;
 use RuntimeException;
 
 /**
@@ -40,6 +37,11 @@ class TestApplication
      * @var string
      */
     private $basename;
+
+    /**
+     * @var TestCase
+     */
+    private $testCase;
 
     /**
      * @param string $varname name of the environment variable containing the test-root
@@ -79,22 +81,24 @@ class TestApplication
     }
 
     /**
+     * @param TestCase $testCase
      * @return array
      */
-    public static function getConfig()
+    public static function getConfig(TestCase $testCase)
     {
-        $testApplication = new TestApplication();
-        $config = $testApplication->getApplication()->getConfig();
+        $testApplication = new TestApplication($testCase);
 
-        return $config;
+        return $testApplication->getApplication()->getConfig();
     }
 
     /**
      * TestApplication constructor.
      *
-     * @param string $varname [optional] name of the environment variable containing the path to magento-root
+     * @param TestCase $testCase
+     * @param null $varname [optional] name of the environment variable containing the path to magento-root, "N98_MAGERUN_TEST_MAGENTO_ROOT" by default
+     * @param null $basename [optional] of the stop-file, ".n98-magerun" by default
      */
-    public function __construct($varname = null, $basename = null)
+    public function __construct(TestCase $testCase, $varname = null, $basename = null)
     {
         if (null === $varname) {
             $varname = 'N98_MAGERUN_TEST_MAGENTO_ROOT';
@@ -102,6 +106,7 @@ class TestApplication
         if (null === $basename) {
             $basename = '.n98-magerun';
         }
+        $this->testCase = $testCase;
         $this->varname = $varname;
         $this->basename = $basename;
     }
@@ -124,7 +129,7 @@ class TestApplication
         $root = self::getTestMagentoRootFromEnvironment($varname, $this->basename);
 
         if (null === $root) {
-            $this->markTestSkipped(
+            throw new \PHPUnit\Framework\SkippedTestError(
                 "Please specify environment variable $varname with path to your test magento installation!"
             );
         }
@@ -140,10 +145,10 @@ class TestApplication
         if ($this->application === null) {
             $root = $this->getTestMagentoRoot();
 
-            $mockObjectGenerator = new PHPUnit_Framework_MockObject_Generator;
-
             /** @var Application|PHPUnit_Framework_MockObject_MockObject $application */
-            $application = $mockObjectGenerator->getMock('N98\Magento\Application', array('getMagentoRootFolder'));
+            $application = $this->testCase->getMockBuilder('N98\Magento\Application')
+                ->setMethods(array('getMagentoRootFolder'))
+                ->getMock();
 
             // Get the composer bootstrap
             if (defined('PHPUNIT_COMPOSER_INSTALL')) {
@@ -157,7 +162,7 @@ class TestApplication
             }
 
             $application->setAutoloader($loader);
-            $application->expects($this->any())->method('getMagentoRootFolder')->will($this->returnValue($root));
+            $application->method('getMagentoRootFolder')->willReturn($root);
 
             spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
 
@@ -172,45 +177,5 @@ class TestApplication
         }
 
         return $this->application;
-    }
-
-    /*
-     * PHPUnit TestCase methods
-     */
-
-    /**
-     * Returns a matcher that matches when the method it is evaluated for
-     * is executed zero or more times.
-     *
-     * @return PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount
-     * @since  Method available since Release 3.0.0
-     */
-    public static function any()
-    {
-        return new PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount;
-    }
-
-    /**
-     *
-     *
-     * @param  mixed $value
-     * @return PHPUnit_Framework_MockObject_Stub_Return
-     * @since  Method available since Release 3.0.0
-     */
-    public static function returnValue($value)
-    {
-        return new PHPUnit_Framework_MockObject_Stub_Return($value);
-    }
-
-    /**
-     * Mark the test as skipped.
-     *
-     * @param  string $message
-     * @throws PHPUnit_Framework_SkippedTestError
-     * @since  Method available since Release 3.0.0
-     */
-    public static function markTestSkipped($message = '')
-    {
-        throw new PHPUnit_Framework_SkippedTestError($message);
     }
 }
