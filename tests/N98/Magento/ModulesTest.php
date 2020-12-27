@@ -9,7 +9,7 @@ namespace N98\Magento;
 
 use InvalidArgumentException;
 use N98\Magento\Command\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Console\Input\ArrayInput;
 
 /**
@@ -71,7 +71,7 @@ class ModulesTest extends TestCase
      *
      * @param string $option
      * @param string $value
-     * @return PHPUnit_Framework_MockObject_MockObject|ArrayInput
+     * @return \PHPUnit\Framework\MockObject\MockObject|ArrayInput
      */
     private function filter($option = null, $value = null)
     {

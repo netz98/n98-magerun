@@ -8,7 +8,6 @@
 namespace N98\Magento;
 
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 use RuntimeException;
 
 /**
@@ -138,14 +137,14 @@ class TestApplication
     }
 
     /**
-     * @return Application|PHPUnit_Framework_MockObject_MockObject
+     * @return Application|\PHPUnit\Framework\MockObject\MockObject
      */
     public function getApplication()
     {
         if ($this->application === null) {
             $root = $this->getTestMagentoRoot();
 
-            /** @var Application|PHPUnit_Framework_MockObject_MockObject $application */
+            /** @var Application|\PHPUnit\Framework\MockObject\MockObject $application */
             $application = $this->testCase->getMockBuilder('N98\Magento\Application')
                 ->setMethods(array('getMagentoRootFolder'))
                 ->getMock();

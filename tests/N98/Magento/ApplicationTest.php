@@ -151,7 +151,7 @@ class ApplicationTest extends TestCase
             )
         );
 
-        /** @var \PHPUnit_Framework_MockObject_MockObject $configurationLoader */
+        /** @var \N98\Magento\Application\ConfigurationLoader|\PHPUnit\Framework\MockObject\MockObject $configurationLoader */
         $configurationLoader = $this->getMockBuilder(\N98\Magento\Application\ConfigurationLoader::class)
             ->setMethods(['getConfigurationLoaderDir'])
             ->setConstructorArgs([[], false, new NullOutput()])

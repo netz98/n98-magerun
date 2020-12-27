@@ -44,42 +44,42 @@ class VerifyOrDieTest extends TestCase
 
     /**
      * @test a filename must have at least one byte
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Filename is zero-length string
      */
     public function zeroLengthFilename()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Filename is zero-length string');
         VerifyOrDie::filename('');
     }
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Parameter basename must be of type string, NULL given
      */
     public function invalidArugment()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Parameter basename must be of type string, NULL given');
         VerifyOrDie::filename(null);
     }
 
     /**
      * @test a filename must not start with a dash
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Filename '-rf' starts with a dash
      */
     public function startWithDashFilename()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Filename \'-rf\' starts with a dash');
         VerifyOrDie::filename('-rf');
     }
 
     /**
      * @test
      * @dataProvider provideNonPortableFilenames
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage is not portable
      */
     public function nonPortableFilenameThrowsException($filename)
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('is not portable');
         VerifyOrDie::filename($filename);
     }
 

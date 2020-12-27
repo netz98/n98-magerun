@@ -57,11 +57,11 @@ class ConfigFileTest extends TestCase
 
     /**
      * @test
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Failed to parse config-file 'data://,'
      */
     public function parseEmptyFile()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Failed to parse config-file \'data://,\'');
         $configFile = new ConfigFile();
         $configFile->loadFile('data://,');
         $this->addToAssertionCount(1);
@@ -71,10 +71,10 @@ class ConfigFileTest extends TestCase
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
      */
     public function invalidFileThrowsException()
     {
+        $this->expectException(\InvalidArgumentException::class);
         @ConfigFile::createFromFile(":");
     }
 }

@@ -220,7 +220,7 @@ class DumpCommandTest extends TestCase
         if ($dumpFile->isReadable()) {
             $this->assertTrue(unlink($dumpFile), 'Precondition to unlink that the file does not exists');
         }
-        $this->assertFalse(is_readable($dumpFile), 'Precondition that the file does not exists');
+        $this->assertNotIsReadable((string)$dumpFile, 'Precondition that the file does not exists');
 
         $command = $this->getCommand();
         $commandTester = new CommandTester($command);
