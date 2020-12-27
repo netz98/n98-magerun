@@ -273,6 +273,7 @@ class ConfigurationLoader
             $this->_userConfig = array();
             $locator = new ConfigLocator($this->_customConfigFilename, $magentoRootFolder);
             if ($userConfigFile = $locator->getUserConfigFile()) {
+                $this->logDebug('Load user config <comment>' . $userConfigFile->getPath() . '</comment>');
                 $this->_userConfig = $userConfigFile->toArray();
             }
         }

@@ -109,4 +109,12 @@ class ConfigFile
 
         return ArrayFunctions::mergeArrays($array, $result);
     }
+
+    /**
+     * @return string path to config-file
+     */
+    public function getPath(): string
+    {
+        return $this->path;
+    }
 }
