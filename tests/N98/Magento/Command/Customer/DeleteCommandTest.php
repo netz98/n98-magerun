@@ -89,17 +89,14 @@ class DeleteCommandTest extends TestCase
             ->getMock();
 
         $this->command
-            ->expects(self::any())
             ->method('getCustomerModel')
             ->will(self::returnValue($this->customerModel));
 
         $this->command
-            ->expects(self::any())
             ->method('getCustomerCollection')
             ->will(self::returnValue($this->customerCollection));
 
         $this->command
-            ->expects(self::any())
             ->method('getHelper')
             ->will(self::returnValueMap(array(
                 array('dialog', $this->dialog),
@@ -107,17 +104,14 @@ class DeleteCommandTest extends TestCase
             )));
 
         $this->dialog
-            ->expects(self::any())
             ->method('getQuestion')
             ->will(self::returnArgument(0));
 
         $this->parameter
-            ->expects(self::any())
             ->method('askWebsite')
             ->will(self::returnValue($this->website));
 
         $this->website
-            ->expects(self::any())
             ->method('getId')
             ->will(self::returnValue(1));
     }

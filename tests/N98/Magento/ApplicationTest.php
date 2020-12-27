@@ -158,7 +158,6 @@ class ApplicationTest extends TestCase
             ->getMock();
 
         $configurationLoader
-            ->expects(self::any())
             ->method('getConfigurationLoaderDir')
             ->willReturn(vfsStream::url('root/vendor/n98/magerun/src/N98/Magento/Command'));
 

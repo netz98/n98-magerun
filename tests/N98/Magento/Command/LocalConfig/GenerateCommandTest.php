@@ -21,7 +21,6 @@ class GenerateCommandTest extends TestCase
             ->getMock();
 
         $commandMock
-            ->expects(self::any())
             ->method('_getLocalConfigFilename')
             ->willReturn($this->configFile);
 
