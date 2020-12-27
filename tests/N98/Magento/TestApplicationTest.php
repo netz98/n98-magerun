@@ -14,7 +14,7 @@ class TestApplicationTest extends \PHPUnit\Framework\TestCase
      */
     public function creation()
     {
-        $application = new TestApplication();
+        $application = new TestApplication($this);
         $this->assertInstanceOf(__NAMESPACE__ . '\TestApplication', $application);
     }
 
@@ -23,7 +23,7 @@ class TestApplicationTest extends \PHPUnit\Framework\TestCase
      */
     public function magentoTestRoot()
     {
-        $application = new TestApplication();
+        $application = new TestApplication($this);
         $actual = $application->getTestMagentoRoot();
         $this->assertInternalType('string', $actual);
         $this->assertGreaterThan(10, strlen($actual));
@@ -35,7 +35,7 @@ class TestApplicationTest extends \PHPUnit\Framework\TestCase
      */
     public function getApplication()
     {
-        $application = new TestApplication();
+        $application = new TestApplication($this);
         $actual = $application->getApplication();
         $this->assertInstanceOf(__NAMESPACE__ . '\Application', $actual);
     }
