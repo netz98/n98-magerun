@@ -669,12 +669,10 @@ class DeleteCommandTest extends TestCase
         $this->assertEquals(1, $result);
     }
 
-    /**
-     * @expectedException   \RuntimeException
-     * @expectedExceptionMessage    The range should be numeric and above 0 e.g. 1
-     */
     public function testValidateInt()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('The range should be numeric and above 0 e.g. 1');
         $refObject = new \ReflectionObject($this->command);
         $method = $refObject->getMethod('validateInt');
         $method->setAccessible(true);

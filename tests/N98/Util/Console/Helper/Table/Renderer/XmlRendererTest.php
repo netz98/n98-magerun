@@ -133,11 +133,11 @@ ftw</Column2>
 
     /**
      * @test
-     * @expectedException DOMException
-     * @expectedExceptionMessage Invalid name '0'
      */
     public function invalidName()
     {
+        $this->expectException(\DOMException::class);
+        $this->expectExceptionMessage('Invalid name \'0\'');
         $renderer = new XmlRenderer();
         $output = new NullOutput();
         $renderer->render($output, array(array("foo")));
@@ -145,11 +145,11 @@ ftw</Column2>
 
     /**
      * @test
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Encoding error, only US-ASCII and UTF-8 supported, can not process '
      */
     public function invalidEncoding()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Encoding error, only US-ASCII and UTF-8 supported, can not process \'');
         $renderer = new XmlRenderer();
         $output = new NullOutput();
         $renderer->render($output, array(array("\xC1" => "foo")));

@@ -8,6 +8,9 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class UpdateCommandTest extends TestCase
 {
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testExecute()
     {
         $application = $this->getApplication();

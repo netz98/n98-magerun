@@ -17,9 +17,9 @@ class ExecTest extends \PHPUnit\Framework\TestCase
      */
     public function commandOnly()
     {
-        Exec::run('echo test');
+        Exec::run('echo test', $output, $actual);
 
-        $this->addToAssertionCount(1);
+        $this->assertSame(0, $actual);
     }
 
     /**
@@ -35,11 +35,10 @@ class ExecTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @test
-     *
-     * @expectedException RuntimeException
      */
     public function exception()
     {
+        $this->expectException(\RuntimeException::class);
         Exec::run('foobar');
     }
 }

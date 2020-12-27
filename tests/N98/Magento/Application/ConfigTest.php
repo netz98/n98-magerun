@@ -109,6 +109,7 @@ class ConfigTest extends TestCase
 
     /**
      * @test
+     * @doesNotPerformAssertions
      */
     public function customCommands()
     {
@@ -127,7 +128,7 @@ class ConfigTest extends TestCase
         $config = new Config([], false, $output);
         $config->setConfig($configArray);
 
-        /** @var \PHPUnit_Framework_MockObject_MockObject $application */
+        /** @var \N98\Magento\Application|\PHPUnit\Framework\MockObject\MockObject $application */
         $application = $this->createMock(\N98\Magento\Application::class);
         $application->expects($this->exactly(2))->method('add');
 

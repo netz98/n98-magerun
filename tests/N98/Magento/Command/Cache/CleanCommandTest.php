@@ -9,7 +9,7 @@ class CleanCommandTest extends TestCase
 {
     /**
      * @throws \RuntimeException
-     * @return \PHPUnit_Framework_MockObject_MockObject|\N98\Magento\Application
+     * @return \PHPUnit\Framework\MockObject\MockObject|\N98\Magento\Application
      */
     public function getApplication()
     {

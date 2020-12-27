@@ -12,8 +12,8 @@ class MagentoHelper extends TestCase
      */
     protected function getHelper()
     {
-        $inputMock = $this->getMock('Symfony\Component\Console\Input\InputInterface');
-        $outputMock = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+        $inputMock = $this->createMock('Symfony\Component\Console\Input\InputInterface');
+        $outputMock = $this->createMock('Symfony\Component\Console\Output\OutputInterface');
 
         return new MagentoHelper($inputMock, $outputMock);
     }

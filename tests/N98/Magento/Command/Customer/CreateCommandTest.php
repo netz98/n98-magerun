@@ -50,7 +50,7 @@ class CreateCommandTest extends TestCase
 
         // mock dialog
         // We mock the DialogHelper
-        $dialog = $this->getMock('N98\Util\Console\Helper\ParameterHelper', array('askPassword'));
+        $dialog = $this->createMock('N98\Util\Console\Helper\ParameterHelper');
         $dialog->expects($this->at(0))
             ->method('askPassword')
             ->will($this->returnValue(true)); // The user confirms

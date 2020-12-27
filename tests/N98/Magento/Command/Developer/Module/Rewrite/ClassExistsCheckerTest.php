@@ -172,6 +172,7 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
      * Document the condition in which the Varien_Autoload auto-loader causes a fatal error
      *
      * @test
+     * @doesNotPerformAssertions
      */
     public function triggersFatalError()
     {
