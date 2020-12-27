@@ -22,7 +22,7 @@ class TemplateHintsBlocksCommandTest extends TestCase
                 'store'    => 'admin',
             )
         );
-        $this->assertRegExp('/Template Hints Blocks enabled/', $commandTester->getDisplay());
+        self::assertRegExp('/Template Hints Blocks enabled/', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -33,6 +33,6 @@ class TemplateHintsBlocksCommandTest extends TestCase
             )
         );
 
-        $this->assertRegExp('/Template Hints Blocks disabled/', $commandTester->getDisplay());
+        self::assertRegExp('/Template Hints Blocks disabled/', $commandTester->getDisplay());
     }
 }

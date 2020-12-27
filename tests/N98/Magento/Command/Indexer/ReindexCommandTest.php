@@ -21,6 +21,6 @@ class ReindexCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('Successfully reindexed tag_summary', $commandTester->getDisplay());
+        self::assertContains('Successfully reindexed tag_summary', $commandTester->getDisplay());
     }
 }

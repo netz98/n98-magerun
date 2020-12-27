@@ -26,30 +26,30 @@ class ChangePasswordCommandTest extends TestCase
             ->getMock();
 
         $this->command
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getUserModel')
-            ->will($this->returnValue($this->userModel));
+            ->will(self::returnValue($this->userModel));
     }
 
     public function testCanChangePassword()
     {
         $this->userModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('loadByUsername')
             ->with('aydin')
-            ->will($this->returnValue($this->userModel));
+            ->will(self::returnValue($this->userModel));
 
         $this->userModel
-            ->expects($this->at(1))
+            ->expects(self::at(1))
             ->method('getId')
-            ->will($this->returnValue(2));
+            ->will(self::returnValue(2));
 
         $this->userModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('validate');
 
         $this->userModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('save');
 
         $application = $this->getApplication();
@@ -65,21 +65,21 @@ class ChangePasswordCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('Password successfully changed', $commandTester->getDisplay());
+        self::assertContains('Password successfully changed', $commandTester->getDisplay());
     }
 
     public function testReturnEarlyIfUserNotFound()
     {
         $this->userModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('loadByUsername')
             ->with('notauser')
-            ->will($this->returnValue($this->userModel));
+            ->will(self::returnValue($this->userModel));
 
         $this->userModel
-            ->expects($this->at(1))
+            ->expects(self::at(1))
             ->method('getId')
-            ->will($this->returnValue(null));
+            ->will(self::returnValue(null));
 
         $application = $this->getApplication();
         $application->add($this->command);
@@ -91,6 +91,6 @@ class ChangePasswordCommandTest extends TestCase
             'username'  => 'notauser',
         ));
 
-        $this->assertContains('User was not found', $commandTester->getDisplay());
+        self::assertContains('User was not found', $commandTester->getDisplay());
     }
 }

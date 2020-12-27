@@ -15,7 +15,7 @@ class TestApplicationTest extends \PHPUnit\Framework\TestCase
     public function creation()
     {
         $application = new TestApplication($this);
-        $this->assertInstanceOf(__NAMESPACE__ . '\TestApplication', $application);
+        self::assertInstanceOf(__NAMESPACE__ . '\TestApplication', $application);
     }
 
     /**
@@ -25,9 +25,9 @@ class TestApplicationTest extends \PHPUnit\Framework\TestCase
     {
         $application = new TestApplication($this);
         $actual = $application->getTestMagentoRoot();
-        $this->assertInternalType('string', $actual);
-        $this->assertGreaterThan(10, strlen($actual));
-        $this->assertDirectoryExists($actual);
+        self::assertInternalType('string', $actual);
+        self::assertGreaterThan(10, strlen($actual));
+        self::assertDirectoryExists($actual);
     }
 
     /**
@@ -37,6 +37,6 @@ class TestApplicationTest extends \PHPUnit\Framework\TestCase
     {
         $application = new TestApplication($this);
         $actual = $application->getApplication();
-        $this->assertInstanceOf(__NAMESPACE__ . '\Application', $actual);
+        self::assertInstanceOf(__NAMESPACE__ . '\Application', $actual);
     }
 }

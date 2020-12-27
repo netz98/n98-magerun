@@ -16,6 +16,6 @@ class ListCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $this->assertRegExp('/email/', $commandTester->getDisplay());
+        self::assertRegExp('/email/', $commandTester->getDisplay());
     }
 }

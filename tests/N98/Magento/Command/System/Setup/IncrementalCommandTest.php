@@ -21,12 +21,12 @@ class IncrementalCommandTest extends TestCase
         $stub = new IncrementalCommandStub();
 
         $actual = $stub->callProtectedMethodFromObject('protectedMethod', $this, array("fooBar"));
-        $this->assertSame('barBaz', $actual);
+        self::assertSame('barBaz', $actual);
     }
 
     protected function protectedMethod($arg)
     {
-        $this->assertSame('fooBar', $arg);
+        self::assertSame('fooBar', $arg);
         $this->addToAssertionCount(1);
 
         return "barBaz";

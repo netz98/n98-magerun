@@ -18,6 +18,6 @@ class ConfigurationLoaderTest extends TestCase
     public function creation()
     {
         $loader = new ConfigurationLoader(array(), false, new NullOutput());
-        $this->assertInstanceOf(__NAMESPACE__ . '\\ConfigurationLoader', $loader);
+        self::assertInstanceOf(__NAMESPACE__ . '\\ConfigurationLoader', $loader);
     }
 }

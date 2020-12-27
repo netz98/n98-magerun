@@ -26,7 +26,7 @@ class DuplicatesCommandTest extends TestCase
 
         $this->assertContainsPath('template/catalog/product/price.phtml', $display);
         $this->assertContainsPath('layout/catalog.xml', $display);
-        $this->assertNotContains('No duplicates was found', $display);
+        self::assertNotContains('No duplicates was found', $display);
     }
 
     /**
@@ -50,6 +50,6 @@ class DuplicatesCommandTest extends TestCase
         }
         $pattern .= '~';
 
-        $this->assertRegExp($pattern, $haystack);
+        self::assertRegExp($pattern, $haystack);
     }
 }

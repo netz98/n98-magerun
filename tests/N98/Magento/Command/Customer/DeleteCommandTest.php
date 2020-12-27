@@ -89,63 +89,63 @@ class DeleteCommandTest extends TestCase
             ->getMock();
 
         $this->command
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getCustomerModel')
-            ->will($this->returnValue($this->customerModel));
+            ->will(self::returnValue($this->customerModel));
 
         $this->command
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getCustomerCollection')
-            ->will($this->returnValue($this->customerCollection));
+            ->will(self::returnValue($this->customerCollection));
 
         $this->command
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getHelper')
-            ->will($this->returnValueMap(array(
+            ->will(self::returnValueMap(array(
                 array('dialog', $this->dialog),
                 array('parameter', $this->parameter),
             )));
 
         $this->dialog
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getQuestion')
-            ->will($this->returnArgument(0));
+            ->will(self::returnArgument(0));
 
         $this->parameter
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('askWebsite')
-            ->will($this->returnValue($this->website));
+            ->will(self::returnValue($this->website));
 
         $this->website
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->will(self::returnValue(1));
     }
 
     public function testCanDeleteById()
     {
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with('1')
-            ->will($this->returnValue($this->customerModel));
+            ->will(self::returnValue($this->customerModel));
 
         $this->customerModel
-            ->expects($this->at(1))
+            ->expects(self::at(1))
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->will(self::returnValue(1));
 
         $this->customerModel
-            ->expects($this->at(2))
+            ->expects(self::at(2))
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->will(self::returnValue(1));
 
         $this->customerModel
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('loadByEmail');
 
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('delete');
 
         $application = $this->getApplication();
@@ -161,41 +161,41 @@ class DeleteCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('successfully deleted', $commandTester->getDisplay());
+        self::assertContains('successfully deleted', $commandTester->getDisplay());
     }
 
     public function testCanDeleteByEmail()
     {
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with('mike@testing.com')
-            ->will($this->returnValue($this->customerModel));
+            ->will(self::returnValue($this->customerModel));
 
         $this->customerModel
-            ->expects($this->at(1))
+            ->expects(self::at(1))
             ->method('getId')
-            ->will($this->returnValue(null));
+            ->will(self::returnValue(null));
 
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('setWebsiteId')
             ->with(1)
-            ->will($this->returnValue($this->customerModel));
+            ->will(self::returnValue($this->customerModel));
 
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('loadByEmail')
             ->with('mike@testing.com')
-            ->will($this->returnValue($this->customerModel));
+            ->will(self::returnValue($this->customerModel));
 
         $this->customerModel
-            ->expects($this->at(4))
+            ->expects(self::at(4))
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->will(self::returnValue(1));
 
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('delete');
 
         $application = $this->getApplication();
@@ -211,33 +211,33 @@ class DeleteCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('successfully deleted', $commandTester->getDisplay());
+        self::assertContains('successfully deleted', $commandTester->getDisplay());
     }
 
     public function testCustomerNotFound()
     {
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with('mike@testing.com')
-            ->will($this->returnValue($this->customerModel));
+            ->will(self::returnValue($this->customerModel));
 
         $this->customerModel
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('getId')
-            ->will($this->returnValue(null));
+            ->will(self::returnValue(null));
 
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('setWebsiteId')
             ->with(1)
-            ->will($this->returnValue($this->customerModel));
+            ->will(self::returnValue($this->customerModel));
 
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('loadByEmail')
             ->with('mike@testing.com')
-            ->will($this->returnValue($this->customerModel));
+            ->will(self::returnValue($this->customerModel));
 
         $application = $this->getApplication();
         $application->add($this->command);
@@ -252,35 +252,35 @@ class DeleteCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('No customer found!', $commandTester->getDisplay());
+        self::assertContains('No customer found!', $commandTester->getDisplay());
     }
 
     public function testDeleteFailed()
     {
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with('1')
-            ->will($this->returnValue($this->customerModel));
+            ->will(self::returnValue($this->customerModel));
 
         $this->customerModel
-            ->expects($this->at(1))
+            ->expects(self::at(1))
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->will(self::returnValue(1));
 
         $this->customerModel
-            ->expects($this->at(2))
+            ->expects(self::at(2))
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->will(self::returnValue(1));
 
         $this->customerModel
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('loadByEmail');
 
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('delete')
-            ->will($this->throwException(new \Exception('Failed to save')));
+            ->will(self::throwException(new \Exception('Failed to save')));
 
         $application = $this->getApplication();
         $application->add($this->command);
@@ -295,43 +295,43 @@ class DeleteCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('Failed to save', $commandTester->getDisplay());
+        self::assertContains('Failed to save', $commandTester->getDisplay());
     }
 
     public function testPromptForCustomerIdAndDelete()
     {
         $this->dialog
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('askConfirmation')
-            ->will($this->returnValue(false));
+            ->will(self::returnValue(false));
 
         $this->dialog
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('ask')
-            ->will($this->returnValue('1'));
+            ->will(self::returnValue('1'));
 
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with('1')
-            ->will($this->returnValue($this->customerModel));
+            ->will(self::returnValue($this->customerModel));
 
         $this->customerModel
-            ->expects($this->at(1))
+            ->expects(self::at(1))
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->will(self::returnValue(1));
 
         $this->customerModel
-            ->expects($this->at(2))
+            ->expects(self::at(2))
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->will(self::returnValue(1));
 
         $this->customerModel
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('loadByEmail');
 
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('delete');
 
         $application = $this->getApplication();
@@ -346,24 +346,24 @@ class DeleteCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('successfully deleted', $commandTester->getDisplay());
+        self::assertContains('successfully deleted', $commandTester->getDisplay());
     }
 
     public function testBatchDeleteGetsCustomerCollection()
     {
         $this->customerCollection
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('addAttributeToSelect')
-            ->will($this->returnValueMap(array(
+            ->will(self::returnValueMap(array(
                 array('firstname', false, $this->customerCollection),
                 array('lastname', false, $this->customerCollection),
                 array('email', false, $this->customerCollection),
             )));
 
         $this->dialog
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('askConfirmation')
-            ->will($this->returnValue(false));
+            ->will(self::returnValue(false));
 
         $application = $this->getApplication();
         $application->add($this->command);
@@ -377,43 +377,43 @@ class DeleteCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('Aborting delete', $commandTester->getDisplay());
+        self::assertContains('Aborting delete', $commandTester->getDisplay());
     }
 
     public function testRangeDeleteGetsCustomerCollection()
     {
         $this->customerCollection
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('addAttributeToSelect')
-            ->will($this->returnValueMap(array(
+            ->will(self::returnValueMap(array(
                 array('firstname', false, $this->customerCollection),
                 array('lastname', false, $this->customerCollection),
                 array('email', false, $this->customerCollection),
             )));
 
         $this->dialog
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('askAndValidate');
 
         $this->dialog
-            ->expects($this->at(0))
+            ->expects(self::at(0))
             ->method('askAndValidate')
-            ->will($this->returnValue('1'));
+            ->will(self::returnValue('1'));
 
         $this->dialog
-            ->expects($this->at(1))
+            ->expects(self::at(1))
             ->method('askAndValidate')
-            ->will($this->returnValue('10'));
+            ->will(self::returnValue('10'));
 
         $this->customerCollection
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('addAttributeToFilter')
-            ->will($this->returnValue($this->customerCollection));
+            ->will(self::returnValue($this->customerCollection));
 
         $this->dialog
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('askConfirmation')
-            ->will($this->returnValue(false));
+            ->will(self::returnValue(false));
 
         $application = $this->getApplication();
         $application->add($this->command);
@@ -427,38 +427,38 @@ class DeleteCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('Aborting delete', $commandTester->getDisplay());
+        self::assertContains('Aborting delete', $commandTester->getDisplay());
     }
 
     public function testShouldRemoveStopsDeletion()
     {
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with('1')
-            ->will($this->returnValue($this->customerModel));
+            ->will(self::returnValue($this->customerModel));
 
         $this->customerModel
-            ->expects($this->at(1))
+            ->expects(self::at(1))
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->will(self::returnValue(1));
 
         $this->customerModel
-            ->expects($this->at(2))
+            ->expects(self::at(2))
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->will(self::returnValue(1));
 
         $this->customerModel
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('loadByEmail');
 
         $this->dialog
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('askConfirmation')
-            ->will($this->returnValue(false));
+            ->will(self::returnValue(false));
 
         $this->customerModel
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('delete');
 
         $application = $this->getApplication();
@@ -473,38 +473,38 @@ class DeleteCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('Aborting delete', $commandTester->getDisplay());
+        self::assertContains('Aborting delete', $commandTester->getDisplay());
     }
 
     public function testShouldRemovePromptAllowsDeletion()
     {
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with('1')
-            ->will($this->returnValue($this->customerModel));
+            ->will(self::returnValue($this->customerModel));
 
         $this->customerModel
-            ->expects($this->at(1))
+            ->expects(self::at(1))
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->will(self::returnValue(1));
 
         $this->customerModel
-            ->expects($this->at(2))
+            ->expects(self::at(2))
             ->method('getId')
-            ->will($this->returnValue(1));
+            ->will(self::returnValue(1));
 
         $this->customerModel
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('loadByEmail');
 
         $this->dialog
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('askConfirmation')
-            ->will($this->returnValue(true));
+            ->will(self::returnValue(true));
 
         $this->customerModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('delete');
 
         $application = $this->getApplication();
@@ -519,15 +519,15 @@ class DeleteCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('successfully deleted', $commandTester->getDisplay());
+        self::assertContains('successfully deleted', $commandTester->getDisplay());
     }
 
     public function testPromptDeleteAllAndDeleteRangeAndAbort()
     {
         $this->dialog
-            ->expects($this->exactly(3))
+            ->expects(self::exactly(3))
             ->method('askConfirmation')
-            ->will($this->onConsecutiveCalls(true, false, false));
+            ->will(self::onConsecutiveCalls(true, false, false));
 
         $application = $this->getApplication();
         $application->add($this->command);
@@ -540,30 +540,30 @@ class DeleteCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('nothing to do', $commandTester->getDisplay());
+        self::assertContains('nothing to do', $commandTester->getDisplay());
     }
 
     public function testPromptAllCanDeleteAll()
     {
         $this->dialog
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('askConfirmation')
-            ->will($this->onConsecutiveCalls(true, true));
+            ->will(self::onConsecutiveCalls(true, true));
 
         $this->customerCollection
-            ->expects($this->exactly(3))
+            ->expects(self::exactly(3))
             ->method('addAttributeToSelect')
-            ->will($this->returnValueMap(array(
+            ->will(self::returnValueMap(array(
                 array('firstname', false, $this->customerCollection),
                 array('lastname', false, $this->customerCollection),
                 array('email', false, $this->customerCollection),
             )));
 
         $this->command
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('batchDelete')
             ->with($this->customerCollection)
-            ->will($this->returnValue(3));
+            ->will(self::returnValue(3));
 
         $application = $this->getApplication();
         $application->add($this->command);
@@ -577,49 +577,49 @@ class DeleteCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('Successfully deleted 3 customer/s', $commandTester->getDisplay());
+        self::assertContains('Successfully deleted 3 customer/s', $commandTester->getDisplay());
     }
 
     public function testPromptRangeCanDeleteRange()
     {
         $this->dialog
-            ->expects($this->exactly(3))
+            ->expects(self::exactly(3))
             ->method('askConfirmation')
-            ->will($this->onConsecutiveCalls(true, false, true));
+            ->will(self::onConsecutiveCalls(true, false, true));
 
         $this->customerCollection
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('addAttributeToSelect')
-            ->will($this->returnValueMap(array(
+            ->will(self::returnValueMap(array(
                 array('firstname', false, $this->customerCollection),
                 array('lastname', false, $this->customerCollection),
                 array('email', false, $this->customerCollection),
             )));
 
         $this->dialog
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('askAndValidate');
 
         $this->dialog
-            ->expects($this->at(0))
+            ->expects(self::at(0))
             ->method('askAndValidate')
-            ->will($this->returnValue('1'));
+            ->will(self::returnValue('1'));
 
         $this->dialog
-            ->expects($this->at(1))
+            ->expects(self::at(1))
             ->method('askAndValidate')
-            ->will($this->returnValue('10'));
+            ->will(self::returnValue('10'));
 
         $this->customerCollection
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('addAttributeToFilter')
-            ->will($this->returnSelf());
+            ->will(self::returnSelf());
 
         $this->command
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('batchDelete')
             ->with($this->customerCollection)
-            ->will($this->returnValue(3));
+            ->will(self::returnValue(3));
 
         $application = $this->getApplication();
         $application->add($this->command);
@@ -633,7 +633,7 @@ class DeleteCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('Successfully deleted 3 customer/s', $commandTester->getDisplay());
+        self::assertContains('Successfully deleted 3 customer/s', $commandTester->getDisplay());
     }
 
     public function testBatchDelete()
@@ -644,9 +644,9 @@ class DeleteCommandTest extends TestCase
             ->getMock();
 
         $command
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('deleteCustomer')
-            ->will($this->onConsecutiveCalls(true, new \Exception('Failed to delete')));
+            ->will(self::onConsecutiveCalls(true, new \Exception('Failed to delete')));
 
         $refObject = new \ReflectionObject($command);
         $method = $refObject->getMethod('batchDelete');
@@ -660,13 +660,13 @@ class DeleteCommandTest extends TestCase
         $collection = $this->getCustomerCollection(array('getIterator'));
 
         $collection
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getIterator')
-            ->will($this->returnValue($data));
+            ->will(self::returnValue($data));
 
         $result = $method->invokeArgs($command, array($collection));
 
-        $this->assertEquals(1, $result);
+        self::assertEquals(1, $result);
     }
 
     public function testValidateInt()
@@ -678,7 +678,7 @@ class DeleteCommandTest extends TestCase
         $method->setAccessible(true);
 
         $resultValid = $method->invokeArgs($this->command, array('5'));
-        $this->assertEquals(5, $resultValid);
+        self::assertEquals(5, $resultValid);
         $method->invokeArgs($this->command, array('bad input')); // Exception!
     }
 }

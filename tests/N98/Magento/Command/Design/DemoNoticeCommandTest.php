@@ -22,7 +22,7 @@ class DemoNoticeCommandTest extends TestCase
                 '--on'     => true,
             )
         );
-        $this->assertRegExp('/Demo Notice enabled/', $commandTester->getDisplay());
+        self::assertRegExp('/Demo Notice enabled/', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -33,6 +33,6 @@ class DemoNoticeCommandTest extends TestCase
             )
         );
 
-        $this->assertRegExp('/Demo Notice disabled/', $commandTester->getDisplay());
+        self::assertRegExp('/Demo Notice disabled/', $commandTester->getDisplay());
     }
 }

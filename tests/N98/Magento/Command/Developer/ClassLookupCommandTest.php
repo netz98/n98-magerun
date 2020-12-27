@@ -33,7 +33,7 @@ class ClassLookupCommandTest extends TestCase
         );
 
         $output = $commandTester->getDisplay();
-        $this->assertRegExp(sprintf('/%s/', $expected), $output);
+        self::assertRegExp(sprintf('/%s/', $expected), $output);
 
         $existsAssertion = (!$exists) ? 'assertRegExp' : 'assertNotRegExp';
         $this->{$existsAssertion}(sprintf('/%s/', 'does not exist'), $output);

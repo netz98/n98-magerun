@@ -48,13 +48,13 @@ class InstallCommandPackageVersionTest extends TestCase
         $nameConstraint = array();
 
         foreach ($packages as $package) {
-            $this->assertArrayHasKey('name', $package);
-            $this->assertArrayHasKey('version', $package);
+            self::assertArrayHasKey('name', $package);
+            self::assertArrayHasKey('version', $package);
             $name = $package['name'];
             $version = $package['version'];
             $nameAndVersion = "$name $version";
 
-            $this->assertArrayNotHasKey(
+            self::assertArrayNotHasKey(
                 $name,
                 $nameConstraint,
                 sprintf('duplicate package "%s"', $name)
@@ -73,7 +73,7 @@ class InstallCommandPackageVersionTest extends TestCase
                 $nonVersions++;
                 continue;
             }
-            $this->assertSame($version, $nameVersion);
+            self::assertSame($version, $nameVersion);
 
             if (isset($nameStack[$namespace])) {
                 $comparison = version_compare($nameStack[$namespace], $version);
@@ -82,14 +82,14 @@ class InstallCommandPackageVersionTest extends TestCase
                     $nameStack[$namespace],
                     $version
                 );
-                $this->assertGreaterThan(0, $comparison, $message);
+                self::assertGreaterThan(0, $comparison, $message);
             }
             $nameStack[$namespace] = $nameVersion;
         }
 
-        $this->assertGreaterThanOrEqual($namespacesMinimum, count($nameStack));
+        self::assertGreaterThanOrEqual($namespacesMinimum, count($nameStack));
         $message = sprintf('Too many non-versions (%s)', implode(', ', $nonVersionsList));
-        $this->assertLessThan($nonVersionsMaximum, $nonVersions, $message);
+        self::assertLessThan($nonVersionsMaximum, $nonVersions, $message);
     }
 
     /**
@@ -122,7 +122,7 @@ class InstallCommandPackageVersionTest extends TestCase
             }
             $name = $package['extra']['sample-data'];
             $message = sprintf('Invalid sample-data "%s" (undefined) in package "%s"', $name, $package['name']);
-            $this->assertArrayHasKey($name, $map, $message);
+            self::assertArrayHasKey($name, $map, $message);
         }
     }
 

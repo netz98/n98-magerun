@@ -9,11 +9,11 @@ class ValidateExtensionCommandTest extends TestCase
 {
     public function testSetup()
     {
-        $this->markTestSkipped('Skip Test - Currently are connect problems. We skip test.');
+        self::markTestSkipped('Skip Test - Currently are connect problems. We skip test.');
 
         $this->getApplication()->initMagento();
         if (version_compare(\Mage::getVersion(), '1.4.2.0', '<=')) {
-            $this->markTestSkipped('Skip Test - mage cli script does not exist.');
+            self::markTestSkipped('Skip Test - mage cli script does not exist.');
         }
 
         $application = $this->getApplication();
@@ -25,9 +25,9 @@ class ValidateExtensionCommandTest extends TestCase
         $application->add($commandMock);
 
         $commandMock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('_getDownloaderConfigPath')
-            ->will($this->returnValue(__DIR__ . '/_files/cache.cfg'));
+            ->will(self::returnValue(__DIR__ . '/_files/cache.cfg'));
 
         $commandTester = new CommandTester($commandMock);
         $commandTester->execute(
@@ -39,6 +39,6 @@ class ValidateExtensionCommandTest extends TestCase
         );
 
         $output = $commandTester->getDisplay();
-        $this->assertContains('Mage_All_Latest', $output);
+        self::assertContains('Mage_All_Latest', $output);
     }
 }

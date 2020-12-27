@@ -22,9 +22,9 @@ class ReportCommandTest extends TestCase
             )
         );
 
-        $this->assertRegExp('/ID/', $commandTester->getDisplay());
-        $this->assertRegExp('/EXPIRE/', $commandTester->getDisplay());
-        $this->assertRegExp('/MTIME/', $commandTester->getDisplay());
-        $this->assertRegExp('/TAGS/', $commandTester->getDisplay());
+        self::assertRegExp('/ID/', $commandTester->getDisplay());
+        self::assertRegExp('/EXPIRE/', $commandTester->getDisplay());
+        self::assertRegExp('/MTIME/', $commandTester->getDisplay());
+        self::assertRegExp('/TAGS/', $commandTester->getDisplay());
     }
 }

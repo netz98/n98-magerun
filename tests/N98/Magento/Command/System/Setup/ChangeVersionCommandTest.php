@@ -19,17 +19,17 @@ class ChangeVersionCommandTest extends TestCase
             ->getMock();
 
         $command
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('_getResourceSingleton')
-            ->will($this->returnValue($resourceModel));
+            ->will(self::returnValue($resourceModel));
 
         $resourceModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('setDbVersion')
             ->with('weee_setup', '1.6.0.0');
 
         $resourceModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('setDataVersion')
             ->with('weee_setup', '1.6.0.0');
 
@@ -44,7 +44,7 @@ class ChangeVersionCommandTest extends TestCase
             'version'   => '1.6.0.0',
         ));
 
-        $this->assertContains(
+        self::assertContains(
             'Successfully updated: "Mage_Weee" - "weee_setup" to version: "1.6.0.0"',
             $commandTester->getDisplay()
         );
@@ -62,17 +62,17 @@ class ChangeVersionCommandTest extends TestCase
             ->getMock();
 
         $command
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('_getResourceSingleton')
-            ->will($this->returnValue($resourceModel));
+            ->will(self::returnValue($resourceModel));
 
         $resourceModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('setDbVersion')
             ->with('weee_setup', '1.6.0.0');
 
         $resourceModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('setDataVersion')
             ->with('weee_setup', '1.6.0.0');
 
@@ -88,7 +88,7 @@ class ChangeVersionCommandTest extends TestCase
             'setup'     => 'weee_setup',
         ));
 
-        $this->assertContains(
+        self::assertContains(
             'Successfully updated: "Mage_Weee" - "weee_setup" to version: "1.6.0.0"',
             $commandTester->getDisplay()
         );
@@ -137,10 +137,10 @@ class ChangeVersionCommandTest extends TestCase
             ->setMethods(array('getModuleSetupResources'))
             ->getMock();
 
-        $command->expects($this->once())
+        $command->expects(self::once())
             ->method('getModuleSetupResources')
             ->with('Mage_Weee')
-            ->will($this->returnValue(array()));
+            ->will(self::returnValue(array()));
 
         $application = $this->getApplication();
         $application->add($command);
@@ -154,7 +154,7 @@ class ChangeVersionCommandTest extends TestCase
             'setup'     => 'weee_setup',
         ));
 
-        $this->assertContains(
+        self::assertContains(
             'No setup resources found for module: "Mage_Weee"',
             $commandTester->getDisplay()
         );

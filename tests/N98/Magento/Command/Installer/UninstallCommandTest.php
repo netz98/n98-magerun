@@ -33,10 +33,10 @@ class UninstallCommandTest extends TestCase
             'command'               => $command->getName(),
             '--installationFolder'  => $this->getTestMagentoRoot(),
         ));
-        $this->assertEquals("Really uninstall ? [n]: ", $commandTester->getDisplay());
+        self::assertEquals("Really uninstall ? [n]: ", $commandTester->getDisplay());
 
         //check magento still installed
-        $this->assertFileExists($this->getTestMagentoRoot() . '/app/etc/local.xml');
+        self::assertFileExists($this->getTestMagentoRoot() . '/app/etc/local.xml');
     }
 
     /**
@@ -58,10 +58,10 @@ class UninstallCommandTest extends TestCase
             )
         );
 
-        $this->assertContains("Dropped database", $commandTester->getDisplay());
-        $this->assertContains("Remove directory " . $this->getTestMagentoRoot(), $commandTester->getDisplay());
-        $this->assertContains("Done", $commandTester->getDisplay());
-        $this->assertFileNotExists($this->getTestMagentoRoot() . '/app/etc/local.xml');
+        self::assertContains("Dropped database", $commandTester->getDisplay());
+        self::assertContains("Remove directory " . $this->getTestMagentoRoot(), $commandTester->getDisplay());
+        self::assertContains("Done", $commandTester->getDisplay());
+        self::assertFileNotExists($this->getTestMagentoRoot() . '/app/etc/local.xml');
     }
 
     /**

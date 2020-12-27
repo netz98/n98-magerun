@@ -25,7 +25,7 @@ class DbSettingsTest extends TestCase
     {
         $file = $this->getTestMagentoRoot() . '/app/etc/local.xml';
         $settings = new DbSettings($file);
-        $this->assertInstanceOf(__NAMESPACE__ . '\\DbSettings', $settings);
+        self::assertInstanceOf(__NAMESPACE__ . '\\DbSettings', $settings);
     }
 
     /**
@@ -37,20 +37,20 @@ class DbSettingsTest extends TestCase
 
         $settings = new DbSettings($file);
 
-        $this->assertSame('', $settings->getTablePrefix());
+        self::assertSame('', $settings->getTablePrefix());
 
-        $this->assertSame('localhost', $settings->getHost());
-        $this->assertNull($settings->getPort());
+        self::assertSame('localhost', $settings->getHost());
+        self::assertNull($settings->getPort());
 
-        $this->assertNull($settings->getUnixSocket());
+        self::assertNull($settings->getUnixSocket());
 
-        $this->assertSame('user', $settings->getUsername());
-        $this->assertSame('pass', $settings->getPassword());
+        self::assertSame('user', $settings->getUsername());
+        self::assertSame('pass', $settings->getPassword());
 
         // DbSettings is more strict here, only using known DSN settings, see @link http://php.net/ref.pdo-mysql.connection
         // minus those settings that are black-listed: dbname, charset
         // "mysql:host=localhost;initStatements=SET NAMES utf8;model=mysql4;type=pdo_mysql;pdoType=;active=1;prefix="
-        $this->assertEquals('mysql:host=localhost', $settings->getDsn());
+        self::assertEquals('mysql:host=localhost', $settings->getDsn());
     }
 
     /**
@@ -61,13 +61,13 @@ class DbSettingsTest extends TestCase
         $file = __DIR__ . '/local.xml';
         $settings = new DbSettings($file);
 
-        $this->assertSame('user', $settings['username']);
-        $this->assertSame('pass', $settings['password']);
+        self::assertSame('user', $settings['username']);
+        self::assertSame('pass', $settings['password']);
 
         // unix_socket should be NULL
-        $this->assertNull($settings['unix_socket']);
+        self::assertNull($settings['unix_socket']);
 
         // it's still leaky:
-        $this->assertInstanceOf('SimpleXMLElement', $settings['pdoType']);
+        self::assertInstanceOf('SimpleXMLElement', $settings['pdoType']);
     }
 }

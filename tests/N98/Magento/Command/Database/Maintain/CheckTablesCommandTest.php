@@ -23,13 +23,13 @@ class CheckTablesCommandTest extends TestCase
                 '--table'  => 'catalogsearch_*',
             )
         );
-        $this->assertContains('catalogsearch_fulltext,check,quick,OK', $commandTester->getDisplay());
+        self::assertContains('catalogsearch_fulltext,check,quick,OK', $commandTester->getDisplay());
         $timeRegex = '"\s+[0-9]+\srows","[0-9\.]+\ssecs"';
-        $this->assertRegExp(
+        self::assertRegExp(
             '~catalogsearch_query,"ENGINE InnoDB",' . $timeRegex . '~',
             $commandTester->getDisplay()
         );
-        $this->assertRegExp(
+        self::assertRegExp(
             '~catalogsearch_result,"ENGINE InnoDB",' . $timeRegex . '~',
             $commandTester->getDisplay()
         );

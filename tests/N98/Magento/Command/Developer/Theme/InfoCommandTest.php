@@ -20,7 +20,7 @@ class InfoCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('base/default', $commandTester->getDisplay());
-        $this->assertContains('Design Package Name', $commandTester->getDisplay());
+        self::assertContains('base/default', $commandTester->getDisplay());
+        self::assertContains('Design Package Name', $commandTester->getDisplay());
     }
 }

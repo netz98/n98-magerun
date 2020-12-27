@@ -20,6 +20,6 @@ class DumpCommandTest extends TestCase
                 'xpath'     => 'global/install',
             )
         );
-        $this->assertContains('date', $commandTester->getDisplay());
+        self::assertContains('date', $commandTester->getDisplay());
     }
 }

@@ -51,10 +51,10 @@ class VariablesCommandTest extends TestCase
         ));
         $display = $commandTester->getDisplay();
 
-        $this->assertContains('have_query_cache', $display);
-        $this->assertContains('innodb_log_buffer_size', $display);
-        $this->assertContains('max_connections', $display);
-        $this->assertContains('thread_cache_size', $display);
+        self::assertContains('have_query_cache', $display);
+        self::assertContains('innodb_log_buffer_size', $display);
+        self::assertContains('max_connections', $display);
+        self::assertContains('thread_cache_size', $display);
     }
 
     /**
@@ -71,13 +71,13 @@ class VariablesCommandTest extends TestCase
 
         $display = $commandTester->getDisplay();
 
-        $this->assertContains('innodb_concurrency_tickets', $display);
+        self::assertContains('innodb_concurrency_tickets', $display);
         // innodb_force_load_corrupted Introduced in 5.6.3
         if (-1 < version_compare($dbHelper->getMysqlVariable('version'), '5.6.3')) {
-            $this->assertContains('innodb_force_load_corrupted', $display);
+            self::assertContains('innodb_force_load_corrupted', $display);
         }
-        $this->assertContains('innodb_log_file_size', $display);
-        $this->assertRegExp('~innodb_(?:file|read)_io_threads~', $display);
+        self::assertContains('innodb_log_file_size', $display);
+        self::assertRegExp('~innodb_(?:file|read)_io_threads~', $display);
     }
 
     /**
@@ -95,11 +95,11 @@ class VariablesCommandTest extends TestCase
 
         $display = $commandTester->getDisplay();
 
-        $this->assertRegExp('~myisam_max_sort_file_size,[0-9\.]+[A-Z]~', $commandTester->getDisplay());
+        self::assertRegExp('~myisam_max_sort_file_size,[0-9\.]+[A-Z]~', $commandTester->getDisplay());
 
         // max_binlog_stmt_cache_size Introduced in 5.5.9
         if (-1 < version_compare($dbHelper->getMysqlVariable('version'), '5.5.9')) {
-            $this->assertRegExp('~max_binlog_stmt_cache_size,[0-9\.]+[A-Z]~', $display);
+            self::assertRegExp('~max_binlog_stmt_cache_size,[0-9\.]+[A-Z]~', $display);
         }
     }
 }

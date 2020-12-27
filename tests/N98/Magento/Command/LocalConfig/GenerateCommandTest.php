@@ -21,7 +21,7 @@ class GenerateCommandTest extends TestCase
             ->getMock();
 
         $commandMock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('_getLocalConfigFilename')
             ->willReturn($this->configFile);
 
@@ -54,8 +54,8 @@ class GenerateCommandTest extends TestCase
             ]
         );
 
-        $this->assertFileExists($this->configFile);
-        $this->assertContains(
+        self::assertFileExists($this->configFile);
+        self::assertContains(
             sprintf('local.xml file already exists in folder "%s/app/etc"', dirname($this->configFile)),
             $commandTester->getDisplay()
         );
@@ -79,7 +79,7 @@ class GenerateCommandTest extends TestCase
             ]
         );
 
-        $this->assertContains(
+        self::assertContains(
             sprintf('File %s/local.xml.template does not exist', dirname($this->configFile)),
             $commandTester->getDisplay()
         );
@@ -106,7 +106,7 @@ class GenerateCommandTest extends TestCase
             ]
         );
 
-        $this->assertContains(
+        self::assertContains(
             sprintf('Folder %s is not writeable', dirname($this->configFile)),
             $commandTester->getDisplay()
         );
@@ -131,18 +131,18 @@ class GenerateCommandTest extends TestCase
             ]
         );
 
-        $this->assertFileExists($this->configFile);
+        self::assertFileExists($this->configFile);
         $fileContent = \file_get_contents($this->configFile);
-        $this->assertContains('<host><![CDATA[my_db_host]]></host>', $fileContent);
-        $this->assertContains('<username><![CDATA[my_db_user]]></username>', $fileContent);
-        $this->assertContains('<password><![CDATA[my_db_pass]]></password>', $fileContent);
-        $this->assertContains('<dbname><![CDATA[my_db_name]]></dbname>', $fileContent);
-        $this->assertContains('<session_save><![CDATA[my_session_save]]></session_save>', $fileContent);
-        $this->assertContains('<frontName><![CDATA[my_admin_frontname]]></frontName>', $fileContent);
-        $this->assertRegExp('/<key><!\[CDATA\[[a-f0-9]{32}\]\]><\/key>/', $fileContent);
+        self::assertContains('<host><![CDATA[my_db_host]]></host>', $fileContent);
+        self::assertContains('<username><![CDATA[my_db_user]]></username>', $fileContent);
+        self::assertContains('<password><![CDATA[my_db_pass]]></password>', $fileContent);
+        self::assertContains('<dbname><![CDATA[my_db_name]]></dbname>', $fileContent);
+        self::assertContains('<session_save><![CDATA[my_session_save]]></session_save>', $fileContent);
+        self::assertContains('<frontName><![CDATA[my_admin_frontname]]></frontName>', $fileContent);
+        self::assertRegExp('/<key><!\[CDATA\[[a-f0-9]{32}\]\]><\/key>/', $fileContent);
 
         $xml = \simplexml_load_file($this->configFile);
-        $this->assertNotInternalType('bool', $xml);
+        self::assertNotInternalType('bool', $xml);
     }
 
     public function testExecuteWithCliParameters()
@@ -163,18 +163,18 @@ class GenerateCommandTest extends TestCase
             ]
         );
 
-        $this->assertFileExists($this->configFile);
+        self::assertFileExists($this->configFile);
         $fileContent = \file_get_contents($this->configFile);
-        $this->assertContains('<host><![CDATA[my_db_host]]></host>', $fileContent);
-        $this->assertContains('<username><![CDATA[my_db_user]]></username>', $fileContent);
-        $this->assertContains('<password><![CDATA[my_db_pass]]></password>', $fileContent);
-        $this->assertContains('<dbname><![CDATA[my_db_name]]></dbname>', $fileContent);
-        $this->assertContains('<session_save><![CDATA[my_session_save]]></session_save>', $fileContent);
-        $this->assertContains('<frontName><![CDATA[my_admin_frontname]]></frontName>', $fileContent);
-        $this->assertContains('<key><![CDATA[key123456789]]></key>', $fileContent);
+        self::assertContains('<host><![CDATA[my_db_host]]></host>', $fileContent);
+        self::assertContains('<username><![CDATA[my_db_user]]></username>', $fileContent);
+        self::assertContains('<password><![CDATA[my_db_pass]]></password>', $fileContent);
+        self::assertContains('<dbname><![CDATA[my_db_name]]></dbname>', $fileContent);
+        self::assertContains('<session_save><![CDATA[my_session_save]]></session_save>', $fileContent);
+        self::assertContains('<frontName><![CDATA[my_admin_frontname]]></frontName>', $fileContent);
+        self::assertContains('<key><![CDATA[key123456789]]></key>', $fileContent);
 
         $xml = \simplexml_load_file($this->configFile);
-        $this->assertNotInternalType('bool', $xml);
+        self::assertNotInternalType('bool', $xml);
     }
 
     public function testInteractiveInputUsesDefaultValuesIfNoValueEntered()
@@ -196,18 +196,18 @@ class GenerateCommandTest extends TestCase
             ]
         );
 
-        $this->assertFileExists($this->configFile);
+        self::assertFileExists($this->configFile);
         $fileContent = \file_get_contents($this->configFile);
-        $this->assertContains('<host><![CDATA[my_db_host]]></host>', $fileContent);
-        $this->assertContains('<username><![CDATA[my_db_user]]></username>', $fileContent);
-        $this->assertContains('<password><![CDATA[my_db_pass]]></password>', $fileContent);
-        $this->assertContains('<dbname><![CDATA[my_db_name]]></dbname>', $fileContent);
-        $this->assertContains('<session_save><![CDATA[files]]></session_save>', $fileContent);
-        $this->assertContains('<frontName><![CDATA[admin]]></frontName>', $fileContent);
-        $this->assertContains('<key><![CDATA[key123456789]]></key>', $fileContent);
+        self::assertContains('<host><![CDATA[my_db_host]]></host>', $fileContent);
+        self::assertContains('<username><![CDATA[my_db_user]]></username>', $fileContent);
+        self::assertContains('<password><![CDATA[my_db_pass]]></password>', $fileContent);
+        self::assertContains('<dbname><![CDATA[my_db_name]]></dbname>', $fileContent);
+        self::assertContains('<session_save><![CDATA[files]]></session_save>', $fileContent);
+        self::assertContains('<frontName><![CDATA[admin]]></frontName>', $fileContent);
+        self::assertContains('<key><![CDATA[key123456789]]></key>', $fileContent);
 
         $xml = \simplexml_load_file($this->configFile);
-        $this->assertNotInternalType('bool', $xml);
+        self::assertNotInternalType('bool', $xml);
     }
 
     /**
@@ -237,10 +237,10 @@ class GenerateCommandTest extends TestCase
             ->setMethods(['ask'])
             ->getMock();
 
-        $dialog->expects($this->once())
+        $dialog->expects(self::once())
             ->method('ask')
             ->with(
-                $this->isInstanceOf('Symfony\Component\Console\Output\StreamOutput'),
+                self::isInstanceOf('Symfony\Component\Console\Output\StreamOutput'),
                 sprintf('<question>Please enter the %s:</question>', $prompt)
             )
             ->willReturn(null);
@@ -286,10 +286,10 @@ class GenerateCommandTest extends TestCase
 
         foreach ($inputs as $i => $input) {
             list($prompt, $returnValue) = $input;
-            $dialog->expects($this->at($i))
+            $dialog->expects(self::at($i))
                 ->method('ask')
                 ->with(
-                    $this->isInstanceOf('Symfony\Component\Console\Output\StreamOutput'),
+                    self::isInstanceOf('Symfony\Component\Console\Output\StreamOutput'),
                     sprintf('<question>Please enter the %s:</question>', $prompt)
                 )
                 ->willReturn($returnValue);
@@ -300,17 +300,17 @@ class GenerateCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $this->assertFileExists($this->configFile);
+        self::assertFileExists($this->configFile);
         $fileContent = \file_get_contents($this->configFile);
-        $this->assertContains('<host><![CDATA[some-db-host]]></host>', $fileContent);
-        $this->assertContains('<username><![CDATA[some-db-username]]></username>', $fileContent);
-        $this->assertContains('<password><![CDATA[some-db-password]]></password>', $fileContent);
-        $this->assertContains('<dbname><![CDATA[some-db-name]]></dbname>', $fileContent);
-        $this->assertContains('<session_save><![CDATA[some-session-save]]></session_save>', $fileContent);
-        $this->assertContains('<frontName><![CDATA[some-admin-front-name]]></frontName>', $fileContent);
+        self::assertContains('<host><![CDATA[some-db-host]]></host>', $fileContent);
+        self::assertContains('<username><![CDATA[some-db-username]]></username>', $fileContent);
+        self::assertContains('<password><![CDATA[some-db-password]]></password>', $fileContent);
+        self::assertContains('<dbname><![CDATA[some-db-name]]></dbname>', $fileContent);
+        self::assertContains('<session_save><![CDATA[some-session-save]]></session_save>', $fileContent);
+        self::assertContains('<frontName><![CDATA[some-admin-front-name]]></frontName>', $fileContent);
 
         $xml = \simplexml_load_file($this->configFile);
-        $this->assertNotInternalType('bool', $xml);
+        self::assertNotInternalType('bool', $xml);
     }
 
     public function testIfPasswordOmittedItIsWrittenBlank()
@@ -321,10 +321,10 @@ class GenerateCommandTest extends TestCase
             ->setMethods(['ask'])
             ->getMock();
 
-        $dialog->expects($this->once())
+        $dialog->expects(self::once())
             ->method('ask')
             ->with(
-                $this->isInstanceOf('Symfony\Component\Console\Output\StreamOutput'),
+                self::isInstanceOf('Symfony\Component\Console\Output\StreamOutput'),
                 sprintf('<question>Please enter the database password:</question>')
             )
             ->willReturn(null);
@@ -344,18 +344,18 @@ class GenerateCommandTest extends TestCase
             ]
         );
 
-        $this->assertFileExists($this->configFile);
+        self::assertFileExists($this->configFile);
         $fileContent = \file_get_contents($this->configFile);
-        $this->assertContains('<host><![CDATA[my_db_host]]></host>', $fileContent);
-        $this->assertContains('<username><![CDATA[my_db_user]]></username>', $fileContent);
-        $this->assertContains('<password></password>', $fileContent);
-        $this->assertContains('<dbname><![CDATA[my_db_name]]></dbname>', $fileContent);
-        $this->assertContains('<session_save><![CDATA[my_session_save]]></session_save>', $fileContent);
-        $this->assertContains('<frontName><![CDATA[my_admin_frontname]]></frontName>', $fileContent);
-        $this->assertContains('<key><![CDATA[key123456789]]></key>', $fileContent);
+        self::assertContains('<host><![CDATA[my_db_host]]></host>', $fileContent);
+        self::assertContains('<username><![CDATA[my_db_user]]></username>', $fileContent);
+        self::assertContains('<password></password>', $fileContent);
+        self::assertContains('<dbname><![CDATA[my_db_name]]></dbname>', $fileContent);
+        self::assertContains('<session_save><![CDATA[my_session_save]]></session_save>', $fileContent);
+        self::assertContains('<frontName><![CDATA[my_admin_frontname]]></frontName>', $fileContent);
+        self::assertContains('<key><![CDATA[key123456789]]></key>', $fileContent);
 
         $xml = \simplexml_load_file($this->configFile);
-        $this->assertNotInternalType('bool', $xml);
+        self::assertNotInternalType('bool', $xml);
     }
 
     public function testCdataTagIsNotAddedIfPresentInInput()
@@ -366,10 +366,10 @@ class GenerateCommandTest extends TestCase
             ->setMethods(['ask'])
             ->getMock();
 
-        $dialog->expects($this->once())
+        $dialog->expects(self::once())
             ->method('ask')
             ->with(
-                $this->isInstanceOf('Symfony\Component\Console\Output\StreamOutput'),
+                self::isInstanceOf('Symfony\Component\Console\Output\StreamOutput'),
                 '<question>Please enter the database host:</question>'
             )
             ->willReturn('CDATAdatabasehost');
@@ -389,17 +389,17 @@ class GenerateCommandTest extends TestCase
             ]
         );
 
-        $this->assertFileExists($this->configFile);
+        self::assertFileExists($this->configFile);
         $fileContent = \file_get_contents($this->configFile);
-        $this->assertContains('<host><![CDATA[CDATAdatabasehost]]></host>', $fileContent);
-        $this->assertContains('<username><![CDATA[my_db_user]]></username>', $fileContent);
-        $this->assertContains('<password><![CDATA[my_db_pass]]></password>', $fileContent);
-        $this->assertContains('<dbname><![CDATA[my_db_name]]></dbname>', $fileContent);
-        $this->assertContains('<session_save><![CDATA[my_session_save]]></session_save>', $fileContent);
-        $this->assertContains('<frontName><![CDATA[my_admin_frontname]]></frontName>', $fileContent);
-        $this->assertContains('<key><![CDATA[key123456789]]></key>', $fileContent);
+        self::assertContains('<host><![CDATA[CDATAdatabasehost]]></host>', $fileContent);
+        self::assertContains('<username><![CDATA[my_db_user]]></username>', $fileContent);
+        self::assertContains('<password><![CDATA[my_db_pass]]></password>', $fileContent);
+        self::assertContains('<dbname><![CDATA[my_db_name]]></dbname>', $fileContent);
+        self::assertContains('<session_save><![CDATA[my_session_save]]></session_save>', $fileContent);
+        self::assertContains('<frontName><![CDATA[my_admin_frontname]]></frontName>', $fileContent);
+        self::assertContains('<key><![CDATA[key123456789]]></key>', $fileContent);
         $xml = \simplexml_load_file($this->configFile);
-        $this->assertNotInternalType('bool', $xml);
+        self::assertNotInternalType('bool', $xml);
     }
 
     /**
@@ -415,12 +415,12 @@ class GenerateCommandTest extends TestCase
             return $method->invoke($command, $string);
         };
 
-        $this->assertSame('', $sujet(null));
-        $this->assertSame('<![CDATA[CDATA]]>', $sujet('CDATA'));
-        $this->assertSame('<![CDATA[]]]]>', $sujet(']]'));
-        $this->assertSame('<![CDATA[ with terminator "]]>]]&gt;<![CDATA[" inside ]]>', $sujet(' with terminator "]]>" inside '));
-        $this->assertSame(']]&gt;<![CDATA[ at the start ]]>', $sujet(']]> at the start '));
-        $this->assertSame('<![CDATA[ at the end ]]>]]&gt;', $sujet(' at the end ]]>'));
+        self::assertSame('', $sujet(null));
+        self::assertSame('<![CDATA[CDATA]]>', $sujet('CDATA'));
+        self::assertSame('<![CDATA[]]]]>', $sujet(']]'));
+        self::assertSame('<![CDATA[ with terminator "]]>]]&gt;<![CDATA[" inside ]]>', $sujet(' with terminator "]]>" inside '));
+        self::assertSame(']]&gt;<![CDATA[ at the start ]]>', $sujet(']]> at the start '));
+        self::assertSame('<![CDATA[ at the end ]]>]]&gt;', $sujet(' at the end ]]>'));
     }
 
     public function tearDown()

@@ -29,9 +29,9 @@ class RunCommandTest extends TestCase
         );
 
         // Runs sys:info -> Check for any output
-        $this->assertContains('Vendors (core)', $commandTester->getDisplay());
+        self::assertContains('Vendors (core)', $commandTester->getDisplay());
 
-        $this->assertContains(
+        self::assertContains(
             $testDir . '/hello-world.magerun',
             $this->normalizePathSeparators($commandTester->getDisplay())
         );

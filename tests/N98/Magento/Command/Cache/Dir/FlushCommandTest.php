@@ -25,8 +25,8 @@ class FlushCommandTest extends TestCase
         $commandTester->execute(array('command' => $command->getName()));
 
         $display = $commandTester->getDisplay();
-        $this->assertContains('Flushing cache directory ', $display);
-        $this->assertContains('Cache directory flushed', $display);
+        self::assertContains('Flushing cache directory ', $display);
+        self::assertContains('Cache directory flushed', $display);
     }
 
     /**

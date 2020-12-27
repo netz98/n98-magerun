@@ -16,9 +16,9 @@ class ListCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $this->assertContains('id', $commandTester->getDisplay());
-        $this->assertContains('user', $commandTester->getDisplay());
-        $this->assertContains('email', $commandTester->getDisplay());
-        $this->assertContains('status', $commandTester->getDisplay());
+        self::assertContains('id', $commandTester->getDisplay());
+        self::assertContains('user', $commandTester->getDisplay());
+        self::assertContains('email', $commandTester->getDisplay());
+        self::assertContains('status', $commandTester->getDisplay());
     }
 }

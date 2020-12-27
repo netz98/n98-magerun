@@ -23,7 +23,7 @@ class MagentoHelper extends TestCase
      */
     public function testHelperInstance()
     {
-        $this->assertInstanceOf('\N98\Util\Console\Helper\MagentoHelper', $this->getHelper());
+        self::assertInstanceOf('\N98\Util\Console\Helper\MagentoHelper', $this->getHelper());
     }
 
     /**
@@ -43,8 +43,8 @@ class MagentoHelper extends TestCase
         $helper = $this->getHelper();
         $helper->detect(vfsStream::url('root'), array());
 
-        $this->assertEquals(vfsStream::url('root'), $helper->getRootFolder());
-        $this->assertEquals(\N98\Magento\Application::MAGENTO_MAJOR_VERSION_1, $helper->getMajorVersion());
+        self::assertEquals(vfsStream::url('root'), $helper->getRootFolder());
+        self::assertEquals(\N98\Magento\Application::MAGENTO_MAJOR_VERSION_1, $helper->getMajorVersion());
     }
 
     /**
@@ -75,8 +75,8 @@ class MagentoHelper extends TestCase
             )
         );
 
-        $this->assertEquals(vfsStream::url('root/htdocs'), $helper->getRootFolder());
-        $this->assertEquals(\N98\Magento\Application::MAGENTO_MAJOR_VERSION_1, $helper->getMajorVersion());
+        self::assertEquals(vfsStream::url('root/htdocs'), $helper->getRootFolder());
+        self::assertEquals(\N98\Magento\Application::MAGENTO_MAJOR_VERSION_1, $helper->getMajorVersion());
     }
 
     /**
@@ -98,7 +98,7 @@ class MagentoHelper extends TestCase
             vfsStream::url('root')
         );
 
-        $this->assertNull($helper->getRootFolder());
+        self::assertNull($helper->getRootFolder());
     }
 
     /**
@@ -128,9 +128,9 @@ class MagentoHelper extends TestCase
         );
 
         // Verify if this could be checked with more elegance
-        $this->assertEquals(vfsStream::url('root/../root/htdocs/magento_root'), $helper->getRootFolder());
+        self::assertEquals(vfsStream::url('root/../root/htdocs/magento_root'), $helper->getRootFolder());
 
-        $this->assertEquals(\N98\Magento\Application::MAGENTO_MAJOR_VERSION_1, $helper->getMajorVersion());
+        self::assertEquals(\N98\Magento\Application::MAGENTO_MAJOR_VERSION_1, $helper->getMajorVersion());
     }
 
     /**
@@ -162,7 +162,7 @@ class MagentoHelper extends TestCase
             )
         );
 
-        $this->assertEquals(vfsStream::url('root/htdocs'), $helper->getRootFolder());
-        $this->assertEquals(\N98\Magento\Application::MAGENTO_MAJOR_VERSION_2, $helper->getMajorVersion());
+        self::assertEquals(vfsStream::url('root/htdocs'), $helper->getRootFolder());
+        self::assertEquals(\N98\Magento\Application::MAGENTO_MAJOR_VERSION_2, $helper->getMajorVersion());
     }
 }

@@ -20,6 +20,6 @@ class RunCommandTest extends TestCase
             )
         );
 
-        $this->assertRegExp('/done/', $commandTester->getDisplay());
+        self::assertRegExp('/done/', $commandTester->getDisplay());
     }
 }

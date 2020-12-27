@@ -34,10 +34,10 @@ class StatusCommandTest extends TestCase
         ));
         $display = $commandTester->getDisplay();
 
-        $this->assertContains('Threads_connected', $display);
-        $this->assertContains('Innodb_buffer_pool_wait_free', $display);
-        $this->assertContains('InnoDB Buffer Pool hit', $display);
-        $this->assertContains('Full table scans', $display);
+        self::assertContains('Threads_connected', $display);
+        self::assertContains('Innodb_buffer_pool_wait_free', $display);
+        self::assertContains('InnoDB Buffer Pool hit', $display);
+        self::assertContains('Full table scans', $display);
     }
 
     public function testSearch()
@@ -49,11 +49,11 @@ class StatusCommandTest extends TestCase
 
         $display = $commandTester->getDisplay();
 
-        $this->assertContains('Innodb_buffer_pool_read_ahead_rnd', $display);
-        $this->assertContains('Innodb_buffer_pool_wait_free', $display);
-        $this->assertContains('InnoDB Buffer Pool hit', $display);
-        $this->assertContains('Innodb_dblwr_pages_written', $display);
-        $this->assertContains('Innodb_os_log_written', $display);
+        self::assertContains('Innodb_buffer_pool_read_ahead_rnd', $display);
+        self::assertContains('Innodb_buffer_pool_wait_free', $display);
+        self::assertContains('InnoDB Buffer Pool hit', $display);
+        self::assertContains('Innodb_dblwr_pages_written', $display);
+        self::assertContains('Innodb_os_log_written', $display);
     }
 
     public function testRounding()
@@ -63,7 +63,7 @@ class StatusCommandTest extends TestCase
             '--rounding' => '2',
             'search'     => '%size%',
         ));
-        $this->assertRegExp(
+        self::assertRegExp(
             '~Innodb_page_size,[0-9\.]+K,~',
             $commandTester->getDisplay()
         );

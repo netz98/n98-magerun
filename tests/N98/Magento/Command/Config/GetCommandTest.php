@@ -196,7 +196,7 @@ class GetCommandTest extends TestCase
         switch ($magentoEdition) {
             case 'Community':
                 if (version_compare($magentoVersion, $community, '<')) {
-                    $this->markTestSkipped(
+                    self::markTestSkipped(
                         sprintf(
                             'Test requires minimum Magento version of "%s", version "%s" is in use',
                             $community,
@@ -207,7 +207,7 @@ class GetCommandTest extends TestCase
                 break;
             case 'Enterprise':
                 if (version_compare($magentoVersion, $enterprise, '<')) {
-                    $this->markTestSkipped(
+                    self::markTestSkipped(
                         sprintf(
                             'Test requires minimum Magento version of "%s", version "%s" is in use',
                             $enterprise,
@@ -217,7 +217,7 @@ class GetCommandTest extends TestCase
                 }
                 break;
             default:
-                $this->markTestSkipped(
+                self::markTestSkipped(
                     sprintf(
                         'Test requires community or enterprise edition, Magento edition "%s" given',
                         $magentoEdition

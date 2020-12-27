@@ -24,16 +24,16 @@ class DummyCommandTest extends TestCase
             )
         );
 
-        $this->assertRegExp('/CATEGORY: \'My Awesome Category (.+)\' WITH ID: \'(.+)\' CREATED!/', $commandTester->getDisplay());
-        $this->assertRegExp('/CATEGORY CHILD: \'My Awesome Category (.+)\' WITH ID: \'(.+)\' CREATED!/', $commandTester->getDisplay());
+        self::assertRegExp('/CATEGORY: \'My Awesome Category (.+)\' WITH ID: \'(.+)\' CREATED!/', $commandTester->getDisplay());
+        self::assertRegExp('/CATEGORY CHILD: \'My Awesome Category (.+)\' WITH ID: \'(.+)\' CREATED!/', $commandTester->getDisplay());
 
         // Check if the category is created correctly
         $match_parent = "";
         $match_child = "";
         preg_match('/CATEGORY: \'My Awesome Category (.+)\' WITH ID: \'(.+)\' CREATED!/', $commandTester->getDisplay(), $match_parent);
-        $this->assertTrue($this->checkifCategoryExist($match_parent[2]));
+        self::assertTrue($this->checkifCategoryExist($match_parent[2]));
         preg_match('/CATEGORY CHILD: \'My Awesome Category (.+)\' WITH ID: \'(.+)\' CREATED!/', $commandTester->getDisplay(), $match_child);
-        $this->assertTrue($this->checkifCategoryExist($match_child[2]));
+        self::assertTrue($this->checkifCategoryExist($match_child[2]));
 
         // Delete category created
         $this->deleteMagentoCategory($match_parent[2]);
@@ -64,42 +64,42 @@ class DummyCommandTest extends TestCase
             ->getMock();
 
         // ASK - store-id
-        $dialog->expects($this->any())
+        $dialog->expects(self::any())
             ->method('ask')
             ->with(
-                $this->isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
-                $this->isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
-                $this->isInstanceOf('Symfony\Component\Console\Question\Question')
+                self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
+                self::isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
+                self::isInstanceOf('Symfony\Component\Console\Question\Question')
             )
             ->willReturn(1);
 
         // ASK - children-categories-number
-        $dialog->expects($this->any())
+        $dialog->expects(self::any())
             ->method('ask')
             ->with(
-                $this->isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
-                $this->isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
-                $this->isInstanceOf('Symfony\Component\Console\Question\Question')
+                self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
+                self::isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
+                self::isInstanceOf('Symfony\Component\Console\Question\Question')
             )
             ->willReturn(0);
 
         // ASK - category-name-prefix
-        $dialog->expects($this->any())
+        $dialog->expects(self::any())
             ->method('ask')
             ->with(
-                $this->isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
-                $this->isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
-                $this->isInstanceOf('Symfony\Component\Console\Question\Question')
+                self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
+                self::isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
+                self::isInstanceOf('Symfony\Component\Console\Question\Question')
             )
             ->willReturn('My Awesome Category ');
 
         // ASK - category-number
-        $dialog->expects($this->any())
+        $dialog->expects(self::any())
             ->method('ask')
             ->with(
-                $this->isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
-                $this->isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
-                $this->isInstanceOf('Symfony\Component\Console\Question\Question')
+                self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
+                self::isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
+                self::isInstanceOf('Symfony\Component\Console\Question\Question')
             )
             ->willReturn(0);
 
@@ -115,9 +115,9 @@ class DummyCommandTest extends TestCase
         );
 
         $arguments = $commandTester->getInput()->getArguments();
-        $this->assertArrayHasKey('store-id', $arguments);
-        $this->assertArrayHasKey('children-categories-number', $arguments);
-        $this->assertArrayHasKey('category-name-prefix', $arguments);
-        $this->assertArrayHasKey('category-number', $arguments);
+        self::assertArrayHasKey('store-id', $arguments);
+        self::assertArrayHasKey('children-categories-number', $arguments);
+        self::assertArrayHasKey('category-name-prefix', $arguments);
+        self::assertArrayHasKey('category-number', $arguments);
     }
 }

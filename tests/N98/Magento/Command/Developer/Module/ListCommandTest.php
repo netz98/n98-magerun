@@ -20,6 +20,6 @@ class ListCommandTest extends TestCase
             )
         );
 
-        $this->assertRegExp('/Mage_Core/', $commandTester->getDisplay());
+        self::assertRegExp('/Mage_Core/', $commandTester->getDisplay());
     }
 }

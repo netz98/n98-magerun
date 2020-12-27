@@ -18,7 +18,7 @@ class ArrayFunctionsTest extends \PHPUnit\Framework\TestCase
      */
     public function mergeArrays(array $a, array $b, array $expected)
     {
-        $this->assertEquals($expected, ArrayFunctions::mergeArrays($a, $b));
+        self::assertEquals($expected, ArrayFunctions::mergeArrays($a, $b));
     }
 
     /**
@@ -72,15 +72,15 @@ class ArrayFunctionsTest extends \PHPUnit\Framework\TestCase
         );
 
         $actual = ArrayFunctions::columnOrderArrayTable($headers, $table);
-        $this->assertInternalType('array', $actual);
-        $this->assertCount(count($table), $actual);
+        self::assertInternalType('array', $actual);
+        self::assertCount(count($table), $actual);
         $expected = array(
             array('foo' => 'A1', 'bar' => 'B1', 'baz' => 'C1', 'D1'),
             array('foo' => 'A2', 'bar' => 'B2', 'baz' => 'C2', 'D2'),
             array('foo' => 'A3', 'bar' => null, 'baz' => null, null),
         );
-        $this->assertEquals($expected, $actual);
-        $this->assertSame($expected, $actual);
+        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -90,9 +90,9 @@ class ArrayFunctionsTest extends \PHPUnit\Framework\TestCase
     public function columnOrder($columns, $array, $expected)
     {
         $actual = ArrayFunctions::columnOrder($columns, $array);
-        $this->assertInternalType('array', $actual);
-        $this->assertEquals($expected, $actual);
-        $this->assertSame($expected, $actual);
+        self::assertInternalType('array', $actual);
+        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -160,9 +160,9 @@ class ArrayFunctionsTest extends \PHPUnit\Framework\TestCase
      */
     public function matrixFilterByValue(array $matrix)
     {
-        $this->assertCount(3, $matrix);
+        self::assertCount(3, $matrix);
         $filtered = ArrayFunctions::matrixFilterByValue($matrix, 'foo', 'bar');
-        $this->assertCount(1, $filtered);
+        self::assertCount(1, $filtered);
     }
 
     /**
@@ -172,8 +172,8 @@ class ArrayFunctionsTest extends \PHPUnit\Framework\TestCase
      */
     public function matrixFilterStartsWith(array $matrix)
     {
-        $this->assertCount(3, $matrix);
+        self::assertCount(3, $matrix);
         $filtered = ArrayFunctions::matrixFilterStartswith($matrix, 'foo', 'ba');
-        $this->assertCount(2, $filtered);
+        self::assertCount(2, $filtered);
     }
 }

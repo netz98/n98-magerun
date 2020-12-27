@@ -22,7 +22,7 @@ class InlineShopCommandTest extends TestCase
                 '--on'     => true,
             )
         );
-        $this->assertContains('Inline Translation enabled', $commandTester->getDisplay());
+        self::assertContains('Inline Translation enabled', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -33,6 +33,6 @@ class InlineShopCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('Inline Translation disabled', $commandTester->getDisplay());
+        self::assertContains('Inline Translation disabled', $commandTester->getDisplay());
     }
 }

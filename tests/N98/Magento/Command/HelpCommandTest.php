@@ -17,6 +17,6 @@ class HelpCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('The help command displays help for a given command', $commandTester->getDisplay());
+        self::assertContains('The help command displays help for a given command', $commandTester->getDisplay());
     }
 }

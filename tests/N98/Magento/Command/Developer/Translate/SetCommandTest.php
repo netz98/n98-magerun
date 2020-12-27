@@ -23,6 +23,6 @@ class SetCommandTest extends TestCase
                 'store'     => 'admin',
             )
         );
-        $this->assertContains('foo => bar', $commandTester->getDisplay());
+        self::assertContains('foo => bar', $commandTester->getDisplay());
     }
 }

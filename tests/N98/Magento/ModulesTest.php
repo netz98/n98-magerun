@@ -26,7 +26,7 @@ class ModulesTest extends TestCase
     public function creation()
     {
         $modules = new Modules();
-        $this->assertInstanceOf(__NAMESPACE__ . '\Modules', $modules);
+        self::assertInstanceOf(__NAMESPACE__ . '\Modules', $modules);
     }
 
     /**
@@ -39,9 +39,9 @@ class ModulesTest extends TestCase
         $result = $modules->filterModules(
             $this->filter()
         );
-        $this->assertInstanceOf(__NAMESPACE__ . '\Modules', $result);
-        $this->assertCount(0, $result);
-        $this->assertCount(0, iterator_to_array($result));
+        self::assertInstanceOf(__NAMESPACE__ . '\Modules', $result);
+        self::assertCount(0, $result);
+        self::assertCount(0, iterator_to_array($result));
     }
 
     /**
@@ -52,18 +52,18 @@ class ModulesTest extends TestCase
         $this->getApplication()->initMagento();
 
         $modules = new Modules();
-        $this->assertCount(0, $modules);
+        self::assertCount(0, $modules);
         $total = count($modules->findInstalledModules());
-        $this->assertGreaterThan(10, $total);
+        self::assertGreaterThan(10, $total);
 
         $filtered = $modules->filterModules($this->filter('codepool', 'core'));
-        $this->assertLessThan($total, count($filtered));
+        self::assertLessThan($total, count($filtered));
 
         $filtered = $modules->filterModules($this->filter('status', 'active'));
-        $this->assertLessThan($total, count($filtered));
+        self::assertLessThan($total, count($filtered));
 
         $filtered = $modules->filterModules($this->filter('vendor', 'Mage_'));
-        $this->assertLessThan($total, count($filtered));
+        self::assertLessThan($total, count($filtered));
     }
 
     /**
@@ -94,7 +94,7 @@ class ModulesTest extends TestCase
         $i = 0;
         foreach ($options as $opt => $val) {
             $input
-                ->expects($this->at($i++))
+                ->expects(self::at($i++))
                 ->method('getOption')
                 ->with($opt)
                 ->willReturn($val);
@@ -103,7 +103,7 @@ class ModulesTest extends TestCase
                 continue;
             }
 
-            $input->expects($this->at($i++))
+            $input->expects(self::at($i++))
                 ->method('getOption')
                 ->with($opt)
                 ->willReturn($val);

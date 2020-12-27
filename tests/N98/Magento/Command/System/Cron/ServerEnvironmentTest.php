@@ -12,7 +12,7 @@ class ServerEnvironmentTest extends TestCase
 
         // Initialise Magento autoloader (if not yet)
         $application = $this->getApplication();
-        $this->assertInstanceOf('N98\Magento\Application', $application);
+        self::assertInstanceOf('N98\Magento\Application', $application);
     }
 
     /**
@@ -22,8 +22,8 @@ class ServerEnvironmentTest extends TestCase
     {
         $store = \Mage::app()->getStore(null);
         $actual = $store->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK);
-        $this->assertInternalType('string', $actual);
-        $this->assertRegExp('~/(ide-phpunit.php|phpunit)/$~', $actual);
+        self::assertInternalType('string', $actual);
+        self::assertRegExp('~/(ide-phpunit.php|phpunit)/$~', $actual);
     }
 
     /**
@@ -38,15 +38,15 @@ class ServerEnvironmentTest extends TestCase
         $environment->initalize();
 
         $actual = $store->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK);
-        $this->assertInternalType('string', $actual);
-        $this->assertStringEndsWith('/index.php/', $actual);
+        self::assertInternalType('string', $actual);
+        self::assertStringEndsWith('/index.php/', $actual);
 
         $store->resetConfig();
 
         $environment->reset();
 
         $actual = \Mage::app()->getStore(null)->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK);
-        $this->assertInternalType('string', $actual);
-        $this->assertRegExp('~/(ide-phpunit.php|phpunit)/$~', $actual);
+        self::assertInternalType('string', $actual);
+        self::assertRegExp('~/(ide-phpunit.php|phpunit)/$~', $actual);
     }
 }

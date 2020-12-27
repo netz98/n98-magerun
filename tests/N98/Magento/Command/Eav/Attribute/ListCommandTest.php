@@ -22,8 +22,8 @@ class ListCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('eav/entity_attribute_source_boolean', $commandTester->getDisplay());
-        $this->assertContains('sku', $commandTester->getDisplay());
-        $this->assertContains('catalog_product', $commandTester->getDisplay());
+        self::assertContains('eav/entity_attribute_source_boolean', $commandTester->getDisplay());
+        self::assertContains('sku', $commandTester->getDisplay());
+        self::assertContains('catalog_product', $commandTester->getDisplay());
     }
 }

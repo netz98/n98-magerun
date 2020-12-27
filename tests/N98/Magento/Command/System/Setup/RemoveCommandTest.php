@@ -19,12 +19,12 @@ class RemoveCommandTest extends TestCase
             ->setMethods(array('delete'))
             ->getMock();
 
-        $mockAdapter->expects($this->once())
+        $mockAdapter->expects(self::once())
             ->method('delete')
             ->willReturn(1);
 
         $coreResource = $this->createMock('\Mage_Core_Model_Resource');
-        $coreResource->expects($this->once())
+        $coreResource->expects(self::once())
             ->method('getConnection')
             ->willReturn($mockAdapter);
 
@@ -32,7 +32,7 @@ class RemoveCommandTest extends TestCase
             ->setMethods(array('_getModel'))
             ->getMock();
 
-        $command->expects($this->once())
+        $command->expects(self::once())
             ->method('_getModel')
             ->with('core/resource', 'Mage_Core_Model_Resource')
             ->willReturn($coreResource);
@@ -47,7 +47,7 @@ class RemoveCommandTest extends TestCase
             'module'    => 'Mage_Weee',
         ));
 
-        $this->assertContains(
+        self::assertContains(
             'Successfully removed setup resource: "weee_setup" from module: "Mage_Weee"',
             $commandTester->getDisplay()
         );
@@ -60,12 +60,12 @@ class RemoveCommandTest extends TestCase
             ->setMethods(['delete'])
             ->getMock();
 
-        $mockAdapter->expects($this->once())
+        $mockAdapter->expects(self::once())
             ->method('delete')
             ->willReturn(1);
 
         $coreResource = $this->createMock('\Mage_Core_Model_Resource');
-        $coreResource->expects($this->once())
+        $coreResource->expects(self::once())
             ->method('getConnection')
             ->willReturn($mockAdapter);
 
@@ -73,7 +73,7 @@ class RemoveCommandTest extends TestCase
             ->setMethods(['_getModel'])
             ->getMock();
 
-        $command->expects($this->once())
+        $command->expects(self::once())
             ->method('_getModel')
             ->with('core/resource', 'Mage_Core_Model_Resource')
             ->willReturn($coreResource);
@@ -89,7 +89,7 @@ class RemoveCommandTest extends TestCase
             'setup'     => 'weee_setup',
         ]);
 
-        $this->assertContains(
+        self::assertContains(
             'Successfully removed setup resource: "weee_setup" from module: "Mage_Weee"',
             $commandTester->getDisplay()
         );
@@ -102,16 +102,16 @@ class RemoveCommandTest extends TestCase
             ->setMethods(['delete'])
             ->getMock();
 
-        $mockAdapter->expects($this->once())
+        $mockAdapter->expects(self::once())
             ->method('delete')
             ->willReturn(0);
 
         $coreResource = $this->createMock('\Mage_Core_Model_Resource');
-        $coreResource->expects($this->once())
+        $coreResource->expects(self::once())
             ->method('getConnection')
             ->willReturn($mockAdapter);
 
-        $coreResource->expects($this->once())
+        $coreResource->expects(self::once())
             ->method('getTableName')
             ->with('core_resource')
             ->willReturn('core_resource');
@@ -120,7 +120,7 @@ class RemoveCommandTest extends TestCase
             ->setMethods(['_getModel'])
             ->getMock();
 
-        $command->expects($this->once())
+        $command->expects(self::once())
             ->method('_getModel')
             ->with('core/resource', 'Mage_Core_Model_Resource')
             ->willReturn($coreResource);
@@ -136,7 +136,7 @@ class RemoveCommandTest extends TestCase
             'setup'     => 'weee_setup',
         ));
 
-        $this->assertContains(
+        self::assertContains(
             'No entry was found for setup resource: "weee_setup" in module: "Mage_Weee"',
             $commandTester->getDisplay()
         );
@@ -183,7 +183,7 @@ class RemoveCommandTest extends TestCase
             ->setMethods(['getModuleSetupResources'])
             ->getMock();
 
-        $command->expects($this->once())
+        $command->expects(self::once())
             ->method('getModuleSetupResources')
             ->with('Mage_Weee')
             ->willReturn([]);
@@ -199,7 +199,7 @@ class RemoveCommandTest extends TestCase
             'setup'     => 'weee_setup',
         ]);
 
-        $this->assertContains(
+        self::assertContains(
             'No setup resources found for module: "Mage_Weee"',
             $commandTester->getDisplay()
         );

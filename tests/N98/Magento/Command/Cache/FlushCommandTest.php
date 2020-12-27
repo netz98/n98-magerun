@@ -19,7 +19,7 @@ class FlushCommandTest extends TestCase
             $commandTester = new CommandTester($command);
             $commandTester->execute(array('command' => $command->getName()));
 
-            $this->assertRegExp('/Cache cleared/', $commandTester->getDisplay());
+            self::assertRegExp('/Cache cleared/', $commandTester->getDisplay());
         }
     }
 }

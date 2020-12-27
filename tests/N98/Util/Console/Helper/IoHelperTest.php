@@ -22,10 +22,10 @@ class IoHelperTest extends TestCase
     public function creation()
     {
         $helper = new IoHelper();
-        $this->assertInstanceOf('N98\Util\Console\Helper\IoHelper', $helper);
-        $this->assertInstanceOf('Symfony\Component\Console\Helper\HelperInterface', $helper);
-        $this->assertNull($helper->getOutput());
+        self::assertInstanceOf('N98\Util\Console\Helper\IoHelper', $helper);
+        self::assertInstanceOf('Symfony\Component\Console\Helper\HelperInterface', $helper);
+        self::assertNull($helper->getOutput());
 
-        $this->assertSame('io', $helper->getName());
+        self::assertSame('io', $helper->getName());
     }
 }

@@ -40,16 +40,16 @@ class CreateCommandTest extends TestCase
             )
         );
 
-        $this->assertFileExists($root . '/N98Magerun_UnitTest/composer.json');
-        $this->assertFileExists($root . '/N98Magerun_UnitTest/readme.md');
+        self::assertFileExists($root . '/N98Magerun_UnitTest/composer.json');
+        self::assertFileExists($root . '/N98Magerun_UnitTest/readme.md');
         $moduleBaseFolder = $root . '/N98Magerun_UnitTest/src/app/code/local/N98Magerun/UnitTest/';
-        $this->assertFileExists($moduleBaseFolder . 'etc/config.xml');
-        $this->assertFileExists($moduleBaseFolder . 'controllers');
-        $this->assertFileExists($moduleBaseFolder . 'Block');
-        $this->assertFileExists($moduleBaseFolder . 'Model');
-        $this->assertFileExists($moduleBaseFolder . 'Helper');
-        $this->assertFileExists($moduleBaseFolder . 'data/n98magerun_unittest_setup');
-        $this->assertFileExists($moduleBaseFolder . 'sql/n98magerun_unittest_setup');
+        self::assertFileExists($moduleBaseFolder . 'etc/config.xml');
+        self::assertFileExists($moduleBaseFolder . 'controllers');
+        self::assertFileExists($moduleBaseFolder . 'Block');
+        self::assertFileExists($moduleBaseFolder . 'Model');
+        self::assertFileExists($moduleBaseFolder . 'Helper');
+        self::assertFileExists($moduleBaseFolder . 'data/n98magerun_unittest_setup');
+        self::assertFileExists($moduleBaseFolder . 'sql/n98magerun_unittest_setup');
 
         // delete old module
         if (is_dir($root . '/N98Magerun_UnitTest')) {

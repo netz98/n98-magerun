@@ -29,7 +29,7 @@ class ConfigTest extends TestCase
     public function creation()
     {
         $config = new Config();
-        $this->assertInstanceOf(__NAMESPACE__ . '\\Config', $config);
+        self::assertInstanceOf(__NAMESPACE__ . '\\Config', $config);
     }
 
     /**
@@ -41,22 +41,22 @@ class ConfigTest extends TestCase
 
         try {
             $config->load();
-            $this->fail('An expected exception was not thrown');
+            self::fail('An expected exception was not thrown');
         } catch (ErrorException $e) {
-            $this->assertEquals('Configuration not yet fully loaded', $e->getMessage());
+            self::assertEquals('Configuration not yet fully loaded', $e->getMessage());
         }
 
-        $this->assertEquals(array(), $config->getConfig());
+        self::assertEquals(array(), $config->getConfig());
 
         $loader = $config->getLoader();
-        $this->assertInstanceOf(__NAMESPACE__ . '\\ConfigurationLoader', $loader);
-        $this->assertSame($loader, $config->getLoader());
+        self::assertInstanceOf(__NAMESPACE__ . '\\ConfigurationLoader', $loader);
+        self::assertSame($loader, $config->getLoader());
 
         $loader->loadStageTwo("");
         $config->load();
 
-        $this->assertInternalType('array', $config->getConfig());
-        $this->assertGreaterThan(4, count($config->getConfig()));
+        self::assertInternalType('array', $config->getConfig());
+        self::assertGreaterThan(4, count($config->getConfig()));
 
         $config->setLoader($loader);
     }
@@ -71,7 +71,7 @@ class ConfigTest extends TestCase
         $config = new Config();
         $config->setConfig(array(0, 1, 2));
         $actual = $config->getConfig();
-        $this->assertSame($actual[1], 1);
+        self::assertSame($actual[1], 1);
     }
 
     /**
@@ -82,7 +82,7 @@ class ConfigTest extends TestCase
         $config = new Config();
         $input = new ArgvInput();
         $actual = $config->checkConfigCommandAlias($input);
-        $this->assertInstanceOf('Symfony\Component\Console\Input\InputInterface', $actual);
+        self::assertInstanceOf('Symfony\Component\Console\Input\InputInterface', $actual);
 
         $saved = $_SERVER['argv'];
         {
@@ -93,10 +93,10 @@ class ConfigTest extends TestCase
             $argv = array('/path/to/command', 'list-help');
             $_SERVER['argv'] = $argv;
             $input = new ArgvInput($argv, $definition);
-            $this->assertSame('list-help', (string) $input);
+            self::assertSame('list-help', (string) $input);
             $actual = $config->checkConfigCommandAlias($input);
-            $this->assertSame('list-help', $actual->getFirstArgument());
-            $this->assertSame('list-help --help', (string) $actual);
+            self::assertSame('list-help', $actual->getFirstArgument());
+            self::assertSame('list-help --help', (string) $actual);
         }
         $_SERVER['argv'] = $saved;
 
@@ -104,7 +104,7 @@ class ConfigTest extends TestCase
 
         $config->registerConfigCommandAlias($command);
 
-        $this->assertSame(array('list-help'), $command->getAliases());
+        self::assertSame(array('list-help'), $command->getAliases());
     }
 
     /**
@@ -130,7 +130,7 @@ class ConfigTest extends TestCase
 
         /** @var \N98\Magento\Application|\PHPUnit\Framework\MockObject\MockObject $application */
         $application = $this->createMock(\N98\Magento\Application::class);
-        $application->expects($this->exactly(2))->method('add');
+        $application->expects(self::exactly(2))->method('add');
 
         $config->registerCustomCommands($application);
     }
@@ -169,10 +169,10 @@ class ConfigTest extends TestCase
     public function loadPartialConfig()
     {
         $config = new Config();
-        $this->assertEquals(array(), $config->getDetectSubFolders());
+        self::assertEquals(array(), $config->getDetectSubFolders());
         $config->loadPartialConfig(false);
         $actual = $config->getDetectSubFolders();
-        $this->assertInternalType('array', $actual);
-        $this->assertNotEquals(array(), $actual);
+        self::assertInternalType('array', $actual);
+        self::assertNotEquals(array(), $actual);
     }
 }

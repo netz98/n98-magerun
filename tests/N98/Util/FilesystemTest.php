@@ -44,8 +44,8 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
         touch($file2);
 
         $this->fileSystem->recursiveCopy($basePath, $dest);
-        $this->assertFileExists($dest . "/folder1/file1.txt");
-        $this->assertFileExists($dest . "/folder2/file2.txt");
+        self::assertFileExists($dest . "/folder1/file1.txt");
+        self::assertFileExists($dest . "/folder2/file2.txt");
 
         //cleanup
         unlink($file1);
@@ -60,8 +60,8 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
         rmdir($dest . "/folder2");
         rmdir($dest);
 
-        $this->assertFileNotExists($dest . "/folder1/file1.txt");
-        $this->assertFileNotExists($dest);
+        self::assertFileNotExists($dest . "/folder1/file1.txt");
+        self::assertFileNotExists($dest);
 
         is_dir($tmp . '/a') || mkdir($tmp . '/a');
         touch($tmp . '/file1.txt');
@@ -89,9 +89,9 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
         touch($file2);
 
         $this->fileSystem->recursiveCopy($basePath, $dest, array('ignore.me'));
-        $this->assertFileExists($dest . "/folder1/file1.txt");
-        $this->assertFileNotExists($dest . "/folder1/ignore.me");
-        $this->assertFileExists($dest . "/folder2/file2.txt");
+        self::assertFileExists($dest . "/folder1/file1.txt");
+        self::assertFileNotExists($dest . "/folder1/ignore.me");
+        self::assertFileExists($dest . "/folder2/file2.txt");
 
         //cleanup
         unlink($file1);
@@ -124,12 +124,12 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
         touch($symLinkedFile);
 
         $result = @symlink($symLinked, $basePath . "/symlink");
-        $this->assertTrue($result);
+        self::assertTrue($result);
 
         $this->fileSystem->recursiveRemoveDirectory($basePath);
 
-        $this->assertFileExists($symLinkedFile);
-        $this->assertFileNotExists($basePath);
+        self::assertFileExists($symLinkedFile);
+        self::assertFileNotExists($basePath);
     }
 
     public function testRecursiveRemove()
@@ -147,7 +147,7 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
         touch($file2);
 
         $this->fileSystem->recursiveRemoveDirectory($basePath);
-        $this->assertFileNotExists($basePath);
+        self::assertFileNotExists($basePath);
     }
 
     public function testRecursiveRemoveWithTrailingSlash()
@@ -165,12 +165,12 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
         touch($file2);
 
         $this->fileSystem->recursiveRemoveDirectory($basePath . "/");
-        $this->assertFileNotExists($basePath);
+        self::assertFileNotExists($basePath);
     }
 
     public function testFalseIsReturnedIfDirectoryNotExist()
     {
-        $this->assertFalse($this->fileSystem->recursiveRemoveDirectory("not-a-folder"));
+        self::assertFalse($this->fileSystem->recursiveRemoveDirectory("not-a-folder"));
     }
 
     public function testFalseIsReturnedIfDirectoryNotReadable()
@@ -178,7 +178,7 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
         $tmp = sys_get_temp_dir();
         $basePath = $tmp . "/n98_testdir-never-existed";
 
-        $this->assertFalse($this->fileSystem->recursiveRemoveDirectory($basePath));
+        self::assertFalse($this->fileSystem->recursiveRemoveDirectory($basePath));
     }
 
     public function testParentIsNotRemovedIfEmptyIsTrue()
@@ -196,9 +196,9 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
         touch($file2);
 
         $this->fileSystem->recursiveRemoveDirectory($basePath, true);
-        $this->assertFileExists($basePath);
-        $this->assertFileNotExists($folder1);
-        $this->assertFileNotExists($folder2);
+        self::assertFileExists($basePath);
+        self::assertFileNotExists($folder1);
+        self::assertFileNotExists($folder2);
     }
 
     /**
@@ -210,7 +210,7 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
     public function testConvertBytesToHumanReadable($bytes, $decimalPlaces, $expected)
     {
         $res = Filesystem::humanFileSize($bytes, $decimalPlaces);
-        $this->assertSame($expected, $res);
+        self::assertSame($expected, $res);
     }
 
     /**

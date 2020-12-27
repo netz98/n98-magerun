@@ -20,6 +20,6 @@ class ListCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('base/default', $commandTester->getDisplay());
+        self::assertContains('base/default', $commandTester->getDisplay());
     }
 }
