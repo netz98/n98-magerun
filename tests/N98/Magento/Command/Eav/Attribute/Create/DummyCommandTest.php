@@ -39,7 +39,7 @@ class DummyCommandTest extends TestCase
             ->getMock();
 
         // ASK - attribute-id
-        $dialog->expects(self::any())
+        $dialog
                ->method('ask')
                ->with(
                    self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
@@ -49,7 +49,7 @@ class DummyCommandTest extends TestCase
                ->willReturn(92);
 
         // ASK - values-type
-        $dialog->expects(self::any())
+        $dialog
                ->method('ask')
                ->with(
                    self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
@@ -59,7 +59,7 @@ class DummyCommandTest extends TestCase
                ->willReturn('int');
 
         // ASK - values-number
-        $dialog->expects(self::any())
+        $dialog
                ->method('ask')
                ->with(
                    self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),

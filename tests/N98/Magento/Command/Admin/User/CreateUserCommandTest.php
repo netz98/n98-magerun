@@ -28,7 +28,6 @@ class CreateUserCommandTest extends TestCase
             ->getMock();
 
         $this->command
-            ->expects(self::any())
             ->method('getUserModel')
             ->willReturn($this->userModel);
 
@@ -38,7 +37,6 @@ class CreateUserCommandTest extends TestCase
             ->getMock();
 
         $this->command
-            ->expects(self::any())
             ->method('getRoleModel')
             ->willReturn($this->roleModel);
 
@@ -48,7 +46,6 @@ class CreateUserCommandTest extends TestCase
             ->getMock();
 
         $this->command
-            ->expects(self::any())
             ->method('getRulesModel')
             ->willReturn($this->rulesModel);
     }

@@ -25,7 +25,6 @@ class ValidateExtensionCommandTest extends TestCase
         $application->add($commandMock);
 
         $commandMock
-            ->expects(self::any())
             ->method('_getDownloaderConfigPath')
             ->will(self::returnValue(__DIR__ . '/_files/cache.cfg'));
 

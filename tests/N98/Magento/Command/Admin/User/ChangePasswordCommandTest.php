@@ -26,7 +26,6 @@ class ChangePasswordCommandTest extends TestCase
             ->getMock();
 
         $this->command
-            ->expects(self::any())
             ->method('getUserModel')
             ->will(self::returnValue($this->userModel));
     }

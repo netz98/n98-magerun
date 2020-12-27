@@ -26,7 +26,6 @@ class ChangeStatusCommandTest extends TestCase
             ->getMock();
 
         $this->command
-            ->expects(self::any())
             ->method('getUserModel')
             ->willReturn($this->userModel);
     }

@@ -64,7 +64,7 @@ class DummyCommandTest extends TestCase
             ->getMock();
 
         // ASK - store-id
-        $dialog->expects(self::any())
+        $dialog
             ->method('ask')
             ->with(
                 self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
@@ -74,7 +74,7 @@ class DummyCommandTest extends TestCase
             ->willReturn(1);
 
         // ASK - children-categories-number
-        $dialog->expects(self::any())
+        $dialog
             ->method('ask')
             ->with(
                 self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
@@ -84,7 +84,7 @@ class DummyCommandTest extends TestCase
             ->willReturn(0);
 
         // ASK - category-name-prefix
-        $dialog->expects(self::any())
+        $dialog
             ->method('ask')
             ->with(
                 self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
@@ -94,7 +94,7 @@ class DummyCommandTest extends TestCase
             ->willReturn('My Awesome Category ');
 
         // ASK - category-number
-        $dialog->expects(self::any())
+        $dialog
             ->method('ask')
             ->with(
                 self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
