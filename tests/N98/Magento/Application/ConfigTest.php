@@ -144,6 +144,10 @@ class ConfigTest extends TestCase
             'autoloaders_psr4' => array('$prefix\\' => '$path'),
         );
 
+        $expected =
+            '<debug>Registered PSR-0 autoloader </debug> $prefix -> $path' . "\n" .
+            '<debug>Registered PSR-4 autoloader </debug> $prefix\\ -> $path' . "\n";
+
         $output = new BufferedOutput();
 
         $config = new Config(array(), false, $output);
@@ -154,6 +158,8 @@ class ConfigTest extends TestCase
 
         $output->setVerbosity($output::VERBOSITY_DEBUG);
         $config->registerCustomAutoloaders($autloader);
+
+        self::assertSame($expected, $output->fetch());
     }
 
     /**
