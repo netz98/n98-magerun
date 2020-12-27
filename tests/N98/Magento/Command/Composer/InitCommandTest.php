@@ -10,7 +10,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Composer\Test\Command;
+namespace N98\Magento\Command\Composer;
 
 use Composer\Command\InitCommand;
 use N98\Magento\Command\TestCase;
