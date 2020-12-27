@@ -145,10 +145,10 @@ class TestApplication
             /** @var Application|PHPUnit_Framework_MockObject_MockObject $application */
             $application = $mockObjectGenerator->getMock('N98\Magento\Application', array('getMagentoRootFolder'));
 
-            // Get the composer bootstraph
+            // Get the composer bootstrap
             if (defined('PHPUNIT_COMPOSER_INSTALL')) {
                 $loader = require PHPUNIT_COMPOSER_INSTALL;
-            } elseif (file_exists(__DIR__ . '/../../../../../autoload.php')) {
+            } elseif (is_file(__DIR__ . '/../../../../../autoload.php')) {
                 // Installed via composer, already in vendor
                 $loader = require __DIR__ . '/../../../../../autoload.php';
             } else {
