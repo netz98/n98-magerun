@@ -22,6 +22,6 @@ class DumpCommand extends TestCase
             )
         );
 
-        $this->assertContains('Compress directory', $commandTester->getDisplay());
+        self::assertContains('Compress directory', $commandTester->getDisplay());
     }
 }

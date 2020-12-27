@@ -19,7 +19,7 @@ class ExecTest extends \PHPUnit\Framework\TestCase
     {
         Exec::run('echo test', $output, $actual);
 
-        $this->assertSame(0, $actual);
+        self::assertSame(0, $actual);
     }
 
     /**
@@ -29,8 +29,8 @@ class ExecTest extends \PHPUnit\Framework\TestCase
     {
         Exec::run('echo test', $commandOutput, $returnCode);
 
-        $this->assertEquals(Exec::CODE_CLEAN_EXIT, $returnCode);
-        $this->assertStringStartsWith('test', $commandOutput);
+        self::assertEquals(Exec::CODE_CLEAN_EXIT, $returnCode);
+        self::assertStringStartsWith('test', $commandOutput);
     }
 
     /**

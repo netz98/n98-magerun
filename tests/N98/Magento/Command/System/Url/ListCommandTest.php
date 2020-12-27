@@ -25,8 +25,8 @@ class ListCommandTest extends TestCase
             )
         );
 
-        $this->assertRegExp('/prefix/', $commandTester->getDisplay());
-        $this->assertRegExp('/http/', $commandTester->getDisplay());
-        $this->assertRegExp('/suffix/', $commandTester->getDisplay());
+        self::assertRegExp('/prefix/', $commandTester->getDisplay());
+        self::assertRegExp('/http/', $commandTester->getDisplay());
+        self::assertRegExp('/suffix/', $commandTester->getDisplay());
     }
 }

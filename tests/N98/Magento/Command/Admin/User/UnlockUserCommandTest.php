@@ -15,7 +15,7 @@ class UnlockUserCommandTest extends TestCase
         $command = new UnlockCommand();
         $command->setApplication($this->getApplication());
         if (!$command->isEnabled()) {
-            $this->markTestSkipped('UnlockCommand is not enabled.');
+            self::markTestSkipped('UnlockCommand is not enabled.');
         }
         return $command;
     }
@@ -27,7 +27,7 @@ class UnlockUserCommandTest extends TestCase
             ->setMethods(['ask'])
             ->getMock();
 
-        $dialog->expects($this->once())
+        $dialog->expects(self::once())
             ->method('ask')
             ->willReturn('n');
 
@@ -39,7 +39,7 @@ class UnlockUserCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $this->assertNotContains('All admins unlocked', $commandTester->getDisplay());
+        self::assertNotContains('All admins unlocked', $commandTester->getDisplay());
     }
 
     public function testUnlockAllUsersPromptYes()
@@ -49,7 +49,7 @@ class UnlockUserCommandTest extends TestCase
             ->setMethods(['ask'])
             ->getMock();
 
-        $dialog->expects($this->once())
+        $dialog->expects(self::once())
             ->method('ask')
             ->willReturn('y');
 
@@ -61,6 +61,6 @@ class UnlockUserCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $this->assertContains('All admins unlocked', $commandTester->getDisplay());
+        self::assertContains('All admins unlocked', $commandTester->getDisplay());
     }
 }

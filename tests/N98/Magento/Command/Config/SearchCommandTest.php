@@ -20,7 +20,7 @@ class SearchCommandTest extends TestCase
                 'text'      => 'This message will be shown',
             )
         );
-        $this->assertContains('Found a field with a match', $commandTester->getDisplay());
+        self::assertContains('Found a field with a match', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -29,6 +29,6 @@ class SearchCommandTest extends TestCase
                 'text'      => 'xyz1234567890',
             )
         );
-        $this->assertContains('No matches for xyz1234567890', $commandTester->getDisplay());
+        self::assertContains('No matches for xyz1234567890', $commandTester->getDisplay());
     }
 }

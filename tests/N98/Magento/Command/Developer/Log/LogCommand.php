@@ -22,7 +22,7 @@ class LogCommand extends TestCase
                 '--on'     => true,
             )
         );
-        $this->assertRegExp('/Development Log/', $commandTester->getDisplay());
+        self::assertRegExp('/Development Log/', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -33,6 +33,6 @@ class LogCommand extends TestCase
             )
         );
 
-        $this->assertRegExp('/Development Log/', $commandTester->getDisplay());
+        self::assertRegExp('/Development Log/', $commandTester->getDisplay());
     }
 }

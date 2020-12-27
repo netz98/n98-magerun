@@ -22,7 +22,7 @@ class SymlinksCommandTest extends TestCase
                 '--on'     => true,
             )
         );
-        $this->assertRegExp('/Symlinks allowed/', $commandTester->getDisplay());
+        self::assertRegExp('/Symlinks allowed/', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -33,6 +33,6 @@ class SymlinksCommandTest extends TestCase
             )
         );
 
-        $this->assertRegExp('/Symlinks denied/', $commandTester->getDisplay());
+        self::assertRegExp('/Symlinks denied/', $commandTester->getDisplay());
     }
 }

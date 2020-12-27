@@ -19,7 +19,7 @@ class DumpCommandTest extends TestCase
     {
         $dumpCommand = new DumpCommand();
         if (!$dumpCommand->isEnabled()) {
-            $this->markTestSkipped('DumpCommand is not enabled.');
+            self::markTestSkipped('DumpCommand is not enabled.');
         }
 
         $application = $this->getApplication();
@@ -44,9 +44,9 @@ class DumpCommandTest extends TestCase
             )
         );
 
-        $this->assertRegExp('/mysqldump/', $commandTester->getDisplay());
-        $this->assertRegExp('/\.sql/', $commandTester->getDisplay());
-        $this->assertContains(".sql.gz", $commandTester->getDisplay());
+        self::assertRegExp('/mysqldump/', $commandTester->getDisplay());
+        self::assertRegExp('/\.sql/', $commandTester->getDisplay());
+        self::assertContains(".sql.gz", $commandTester->getDisplay());
     }
 
     /**
@@ -122,13 +122,13 @@ class DumpCommandTest extends TestCase
         $dbConfig = $this->getDatabaseConnection()->getConfig();
         $db = $dbConfig['dbname'];
 
-        $this->assertRegExp("/--ignore-table=$db.customer_entity/", $commandTester->getDisplay());
-        $this->assertRegExp("/--ignore-table=$db.customer_address_entity/", $commandTester->getDisplay());
-        $this->assertRegExp("/--ignore-table=$db.sales_flat_order/", $commandTester->getDisplay());
-        $this->assertRegExp("/--ignore-table=$db.sales_flat_order_item/", $commandTester->getDisplay());
-        $this->assertRegExp("/--ignore-table=$db.sales_flat_order_item/", $commandTester->getDisplay());
-        $this->assertNotContains("not_existing_table_1", $commandTester->getDisplay());
-        $this->assertContains(".sql.gz", $commandTester->getDisplay());
+        self::assertRegExp("/--ignore-table=$db.customer_entity/", $commandTester->getDisplay());
+        self::assertRegExp("/--ignore-table=$db.customer_address_entity/", $commandTester->getDisplay());
+        self::assertRegExp("/--ignore-table=$db.sales_flat_order/", $commandTester->getDisplay());
+        self::assertRegExp("/--ignore-table=$db.sales_flat_order_item/", $commandTester->getDisplay());
+        self::assertRegExp("/--ignore-table=$db.sales_flat_order_item/", $commandTester->getDisplay());
+        self::assertNotContains("not_existing_table_1", $commandTester->getDisplay());
+        self::assertContains(".sql.gz", $commandTester->getDisplay());
 
         /**
          * Uncompressed
@@ -143,7 +143,7 @@ class DumpCommandTest extends TestCase
                 '--strip'        => '@development',
             )
         );
-        $this->assertNotContains(".sql.gz", $commandTester->getDisplay());
+        self::assertNotContains(".sql.gz", $commandTester->getDisplay());
     }
 
     public function testWithIncludeExcludeOptions()
@@ -167,7 +167,7 @@ class DumpCommandTest extends TestCase
                 '--compression'  => 'gzip',
             )
         );
-        $this->assertRegExp("/--ignore-table=$db\.core_config_data/", $commandTester->getDisplay());
+        self::assertRegExp("/--ignore-table=$db\.core_config_data/", $commandTester->getDisplay());
 
         /**
          * Include
@@ -183,8 +183,8 @@ class DumpCommandTest extends TestCase
                 '--compression'  => 'gzip',
             )
         );
-        $this->assertNotRegExp("/--ignore-table=$db\.core_config_data/", $commandTester->getDisplay());
-        $this->assertRegExp("/--ignore-table=$db\.catalog_product_entity/", $commandTester->getDisplay());
+        self::assertNotRegExp("/--ignore-table=$db\.core_config_data/", $commandTester->getDisplay());
+        self::assertRegExp("/--ignore-table=$db\.catalog_product_entity/", $commandTester->getDisplay());
     }
 
     public function testIncludeExcludeMutualExclusivity()
@@ -218,9 +218,9 @@ class DumpCommandTest extends TestCase
     {
         $dumpFile = new SplFileInfo($this->getTestMagentoRoot() . '/test-dump.sql');
         if ($dumpFile->isReadable()) {
-            $this->assertTrue(unlink($dumpFile), 'Precondition to unlink that the file does not exists');
+            self::assertTrue(unlink($dumpFile), 'Precondition to unlink that the file does not exists');
         }
-        $this->assertNotIsReadable((string)$dumpFile, 'Precondition that the file does not exists');
+        self::assertNotIsReadable((string)$dumpFile, 'Precondition that the file does not exists');
 
         $command = $this->getCommand();
         $commandTester = new CommandTester($command);
@@ -232,8 +232,8 @@ class DumpCommandTest extends TestCase
             )
         );
 
-        $this->assertTrue($dumpFile->isReadable(), 'File was created');
+        self::assertTrue($dumpFile->isReadable(), 'File was created');
         // dump should be larger than quarter a megabyte
-        $this->assertGreaterThan(250000, $dumpFile->getSize());
+        self::assertGreaterThan(250000, $dumpFile->getSize());
     }
 }

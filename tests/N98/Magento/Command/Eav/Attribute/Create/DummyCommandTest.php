@@ -24,7 +24,7 @@ class DummyCommandTest extends TestCase
             )
         );
 
-        $this->assertRegExp('/ATTRIBUTE VALUE: \'(.+)\' ADDED!/', $commandTester->getDisplay());
+        self::assertRegExp('/ATTRIBUTE VALUE: \'(.+)\' ADDED!/', $commandTester->getDisplay());
     }
 
     public function testmanageArguments()
@@ -39,32 +39,32 @@ class DummyCommandTest extends TestCase
             ->getMock();
 
         // ASK - attribute-id
-        $dialog->expects($this->any())
+        $dialog->expects(self::any())
                ->method('ask')
                ->with(
-                   $this->isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
-                   $this->isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
-                   $this->isInstanceOf('Symfony\Component\Console\Question\Question')
+                   self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
+                   self::isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
+                   self::isInstanceOf('Symfony\Component\Console\Question\Question')
                )
                ->willReturn(92);
 
         // ASK - values-type
-        $dialog->expects($this->any())
+        $dialog->expects(self::any())
                ->method('ask')
                ->with(
-                   $this->isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
-                   $this->isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
-                   $this->isInstanceOf('Symfony\Component\Console\Question\Question')
+                   self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
+                   self::isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
+                   self::isInstanceOf('Symfony\Component\Console\Question\Question')
                )
                ->willReturn('int');
 
         // ASK - values-number
-        $dialog->expects($this->any())
+        $dialog->expects(self::any())
                ->method('ask')
                ->with(
-                   $this->isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
-                   $this->isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
-                   $this->isInstanceOf('Symfony\Component\Console\Question\Question')
+                   self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
+                   self::isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
+                   self::isInstanceOf('Symfony\Component\Console\Question\Question')
                )
                ->willReturn(1);
 
@@ -80,8 +80,8 @@ class DummyCommandTest extends TestCase
         );
 
         $arguments = $commandTester->getInput()->getArguments();
-        $this->assertArrayHasKey('attribute-id', $arguments);
-        $this->assertArrayHasKey('values-type', $arguments);
-        $this->assertArrayHasKey('values-number', $arguments);
+        self::assertArrayHasKey('attribute-id', $arguments);
+        self::assertArrayHasKey('values-type', $arguments);
+        self::assertArrayHasKey('values-number', $arguments);
     }
 }

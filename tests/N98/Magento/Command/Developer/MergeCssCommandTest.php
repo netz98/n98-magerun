@@ -22,7 +22,7 @@ class MergeCssCommandTest extends TestCase
                 'store'    => 'admin',
             )
         );
-        $this->assertRegExp('/CSS Merging enabled/', $commandTester->getDisplay());
+        self::assertRegExp('/CSS Merging enabled/', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -33,6 +33,6 @@ class MergeCssCommandTest extends TestCase
             )
         );
 
-        $this->assertRegExp('/CSS Merging disabled/', $commandTester->getDisplay());
+        self::assertRegExp('/CSS Merging disabled/', $commandTester->getDisplay());
     }
 }

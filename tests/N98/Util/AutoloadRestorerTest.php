@@ -21,7 +21,7 @@ class AutoloadRestorerTest extends \PHPUnit\Framework\TestCase
     {
         $restorer = new AutoloadRestorer();
 
-        $this->assertInstanceOf('N98\Util\AutoloadRestorer', $restorer);
+        self::assertInstanceOf('N98\Util\AutoloadRestorer', $restorer);
     }
 
     /**
@@ -32,18 +32,18 @@ class AutoloadRestorerTest extends \PHPUnit\Framework\TestCase
         $callbackStub = function () {
         };
 
-        $this->assertTrue(spl_autoload_register($callbackStub));
+        self::assertTrue(spl_autoload_register($callbackStub));
 
         $restorer = new AutoloadRestorer();
 
-        $this->assertTrue(in_array($callbackStub, spl_autoload_functions(), true));
+        self::assertTrue(in_array($callbackStub, spl_autoload_functions(), true));
 
-        $this->assertTrue(spl_autoload_unregister($callbackStub));
+        self::assertTrue(spl_autoload_unregister($callbackStub));
 
-        $this->assertFalse(in_array($callbackStub, spl_autoload_functions(), true));
+        self::assertFalse(in_array($callbackStub, spl_autoload_functions(), true));
 
         $restorer->restore();
 
-        $this->assertTrue(in_array($callbackStub, spl_autoload_functions(), true));
+        self::assertTrue(in_array($callbackStub, spl_autoload_functions(), true));
     }
 }

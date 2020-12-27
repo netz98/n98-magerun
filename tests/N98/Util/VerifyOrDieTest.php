@@ -23,9 +23,9 @@ class VerifyOrDieTest extends TestCase
      */
     public function portableFilename()
     {
-        $this->assertSame("example.txt", VerifyOrDie::filename("example.txt"));
+        self::assertSame("example.txt", VerifyOrDie::filename("example.txt"));
 
-        $this->assertSame(".hidden", VerifyOrDie::filename(".hidden"));
+        self::assertSame(".hidden", VerifyOrDie::filename(".hidden"));
     }
 
     /**
@@ -36,9 +36,9 @@ class VerifyOrDieTest extends TestCase
         $message = sprintf('Database name %s is not portable', var_export('-fail', true));
         try {
             VerifyOrDie::filename('-fail', $message);
-            $this->fail('An expected exception has not been thrown.');
+            self::fail('An expected exception has not been thrown.');
         } catch (RuntimeException $e) {
-            $this->assertSame($message, $e->getMessage());
+            self::assertSame($message, $e->getMessage());
         }
     }
 

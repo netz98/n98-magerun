@@ -26,7 +26,7 @@ class CleanCommandTest extends TestCase
             $against = '1.14.0.0';
         }
         if (-1 != version_compare($version, $against)) {
-            $this->markTestSkipped(
+            self::markTestSkipped(
                 sprintf(
                     'Test skipped because it fails after new install of a Magento 1.9+ version (Magento version is: ' .
                     '%s) which is the case on travis where we always have a new install.', $version
@@ -46,7 +46,7 @@ class CleanCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $this->assertContains('Cache config cleaned', $commandTester->getDisplay());
+        self::assertContains('Cache config cleaned', $commandTester->getDisplay());
     }
 
     public function testItCanCleanMultipleCaches()
@@ -63,7 +63,7 @@ class CleanCommandTest extends TestCase
 
         $display = $commandTester->getDisplay();
 
-        $this->assertContains('Cache config cleaned', $display);
-        $this->assertContains('Cache layout cleaned', $display);
+        self::assertContains('Cache config cleaned', $display);
+        self::assertContains('Cache layout cleaned', $display);
     }
 }

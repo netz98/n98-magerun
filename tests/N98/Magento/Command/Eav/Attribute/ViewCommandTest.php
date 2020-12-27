@@ -22,9 +22,9 @@ class ViewCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('sku', $commandTester->getDisplay());
-        $this->assertContains('catalog_product_entity', $commandTester->getDisplay());
-        $this->assertContains('Backend-Type', $commandTester->getDisplay());
-        $this->assertContains('static', $commandTester->getDisplay());
+        self::assertContains('sku', $commandTester->getDisplay());
+        self::assertContains('catalog_product_entity', $commandTester->getDisplay());
+        self::assertContains('Backend-Type', $commandTester->getDisplay());
+        self::assertContains('static', $commandTester->getDisplay());
     }
 }

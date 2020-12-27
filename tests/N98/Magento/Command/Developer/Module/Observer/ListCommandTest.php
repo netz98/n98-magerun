@@ -21,6 +21,6 @@ class ListCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('controller_front_init_routers', $commandTester->getDisplay());
+        self::assertContains('controller_front_init_routers', $commandTester->getDisplay());
     }
 }

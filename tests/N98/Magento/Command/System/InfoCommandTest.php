@@ -16,9 +16,9 @@ class InfoCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $this->assertRegExp('/Magento System Information/', $commandTester->getDisplay());
-        $this->assertRegExp('/Install Date/', $commandTester->getDisplay());
-        $this->assertRegExp('/Crypt Key/', $commandTester->getDisplay());
+        self::assertRegExp('/Magento System Information/', $commandTester->getDisplay());
+        self::assertRegExp('/Install Date/', $commandTester->getDisplay());
+        self::assertRegExp('/Crypt Key/', $commandTester->getDisplay());
 
         // Settings argument
         $commandTester->execute(
@@ -29,6 +29,6 @@ class InfoCommandTest extends TestCase
         );
 
         $commandResult = $commandTester->getDisplay();
-        $this->assertRegExp('/\d+\.\d+\.\d+/', $commandResult);
+        self::assertRegExp('/\d+\.\d+\.\d+/', $commandResult);
     }
 }

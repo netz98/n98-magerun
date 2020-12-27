@@ -20,6 +20,6 @@ class HistoryCommandTest extends TestCase
             )
         );
 
-        $this->assertRegExp('/Last executed jobs/', $commandTester->getDisplay());
+        self::assertRegExp('/Last executed jobs/', $commandTester->getDisplay());
     }
 }

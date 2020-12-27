@@ -22,18 +22,18 @@ class ApplicationTest extends TestCase
         $application = require __DIR__ . '/../../../src/bootstrap.php';
         $application->setMagentoRootFolder($this->getTestMagentoRoot());
 
-        $this->assertInstanceOf('\N98\Magento\Application', $application);
+        self::assertInstanceOf('\N98\Magento\Application', $application);
         $loader = $application->getAutoloader();
-        $this->assertInstanceOf('\Composer\Autoload\ClassLoader', $loader);
+        self::assertInstanceOf('\Composer\Autoload\ClassLoader', $loader);
 
         /**
          * Check version
          */
-        $this->assertEquals(Application::APP_VERSION, trim(file_get_contents(__DIR__ . '/../../../version.txt')));
+        self::assertEquals(Application::APP_VERSION, trim(file_get_contents(__DIR__ . '/../../../version.txt')));
 
         /* @var $loader \Composer\Autoload\ClassLoader */
         $prefixes = $loader->getPrefixesPsr4();
-        $this->assertArrayHasKey('N98\\', $prefixes);
+        self::assertArrayHasKey('N98\\', $prefixes);
 
         $distConfigArray = Yaml::parse(file_get_contents(__DIR__ . '/../../../config.yaml'));
 
@@ -64,10 +64,10 @@ class ApplicationTest extends TestCase
 
         // Check if autoloaders, commands and aliases are registered
         $prefixes = $loader->getPrefixes();
-        $this->assertArrayHasKey('N98MagerunTest', $prefixes);
+        self::assertArrayHasKey('N98MagerunTest', $prefixes);
 
         $testDummyCommand = $application->find('n98mageruntest:test:dummy');
-        $this->assertInstanceOf('\N98MagerunTest\TestDummyCommand', $testDummyCommand);
+        self::assertInstanceOf('\N98MagerunTest\TestDummyCommand', $testDummyCommand);
 
         $commandTester = new CommandTester($testDummyCommand);
         $commandTester->execute(
@@ -75,18 +75,18 @@ class ApplicationTest extends TestCase
                 'command'    => $testDummyCommand->getName(),
             )
         );
-        $this->assertContains('dummy', $commandTester->getDisplay());
-        $this->assertTrue($application->getDefinition()->hasOption('root-dir'));
+        self::assertContains('dummy', $commandTester->getDisplay());
+        self::assertTrue($application->getDefinition()->hasOption('root-dir'));
 
         // Test alternative config model
         $application->initMagento();
         if (version_compare(\Mage::getVersion(), '1.7.0.2', '>=')) {
             // config_model option is only available in Magento CE >1.6
-            $this->assertInstanceOf('\N98MagerunTest\AlternativeConfigModel', \Mage::getConfig());
+            self::assertInstanceOf('\N98MagerunTest\AlternativeConfigModel', \Mage::getConfig());
         }
 
         // check alias
-        $this->assertInstanceOf('\N98\Magento\Command\Cache\ListCommand', $application->find('cl'));
+        self::assertInstanceOf('\N98\Magento\Command\Cache\ListCommand', $application->find('cl'));
     }
 
     public function testPlugins()
@@ -110,7 +110,7 @@ class ApplicationTest extends TestCase
         $application->init($injectConfig);
 
         // Check for module command
-        $this->assertInstanceOf('TestModule\FooCommand', $application->find('testmodule:foo'));
+        self::assertInstanceOf('TestModule\FooCommand', $application->find('testmodule:foo'));
     }
 
     public function testComposer()
@@ -158,7 +158,7 @@ class ApplicationTest extends TestCase
             ->getMock();
 
         $configurationLoader
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getConfigurationLoaderDir')
             ->willReturn(vfsStream::url('root/vendor/n98/magerun/src/N98/Magento/Command'));
 
@@ -169,6 +169,6 @@ class ApplicationTest extends TestCase
         $application->init();
 
         // Check for module command
-        $this->assertInstanceOf('Acme\FooCommand', $application->find('acme:foo'));
+        self::assertInstanceOf('Acme\FooCommand', $application->find('acme:foo'));
     }
 }

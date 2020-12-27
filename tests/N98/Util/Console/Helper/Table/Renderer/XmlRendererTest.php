@@ -25,12 +25,12 @@ class XmlRendererTest extends TestCase
     public function creation()
     {
         $renderer = new XmlRenderer();
-        $this->assertInstanceOf(__NAMESPACE__ . '\\XmlRenderer', $renderer);
+        self::assertInstanceOf(__NAMESPACE__ . '\\XmlRenderer', $renderer);
 
         $renderFactory = new RendererFactory();
 
         $renderer = $renderFactory->create('xml');
-        $this->assertInstanceOf(__NAMESPACE__ . '\\XmlRenderer', $renderer);
+        self::assertInstanceOf(__NAMESPACE__ . '\\XmlRenderer', $renderer);
     }
 
     /**
@@ -166,6 +166,6 @@ ftw</Column2>
 
         $renderer->render($output, $rows);
 
-        $this->assertEquals($expected . "\n", $this->getOutputBuffer($output));
+        self::assertEquals($expected . "\n", $this->getOutputBuffer($output));
     }
 }

@@ -18,7 +18,7 @@ class LockCommandTest extends TestCase
     {
         $command = new LockCommand();
         $result = $command->daysToSeconds($days);
-        $this->assertSame($expected, $result);
+        self::assertSame($expected, $result);
     }
 
     /**

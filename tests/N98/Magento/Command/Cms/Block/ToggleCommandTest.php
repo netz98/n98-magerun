@@ -26,7 +26,7 @@ class ToggleCommandTest extends TestCase
                 'block_id' => $victim->getId(),
             )
         );
-        $this->assertContains('disabled', $commandTester->getDisplay());
+        self::assertContains('disabled', $commandTester->getDisplay());
         $commandTester->execute(
             array(
                 'command'  => $command->getName(),
@@ -34,6 +34,6 @@ class ToggleCommandTest extends TestCase
                 'block_id' => $victim->getIdentifier(),
             )
         );
-        $this->assertContains('enabled', $commandTester->getDisplay());
+        self::assertContains('enabled', $commandTester->getDisplay());
     }
 }

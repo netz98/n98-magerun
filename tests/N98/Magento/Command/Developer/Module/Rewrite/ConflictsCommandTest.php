@@ -28,7 +28,7 @@ class ConflictsCommandTest extends TestCase
                 'command' => $command->getName(),
             )
         );
-        $this->assertContains('No rewrite conflicts were found', $commandTester->getDisplay());
+        self::assertContains('No rewrite conflicts were found', $commandTester->getDisplay());
 
         /**
          * Junit Log without any output
@@ -40,9 +40,9 @@ class ConflictsCommandTest extends TestCase
                 '--log-junit' => '_output.xml',
             )
         );
-        $this->assertEquals(0, $result);
-        $this->assertEquals('', $commandTester->getDisplay());
-        $this->assertFileExists('_output.xml');
+        self::assertEquals(0, $result);
+        self::assertEquals('', $commandTester->getDisplay());
+        self::assertFileExists('_output.xml');
         @unlink('_output.xml');
     }
 
@@ -62,8 +62,8 @@ class ConflictsCommandTest extends TestCase
         $command = $this->getCommandWithMockLoadRewrites($rewrites);
         $commandTester = new CommandTester($command);
         $result = $commandTester->execute(array('command' => $command->getName()));
-        $this->assertNotEquals(0, $result);
-        $this->assertContains('1 conflict was found', $commandTester->getDisplay());
+        self::assertNotEquals(0, $result);
+        self::assertContains('1 conflict was found', $commandTester->getDisplay());
     }
 
     /**
@@ -84,8 +84,8 @@ class ConflictsCommandTest extends TestCase
         $command = $this->getCommandWithMockLoadRewrites($rewrites);
         $commandTester = new CommandTester($command);
         $result = $commandTester->execute(array('command' => $command->getName()));
-        $this->assertEquals(0, $result);
-        $this->assertContains('No rewrite conflicts were found', $commandTester->getDisplay());
+        self::assertEquals(0, $result);
+        self::assertContains('No rewrite conflicts were found', $commandTester->getDisplay());
     }
 
     /**
@@ -104,9 +104,9 @@ class ConflictsCommandTest extends TestCase
             ->getMock();
         $this->getApplication()->add($commandMock);
         $commandMock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('loadRewrites')
-            ->will($this->returnValue($return));
+            ->will(self::returnValue($return));
         return $commandMock;
     }
 }

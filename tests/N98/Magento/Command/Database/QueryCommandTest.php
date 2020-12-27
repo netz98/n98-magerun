@@ -21,8 +21,8 @@ class QueryCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('admin_user', $commandTester->getDisplay());
-        $this->assertContains('catalog_product_entity', $commandTester->getDisplay());
-        $this->assertContains('wishlist', $commandTester->getDisplay());
+        self::assertContains('admin_user', $commandTester->getDisplay());
+        self::assertContains('catalog_product_entity', $commandTester->getDisplay());
+        self::assertContains('wishlist', $commandTester->getDisplay());
     }
 }

@@ -17,7 +17,7 @@ class ListCommandTest extends TestCase
         )
         );
 
-        $this->assertContains(
+        self::assertContains(
             sprintf('n98-magerun version %s by netz98 GmbH', $this->getApplication()->getVersion()),
             $commandTester->getDisplay()
         );

@@ -22,9 +22,9 @@ class StringTypedTest extends TestCase
      */
     public function scope()
     {
-        $this->assertSame(true, StringTyped::parseBoolOption("true"));
+        self::assertSame(true, StringTyped::parseBoolOption("true"));
 
-        $this->assertSame('inactive', StringTyped::formatActive(null));
-        $this->assertSame('active', StringTyped::formatActive('1'));
+        self::assertSame('inactive', StringTyped::formatActive(null));
+        self::assertSame('active', StringTyped::formatActive('1'));
     }
 }

@@ -29,21 +29,21 @@ class CreateCommandTest extends TestCase
             'website'   => $website->getCode(),
         );
         $commandTester->execute($options);
-        $this->assertRegExp('/Customer ' . $generatedEmail . ' successfully created/', $commandTester->getDisplay());
+        self::assertRegExp('/Customer ' . $generatedEmail . ' successfully created/', $commandTester->getDisplay());
 
         // Format option
         $commandTester = new CommandTester($command);
         $generatedEmail = uniqid() . '@example.com';
         $options['email'] = $generatedEmail;
         $options['--format'] = 'csv';
-        $this->assertEquals(0, $commandTester->execute($options));
-        $this->assertContains('email,password,firstname,lastname', $commandTester->getDisplay());
-        $this->assertContains($generatedEmail . ',password123,John,Doe', $commandTester->getDisplay());
+        self::assertEquals(0, $commandTester->execute($options));
+        self::assertContains('email,password,firstname,lastname', $commandTester->getDisplay());
+        self::assertContains($generatedEmail . ',password123,John,Doe', $commandTester->getDisplay());
     }
 
     public function testWithWrongPassword()
     {
-        $this->markTestIncomplete('We currently cannot deal with interactive commands');
+        self::markTestIncomplete('We currently cannot deal with interactive commands');
 
         $command = $this->_getCommand();
         $generatedEmail = uniqid() . '@example.com';
@@ -51,9 +51,9 @@ class CreateCommandTest extends TestCase
         // mock dialog
         // We mock the DialogHelper
         $dialog = $this->createMock('N98\Util\Console\Helper\ParameterHelper');
-        $dialog->expects($this->at(0))
+        $dialog->expects(self::at(0))
             ->method('askPassword')
-            ->will($this->returnValue(true)); // The user confirms
+            ->will(self::returnValue(true)); // The user confirms
 
         // We override the standard helper with our mock
         $command->getHelperSet()->set($dialog, 'parameter');
@@ -67,7 +67,7 @@ class CreateCommandTest extends TestCase
         );
         $commandTester = new CommandTester($command);
         $commandTester->execute($options);
-        $this->assertRegExp('/The password must have at least 6 characters. Leading or trailing spaces will be ignored./', $commandTester->getDisplay());
+        self::assertRegExp('/The password must have at least 6 characters. Leading or trailing spaces will be ignored./', $commandTester->getDisplay());
     }
 
     /**

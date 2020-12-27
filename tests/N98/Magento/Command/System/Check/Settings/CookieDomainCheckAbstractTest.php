@@ -69,6 +69,6 @@ class CookieDomainCheckAbstractTest extends \PHPUnit\Framework\TestCase
 
         $message = sprintf('%s for %s', $cookieDomain, $baseUrl);
 
-        $this->assertSame($expected, $actual, $message);
+        self::assertSame($expected, $actual, $message);
     }
 }

@@ -24,8 +24,8 @@ class ListCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('Cache Flush Command Test (Hello World)', $commandTester->getDisplay());
-        $this->assertContains('Foo command', $commandTester->getDisplay());
-        $this->assertContains('Bar command', $commandTester->getDisplay());
+        self::assertContains('Cache Flush Command Test (Hello World)', $commandTester->getDisplay());
+        self::assertContains('Foo command', $commandTester->getDisplay());
+        self::assertContains('Bar command', $commandTester->getDisplay());
     }
 }

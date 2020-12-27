@@ -22,7 +22,7 @@ class ProfilerCommandTest extends TestCase
                 '--on'     => true,
             )
         );
-        $this->assertRegExp('/Profiler enabled/', $commandTester->getDisplay());
+        self::assertRegExp('/Profiler enabled/', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -33,6 +33,6 @@ class ProfilerCommandTest extends TestCase
             )
         );
 
-        $this->assertRegExp('/Profiler disabled/', $commandTester->getDisplay());
+        self::assertRegExp('/Profiler disabled/', $commandTester->getDisplay());
     }
 }

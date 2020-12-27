@@ -21,7 +21,7 @@ class InlineAdminCommandTest extends TestCase
                 '--on'     => true,
             )
         );
-        $this->assertContains('Inline Translation (Admin) enabled', $commandTester->getDisplay());
+        self::assertContains('Inline Translation (Admin) enabled', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -31,6 +31,6 @@ class InlineAdminCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('Inline Translation (Admin) disabled', $commandTester->getDisplay());
+        self::assertContains('Inline Translation (Admin) disabled', $commandTester->getDisplay());
     }
 }

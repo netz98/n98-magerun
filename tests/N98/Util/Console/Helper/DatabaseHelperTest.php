@@ -35,7 +35,7 @@ class DatabaseHelperTest extends TestCase
      */
     public function testHelperInstance()
     {
-        $this->assertInstanceOf('\N98\Util\Console\Helper\DatabaseHelper', $this->getHelper());
+        self::assertInstanceOf('\N98\Util\Console\Helper\DatabaseHelper', $this->getHelper());
     }
 
     /**
@@ -43,7 +43,7 @@ class DatabaseHelperTest extends TestCase
      */
     public function getConnection()
     {
-        $this->assertInstanceOf('\PDO', $this->getHelper()->getConnection());
+        self::assertInstanceOf('\PDO', $this->getHelper()->getConnection());
     }
 
     /**
@@ -51,7 +51,7 @@ class DatabaseHelperTest extends TestCase
      */
     public function dsn()
     {
-        $this->assertStringStartsWith('mysql:', $this->getHelper()->dsn());
+        self::assertStringStartsWith('mysql:', $this->getHelper()->dsn());
     }
 
     /**
@@ -59,7 +59,7 @@ class DatabaseHelperTest extends TestCase
      */
     public function mysqlUserHasPrivilege()
     {
-        $this->assertTrue($this->getHelper()->mysqlUserHasPrivilege('SELECT'));
+        self::assertTrue($this->getHelper()->mysqlUserHasPrivilege('SELECT'));
     }
 
     /**
@@ -72,22 +72,22 @@ class DatabaseHelperTest extends TestCase
         // verify (complex) return value with existing global variable
         $actual = $helper->getMysqlVariableValue('version');
 
-        $this->assertInternalType('array', $actual);
-        $this->assertCount(1, $actual);
+        self::assertInternalType('array', $actual);
+        self::assertCount(1, $actual);
         $key = '@@version';
-        $this->assertArrayHasKey($key, $actual);
-        $this->assertInternalType('string', $actual[$key]);
+        self::assertArrayHasKey($key, $actual);
+        self::assertInternalType('string', $actual[$key]);
 
         // quoted
         $actual = $helper->getMysqlVariableValue('`version`');
-        $this->assertEquals('@@`version`', key($actual));
+        self::assertEquals('@@`version`', key($actual));
 
         // non-existent global variable
         try {
             $helper->getMysqlVariableValue('nonexistent');
-            $this->fail('An expected exception has not been thrown');
+            self::fail('An expected exception has not been thrown');
         } catch (RuntimeException $e) {
-            $this->assertEquals("Failed to query mysql variable 'nonexistent'", $e->getMessage());
+            self::assertEquals("Failed to query mysql variable 'nonexistent'", $e->getMessage());
         }
     }
 
@@ -100,24 +100,24 @@ class DatabaseHelperTest extends TestCase
 
         // behaviour with existing global variable
         $actual = $helper->getMysqlVariable('version');
-        $this->assertInternalType('string', $actual);
+        self::assertInternalType('string', $actual);
 
         // behavior with existent session variable (INTEGER)
         $helper->getConnection()->query('SET @existent = 14;');
         $actual = $helper->getMysqlVariable('existent', '@');
-        $this->assertSame("14", $actual);
+        self::assertSame("14", $actual);
 
         // behavior with non-existent session variable
         $actual = $helper->getMysqlVariable('nonexistent', '@');
-        $this->assertNull($actual);
+        self::assertNull($actual);
 
         // behavior with non-existent global variable
         try {
             $helper->getMysqlVariable('nonexistent');
-            $this->fail('An expected Exception has not been thrown');
+            self::fail('An expected Exception has not been thrown');
         } catch (RuntimeException $e) {
             // test against the mysql error message
-            $this->assertStringEndsWith(
+            self::assertStringEndsWith(
                 "SQLSTATE[HY000]: 1193: Unknown system variable 'nonexistent'",
                 $e->getMessage()
             );
@@ -126,10 +126,10 @@ class DatabaseHelperTest extends TestCase
         // invalid variable type
         try {
             $helper->getMysqlVariable('nonexistent', '@@@');
-            $this->fail('An expected Exception has not been thrown');
+            self::fail('An expected Exception has not been thrown');
         } catch (InvalidArgumentException $e) {
             // test against the mysql error message
-            $this->assertEquals(
+            self::assertEquals(
                 'Invalid mysql variable type "@@@", must be "@@" (system) or "@" (session)',
                 $e->getMessage()
             );
@@ -144,8 +144,8 @@ class DatabaseHelperTest extends TestCase
         $helper = $this->getHelper();
 
         $tables = $helper->getTables();
-        $this->assertInternalType('array', $tables);
-        $this->assertContains('admin_user', $tables);
+        self::assertInternalType('array', $tables);
+        self::assertContains('admin_user', $tables);
 
         $dbSettings = $helper->getDbSettings();
         $ro = new \ReflectionObject($dbSettings);
@@ -164,16 +164,16 @@ class DatabaseHelperTest extends TestCase
         $rp->setValue($dbSettings, $config);
 
         $tables = $helper->getTables(null); // default value should be null-able and is false
-        $this->assertInternalType('array', $tables);
-        $this->assertNotContains('admin_user', $tables);
-        $this->assertContains('core_store', $tables);
-        $this->assertContains('core_website', $tables);
+        self::assertInternalType('array', $tables);
+        self::assertNotContains('admin_user', $tables);
+        self::assertContains('core_store', $tables);
+        self::assertContains('core_website', $tables);
 
         $tables = $helper->getTables(true);
-        $this->assertInternalType('array', $tables);
-        $this->assertNotContains('admin_user', $tables);
-        $this->assertContains('store', $tables);
-        $this->assertContains('website', $tables);
+        self::assertInternalType('array', $tables);
+        self::assertNotContains('admin_user', $tables);
+        self::assertContains('store', $tables);
+        self::assertContains('website', $tables);
     }
 
     /**
@@ -182,8 +182,8 @@ class DatabaseHelperTest extends TestCase
     public function resolveTables()
     {
         $tables = $this->getHelper()->resolveTables(array('catalog_*'));
-        $this->assertContains('catalog_product_entity', $tables);
-        $this->assertNotContains('catalogrule', $tables);
+        self::assertContains('catalog_product_entity', $tables);
+        self::assertNotContains('catalogrule', $tables);
 
         $definitions = array(
             'wild_1'   => array('tables' => array('catalog_*')),
@@ -195,10 +195,10 @@ class DatabaseHelperTest extends TestCase
             array('@wild_1', '@wild_2', '@dataflow'),
             $definitions
         );
-        $this->assertContains('catalog_product_entity', $tables);
-        $this->assertContains('core_config_data', $tables);
-        $this->assertContains('dataflow_batch_import', $tables);
-        $this->assertNotContains('catalogrule', $tables);
+        self::assertContains('catalog_product_entity', $tables);
+        self::assertContains('core_config_data', $tables);
+        self::assertContains('dataflow_batch_import', $tables);
+        self::assertNotContains('catalogrule', $tables);
     }
 
     /**

@@ -22,14 +22,14 @@ class ReindexAllCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('Successfully reindexed catalog_product_attribute', $commandTester->getDisplay());
-        $this->assertContains('Successfully reindexed catalog_product_price', $commandTester->getDisplay());
-        $this->assertContains('Successfully reindexed catalog_url', $commandTester->getDisplay());
-        $this->assertContains('Successfully reindexed catalog_product_flat', $commandTester->getDisplay());
-        $this->assertContains('Successfully reindexed catalog_category_flat', $commandTester->getDisplay());
-        $this->assertContains('Successfully reindexed catalog_category_product', $commandTester->getDisplay());
-        $this->assertContains('Successfully reindexed catalogsearch_fulltext', $commandTester->getDisplay());
-        $this->assertContains('Successfully reindexed cataloginventory_stock', $commandTester->getDisplay());
-        $this->assertContains('Successfully reindexed tag_summary', $commandTester->getDisplay());
+        self::assertContains('Successfully reindexed catalog_product_attribute', $commandTester->getDisplay());
+        self::assertContains('Successfully reindexed catalog_product_price', $commandTester->getDisplay());
+        self::assertContains('Successfully reindexed catalog_url', $commandTester->getDisplay());
+        self::assertContains('Successfully reindexed catalog_product_flat', $commandTester->getDisplay());
+        self::assertContains('Successfully reindexed catalog_category_flat', $commandTester->getDisplay());
+        self::assertContains('Successfully reindexed catalog_category_product', $commandTester->getDisplay());
+        self::assertContains('Successfully reindexed catalogsearch_fulltext', $commandTester->getDisplay());
+        self::assertContains('Successfully reindexed cataloginventory_stock', $commandTester->getDisplay());
+        self::assertContains('Successfully reindexed tag_summary', $commandTester->getDisplay());
     }
 }

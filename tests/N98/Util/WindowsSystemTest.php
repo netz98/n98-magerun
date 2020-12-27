@@ -20,11 +20,11 @@ class WindowsSystemTest extends \PHPUnit\Framework\TestCase
      */
     public function isProgramInstalled()
     {
-        $this->assertTrue(WindowsSystem::isProgramInstalled("notepad"));
+        self::assertTrue(WindowsSystem::isProgramInstalled("notepad"));
 
-        $this->assertFalse(WindowsSystem::isProgramInstalled("notepad-that-never-made-it-into-windows-kernel"));
+        self::assertFalse(WindowsSystem::isProgramInstalled("notepad-that-never-made-it-into-windows-kernel"));
 
-        $this->assertFalse(WindowsSystem::isProgramInstalled("invalid\\command*name|thisis"));
+        self::assertFalse(WindowsSystem::isProgramInstalled("invalid\\command*name|thisis"));
     }
 
     /**
@@ -54,6 +54,6 @@ class WindowsSystemTest extends \PHPUnit\Framework\TestCase
      */
     public function isExecutableName($name, $expected)
     {
-        $this->assertSame($expected, WindowsSystem::isExecutableName($name), $name);
+        self::assertSame($expected, WindowsSystem::isExecutableName($name), $name);
     }
 }

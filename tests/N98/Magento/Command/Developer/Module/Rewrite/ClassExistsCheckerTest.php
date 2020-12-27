@@ -34,10 +34,10 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
     public function creation()
     {
         $checker = new ClassExistsChecker('Le_Foo_Le_Bar_Nexiste_Pas');
-        $this->assertInstanceOf(__NAMESPACE__ . '\ClassExistsChecker', $checker);
+        self::assertInstanceOf(__NAMESPACE__ . '\ClassExistsChecker', $checker);
 
         $checker = ClassExistsChecker::create('Le_Foo_Le_Bar_Nexiste_Pas');
-        $this->assertInstanceOf(__NAMESPACE__ . '\ClassExistsChecker', $checker);
+        self::assertInstanceOf(__NAMESPACE__ . '\ClassExistsChecker', $checker);
     }
 
     /**
@@ -45,7 +45,7 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
      */
     public function existingClass()
     {
-        $this->assertTrue(ClassExistsChecker::create('IteratorIterator')->existsExtendsSafe());
+        self::assertTrue(ClassExistsChecker::create('IteratorIterator')->existsExtendsSafe());
     }
 
     /**
@@ -53,7 +53,7 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
      */
     public function nonExistingClass()
     {
-        $this->assertFalse(ClassExistsChecker::create('asdfu8jq23nklr08asASDF0oaosdufhoanl')->existsExtendsSafe());
+        self::assertFalse(ClassExistsChecker::create('asdfu8jq23nklr08asASDF0oaosdufhoanl')->existsExtendsSafe());
     }
 
     /**
@@ -72,12 +72,12 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
             $className = 'Le_Foo_Le_Bar_Nexiste_Pas';
             ClassExistsChecker::create($className)->existsExtendsSafe();
             $autoload->reset();
-            $this->fail('An expected Exception has not been thrown');
+            self::fail('An expected Exception has not been thrown');
         } catch (\Exception $ex) {
             $autoload->reset();
-            $this->assertInstanceOf(__NAMESPACE__ . '\ClassExistsThrownException', $ex);
-            $this->assertTrue($ex->getPrevious() instanceof $innerException);
-            $this->assertSame($innerException, $ex->getPrevious());
+            self::assertInstanceOf(__NAMESPACE__ . '\ClassExistsThrownException', $ex);
+            self::assertTrue($ex->getPrevious() instanceof $innerException);
+            self::assertSame($innerException, $ex->getPrevious());
         }
     }
 
@@ -106,11 +106,11 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
             $actual = ClassExistsChecker::create($className)->existsExtendsSafe();
             $restore();
             $autoload->reset();
-            $this->assertFalse($actual);
+            self::assertFalse($actual);
         } catch (\Exception $ex) {
             $restore();
             $autoload->reset();
-            $this->fail('An exception has been thrown');
+            self::fail('An exception has been thrown');
         }
     }
 
@@ -126,7 +126,7 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
         $canary = error_get_last();
 
         // precondition is that there was no error yet
-        $this->assertNotNull($canary, 'precondition not met');
+        self::assertNotNull($canary, 'precondition not met');
 
         // precondition of the error reporting level
         $reporting = error_reporting();
@@ -136,36 +136,36 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
             'E_ALL & ~E_DEPRECATED & ~E_STRICT (Deb Sury 5.6)' => 22527,
             'E_ALL (Travis PHP 5.3, 5.4, 5.5)'                 => 32767,
         );
-        $this->assertTrue(in_array($reporting, $knownErrorLevels), "error reporting as of $reporting");
+        self::assertTrue(in_array($reporting, $knownErrorLevels), "error reporting as of $reporting");
 
         // by default the class must be loaded with a different autoloader
-        $this->assertFalse(class_exists('Le_Foo_Le_Bar_Fine'));
+        self::assertFalse(class_exists('Le_Foo_Le_Bar_Fine'));
 
         // post-condition is that there was no error yet
-        $this->assertSame($canary, error_get_last());
+        self::assertSame($canary, error_get_last());
 
         // should not trigger an error if the class exists
         $autoload = $this->create($this->getAutoloader());
-        $this->assertTrue(class_exists('Le_Foo_Le_Bar_Fine'));
-        $this->assertSame($canary, error_get_last());
+        self::assertTrue(class_exists('Le_Foo_Le_Bar_Fine'));
+        self::assertSame($canary, error_get_last());
 
         // should trigger a warning if the class does not exists as file on disk per auto-loading
         $restore = $this->noErrorExceptions();
         $actual = class_exists('Le_Foo_Le_Bar_Nexiste_Pas');
         $restore();
 
-        $this->assertFalse($actual);
+        self::assertFalse($actual);
         $lastError = error_get_last();
         if ($canary === $lastError) {
-            $this->markTestIncomplete('System does not triggers the expected warning on include');
+            self::markTestIncomplete('System does not triggers the expected warning on include');
         }
 
-        $this->assertNotSame($canary, $lastError);
-        $this->assertArrayHasKey('type', $lastError);
-        $this->assertSame(2, $lastError['type']);
-        $this->assertArrayHasKey('message', $lastError);
+        self::assertNotSame($canary, $lastError);
+        self::assertArrayHasKey('type', $lastError);
+        self::assertSame(2, $lastError['type']);
+        self::assertArrayHasKey('message', $lastError);
         $pattern = '~include\(\): Failed opening \'.*Rewrite/fixture/Le_Foo_Le_Bar_Nexiste_Pas\.php\' for inclusion ~';
-        $this->assertRegExp($pattern, $lastError['message']);
+        self::assertRegExp($pattern, $lastError['message']);
     }
 
     /**
@@ -176,13 +176,13 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
      */
     public function triggersFatalError()
     {
-        $this->markTestSkipped('This test can not be run in group as it causes a fatal error');
+        self::markTestSkipped('This test can not be run in group as it causes a fatal error');
 
         // fatal error is caused with plain class_exists on non-dynamic definition with inexistent parent via autoloader
         $unload = $this->create($this->getAutoloader());
         $reset = $this->noErrorExceptions(false);
         $result = class_exists('Le_Foo_Le_Bar');
-        $this->fail('Fatal error must have been triggered in the line above.');
+        self::fail('Fatal error must have been triggered in the line above.');
     }
 
     /**

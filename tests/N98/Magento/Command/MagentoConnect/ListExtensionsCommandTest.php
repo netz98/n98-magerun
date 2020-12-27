@@ -9,11 +9,11 @@ class ListExtensionsCommandTest extends TestCase
 {
     public function testExecute()
     {
-        $this->markTestSkipped('Skip Test - Currently are connect problems. We skip test.');
+        self::markTestSkipped('Skip Test - Currently are connect problems. We skip test.');
 
         $this->getApplication()->initMagento();
         if (version_compare(\Mage::getVersion(), '1.4.2.0', '<=')) {
-            $this->markTestSkipped('Skip Test - mage cli script does not exist.');
+            self::markTestSkipped('Skip Test - mage cli script does not exist.');
         }
 
         $application = $this->getApplication();
@@ -28,8 +28,8 @@ class ListExtensionsCommandTest extends TestCase
             )
         );
 
-        $this->assertContains('Package', $commandTester->getDisplay());
-        $this->assertContains('Version', $commandTester->getDisplay());
-        $this->assertContains('Mage_All_Latest', $commandTester->getDisplay());
+        self::assertContains('Package', $commandTester->getDisplay());
+        self::assertContains('Version', $commandTester->getDisplay());
+        self::assertContains('Mage_All_Latest', $commandTester->getDisplay());
     }
 }

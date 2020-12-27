@@ -21,11 +21,11 @@ class CompareVersionsCommandTest extends TestCase
             )
         );
 
-        $this->assertRegExp('/Setup/', $commandTester->getDisplay());
-        $this->assertRegExp('/Module/', $commandTester->getDisplay());
-        $this->assertRegExp('/DB/', $commandTester->getDisplay());
-        $this->assertRegExp('/Data/', $commandTester->getDisplay());
-        $this->assertRegExp('/Status/', $commandTester->getDisplay());
+        self::assertRegExp('/Setup/', $commandTester->getDisplay());
+        self::assertRegExp('/Module/', $commandTester->getDisplay());
+        self::assertRegExp('/DB/', $commandTester->getDisplay());
+        self::assertRegExp('/Data/', $commandTester->getDisplay());
+        self::assertRegExp('/Status/', $commandTester->getDisplay());
     }
 
     public function testJunit()
@@ -43,6 +43,6 @@ class CompareVersionsCommandTest extends TestCase
             )
         );
 
-        $this->assertFileExists(vfsStream::url('root/junit.xml'));
+        self::assertFileExists(vfsStream::url('root/junit.xml'));
     }
 }

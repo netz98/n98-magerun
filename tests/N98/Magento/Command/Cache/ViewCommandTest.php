@@ -23,7 +23,7 @@ class ViewCommandTest extends TestCase
             )
         );
 
-        $this->assertRegExp('/TEST n98-magerun/', $commandTester->getDisplay());
+        self::assertRegExp('/TEST n98-magerun/', $commandTester->getDisplay());
     }
 
     public function testExecuteUnserialize()
@@ -49,6 +49,6 @@ class ViewCommandTest extends TestCase
             )
         );
 
-        $this->assertEquals(print_r($cacheData, true) . "\n", $commandTester->getDisplay(true));
+        self::assertEquals(print_r($cacheData, true) . "\n", $commandTester->getDisplay(true));
     }
 }

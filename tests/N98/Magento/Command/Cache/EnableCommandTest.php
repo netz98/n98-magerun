@@ -18,7 +18,7 @@ class EnableCommandTest extends TestCase
             $commandTester = new CommandTester($command);
             $commandTester->execute(array('command' => $command->getName()));
 
-            $this->assertRegExp('/Caches enabled/', $commandTester->getDisplay());
+            self::assertRegExp('/Caches enabled/', $commandTester->getDisplay());
         }
     }
 
@@ -37,8 +37,8 @@ class EnableCommandTest extends TestCase
                 )
             );
 
-            $this->assertRegExp('/Cache config enabled/', $commandTester->getDisplay());
-            $this->assertRegExp('/Cache eav enabled/', $commandTester->getDisplay());
+            self::assertRegExp('/Cache config enabled/', $commandTester->getDisplay());
+            self::assertRegExp('/Cache eav enabled/', $commandTester->getDisplay());
         }
     }
 }

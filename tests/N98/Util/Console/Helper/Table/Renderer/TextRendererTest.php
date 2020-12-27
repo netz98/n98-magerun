@@ -23,12 +23,12 @@ class TextRendererTest extends TestCase
     public function creation()
     {
         $renderer = new TextRenderer();
-        $this->assertInstanceOf(__NAMESPACE__ . '\\TextRenderer', $renderer);
+        self::assertInstanceOf(__NAMESPACE__ . '\\TextRenderer', $renderer);
 
         $renderFactory = new RendererFactory();
 
         $renderer = $renderFactory->create('text');
-        $this->assertInstanceOf(__NAMESPACE__ . '\\TextRenderer', $renderer);
+        self::assertInstanceOf(__NAMESPACE__ . '\\TextRenderer', $renderer);
     }
 
     /**
@@ -57,6 +57,6 @@ class TextRendererTest extends TestCase
 
         $renderer->render($output, $rows);
 
-        $this->assertEquals($expected, $this->getOutputBuffer($output));
+        self::assertEquals($expected, $this->getOutputBuffer($output));
     }
 }

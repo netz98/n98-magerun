@@ -16,6 +16,6 @@ class ListCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $this->assertRegExp('/Cronjob List/', $commandTester->getDisplay());
+        self::assertRegExp('/Cronjob List/', $commandTester->getDisplay());
     }
 }

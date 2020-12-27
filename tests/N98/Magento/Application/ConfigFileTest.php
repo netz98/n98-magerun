@@ -25,10 +25,10 @@ class ConfigFileTest extends TestCase
     public function creation()
     {
         $configFile = new ConfigFile();
-        $this->assertInstanceOf('\N98\Magento\Application\ConfigFile', $configFile);
+        self::assertInstanceOf('\N98\Magento\Application\ConfigFile', $configFile);
 
         $configFile = ConfigFile::createFromFile(__FILE__);
-        $this->assertInstanceOf('\N98\Magento\Application\ConfigFile', $configFile);
+        self::assertInstanceOf('\N98\Magento\Application\ConfigFile', $configFile);
     }
 
     /**
@@ -40,7 +40,7 @@ class ConfigFileTest extends TestCase
         $configFile->loadFile('data://,- %root%');
         $configFile->applyVariables("root-folder");
 
-        $this->assertSame(array('root-folder'), $configFile->toArray());
+        self::assertSame(array('root-folder'), $configFile->toArray());
     }
 
     /**
@@ -52,7 +52,7 @@ class ConfigFileTest extends TestCase
         $configFile->loadFile('data://,- bar');
         $result = $configFile->mergeArray(array('foo'));
 
-        $this->assertSame(array('foo', 'bar'), $result);
+        self::assertSame(array('foo', 'bar'), $result);
     }
 
     /**
@@ -66,7 +66,7 @@ class ConfigFileTest extends TestCase
         $configFile->loadFile('data://,');
         $this->addToAssertionCount(1);
         $configFile->toArray();
-        $this->fail('An expected exception has not been thrown.');
+        self::fail('An expected exception has not been thrown.');
     }
 
     /**

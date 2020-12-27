@@ -98,7 +98,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $display = $this->getMagerunTester($command)->getDisplay();
 
-        $this->assertContains($needle, $display, $message);
+        self::assertContains($needle, $display, $message);
     }
 
     /**
@@ -110,7 +110,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $display = $this->getMagerunTester($command)->getDisplay();
 
-        $this->assertNotContains($needle, $display, $message);
+        self::assertNotContains($needle, $display, $message);
     }
 
     /**
@@ -122,7 +122,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $display = $this->getMagerunTester($command)->getDisplay();
 
-        $this->assertRegExp($pattern, $display, $message);
+        self::assertRegExp($pattern, $display, $message);
     }
 
     /**
@@ -143,7 +143,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $message .= "Command executes with a status code of zero";
 
-        $this->assertSame(0, $status, $message);
+        self::assertSame(0, $status, $message);
 
         return $tester;
     }

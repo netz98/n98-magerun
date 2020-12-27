@@ -103,10 +103,10 @@ class UpdateCommandTest extends TestCase
             )
         );
 
-        $this->assertFileExists($moduleBaseFolder . 'etc/config.xml');
+        self::assertFileExists($moduleBaseFolder . 'etc/config.xml');
 
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
-        $this->assertContains('<version>2.0.0</version>', $configXmlContent);
+        self::assertContains('<version>2.0.0</version>', $configXmlContent);
     }
 
     /**
@@ -129,14 +129,14 @@ class UpdateCommandTest extends TestCase
         );
 
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
-        $this->assertContains('<n98magerun_unittest_resource>', $configXmlContent);
-        $this->assertContains('<deprecatedNode>n98magerun_unittest_resource_eav_mysql4</deprecatedNode>', $configXmlContent);
-        $this->assertContains('<class>N98Magerun_UnitTest_Model_Resource</class>', $configXmlContent);
-        $this->assertContains('<entities>', $configXmlContent);
-        $this->assertContains('<entity1>', $configXmlContent);
-        $this->assertContains('<table>entity1table</table>', $configXmlContent);
-        $this->assertContains('<entity2>', $configXmlContent);
-        $this->assertContains('<table>entity2table</table>', $configXmlContent);
+        self::assertContains('<n98magerun_unittest_resource>', $configXmlContent);
+        self::assertContains('<deprecatedNode>n98magerun_unittest_resource_eav_mysql4</deprecatedNode>', $configXmlContent);
+        self::assertContains('<class>N98Magerun_UnitTest_Model_Resource</class>', $configXmlContent);
+        self::assertContains('<entities>', $configXmlContent);
+        self::assertContains('<entity1>', $configXmlContent);
+        self::assertContains('<table>entity1table</table>', $configXmlContent);
+        self::assertContains('<entity2>', $configXmlContent);
+        self::assertContains('<table>entity2table</table>', $configXmlContent);
     }
 
     /**
@@ -158,13 +158,13 @@ class UpdateCommandTest extends TestCase
         );
 
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
-        $this->assertContains('<admin>', $configXmlContent);
-        $this->assertContains('<routers>', $configXmlContent);
-        $this->assertContains('<n98magerun_unittest>', $configXmlContent);
-        $this->assertContains('<args>', $configXmlContent);
-        $this->assertContains('<use>standard</use>', $configXmlContent);
-        $this->assertContains('<module>n98magerun_unittest</module>', $configXmlContent);
-        $this->assertContains('<frontName>n98magerun</frontName>', $configXmlContent);
+        self::assertContains('<admin>', $configXmlContent);
+        self::assertContains('<routers>', $configXmlContent);
+        self::assertContains('<n98magerun_unittest>', $configXmlContent);
+        self::assertContains('<args>', $configXmlContent);
+        self::assertContains('<use>standard</use>', $configXmlContent);
+        self::assertContains('<module>n98magerun_unittest</module>', $configXmlContent);
+        self::assertContains('<frontName>n98magerun</frontName>', $configXmlContent);
     }
 
     /**
@@ -185,11 +185,11 @@ class UpdateCommandTest extends TestCase
             )
         );
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
-        $this->assertContains('<frontend>', $configXmlContent);
-        $this->assertContains('<events>', $configXmlContent);
-        $this->assertContains('<n98mageruntest_observer>', $configXmlContent);
-        $this->assertContains('<class>n98magerun_unittest/observer</class>', $configXmlContent);
-        $this->assertContains('<method>controllerActionPostdispatch</method>', $configXmlContent);
+        self::assertContains('<frontend>', $configXmlContent);
+        self::assertContains('<events>', $configXmlContent);
+        self::assertContains('<n98mageruntest_observer>', $configXmlContent);
+        self::assertContains('<class>n98magerun_unittest/observer</class>', $configXmlContent);
+        self::assertContains('<method>controllerActionPostdispatch</method>', $configXmlContent);
     }
 
     /**
@@ -210,11 +210,11 @@ class UpdateCommandTest extends TestCase
             )
         );
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
-        $this->assertContains('<adminhtml>', $configXmlContent);
-        $this->assertContains('<layout>', $configXmlContent);
-        $this->assertContains('<updates>', $configXmlContent);
-        $this->assertContains('<n98magerun_unittest>', $configXmlContent);
-        $this->assertContains('<file>n98magerun_unittest.xml</file>', $configXmlContent);
+        self::assertContains('<adminhtml>', $configXmlContent);
+        self::assertContains('<layout>', $configXmlContent);
+        self::assertContains('<updates>', $configXmlContent);
+        self::assertContains('<n98magerun_unittest>', $configXmlContent);
+        self::assertContains('<file>n98magerun_unittest.xml</file>', $configXmlContent);
     }
 
     /**
@@ -235,12 +235,12 @@ class UpdateCommandTest extends TestCase
             )
         );
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
-        $this->assertContains('<adminhtml>', $configXmlContent);
-        $this->assertContains('<translate>', $configXmlContent);
-        $this->assertContains('<modules>', $configXmlContent);
-        $this->assertContains('<N98Magerun_UnitTest>', $configXmlContent);
-        $this->assertContains('<files>', $configXmlContent);
-        $this->assertContains('<default>N98magerun_UnitTest.csv</default>', $configXmlContent);
+        self::assertContains('<adminhtml>', $configXmlContent);
+        self::assertContains('<translate>', $configXmlContent);
+        self::assertContains('<modules>', $configXmlContent);
+        self::assertContains('<N98Magerun_UnitTest>', $configXmlContent);
+        self::assertContains('<files>', $configXmlContent);
+        self::assertContains('<default>N98magerun_UnitTest.csv</default>', $configXmlContent);
     }
 
     /**
@@ -261,9 +261,9 @@ class UpdateCommandTest extends TestCase
             )
         );
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
-        $this->assertContains('<default>', $configXmlContent);
-        $this->assertContains('<sectiontest>', $configXmlContent);
-        $this->assertContains('<grouptest>', $configXmlContent);
-        $this->assertContains('<fieldname>fieldvalue</fieldname>', $configXmlContent);
+        self::assertContains('<default>', $configXmlContent);
+        self::assertContains('<sectiontest>', $configXmlContent);
+        self::assertContains('<grouptest>', $configXmlContent);
+        self::assertContains('<fieldname>fieldvalue</fieldname>', $configXmlContent);
     }
 }

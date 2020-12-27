@@ -15,7 +15,7 @@ class MaintenanceCommandTest extends TestCase
 
         $magentoRootFolder = $application->getMagentoRootFolder();
         if (!is_writable($magentoRootFolder)) {
-            $this->markTestSkipped('Magento root folder must be writable.');
+            self::markTestSkipped('Magento root folder must be writable.');
         }
 
         $commandTester = new CommandTester($command);
@@ -25,8 +25,8 @@ class MaintenanceCommandTest extends TestCase
                 '--on'    => '',
             )
         );
-        $this->assertRegExp('/Maintenance mode on/', $commandTester->getDisplay());
-        $this->assertFileExists($magentoRootFolder . '/maintenance.flag');
+        self::assertRegExp('/Maintenance mode on/', $commandTester->getDisplay());
+        self::assertFileExists($magentoRootFolder . '/maintenance.flag');
 
         $commandTester->execute(
             array(
@@ -34,7 +34,7 @@ class MaintenanceCommandTest extends TestCase
                 '--off'   => '',
             )
         );
-        $this->assertRegExp('/Maintenance mode off/', $commandTester->getDisplay());
-        $this->assertFileNotExists($magentoRootFolder . '/maintenance.flag');
+        self::assertRegExp('/Maintenance mode off/', $commandTester->getDisplay());
+        self::assertFileNotExists($magentoRootFolder . '/maintenance.flag');
     }
 }

@@ -66,14 +66,14 @@ class InstallCommandTest extends TestCase
                 )
             );
         } catch (\InvalidArgumentException $e) {
-            $this->assertEquals("Database configuration is invalid", $e->getMessage());
+            self::assertEquals("Database configuration is invalid", $e->getMessage());
             $display = $commandTester->getDisplay(true);
-            $this->assertContains('SQLSTATE', $display);
+            self::assertContains('SQLSTATE', $display);
 
             return;
         }
 
-        $this->fail('InvalidArgumentException was not raised');
+        self::fail('InvalidArgumentException was not raised');
     }
 
     /**

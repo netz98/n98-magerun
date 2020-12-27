@@ -103,10 +103,10 @@ class OnCommandTest extends TestCase
 
         $commandTester->execute($input);
         foreach ($contains as $expectation) {
-            $this->assertContains($expectation, $commandTester->getDisplay());
+            self::assertContains($expectation, $commandTester->getDisplay());
         }
         foreach ($notContains as $expectation) {
-            $this->assertNotContains($expectation, $commandTester->getDisplay());
+            self::assertNotContains($expectation, $commandTester->getDisplay());
         }
     }
 }

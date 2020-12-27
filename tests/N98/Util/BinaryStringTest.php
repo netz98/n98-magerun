@@ -18,7 +18,7 @@ class BinaryStringTest extends \PHPUnit\Framework\TestCase
      */
     public function trimExplodeEmpty($delimiter, $string, $expected)
     {
-        $this->assertEquals($expected, BinaryString::trimExplodeEmpty($delimiter, $string), '', 0.0, 10, true);
+        self::assertEquals($expected, BinaryString::trimExplodeEmpty($delimiter, $string), '', 0.0, 10, true);
     }
 
     /**
@@ -50,9 +50,9 @@ class BinaryStringTest extends \PHPUnit\Framework\TestCase
      */
     public function startsWith()
     {
-        $this->assertTrue(BinaryString::startsWith('Foo', 'Foo'));
-        $this->assertTrue(BinaryString::startsWith('Foo123', 'Foo'));
-        $this->assertFalse(BinaryString::startsWith(' Foo123', 'Foo'));
+        self::assertTrue(BinaryString::startsWith('Foo', 'Foo'));
+        self::assertTrue(BinaryString::startsWith('Foo123', 'Foo'));
+        self::assertFalse(BinaryString::startsWith(' Foo123', 'Foo'));
     }
 
     /**
@@ -60,8 +60,8 @@ class BinaryStringTest extends \PHPUnit\Framework\TestCase
      */
     public function endsWith()
     {
-        $this->assertTrue(BinaryString::endsWith('Foo', 'Foo'));
-        $this->assertTrue(BinaryString::endsWith('Foo123', '123'));
-        $this->assertFalse(BinaryString::endsWith(' Foo123 ', '123'));
+        self::assertTrue(BinaryString::endsWith('Foo', 'Foo'));
+        self::assertTrue(BinaryString::endsWith('Foo123', '123'));
+        self::assertFalse(BinaryString::endsWith(' Foo123 ', '123'));
     }
 }

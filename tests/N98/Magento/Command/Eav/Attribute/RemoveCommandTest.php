@@ -47,7 +47,7 @@ class RemoveCommandTest extends TestCase
             )
         );
 
-        $this->assertContains(
+        self::assertContains(
             'Attribute: "not_an_attribute" does not exist for entity type: "catalog_product"',
             $commandTester->getDisplay()
         );
@@ -68,7 +68,7 @@ class RemoveCommandTest extends TestCase
             'label' => 'Test Attribute',
         ));
 
-        $this->assertTrue($this->attributeExists($entityType, $attributeCode));
+        self::assertTrue($this->attributeExists($entityType, $attributeCode));
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
@@ -78,7 +78,7 @@ class RemoveCommandTest extends TestCase
             )
         );
 
-        $this->assertFalse($this->attributeExists($entityType, $attributeCode));
+        self::assertFalse($this->attributeExists($entityType, $attributeCode));
     }
 
     /**
@@ -99,7 +99,7 @@ class RemoveCommandTest extends TestCase
             'label' => 'Test Attribute',
         ));
 
-        $this->assertTrue($this->attributeExists($entityTypeCode, $attributeCode));
+        self::assertTrue($this->attributeExists($entityTypeCode, $attributeCode));
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
@@ -109,7 +109,7 @@ class RemoveCommandTest extends TestCase
             )
         );
 
-        $this->assertFalse($this->attributeExists($entityTypeCode, $attributeCode));
+        self::assertFalse($this->attributeExists($entityTypeCode, $attributeCode));
     }
 
     public function testCanRemoveMultipleAttributes()
@@ -133,8 +133,8 @@ class RemoveCommandTest extends TestCase
             'label' => 'Test Attribute 2',
         ));
 
-        $this->assertTrue($this->attributeExists('catalog_product', $attributeCode1));
-        $this->assertTrue($this->attributeExists('catalog_product', $attributeCode2));
+        self::assertTrue($this->attributeExists('catalog_product', $attributeCode1));
+        self::assertTrue($this->attributeExists('catalog_product', $attributeCode2));
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
@@ -144,15 +144,15 @@ class RemoveCommandTest extends TestCase
             )
         );
 
-        $this->assertFalse($this->attributeExists('catalog_product', $attributeCode1));
-        $this->assertFalse($this->attributeExists('catalog_product', $attributeCode2));
+        self::assertFalse($this->attributeExists('catalog_product', $attributeCode1));
+        self::assertFalse($this->attributeExists('catalog_product', $attributeCode2));
 
-        $this->assertContains(
+        self::assertContains(
             'Successfully removed attribute: "crazyCoolAttribute1" from entity type: "catalog_product"',
             $commandTester->getDisplay()
         );
 
-        $this->assertContains(
+        self::assertContains(
             'Successfully removed attribute: "crazyCoolAttribute2" from entity type: "catalog_product"',
             $commandTester->getDisplay()
         );
@@ -173,8 +173,8 @@ class RemoveCommandTest extends TestCase
             'label' => 'Test Attribute 1',
         ));
 
-        $this->assertTrue($this->attributeExists('catalog_product', $attributeCode1));
-        $this->assertFalse($this->attributeExists('catalog_product', $attributeCode2));
+        self::assertTrue($this->attributeExists('catalog_product', $attributeCode1));
+        self::assertFalse($this->attributeExists('catalog_product', $attributeCode2));
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
@@ -184,15 +184,15 @@ class RemoveCommandTest extends TestCase
             )
         );
 
-        $this->assertFalse($this->attributeExists('catalog_product', $attributeCode1));
-        $this->assertFalse($this->attributeExists('catalog_product', $attributeCode2));
+        self::assertFalse($this->attributeExists('catalog_product', $attributeCode1));
+        self::assertFalse($this->attributeExists('catalog_product', $attributeCode2));
 
-        $this->assertContains(
+        self::assertContains(
             'Attribute: "crazyCoolAttribute2" does not exist for entity type: "catalog_product"',
             $commandTester->getDisplay()
         );
 
-        $this->assertContains(
+        self::assertContains(
             'Successfully removed attribute: "crazyCoolAttribute1" from entity type: "catalog_product"',
             $commandTester->getDisplay()
         );
