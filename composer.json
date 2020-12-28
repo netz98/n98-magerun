@@ -27,6 +27,7 @@
         "twig/twig": "~2.13"
     },
     "require-dev": {
+        "ext-simplexml": "*",
         "bamarni/symfony-console-autocomplete": "^1.2.0",
         "friendsofphp/php-cs-fixer": "~2.2.20",
         "phing/phing": "~2.16.3",
