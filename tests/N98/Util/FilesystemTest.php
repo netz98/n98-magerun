@@ -7,8 +7,6 @@
 
 namespace N98\Util;
 
-use RuntimeException;
-
 /**
  * Class FilesystemTest
  * @package N98\Util

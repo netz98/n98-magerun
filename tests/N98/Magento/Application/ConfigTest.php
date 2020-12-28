@@ -7,7 +7,6 @@ namespace N98\Magento\Application;
 
 use Composer\Autoload\ClassLoader;
 use ErrorException;
-use N98\Magento\Application;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;

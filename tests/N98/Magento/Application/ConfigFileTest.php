@@ -7,8 +7,6 @@
 
 namespace N98\Magento\Application;
 
-use InvalidArgumentException;
-use MongoDB\Driver\Exception\RuntimeException;
 use N98\Magento\Command\TestCase;
 
 /**

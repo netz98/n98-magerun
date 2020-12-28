@@ -9,7 +9,6 @@ namespace N98\Magento;
 
 use InvalidArgumentException;
 use N98\Magento\Command\TestCase;
-use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Console\Input\ArrayInput;
 
 /**
