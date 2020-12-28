@@ -71,7 +71,7 @@ class UpdateCommandTest extends TestCase
 
     protected function getInputStream($input)
     {
-        $stream = fopen('php://memory', 'r+', false);
+        $stream = fopen('php://memory', 'rb+', false);
         fputs($stream, $input);
 
         rewind($stream);
