@@ -64,7 +64,7 @@ class TestApplication
         # directory test
         if (!is_dir($root)) {
             throw new RuntimeException(
-                sprintf("%s path '%s' is not a directory (cwd: '%s', stopfile: '%s')", $varname, $root, getcwd(), $stopfile)
+                sprintf("%s path '%s' is not a directory (cwd: '%s', stopfile: '%s')", $varname, $root, getcwd(), $stopfile ?? '')
             );
         }
 
