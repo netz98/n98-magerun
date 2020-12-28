@@ -21,7 +21,7 @@ class ChangeVersionCommandTest extends TestCase
         $command
             ->expects(self::once())
             ->method('_getResourceSingleton')
-            ->will(self::returnValue($resourceModel));
+            ->willReturn($resourceModel);
 
         $resourceModel
             ->expects(self::once())
@@ -64,7 +64,7 @@ class ChangeVersionCommandTest extends TestCase
         $command
             ->expects(self::once())
             ->method('_getResourceSingleton')
-            ->will(self::returnValue($resourceModel));
+            ->willReturn($resourceModel);
 
         $resourceModel
             ->expects(self::once())
@@ -140,7 +140,7 @@ class ChangeVersionCommandTest extends TestCase
         $command->expects(self::once())
             ->method('getModuleSetupResources')
             ->with('Mage_Weee')
-            ->will(self::returnValue(array()));
+            ->willReturn(array());
 
         $application = $this->getApplication();
         $application->add($command);

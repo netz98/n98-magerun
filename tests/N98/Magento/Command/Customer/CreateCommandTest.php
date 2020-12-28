@@ -53,7 +53,7 @@ class CreateCommandTest extends TestCase
         $dialog = $this->createMock('N98\Util\Console\Helper\ParameterHelper');
         $dialog->expects(self::at(0))
             ->method('askPassword')
-            ->will(self::returnValue(true)); // The user confirms
+            ->willReturn(true); // The user confirms
 
         // We override the standard helper with our mock
         $command->getHelperSet()->set($dialog, 'parameter');

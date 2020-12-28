@@ -105,7 +105,7 @@ class ConflictsCommandTest extends TestCase
         $this->getApplication()->add($commandMock);
         $commandMock
             ->method('loadRewrites')
-            ->will(self::returnValue($return));
+            ->willReturn($return);
         return $commandMock;
     }
 }

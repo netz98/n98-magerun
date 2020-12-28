@@ -27,7 +27,7 @@ class ChangePasswordCommandTest extends TestCase
 
         $this->command
             ->method('getUserModel')
-            ->will(self::returnValue($this->userModel));
+            ->willReturn($this->userModel);
     }
 
     public function testCanChangePassword()
@@ -36,12 +36,12 @@ class ChangePasswordCommandTest extends TestCase
             ->expects(self::once())
             ->method('loadByUsername')
             ->with('aydin')
-            ->will(self::returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects(self::at(1))
             ->method('getId')
-            ->will(self::returnValue(2));
+            ->willReturn(2);
 
         $this->userModel
             ->expects(self::once())
@@ -73,12 +73,12 @@ class ChangePasswordCommandTest extends TestCase
             ->expects(self::once())
             ->method('loadByUsername')
             ->with('notauser')
-            ->will(self::returnValue($this->userModel));
+            ->willReturn($this->userModel);
 
         $this->userModel
             ->expects(self::at(1))
             ->method('getId')
-            ->will(self::returnValue(null));
+            ->willReturn(null);
 
         $application = $this->getApplication();
         $application->add($this->command);

@@ -76,7 +76,7 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
         } catch (\Exception $ex) {
             $autoload->reset();
             self::assertInstanceOf(__NAMESPACE__ . '\ClassExistsThrownException', $ex);
-            self::assertTrue($ex->getPrevious() instanceof $innerException);
+            isset($innerException) && self::assertInstanceOf(get_class($innerException), $ex->getPrevious());
             self::assertSame($innerException, $ex->getPrevious());
         }
     }
@@ -138,7 +138,7 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
             'E_ALL & ~E_DEPRECATED & ~E_STRICT (Deb Sury 5.6)' => 22527,
             'E_ALL (Travis PHP 5.3, 5.4, 5.5)'                 => 32767,
         );
-        self::assertTrue(in_array($reporting, $knownErrorLevels), "error reporting as of $reporting");
+        self::assertContains($reporting, $knownErrorLevels, "error reporting as of $reporting");
 
         // by default the class must be loaded with a different autoloader
         self::assertFalse(class_exists('Le_Foo_Le_Bar_Fine'));
