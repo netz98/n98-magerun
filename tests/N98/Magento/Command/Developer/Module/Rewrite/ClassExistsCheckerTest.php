@@ -121,6 +121,8 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
     {
         // reset last error
         set_error_handler('var_dump', 0);
+        /** @noinspection PhpUndefinedVariableInspection */
+        /** @noinspection PhpExpressionResultUnusedInspection */
         @$undef_var;
         restore_error_handler();
         $canary = error_get_last();
