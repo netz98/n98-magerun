@@ -162,7 +162,7 @@ ftw</Column2>
     public function tableRendering($rows, $expected)
     {
         $renderer = new XmlRenderer();
-        $output = new StreamOutput(fopen('php://memory', 'w', false));
+        $output = new StreamOutput(fopen('php://memory', 'wb', false));
 
         $renderer->render($output, $rows);
 
