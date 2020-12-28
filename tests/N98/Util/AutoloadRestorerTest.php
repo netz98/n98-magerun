@@ -36,14 +36,14 @@ class AutoloadRestorerTest extends \PHPUnit\Framework\TestCase
 
         $restorer = new AutoloadRestorer();
 
-        self::assertTrue(in_array($callbackStub, spl_autoload_functions(), true));
+        self::assertContains($callbackStub, spl_autoload_functions());
 
         self::assertTrue(spl_autoload_unregister($callbackStub));
 
-        self::assertFalse(in_array($callbackStub, spl_autoload_functions(), true));
+        self::assertNotContains($callbackStub, spl_autoload_functions());
 
         $restorer->restore();
 
-        self::assertTrue(in_array($callbackStub, spl_autoload_functions(), true));
+        self::assertContains($callbackStub, spl_autoload_functions());
     }
 }

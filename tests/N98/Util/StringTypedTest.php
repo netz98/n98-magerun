@@ -22,7 +22,7 @@ class StringTypedTest extends TestCase
      */
     public function scope()
     {
-        self::assertSame(true, StringTyped::parseBoolOption("true"));
+        self::assertTrue(StringTyped::parseBoolOption("true"));
 
         self::assertSame('inactive', StringTyped::formatActive(null));
         self::assertSame('active', StringTyped::formatActive('1'));

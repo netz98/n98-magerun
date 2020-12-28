@@ -50,7 +50,7 @@ class AutoloadHandlerTest extends \PHPUnit\Framework\TestCase
         $handler = $this->create(null, AutoloadHandler::NO_AUTO_REGISTER);
         $handler->disable(); // assertions require a disabled handler b/c of exceptions
 
-        self::assertFalse(in_array($handler, spl_autoload_functions()));
+        self::assertNotContains($handler, spl_autoload_functions());
         self::assertFalse($handler->__invoke('test'));
         $handler->register();
         $actual = in_array($handler, spl_autoload_functions());
@@ -167,9 +167,9 @@ class AutoloadHandlerTest extends \PHPUnit\Framework\TestCase
         $cleanup = $handler->getCleanupCallback();
         $actual = class_exists('Test');
         self::assertFalse($actual);
-        self::assertTrue(in_array($handler, spl_autoload_functions()), 'before cleanup');
+        self::assertContains($handler, spl_autoload_functions(), 'before cleanup');
         $cleanup();
-        self::assertFalse(in_array($handler, spl_autoload_functions()), 'after cleanup');
+        self::assertNotContains($handler, spl_autoload_functions(), 'after cleanup');
         // calling cleanup again must not do any warnings etc.
         $cleanup();
     }
