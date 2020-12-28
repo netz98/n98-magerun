@@ -12,6 +12,7 @@ namespace N98\Magento\Command\System\Setup;
  */
 class IncrementalCommandStub extends IncrementalCommand
 {
+    /** @noinspection MagicMethodsValidityInspection */
     public function __construct($name = null)
     {
         // missing parent constructor call by intention

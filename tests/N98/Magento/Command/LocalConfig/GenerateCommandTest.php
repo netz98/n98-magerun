@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection SimpleXmlLoadFileUsageInspection */
+
 namespace N98\Magento\Command\LocalConfig;
 
 use N98\Magento\Command\TestCase;
