@@ -58,7 +58,7 @@ class VariablesCommandTest extends TestCase
     }
 
     /**
-     * @test search command for innodb returns an actual result by checking for known innodb variables.
+     * search command for innodb returns an actual result by checking for known innodb variables.
      */
     public function testSearch()
     {
@@ -81,7 +81,7 @@ class VariablesCommandTest extends TestCase
     }
 
     /**
-     * @test rounding which is humanize with K/M/G quantifier *and* --rounding number of digits
+     * rounding is humanize with K/M/G quantifier *and* --rounding number of digits
      */
     public function testRounding()
     {

@@ -18,9 +18,6 @@ class MagentoHelper extends TestCase
         return new MagentoHelper($inputMock, $outputMock);
     }
 
-    /**
-     * @test
-     */
     public function testHelperInstance()
     {
         self::assertInstanceOf('\N98\Util\Console\Helper\MagentoHelper', $this->getHelper());

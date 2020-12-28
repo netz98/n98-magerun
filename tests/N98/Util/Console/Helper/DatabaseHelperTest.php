@@ -30,9 +30,6 @@ class DatabaseHelperTest extends TestCase
         return $command->getHelper('database');
     }
 
-    /**
-     * @test
-     */
     public function testHelperInstance()
     {
         self::assertInstanceOf('\N98\Util\Console\Helper\DatabaseHelper', $this->getHelper());
