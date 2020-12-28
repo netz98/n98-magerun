@@ -23,7 +23,7 @@ class InstallCommandTest extends TestCase
             $result = rmdir($installDir);
             if (!$result) {
                 throw new RuntimeException(
-                    sprintf('Failed to remove temporary install dir %s', var_export($installDir))
+                    sprintf('Failed to remove temporary install dir "%s"', $installDir)
                 );
             }
         }
