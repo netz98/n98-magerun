@@ -2,9 +2,6 @@
 
 namespace N98\Util;
 
-use Exception;
-use RuntimeException;
-
 /**
  * Class ExecTest
  *

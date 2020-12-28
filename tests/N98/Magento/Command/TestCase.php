@@ -5,7 +5,6 @@ namespace N98\Magento\Command;
 use N98\Magento\Application;
 use N98\Magento\MagerunCommandTester;
 use N98\Magento\TestApplication;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Class TestCase

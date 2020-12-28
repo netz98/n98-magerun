@@ -7,7 +7,6 @@
 
 namespace N98\Util\Console\Helper\Table\Renderer;
 
-use DOMException;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\StreamOutput;
 

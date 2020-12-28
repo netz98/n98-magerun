@@ -8,7 +8,6 @@
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
 use N98\Util\AutoloadHandler;
-use \PHPUnit\Framework\Error\Warning;
 
 /**
  * Class ClassExistsCheckerTest
