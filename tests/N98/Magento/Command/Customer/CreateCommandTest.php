@@ -13,7 +13,7 @@ class CreateCommandTest extends TestCase
     public function testExecute()
     {
         $command = $this->_getCommand();
-        $generatedEmail = uniqid() . '@example.com';
+        $generatedEmail = uniqid('', true) . '@example.com';
 
         $this->getApplication()->initMagento();
 
@@ -33,7 +33,7 @@ class CreateCommandTest extends TestCase
 
         // Format option
         $commandTester = new CommandTester($command);
-        $generatedEmail = uniqid() . '@example.com';
+        $generatedEmail = uniqid('', true) . '@example.com';
         $options['email'] = $generatedEmail;
         $options['--format'] = 'csv';
         self::assertEquals(0, $commandTester->execute($options));
@@ -46,7 +46,7 @@ class CreateCommandTest extends TestCase
         self::markTestIncomplete('We currently cannot deal with interactive commands');
 
         $command = $this->_getCommand();
-        $generatedEmail = uniqid() . '@example.com';
+        $generatedEmail = uniqid('', true) . '@example.com';
 
         // mock dialog
         // We mock the DialogHelper
