@@ -182,6 +182,22 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
+      - name: openmage-20.0.6
+        version: 20.0.6
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v20.0.6.zip
+          type: zip
+          shasum: d404d4d927abc79f2fd418999beb77aa99fee85c
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.0.5
+        version: 20.0.5
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v20.0.5.zip
+          type: zip
+          shasum: cc38fa0da68ab933b7b22ccd529b9184589dea08
+        extra:
+          sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.4
         version: 20.0.4
         dist:
@@ -196,6 +212,118 @@ commands:
           url: https://github.com/OpenMage/magento-lts/archive/v20.0.3.zip
           type: zip
           shasum: f7e9241c8b246518d84942de78c031228cb4e3f1
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.0.2
+        version: 20.0.2
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v20.0.2.zip
+          type: zip
+          shasum: a3f2a8cc6eb055a9994cf593e0ab018bd6c42f5d
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.0.1
+        version: 20.0.1
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v20.0.1.zip
+          type: zip
+          shasum: 0284936a971df6815e96bbc0630b1c5bf160aa94
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.0.0
+        version: 20.0.0
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v20.0.0.zip
+          type: zip
+          shasum: b8bcc1101af9e25a695647cdc8693620a65768f5
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.10
+        version: 19.4.10
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.10.zip
+          type: zip
+          shasum: ae4c788ea6e941b5c60b62b9fd18ff44bd10da91
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.9
+        version: 19.4.9
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.9.zip
+          type: zip
+          shasum: 213f77f78b307dfbab54ace73c71a8fe08e4340a
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.8
+        version: 19.4.8
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.8.zip
+          type: zip
+          shasum: b9370267b37fc2b111683c447d47d5881e7762c3
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.7
+        version: 19.4.7
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.7.zip
+          type: zip
+          shasum: a4f752bc0d972e4ae8033b6e9e4370e80b5f6e2b
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.6
+        version: 19.4.6
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.6.zip
+          type: zip
+          shasum: d0c1d4b63fafe6c5a3fabe2dcbc9bf839805436d
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.5
+        version: 19.4.5
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.5.zip
+          type: zip
+          shasum: cadf8bbbaee97072f5d731c4af7737a43655f3e1
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.4
+        version: 19.4.4
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.4.zip
+          type: zip
+          shasum: d6024a0358c35dbc4a16dcc165704008022fc96c
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.3
+        version: 19.4.3
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.3.zip
+          type: zip
+          shasum: ea65e1674cf2a0aab87f28f078b8b6f647f5898a
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.2
+        version: 19.4.2
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.2.zip
+          type: zip
+          shasum: 7b2c5192702ba85d5d5144a77de1054f54930dd7
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.1
+        version: 19.4.1
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.1.zip
+          type: zip
+          shasum: f905741d7423b21cedc8a906f6f0e3bda3838650
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.0
+        version: 19.4.0
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.0.zip
+          type: zip
+          shasum: cf2529703607f326b23d8e8fd9897a579a4721d5
         extra:
           sample-data: sample-data-1.9.2.4
       - name: magento-mirror-1.9.4.5
@@ -247,7 +375,7 @@ commands:
           shasum: e79ea1a5e9fb175cd9a48af8e8b94e9485dfeffb
         extra:
           sample-data: sample-data-1.9.2.4
-          
+
       - name: magento-mirror-1.9.3.10
         version: 1.9.3.10
         dist:
@@ -488,114 +616,6 @@ commands:
           url: https://github.com/mageplus/mageplus.git
           type: git
           reference: master
-        extra:
-          sample-data: sample-data-1.6.1.0
-
-      - name: magento-ce-1.9.2.4
-        version: 1.9.2.4
-        dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.4/magento-1.9.2.4.zip
-          type: zip
-          shasum: 219fe2b88068cf73953b90ce01186cb1f19affea
-        extra:
-          sample-data: sample-data-1.9.2.4
-
-      - name: magento-ce-1.9.2.3
-        version: 1.9.2.3
-        dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.3/magento-1.9.2.3.zip
-          type: zip
-          shasum: c211c1d31468dfbc45decd7d00266281fdc97b20
-        extra:
-          sample-data: sample-data-1.9.1.0
-
-      - name: magento-ce-1.9.2.2
-        version: 1.9.2.2
-        dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.2/magento-1.9.2.2.zip
-          type: zip
-          shasum: 6b6de6bee57a2992affa1fad01444cb6c05e0788
-        extra:
-          sample-data: sample-data-1.9.1.0
-
-      - name: magento-ce-1.9.2.1
-        version: 1.9.2.1
-        dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.1/magento-1.9.2.1.zip
-          type: zip
-          shasum: b158de5c3bc587931d99af1bd11f3235e75d1191
-        extra:
-          sample-data: sample-data-1.9.1.0
-
-      - name: magento-ce-1.9.2.0
-        version: 1.9.2.0
-        dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.2.0/magento-1.9.2.0.zip
-          type: zip
-          shasum: f5cd7053c41f19e9007ce6817ad12344e6fc0263
-        extra:
-          sample-data: sample-data-1.9.1.0
-
-      - name: magento-ce-1.9.1.1
-        version: 1.9.1.1
-        dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.1.1/magento-1.9.1.1.zip
-          type: zip
-          shasum: c9074bf9646b28c035d369db7189aec9733ea978
-        extra:
-          sample-data: sample-data-1.9.1.0
-
-      - name: magento-ce-1.9.1.0
-        version: 1.9.1.0
-        dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.1.0/magento-1.9.1.0.zip
-          type: zip
-          shasum: ef2da3723033614d4f10c3a12e8392d1730ade30
-        extra:
-          sample-data: sample-data-1.9.1.0
-
-      - name: magento-ce-1.9.0.1
-        version: 1.9.0.1
-        dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.9.0.1/magento-1.9.0.1.zip
-          type: zip
-          shasum: ff84a32100598cff43d765e3d6cb0bc1a5a414b3
-        extra:
-          sample-data: sample-data-1.9.0.0
-
-      - name: magento-ce-1.8.1.0
-        version: 1.8.1.0
-        dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.8.1.0/magento-1.8.1.0.zip
-          type: zip
-          shasum: 9b47925c8e68a4eea0963e32af884944e3b90ee0
-        extra:
-          sample-data: sample-data-1.6.1.0
-
-      - name: magento-ce-1.8.0.0
-        version: 1.8.0.0
-        dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.8.0.0/magento-1.8.0.0.zip
-          type: zip
-          shasum: 51a140dc651e1d2e3693571f86963a01c168f740
-        extra:
-          sample-data: sample-data-1.6.1.0
-
-      - name: magento-ce-1.7.0.2
-        version: 1.7.0.2
-        dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.7.0.2/magento-1.7.0.2.zip
-          type: zip
-          shasum: 0183fac38b6c5a6ff13b9363304eb70d9298b759
-        extra:
-          sample-data: sample-data-1.6.1.0
-
-      - name: magento-ce-1.6.2.0
-        version: 1.6.2.0
-        dist:
-          url: http://www.magentocommerce.com/downloads/assets/1.6.2.0/magento-1.6.2.0.zip
-          type: zip
-          shasum: 136a5ce5d49cc7d4fd6a43452aafcfbac97722be
         extra:
           sample-data: sample-data-1.6.1.0
 
