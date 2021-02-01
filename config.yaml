@@ -623,37 +623,37 @@ commands:
       - name: sample-data-1.9.2.4
         version: 1.9.2.4
         dist:
-          url: https://sourceforge.net/projects/mageloads/files/assets/1.9.2.4/magento-sample-data-1.9.2.4-fix.tar.gz
-          type: tar
-          shasum: fe5930d0f41c2b5e92b86f7f7fc4247c927efa01
+          url: https://github.com/sreichel/magento-1-compressed-sample-data/raw/master/magento-sample-data-1.9.2.4.zip
+          type: zip
+          shasum: 243a47cf216c83074f8b657f42d6707940646823
 
       - name: sample-data-1.9.1.0
         version: 1.9.1.0
         dist:
-          url: https://sourceforge.net/projects/mageloads/files/assets/1.9.1.0/magento-sample-data-1.9.1.0.tar.gz
-          type: tar
-          shasum: 617e0271900772ac8f11e7bb86e29fca0f640562
+          url: https://github.com/sreichel/magento-1-compressed-sample-data/raw/master/magento-sample-data-1.9.1.0.zip
+          type: zip
+          shasum: 0d4145ae3fc732de24f2ae504c908991db3bc01c
 
       - name: sample-data-1.9.0.0
         version: 1.9.0.0
         dist:
-          url: https://sourceforge.net/projects/mageloads/files/assets/1.9.0.0/magento-sample-data-1.9.0.0.tar.gz
-          type: tar
-          shasum: b2b535901eb2db92a8602baf8a839ab2120c4c8f
+          url: https://github.com/sreichel/magento-1-compressed-sample-data/raw/master/magento-sample-data-1.9.0.0.zip
+          type: zip
+          shasum: 24c7144d106fb1165e3e730fd040780e23dd9c60
 
       - name: sample-data-1.6.1.0
         version: 1.6.1.0
         dist:
-          url: https://sourceforge.net/projects/mageloads/files/assets/1.6.1.0/magento-sample-data-1.6.1.0.tar.gz
-          type: tar
-          shasum: a9226bc92966855327f6eb62ff8f6c562b2113a2
+          url: https://github.com/sreichel/magento-1-compressed-sample-data/raw/master/magento-sample-data-1.6.1.0.zip
+          type: zip
+          shasum: 81b7b82d4223fdcd823ab62f7fac9c38efad47b8
 
       - name: sample-data-1.1.2
         version: 1.1.2
         dist:
-          url: https://sourceforge.net/projects/mageloads/files/assets/1.1.2/magento-sample-data-1.1.2.zip
+          url: https://github.com/sreichel/magento-1-compressed-sample-data/raw/master/magento-sample-data-1.1.2.zip
           type: zip
-          shasum: 6bbb57e387c59da2752fe013aadef6dcd3cd2b29
+          shasum: c816cb97ec089eed73101324a9b154a88e00b262
 
     installation:
       pre-check:
