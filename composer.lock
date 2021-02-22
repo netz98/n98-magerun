@@ -1848,21 +1848,21 @@
     "packages-dev": [
         {
             "name": "bamarni/symfony-console-autocomplete",
-            "version": "v1.4.0",
+            "version": "v1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bamarni/symfony-console-autocomplete.git",
-                "reference": "32995c7d60cc2bc47589eea3d2285b2648b558c8"
+                "reference": "f07271bcacbceb92efeec6d680520d8421cdb9e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bamarni/symfony-console-autocomplete/zipball/32995c7d60cc2bc47589eea3d2285b2648b558c8",
-                "reference": "32995c7d60cc2bc47589eea3d2285b2648b558c8",
+                "url": "https://api.github.com/repos/bamarni/symfony-console-autocomplete/zipball/f07271bcacbceb92efeec6d680520d8421cdb9e3",
+                "reference": "f07271bcacbceb92efeec6d680520d8421cdb9e3",
                 "shasum": ""
             },
             "require": {
                 "ext-simplexml": "*",
-                "php": "^7.0",
+                "php": "^7.0|^8.0",
                 "symfony/console": "^2.5|^3|^4|^5",
                 "symfony/process": "^2.5|^3|^4|^5"
             },
@@ -1895,7 +1895,7 @@
                 }
             ],
             "description": "Shell completion for Symfony Console based scripts",
-            "time": "2020-06-24T20:55:54+00:00"
+            "time": "2021-02-21T15:19:47+00:00"
         },
         {
             "name": "doctrine/annotations",
