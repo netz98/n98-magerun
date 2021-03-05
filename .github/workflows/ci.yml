@@ -69,6 +69,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
+          extensions: yaml
           coverage: none
 
       - {name: mysqld,shell: bash,run: 'sudo systemctl start mysql.service'}
