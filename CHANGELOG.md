@@ -1,8 +1,27 @@
 RECENT CHANGES
 ==============
 
-2.2.0-dev
----------
+2.2.0
+-----
+
+- Add: OpenMage 20.0.10 (by Christian Münch)
+- Add: maintenance badge (by Christian Münch)
+- Add: ext-simplexml for test-suite (by Tom Klingenberg)
+- Add: makefile (by Tom Klingenberg)
+- Add: missing changelog entry (by Christian Münch)
+- Imp: Change autoloading from psr-0 to psr-4 (by Tom Klingenberg)
+- Fix: Fix-up message improvements (by Tom Klingenberg)
+- Fix unnecessary assertions (by Tom Klingenberg)
+- Fix static method invocations via '->' (by Tom Klingenberg)
+- Fix missing assertion in config-test (by Tom Klingenberg)
+- Fix missing debug output for user-config-file (by Tom Klingenberg)
+- Fix namespace for composer init-command-test (by Tom Klingenberg)
+- Fix clover.xml path (by Tom Klingenberg)
+- Fix "$default-branch" macro use (by Tom Klingenberg)
+- Del: unused import statements (by Tom Klingenberg)
+- Del: superfluous @test annotations (by Tom Klingenberg)
+- Del: deprecated string class (by Tom Klingenberg)
+- Del: magerun magento2 entry-point (by Tom Klingenberg)
 
 2.1.0
 -----

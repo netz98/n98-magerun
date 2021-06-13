@@ -182,6 +182,14 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
+      - name: openmage-20.0.10
+        version: 20.0.10
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v20.0.10.zip
+          type: zip
+          shasum: 2702a588b6d8668707b1a785f9b634d1fdb4ec01
+        extra:
+          sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.6
         version: 20.0.6
         dist:
