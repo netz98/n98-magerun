@@ -1505,20 +1505,21 @@
         },
         {
             "name": "symfony/process",
-            "version": "v4.4.26",
+            "version": "v4.4.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "7e812c84c3f2dba173d311de6e510edf701685a8"
+                "reference": "0b7dc5599ac4aa6d7b936c8f7d10abae64f6cf7f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/7e812c84c3f2dba173d311de6e510edf701685a8",
-                "reference": "7e812c84c3f2dba173d311de6e510edf701685a8",
+                "url": "https://api.github.com/repos/symfony/process/zipball/0b7dc5599ac4aa6d7b936c8f7d10abae64f6cf7f",
+                "reference": "0b7dc5599ac4aa6d7b936c8f7d10abae64f6cf7f",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1.3"
+                "php": ">=7.1.3",
+                "symfony/polyfill-php80": "^1.16"
             },
             "type": "library",
             "autoload": {
@@ -1559,7 +1560,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-06-09T14:57:04+00:00"
+            "time": "2021-07-23T15:41:52+00:00"
         },
         {
             "name": "symfony/translation",
