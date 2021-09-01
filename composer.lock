@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1a54df435e4a609ce69bf3cb3031efe6",
+    "content-hash": "bfb1a7577cd3e14a9975dd7edcc657f3",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -2536,16 +2536,16 @@
         },
         {
             "name": "phing/phing",
-            "version": "2.16.4",
+            "version": "2.17.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phingofficial/phing.git",
-                "reference": "30831b22fc6bab57003f1893842668c44b7f65ae"
+                "reference": "c0a3bce822c088d60b30a577c25debb42325d0f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phingofficial/phing/zipball/30831b22fc6bab57003f1893842668c44b7f65ae",
-                "reference": "30831b22fc6bab57003f1893842668c44b7f65ae",
+                "url": "https://api.github.com/repos/phingofficial/phing/zipball/c0a3bce822c088d60b30a577c25debb42325d0f8",
+                "reference": "c0a3bce822c088d60b30a577c25debb42325d0f8",
                 "shasum": ""
             },
             "require": {
@@ -2639,7 +2639,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2021-01-29T14:00:54+00:00"
+            "time": "2021-08-31T13:33:01+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
