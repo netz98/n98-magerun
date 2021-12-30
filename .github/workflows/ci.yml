@@ -8,7 +8,7 @@ on:
       - 'bugfix/*'
       - 'feature/*'
       - 'release/*'
-  pull_request:
+  pull_request_target:
     branches:
       - 'master'
       - 'develop'
@@ -18,7 +18,16 @@ jobs:
     name: PHP Composer
     runs-on: 'ubuntu-18.04'
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout PR
+        uses: actions/checkout@v2
+        if: github.event_name == 'pull_request_target'
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Checkout HEAD
+        uses: actions/checkout@v2
+        if: github.event_name == 'push'
+
       - uses: symfonycorp/security-checker-action@v2
 
       - uses: shivammathur/setup-php@v2
@@ -65,7 +74,16 @@ jobs:
       SETUP_DB_PASS: root
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout PR
+        uses: actions/checkout@v2
+        if: github.event_name == 'pull_request_target'
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Checkout HEAD
+        uses: actions/checkout@v2
+        if: github.event_name == 'push'
+
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
@@ -83,7 +101,17 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - {name: mysqld,shell: bash,run: 'sudo systemctl start mysql.service'}
-      - uses: actions/checkout@v2
+      
+      - name: Checkout PR
+        uses: actions/checkout@v2
+        if: github.event_name == 'pull_request_target'
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Checkout HEAD
+        uses: actions/checkout@v2
+        if: github.event_name == 'push'
+
       - uses: actions/cache@v2
         with:
           path: |
@@ -110,9 +138,20 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - {name: mysqld,shell: bash,run: 'sudo systemctl start mysql.service'}
-      - uses: actions/checkout@v2
+
+      - name: Checkout PR
+        uses: actions/checkout@v2
+        if: github.event_name == 'pull_request_target'
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Checkout HEAD
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+        if: github.event_name == 'push'
+
 
       - uses: shivammathur/setup-php@v2
         with:
