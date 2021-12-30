@@ -47,8 +47,8 @@ jobs:
 
       - run: composer install --prefer-dist --no-progress --no-suggest
       - run: composer validate --strict
-      - run: composer validate --with-dependencies
-      - run: composer validate --with-dependencies --strict || echo "failure intentionally allowed"
+      #- run: composer validate --with-dependencies
+      #- run: composer validate --with-dependencies --strict || echo "failure intentionally allowed"
 
 
   travis-ci-migration:
