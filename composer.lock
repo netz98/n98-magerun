@@ -1601,16 +1601,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v4.4.40",
+            "version": "v4.4.41",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "54e9d763759268e07eb13b921d8631fc2816206f"
+                "reference": "9eedd60225506d56e42210a70c21bb80ca8456ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/54e9d763759268e07eb13b921d8631fc2816206f",
-                "reference": "54e9d763759268e07eb13b921d8631fc2816206f",
+                "url": "https://api.github.com/repos/symfony/process/zipball/9eedd60225506d56e42210a70c21bb80ca8456ce",
+                "reference": "9eedd60225506d56e42210a70c21bb80ca8456ce",
                 "shasum": ""
             },
             "require": {
@@ -1643,7 +1643,7 @@
             "description": "Executes commands in sub-processes",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/process/tree/v4.4.40"
+                "source": "https://github.com/symfony/process/tree/v4.4.41"
             },
             "funding": [
                 {
@@ -1659,7 +1659,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-18T16:18:39+00:00"
+            "time": "2022-04-04T10:19:07+00:00"
         },
         {
             "name": "symfony/translation",
