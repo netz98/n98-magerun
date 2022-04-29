@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v2
         if: github.event_name == 'push'
 
-      - uses: symfonycorp/security-checker-action@v2
+      - uses: symfonycorp/security-checker-action@v3
 
       - uses: shivammathur/setup-php@v2
         with:
