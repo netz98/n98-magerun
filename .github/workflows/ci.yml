@@ -19,13 +19,13 @@ jobs:
     runs-on: 'ubuntu-18.04'
     steps:
       - name: Checkout PR
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         if: github.event_name == 'pull_request_target'
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Checkout HEAD
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         if: github.event_name == 'push'
 
       - uses: symfonycorp/security-checker-action@v3
@@ -75,13 +75,13 @@ jobs:
 
     steps:
       - name: Checkout PR
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         if: github.event_name == 'pull_request_target'
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Checkout HEAD
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         if: github.event_name == 'push'
 
       - uses: shivammathur/setup-php@v2
@@ -103,13 +103,13 @@ jobs:
       - {name: mysqld,shell: bash,run: 'sudo systemctl start mysql.service'}
       
       - name: Checkout PR
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         if: github.event_name == 'pull_request_target'
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Checkout HEAD
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         if: github.event_name == 'push'
 
       - uses: actions/cache@v3
@@ -140,14 +140,14 @@ jobs:
       - {name: mysqld,shell: bash,run: 'sudo systemctl start mysql.service'}
 
       - name: Checkout PR
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         if: github.event_name == 'pull_request_target'
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Checkout HEAD
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
         if: github.event_name == 'push'
