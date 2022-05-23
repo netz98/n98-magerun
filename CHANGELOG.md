@@ -1,6 +1,13 @@
 RECENT CHANGES
 ==============
 
+2.3.0
+-----
+
+- Add: OpenMage 20.0.14 (by Christian Münch)
+- Imp: Update 3rd party dependencies 
+       (twig, phing, symfony, composer, psysh, vsfstream)
+
 2.2.0
 -----
 
