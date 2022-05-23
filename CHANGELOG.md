@@ -7,6 +7,7 @@ RECENT CHANGES
 - Add: OpenMage 20.0.14 (by Christian Münch)
 - Imp: Update 3rd party dependencies 
        (twig, phing, symfony, composer, psysh, vsfstream)
+- Imp: Github action configuration (by neilnaveen)
 
 2.2.0
 -----
