@@ -129,7 +129,7 @@ jobs:
         run: |
           composer install --ignore-platform-reqs --prefer-dist --no-progress --no-suggest
           test_setup_db_pass=root \
-          test_setup_magento_version=openmage-20.0.10 \
+          test_setup_magento_version=openmage-20.0.14 \
               build/local/test_setup.sh
 
 
