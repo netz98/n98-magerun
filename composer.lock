@@ -2601,16 +2601,16 @@
         },
         {
             "name": "phing/phing",
-            "version": "2.17.3",
+            "version": "2.17.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phingofficial/phing.git",
-                "reference": "053cb496cf49608d19f85664d85d71c48b241667"
+                "reference": "9f3bc8c72e65452686dcf64497e02a082f138908"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phingofficial/phing/zipball/053cb496cf49608d19f85664d85d71c48b241667",
-                "reference": "053cb496cf49608d19f85664d85d71c48b241667",
+                "url": "https://api.github.com/repos/phingofficial/phing/zipball/9f3bc8c72e65452686dcf64497e02a082f138908",
+                "reference": "9f3bc8c72e65452686dcf64497e02a082f138908",
                 "shasum": ""
             },
             "require": {
@@ -2693,7 +2693,7 @@
             "support": {
                 "irc": "irc://irc.freenode.net/phing",
                 "issues": "https://www.phing.info/trac/report",
-                "source": "https://github.com/phingofficial/phing/tree/2.17.3"
+                "source": "https://github.com/phingofficial/phing/tree/2.17.4"
             },
             "funding": [
                 {
@@ -2709,7 +2709,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2022-05-04T19:17:50+00:00"
+            "time": "2022-07-08T09:07:07+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
