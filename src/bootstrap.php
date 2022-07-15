@@ -1,5 +1,9 @@
 <?php
 
+if (defined('E_DEPRECATED')) {
+    error_reporting(error_reporting() & ~E_DEPRECATED);
+}
+
 if (!class_exists('N98\MagerunBootstrap')) {
     require_once __DIR__ . '/N98/MagerunBootstrap.php';
 }
