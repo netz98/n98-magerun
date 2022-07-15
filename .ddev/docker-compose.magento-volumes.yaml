@@ -1,0 +1,8 @@
+version: '3.6'
+services:
+  web:
+    volumes:
+      - 'magento-test-environments:/opt/magento-test-environments'
+volumes:
+  magento-test-environments:
+    name: '${DDEV_SITENAME}-magento-test-environments'
