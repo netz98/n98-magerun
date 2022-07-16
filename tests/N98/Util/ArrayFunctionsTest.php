@@ -2,18 +2,16 @@
 
 namespace N98\Util;
 
+use PHPUnit\Framework\TestCase;
 /**
  * Class ArrayFunctionsTest
  *
  * @covers N98\Util\ArrayFunctions
  */
-class ArrayFunctionsTest extends \PHPUnit\Framework\TestCase
+class ArrayFunctionsTest extends TestCase
 {
     /**
      * @test
-     * @param array $a
-     * @param array $b
-     * @param array $expected
      * @dataProvider mergeArraysProvider
      */
     public function mergeArrays(array $a, array $b, array $expected)
@@ -26,37 +24,16 @@ class ArrayFunctionsTest extends \PHPUnit\Framework\TestCase
      */
     public function mergeArraysProvider()
     {
-        return array(
-            array(
-                array(),
-                array('Foo', 'Bar'),
-                array('Foo', 'Bar'),
-            ),
-            array(
-                array('Foo', 'Bar'),
-                array(),
-                array('Foo', 'Bar'),
-            ),
-            array(
-                array('Foo'),
-                array('Bar'),
-                array('Foo', 'Bar'),
-            ),
-            array(
-                array('Foo', array('Bar')),
-                array('Bar'),
-                array('Foo', array('Bar'), 'Bar'),
-            ),
-
+        return [
+            [[], ['Foo', 'Bar'], ['Foo', 'Bar']],
+            [['Foo', 'Bar'], [], ['Foo', 'Bar']],
+            [['Foo'], ['Bar'], ['Foo', 'Bar']],
+            [['Foo', ['Bar']], ['Bar'], ['Foo', ['Bar'], 'Bar']],
             /**
              * Override Bar->Bar
              */
-            array(
-                array('Foo', 'Bar' => array('Bar' => 1)),
-                array('Bar' => array('Bar' => 2)),
-                array('Foo', 'Bar' => array('Bar' => 2)),
-            ),
-        );
+            [['Foo', 'Bar' => ['Bar' => 1]], ['Bar' => ['Bar' => 2]], ['Foo', 'Bar' => ['Bar' => 2]]],
+        ];
     }
 
     /**
@@ -64,21 +41,13 @@ class ArrayFunctionsTest extends \PHPUnit\Framework\TestCase
      */
     public function columnOrderArrayTable()
     {
-        $headers = array('foo', 'bar', 'baz');
-        $table = array(
-            array('foo' => 'A1', 'baz' => 'C1', 'B1', 'D1'),
-            array('A2', 'B2', 'C2', 'D2'),
-            array(null, null, null, 'foo' => 'A3'),
-        );
+        $headers = ['foo', 'bar', 'baz'];
+        $table = [['foo' => 'A1', 'baz' => 'C1', 'B1', 'D1'], ['A2', 'B2', 'C2', 'D2'], [null, null, null, 'foo' => 'A3']];
 
         $actual = ArrayFunctions::columnOrderArrayTable($headers, $table);
-        self::assertInternalType('array', $actual);
+        self::assertIsArray($actual);
         self::assertCount(count($table), $actual);
-        $expected = array(
-            array('foo' => 'A1', 'bar' => 'B1', 'baz' => 'C1', 'D1'),
-            array('foo' => 'A2', 'bar' => 'B2', 'baz' => 'C2', 'D2'),
-            array('foo' => 'A3', 'bar' => null, 'baz' => null, null),
-        );
+        $expected = [['foo' => 'A1', 'bar' => 'B1', 'baz' => 'C1', 'D1'], ['foo' => 'A2', 'bar' => 'B2', 'baz' => 'C2', 'D2'], ['foo' => 'A3', 'bar' => null, 'baz' => null, null]];
         self::assertEquals($expected, $actual);
         self::assertSame($expected, $actual);
     }
@@ -90,7 +59,7 @@ class ArrayFunctionsTest extends \PHPUnit\Framework\TestCase
     public function columnOrder($columns, $array, $expected)
     {
         $actual = ArrayFunctions::columnOrder($columns, $array);
-        self::assertInternalType('array', $actual);
+        self::assertIsArray($actual);
         self::assertEquals($expected, $actual);
         self::assertSame($expected, $actual);
     }
@@ -101,38 +70,7 @@ class ArrayFunctionsTest extends \PHPUnit\Framework\TestCase
      */
     public function provideColumnOrderings()
     {
-        return array(
-            array(
-                array('foo', 'bar', 'baz'),
-                array('A', 'B', 'C'),
-                array('foo' => 'A', 'bar' => 'B', 'baz' => 'C'),
-            ),
-            array(
-                array('foo', 'bar', 'baz'),
-                array('A', 'B', 'C', 'D'),
-                array('foo' => 'A', 'bar' => 'B', 'baz' => 'C', 'D'),
-            ),
-            array(
-                array('foo', 'bar', 'baz'),
-                array('A', 'B', 'C'),
-                array('foo' => 'A', 'bar' => 'B', 'baz' => 'C'),
-            ),
-            array(
-                array('foo', 'bar', 'baz'),
-                array('buz' => 'D', 'A', 'B', 'C'),
-                array('foo' => 'A', 'bar' => 'B', 'baz' => 'C', 'buz' => 'D'),
-            ),
-            array(
-                array('foo', 'bar', 'baz'),
-                array('foo' => 'A', 'baz' => 'C', 'B', 'D'),
-                array('foo' => 'A', 'bar' => 'B', 'baz' => 'C', 'D'),
-            ),
-            array(
-                array('foo', 'bar', 'baz'),
-                array('foo' => 'A', 'baz' => 'C'),
-                array('foo' => 'A', 'bar' => null, 'baz' => 'C'),
-            ),
-        );
+        return [[['foo', 'bar', 'baz'], ['A', 'B', 'C'], ['foo' => 'A', 'bar' => 'B', 'baz' => 'C']], [['foo', 'bar', 'baz'], ['A', 'B', 'C', 'D'], ['foo' => 'A', 'bar' => 'B', 'baz' => 'C', 'D']], [['foo', 'bar', 'baz'], ['A', 'B', 'C'], ['foo' => 'A', 'bar' => 'B', 'baz' => 'C']], [['foo', 'bar', 'baz'], ['buz' => 'D', 'A', 'B', 'C'], ['foo' => 'A', 'bar' => 'B', 'baz' => 'C', 'buz' => 'D']], [['foo', 'bar', 'baz'], ['foo' => 'A', 'baz' => 'C', 'B', 'D'], ['foo' => 'A', 'bar' => 'B', 'baz' => 'C', 'D']], [['foo', 'bar', 'baz'], ['foo' => 'A', 'baz' => 'C'], ['foo' => 'A', 'bar' => null, 'baz' => 'C']]];
     }
 
     /**
@@ -142,19 +80,10 @@ class ArrayFunctionsTest extends \PHPUnit\Framework\TestCase
      */
     public function provideMatrix()
     {
-        return array(
-            array(
-                array(
-                    array('foo' => 'bar'),
-                    array('foo' => 'baz'),
-                    array('foo' => 'zaz'),
-                ),
-            ),
-        );
+        return [[[['foo' => 'bar'], ['foo' => 'baz'], ['foo' => 'zaz']]]];
     }
 
     /**
-     * @param array $matrix
      * @test
      * @dataProvider provideMatrix
      */
@@ -166,7 +95,6 @@ class ArrayFunctionsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param array $matrix
      * @test
      * @dataProvider provideMatrix
      */

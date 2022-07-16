@@ -28,7 +28,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
     protected function detectDbSettings(OutputInterface $output, $connectionNode = null)
     {
         $database = $database = $this->getDatabaseHelper();
-        $this->dbSettings = $database->getDbSettings($output, $connectionNode);
+        $this->dbSettings = $database->getDbSettings($output);
     }
 
     /**
@@ -51,7 +51,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      */
     protected function getCompressionHelp()
     {
-        $messages = array();
+        $messages = [];
         $messages[] = '';
         $messages[] = '<comment>Compression option</comment>';
         $messages[] = ' Supported compression: gzip';
@@ -111,7 +111,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      *
      * @deprecated Please use database helper
      */
-    protected function resolveTables(array $excludes, array $definitions, array $resolved = array())
+    protected function resolveTables(array $excludes, array $definitions, array $resolved = [])
     {
         return $this->getHelper('database')->resolveTables($excludes, $definitions, $resolved);
     }

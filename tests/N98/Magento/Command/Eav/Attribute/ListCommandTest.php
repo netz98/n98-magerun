@@ -15,15 +15,11 @@ class ListCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'       => $command->getName(),
-                '--filter-type' => 'catalog_product',
-                '--add-source'  => true,
-            )
+            ['command'       => $command->getName(), '--filter-type' => 'catalog_product', '--add-source'  => true]
         );
 
-        self::assertContains('eav/entity_attribute_source_boolean', $commandTester->getDisplay());
-        self::assertContains('sku', $commandTester->getDisplay());
-        self::assertContains('catalog_product', $commandTester->getDisplay());
+        self::assertStringContainsString('eav/entity_attribute_source_boolean', $commandTester->getDisplay());
+        self::assertStringContainsString('sku', $commandTester->getDisplay());
+        self::assertStringContainsString('catalog_product', $commandTester->getDisplay());
     }
 }

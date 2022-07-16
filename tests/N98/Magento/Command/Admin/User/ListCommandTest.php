@@ -14,11 +14,11 @@ class ListCommandTest extends TestCase
         $command = $this->getApplication()->find('admin:user:list');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $commandTester->execute(['command' => $command->getName()]);
 
-        self::assertContains('id', $commandTester->getDisplay());
-        self::assertContains('user', $commandTester->getDisplay());
-        self::assertContains('email', $commandTester->getDisplay());
-        self::assertContains('status', $commandTester->getDisplay());
+        self::assertStringContainsString('id', $commandTester->getDisplay());
+        self::assertStringContainsString('user', $commandTester->getDisplay());
+        self::assertStringContainsString('email', $commandTester->getDisplay());
+        self::assertStringContainsString('status', $commandTester->getDisplay());
     }
 }

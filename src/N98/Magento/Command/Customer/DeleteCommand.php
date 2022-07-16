@@ -2,16 +2,20 @@
 
 namespace N98\Magento\Command\Customer;
 
+use Mage_Customer_Model_Customer;
 use Exception;
 use Mage_Customer_Model_Entity_Customer_Collection;
 use Mage_Customer_Model_Resource_Customer_Collection;
 use N98\Util\Console\Helper\ParameterHelper;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\Question;
 
 /**
  * Class DeleteCommand
@@ -30,7 +34,7 @@ class DeleteCommand extends AbstractCustomerCommand
     protected $output;
 
     /**
-     * @var DialogHelper
+     * @var QuestionHelper
      */
     protected $dialog;
 
@@ -68,17 +72,16 @@ HELP;
      *
      * @return false|null
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $this->input = $input;
         $this->output = $output;
-        /** @var DialogHelper dialog */
-        $this->dialog = $this->getHelper('dialog');
+        $this->dialog = new QuestionHelper();
 
         // Defaults
         $range = $all = false;
@@ -90,31 +93,31 @@ HELP;
         if (!($id) && !($range) && !($all)) {
 
             // Delete more than one customer ?
-            $batchDelete = $this->dialog->askConfirmation(
+            $batchDelete = $this->dialog->ask(
+                $this->input,
                 $this->output,
                 $this->getQuestion('Delete more than 1 customer?', 'n'),
-                false
             );
 
             if ($batchDelete) {
                 // Batch deletion
-                $all = $this->dialog->askConfirmation(
+                $all = $this->dialog->ask(
+                    $this->input,
                     $this->output,
-                    $this->getQuestion('Delete all customers?', 'n'),
-                    false
+                    new ConfirmationQuestion('Delete all customers?', 'n'),
                 );
 
                 if (!$all) {
-                    $range = $this->dialog->askConfirmation(
+                    $range = $this->dialog->ask(
+                        $this->input,
                         $this->output,
-                        $this->getQuestion('Delete a range of customers?', 'n'),
-                        false
+                        new ConfirmationQuestion('Delete a range of customers?', 'n'),
                     );
 
                     if (!$range) {
                         // Nothing to do
                         $this->output->writeln('<error>Finished nothing to do</error>');
-                        return false;
+                        return (int) false;
                     }
                 }
             }
@@ -123,14 +126,14 @@ HELP;
         if (!$range && !$all) {
             // Single customer deletion
             if (!$id) {
-                $id = $this->dialog->ask($this->output, $this->getQuestion('Customer Id'), null);
+                $id = $this->dialog->ask($this->input, $this->output, $this->getQuestion('Customer Id'), null);
             }
 
             try {
                 $customer = $this->getCustomer($id);
             } catch (Exception $e) {
                 $this->output->writeln('<error>No customer found!</error>');
-                return false;
+                return (int) false;
             }
 
             if ($this->shouldRemove()) {
@@ -147,30 +150,21 @@ HELP;
 
             if ($range) {
                 // Get Range
-                $ranges = array();
-                $ranges[0] = $this->dialog->askAndValidate(
+                $ranges = [];
+                $ranges[0] = $this->dialog->ask(
                     $this->output,
-                    $this->getQuestion('Range start Id', '1'),
-                    array($this, 'validateInt'),
-                    false,
-                    '1'
+                    $this->getQuestion('Range start Id', '1')->setValidator([$this, 'validateInt']),
                 );
                 $ranges[1] = $this->dialog->askAndValidate(
                     $this->output,
-                    $this->getQuestion('Range end Id', '1'),
-                    array($this, 'validateInt'),
-                    false,
-                    '1'
+                    $this->getQuestion('Range end Id', '1')->setValidator([$this, 'validateInt']),
                 );
 
                 // Ensure ascending order
                 sort($ranges);
 
                 // Range delete, takes precedence over --all
-                $customers->addAttributeToFilter('entity_id', array(
-                    'from'  => $ranges[0],
-                    'to'    => $ranges[1],
-                ));
+                $customers->addAttributeToFilter('entity_id', ['from'  => $ranges[0], 'to'    => $ranges[1]]);
             }
 
             if ($this->shouldRemove()) {
@@ -180,6 +174,7 @@ HELP;
                 $this->output->writeln('<error>Aborting delete</error>');
             }
         }
+        return 0;
     }
 
     /**
@@ -189,10 +184,10 @@ HELP;
     {
         $shouldRemove = $this->input->getOption('force');
         if (!$shouldRemove) {
-            $shouldRemove = $this->dialog->askConfirmation(
+            $shouldRemove = $this->dialog->ask(
+                $this->input,
                 $this->output,
                 $this->getQuestion('Are you sure?', 'n'),
-                false
             );
         }
 
@@ -230,7 +225,7 @@ HELP;
      *
      * @return true|Exception
      */
-    protected function deleteCustomer(\Mage_Customer_Model_Customer $customer)
+    protected function deleteCustomer(Mage_Customer_Model_Customer $customer)
     {
         try {
             $customer->delete();
@@ -267,7 +262,7 @@ HELP;
      */
     public function validateInt($answer)
     {
-        if (intval($answer) === 0) {
+        if ((int)$answer === 0) {
             throw new RuntimeException(
                 'The range should be numeric and above 0 e.g. 1'
             );
@@ -280,11 +275,11 @@ HELP;
      * @param string $message
      * @param string $default [optional]
      *
-     * @return string
+     * @return \Symfony\Component\Console\Question\Question
      */
     private function getQuestion($message, $default = null)
     {
-        $params = array($message);
+        $params = [$message];
         $pattern = '%s: ';
 
         if (null !== $default) {
@@ -292,6 +287,6 @@ HELP;
             $pattern .= '[%s] ';
         }
 
-        return vsprintf($pattern, $params);
+        return new Question(vsprintf($pattern, $params));
     }
 }

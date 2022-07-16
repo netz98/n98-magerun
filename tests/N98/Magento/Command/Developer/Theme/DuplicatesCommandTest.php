@@ -15,18 +15,14 @@ class DuplicatesCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'       => $command->getName(),
-                'theme'         => 'base/default',
-                'originalTheme' => 'base/default',
-            )
+            ['command'       => $command->getName(), 'theme'         => 'base/default', 'originalTheme' => 'base/default']
         );
 
         $display = $commandTester->getDisplay();
 
         $this->assertContainsPath('template/catalog/product/price.phtml', $display);
         $this->assertContainsPath('layout/catalog.xml', $display);
-        self::assertNotContains('No duplicates was found', $display);
+        self::assertStringNotContainsString('No duplicates was found', $display);
     }
 
     /**

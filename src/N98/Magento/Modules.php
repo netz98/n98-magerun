@@ -31,7 +31,7 @@ class Modules implements IteratorAggregate, Countable
     public function __construct(array $list = null)
     {
         if (null === $list) {
-            $list = array();
+            $list = [];
         }
 
         $this->list = $list;
@@ -42,20 +42,15 @@ class Modules implements IteratorAggregate, Countable
      */
     public function findInstalledModules()
     {
-        $list = array();
+        $list = [];
 
         $modules = Mage::app()->getConfig()->getNode('modules')->asArray();
         foreach ($modules as $moduleName => $moduleInfo) {
-            $codePool = isset($moduleInfo['codePool']) ? $moduleInfo['codePool'] : '';
-            $version = isset($moduleInfo['version']) ? $moduleInfo['version'] : '';
-            $active = isset($moduleInfo['active']) ? $moduleInfo['active'] : '';
+            $codePool = $moduleInfo['codePool'] ?? '';
+            $version = $moduleInfo['version'] ?? '';
+            $active = $moduleInfo['active'] ?? '';
 
-            $list[] = array(
-                'codePool' => trim($codePool),
-                'Name'     => trim($moduleName),
-                'Version'  => trim($version),
-                'Status'   => StringTyped::formatActive($active),
-            );
+            $list[] = ['codePool' => trim($codePool), 'Name'     => trim($moduleName), 'Version'  => trim($version), 'Status'   => StringTyped::formatActive($active)];
         }
 
         return new Modules($list);

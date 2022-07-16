@@ -2,6 +2,10 @@
 
 namespace N98\Magento\Command\Indexer;
 
+use UnexpectedValueException;
+use Varien_Simplexml_Element;
+use DateTimeZone;
+use DateInterval;
 use Exception;
 use Mage;
 use Mage_Index_Model_Indexer;
@@ -25,7 +29,7 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
         /* @var $indexer Mage_Index_Model_Indexer */
         $indexer = Mage::getModel('index/indexer');
         if (!$indexer instanceof Mage_Index_Model_Indexer) {
-            throw new \UnexpectedValueException('Failure getting indexer model');
+            throw new UnexpectedValueException('Failure getting indexer model');
         }
 
         return $indexer;
@@ -46,17 +50,12 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
      */
     protected function getIndexerList()
     {
-        $list = array();
+        $list = [];
         $indexCollection = $this->getIndexerModel()->getProcessesCollection();
         foreach ($indexCollection as $indexer) {
             $lastReadbleRuntime = $this->getRuntime($indexer);
             $runtimeInSeconds = $this->getRuntimeInSeconds($indexer);
-            $list[] = array(
-                'code'            => $indexer->getIndexerCode(),
-                'status'          => $indexer->getStatus(),
-                'last_runtime'    => $lastReadbleRuntime,
-                'runtime_seconds' => $runtimeInSeconds,
-            );
+            $list[] = ['code'            => $indexer->getIndexerCode(), 'status'          => $indexer->getStatus(), 'last_runtime'    => $lastReadbleRuntime, 'runtime_seconds' => $runtimeInSeconds];
         }
 
         return $list;
@@ -87,7 +86,7 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
     {
         $node = Mage::app()->getConfig()->getNode('adminhtml/events/core_locale_set_locale/observers/bind_locale');
         if ($node) {
-            $node->appendChild(new \Varien_Simplexml_Element('<type>disabled</type>'));
+            $node->appendChild(new Varien_Simplexml_Element('<type>disabled</type>'));
         }
     }
 
@@ -120,8 +119,8 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
             return;
         }
 
-        $estimatedEnd = new \DateTime('now', new \DateTimeZone('UTC'));
-        $estimatedEnd->add(new \DateInterval('PT' . $runtimeInSeconds . 'S'));
+        $estimatedEnd = new \DateTime('now', new DateTimeZone('UTC'));
+        $estimatedEnd->add(new DateInterval('PT' . $runtimeInSeconds . 'S'));
         $output->writeln(
             sprintf('<info>Estimated end: <comment>%s</comment></info>', $estimatedEnd->format('Y-m-d H:i:s T'))
         );

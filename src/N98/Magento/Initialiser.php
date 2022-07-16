@@ -21,12 +21,12 @@ class Initialiser
     /**
      * Mage filename
      */
-    const PATH_APP_MAGE_PHP = 'app/Mage.php';
+    public const PATH_APP_MAGE_PHP = 'app/Mage.php';
 
     /**
      * Mage classname
      */
-    const CLASS_MAGE = 'Mage';
+    public const CLASS_MAGE = 'Mage';
 
     /**
      * @var string path to Magento root directory

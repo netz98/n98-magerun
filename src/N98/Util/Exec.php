@@ -14,17 +14,17 @@ class Exec
     /**
      * @var string
      */
-    const REDIRECT_STDERR_TO_STDOUT = ' 2>&1';
+    public const REDIRECT_STDERR_TO_STDOUT = ' 2>&1';
 
     /**
      * @var int (0-255)
      */
-    const CODE_CLEAN_EXIT = 0;
+    public const CODE_CLEAN_EXIT = 0;
 
     /**
      * Every error in a pipe will be exited with an error code
      */
-    const SET_O_PIPEFAIL = 'set -o pipefail;';
+    public const SET_O_PIPEFAIL = 'set -o pipefail;';
 
     /**
      * @param string $command

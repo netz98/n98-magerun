@@ -16,7 +16,7 @@ if (!file_exists($inputFile)) {
     );
 }
 
-if (!$percentage) {
+if ($percentage === 0) {
     throw new InvalidArgumentException('An integer checked percentage must be given as second parameter');
 }
 

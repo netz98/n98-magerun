@@ -2,10 +2,15 @@
 
 namespace N98\Magento\Command\Developer\Log;
 
+use Mage;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Finder\Finder;
 
 class AbstractLogCommand extends AbstractMagentoCommand
@@ -18,9 +23,7 @@ class AbstractLogCommand extends AbstractMagentoCommand
         $finder = Finder::create();
         $finder->ignoreUnreadableDirs(true);
 
-        $logDirs = array(
-            $this->getLogDir(),
-        );
+        $logDirs = [$this->getLogDir()];
 
         if (is_dir($this->getDebugDir())) {
             $logDirs[] = $this->getDebugDir();
@@ -34,7 +37,7 @@ class AbstractLogCommand extends AbstractMagentoCommand
      */
     protected function getLogDir()
     {
-        return \Mage::getBaseDir('log');
+        return Mage::getBaseDir('log');
     }
 
     /**
@@ -42,7 +45,7 @@ class AbstractLogCommand extends AbstractMagentoCommand
      */
     protected function getDebugDir()
     {
-        return \Mage::getBaseDir('var') . '/debug';
+        return Mage::getBaseDir('var') . '/debug';
     }
 
     /**
@@ -57,30 +60,30 @@ class AbstractLogCommand extends AbstractMagentoCommand
     }
 
     /**
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return string
      */
-    protected function askLogFile($output)
+    protected function askLogFile($input, $output)
     {
         $logFiles = $this->getLogFileIterator();
-        $files = array();
-        $question = array();
+        $files = [];
+        $choices = [];
 
         $i = 0;
         foreach ($logFiles as $logFile) {
             $files[$i++] = $logFile->getPathname();
-            $question[] = '<comment>[' . ($i) . ']</comment> ' . $logFile->getFilename() . PHP_EOL;
+            $choices[] = '<comment>[' . ($i) . ']</comment> ' . $logFile->getFilename() . PHP_EOL;
         }
-        $question[] = '<question>Please select a log file: </question>';
 
         if ($i === 0) {
             return '';
         }
 
-        /** @var $dialog DialogHelper */
-        $dialog = $this->getHelper('dialog');
-        $logFile = $dialog->askAndValidate($output, $question, function ($typeInput) use ($files) {
+        $dialog = new QuestionHelper();
+        $questionObj = new ChoiceQuestion('<question>Please select a log file: </question>', $choices);
+        $questionObj->setValidator(function ($typeInput) use ($files) {
             if (!isset($files[$typeInput - 1])) {
                 throw new InvalidArgumentException('Invalid file');
             }
@@ -88,6 +91,6 @@ class AbstractLogCommand extends AbstractMagentoCommand
             return $files[$typeInput - 1];
         });
 
-        return $logFile;
+        return $dialog->ask($input, $output, $questionObj);
     }
 }

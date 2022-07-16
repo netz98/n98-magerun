@@ -7,6 +7,7 @@
 
 namespace N98\Util\Console\Helper\Table\Renderer;
 
+use SimpleXMLElement;
 use Symfony\Component\Console\Output\StreamOutput;
 
 /**
@@ -25,9 +26,9 @@ class TextRendererTest extends TestCase
         $renderer = new TextRenderer();
         self::assertInstanceOf(__NAMESPACE__ . '\\TextRenderer', $renderer);
 
-        $renderFactory = new RendererFactory();
+        $rendererFactory = new RendererFactory();
 
-        $renderer = $renderFactory->create('text');
+        $renderer = $rendererFactory->create('text');
         self::assertInstanceOf(__NAMESPACE__ . '\\TextRenderer', $renderer);
     }
 
@@ -36,14 +37,10 @@ class TextRendererTest extends TestCase
      */
     public function rendering()
     {
-        $renderer = new TextRenderer();
-        $output = new StreamOutput(fopen('php://memory', 'wb', false));
+        $textRenderer = new TextRenderer();
+        $streamOutput = new StreamOutput(fopen('php://memory', 'wb', false));
 
-        $rows = array(
-            array('Column1' => 'Value A1', 'Column2' => 'A2 is another value that there is'),
-            array(1, "multi\nline\nftw"),
-            array("C1 cell here!", new \SimpleXMLElement('<r>PHP Magic->toString() test</r>')),
-        );
+        $rows = [['Column1' => 'Value A1', 'Column2' => 'A2 is another value that there is'], [1, "multi\nline\nftw"], ["C1 cell here!", new SimpleXMLElement('<r>PHP Magic->toString() test</r>')]];
 
         $expected = '+---------------+-----------------------------------+
 | Column1       | Column2                           |
@@ -55,8 +52,8 @@ class TextRendererTest extends TestCase
 | C1 cell here! | PHP Magic->toString() test        |
 +---------------+-----------------------------------+' . "\n";
 
-        $renderer->render($output, $rows);
+        $textRenderer->render($streamOutput, $rows);
 
-        self::assertEquals($expected, $this->getOutputBuffer($output));
+        self::assertEquals($expected, $this->getOutputBuffer($streamOutput));
     }
 }

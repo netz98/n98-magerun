@@ -108,14 +108,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
     private function parseResources(SimpleXMLElement $resources)
     {
         // default values
-        $config = array(
-            'host'        => null,
-            'port'        => null,
-            'unix_socket' => null,
-            'dbname'      => null,
-            'username'    => null,
-            'password'    => null,
-        );
+        $config = ['host'        => null, 'port'        => null, 'unix_socket' => null, 'dbname'      => null, 'username'    => null, 'password'    => null];
 
         $connectionNode = $this->connectionNode;
         $config = array_merge($config, (array) $resources->$connectionNode->connection);
@@ -133,7 +126,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             $config['host'] = null;
             $config['port'] = null;
         } elseif (strpos($config['host'], ':') !== false) {
-            list($config['host'], $config['port']) = explode(':', $config['host']);
+            [$config['host'], $config['port']] = explode(':', $config['host']);
             $config['unix_socket'] = null;
         }
 
@@ -157,7 +150,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
     {
         $dsn = 'mysql:';
 
-        $named = array();
+        $named = [];
 
         // blacklisted in prev. DSN creation: username, password, options, charset, persistent, driver_options, dbname
 
@@ -170,7 +163,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             }
         }
 
-        $options = array();
+        $options = [];
         foreach ($named as $name => $value) {
             $options[$name] = "{$name}={$value}";
         }
@@ -218,7 +211,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
 
     public function getMysqlClientToolConnectionString()
     {
-        $segments = array();
+        $segments = [];
 
         if (null !== $this->config['unix_socket']) {
             $segments[] = '--socket=' . escapeshellarg($this->config['unix_socket']);
@@ -261,7 +254,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             );
         }
 
-        return $quote . strtr($identifier, array($quote => $quote . $quote)) . $quote;
+        return $quote . strtr($identifier, [$quote => $quote . $quote]) . $quote;
     }
 
     /**

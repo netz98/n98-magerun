@@ -2,6 +2,9 @@
 
 namespace N98\Magento\Command\System\Cron;
 
+use Mage;
+use Mage_Cron_Model_Schedule;
+use Varien_Data_Collection_Db;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
@@ -42,7 +45,7 @@ class HistoryCommand extends AbstractMagentoCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
 
@@ -51,30 +54,26 @@ class HistoryCommand extends AbstractMagentoCommand
         }
         $this->initMagento();
 
-        $timezone = $input->getOption('timezone')
-            ? $input->getOption('timezone') : \Mage::app()->getStore()->getConfig('general/locale/timezone');
+        $timezone = $input->getOption('timezone') ?: Mage::app()->getStore()->getConfig('general/locale/timezone');
 
         $output->writeln('<info>Times shown in <comment>' . $timezone . '</comment></info>');
 
-        $date = \Mage::getSingleton('core/date');
+        $date = Mage::getSingleton('core/date');
         $offset = $date->calculateOffset($timezone);
-        $collection = \Mage::getModel('cron/schedule')->getCollection();
+        $collection = Mage::getModel('cron/schedule')->getCollection();
         $collection
-            ->addFieldToFilter('status', array('neq' => \Mage_Cron_Model_Schedule::STATUS_PENDING))
-            ->addOrder('finished_at', \Varien_Data_Collection_Db::SORT_ORDER_DESC);
+            ->addFieldToFilter('status', ['neq' => Mage_Cron_Model_Schedule::STATUS_PENDING])
+            ->addOrder('finished_at', Varien_Data_Collection_Db::SORT_ORDER_DESC);
 
-        $table = array();
+        $table = [];
         foreach ($collection as $job) {
-            $table[] = array(
-                $job->getJobCode(),
-                $job->getStatus(),
-                $job->getFinishedAt() ? $date->gmtDate(null, $date->timestamp($job->getFinishedAt()) + $offset) : '',
-            );
+            $table[] = [$job->getJobCode(), $job->getStatus(), $job->getFinishedAt() ? $date->gmtDate(null, $date->timestamp($job->getFinishedAt()) + $offset) : ''];
         }
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('Job', 'Status', 'Finished'))
+            ->setHeaders(['Job', 'Status', 'Finished'])
             ->renderByFormat($output, $table, $input->getOption('format'));
+        return 0;
     }
 }

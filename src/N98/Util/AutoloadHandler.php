@@ -7,6 +7,7 @@
 
 namespace N98\Util;
 
+use BadMethodCallException;
 /**
  * Autloader with self-registration, de-registration, muting and implementation switching
  *
@@ -18,12 +19,12 @@ final class AutoloadHandler
      * Throw exception if the autoload implementation is not callable (default). If no exception is thrown,
      * autoload callback is just ignored
      */
-    const NO_EXCEPTION = 1;
+    public const NO_EXCEPTION = 1;
 
     /**
      *
      */
-    const NO_AUTO_REGISTER = 2;
+    public const NO_AUTO_REGISTER = 2;
 
     /**
      * @var integer
@@ -93,7 +94,7 @@ final class AutoloadHandler
             if ($this->flags & self::NO_EXCEPTION) {
                 return false;
             }
-            throw new \BadMethodCallException('Autoload callback is not callable');
+            throw new BadMethodCallException('Autoload callback is not callable');
         }
 
         return call_user_func($this->callback, $className);
@@ -101,7 +102,7 @@ final class AutoloadHandler
 
     public function getCleanupCallback()
     {
-        $self = (object) array('ref' => $this);
+        $self = (object) ['ref' => $this];
 
         return function () use ($self) {
             if (isset($self->ref)) {

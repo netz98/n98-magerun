@@ -2,7 +2,8 @@
 
 namespace N98\Util\Unicode;
 
-class CharsetTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+class CharsetTest extends TestCase
 {
     public function testConvertInteger()
     {

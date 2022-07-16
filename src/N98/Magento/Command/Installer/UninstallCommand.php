@@ -47,7 +47,7 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->chooseInstallationFolder($input, $output);
         $this->detectMagento($output);
@@ -76,5 +76,6 @@ HELP;
             }
             $output->writeln('<info>Done</info>');
         }
+        return 0;
     }
 }

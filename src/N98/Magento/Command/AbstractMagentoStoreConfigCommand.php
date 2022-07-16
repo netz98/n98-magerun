@@ -2,6 +2,9 @@
 
 namespace N98\Magento\Command;
 
+use Mage;
+use Mage_Core_Model_App;
+use Mage_Core_Model_Store;
 use N98\Util\Console\Helper\ParameterHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,22 +18,22 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
     /**
      * @var string
      */
-    const SCOPE_STORE_VIEW = 'store';
+    public const SCOPE_STORE_VIEW = 'store';
 
     /**
      * @var string
      */
-    const SCOPE_WEBSITE = 'website';
+    public const SCOPE_WEBSITE = 'website';
 
     /**
      * @var string
      */
-    const SCOPE_GLOBAL = 'global';
+    public const SCOPE_GLOBAL = 'global';
 
     /**
      * Store view or global by additional option
      */
-    const SCOPE_STORE_VIEW_GLOBAL = 'store_view_global';
+    public const SCOPE_STORE_VIEW_GLOBAL = 'store_view_global';
 
     /**
      * @var string
@@ -98,8 +101,10 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $store = null;
+        $runOnStoreView = null;
         $this->detectMagento($output);
         if ($this->initMagento()) {
             $runOnStoreView = false;
@@ -112,7 +117,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             if ($runOnStoreView) {
                 $store = $this->_initStore($input, $output);
             } else {
-                $store = \Mage::app()->getStore(\Mage_Core_Model_App::ADMIN_STORE_ID);
+                $store = Mage::app()->getStore(Mage_Core_Model_App::ADMIN_STORE_ID);
             }
         }
 
@@ -121,15 +126,15 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
         } elseif ($input->getOption('off')) {
             $isFalse = false;
         } else {
-            $isFalse = !\Mage::getStoreConfigFlag($this->configPath, $store->getId());
+            $isFalse = !Mage::getStoreConfigFlag($this->configPath, $store->getId());
         }
 
         $this->_beforeSave($store, $isFalse);
 
-        \Mage::app()->getConfig()->saveConfig(
+        Mage::app()->getConfig()->saveConfig(
             $this->configPath,
             $isFalse ? 1 : 0,
-            $store->getId() == \Mage_Core_Model_App::ADMIN_STORE_ID ? 'default' : 'stores',
+            $store->getId() == Mage_Core_Model_App::ADMIN_STORE_ID ? 'default' : 'stores',
             $store->getId()
         );
 
@@ -144,6 +149,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 
         $input = new StringInput('cache:flush');
         $this->getApplication()->run($input, new NullOutput());
+        return 0;
     }
 
     /**
@@ -154,7 +160,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      * @param  bool                   $enabled
      * @return void
      */
-    protected function detectAskAndSetDeveloperIp(\Mage_Core_Model_Store $store, $enabled)
+    protected function detectAskAndSetDeveloperIp(Mage_Core_Model_Store $store, $enabled)
     {
         if (!$enabled) {
             // No need to notify about developer IP restrictions if we're disabling template hints etc
@@ -179,7 +185,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      * @param  string|null            $devRestriction
      * @return void
      */
-    protected function askAndSetDeveloperIp(OutputInterface $output, \Mage_Core_Model_Store $store, $devRestriction)
+    protected function askAndSetDeveloperIp(OutputInterface $output, Mage_Core_Model_Store $store, $devRestriction)
     {
         $output->writeln(
             sprintf(
@@ -209,9 +215,9 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      * @param \Mage_Core_Model_Store $store
      * @param string                 $newDeveloperIp
      */
-    protected function setDeveloperIp(\Mage_Core_Model_Store $store, $newDeveloperIp)
+    protected function setDeveloperIp(Mage_Core_Model_Store $store, $newDeveloperIp)
     {
-        \Mage::getModel('core/config')
+        Mage::getModel('core/config')
             ->saveConfig('dev/restrict/allow_ips', $newDeveloperIp, 'stores', $store->getId());
     }
 
@@ -233,7 +239,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      * @param \Mage_Core_Model_Store $store
      * @param bool $disabled
      */
-    protected function _beforeSave(\Mage_Core_Model_Store $store, $disabled)
+    protected function _beforeSave(Mage_Core_Model_Store $store, $disabled)
     {
     }
 
@@ -241,7 +247,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      * @param \Mage_Core_Model_Store $store
      * @param bool $disabled
      */
-    protected function _afterSave(\Mage_Core_Model_Store $store, $disabled)
+    protected function _afterSave(Mage_Core_Model_Store $store, $disabled)
     {
     }
 }

@@ -2,6 +2,9 @@
 
 namespace N98\Magento\Command\System\Setup;
 
+use Mage_Core_Model_Resource_Setup;
+use ReflectionObject;
+use Mage;
 use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\TableHelper;
@@ -36,11 +39,11 @@ HELP;
      * @param OutputInterface $output
      * @return int|null
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         try {
@@ -53,9 +56,9 @@ HELP;
              * directly to stdout. Use exception which will be thrown to show error
              */
             \ob_start();
-            \Mage_Core_Model_Resource_Setup::applyAllUpdates();
-            if (is_callable(array('\Mage_Core_Model_Resource_Setup', 'applyAllDataUpdates'))) {
-                \Mage_Core_Model_Resource_Setup::applyAllDataUpdates();
+            Mage_Core_Model_Resource_Setup::applyAllUpdates();
+            if (is_callable(['\Mage_Core_Model_Resource_Setup', 'applyAllDataUpdates'])) {
+                Mage_Core_Model_Resource_Setup::applyAllDataUpdates();
             }
             \ob_end_clean();
             $output->writeln('<info>done</info>');
@@ -67,6 +70,7 @@ HELP;
 
             return 1; // exit with error status
         }
+        return 0;
     }
 
     /**
@@ -90,16 +94,12 @@ HELP;
 
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
-        $rows = array();
+        $rows = [];
         $i = 1;
         foreach ($trace as $row) {
-            $rows[] = array(
-                $i++,
-                $row['file'] . ':' . $row['line'],
-                $row['class'] . '::' . $row['function'],
-            );
+            $rows[] = [$i++, $row['file'] . ':' . $row['line'], $row['class'] . '::' . $row['function']];
         }
-        $tableHelper->setHeaders(array('#', 'File/Line', 'Method'));
+        $tableHelper->setHeaders(['#', 'File/Line', 'Method']);
         $tableHelper->setRows($rows);
         $tableHelper->render($output);
     }
@@ -114,12 +114,12 @@ HELP;
             /* @var $tableHelper TableHelper */
             $tableHelper = $this->getHelper('table');
             $lines = \file($matches[1]);
-            $rows = array();
+            $rows = [];
             $i = 0;
             foreach ($lines as $line) {
-                $rows[] = array(++$i, rtrim($line));
+                $rows[] = [++$i, rtrim($line)];
             }
-            $tableHelper->setHeaders(array('Line', 'Code'));
+            $tableHelper->setHeaders(['Line', 'Code']);
             $tableHelper->setRows($rows);
             $tableHelper->render($output);
         }
@@ -130,10 +130,10 @@ HELP;
         /**
          * Get events before cache flush command is called.
          */
-        $reflectionApp = new \ReflectionObject(\Mage::app());
+        $reflectionApp = new ReflectionObject(Mage::app());
         $appEventReflectionProperty = $reflectionApp->getProperty('_events');
         $appEventReflectionProperty->setAccessible(true);
-        $eventsBeforeCacheFlush = $appEventReflectionProperty->getValue(\Mage::app());
+        $eventsBeforeCacheFlush = $appEventReflectionProperty->getValue(Mage::app());
 
         $application = $this->getApplication();
         $saved = $application->setAutoExit(false);
@@ -143,6 +143,6 @@ HELP;
         /**
          * Restore initially loaded events which was reset during setup script run
          */
-        $appEventReflectionProperty->setValue(\Mage::app(), $eventsBeforeCacheFlush);
+        $appEventReflectionProperty->setValue(Mage::app(), $eventsBeforeCacheFlush);
     }
 }

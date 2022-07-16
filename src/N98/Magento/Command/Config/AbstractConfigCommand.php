@@ -2,21 +2,18 @@
 
 namespace N98\Magento\Command\Config;
 
+use Mage;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 
 abstract class AbstractConfigCommand extends AbstractMagentoCommand
 {
-    const DISPLAY_NULL_UNKNOWN_VALUE = "NULL (NULL/\"unknown\" value)";
+    public const DISPLAY_NULL_UNKNOWN_VALUE = "NULL (NULL/\"unknown\" value)";
 
     /**
      * @var array strings of configuration scopes
      */
-    protected $_scopes = array(
-        'default',
-        'websites',
-        'stores',
-    );
+    protected $_scopes = ['default', 'websites', 'stores'];
 
     /**
      * @return \Mage_Core_Model_Encryption
@@ -26,7 +23,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
         if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
             // @TODO Magento 2 support
         } else {
-            return \Mage::helper('core')->getEncryptor();
+            return Mage::helper('core')->getEncryptor();
         }
     }
 
@@ -94,7 +91,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
         }
 
         if ($scope == 'websites' && !is_numeric($scopeId)) {
-            $website = \Mage::app()->getWebsite($scopeId);
+            $website = Mage::app()->getWebsite($scopeId);
             if (!$website) {
                 throw new InvalidArgumentException(
                     sprintf("Invalid scope parameter, website '%s' does not exist.", $scopeId)
@@ -105,7 +102,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
         }
 
         if ($scope == 'stores' && !is_numeric($scopeId)) {
-            $store = \Mage::app()->getStore($scopeId);
+            $store = Mage::app()->getStore($scopeId);
             if (!$store) {
                 throw new InvalidArgumentException(
                     sprintf("Invalid scope parameter. store '%s' does not exist.", $scopeId)

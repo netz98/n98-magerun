@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Module\Observer;
 
+use Mage;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
@@ -40,21 +41,16 @@ class ListCommand extends AbstractMagentoCommand
      * @throws InvalidArgumentException
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $type = $input->getArgument('type');
 
-        $areas = array(
-            'global',
-            'adminhtml',
-            'frontend',
-            'crontab',
-        );
+        $areas = ['global', 'adminhtml', 'frontend', 'crontab'];
 
         if ($type === null) {
             $type = $this->askForArrayEntry($areas, $output, 'Please select an area:');
@@ -67,29 +63,27 @@ class ListCommand extends AbstractMagentoCommand
         if ($input->getOption('format') === null) {
             $this->writeSection($output, 'Observers: ' . $type);
         }
-        $frontendEvents = \Mage::getConfig()->getNode($type . '/events')->asArray();
+        $frontendEvents = Mage::getConfig()->getNode($type . '/events')->asArray();
         if (true === $input->getOption('sort')) {
             // sorting for Observers is a bad idea because the order in which observers will be called is important.
             ksort($frontendEvents);
         }
-        $table = array();
+        $table = [];
         foreach ($frontendEvents as $eventName => $eventData) {
-            $observerList = array();
+            $observerList = [];
             foreach ($eventData['observers'] as $observer) {
                 $observerList[] = $this->getObserver($observer, $type);
             }
-            $table[] = array(
-                $eventName,
-                implode("\n", $observerList),
-            );
+            $table[] = [$eventName, implode("\n", $observerList)];
         }
 
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('Event', 'Observers'))
+            ->setHeaders(['Event', 'Observers'])
             ->setRows($table)
             ->renderByFormat($output, $table, $input->getOption('format'));
+        return 0;
     }
 
     /**

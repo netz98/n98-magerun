@@ -15,9 +15,7 @@ class RunCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-                'job'     => 'log_clean', )
+            ['command' => $command->getName(), 'job'     => 'log_clean']
         );
 
         self::assertRegExp('/Run Mage_Log_Model_Cron::logClean done/', $commandTester->getDisplay());
@@ -34,9 +32,7 @@ class RunCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-                'job'     => 'log_clean', )
+            ['command' => $command->getName(), 'job'     => 'log_clean']
         );
 
         self::assertRegExp('/Run Mage_Log_Model_Cron::logClean done/', $commandTester->getDisplay());

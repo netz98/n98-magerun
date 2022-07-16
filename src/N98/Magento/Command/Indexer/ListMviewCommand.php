@@ -35,14 +35,14 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
-        $table = array();
+        $table = [];
         foreach ($this->getMetaDataCollection() as $index) {
             $changelogName = $index->getData('changelog_name');
             $versionId = $index->getData('version_id');
@@ -53,30 +53,17 @@ HELP;
                 $pendingString = "<info>$pendingCount</info>";
             }
 
-            $table[] = array(
-                $index->getData('table_name'),
-                $index->getData('view_name'),
-                $changelogName,
-                $index->getData('status'),
-                $versionId,
-                $pendingString,
-            );
+            $table[] = [$index->getData('table_name'), $index->getData('view_name'), $changelogName, $index->getData('status'), $versionId, $pendingString];
         }
 
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
             ->setHeaders(
-                array(
-                    'table_name',
-                    'view_name',
-                    'changelog_name',
-                    'status',
-                    'version_id',
-                    'entries pending reindex',
-                )
+                ['table_name', 'view_name', 'changelog_name', 'status', 'version_id', 'entries pending reindex']
             )
             ->renderByFormat($output, $table, $input->getOption('format'));
+        return 0;
     }
 
     /**
@@ -91,7 +78,7 @@ HELP;
         $readConnection = $resource->getConnection('core_read');
 
         $select = $readConnection->select()
-            ->from($tableName, array('count(*)'))
+            ->from($tableName, ['count(*)'])
             ->where("version_id > ?", $currentVersionId);
         $todoCount = $readConnection->fetchOne($select);
 

@@ -43,9 +43,9 @@ class InstallCommandPackageVersionTest extends TestCase
     private function assertOngoingPackageVersions(array $packages, $namespacesMinimum, $nonVersionsMaximum)
     {
         $nonVersions = 0;
-        $nonVersionsList = array();
-        $nameStack = array();
-        $nameConstraint = array();
+        $nonVersionsList = [];
+        $nameStack = [];
+        $nameConstraint = [];
 
         foreach ($packages as $package) {
             self::assertArrayHasKey('name', $package);
@@ -67,7 +67,7 @@ class InstallCommandPackageVersionTest extends TestCase
                 continue;
             }
 
-            list($namespace, $nameVersion) = $this->splitName($name);
+            [$namespace, $nameVersion] = $this->splitName($name);
             if ($nameVersion === null || $nameVersion !== $version) {
                 $nonVersionsList[] = $name;
                 $nonVersions++;
@@ -111,7 +111,7 @@ class InstallCommandPackageVersionTest extends TestCase
 
     private function assertSampleDataPackagesExist(array $packages, array $demoDataPackages)
     {
-        $map = array();
+        $map = [];
         foreach ($demoDataPackages as $index => $package) {
             $map[$package['name']] = $index;
         }
@@ -132,9 +132,9 @@ class InstallCommandPackageVersionTest extends TestCase
      */
     private function splitName($name)
     {
-        list($nameSuffix, $nameVersion) = preg_split('~-(?=[^-]+$)~', $name) + array(1 => null);
+        [$nameSuffix, $nameVersion] = preg_split('~-(?=[^-]+$)~', $name) + [1 => null];
 
-        return array($nameSuffix, $nameVersion);
+        return [$nameSuffix, $nameVersion];
     }
 
     /**

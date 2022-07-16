@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Admin\User;
 
+use Exception;
+use Symfony\Component\Console\Helper\DialogHelper;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -13,14 +15,14 @@ class DeleteUserCommandTest extends TestCase
     protected $command;
     protected $userModel;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->command = $this->getMockBuilder('\N98\Magento\Command\Admin\User\DeleteUserCommand')
-            ->setMethods(array('getUserModel'))
+        $this->command = $this->getMockBuilder(DeleteUserCommand::class)
+            ->setMethods(['getUserModel'])
             ->getMock();
 
         $this->userModel = $this->getMockBuilder('Mage_Admin_Model_User')
-            ->setMethods(array('loadByUsername', 'load', 'getId', 'delete'))
+            ->setMethods(['loadByUsername', 'load', 'getId', 'delete'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -61,14 +63,10 @@ class DeleteUserCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'id'        => 'aydin',
-                '--force'   => true,
-            )
+            ['command'   => $command->getName(), 'id'        => 'aydin', '--force'   => true]
         );
 
-        self::assertContains('User was successfully deleted', $commandTester->getDisplay());
+        self::assertStringContainsString('User was successfully deleted', $commandTester->getDisplay());
     }
 
     public function testCanDeleteByEmail()
@@ -105,14 +103,10 @@ class DeleteUserCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'id'        => 'aydin@hotmail.co.uk',
-                '--force'   => true,
-            )
+            ['command'   => $command->getName(), 'id'        => 'aydin@hotmail.co.uk', '--force'   => true]
         );
 
-        self::assertContains('User was successfully deleted', $commandTester->getDisplay());
+        self::assertStringContainsString('User was successfully deleted', $commandTester->getDisplay());
     }
 
     public function testReturnEarlyIfUserNotFound()
@@ -144,12 +138,9 @@ class DeleteUserCommandTest extends TestCase
         $command = $this->getApplication()->find('admin:user:delete');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
-            'command'   => $command->getName(),
-            'id'        => 'notauser',
-        ));
+        $commandTester->execute(['command'   => $command->getName(), 'id'        => 'notauser']);
 
-        self::assertContains('User was not found', $commandTester->getDisplay());
+        self::assertStringContainsString('User was not found', $commandTester->getDisplay());
     }
 
     public function testMessageIsPrintedIfErrorDeleting()
@@ -176,7 +167,7 @@ class DeleteUserCommandTest extends TestCase
             ->method('getId')
             ->willReturn(2);
 
-        $exception = new \Exception("Error!");
+        $exception = new Exception("Error!");
         $this->userModel
             ->expects(self::once())
             ->method('delete')
@@ -188,14 +179,10 @@ class DeleteUserCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'id'        => 'aydin@hotmail.co.uk',
-                '--force'   => true,
-            )
+            ['command'   => $command->getName(), 'id'        => 'aydin@hotmail.co.uk', '--force'   => true]
         );
 
-        self::assertContains('Error!', $commandTester->getDisplay());
+        self::assertStringContainsString('Error!', $commandTester->getDisplay());
     }
 
     public function testConfirmationTrueReplyDeletesUser()
@@ -230,7 +217,7 @@ class DeleteUserCommandTest extends TestCase
         $application->add($this->command);
         $command = $this->getApplication()->find('admin:user:delete');
 
-        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\DialogHelper::class)
+        $dialog = $this->getMockBuilder(DialogHelper::class)
             ->setMethods(['askConfirmation'])
             ->getMock();
 
@@ -242,12 +229,9 @@ class DeleteUserCommandTest extends TestCase
         $command->getHelperSet()->set($dialog, 'dialog');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
-            'command'   => $command->getName(),
-            'id'        => 'notauser',
-        ));
+        $commandTester->execute(['command'   => $command->getName(), 'id'        => 'notauser']);
 
-        self::assertContains('User was successfully deleted', $commandTester->getDisplay());
+        self::assertStringContainsString('User was successfully deleted', $commandTester->getDisplay());
     }
 
     public function testConfirmationFalseReplyDoesNotDeleteUser()
@@ -282,7 +266,7 @@ class DeleteUserCommandTest extends TestCase
         $application->add($this->command);
         $command = $this->getApplication()->find('admin:user:delete');
 
-        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\DialogHelper::class)
+        $dialog = $this->getMockBuilder(DialogHelper::class)
             ->setMethods(['askConfirmation'])
             ->getMock();
 
@@ -299,12 +283,12 @@ class DeleteUserCommandTest extends TestCase
             'id'        => 'notauser',
         ]);
 
-        self::assertContains('Aborting delete', $commandTester->getDisplay());
+        self::assertStringContainsString('Aborting delete', $commandTester->getDisplay());
     }
 
     public function testIfNoIdIsPresentItIsPromptedFor()
     {
-        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\DialogHelper::class)
+        $dialog = $this->getMockBuilder(DialogHelper::class)
             ->setMethods(['ask'])
             ->getMock();
 
@@ -346,11 +330,8 @@ class DeleteUserCommandTest extends TestCase
         $command->getHelperSet()->set($dialog, 'dialog');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
-            'command'   => $command->getName(),
-            '--force'   => true,
-        ));
+        $commandTester->execute(['command'   => $command->getName(), '--force'   => true]);
 
-        self::assertContains('User was successfully deleted', $commandTester->getDisplay());
+        self::assertStringContainsString('User was successfully deleted', $commandTester->getDisplay());
     }
 }

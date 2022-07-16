@@ -2,6 +2,11 @@
 
 namespace N98\Magento\Command\Customer;
 
+use Mage;
+use Exception;
+use ReflectionObject;
+use ArrayIterator;
+use RuntimeException;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -19,9 +24,9 @@ class DeleteCommandTest extends TestCase
     {
         // Get correct model classes to mock
         if ($this->application->getMagentoMajorVersion() == 2) {
-            return get_class(\Mage::getResourceModel($mage2Code));
+            return get_class(Mage::getResourceModel($mage2Code));
         } else {
-            return get_class(\Mage::getResourceModel($mage1Code));
+            return get_class(Mage::getResourceModel($mage1Code));
         }
     }
 
@@ -29,9 +34,9 @@ class DeleteCommandTest extends TestCase
     {
         // Get correct model classes to mock
         if ($this->application->getMagentoMajorVersion() == 2) {
-            return get_class(\Mage::getModel($mage2Code));
+            return get_class(Mage::getModel($mage2Code));
         } else {
-            return get_class(\Mage::getModel($mage1Code));
+            return get_class(Mage::getModel($mage1Code));
         }
     }
 
@@ -57,35 +62,28 @@ class DeleteCommandTest extends TestCase
             ->getMock();
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->application = $this->getApplication();
         $this->application->initMagento();
 
-        $this->customerModel = $this->getCustomerModel(array('loadByEmail', 'load', 'getId', 'delete', 'setWebsiteId'));
-        $this->customerCollection = $this->getCustomerCollection(array('addAttributeToSelect', 'addAttributeToFilter'));
+        $this->customerModel = $this->getCustomerModel(['loadByEmail', 'load', 'getId', 'delete', 'setWebsiteId']);
+        $this->customerCollection = $this->getCustomerCollection(['addAttributeToSelect', 'addAttributeToFilter']);
 
-        $this->command = $this->getMockBuilder('\N98\Magento\Command\Customer\DeleteCommand')
-            ->setMethods(array(
-                'getCustomerModel',
-                'getCustomerCollection',
-                'ask',
-                'askConfirmation',
-                'getHelper',
-                'batchDelete',
-            ))
+        $this->command = $this->getMockBuilder(DeleteCommand::class)
+            ->setMethods(['getCustomerModel', 'getCustomerCollection', 'ask', 'askConfirmation', 'getHelper', 'batchDelete'])
             ->getMock();
 
         $this->dialog = $this->getMockBuilder('Symfony\Component\Console\Helper\DialogHelper')
-            ->setMethods(array('ask', 'askConfirmation', 'askAndValidate', 'askWebsite', 'getQuestion'))
+            ->setMethods(['ask', 'askConfirmation', 'askAndValidate', 'askWebsite', 'getQuestion'])
             ->getMock();
 
         $this->parameter = $this->getMockBuilder('Symfony\Component\Console\Helper\ParameterHelper')
-            ->setMethods(array('askWebsite'))
+            ->setMethods(['askWebsite'])
             ->getMock();
 
         $this->website = $this->getMockBuilder('Mage_Core_Model_Website')
-            ->setMethods(array('getId'))
+            ->setMethods(['getId'])
             ->getMock();
 
         $this->command
@@ -98,10 +96,7 @@ class DeleteCommandTest extends TestCase
 
         $this->command
             ->method('getHelper')
-            ->willReturnMap(array(
-                array('dialog', $this->dialog),
-                array('parameter', $this->parameter),
-            ));
+            ->willReturnMap([['dialog', $this->dialog], ['parameter', $this->parameter]]);
 
         $this->dialog
             ->method('getQuestion')
@@ -148,14 +143,10 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'id'        => '1',
-                '--force'   => true,
-            )
+            ['command'   => $command->getName(), 'id'        => '1', '--force'   => true]
         );
 
-        self::assertContains('successfully deleted', $commandTester->getDisplay());
+        self::assertStringContainsString('successfully deleted', $commandTester->getDisplay());
     }
 
     public function testCanDeleteByEmail()
@@ -198,14 +189,10 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'id'        => 'mike@testing.com',
-                '--force'   => true,
-            )
+            ['command'   => $command->getName(), 'id'        => 'mike@testing.com', '--force'   => true]
         );
 
-        self::assertContains('successfully deleted', $commandTester->getDisplay());
+        self::assertStringContainsString('successfully deleted', $commandTester->getDisplay());
     }
 
     public function testCustomerNotFound()
@@ -239,14 +226,10 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'id'        => 'mike@testing.com',
-                '--force'   => true,
-            )
+            ['command'   => $command->getName(), 'id'        => 'mike@testing.com', '--force'   => true]
         );
 
-        self::assertContains('No customer found!', $commandTester->getDisplay());
+        self::assertStringContainsString('No customer found!', $commandTester->getDisplay());
     }
 
     public function testDeleteFailed()
@@ -274,7 +257,7 @@ class DeleteCommandTest extends TestCase
         $this->customerModel
             ->expects(self::once())
             ->method('delete')
-            ->will(self::throwException(new \Exception('Failed to save')));
+            ->will(self::throwException(new Exception('Failed to save')));
 
         $application = $this->getApplication();
         $application->add($this->command);
@@ -282,14 +265,10 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'id'        => '1',
-                '--force'   => true,
-            )
+            ['command'   => $command->getName(), 'id'        => '1', '--force'   => true]
         );
 
-        self::assertContains('Failed to save', $commandTester->getDisplay());
+        self::assertStringContainsString('Failed to save', $commandTester->getDisplay());
     }
 
     public function testPromptForCustomerIdAndDelete()
@@ -334,13 +313,10 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                '--force'   => true,
-            )
+            ['command'   => $command->getName(), '--force'   => true]
         );
 
-        self::assertContains('successfully deleted', $commandTester->getDisplay());
+        self::assertStringContainsString('successfully deleted', $commandTester->getDisplay());
     }
 
     public function testBatchDeleteGetsCustomerCollection()
@@ -348,11 +324,7 @@ class DeleteCommandTest extends TestCase
         $this->customerCollection
             ->expects(self::atLeastOnce())
             ->method('addAttributeToSelect')
-            ->willReturnMap(array(
-                array('firstname', false, $this->customerCollection),
-                array('lastname', false, $this->customerCollection),
-                array('email', false, $this->customerCollection),
-            ));
+            ->willReturnMap([['firstname', false, $this->customerCollection], ['lastname', false, $this->customerCollection], ['email', false, $this->customerCollection]]);
 
         $this->dialog
             ->expects(self::once())
@@ -365,13 +337,10 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                '--all'     => true,
-            )
+            ['command'   => $command->getName(), '--all'     => true]
         );
 
-        self::assertContains('Aborting delete', $commandTester->getDisplay());
+        self::assertStringContainsString('Aborting delete', $commandTester->getDisplay());
     }
 
     public function testRangeDeleteGetsCustomerCollection()
@@ -379,11 +348,7 @@ class DeleteCommandTest extends TestCase
         $this->customerCollection
             ->expects(self::atLeastOnce())
             ->method('addAttributeToSelect')
-            ->willReturnMap(array(
-                array('firstname', false, $this->customerCollection),
-                array('lastname', false, $this->customerCollection),
-                array('email', false, $this->customerCollection),
-            ));
+            ->willReturnMap([['firstname', false, $this->customerCollection], ['lastname', false, $this->customerCollection], ['email', false, $this->customerCollection]]);
 
         $this->dialog
             ->expects(self::exactly(2))
@@ -415,13 +380,10 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                '--range'   => true,
-            )
+            ['command'   => $command->getName(), '--range'   => true]
         );
 
-        self::assertContains('Aborting delete', $commandTester->getDisplay());
+        self::assertStringContainsString('Aborting delete', $commandTester->getDisplay());
     }
 
     public function testShouldRemoveStopsDeletion()
@@ -461,13 +423,10 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'id'        => '1',
-            )
+            ['command'   => $command->getName(), 'id'        => '1']
         );
 
-        self::assertContains('Aborting delete', $commandTester->getDisplay());
+        self::assertStringContainsString('Aborting delete', $commandTester->getDisplay());
     }
 
     public function testShouldRemovePromptAllowsDeletion()
@@ -507,13 +466,10 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'id'        => '1',
-            )
+            ['command'   => $command->getName(), 'id'        => '1']
         );
 
-        self::assertContains('successfully deleted', $commandTester->getDisplay());
+        self::assertStringContainsString('successfully deleted', $commandTester->getDisplay());
     }
 
     public function testPromptDeleteAllAndDeleteRangeAndAbort()
@@ -529,12 +485,10 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-            )
+            ['command'   => $command->getName()]
         );
 
-        self::assertContains('nothing to do', $commandTester->getDisplay());
+        self::assertStringContainsString('nothing to do', $commandTester->getDisplay());
     }
 
     public function testPromptAllCanDeleteAll()
@@ -547,11 +501,7 @@ class DeleteCommandTest extends TestCase
         $this->customerCollection
             ->expects(self::exactly(3))
             ->method('addAttributeToSelect')
-            ->willReturnMap(array(
-                array('firstname', false, $this->customerCollection),
-                array('lastname', false, $this->customerCollection),
-                array('email', false, $this->customerCollection),
-            ));
+            ->willReturnMap([['firstname', false, $this->customerCollection], ['lastname', false, $this->customerCollection], ['email', false, $this->customerCollection]]);
 
         $this->command
             ->expects(self::once())
@@ -565,13 +515,10 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                '--force'   => true,
-            )
+            ['command'   => $command->getName(), '--force'   => true]
         );
 
-        self::assertContains('Successfully deleted 3 customer/s', $commandTester->getDisplay());
+        self::assertStringContainsString('Successfully deleted 3 customer/s', $commandTester->getDisplay());
     }
 
     public function testPromptRangeCanDeleteRange()
@@ -584,11 +531,7 @@ class DeleteCommandTest extends TestCase
         $this->customerCollection
             ->expects(self::atLeastOnce())
             ->method('addAttributeToSelect')
-            ->willReturnMap(array(
-                array('firstname', false, $this->customerCollection),
-                array('lastname', false, $this->customerCollection),
-                array('email', false, $this->customerCollection),
-            ));
+            ->willReturnMap([['firstname', false, $this->customerCollection], ['lastname', false, $this->customerCollection], ['email', false, $this->customerCollection]]);
 
         $this->dialog
             ->expects(self::exactly(2))
@@ -621,58 +564,52 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                '--force'   => true,
-            )
+            ['command'   => $command->getName(), '--force'   => true]
         );
 
-        self::assertContains('Successfully deleted 3 customer/s', $commandTester->getDisplay());
+        self::assertStringContainsString('Successfully deleted 3 customer/s', $commandTester->getDisplay());
     }
 
     public function testBatchDelete()
     {
-        $command = $this->getMockBuilder('\N98\Magento\Command\Customer\DeleteCommand')
-            ->setMethods(array('deleteCustomer'))
+        $command = $this->getMockBuilder(DeleteCommand::class)
+            ->setMethods(['deleteCustomer'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $command
             ->expects(self::exactly(2))
             ->method('deleteCustomer')
-            ->will(self::onConsecutiveCalls(true, new \Exception('Failed to delete')));
+            ->will(self::onConsecutiveCalls(true, new Exception('Failed to delete')));
 
-        $refObject = new \ReflectionObject($command);
+        $refObject = new ReflectionObject($command);
         $method = $refObject->getMethod('batchDelete');
         $method->setAccessible(true);
 
-        $data = new \ArrayIterator(array(
-            $this->customerModel,
-            $this->customerModel,
-        ));
+        $data = new ArrayIterator([$this->customerModel, $this->customerModel]);
 
-        $collection = $this->getCustomerCollection(array('getIterator'));
+        $collection = $this->getCustomerCollection(['getIterator']);
 
         $collection
             ->expects(self::once())
             ->method('getIterator')
             ->willReturn($data);
 
-        $result = $method->invokeArgs($command, array($collection));
+        $result = $method->invokeArgs($command, [$collection]);
 
         self::assertEquals(1, $result);
     }
 
     public function testValidateInt()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('The range should be numeric and above 0 e.g. 1');
-        $refObject = new \ReflectionObject($this->command);
+        $refObject = new ReflectionObject($this->command);
         $method = $refObject->getMethod('validateInt');
         $method->setAccessible(true);
 
-        $resultValid = $method->invokeArgs($this->command, array('5'));
+        $resultValid = $method->invokeArgs($this->command, ['5']);
         self::assertEquals(5, $resultValid);
-        $method->invokeArgs($this->command, array('bad input')); // Exception!
+        $method->invokeArgs($this->command, ['bad input']); // Exception!
     }
 }

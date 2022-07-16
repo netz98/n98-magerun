@@ -13,7 +13,7 @@ class CheckRootUser implements EventSubscriberInterface
     /**
      * @var string
      */
-    const WARNING_ROOT_USER = '<error>It\'s not recommended to run n98-magerun as root user</error>';
+    public const WARNING_ROOT_USER = '<error>It\'s not recommended to run n98-magerun as root user</error>';
 
     /**
      * Returns an array of event names this subscriber wants to listen to.
@@ -24,9 +24,7 @@ class CheckRootUser implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            Events::RUN_BEFORE => 'checkRunningAsRootUser',
-        );
+        return [Events::RUN_BEFORE => 'checkRunningAsRootUser'];
     }
 
     /**
@@ -48,11 +46,7 @@ class CheckRootUser implements EventSubscriberInterface
 
         if (OperatingSystem::isRoot()) {
             $output = $event->getOutput();
-            $output->writeln(array(
-                '',
-                self::WARNING_ROOT_USER,
-                '',
-            ));
+            $output->writeln(['', self::WARNING_ROOT_USER, '']);
         }
     }
 

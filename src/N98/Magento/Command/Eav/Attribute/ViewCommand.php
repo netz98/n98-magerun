@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Eav\Attribute;
 
+use Mage;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
@@ -34,11 +35,11 @@ class ViewCommand extends AbstractMagentoCommand
      * @return int|void
      * @throws InvalidArgumentException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $entityType = $input->getArgument('entityType');
@@ -49,40 +50,20 @@ class ViewCommand extends AbstractMagentoCommand
             throw new InvalidArgumentException('Attribute was not found.');
         }
 
-        $table = array(
-            array('ID', $attribute->getId()),
-            array('Code', $attribute->getName()),
-            array('Attribute-Set-ID', $attribute->getAttributeSetId()),
-            array('Visible-On-Front', $attribute->getIsVisibleOnFront() ? 'yes' : 'no'),
-            array('Attribute-Model', $attribute->getAttributeModel() ? $attribute->getAttributeModel() : ''),
-            array('Backend-Model', $attribute->getBackendModel() ? $attribute->getBackendModel() : ''),
-            array('Backend-Table', $attribute->getBackendTable() ? $attribute->getBackendTable() : ''),
-            array('Backend-Type', $attribute->getBackendType() ? $attribute->getBackendType() : ''),
-            array('Source-Model', $attribute->getSourceModel() ? $attribute->getSourceModel() : ''),
-            array('Cache-ID-Tags', $attribute->getCacheIdTags() ? implode(',', $attribute->getCacheIdTags()) : ''),
-            array('Cache-Tags', $attribute->getCacheTags() ? implode(',', $attribute->getCacheTags()) : ''),
-            array('Default-Value', $attribute->getDefaultValue() ? $attribute->getDefaultValue() : ''),
-            array(
-                'Flat-Columns',
-                $attribute->getFlatColumns() ? implode(',', array_keys($attribute->getFlatColumns())) : '',
-            ),
-            array('Flat-Indexes', $attribute->getFlatIndexes() ? implode(',', $attribute->getFlatIndexes()) : ''),
-        );
+        $table = [['ID', $attribute->getId()], ['Code', $attribute->getName()], ['Attribute-Set-ID', $attribute->getAttributeSetId()], ['Visible-On-Front', $attribute->getIsVisibleOnFront() ? 'yes' : 'no'], ['Attribute-Model', $attribute->getAttributeModel() ?: ''], ['Backend-Model', $attribute->getBackendModel() ?: ''], ['Backend-Table', $attribute->getBackendTable() ?: ''], ['Backend-Type', $attribute->getBackendType() ?: ''], ['Source-Model', $attribute->getSourceModel() ?: ''], ['Cache-ID-Tags', $attribute->getCacheIdTags() ? implode(',', $attribute->getCacheIdTags()) : ''], ['Cache-Tags', $attribute->getCacheTags() ? implode(',', $attribute->getCacheTags()) : ''], ['Default-Value', $attribute->getDefaultValue() ?: ''], ['Flat-Columns', $attribute->getFlatColumns() ? implode(',', array_keys($attribute->getFlatColumns())) : ''], ['Flat-Indexes', $attribute->getFlatIndexes() ? implode(',', $attribute->getFlatIndexes()) : '']];
 
         if ($attribute->getFrontend()) {
-            $table[] = array('Frontend-Label', $attribute->getFrontend()->getLabel());
-            $table[] = array('Frontend-Class', trim($attribute->getFrontend()->getClass()));
-            $table[] = array('Frontend-Input', trim($attribute->getFrontend()->getInputType()));
-            $table[] = array(
-                'Frontend-Input-Renderer-Class',
-                trim($attribute->getFrontend()->getInputRendererClass()),
-            );
+            $table[] = ['Frontend-Label', $attribute->getFrontend()->getLabel()];
+            $table[] = ['Frontend-Class', trim($attribute->getFrontend()->getClass())];
+            $table[] = ['Frontend-Input', trim($attribute->getFrontend()->getInputType())];
+            $table[] = ['Frontend-Input-Renderer-Class', trim($attribute->getFrontend()->getInputRendererClass())];
         }
 
         $this
             ->getHelper('table')
-            ->setHeaders(array('Type', 'Value'))
+            ->setHeaders(['Type', 'Value'])
             ->renderByFormat($output, $table, $input->getOption('format'));
+        return 0;
     }
 
     /**
@@ -93,6 +74,6 @@ class ViewCommand extends AbstractMagentoCommand
      */
     protected function getAttribute($entityType, $attributeCode)
     {
-        return \Mage::getModel('eav/config')->getAttribute($entityType, $attributeCode);
+        return Mage::getModel('eav/config')->getAttribute($entityType, $attributeCode);
     }
 }

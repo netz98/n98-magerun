@@ -15,12 +15,9 @@ class ListCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-                'type'    => 'global',
-            )
+            ['command' => $command->getName(), 'type'    => 'global']
         );
 
-        self::assertContains('controller_front_init_routers', $commandTester->getDisplay());
+        self::assertStringContainsString('controller_front_init_routers', $commandTester->getDisplay());
     }
 }

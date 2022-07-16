@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Theme;
 
+use DateTime;
 use N98\JUnitXml\Document as JUnitXmlDocument;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -44,7 +45,7 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $time = microtime(true);
         $this->detectMagento($output);
@@ -58,7 +59,7 @@ HELP;
             $themeFolder = $this->_magentoRootFolder . '/app/design/frontend/' . $input->getArgument('theme');
             $themeFiles = $this->getChecksums($themeFolder);
 
-            $duplicates = array();
+            $duplicates = [];
             foreach ($themeFiles as $themeFilename => $themeFileChecksum) {
                 if (isset($referenceFiles[$themeFilename])
                     && $themeFileChecksum == $referenceFiles[$themeFilename]
@@ -77,6 +78,7 @@ HELP;
                 }
             }
         }
+        return 0;
     }
 
     /**
@@ -93,7 +95,7 @@ HELP;
             ->ignoreVCS(true)
             ->followLinks()
             ->in($baseFolder);
-        $checksums = array();
+        $checksums = [];
         foreach ($finder as $file) {
             /* @var $file \Symfony\Component\Finder\SplFileInfo */
             if (file_exists($file->getRealPath())) {
@@ -115,7 +117,7 @@ HELP;
         $document = new JUnitXmlDocument();
         $suite = $document->addTestSuite();
         $suite->setName('n98-magerun: ' . $this->getName());
-        $suite->setTimestamp(new \DateTime());
+        $suite->setTimestamp(new DateTime());
         $suite->setTime($duration);
 
         $testCase = $suite->addTestCase();

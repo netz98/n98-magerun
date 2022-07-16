@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Theme;
 
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
@@ -30,28 +31,27 @@ class ListCommand extends AbstractMagentoCommand
      * @param OutputInterface $output
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $packages = $this->getThemes();
-        $table = array();
+        $table = [];
         foreach ($packages as $package => $themes) {
             foreach ($themes as $theme) {
-                $table[] = array(
-                    ($package ? $package . '/' : '') . $theme,
-                );
+                $table[] = [($package ? $package . '/' : '') . $theme];
             }
         }
 
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('Theme'))
+            ->setHeaders(['Theme'])
             ->renderByFormat($output, $table, $input->getOption('format'));
+        return 0;
     }
 
     /**
@@ -60,15 +60,15 @@ class ListCommand extends AbstractMagentoCommand
     protected function getThemes()
     {
         if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            $collection = \Mage::getModel('Mage_Core_Model_Theme')->getLabelsCollection();
-            $themes = array();
+            $collection = Mage::getModel('Mage_Core_Model_Theme')->getLabelsCollection();
+            $themes = [];
             foreach ($collection as $theme) {
                 $themes[] = $theme['label'];
             }
 
-            return array($themes);
+            return [$themes];
         }
 
-        return \Mage::getModel('core/design_package')->getThemeList();
+        return Mage::getModel('core/design_package')->getThemeList();
     }
 }

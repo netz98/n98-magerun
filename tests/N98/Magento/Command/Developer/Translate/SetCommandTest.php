@@ -16,13 +16,8 @@ class SetCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'string'    => 'foo',
-                'translate' => 'bar',
-                'store'     => 'admin',
-            )
+            ['command'   => $command->getName(), 'string'    => 'foo', 'translate' => 'bar', 'store'     => 'admin']
         );
-        self::assertContains('foo => bar', $commandTester->getDisplay());
+        self::assertStringContainsString('foo => bar', $commandTester->getDisplay());
     }
 }

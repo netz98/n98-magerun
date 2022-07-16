@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command;
 
+use PHPUnit\Framework\MockObject\MockObject;
+use Mage;
 use N98\Magento\Application;
 use N98\Magento\MagerunCommandTester;
 use N98\Magento\TestApplication;
@@ -32,7 +34,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return Application|\PHPUnit\Framework\MockObject\MockObject
+     * @return Application|MockObject
      */
     public function getApplication()
     {
@@ -44,7 +46,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     public function getDatabaseConnection()
     {
-        $resource = \Mage::getSingleton('core/resource');
+        $resource = Mage::getSingleton('core/resource');
 
         return $resource->getConnection('write');
     }
@@ -64,7 +66,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     /**
      * @var array
      */
-    private $testers = array();
+    private $testers = [];
 
     /**
      * @param string|array $command name or input
@@ -73,14 +75,12 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     private function getMagerunTester($command)
     {
         if (is_string($command)) {
-            $input = array(
-                'command' => $command,
-            );
+            $input = ['command' => $command];
         } else {
             $input = $command;
         }
 
-        $hash = md5(json_encode($input));
+        $hash = md5(json_encode($input, JSON_THROW_ON_ERROR));
         if (!isset($this->testers[$hash])) {
             $this->testers[$hash] = new MagerunCommandTester($this, $input);
         }
@@ -97,7 +97,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $display = $this->getMagerunTester($command)->getDisplay();
 
-        self::assertContains($needle, $display, $message);
+        self::assertStringContainsString($needle, $display, $message);
     }
 
     /**
@@ -109,7 +109,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $display = $this->getMagerunTester($command)->getDisplay();
 
-        self::assertNotContains($needle, $display, $message);
+        self::assertStringNotContainsString($needle, $display, $message);
     }
 
     /**

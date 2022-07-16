@@ -7,6 +7,9 @@
 
 namespace N98\Util\Console\Helper\Table\Renderer;
 
+use SimpleXMLElement;
+use DOMException;
+use RuntimeException;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\StreamOutput;
 
@@ -26,9 +29,9 @@ class XmlRendererTest extends TestCase
         $renderer = new XmlRenderer();
         self::assertInstanceOf(__NAMESPACE__ . '\\XmlRenderer', $renderer);
 
-        $renderFactory = new RendererFactory();
+        $rendererFactory = new RendererFactory();
 
-        $renderer = $renderFactory->create('xml');
+        $renderer = $rendererFactory->create('xml');
         self::assertInstanceOf(__NAMESPACE__ . '\\XmlRenderer', $renderer);
     }
 
@@ -38,17 +41,7 @@ class XmlRendererTest extends TestCase
      */
     public function provideTables()
     {
-        return array(
-            array(
-                array(
-                    array(
-                        "column" => "Doors wide > open",
-                    ),
-                    array(
-                        "column" => "null \0 bytes FTW",
-                    ),
-                ),
-                '<?xml version="1.0" encoding="UTF-8"?>
+        return [[[["column" => "Doors wide > open"], ["column" => "null \0 bytes FTW"]], '<?xml version="1.0" encoding="UTF-8"?>
 <table>
   <headers>
     <header>column</header>
@@ -59,22 +52,10 @@ class XmlRendererTest extends TestCase
   <row>
     <column encoding="base64">bnVsbCAAIGJ5dGVzIEZUVw==</column>
   </row>
-</table>',
-            ),
-            array(
-                array(),
-                '<?xml version="1.0" encoding="UTF-8"?>
+</table>'], [[], '<?xml version="1.0" encoding="UTF-8"?>
 <table>
   <!--intentionally left blank, the table is empty-->
-</table>',
-            ),
-            array(
-                array(
-                    array('Column1' => 'Value A1', 'Column2' => 'A2 is another value that there is'),
-                    array(1, "multi\nline\nftw"),
-                    array("C1 cell here!", new \SimpleXMLElement('<r>PHP Magic->toString() test</r>')),
-                ),
-                '<?xml version="1.0" encoding="UTF-8"?>
+</table>'], [[['Column1' => 'Value A1', 'Column2' => 'A2 is another value that there is'], [1, "multi\nline\nftw"], ["C1 cell here!", new SimpleXMLElement('<r>PHP Magic->toString() test</r>')]], '<?xml version="1.0" encoding="UTF-8"?>
 <table>
   <headers>
     <header>Column1</header>
@@ -94,11 +75,7 @@ ftw</Column2>
     <Column1>C1 cell here!</Column1>
     <Column2>PHP Magic-&gt;toString() test</Column2>
   </row>
-</table>',
-            ),
-            array(
-                array(array("\x00" => "foo")),
-                '<?xml version="1.0" encoding="UTF-8"?>
+</table>'], [[["\x00" => "foo"]], '<?xml version="1.0" encoding="UTF-8"?>
 <table>
   <headers>
     <header></header>
@@ -106,14 +83,7 @@ ftw</Column2>
   <row>
     <_>foo</_>
   </row>
-</table>',
-            ),
-            array(
-                array(
-                    array("foo" => "bar"),
-                    array("baz", "buz" => "here"),
-                ),
-                '<?xml version="1.0" encoding="UTF-8"?>
+</table>'], [[["foo" => "bar"], ["baz", "buz" => "here"]], '<?xml version="1.0" encoding="UTF-8"?>
 <table>
   <headers>
     <header>foo</header>
@@ -125,9 +95,7 @@ ftw</Column2>
     <foo>baz</foo>
     <buz>here</buz>
   </row>
-</table>',
-            ),
-        );
+</table>']];
     }
 
     /**
@@ -135,11 +103,11 @@ ftw</Column2>
      */
     public function invalidName()
     {
-        $this->expectException(\DOMException::class);
-        $this->expectExceptionMessage('Invalid name \'0\'');
-        $renderer = new XmlRenderer();
-        $output = new NullOutput();
-        $renderer->render($output, array(array("foo")));
+        $this->expectException(DOMException::class);
+        $this->expectExceptionMessage("Invalid name '0'");
+        $xmlRenderer = new XmlRenderer();
+        $nullOutput = new NullOutput();
+        $xmlRenderer->render($nullOutput, [["foo"]]);
     }
 
     /**
@@ -147,11 +115,11 @@ ftw</Column2>
      */
     public function invalidEncoding()
     {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Encoding error, only US-ASCII and UTF-8 supported, can not process \'');
-        $renderer = new XmlRenderer();
-        $output = new NullOutput();
-        $renderer->render($output, array(array("\xC1" => "foo")));
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("Encoding error, only US-ASCII and UTF-8 supported, can not process '");
+        $xmlRenderer = new XmlRenderer();
+        $nullOutput = new NullOutput();
+        $xmlRenderer->render($nullOutput, [["\xC1" => "foo"]]);
     }
 
     /**
@@ -160,11 +128,11 @@ ftw</Column2>
      */
     public function tableRendering($rows, $expected)
     {
-        $renderer = new XmlRenderer();
-        $output = new StreamOutput(fopen('php://memory', 'wb', false));
+        $xmlRenderer = new XmlRenderer();
+        $streamOutput = new StreamOutput(fopen('php://memory', 'wb', false));
 
-        $renderer->render($output, $rows);
+        $xmlRenderer->render($streamOutput, $rows);
 
-        self::assertEquals($expected . "\n", $this->getOutputBuffer($output));
+        self::assertEquals($expected . "\n", $this->getOutputBuffer($streamOutput));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Installer;
 
+use Closure;
 use Composer\Composer;
 use Composer\Package\CompletePackage;
 use Exception;
@@ -35,11 +36,11 @@ class InstallCommand extends AbstractMagentoCommand
      * @deprecated since since 1.97.22; Use constant from Exec-Utility instead
      * @see Exec::CODE_CLEAN_EXIT
      */
-    const EXEC_STATUS_OK = 0;
+    public const EXEC_STATUS_OK = 0;
 
-    const DEFAULT_SESSION_PATH = 'var/session';
+    public const DEFAULT_SESSION_PATH = 'var/session';
 
-    const MAGENTO_INSTALL_SCRIPT_PATH = 'install.php';
+    public const MAGENTO_INSTALL_SCRIPT_PATH = 'install.php';
 
     /**
      * @var array
@@ -57,7 +58,7 @@ class InstallCommand extends AbstractMagentoCommand
     protected $commandConfig;
 
     /**
-     * @var \Closure
+     * @var Closure
      */
     protected $notEmptyCallback;
 
@@ -161,7 +162,7 @@ HELP;
      * @throws RuntimeException
      * @return int|null|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->commandConfig = $this->getCommandConfig();
         $this->writeSection($output, 'Magento Installation');
@@ -194,7 +195,8 @@ HELP;
 
         $this->removeEmptyFolders();
         $this->setDirectoryPermissions($output);
-        $this->installMagento($input, $output, $this->config['installationFolder']);
+        $this->installMagento($input, $output);
+        return 0;
     }
 
     /**
@@ -203,7 +205,7 @@ HELP;
     protected function precheckPhp()
     {
         $extensions = $this->commandConfig['installation']['pre-check']['php']['extensions'];
-        $missingExtensions = array();
+        $missingExtensions = [];
         foreach ($extensions as $extension) {
             if (!extension_loaded($extension)) {
                 $missingExtensions[] = $extension;
@@ -226,7 +228,7 @@ HELP;
     protected function selectMagentoVersion(InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption('magentoVersion') == null && $input->getOption('magentoVersionByName') == null) {
-            $question = array();
+            $question = [];
             foreach ($this->commandConfig['magento-packages'] as $key => $package) {
                 $question[] = '<comment>' . str_pad('[' . ($key + 1) . ']', 4, ' ') . '</comment> ' .
                     $package['name'] . "\n";
@@ -239,7 +241,7 @@ HELP;
                 $output,
                 $question,
                 function ($typeInput) use ($commandConfig) {
-                    if (!in_array($typeInput, range(1, count($commandConfig['magento-packages'])))) {
+                    if (!in_array($typeInput, range(1, is_countable($commandConfig['magento-packages']) ? count($commandConfig['magento-packages']) : 0))) {
                         throw new InvalidArgumentException('Invalid type');
                     }
 
@@ -271,7 +273,7 @@ HELP;
                 sprintf(
                     'Invalid Magento package number %s, must be from 1 to %d.',
                     var_export($type, true),
-                    count($magentoPackages)
+                    is_countable($magentoPackages) ? count($magentoPackages) : 0
                 )
             );
         }
@@ -337,8 +339,8 @@ HELP;
             );
 
             if ($this->isSourceTypeRepository($package->getSourceType())) {
-                $filesystem = new \N98\Util\Filesystem;
-                $filesystem->recursiveCopy($targetFolder, $installationFolder, array('.git', '.hg'));
+                $filesystem = new Filesystem;
+                $filesystem->recursiveCopy($targetFolder, $installationFolder, ['.git', '.hg']);
             } else {
                 $filesystem = new \Composer\Util\Filesystem();
                 $filesystem->copyThenRemove(
@@ -413,7 +415,7 @@ HELP;
      */
     protected function createDatabase(InputInterface $input, OutputInterface $output)
     {
-        $dbOptions = array('--dbHost', '--dbUser', '--dbPass', '--dbName');
+        $dbOptions = ['--dbHost', '--dbUser', '--dbPass', '--dbName'];
         $dbOptionsFound = 0;
         foreach ($dbOptions as $dbOption) {
             foreach ($this->getCliArguments() as $definedCliOption) {
@@ -445,7 +447,7 @@ HELP;
             /** @var DialogHelper $dialog */
             $dialog = $this->getHelper('dialog');
             do {
-                $dbHostDefault = $input->getOption('dbHost') ? $input->getOption('dbHost') : 'localhost';
+                $dbHostDefault = $input->getOption('dbHost') ?: 'localhost';
                 $this->config['db_host'] = $dialog->askAndValidate(
                     $output,
                     '<question>Please enter the database host</question> <comment>[' . $dbHostDefault . ']</comment>: ',
@@ -454,7 +456,7 @@ HELP;
                     $dbHostDefault
                 );
 
-                $dbUserDefault = $input->getOption('dbUser') ? $input->getOption('dbUser') : 'root';
+                $dbUserDefault = $input->getOption('dbUser') ?: 'root';
                 $this->config['db_user'] = $dialog->askAndValidate(
                     $output,
                     '<question>Please enter the database username</question> <comment>[' . $dbUserDefault .
@@ -464,7 +466,7 @@ HELP;
                     $dbUserDefault
                 );
 
-                $dbPassDefault = $input->getOption('dbPass') ? $input->getOption('dbPass') : '';
+                $dbPassDefault = $input->getOption('dbPass') ?: '';
                 $this->config['db_pass'] = $dialog->ask(
                     $output,
                     '<question>Please enter the database password</question> <comment>[' . $dbPassDefault .
@@ -472,7 +474,7 @@ HELP;
                     $dbPassDefault
                 );
 
-                $dbNameDefault = $input->getOption('dbName') ? $input->getOption('dbName') : 'magento';
+                $dbNameDefault = $input->getOption('dbName') ?: 'magento';
                 $this->config['db_name'] = $dialog->askAndValidate(
                     $output,
                     '<question>Please enter the database name</question> <comment>[' . $dbNameDefault . ']</comment>: ',
@@ -481,7 +483,7 @@ HELP;
                     $dbNameDefault
                 );
 
-                $dbPortDefault = $input->getOption('dbPort') ? $input->getOption('dbPort') : 3306;
+                $dbPortDefault = $input->getOption('dbPort') ?: 3306;
                 $this->config['db_port'] = $dialog->askAndValidate(
                     $output,
                     '<question>Please enter the database port </question> <comment>[' . $dbPortDefault .
@@ -491,7 +493,7 @@ HELP;
                     $dbPortDefault
                 );
 
-                $dbPrefixDefault = $input->getOption('dbPrefix') ? $input->getOption('dbPrefix') : '';
+                $dbPrefixDefault = $input->getOption('dbPrefix') ?: '';
                 $this->config['db_prefix'] = $dialog->ask(
                     $output,
                     '<question>Please enter the table prefix</question> <comment>[' . $dbPrefixDefault . ']</comment>:',
@@ -580,7 +582,7 @@ HELP;
 
                     $expandedFolder = $this->config['installationFolder']
                         . '/_temp_demo_data/'
-                        . str_replace(array('.tar.gz', '.tar.bz2', '.zip'), '', basename($package->getDistUrl()));
+                        . str_replace(['.tar.gz', '.tar.bz2', '.zip'], '', basename($package->getDistUrl()));
                     if (is_dir($expandedFolder)) {
                         $filesystem->recursiveCopy(
                             $expandedFolder,
@@ -642,7 +644,7 @@ HELP;
     protected function _fixComposerExtractionBug()
     {
         $filesystem = new Filesystem();
-        foreach (array('/_temp_demo_data/media' => '/media', '/_temp_demo_data/skin' => '/skin') as $wrong => $right) {
+        foreach (['/_temp_demo_data/media' => '/media', '/_temp_demo_data/skin' => '/skin'] as $wrong => $right) {
             $wrongFolder = $this->config['installationFolder'] . $wrong;
             $rightFolder = $this->config['installationFolder'] . $right;
             if (is_dir($wrongFolder)) {
@@ -823,7 +825,7 @@ HELP;
             $dbHost .= ':' . $this->config['db_port'];
         }
 
-        $argv = array(
+        $argv = [
             'license_agreement_accepted' => 'yes',
             'locale'                     => $locale,
             'timezone'                   => $timezone,
@@ -843,11 +845,13 @@ HELP;
             'admin_email'                => $adminEmail,
             'admin_password'             => $adminPassword,
             'session_save'               => $sessionSave,
-            'admin_frontname'            => $adminFrontname, /* magento 1 */
-            'backend_frontname'          => $adminFrontname, /* magento 2 */
+            'admin_frontname'            => $adminFrontname,
+            /* magento 1 */
+            'backend_frontname'          => $adminFrontname,
+            /* magento 2 */
             'default_currency'           => $currency,
             'skip_url_validation'        => 'yes',
-        );
+        ];
         if ($useDefaultConfigParams) {
             if (strlen($defaults['encryption_key']) > 0) {
                 $argv['encryption_key'] = $defaults['encryption_key'];
@@ -953,7 +957,7 @@ HELP;
             $finder = Finder::create();
             $finder->directories()
                 ->ignoreUnreadableDirs(true)
-                ->in(array($varFolder, $mediaFolder));
+                ->in([$varFolder, $mediaFolder]);
             foreach ($finder as $dir) {
                 @chmod($dir->getRealpath(), 0777);
             }

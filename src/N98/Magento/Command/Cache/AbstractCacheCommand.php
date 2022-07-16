@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Cache;
 
+use Mage;
 use InvalidArgumentException;
 use Mage_Core_Model_Cache;
 use N98\Magento\Application;
@@ -20,7 +21,7 @@ class AbstractCacheCommand extends AbstractMagentoCommand
         if ($this->_magentoMajorVersion == AbstractMagentoCommand::MAGENTO_MAJOR_VERSION_2) {
             throw new RuntimeException('There global Mage class was removed from Magento 2. What should we do here?');
         } else {
-            return \Mage::app()->getCacheInstance();
+            return Mage::app()->getCacheInstance();
         }
     }
 
@@ -34,14 +35,14 @@ class AbstractCacheCommand extends AbstractMagentoCommand
         $this->validateCacheCodes($codeArgument);
 
         $cacheTypes = $this->_getCacheModel()->getTypes();
-        $enable = \Mage::app()->useCache();
+        $enable = Mage::app()->useCache();
         foreach ($cacheTypes as $cacheCode => $cacheModel) {
             if (empty($codeArgument) || in_array($cacheCode, $codeArgument)) {
                 $enable[$cacheCode] = $status ? 1 : 0;
             }
         }
 
-        \Mage::app()->saveUseCache($enable);
+        Mage::app()->saveUseCache($enable);
     }
 
     /**
@@ -71,7 +72,7 @@ class AbstractCacheCommand extends AbstractMagentoCommand
 
         $config = $this->getApplication()->getConfig();
         if (empty($config['init']['options'])) {
-            $config['init']['options'] = array('global_ban_use_cache' => true);
+            $config['init']['options'] = ['global_ban_use_cache' => true];
             $this->getApplication()->setConfig($config);
         }
     }
@@ -82,8 +83,8 @@ class AbstractCacheCommand extends AbstractMagentoCommand
             return;
         }
 
-        \Mage::getConfig()->getOptions()->setData('global_ban_use_cache', false);
-        \Mage::getConfig()->reinit();
+        Mage::getConfig()->getOptions()->setData('global_ban_use_cache', false);
+        Mage::getConfig()->reinit();
     }
 
     /**

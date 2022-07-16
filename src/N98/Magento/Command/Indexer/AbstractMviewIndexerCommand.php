@@ -31,7 +31,7 @@ class AbstractMviewIndexerCommand extends AbstractMagentoCommand
         /** @var \Enterprise_Index_Helper_Data $helper */
         $helper = $this->_getHelper('enterprise_index', '\Enterprise_Index_Helper_Data');
 
-        $indexers = array();
+        $indexers = [];
         foreach ($helper->getIndexers(true) as $indexer) {
             $indexers[(string) $indexer->index_table] = $indexer;
         }

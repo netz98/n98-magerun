@@ -2,10 +2,13 @@
 
 namespace N98\Magento\Command\Admin\User;
 
+use Mage;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class LockdownCommand extends LockCommand
 {
@@ -33,11 +36,11 @@ HELP
      *
      * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         if ($dryrun = $input->getOption('dry-run')) {
@@ -46,27 +49,26 @@ HELP
 
         $lifetime = $input->getArgument('lifetime') ?: $this->daysToSeconds(self::LIFETIME_DEFAULT);
 
-        $userIds = \Mage::getModel('admin/user')->getCollection()->getAllIds();
+        $userIds = Mage::getModel('admin/user')->getCollection()->getAllIds();
 
         if (empty($userIds)) {
             $output->writeln('<error>No admin users were found!</error>');
-            return;
+            return 0;
         }
 
-        /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
-        $dialog = $this->getHelper('dialog');
-        $confirm = $dialog->askConfirmation(
+        $dialog = new QuestionHelper();
+        $confirm = $dialog->ask(
+            $input,
             $output,
-            sprintf('<question>Really lock all %d admin users?</question> <comment>[n]</comment>: ', count($userIds)),
-            false
+            new ConfirmationQuestion(sprintf('<question>Really lock all %d admin users?</question> <comment>[n]</comment>: ', is_countable($userIds) ? count($userIds) : 0), false)
         );
 
         if (!$confirm) {
-            return;
+            return 0;
         }
 
         if (!$dryrun) {
-            \Mage::getResourceModel('enterprise_pci/admin_user')->lock($userIds, 0, $lifetime);
+            Mage::getResourceModel('enterprise_pci/admin_user')->lock($userIds, 0, $lifetime);
         }
 
         $lifetimeMessage = '';
@@ -75,7 +77,8 @@ HELP
         }
 
         $output->writeln(
-            sprintf('<info><comment>All %d admins</comment> locked%s</info>', count($userIds), $lifetimeMessage)
+            sprintf('<info><comment>All %d admins</comment> locked%s</info>', is_countable($userIds) ? count($userIds) : 0, $lifetimeMessage)
         );
+        return 0;
     }
 }

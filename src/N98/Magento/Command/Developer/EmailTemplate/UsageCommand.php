@@ -8,6 +8,7 @@
 
 namespace N98\Magento\Command\Developer\EmailTemplate;
 
+use Path;
 use Mage;
 use Mage_Adminhtml_Model_Email_Template;
 use Mage_Core_Model_Template;
@@ -39,7 +40,7 @@ class UsageCommand extends AbstractMagentoCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         $this->initMagento();
@@ -49,11 +50,12 @@ class UsageCommand extends AbstractMagentoCommand
             /* @var $tableHelper TableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
-                ->setHeaders(array('id', 'Name', 'Scope', 'Scope Id', 'Path'))
+                ->setHeaders(['id', 'Name', 'Scope', 'Scope Id', Path::class])
                 ->renderByFormat($output, $templates, $input->getOption('format'));
         } else {
             $output->writeln("No transactional email templates stored in the database.");
         }
+        return 0;
     }
 
     protected function findEmailTemplates()
@@ -61,7 +63,7 @@ class UsageCommand extends AbstractMagentoCommand
         /** @var Mage_Core_Model_Template[] $templates */
         $templates = Mage::getModel('adminhtml/email_template')->getCollection();
 
-        $return = array();
+        $return = [];
 
         foreach ($templates as $template) {
 
@@ -76,22 +78,12 @@ class UsageCommand extends AbstractMagentoCommand
 
             $configPaths = $template->getSystemConfigPathsWhereUsedCurrently();
 
-            if (!count($configPaths)) {
-                $configPaths[] = array(
-                    'scope'    => 'Unused',
-                    'scope_id' => 'Unused',
-                    'path'     => 'Unused',
-                );
+            if (!(is_countable($configPaths) ? count($configPaths) : 0)) {
+                $configPaths[] = ['scope'    => 'Unused', 'scope_id' => 'Unused', 'path'     => 'Unused'];
             }
 
             foreach ($configPaths as $configPath) {
-                $return[] = array(
-                    'id'            => $this->sanitizeEmailProperty($template->getId()),
-                    'Template Code' => $this->sanitizeEmailProperty($template->getTemplateCode()),
-                    'Scope'         => $this->sanitizeEmailProperty($configPath['scope']),
-                    'Scope Id'      => $this->sanitizeEmailProperty($configPath['scope_id']),
-                    'Path'          => $this->sanitizeEmailProperty($configPath['path']),
-                );
+                $return[] = ['id'            => $this->sanitizeEmailProperty($template->getId()), 'Template Code' => $this->sanitizeEmailProperty($template->getTemplateCode()), 'Scope'         => $this->sanitizeEmailProperty($configPath['scope']), 'Scope Id'      => $this->sanitizeEmailProperty($configPath['scope_id']), Path::class          => $this->sanitizeEmailProperty($configPath['path'])];
             }
         }
 

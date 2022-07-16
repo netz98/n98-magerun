@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Exception\InvalidArgumentException;
 
 class RunCommand extends AbstractCronCommand
 {
-    const REGEX_RUN_MODEL = '#^([a-z0-9_]+/[a-z0-9_]+)::([a-z0-9_]+)$#i';
+    public const REGEX_RUN_MODEL = '#^([a-z0-9_]+/[a-z0-9_]+)::([a-z0-9_]+)$#i';
     /**
      * @var array
      */
@@ -44,11 +44,11 @@ HELP;
      * @return int|void
      * @throws Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $jobCode = $input->getArgument('job');
@@ -59,7 +59,7 @@ HELP;
 
         $runConfigModel = $this->getRunConfigModelByJobCode($jobCode);
 
-        list($callback, $callableName) = $this->getCallbackFromRunConfigModel($runConfigModel, $jobCode);
+        [$callback, $callableName] = $this->getCallbackFromRunConfigModel($runConfigModel, $jobCode);
 
         $output->write('<info>Run </info><comment>' . $callableName . '</comment> ');
 
@@ -70,6 +70,7 @@ HELP;
         }
 
         $output->writeln('<info>done</info>');
+        return 0;
     }
 
     /**
@@ -83,7 +84,7 @@ HELP;
     {
         $index = 0;
         $keyMap = array_keys($jobs);
-        $question = array();
+        $question = [];
 
         foreach ($jobs as $key => $job) {
             $question[] = '<comment>[' . ($index++) . ']</comment> ' . $job['Job'] . PHP_EOL;
@@ -123,20 +124,20 @@ HELP;
                 )
             );
         }
-        list(, $runModel, $runMethod) = $runMatches;
+        [, $runModel, $runMethod] = $runMatches;
         unset($runMatches);
 
         $model = Mage::getModel($runModel);
         if (false === $model) {
             throw new RuntimeException(sprintf('Failed to create new "%s" model for job "%s"', $runModel, $jobCode));
         }
-        $callback = array($model, $runMethod);
+        $callback = [$model, $runMethod];
         $callableName = sprintf("%s::%s", $runModel, $runMethod);
         if (!$model || !is_callable($callback, false, $callableName)) {
             throw new RuntimeException(sprintf('Invalid callback: %s for job "%s"', $callableName, $jobCode));
         }
 
-        return array($callback, $callableName);
+        return [$callback, $callableName];
     }
 
     /**

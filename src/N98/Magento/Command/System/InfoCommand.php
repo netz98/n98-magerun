@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System;
 
+use Mage;
 use Exception;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
@@ -44,14 +45,11 @@ class InfoCommand extends AbstractMagentoCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
 
-        $softInitMode = in_array($input->getArgument('key'), array(
-            'version',
-            'edition',
-        ));
+        $softInitMode = in_array($input->getArgument('key'), ['version', 'edition']);
 
         if ($input->getOption('format') == null && $input->getArgument('key') == null) {
             $this->writeSection($output, 'Magento System Information');
@@ -64,7 +62,7 @@ class InfoCommand extends AbstractMagentoCommand
         $this->infos['Root'] = $this->_magentoRootFolder;
 
         if ($softInitMode === false) {
-            $config = \Mage::app()->getConfig();
+            $config = Mage::app()->getConfig();
             $this->addCacheInfos();
 
             $this->infos['Session'] = $config->getNode('global/session_save');
@@ -83,9 +81,9 @@ class InfoCommand extends AbstractMagentoCommand
             }
         }
 
-        $table = array();
+        $table = [];
         foreach ($this->infos as $key => $value) {
-            $table[] = array($key, $value);
+            $table[] = [$key, $value];
         }
 
         if (($settingArgument = $input->getArgument('key')) !== null) {
@@ -99,27 +97,28 @@ class InfoCommand extends AbstractMagentoCommand
             /* @var $tableHelper TableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
-                ->setHeaders(array('name', 'value'))
+                ->setHeaders(['name', 'value'])
                 ->renderByFormat($output, $table, $input->getOption('format'));
         }
+        return 0;
     }
 
     protected function magentoVersion()
     {
         if (method_exists('Mage', 'getOpenMageVersion')) {
-            return 'OpenMage LTS ' . \Mage::getOpenMageVersion();
+            return 'OpenMage LTS ' . Mage::getOpenMageVersion();
         }
 
-        return \Mage::getVersion();
+        return Mage::getVersion();
     }
 
     protected function addCacheInfos()
     {
-        $this->infos['Cache Backend'] = get_class(\Mage::app()->getCache()->getBackend());
+        $this->infos['Cache Backend'] = get_class(Mage::app()->getCache()->getBackend());
 
-        switch (get_class(\Mage::app()->getCache()->getBackend())) {
+        switch (get_class(Mage::app()->getCache()->getBackend())) {
             case 'Zend_Cache_Backend_File':
-                $cacheDir = \Mage::app()->getConfig()->getOptions()->getCacheDir();
+                $cacheDir = Mage::app()->getConfig()->getOptions()->getCacheDir();
                 $this->infos['Cache Directory'] = $cacheDir;
                 break;
 
@@ -132,12 +131,7 @@ class InfoCommand extends AbstractMagentoCommand
      */
     protected function findCoreOverwrites()
     {
-        $folders = array(
-            $this->_magentoRootFolder . '/app/code/local/Mage',
-            $this->_magentoRootFolder . '/app/code/local/Enterprise',
-            $this->_magentoRootFolder . '/app/code/community/Mage',
-            $this->_magentoRootFolder . '/app/code/community/Enterprise',
-        );
+        $folders = [$this->_magentoRootFolder . '/app/code/local/Mage', $this->_magentoRootFolder . '/app/code/local/Enterprise', $this->_magentoRootFolder . '/app/code/community/Mage', $this->_magentoRootFolder . '/app/code/community/Enterprise'];
         foreach ($folders as $key => $folder) {
             if (!is_dir($folder)) {
                 unset($folders[$key]);
@@ -159,10 +153,7 @@ class InfoCommand extends AbstractMagentoCommand
      */
     protected function findVendors()
     {
-        $codePools = array(
-            'core'      => $this->_magentoRootFolder . '/app/code/core/',
-            'community' => $this->_magentoRootFolder . '/app/code/community/',
-        );
+        $codePools = ['core'      => $this->_magentoRootFolder . '/app/code/core/', 'community' => $this->_magentoRootFolder . '/app/code/community/'];
 
         if (is_dir($this->_magentoRootFolder . '/app/code/local/')) {
             $codePools['local'] = $this->_magentoRootFolder . '/app/code/local/';
@@ -191,21 +182,21 @@ class InfoCommand extends AbstractMagentoCommand
 
     protected function categoryCount()
     {
-        $this->infos['Category Count'] = \Mage::getModel('catalog/category')->getCollection()->getSize();
+        $this->infos['Category Count'] = Mage::getModel('catalog/category')->getCollection()->getSize();
     }
 
     protected function productCount()
     {
-        $this->infos['Product Count'] = \Mage::getModel('catalog/product')->getCollection()->getSize();
+        $this->infos['Product Count'] = Mage::getModel('catalog/product')->getCollection()->getSize();
     }
 
     protected function customerCount()
     {
-        $this->infos['Customer Count'] = \Mage::getModel('customer/customer')->getCollection()->getSize();
+        $this->infos['Customer Count'] = Mage::getModel('customer/customer')->getCollection()->getSize();
     }
 
     protected function attributeCount()
     {
-        $this->infos['Attribute Count'] = \Mage::getModel('eav/entity_attribute')->getCollection()->getSize();
+        $this->infos['Attribute Count'] = Mage::getModel('eav/entity_attribute')->getCollection()->getSize();
     }
 }

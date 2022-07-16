@@ -16,21 +16,15 @@ class InlineAdminCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'  => $command->getName(),
-                '--on'     => true,
-            )
+            ['command'  => $command->getName(), '--on'     => true]
         );
-        self::assertContains('Inline Translation (Admin) enabled', $commandTester->getDisplay());
+        self::assertStringContainsString('Inline Translation (Admin) enabled', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'  => $command->getName(),
-                '--off'    => true,
-            )
+            ['command'  => $command->getName(), '--off'    => true]
         );
 
-        self::assertContains('Inline Translation (Admin) disabled', $commandTester->getDisplay());
+        self::assertStringContainsString('Inline Translation (Admin) disabled', $commandTester->getDisplay());
     }
 }

@@ -17,7 +17,7 @@ class OperatingSystem
     /**
      * @var int
      */
-    const UID_ROOT = 0;
+    public const UID_ROOT = 0;
 
     /**
      * Returns true if operating system is

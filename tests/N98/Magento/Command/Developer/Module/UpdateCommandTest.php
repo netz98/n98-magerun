@@ -24,16 +24,7 @@ class UpdateCommandTest extends TestCase
         $commandTester = new CommandTester($createCommand);
 
         $commandTester->execute(
-            array(
-                'command'         => $createCommand->getName(),
-                '--add-all'       => true,
-                '--modman'        => true,
-                '--description'   => 'Unit Test Description',
-                '--author-name'   => 'Unit Test',
-                '--author-email'  => 'n98-magerun@example.com',
-                'vendorNamespace' => 'N98Magerun',
-                'moduleName'      => 'UnitTest',
-            )
+            ['command'         => $createCommand->getName(), '--add-all'       => true, '--modman'        => true, '--description'   => 'Unit Test Description', '--author-name'   => 'Unit Test', '--author-email'  => 'n98-magerun@example.com', 'vendorNamespace' => 'N98Magerun', 'moduleName'      => 'UnitTest']
         );
         $commandTester = new CommandTester($updateCommand);
 
@@ -95,18 +86,13 @@ class UpdateCommandTest extends TestCase
     protected function _setVersionOptionTest($commandTester, $updateCommand, $moduleBaseFolder)
     {
         $commandTester->execute(
-            array(
-                'command'         => $updateCommand->getName(),
-                '--set-version'   => true,
-                'vendorNamespace' => 'N98Magerun',
-                'moduleName'      => 'UnitTest',
-            )
+            ['command'         => $updateCommand->getName(), '--set-version'   => true, 'vendorNamespace' => 'N98Magerun', 'moduleName'      => 'UnitTest']
         );
 
         self::assertFileExists($moduleBaseFolder . 'etc/config.xml');
 
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
-        self::assertContains('<version>2.0.0</version>', $configXmlContent);
+        self::assertStringContainsString('<version>2.0.0</version>', $configXmlContent);
     }
 
     /**
@@ -120,23 +106,18 @@ class UpdateCommandTest extends TestCase
     {
         $dialog->setInputStream($this->getInputStream("y\nentity1\nentity1table\nentity2\nentity2table\n\n"));
         $commandTester->execute(
-            array(
-                'command'              => $updateCommand->getName(),
-                '--add-resource-model' => true,
-                'vendorNamespace'      => 'N98Magerun',
-                'moduleName'           => 'UnitTest',
-            )
+            ['command'              => $updateCommand->getName(), '--add-resource-model' => true, 'vendorNamespace'      => 'N98Magerun', 'moduleName'           => 'UnitTest']
         );
 
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
-        self::assertContains('<n98magerun_unittest_resource>', $configXmlContent);
-        self::assertContains('<deprecatedNode>n98magerun_unittest_resource_eav_mysql4</deprecatedNode>', $configXmlContent);
-        self::assertContains('<class>N98Magerun_UnitTest_Model_Resource</class>', $configXmlContent);
-        self::assertContains('<entities>', $configXmlContent);
-        self::assertContains('<entity1>', $configXmlContent);
-        self::assertContains('<table>entity1table</table>', $configXmlContent);
-        self::assertContains('<entity2>', $configXmlContent);
-        self::assertContains('<table>entity2table</table>', $configXmlContent);
+        self::assertStringContainsString('<n98magerun_unittest_resource>', $configXmlContent);
+        self::assertStringContainsString('<deprecatedNode>n98magerun_unittest_resource_eav_mysql4</deprecatedNode>', $configXmlContent);
+        self::assertStringContainsString('<class>N98Magerun_UnitTest_Model_Resource</class>', $configXmlContent);
+        self::assertStringContainsString('<entities>', $configXmlContent);
+        self::assertStringContainsString('<entity1>', $configXmlContent);
+        self::assertStringContainsString('<table>entity1table</table>', $configXmlContent);
+        self::assertStringContainsString('<entity2>', $configXmlContent);
+        self::assertStringContainsString('<table>entity2table</table>', $configXmlContent);
     }
 
     /**
@@ -149,22 +130,17 @@ class UpdateCommandTest extends TestCase
     {
         $dialog->setInputStream($this->getInputStream("admin\nstandard\nn98magerun\n"));
         $commandTester->execute(
-            array(
-                'command'         => $updateCommand->getName(),
-                '--add-routers'   => true,
-                'vendorNamespace' => 'N98Magerun',
-                'moduleName'      => 'UnitTest',
-            )
+            ['command'         => $updateCommand->getName(), '--add-routers'   => true, 'vendorNamespace' => 'N98Magerun', 'moduleName'      => 'UnitTest']
         );
 
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
-        self::assertContains('<admin>', $configXmlContent);
-        self::assertContains('<routers>', $configXmlContent);
-        self::assertContains('<n98magerun_unittest>', $configXmlContent);
-        self::assertContains('<args>', $configXmlContent);
-        self::assertContains('<use>standard</use>', $configXmlContent);
-        self::assertContains('<module>n98magerun_unittest</module>', $configXmlContent);
-        self::assertContains('<frontName>n98magerun</frontName>', $configXmlContent);
+        self::assertStringContainsString('<admin>', $configXmlContent);
+        self::assertStringContainsString('<routers>', $configXmlContent);
+        self::assertStringContainsString('<n98magerun_unittest>', $configXmlContent);
+        self::assertStringContainsString('<args>', $configXmlContent);
+        self::assertStringContainsString('<use>standard</use>', $configXmlContent);
+        self::assertStringContainsString('<module>n98magerun_unittest</module>', $configXmlContent);
+        self::assertStringContainsString('<frontName>n98magerun</frontName>', $configXmlContent);
     }
 
     /**
@@ -177,19 +153,14 @@ class UpdateCommandTest extends TestCase
     {
         $dialog->setInputStream($this->getInputStream("frontend\ncontroller_action_postdispatch\nn98mageruntest_observer\nn98magerun_unittest/observer\ncontrollerActionPostdispatch"));
         $commandTester->execute(
-            array(
-                'command'         => $updateCommand->getName(),
-                '--add-events'    => true,
-                'vendorNamespace' => 'N98Magerun',
-                'moduleName'      => 'UnitTest',
-            )
+            ['command'         => $updateCommand->getName(), '--add-events'    => true, 'vendorNamespace' => 'N98Magerun', 'moduleName'      => 'UnitTest']
         );
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
-        self::assertContains('<frontend>', $configXmlContent);
-        self::assertContains('<events>', $configXmlContent);
-        self::assertContains('<n98mageruntest_observer>', $configXmlContent);
-        self::assertContains('<class>n98magerun_unittest/observer</class>', $configXmlContent);
-        self::assertContains('<method>controllerActionPostdispatch</method>', $configXmlContent);
+        self::assertStringContainsString('<frontend>', $configXmlContent);
+        self::assertStringContainsString('<events>', $configXmlContent);
+        self::assertStringContainsString('<n98mageruntest_observer>', $configXmlContent);
+        self::assertStringContainsString('<class>n98magerun_unittest/observer</class>', $configXmlContent);
+        self::assertStringContainsString('<method>controllerActionPostdispatch</method>', $configXmlContent);
     }
 
     /**
@@ -202,19 +173,14 @@ class UpdateCommandTest extends TestCase
     {
         $dialog->setInputStream($this->getInputStream("adminhtml\nn98magerun_unittest\nn98magerun_unittest.xml"));
         $commandTester->execute(
-            array(
-                'command'              => $updateCommand->getName(),
-                '--add-layout-updates' => true,
-                'vendorNamespace'      => 'N98Magerun',
-                'moduleName'           => 'UnitTest',
-            )
+            ['command'              => $updateCommand->getName(), '--add-layout-updates' => true, 'vendorNamespace'      => 'N98Magerun', 'moduleName'           => 'UnitTest']
         );
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
-        self::assertContains('<adminhtml>', $configXmlContent);
-        self::assertContains('<layout>', $configXmlContent);
-        self::assertContains('<updates>', $configXmlContent);
-        self::assertContains('<n98magerun_unittest>', $configXmlContent);
-        self::assertContains('<file>n98magerun_unittest.xml</file>', $configXmlContent);
+        self::assertStringContainsString('<adminhtml>', $configXmlContent);
+        self::assertStringContainsString('<layout>', $configXmlContent);
+        self::assertStringContainsString('<updates>', $configXmlContent);
+        self::assertStringContainsString('<n98magerun_unittest>', $configXmlContent);
+        self::assertStringContainsString('<file>n98magerun_unittest.xml</file>', $configXmlContent);
     }
 
     /**
@@ -227,20 +193,15 @@ class UpdateCommandTest extends TestCase
     {
         $dialog->setInputStream($this->getInputStream("adminhtml\nN98magerun_UnitTest.csv"));
         $commandTester->execute(
-            array(
-                'command'         => $updateCommand->getName(),
-                '--add-translate' => true,
-                'vendorNamespace' => 'N98Magerun',
-                'moduleName'      => 'UnitTest',
-            )
+            ['command'         => $updateCommand->getName(), '--add-translate' => true, 'vendorNamespace' => 'N98Magerun', 'moduleName'      => 'UnitTest']
         );
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
-        self::assertContains('<adminhtml>', $configXmlContent);
-        self::assertContains('<translate>', $configXmlContent);
-        self::assertContains('<modules>', $configXmlContent);
-        self::assertContains('<N98Magerun_UnitTest>', $configXmlContent);
-        self::assertContains('<files>', $configXmlContent);
-        self::assertContains('<default>N98magerun_UnitTest.csv</default>', $configXmlContent);
+        self::assertStringContainsString('<adminhtml>', $configXmlContent);
+        self::assertStringContainsString('<translate>', $configXmlContent);
+        self::assertStringContainsString('<modules>', $configXmlContent);
+        self::assertStringContainsString('<N98Magerun_UnitTest>', $configXmlContent);
+        self::assertStringContainsString('<files>', $configXmlContent);
+        self::assertStringContainsString('<default>N98magerun_UnitTest.csv</default>', $configXmlContent);
     }
 
     /**
@@ -253,17 +214,12 @@ class UpdateCommandTest extends TestCase
     {
         $dialog->setInputStream($this->getInputStream("sectiontest\ngrouptest\nfieldname\nfieldvalue"));
         $commandTester->execute(
-            array(
-                'command'         => $updateCommand->getName(),
-                '--add-default'   => true,
-                'vendorNamespace' => 'N98Magerun',
-                'moduleName'      => 'UnitTest',
-            )
+            ['command'         => $updateCommand->getName(), '--add-default'   => true, 'vendorNamespace' => 'N98Magerun', 'moduleName'      => 'UnitTest']
         );
         $configXmlContent = $this->_getConfigXmlContents($moduleBaseFolder);
-        self::assertContains('<default>', $configXmlContent);
-        self::assertContains('<sectiontest>', $configXmlContent);
-        self::assertContains('<grouptest>', $configXmlContent);
-        self::assertContains('<fieldname>fieldvalue</fieldname>', $configXmlContent);
+        self::assertStringContainsString('<default>', $configXmlContent);
+        self::assertStringContainsString('<sectiontest>', $configXmlContent);
+        self::assertStringContainsString('<grouptest>', $configXmlContent);
+        self::assertStringContainsString('<fieldname>fieldvalue</fieldname>', $configXmlContent);
     }
 }

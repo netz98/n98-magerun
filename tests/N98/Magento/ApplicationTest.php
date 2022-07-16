@@ -2,6 +2,11 @@
 
 namespace N98\Magento;
 
+use Composer\Autoload\ClassLoader;
+use Mage;
+use N98\Magento\Command\Cache\ListCommand;
+use N98\Magento\Application\ConfigurationLoader;
+use PHPUnit\Framework\MockObject\MockObject;
 use N98\Magento\Command\TestCase;
 use N98\Util\ArrayFunctions;
 use org\bovigo\vfs\vfsStream;
@@ -22,9 +27,9 @@ class ApplicationTest extends TestCase
         $application = require __DIR__ . '/../../../src/bootstrap.php';
         $application->setMagentoRootFolder($this->getTestMagentoRoot());
 
-        self::assertInstanceOf('\N98\Magento\Application', $application);
+        self::assertInstanceOf(Application::class, $application);
         $loader = $application->getAutoloader();
-        self::assertInstanceOf('\Composer\Autoload\ClassLoader', $loader);
+        self::assertInstanceOf(ClassLoader::class, $loader);
 
         /**
          * Check version
@@ -37,26 +42,7 @@ class ApplicationTest extends TestCase
 
         $distConfigArray = Yaml::parse(file_get_contents(__DIR__ . '/../../../config.yaml'));
 
-        $configArray = array(
-            'autoloaders' => array(
-                'N98MagerunTest' => __DIR__ . '/_ApplicationTestSrc',
-            ),
-            'commands' => array(
-                'customCommands' => array(
-                    0 => 'N98MagerunTest\TestDummyCommand',
-                ),
-                'aliases' => array(
-                    array(
-                        'cl' => 'cache:list',
-                    ),
-                ),
-            ),
-            'init' => array(
-                'options' => array(
-                    'config_model' => 'N98MagerunTest\AlternativeConfigModel',
-                ),
-            ),
-        );
+        $configArray = ['autoloaders' => ['N98MagerunTest' => __DIR__ . '/_ApplicationTestSrc'], 'commands' => ['customCommands' => [0 => 'N98MagerunTest\TestDummyCommand'], 'aliases' => [['cl' => 'cache:list']]], 'init' => ['options' => ['config_model' => 'N98MagerunTest\AlternativeConfigModel']]];
 
         $application->setAutoExit(false);
         $application->init(ArrayFunctions::mergeArrays($distConfigArray, $configArray));
@@ -71,22 +57,20 @@ class ApplicationTest extends TestCase
 
         $commandTester = new CommandTester($testDummyCommand);
         $commandTester->execute(
-            array(
-                'command'    => $testDummyCommand->getName(),
-            )
+            ['command'    => $testDummyCommand->getName()]
         );
-        self::assertContains('dummy', $commandTester->getDisplay());
+        self::assertStringContainsString('dummy', $commandTester->getDisplay());
         self::assertTrue($application->getDefinition()->hasOption('root-dir'));
 
         // Test alternative config model
         $application->initMagento();
-        if (version_compare(\Mage::getVersion(), '1.7.0.2', '>=')) {
+        if (version_compare(Mage::getVersion(), '1.7.0.2', '>=')) {
             // config_model option is only available in Magento CE >1.6
-            self::assertInstanceOf('\N98MagerunTest\AlternativeConfigModel', \Mage::getConfig());
+            self::assertInstanceOf('\N98MagerunTest\AlternativeConfigModel', Mage::getConfig());
         }
 
         // check alias
-        self::assertInstanceOf('\N98\Magento\Command\Cache\ListCommand', $application->find('cl'));
+        self::assertInstanceOf(ListCommand::class, $application->find('cl'));
     }
 
     public function testPlugins()
@@ -100,13 +84,7 @@ class ApplicationTest extends TestCase
         $application->setMagentoRootFolder($this->getTestMagentoRoot());
 
         // Load plugin config
-        $injectConfig = array(
-            'plugin' => array(
-                'folders' => array(
-                    __DIR__ . '/_ApplicationTestModules',
-                ),
-            ),
-        );
+        $injectConfig = ['plugin' => ['folders' => [__DIR__ . '/_ApplicationTestModules']]];
         $application->init($injectConfig);
 
         // Check for module command
@@ -117,42 +95,11 @@ class ApplicationTest extends TestCase
     {
         vfsStream::setup('root');
         vfsStream::create(
-            array(
-                'htdocs' => array(
-                    'app' => array(
-                        'Mage.php' => '',
-                    ),
-                ),
-                'vendor' => array(
-                    'acme' => array(
-                        'magerun-test-module' => array(
-                            'n98-magerun.yaml' => file_get_contents(__DIR__ . '/_ApplicationTestComposer/n98-magerun.yaml'),
-                            'src'              => array(
-                                'Acme' => array(
-                                    'FooCommand.php' => file_get_contents(__DIR__ . '/_ApplicationTestComposer/FooCommand.php'),
-                                ),
-                            ),
-                        ),
-                    ),
-                    'n98' => array(
-                        'magerun' => array(
-                            'src' => array(
-                                'N98' => array(
-                                    'Magento' => array(
-                                        'Command' => array(
-                                            'ConfigurationLoader.php' => '',
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            )
+            ['htdocs' => ['app' => ['Mage.php' => '']], 'vendor' => ['acme' => ['magerun-test-module' => ['n98-magerun.yaml' => file_get_contents(__DIR__ . '/_ApplicationTestComposer/n98-magerun.yaml'), 'src'              => ['Acme' => ['FooCommand.php' => file_get_contents(__DIR__ . '/_ApplicationTestComposer/FooCommand.php')]]]], 'n98' => ['magerun' => ['src' => ['N98' => ['Magento' => ['Command' => ['ConfigurationLoader.php' => '']]]]]]]]
         );
 
-        /** @var \N98\Magento\Application\ConfigurationLoader|\PHPUnit\Framework\MockObject\MockObject $configurationLoader */
-        $configurationLoader = $this->getMockBuilder(\N98\Magento\Application\ConfigurationLoader::class)
+        /** @var ConfigurationLoader|MockObject $configurationLoader */
+        $configurationLoader = $this->getMockBuilder(ConfigurationLoader::class)
             ->setMethods(['getConfigurationLoaderDir'])
             ->setConstructorArgs([[], false, new NullOutput()])
             ->getMock();

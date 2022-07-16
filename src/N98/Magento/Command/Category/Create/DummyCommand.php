@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Category\Create;
 
+use N98\Magento\Command\AbstractMagentoCommand;
 use Mage;
 use Mage_Catalog_Model_Category;
 use RuntimeException;
@@ -11,12 +12,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
-class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
+class DummyCommand extends AbstractMagentoCommand
 {
-    const DEFAULT_CATEGORY_NAME = "My Awesome Category";
-    const DEFAULT_CATEGORY_STATUS = 1; // enabled
-    const DEFAULT_CATEGORY_ANCHOR = 1; // enabled
-    const DEFAULT_STORE_ID = 1; // Default Store ID
+    public const DEFAULT_CATEGORY_NAME = "My Awesome Category";
+    public const DEFAULT_CATEGORY_STATUS = 1; // enabled
+    public const DEFAULT_CATEGORY_ANCHOR = 1; // enabled
+    public const DEFAULT_STORE_ID = 1; // Default Store ID
 
     protected function configure()
     {
@@ -43,7 +44,7 @@ class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         $this->initMagento();
@@ -66,7 +67,7 @@ class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
             // Check if product exists
             $collection = Mage::getModel('catalog/category')->getCollection()
                 ->addAttributeToSelect('name')
-                ->addAttributeToFilter('name', array('eq' => $name));
+                ->addAttributeToFilter('name', ['eq' => $name]);
             $_size = $collection->getSize();
             if ($_size > 0) {
                 $output->writeln("<comment>CATEGORY: WITH NAME: '" . $name . "' EXISTS! Skip</comment>\r");
@@ -118,6 +119,7 @@ class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
                 unset($category);
             }
         }
+        return 0;
     }
 
     /**
@@ -131,15 +133,15 @@ class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
     private function askForArguments($input, $output)
     {
         $helper = $this->getHelper('question');
-        $_argument = array();
+        $_argument = [];
 
         // Store ID
         if (is_null($input->getArgument('store-id'))) {
             $store_id = Mage::getModel('core/store')->getCollection()
                 ->addFieldToSelect('*')
-                ->addFieldToFilter('store_id', array('gt' => 0))
+                ->addFieldToFilter('store_id', ['gt' => 0])
                 ->setOrder('store_id', 'ASC');
-            $_store_ids = array();
+            $_store_ids = [];
 
             foreach ($store_id as $item) {
                 $_store_ids[$item['store_id']] = $item['store_id'] . "|" . $item['code'];
@@ -188,7 +190,7 @@ class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
             $input->setArgument('children-categories-number', $helper->ask($input, $output, $question));
         }
         if ($input->getArgument('children-categories-number') == -1) {
-            $input->setArgument('children-categories-number', rand(0, 5));
+            $input->setArgument('children-categories-number', random_int(0, 5));
         }
 
         $output->writeln(
@@ -220,7 +222,7 @@ class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
     private function setCategoryStoreId(Mage_Catalog_Model_Category $category, $storeId)
     {
         if (Mage::getVersion() === "1.5.1.0") {
-            $category->setStoreId(array(0, $storeId));
+            $category->setStoreId([0, $storeId]);
         } else {
             $category->setStoreId($storeId);
         }

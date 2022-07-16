@@ -2,6 +2,9 @@
 
 namespace N98\Magento\Command\System\Setup;
 
+use Mage;
+use Error;
+use DateTime;
 use N98\JUnitXml\Document as JUnitXmlDocument;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
@@ -43,20 +46,20 @@ HELP;
      *
      * @return int|null|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $time = microtime(true);
-        $modules = \Mage::getConfig()->getNode('modules');
+        $modules = Mage::getConfig()->getNode('modules');
         $resourceModel = $this->_getResourceSingleton('core/resource', 'Mage_Core_Model_Resource_Resource');
-        $setups = \Mage::getConfig()->getNode('global/resources')->children();
+        $setups = Mage::getConfig()->getNode('global/resources')->children();
         $ignoreDataUpdate = $input->getOption('ignore-data');
 
-        $headers = array('Setup', 'Module', 'DB', 'Data', 'Status');
+        $headers = ['Setup', 'Module', 'DB', 'Data', 'Status'];
         if ($ignoreDataUpdate) {
             unset($headers[array_search('Data', $headers)]);
         }
@@ -64,7 +67,7 @@ HELP;
         $hasStatusErrors = false;
 
         $errorCounter = 0;
-        $table = array();
+        $table = [];
         foreach ($setups as $setupName => $setup) {
             $moduleName = (string) $setup->setup->module;
             $moduleVersion = (string) $modules->{$moduleName}->version;
@@ -80,16 +83,12 @@ HELP;
                 $errorCounter++;
             }
 
-            $row = array(
-                'Setup'     => $setupName,
-                'Module'    => $moduleVersion,
-                'DB'        => $dbVersion,
-            );
+            $row = ['Setup'     => $setupName, 'Module'    => $moduleVersion, 'DB'        => $dbVersion];
 
             if (!$ignoreDataUpdate) {
                 $row['Data-Version'] = $dataVersion;
             }
-            $row['Status'] = $ok ? 'OK' : 'Error';
+            $row['Status'] = $ok ? 'OK' : Error::class;
 
             if (!$ok) {
                 $hasStatusErrors = true;
@@ -100,7 +99,7 @@ HELP;
 
         if ($input->getOption('errors-only')) {
             $table = array_filter($table, function ($row) {
-                return ($row['Status'] === 'Error');
+                return ($row['Status'] === Error::class);
             });
         }
 
@@ -120,7 +119,7 @@ HELP;
 
             array_walk($table, function (&$row) {
                 $status = $row['Status'];
-                $availableStatus = array('OK' => 'info', 'Error' => 'error');
+                $availableStatus = ['OK' => 'info', Error::class => 'error'];
                 $statusString = sprintf(
                     '<%s>%s</%s>',
                     $availableStatus[$status],
@@ -165,6 +164,7 @@ HELP;
         } else {
             return 0;
         }
+        return 0;
     }
 
     /**
@@ -177,7 +177,7 @@ HELP;
         $document = new JUnitXmlDocument();
         $suite = $document->addTestSuite();
         $suite->setName('n98-magerun: ' . $this->getName());
-        $suite->setTimestamp(new \DateTime());
+        $suite->setTimestamp(new DateTime());
         $suite->setTime($duration);
 
         $testCase = $suite->addTestCase();

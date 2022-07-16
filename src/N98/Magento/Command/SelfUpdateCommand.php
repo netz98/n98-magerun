@@ -2,6 +2,10 @@
 
 namespace N98\Magento\Command;
 
+use Exception;
+use UnexpectedValueException;
+use PharException;
+use Phar;
 use Composer\Downloader\FilesystemException;
 use Composer\IO\ConsoleIO;
 use Composer\Util\RemoteFilesystem;
@@ -16,18 +20,18 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SelfUpdateCommand extends AbstractMagentoCommand
 {
-    const VERSION_TXT_URL_UNSTABLE = 'https://raw.githubusercontent.com/netz98/n98-magerun/develop/version.txt';
-    const MAGERUN_DOWNLOAD_URL_UNSTABLE = 'https://files.magerun.net/n98-magerun-dev.phar';
-    const VERSION_TXT_URL_STABLE = 'https://raw.githubusercontent.com/netz98/n98-magerun/master/version.txt';
-    const MAGERUN_DOWNLOAD_URL_STABLE = 'https://files.magerun.net/n98-magerun.phar';
-    const CHANGELOG_DOWNLOAD_URL_UNSTABLE = 'https://raw.github.com/netz98/n98-magerun/develop/CHANGELOG.md';
-    const CHANGELOG_DOWNLOAD_URL_STABLE = 'https://raw.github.com/netz98/n98-magerun/master/CHANGELOG.md';
+    public const VERSION_TXT_URL_UNSTABLE = 'https://raw.githubusercontent.com/netz98/n98-magerun/develop/version.txt';
+    public const MAGERUN_DOWNLOAD_URL_UNSTABLE = 'https://files.magerun.net/n98-magerun-dev.phar';
+    public const VERSION_TXT_URL_STABLE = 'https://raw.githubusercontent.com/netz98/n98-magerun/master/version.txt';
+    public const MAGERUN_DOWNLOAD_URL_STABLE = 'https://files.magerun.net/n98-magerun.phar';
+    public const CHANGELOG_DOWNLOAD_URL_UNSTABLE = 'https://raw.github.com/netz98/n98-magerun/develop/CHANGELOG.md';
+    public const CHANGELOG_DOWNLOAD_URL_STABLE = 'https://raw.github.com/netz98/n98-magerun/master/CHANGELOG.md';
 
     protected function configure()
     {
         $this
             ->setName('self-update')
-            ->setAliases(array('selfupdate'))
+            ->setAliases(['selfupdate'])
             ->addOption('unstable', null, InputOption::VALUE_NONE, 'Load unstable version from develop branch')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Tests if there is a new version without any update.')
             ->setDescription('Updates n98-magerun.phar to the latest version.')
@@ -52,13 +56,13 @@ EOT
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return int|null|void
-     * @throws \Composer\Downloader\FilesystemException
-     * @throws \Exception
+     * @throws FilesystemException
+     * @throws Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $isDryRun = $input->getOption('dry-run');
         $localFilename = realpath($_SERVER['argv'][0]) ?: $_SERVER['argv'][0];
@@ -105,9 +109,9 @@ EOT
                 $this->showChangelog($output, $loadUnstable, $rfs);
 
                 $this->_exit(0);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 @unlink($tempFilename);
-                if (!$e instanceof \UnexpectedValueException && !$e instanceof \PharException) {
+                if (!$e instanceof UnexpectedValueException && !$e instanceof PharException) {
                     throw $e;
                 }
                 $output->writeln('<error>The download is corrupted (' . $e->getMessage() . ').</error>');
@@ -116,6 +120,7 @@ EOT
         } else {
             $output->writeln("<info>You are using the latest n98-magerun version.</info>");
         }
+        return 0;
     }
 
     /**
@@ -133,7 +138,7 @@ EOT
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      * @param $rfs
      * @param $remoteFilename
      * @param $tempFilename
@@ -157,14 +162,14 @@ EOT
 
         @chmod($tempFilename, 0777 & ~umask());
         // test the phar validity
-        $phar = new \Phar($tempFilename);
+        $phar = new Phar($tempFilename);
         // free the variable to unlock the file
         unset($phar);
         @rename($tempFilename, $localFilename);
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      * @param $loadUnstable
      * @param $rfs
      */

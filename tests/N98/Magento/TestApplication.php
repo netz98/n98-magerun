@@ -7,6 +7,9 @@
 
 namespace N98\Magento;
 
+use PHPUnit\Framework\SkippedTestError;
+use PHPUnit\Framework\MockObject\MockObject;
+use Varien_Autoload;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -128,7 +131,7 @@ class TestApplication
         $root = self::getTestMagentoRootFromEnvironment($varname, $this->basename);
 
         if (null === $root) {
-            throw new \PHPUnit\Framework\SkippedTestError(
+            throw new SkippedTestError(
                 "Please specify environment variable $varname with path to your test magento installation!"
             );
         }
@@ -137,16 +140,16 @@ class TestApplication
     }
 
     /**
-     * @return Application|\PHPUnit\Framework\MockObject\MockObject
+     * @return Application|MockObject
      */
     public function getApplication()
     {
         if ($this->application === null) {
             $root = $this->getTestMagentoRoot();
 
-            /** @var Application|\PHPUnit\Framework\MockObject\MockObject $application */
-            $application = $this->testCase->getMockBuilder('N98\Magento\Application')
-                ->setMethods(array('getMagentoRootFolder'))
+            /** @var Application|MockObject $application */
+            $application = $this->testCase->getMockBuilder(Application::class)
+                ->setMethods(['getMagentoRootFolder'])
                 ->getMock();
 
             // Get the composer bootstrap
@@ -163,13 +166,13 @@ class TestApplication
             $application->setAutoloader($loader);
             $application->method('getMagentoRootFolder')->willReturn($root);
 
-            spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
+            spl_autoload_unregister([Varien_Autoload::instance(), 'autoload']);
 
             $application->init();
             $application->initMagento();
 
             if ($application->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1) {
-                spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
+                spl_autoload_unregister([Varien_Autoload::instance(), 'autoload']);
             }
 
             $this->application = $application;

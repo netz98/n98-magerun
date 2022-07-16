@@ -12,6 +12,7 @@
 
 namespace N98\Magento\Command\Composer;
 
+use InvalidArgumentException;
 use Composer\Command\InitCommand;
 use N98\Magento\Command\TestCase;
 
@@ -36,14 +37,14 @@ class InitCommandTest extends TestCase
     public function testParseEmptyAuthorString()
     {
         $command = new InitCommand();
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $command->parseAuthorString('');
     }
 
     public function testParseAuthorStringWithInvalidEmail()
     {
         $command = new InitCommand();
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $command->parseAuthorString('John Smith <john>');
     }
 }

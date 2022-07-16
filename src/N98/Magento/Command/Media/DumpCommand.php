@@ -29,15 +29,14 @@ class DumpCommand extends AbstractMagentoCommand
      *
      * @return int|null|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $commandConfig = $this->getCommandConfig();
 
         $this->detectMagento($output);
         $finder = new Finder();
         $finder
-            ->files()
-            ->followLinks(true)
+            ->files()->followLinks()
             ->in($this->getApplication()->getMagentoRootFolder() . DIRECTORY_SEPARATOR . 'media');
         if ($input->getOption('strip')) {
             $finder->exclude($commandConfig['strip']['folders']);
@@ -70,5 +69,6 @@ class DumpCommand extends AbstractMagentoCommand
         }
 
         $zip->close();
+        return 0;
     }
 }

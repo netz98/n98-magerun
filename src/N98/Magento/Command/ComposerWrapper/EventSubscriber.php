@@ -18,7 +18,7 @@ class EventSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array('console.command' => 'registerComposer');
+        return ['console.command' => 'registerComposer'];
     }
 
     /**
@@ -30,7 +30,7 @@ class EventSubscriber implements EventSubscriberInterface
          * Inject composer object in composer commands
          */
         $command = $event->getCommand();
-        if (strstr(get_class($command), 'Composer\\Command\\')) {
+        if (strstr($command !== null ? get_class($command) : self::class, 'Composer\\Command\\')) {
             $io = new ConsoleIO($event->getInput(), $event->getOutput(), $command->getHelperSet());
             $magentoRootFolder = $command->getApplication()->getMagentoRootFolder();
             $configFile = $magentoRootFolder . '/composer.json';

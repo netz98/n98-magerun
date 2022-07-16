@@ -7,6 +7,7 @@
 
 namespace N98\Util\Console\Helper;
 
+use Symfony\Component\Console\Helper\HelperInterface;
 use N98\Magento\Command\TestCase;
 
 /**
@@ -21,11 +22,11 @@ class IoHelperTest extends TestCase
      */
     public function creation()
     {
-        $helper = new IoHelper();
-        self::assertInstanceOf('N98\Util\Console\Helper\IoHelper', $helper);
-        self::assertInstanceOf('Symfony\Component\Console\Helper\HelperInterface', $helper);
-        self::assertNull($helper->getOutput());
+        $ioHelper = new IoHelper();
+        self::assertInstanceOf(IoHelper::class, $ioHelper);
+        self::assertInstanceOf(HelperInterface::class, $ioHelper);
+        self::assertNull($ioHelper->getOutput());
 
-        self::assertSame('io', $helper->getName());
+        self::assertSame('io', $ioHelper->getName());
     }
 }

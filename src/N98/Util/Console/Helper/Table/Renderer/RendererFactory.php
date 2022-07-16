@@ -7,12 +7,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RendererFactory
 {
-    protected static $formats = array(
-        'csv'  => 'N98\Util\Console\Helper\Table\Renderer\CsvRenderer',
-        'json' => 'N98\Util\Console\Helper\Table\Renderer\JsonRenderer',
-        'text' => 'N98\Util\Console\Helper\Table\Renderer\TextRenderer',
-        'xml'  => 'N98\Util\Console\Helper\Table\Renderer\XmlRenderer',
-    );
+    protected static $formats = ['csv'  => CsvRenderer::class, 'json' => JsonRenderer::class, 'text' => TextRenderer::class, 'xml'  => XmlRenderer::class];
 
     /**
      * @param string $format

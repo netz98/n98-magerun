@@ -2,6 +2,11 @@
 
 namespace N98\Magento\Command\Category\Create;
 
+use Mage;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -15,13 +20,7 @@ class DummyCommandTest extends TestCase
         $commandTester = new CommandTester($command);
 
         $commandTester->execute(
-            array(
-                'command'                    => $command->getName(),
-                'store-id'                   => 1,
-                'children-categories-number' => 1,
-                'category-name-prefix'       => 'My Awesome Category',
-                'category-number'            => 1,
-            )
+            ['command'                    => $command->getName(), 'store-id'                   => 1, 'children-categories-number' => 1, 'category-name-prefix'       => 'My Awesome Category', 'category-number'            => 1]
         );
 
         self::assertRegExp('/CATEGORY: \'My Awesome Category (.+)\' WITH ID: \'(.+)\' CREATED!/', $commandTester->getDisplay());
@@ -42,14 +41,14 @@ class DummyCommandTest extends TestCase
 
     protected function checkifCategoryExist($_category_id)
     {
-        if (!is_null(\Mage::getModel('catalog/category')->load($_category_id)->getName())) {
+        if (!is_null(Mage::getModel('catalog/category')->load($_category_id)->getName())) {
             return true;
         }
     }
 
     protected function deleteMagentoCategory($_category_id)
     {
-        \Mage::getModel('catalog/category')->load($_category_id)->delete();
+        Mage::getModel('catalog/category')->load($_category_id)->delete();
     }
 
     public function testmanageArguments()
@@ -58,7 +57,7 @@ class DummyCommandTest extends TestCase
         $application->add(new DummyCommand());
         $command = $application->find('category:create:dummy');
 
-        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\QuestionHelper::class)
+        $dialog = $this->getMockBuilder(QuestionHelper::class)
             ->disableOriginalConstructor()
             ->setMethods(['ask'])
             ->getMock();
@@ -67,9 +66,9 @@ class DummyCommandTest extends TestCase
         $dialog
             ->method('ask')
             ->with(
-                self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
-                self::isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
-                self::isInstanceOf('Symfony\Component\Console\Question\Question')
+                self::isInstanceOf(InputInterface::class),
+                self::isInstanceOf(OutputInterface::class),
+                self::isInstanceOf(Question::class)
             )
             ->willReturn(1);
 
@@ -77,9 +76,9 @@ class DummyCommandTest extends TestCase
         $dialog
             ->method('ask')
             ->with(
-                self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
-                self::isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
-                self::isInstanceOf('Symfony\Component\Console\Question\Question')
+                self::isInstanceOf(InputInterface::class),
+                self::isInstanceOf(OutputInterface::class),
+                self::isInstanceOf(Question::class)
             )
             ->willReturn(0);
 
@@ -87,9 +86,9 @@ class DummyCommandTest extends TestCase
         $dialog
             ->method('ask')
             ->with(
-                self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
-                self::isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
-                self::isInstanceOf('Symfony\Component\Console\Question\Question')
+                self::isInstanceOf(InputInterface::class),
+                self::isInstanceOf(OutputInterface::class),
+                self::isInstanceOf(Question::class)
             )
             ->willReturn('My Awesome Category ');
 
@@ -97,9 +96,9 @@ class DummyCommandTest extends TestCase
         $dialog
             ->method('ask')
             ->with(
-                self::isInstanceOf('Symfony\Component\Console\Input\InputInterface'),
-                self::isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
-                self::isInstanceOf('Symfony\Component\Console\Question\Question')
+                self::isInstanceOf(InputInterface::class),
+                self::isInstanceOf(OutputInterface::class),
+                self::isInstanceOf(Question::class)
             )
             ->willReturn(0);
 

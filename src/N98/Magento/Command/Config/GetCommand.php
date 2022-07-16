@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Config;
 
+use Path;
+use UnexpectedValueException;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -62,11 +64,12 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $table = [];
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         /* @var $collection \Mage_Core_Model_Resource_Db_Collection_Abstract */
@@ -78,18 +81,16 @@ HELP;
             $searchPath .= '*';
         }
 
-        $collection->addFieldToFilter('path', array(
-            'like' => str_replace('*', '%', $searchPath),
-        ));
+        $collection->addFieldToFilter('path', ['like' => str_replace('*', '%', $searchPath)]);
 
         if ($scope = $input->getOption('scope')) {
-            $collection->addFieldToFilter('scope', array('eq' => $scope));
+            $collection->addFieldToFilter('scope', ['eq' => $scope]);
         }
 
         if ($scopeId = $input->getOption('scope-id')) {
             $collection->addFieldToFilter(
                 'scope_id',
-                array('eq' => $scopeId)
+                ['eq' => $scopeId]
             );
         }
 
@@ -104,19 +105,14 @@ HELP;
         if ($collection->count() == 0) {
             $output->writeln(sprintf("Couldn't find a config value for \"%s\"", $input->getArgument('path')));
 
-            return;
+            return 0;
         }
 
         foreach ($collection as $item) {
-            $table[] = array(
-                'path'     => $item->getPath(),
-                'scope'    => $item->getScope(),
-                'scope_id' => $item->getScopeId(),
-                'value'    => $this->_formatValue(
-                    $item->getValue(),
-                    $input->getOption('decrypt') ? 'decrypt' : false
-                ),
-            );
+            $table[] = ['path'     => $item->getPath(), 'scope'    => $item->getScope(), 'scope_id' => $item->getScopeId(), 'value'    => $this->_formatValue(
+                $item->getValue(),
+                $input->getOption('decrypt') ? 'decrypt' : false
+            )];
         }
 
         ksort($table);
@@ -128,6 +124,7 @@ HELP;
         } else {
             $this->renderAsTable($output, $table, $input->getOption('format'));
         }
+        return 0;
     }
 
     /**
@@ -137,20 +134,15 @@ HELP;
      */
     protected function renderAsTable(OutputInterface $output, $table, $format)
     {
-        $formattedTable = array();
+        $formattedTable = [];
         foreach ($table as $row) {
-            $formattedTable[] = array(
-                $row['path'],
-                $row['scope'],
-                $row['scope_id'],
-                $this->renderTableValue($row['value'], $format),
-            );
+            $formattedTable[] = [$row['path'], $row['scope'], $row['scope_id'], $this->renderTableValue($row['value'], $format)];
         }
 
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('Path', 'Scope', 'Scope-ID', 'Value'))
+            ->setHeaders([Path::class, 'Scope', 'Scope-ID', 'Value'])
             ->setRows($formattedTable)
             ->renderByFormat($output, $formattedTable, $format);
     }
@@ -169,7 +161,7 @@ HELP;
                     $value = 'NULL';
                     break;
                 default:
-                    throw new \UnexpectedValueException(
+                    throw new UnexpectedValueException(
                         sprintf("Unhandled format %s", var_export($value, true))
                     );
             }
@@ -220,7 +212,7 @@ HELP;
         foreach ($table as $row) {
             $value = $row['value'];
             if ($value !== null) {
-                $value = str_replace(array("\n", "\r"), array('\n', '\r'), $value);
+                $value = str_replace(["\n", "\r"], ['\n', '\r'], $value);
             }
 
             $disaplayValue = $value === null ? "NULL" : escapeshellarg($value);

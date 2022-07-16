@@ -32,7 +32,7 @@ class DbCommand extends AbstractLogCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         $this->initMagento();
@@ -43,6 +43,7 @@ class DbCommand extends AbstractLogCommand
         $this->_replaceVariable($input, $output, '$_logAllQueries');
 
         $output->writeln("<info>Done. You can tail <comment>" . $this->_getDebugLogFilename() . "</comment></info>");
+        return 0;
     }
 
     /**

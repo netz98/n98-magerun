@@ -12,11 +12,9 @@ class HelpCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command' => 'help',
-            )
+            ['command' => 'help']
         );
 
-        self::assertContains('The help command displays help for a given command', $commandTester->getDisplay());
+        self::assertStringContainsString('The help command displays help for a given command', $commandTester->getDisplay());
     }
 }

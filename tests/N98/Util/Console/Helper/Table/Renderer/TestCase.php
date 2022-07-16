@@ -23,16 +23,16 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      *
      * @return string all output
      */
-    protected function getOutputBuffer(StreamOutput $output)
+    protected function getOutputBuffer(StreamOutput $streamOutput)
     {
-        $handle = $output->getStream();
+        $stream = $streamOutput->getStream();
 
-        rewind($handle);
-        $display = stream_get_contents($handle);
+        rewind($stream);
+        $display = stream_get_contents($stream);
 
         // Symfony2's StreamOutput has a hidden dependency on PHP_EOL which needs to be removed by
         // normalizing it to the standard newline for text here.
-        $display = strtr($display, array(PHP_EOL => "\n"));
+        $display = strtr($display, [PHP_EOL => "\n"]);
 
         return $display;
     }

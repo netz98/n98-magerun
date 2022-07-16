@@ -30,24 +30,20 @@ class ListCommand extends AbstractRewriteCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $rewrites = array_merge($this->loadRewrites(), $this->loadAutoloaderRewrites());
 
-        $table = array();
+        $table = [];
         foreach ($rewrites as $type => $data) {
-            if (count($data) > 0) {
+            if ((is_countable($data) ? count($data) : 0) > 0) {
                 foreach ($data as $class => $rewriteClass) {
-                    $table[] = array(
-                        $type,
-                        $class,
-                        implode(', ', $rewriteClass),
-                    );
+                    $table[] = [$type, $class, implode(', ', $rewriteClass)];
                 }
             }
         }
@@ -56,14 +52,15 @@ class ListCommand extends AbstractRewriteCommand
             $output->writeln('<info>No rewrites were found.</info>');
         } else {
             if (count($table) == 0) {
-                $table = array();
+                $table = [];
             }
             /* @var $tableHelper TableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
-                ->setHeaders(array('Type', 'Class', 'Rewrite'))
+                ->setHeaders(['Type', 'Class', 'Rewrite'])
                 ->setRows($table)
                 ->renderByFormat($output, $table, $input->getOption('format'));
         }
+        return 0;
     }
 }

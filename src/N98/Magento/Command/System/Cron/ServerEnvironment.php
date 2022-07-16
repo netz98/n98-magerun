@@ -8,6 +8,7 @@
 
 namespace N98\Magento\Command\System\Cron;
 
+use UnexpectedValueException;
 use BadMethodCallException;
 
 /**
@@ -33,7 +34,7 @@ class ServerEnvironment
 
     public function __construct()
     {
-        $this->keys = array('SCRIPT_NAME', 'SCRIPT_FILENAME');
+        $this->keys = ['SCRIPT_NAME', 'SCRIPT_FILENAME'];
     }
 
     /**
@@ -46,7 +47,7 @@ class ServerEnvironment
         }
 
         if (!is_array($GLOBALS['argv'])) {
-            throw new \UnexpectedValueException('Need argv to work');
+            throw new UnexpectedValueException('Need argv to work');
         }
 
         $basename = basename($GLOBALS['argv'][0]);

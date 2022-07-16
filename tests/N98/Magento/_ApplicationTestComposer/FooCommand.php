@@ -13,7 +13,8 @@ class FooCommand extends AbstractMagentoCommand
         $this->setName('acme:foo');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        return 0;
     }
 }

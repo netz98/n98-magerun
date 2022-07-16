@@ -14,6 +14,7 @@
 
 namespace N98\Magento\Command\Developer\Setup\Script;
 
+use N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType\Factory;
 use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -37,11 +38,11 @@ class AttributeCommand extends AbstractMagentoCommand
      *
      * @return int|null|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         try {
@@ -50,7 +51,7 @@ class AttributeCommand extends AbstractMagentoCommand
 
             $attribute = $this->getAttribute($entityType, $attributeCode);
 
-            $generator = Attribute\EntityType\Factory::create($entityType, $attribute);
+            $generator = Factory::create($entityType, $attribute);
             $generator->setReadConnection(
                 $this->_getModel('core/resource', 'Mage_Core_Model_Resource')->getConnection('core_read')
             );
@@ -61,6 +62,7 @@ class AttributeCommand extends AbstractMagentoCommand
         } catch (Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
+        return 0;
     }
 
     /**

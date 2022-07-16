@@ -16,7 +16,7 @@ class EnableCommandTest extends TestCase
             $command = $this->getApplication()->find('cache:enable');
 
             $commandTester = new CommandTester($command);
-            $commandTester->execute(array('command' => $command->getName()));
+            $commandTester->execute(['command' => $command->getName()]);
 
             self::assertRegExp('/Caches enabled/', $commandTester->getDisplay());
         }
@@ -31,10 +31,7 @@ class EnableCommandTest extends TestCase
             $command = $this->getApplication()->find('cache:enable');
             $commandTester = new CommandTester($command);
             $commandTester->execute(
-                array(
-                    'command' => $command->getName(),
-                    'code'    => 'eav,config',
-                )
+                ['command' => $command->getName(), 'code'    => 'eav,config']
             );
 
             self::assertRegExp('/Cache config enabled/', $commandTester->getDisplay());

@@ -15,11 +15,9 @@ class ListCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-            )
+            ['command' => $command->getName()]
         );
 
-        self::assertContains('base/default', $commandTester->getDisplay());
+        self::assertStringContainsString('base/default', $commandTester->getDisplay());
     }
 }

@@ -2,6 +2,9 @@
 
 namespace N98\Magento\Command\Developer\Theme;
 
+use Mage;
+use Mage_Core_Model_Store;
+use Parameter;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
 use N98\Util\Console\Helper\TableHelper;
@@ -14,25 +17,17 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InfoCommand extends AbstractMagentoCommand
 {
-    const THEMES_EXCEPTION = '_ua_regexp';
+    public const THEMES_EXCEPTION = '_ua_regexp';
 
     /**
      * @var array
      */
-    protected $_configNodes = array(
-        'Theme translations' => 'design/theme/locale',
-    );
+    protected $_configNodes = ['Theme translations' => 'design/theme/locale'];
 
     /**
      * @var array
      */
-    protected $_configNodesWithExceptions = array(
-        'Design Package Name' => 'design/package/name',
-        'Theme template'      => 'design/theme/template',
-        'Theme skin'          => 'design/theme/skin',
-        'Theme layout'        => 'design/theme/layout',
-        'Theme default'       => 'design/theme/default',
-    );
+    protected $_configNodesWithExceptions = ['Design Package Name' => 'design/package/name', 'Theme template'      => 'design/theme/template', 'Theme skin'          => 'design/theme/skin', 'Theme layout'        => 'design/theme/layout', 'Theme default'       => 'design/theme/default'];
 
     protected function configure()
     {
@@ -44,23 +39,24 @@ class InfoCommand extends AbstractMagentoCommand
     /**
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
-        foreach (\Mage::app()->getWebsites() as $website) {
+        foreach (Mage::app()->getWebsites() as $website) {
             /* @var $website \Mage_Core_Model_Website */
             foreach ($website->getStores() as $store) {
                 /* @var $store \Mage_Core_Model_Store */
                 $this->_displayTable($output, $store);
             }
         }
+        return 0;
     }
 
-    protected function _displayTable(OutputInterface $output, \Mage_Core_Model_Store $store)
+    protected function _displayTable(OutputInterface $output, Mage_Core_Model_Store $store)
     {
         $this->writeSection(
             $output, 'Current design setting on store: ' . $store->getWebsite()->getCode() . '/' . $store->getCode()
@@ -71,7 +67,7 @@ class InfoCommand extends AbstractMagentoCommand
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('Parameter', 'Value'))
+            ->setHeaders([Parameter::class, 'Value'])
             ->renderByFormat($output, $storeInfoLines);
 
         return $this;
@@ -80,23 +76,18 @@ class InfoCommand extends AbstractMagentoCommand
     /**
      * @return array
      */
-    protected function _parse(array $nodes, \Mage_Core_Model_Store $store, $withExceptions = false)
+    protected function _parse(array $nodes, Mage_Core_Model_Store $store, $withExceptions = false)
     {
-        $result = array();
+        $result = [];
 
         foreach ($nodes as $nodeLabel => $node) {
-            $result[] = array(
-                $nodeLabel,
-                (string) \Mage::getConfig()->getNode(
-                    $node,
-                    AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW,
-                    $store->getCode()
-                ),
-            );
+            $result[] = [$nodeLabel, (string) Mage::getConfig()->getNode(
+                $node,
+                AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW,
+                $store->getCode()
+            )];
             if ($withExceptions) {
-                $result[] = array(
-                    $nodeLabel . ' exceptions', $this->_parseException($node, $store),
-                );
+                $result[] = [$nodeLabel . ' exceptions', $this->_parseException($node, $store)];
             }
         }
 
@@ -106,9 +97,9 @@ class InfoCommand extends AbstractMagentoCommand
     /**
      * @return string
      */
-    protected function _parseException($node, \Mage_Core_Model_Store $store)
+    protected function _parseException($node, Mage_Core_Model_Store $store)
     {
-        $exception = (string) \Mage::getConfig()->getNode(
+        $exception = (string) Mage::getConfig()->getNode(
             $node . self::THEMES_EXCEPTION,
             AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW,
             $store->getCode()
@@ -119,7 +110,7 @@ class InfoCommand extends AbstractMagentoCommand
         }
 
         $exceptions = unserialize($exception);
-        $result = array();
+        $result = [];
         foreach ($exceptions as $expression) {
             $result[] = 'Matched Expression: ' . $expression['regexp'];
             $result[] = 'Value: ' . $expression['value'];

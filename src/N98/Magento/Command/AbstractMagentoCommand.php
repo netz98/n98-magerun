@@ -2,6 +2,11 @@
 
 namespace N98\Magento\Command;
 
+use N98\Magento\Application;
+use Mage;
+use Composer\Downloader\DownloadManager;
+use Composer\Package\CompletePackage;
+use Composer\Composer;
 use Composer\Factory as ComposerFactory;
 use Composer\IO\ConsoleIO;
 use Composer\Package\Loader\ArrayLoader as PackageLoader;
@@ -12,27 +17,29 @@ use N98\Util\OperatingSystem;
 use N98\Util\StringTyped;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 /**
  * Class AbstractMagentoCommand
  *
  * @package N98\Magento\Command
  *
- * @method \N98\Magento\Application getApplication() getApplication()
+ * @method Application getApplication() getApplication()
  */
 abstract class AbstractMagentoCommand extends Command
 {
     /**
      * @var int
      */
-    const MAGENTO_MAJOR_VERSION_1 = 1;
+    public const MAGENTO_MAJOR_VERSION_1 = 1;
 
     /**
      * @var int
      */
-    const MAGENTO_MAJOR_VERSION_2 = 2;
+    public const MAGENTO_MAJOR_VERSION_2 = 2;
 
     /**
      * @var string
@@ -52,12 +59,12 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * @var array
      */
-    protected $_deprecatedAlias = array();
+    protected $_deprecatedAlias = [];
 
     /**
      * @var array
      */
-    protected $_websiteCodeMap = array();
+    protected $_websiteCodeMap = [];
 
     /**
      * Initializes the command just after the input has been validated.
@@ -75,9 +82,9 @@ abstract class AbstractMagentoCommand extends Command
 
     private function _initWebsites()
     {
-        $this->_websiteCodeMap = array();
+        $this->_websiteCodeMap = [];
         /** @var \Mage_Core_Model_Website[] $websites */
-        $websites = \Mage::app()->getWebsites(false);
+        $websites = Mage::app()->getWebsites(false);
         foreach ($websites as $website) {
             $this->_websiteCodeMap[$website->getId()] = $website->getCode();
         }
@@ -124,7 +131,7 @@ abstract class AbstractMagentoCommand extends Command
             $commandClass = get_class($this);
         }
 
-        /** @var \N98\Magento\Application $application */
+        /** @var Application $application */
         $application = $this->getApplication();
         return (array) $application->getConfig('commands', $commandClass);
     }
@@ -136,11 +143,7 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function writeSection(OutputInterface $output, $text, $style = 'bg=blue;fg=white')
     {
-        $output->writeln(array(
-            '',
-            $this->getHelper('formatter')->formatBlock($text, $style, true),
-            '',
-        ));
+        $output->writeln(['', $this->getHelper('formatter')->formatBlock($text, $style, true), '']);
     }
 
     /**
@@ -206,15 +209,15 @@ abstract class AbstractMagentoCommand extends Command
     protected function getCoreHelper()
     {
         if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return \Mage::helper('Mage_Core_Helper_Data');
+            return Mage::helper('Mage_Core_Helper_Data');
         }
-        return \Mage::helper('core');
+        return Mage::helper('core');
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return \Composer\Downloader\DownloadManager
+     * @return DownloadManager
      */
     protected function getComposerDownloadManager($input, $output)
     {
@@ -223,7 +226,7 @@ abstract class AbstractMagentoCommand extends Command
 
     /**
      * @param array|PackageInterface $config
-     * @return \Composer\Package\CompletePackage
+     * @return CompletePackage
      */
     protected function createComposerPackageByConfig($config)
     {
@@ -237,7 +240,7 @@ abstract class AbstractMagentoCommand extends Command
      * @param array|PackageInterface $config
      * @param string $targetFolder
      * @param bool $preferSource
-     * @return \Composer\Package\CompletePackage
+     * @return CompletePackage
      */
     protected function downloadByComposerConfig(
         InputInterface $input,
@@ -253,7 +256,7 @@ abstract class AbstractMagentoCommand extends Command
             $package = $config;
         }
 
-        $helper = new \N98\Util\Console\Helper\MagentoHelper();
+        $helper = new MagentoHelper();
         $helper->detect($targetFolder);
         if ($this->isSourceTypeRepository($package->getSourceType()) && $helper->getRootFolder() == $targetFolder) {
             $package->setInstallationSource('source');
@@ -322,16 +325,12 @@ abstract class AbstractMagentoCommand extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return \Composer\Composer
+     * @return Composer
      */
     protected function getComposer(InputInterface $input, OutputInterface $output)
     {
         $io = new ConsoleIO($input, $output, $this->getHelperSet());
-        $config = array(
-            'config' => array(
-                'secure-http' => false,
-            ),
-        );
+        $config = ['config' => ['secure-http' => false]];
 
         return ComposerFactory::create($io, $config);
     }
@@ -372,9 +371,9 @@ abstract class AbstractMagentoCommand extends Command
     protected function _getModel($mage1code, $mage2class)
     {
         if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return \Mage::getModel($mage2class);
+            return Mage::getModel($mage2class);
         } else {
-            return \Mage::getModel($mage1code);
+            return Mage::getModel($mage1code);
         }
     }
 
@@ -388,9 +387,9 @@ abstract class AbstractMagentoCommand extends Command
     protected function _getHelper($mage1code, $mage2class)
     {
         if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return \Mage::helper($mage2class);
+            return Mage::helper($mage2class);
         } else {
-            return \Mage::helper($mage1code);
+            return Mage::helper($mage1code);
         }
     }
 
@@ -404,9 +403,9 @@ abstract class AbstractMagentoCommand extends Command
     protected function _getSingleton($mage1code, $mage2class)
     {
         if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return \Mage::getModel($mage2class);
+            return Mage::getModel($mage2class);
         } else {
-            return \Mage::getModel($mage1code);
+            return Mage::getModel($mage1code);
         }
     }
 
@@ -420,9 +419,9 @@ abstract class AbstractMagentoCommand extends Command
     protected function _getResourceModel($mage1code, $mage2class)
     {
         if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return \Mage::getResourceModel($mage2class);
+            return Mage::getResourceModel($mage2class);
         } else {
-            return \Mage::getResourceModel($mage1code);
+            return Mage::getResourceModel($mage1code);
         }
     }
 
@@ -436,9 +435,9 @@ abstract class AbstractMagentoCommand extends Command
     protected function _getResourceSingleton($mage1code, $mage2class)
     {
         if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return \Mage::getResourceSingleton($mage2class);
+            return Mage::getResourceSingleton($mage2class);
         } else {
-            return \Mage::getResourceSingleton($mage1code);
+            return Mage::getResourceSingleton($mage1code);
         }
     }
 
@@ -560,7 +559,7 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function isSourceTypeRepository($type)
     {
-        return in_array($type, array('git', 'hg'));
+        return in_array($type, ['git', 'hg']);
     }
 
     /**
@@ -576,9 +575,8 @@ abstract class AbstractMagentoCommand extends Command
         if ($inputArgument === null) {
             $message = $this->getArgumentMessage($argument, $message);
 
-            /** @var  $dialog  \Symfony\Component\Console\Helper\DialogHelper */
-            $dialog = $this->getHelper('dialog');
-            return $dialog->ask($output, $message);
+            $dialog = new QuestionHelper();
+            return $dialog->ask($input, $output, new Question($message));
         }
 
         return $inputArgument;

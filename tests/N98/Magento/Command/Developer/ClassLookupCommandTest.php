@@ -25,11 +25,7 @@ class ClassLookupCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-                'type'    => $type,
-                'name'    => $name,
-            )
+            ['command' => $command->getName(), 'type'    => $type, 'name'    => $name]
         );
 
         $output = $commandTester->getDisplay();
@@ -45,43 +41,6 @@ class ClassLookupCommandTest extends TestCase
      */
     public function classLookupProvider()
     {
-        return array(
-            array(
-                'type'     => 'model',
-                'name'     => 'catalog/product',
-                'expected' => 'Mage_Catalog_Model_Product',
-                'exists'   => true,
-            ),
-            array(
-                'type'     => 'model',
-                'name'     => 'catalog/nothing_to_see_here',
-                'expected' => 'Mage_Catalog_Model_Nothing_To_See_Here',
-                'exists'   => false,
-            ),
-            array(
-                'type'     => 'helper',
-                'name'     => 'checkout/cart',
-                'expected' => 'Mage_Checkout_Helper_Cart',
-                'exists'   => true,
-            ),
-            array(
-                'type'     => 'helper',
-                'name'     => 'checkout/stolen_creditcards',
-                'expected' => 'Mage_Checkout_Helper_Stolen_Creditcards',
-                'exists'   => false,
-            ),
-            array(
-                'type'     => 'block',
-                'name'     => 'customer/account_dashboard',
-                'expected' => 'Mage_Customer_Block_Account_Dashboard',
-                'exists'   => true,
-            ),
-            array(
-                'type'     => 'block',
-                'name'     => 'customer/my_code_snippets',
-                'expected' => 'Mage_Customer_Block_My_Code_Snippets',
-                'exists'   => false,
-            ),
-        );
+        return [['type'     => 'model', 'name'     => 'catalog/product', 'expected' => 'Mage_Catalog_Model_Product', 'exists'   => true], ['type'     => 'model', 'name'     => 'catalog/nothing_to_see_here', 'expected' => 'Mage_Catalog_Model_Nothing_To_See_Here', 'exists'   => false], ['type'     => 'helper', 'name'     => 'checkout/cart', 'expected' => 'Mage_Checkout_Helper_Cart', 'exists'   => true], ['type'     => 'helper', 'name'     => 'checkout/stolen_creditcards', 'expected' => 'Mage_Checkout_Helper_Stolen_Creditcards', 'exists'   => false], ['type'     => 'block', 'name'     => 'customer/account_dashboard', 'expected' => 'Mage_Customer_Block_Account_Dashboard', 'exists'   => true], ['type'     => 'block', 'name'     => 'customer/my_code_snippets', 'expected' => 'Mage_Customer_Block_My_Code_Snippets', 'exists'   => false]];
     }
 }

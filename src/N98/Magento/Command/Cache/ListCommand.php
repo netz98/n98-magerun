@@ -29,26 +29,24 @@ class ListCommand extends AbstractCacheCommand
      * @param OutputInterface $output
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $cacheTypes = $this->_getCacheModel()->getTypes();
-        $table = array();
+        $table = [];
         foreach ($cacheTypes as $cacheCode => $cacheInfo) {
-            $table[] = array(
-                $cacheCode,
-                $cacheInfo['status'] ? 'enabled' : 'disabled',
-            );
+            $table[] = [$cacheCode, $cacheInfo['status'] ? 'enabled' : 'disabled'];
         }
 
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('code', 'status'))
+            ->setHeaders(['code', 'status'])
             ->renderByFormat($output, $table, $input->getOption('format'));
+        return 0;
     }
 }

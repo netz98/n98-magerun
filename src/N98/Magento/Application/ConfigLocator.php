@@ -125,7 +125,7 @@ class ConfigLocator
      */
     private function getUserConfigFilePaths()
     {
-        $paths = array();
+        $paths = [];
 
         $homeDirectory = OperatingSystem::getHomeDir();
 

@@ -7,6 +7,12 @@
 
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
+use PHPUnit\Framework\TestCase;
+use IteratorIterator;
+use BadMethodCallException;
+use Exception;
+use Closure;
+use PHPUnit\Framework\Error\Warning;
 use N98\Util\AutoloadHandler;
 
 /**
@@ -14,14 +20,14 @@ use N98\Util\AutoloadHandler;
  *
  * @covers \N98\Magento\Command\Developer\Module\Rewrite\ClassExistsChecker
  */
-class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
+class ClassExistsCheckerTest extends TestCase
 {
     /**
      * @var array
      */
-    private $cleanup = array();
+    private $cleanup = [];
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->cleanup();
         parent::tearDown();
@@ -44,7 +50,7 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
      */
     public function existingClass()
     {
-        self::assertTrue(ClassExistsChecker::create('IteratorIterator')->existsExtendsSafe());
+        self::assertTrue(ClassExistsChecker::create(IteratorIterator::class)->existsExtendsSafe());
     }
 
     /**
@@ -63,7 +69,7 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
         // similar to Varien_Autoload
         $innerException = null;
         $autoload = $this->create(function ($className) use (&$innerException) {
-            $innerException = new \BadMethodCallException('exception in include simulation for ' . $className);
+            $innerException = new BadMethodCallException('exception in include simulation for ' . $className);
             throw $innerException;
         });
 
@@ -72,7 +78,7 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
             ClassExistsChecker::create($className)->existsExtendsSafe();
             $autoload->reset();
             self::fail('An expected Exception has not been thrown');
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             $autoload->reset();
             self::assertInstanceOf(__NAMESPACE__ . '\ClassExistsThrownException', $ex);
             isset($innerException) && self::assertInstanceOf(get_class($innerException), $ex->getPrevious());
@@ -86,10 +92,11 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
      */
     public function provideClassNames()
     {
-        return array(
-            array('Le_Foo_Le_Bar'), # extends from a non-existing file of that base-class
-            array('Le_Foo_Le_Bar_R1'), # extends from a dynamic include of non-existence
-        );
+        return [
+            ['Le_Foo_Le_Bar'],
+            # extends from a non-existing file of that base-class
+            ['Le_Foo_Le_Bar_R1'],
+        ];
     }
 
     /**
@@ -106,7 +113,7 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
             $restore();
             $autoload->reset();
             self::assertFalse($actual);
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             $restore();
             $autoload->reset();
             self::fail('An exception has been thrown');
@@ -118,6 +125,7 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
      */
     public function warningTriggeringExpectedBehaviour()
     {
+        $undef_var = null;
         // reset last error
         set_error_handler('var_dump', 0);
         /** @noinspection PhpUndefinedVariableInspection */
@@ -133,10 +141,7 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
         $reporting = error_reporting();
         // 22527 - E_ALL & ~E_DEPRECATED & ~E_STRICT (PHP 5.6)
         // 32767 - E_ALL (Travis PHP 5.3, PHP 5.4)
-        $knownErrorLevels = array(
-            'E_ALL & ~E_DEPRECATED & ~E_STRICT (Deb Sury 5.6)' => 22527,
-            'E_ALL (Travis PHP 5.3, 5.4, 5.5)'                 => 32767,
-        );
+        $knownErrorLevels = ['E_ALL & ~E_DEPRECATED & ~E_STRICT (Deb Sury 5.6)' => 22527, 'E_ALL (Travis PHP 5.3, 5.4, 5.5)'                 => 32767];
         self::assertContains($reporting, $knownErrorLevels, "error reporting as of $reporting");
 
         // by default the class must be loaded with a different autoloader
@@ -189,7 +194,7 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
     /**
      * Returns an auto-loader callback that is similar to Varien_Autoload
      *
-     * @return \Closure
+     * @return Closure
      */
     private function getAutoloader()
     {
@@ -208,7 +213,7 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
      *
      * Private helper function for this test-case.
      *
-     * @return \Closure
+     * @return Closure
      */
     private function noErrorExceptions($includeIni = true)
     {
@@ -218,13 +223,13 @@ class ClassExistsCheckerTest extends \PHPUnit\Framework\TestCase
         $logErrorsOrig = ini_get('log_errors');
         $includeIni && ini_set('log_errors', false);
 
-        $warningEnabledOrig = \PHPUnit\Framework\Error\Warning::$enabled;
-        \PHPUnit\Framework\Error\Warning::$enabled = false;
+        $warningEnabledOrig = Warning::$enabled;
+        Warning::$enabled = false;
 
         $restore = function () use ($displayErrorsOrig, $logErrorsOrig, $warningEnabledOrig) {
             ini_set('display_errors', $displayErrorsOrig);
             ini_set('log_errors', $logErrorsOrig);
-            \PHPUnit\Framework\Error\Warning::$enabled = $warningEnabledOrig;
+            Warning::$enabled = $warningEnabledOrig;
         };
 
         $this->cleanup[] = $restore;

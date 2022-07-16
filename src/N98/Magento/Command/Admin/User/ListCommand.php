@@ -30,30 +30,26 @@ class ListCommand extends AbstractAdminUserCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         /** @var $userModel \Mage_Admin_Model_User  */
         $userModel = $this->getUserModel();
         $userList = $userModel->getCollection();
-        $table = array();
+        $table = [];
         foreach ($userList as $user) {
-            $table[] = array(
-                $user->getId(),
-                $user->getUsername(),
-                $user->getEmail(),
-                $user->getIsActive() ? 'active' : 'inactive',
-            );
+            $table[] = [$user->getId(), $user->getUsername(), $user->getEmail(), $user->getIsActive() ? 'active' : 'inactive'];
         }
 
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('id', 'username', 'email', 'status'))
+            ->setHeaders(['id', 'username', 'email', 'status'])
             ->renderByFormat($output, $table, $input->getOption('format'));
+        return 0;
     }
 }

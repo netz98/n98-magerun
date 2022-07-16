@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\System\Check;
 
+use IteratorAggregate;
+use ArrayObject;
 use Traversable;
 
 /**
@@ -9,7 +11,7 @@ use Traversable;
  *
  * @package N98\Magento\Command\System\Check
  */
-class ResultCollection implements \IteratorAggregate
+class ResultCollection implements IteratorAggregate
 {
     /**
      * @var array
@@ -59,6 +61,6 @@ class ResultCollection implements \IteratorAggregate
      */
     public function getIterator()
     {
-        return new \ArrayObject($this->_results);
+        return new ArrayObject($this->_results);
     }
 }

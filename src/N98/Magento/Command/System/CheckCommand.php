@@ -2,6 +2,10 @@
 
 namespace N98\Magento\Command\System;
 
+use N98\Magento\Command\System\Check\SimpleCheck;
+use N98\Magento\Command\System\Check\StoreCheck;
+use N98\Magento\Command\System\Check\WebsiteCheck;
+use Mage;
 use LogicException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\CommandAware;
@@ -56,11 +60,11 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $this->config = $this->getCommandConfig();
@@ -79,6 +83,7 @@ HELP;
         } else {
             $this->_printResults($output, $results);
         }
+        return 0;
     }
 
     /**
@@ -90,15 +95,15 @@ HELP;
         $check = $this->_createCheck($checkGroupClass);
 
         switch (true) {
-            case $check instanceof Check\SimpleCheck:
+            case $check instanceof SimpleCheck:
                 $check->check($results);
                 break;
 
-            case $check instanceof Check\StoreCheck:
+            case $check instanceof StoreCheck:
                 $this->checkStores($results, $checkGroupClass, $check);
                 break;
 
-            case $check instanceof Check\WebsiteCheck:
+            case $check instanceof WebsiteCheck:
                 $this->checkWebsites($results, $checkGroupClass, $check);
                 break;
 
@@ -148,20 +153,16 @@ HELP;
      */
     protected function _printTable(InputInterface $input, OutputInterface $output, ResultCollection $results)
     {
-        $table = array();
+        $table = [];
         foreach ($results as $result) {
             /* @var $result Result */
-            $table[] = array(
-                $result->getResultGroup(),
-                strip_tags($result->getMessage()),
-                $result->getStatus(),
-            );
+            $table[] = [$result->getResultGroup(), strip_tags($result->getMessage()), $result->getStatus()];
         }
 
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('Group', 'Message', 'Result'))
+            ->setHeaders(['Group', 'Message', 'Result'])
             ->renderByFormat($output, $table, $input->getOption('format'));
     }
 
@@ -207,9 +208,9 @@ HELP;
      * @param string $checkGroupClass name
      * @param Check\StoreCheck $check
      */
-    private function checkStores(ResultCollection $results, $checkGroupClass, Check\StoreCheck $check)
+    private function checkStores(ResultCollection $results, $checkGroupClass, StoreCheck $check)
     {
-        if (!$stores = \Mage::app()->getStores()) {
+        if (!$stores = Mage::app()->getStores()) {
             $this->_markCheckWarning($results, 'stores', $checkGroupClass);
         }
         foreach ($stores as $store) {
@@ -222,9 +223,9 @@ HELP;
      * @param string $checkGroupClass name
      * @param Check\WebsiteCheck $check
      */
-    private function checkWebsites(ResultCollection $results, $checkGroupClass, Check\WebsiteCheck $check)
+    private function checkWebsites(ResultCollection $results, $checkGroupClass, WebsiteCheck $check)
     {
-        if (!$websites = \Mage::app()->getWebsites()) {
+        if (!$websites = Mage::app()->getWebsites()) {
             $this->_markCheckWarning($results, 'websites', $checkGroupClass);
         }
         foreach ($websites as $website) {

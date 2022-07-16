@@ -2,6 +2,7 @@
 
 namespace N98\Util\Console\Helper;
 
+use Mage;
 use N98\Magento\Application;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -25,7 +26,7 @@ class MagentoHelper extends AbstractHelper
     /**
      * @var int
      */
-    protected $_magentoMajorVersion = \N98\Magento\Application::MAGENTO_MAJOR_VERSION_1;
+    protected $_magentoMajorVersion = Application::MAGENTO_MAJOR_VERSION_1;
 
     /**
      * @var bool
@@ -94,7 +95,7 @@ class MagentoHelper extends AbstractHelper
      * @param array $subFolders [optional] sub-folders to check
      * @return bool
      */
-    public function detect($folder, array $subFolders = array())
+    public function detect($folder, array $subFolders = [])
     {
         $folders = $this->splitPathFolders($folder);
         $folders = $this->checkMagerunFile($folders);
@@ -167,7 +168,7 @@ class MagentoHelper extends AbstractHelper
      */
     protected function splitPathFolders($folder)
     {
-        $folders = array();
+        $folders = [];
 
         $folderParts = explode(DIRECTORY_SEPARATOR, $folder);
         foreach ($folderParts as $key => $part) {
@@ -323,8 +324,8 @@ class MagentoHelper extends AbstractHelper
                 return true; // the rest of this does not matter since we are simply exiting with a notice
             }
 
-            if (is_callable(array('\Mage', 'getEdition'))) {
-                $this->_magentoEnterprise = (\Mage::getEdition() == 'Enterprise');
+            if (is_callable(['\Mage', 'getEdition'])) {
+                $this->_magentoEnterprise = (Mage::getEdition() == 'Enterprise');
             } else {
                 $this->_magentoEnterprise = is_dir($this->_magentoRootFolder . '/app/code/core/Enterprise') ||
                     is_dir($this->_magentoRootFolder . '/app/design/frontend/enterprise/default/layout');

@@ -16,9 +16,9 @@ namespace N98\Util;
  */
 final class WindowsSystem
 {
-    const PATH_SEPARATOR = ';';
+    public const PATH_SEPARATOR = ';';
 
-    const FORBIDDEN_CHARS = '<>:"/\|?*';
+    public const FORBIDDEN_CHARS = '<>:"/\|?*';
 
     /**
      * @var WindowsSystem

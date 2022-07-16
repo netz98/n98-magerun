@@ -15,16 +15,12 @@ class ViewCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'       => $command->getName(),
-                'entityType'    => 'catalog_product',
-                'attributeCode' => 'sku',
-            )
+            ['command'       => $command->getName(), 'entityType'    => 'catalog_product', 'attributeCode' => 'sku']
         );
 
-        self::assertContains('sku', $commandTester->getDisplay());
-        self::assertContains('catalog_product_entity', $commandTester->getDisplay());
-        self::assertContains('Backend-Type', $commandTester->getDisplay());
-        self::assertContains('static', $commandTester->getDisplay());
+        self::assertStringContainsString('sku', $commandTester->getDisplay());
+        self::assertStringContainsString('catalog_product_entity', $commandTester->getDisplay());
+        self::assertStringContainsString('Backend-Type', $commandTester->getDisplay());
+        self::assertStringContainsString('static', $commandTester->getDisplay());
     }
 }

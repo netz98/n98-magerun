@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System\Setup;
 
+use InvalidArgumentException;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -16,7 +17,7 @@ class RemoveCommandTest extends TestCase
     {
         $mockAdapter = $this->getMockBuilder('\Varien_Db_Adapter_Pdo_Mysql')
             ->disableOriginalConstructor()
-            ->setMethods(array('delete'))
+            ->setMethods(['delete'])
             ->getMock();
 
         $mockAdapter->expects(self::once())
@@ -28,8 +29,8 @@ class RemoveCommandTest extends TestCase
             ->method('getConnection')
             ->willReturn($mockAdapter);
 
-        $command = $this->getMockBuilder('\N98\Magento\Command\System\Setup\RemoveCommand')
-            ->setMethods(array('_getModel'))
+        $command = $this->getMockBuilder(RemoveCommand::class)
+            ->setMethods(['_getModel'])
             ->getMock();
 
         $command->expects(self::once())
@@ -42,12 +43,9 @@ class RemoveCommandTest extends TestCase
         $command = $this->getApplication()->find('sys:setup:remove');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
-            'command'   => $command->getName(),
-            'module'    => 'Mage_Weee',
-        ));
+        $commandTester->execute(['command'   => $command->getName(), 'module'    => 'Mage_Weee']);
 
-        self::assertContains(
+        self::assertStringContainsString(
             'Successfully removed setup resource: "weee_setup" from module: "Mage_Weee"',
             $commandTester->getDisplay()
         );
@@ -69,7 +67,7 @@ class RemoveCommandTest extends TestCase
             ->method('getConnection')
             ->willReturn($mockAdapter);
 
-        $command = $this->getMockBuilder(\N98\Magento\Command\System\Setup\RemoveCommand::class)
+        $command = $this->getMockBuilder(RemoveCommand::class)
             ->setMethods(['_getModel'])
             ->getMock();
 
@@ -89,7 +87,7 @@ class RemoveCommandTest extends TestCase
             'setup'     => 'weee_setup',
         ]);
 
-        self::assertContains(
+        self::assertStringContainsString(
             'Successfully removed setup resource: "weee_setup" from module: "Mage_Weee"',
             $commandTester->getDisplay()
         );
@@ -116,7 +114,7 @@ class RemoveCommandTest extends TestCase
             ->with('core_resource')
             ->willReturn('core_resource');
 
-        $command = $this->getMockBuilder(\N98\Magento\Command\System\Setup\RemoveCommand::class)
+        $command = $this->getMockBuilder(RemoveCommand::class)
             ->setMethods(['_getModel'])
             ->getMock();
 
@@ -130,13 +128,9 @@ class RemoveCommandTest extends TestCase
         $command = $this->getApplication()->find('sys:setup:remove');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
-            'command'   => $command->getName(),
-            'module'    => 'Mage_Weee',
-            'setup'     => 'weee_setup',
-        ));
+        $commandTester->execute(['command'   => $command->getName(), 'module'    => 'Mage_Weee', 'setup'     => 'weee_setup']);
 
-        self::assertContains(
+        self::assertStringContainsString(
             'No entry was found for setup resource: "weee_setup" in module: "Mage_Weee"',
             $commandTester->getDisplay()
         );
@@ -151,15 +145,10 @@ class RemoveCommandTest extends TestCase
         $commandTester = new CommandTester($command);
 
         $this->expectException(
-            'InvalidArgumentException',
-            'Error no setup found with the name: "no_setup_exists"'
+            InvalidArgumentException::class
         );
 
-        $commandTester->execute(array(
-            'command'   => $command->getName(),
-            'module'    => 'Mage_Weee',
-            'setup'     => 'no_setup_exists',
-        ));
+        $commandTester->execute(['command'   => $command->getName(), 'module'    => 'Mage_Weee', 'setup'     => 'no_setup_exists']);
     }
 
     public function testModuleDoesNotExist()
@@ -170,16 +159,13 @@ class RemoveCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
 
-        $this->expectException('InvalidArgumentException', 'No module found with name: "I_DO_NOT_EXIST"');
-        $commandTester->execute(array(
-            'command'   => $command->getName(),
-            'module'    => 'I_DO_NOT_EXIST',
-        ));
+        $this->expectException(InvalidArgumentException::class);
+        $commandTester->execute(['command'   => $command->getName(), 'module'    => 'I_DO_NOT_EXIST']);
     }
 
     public function testCommandReturnsEarlyIfNoSetupResourcesForModule()
     {
-        $command = $this->getMockBuilder(\N98\Magento\Command\System\Setup\RemoveCommand::class)
+        $command = $this->getMockBuilder(RemoveCommand::class)
             ->setMethods(['getModuleSetupResources'])
             ->getMock();
 
@@ -199,7 +185,7 @@ class RemoveCommandTest extends TestCase
             'setup'     => 'weee_setup',
         ]);
 
-        self::assertContains(
+        self::assertStringContainsString(
             'No setup resources found for module: "Mage_Weee"',
             $commandTester->getDisplay()
         );

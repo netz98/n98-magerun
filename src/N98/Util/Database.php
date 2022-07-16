@@ -21,7 +21,7 @@ class Database
             $file = fopen($file, 'r');
 
             if (is_resource($file) === true) {
-                $query = array();
+                $query = [];
 
                 while (feof($file) === false) {
                     $query[] = fgets($file);
@@ -38,7 +38,7 @@ class Database
                     }
 
                     if (is_string($query) === true) {
-                        $query = array();
+                        $query = [];
                     }
                 }
 

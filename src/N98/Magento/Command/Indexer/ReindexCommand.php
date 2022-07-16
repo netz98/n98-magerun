@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Indexer;
 
+use N98\Util\BinaryString;
 use InvalidArgumentException;
 use Mage_Index_Model_Process;
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -42,11 +43,11 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $this->writeSection($output, 'Reindex');
@@ -56,7 +57,7 @@ HELP;
             $indexCodes = $this->askForIndexCodes($output);
         } else {
             // take cli argument
-            $indexCodes = \N98\Util\BinaryString::trimExplodeEmpty(',', $indexCode);
+            $indexCodes = BinaryString::trimExplodeEmpty(',', $indexCode);
         }
 
         $processes = $this->getProcessesByIndexCodes($indexCodes);
@@ -74,7 +75,7 @@ HELP;
      */
     private function getProcessesByIndexCodes($indexCodes)
     {
-        $processes = array();
+        $processes = [];
         foreach ($indexCodes as $indexCode) {
             /* @var $process Mage_Index_Model_Process */
             $process = $this->getIndexerModel()->getProcessByCode($indexCode);
@@ -94,7 +95,7 @@ HELP;
     private function askForIndexCodes(OutputInterface $output)
     {
         $indexerList = $this->getIndexerList();
-        $question = array();
+        $question = [];
         foreach ($indexerList as $key => $indexer) {
             $question[] = sprintf(
                 "<comment>%-4s</comment> %-40s <info>(last runtime: %s)</info>\n",
@@ -107,12 +108,12 @@ HELP;
 
         $validator = function ($typeInput) use ($indexerList) {
             if (strstr($typeInput, ',')) {
-                $typeInputs = \N98\Util\BinaryString::trimExplodeEmpty(',', $typeInput);
+                $typeInputs = BinaryString::trimExplodeEmpty(',', $typeInput);
             } else {
-                $typeInputs = array($typeInput);
+                $typeInputs = [$typeInput];
             }
 
-            $returnCodes = array();
+            $returnCodes = [];
             foreach ($typeInputs as $typeInput) {
                 if (!isset($indexerList[$typeInput - 1])) {
                     throw new InvalidArgumentException('Invalid indexer');

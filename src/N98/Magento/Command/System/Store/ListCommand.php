@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System\Store;
 
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
@@ -36,23 +37,22 @@ class ListCommand extends AbstractMagentoCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $table = [];
         $this->detectMagento($output, true);
         $this->initMagento();
 
-        foreach (\Mage::app()->getStores() as $store) {
-            $table[$store->getId()] = array(
-                $store->getId(),
-                $store->getCode(),
-            );
+        foreach (Mage::app()->getStores() as $store) {
+            $table[$store->getId()] = [$store->getId(), $store->getCode()];
         }
 
         ksort($table);
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('id', 'code'))
+            ->setHeaders(['id', 'code'])
             ->renderByFormat($output, $table, $input->getOption('format'));
+        return 0;
     }
 }

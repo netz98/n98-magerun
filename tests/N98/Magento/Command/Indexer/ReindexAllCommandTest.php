@@ -17,19 +17,17 @@ class ReindexAllCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-            )
+            ['command' => $command->getName()]
         );
 
-        self::assertContains('Successfully reindexed catalog_product_attribute', $commandTester->getDisplay());
-        self::assertContains('Successfully reindexed catalog_product_price', $commandTester->getDisplay());
-        self::assertContains('Successfully reindexed catalog_url', $commandTester->getDisplay());
-        self::assertContains('Successfully reindexed catalog_product_flat', $commandTester->getDisplay());
-        self::assertContains('Successfully reindexed catalog_category_flat', $commandTester->getDisplay());
-        self::assertContains('Successfully reindexed catalog_category_product', $commandTester->getDisplay());
-        self::assertContains('Successfully reindexed catalogsearch_fulltext', $commandTester->getDisplay());
-        self::assertContains('Successfully reindexed cataloginventory_stock', $commandTester->getDisplay());
-        self::assertContains('Successfully reindexed tag_summary', $commandTester->getDisplay());
+        self::assertStringContainsString('Successfully reindexed catalog_product_attribute', $commandTester->getDisplay());
+        self::assertStringContainsString('Successfully reindexed catalog_product_price', $commandTester->getDisplay());
+        self::assertStringContainsString('Successfully reindexed catalog_url', $commandTester->getDisplay());
+        self::assertStringContainsString('Successfully reindexed catalog_product_flat', $commandTester->getDisplay());
+        self::assertStringContainsString('Successfully reindexed catalog_category_flat', $commandTester->getDisplay());
+        self::assertStringContainsString('Successfully reindexed catalog_category_product', $commandTester->getDisplay());
+        self::assertStringContainsString('Successfully reindexed catalogsearch_fulltext', $commandTester->getDisplay());
+        self::assertStringContainsString('Successfully reindexed cataloginventory_stock', $commandTester->getDisplay());
+        self::assertStringContainsString('Successfully reindexed tag_summary', $commandTester->getDisplay());
     }
 }

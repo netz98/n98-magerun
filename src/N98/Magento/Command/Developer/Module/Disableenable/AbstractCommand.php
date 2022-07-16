@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Module\Disableenable;
 
+use Mage;
+use Varien_Simplexml_Element;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
@@ -54,13 +56,13 @@ class AbstractCommand extends AbstractMagentoCommand
      *
      * @throws InvalidArgumentException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (false === $this->initMagento()) {
             throw new RuntimeException('Magento could not be loaded');
         }
-        $this->config = \Mage::getConfig();
+        $this->config = Mage::getConfig();
         $this->modulesDir = $this->config->getOptions()->getEtcDir() . DS . 'modules' . DS;
         if ($codePool = $input->getOption('codepool')) {
             $output->writeln('<info>' . ($this->commandName == 'enable' ? 'Enabling' : 'Disabling') .
@@ -71,6 +73,7 @@ class AbstractCommand extends AbstractMagentoCommand
         } else {
             throw new InvalidArgumentException('No code-pool option nor module-name argument');
         }
+        return 0;
     }
 
     /**
@@ -101,9 +104,10 @@ class AbstractCommand extends AbstractMagentoCommand
      */
     protected function enableModule($module, OutputInterface $output)
     {
+        $xml = null;
         $validDecFile = false;
         foreach ($this->getDeclaredModuleFiles() as $decFile) {
-            $xml = new \Varien_Simplexml_Element(file_get_contents($decFile));
+            $xml = new Varien_Simplexml_Element(file_get_contents($decFile));
             if ($xml->modules->{$module}) {
                 $validDecFile = $decFile;
                 break;
@@ -141,11 +145,7 @@ class AbstractCommand extends AbstractMagentoCommand
      */
     protected function getDeclaredModuleFiles()
     {
-        $collectModuleFiles = array(
-            'base'   => array(),
-            'mage'   => array(),
-            'custom' => array(),
-        );
+        $collectModuleFiles = ['base'   => [], 'mage'   => [], 'custom' => []];
 
         foreach (glob($this->modulesDir . '*.xml')  as $v) {
             $name = explode(DIRECTORY_SEPARATOR, $v);

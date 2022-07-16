@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System\Setup;
 
+use Mage;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,8 +19,8 @@ class AbstractSetupCommand extends AbstractMagentoCommand
      */
     public function getModuleSetupResources($moduleName)
     {
-        $moduleSetups = array();
-        $resources = \Mage::getConfig()->getNode('global/resources')->children();
+        $moduleSetups = [];
+        $resources = Mage::getConfig()->getNode('global/resources')->children();
 
         foreach ($resources as $resName => $resource) {
             $modName = (string) $resource->setup->module;
@@ -39,7 +40,7 @@ class AbstractSetupCommand extends AbstractMagentoCommand
      */
     public function getModule(InputInterface $input)
     {
-        $modules = \Mage::app()->getConfig()->getNode('modules')->asArray();
+        $modules = Mage::app()->getConfig()->getNode('modules')->asArray();
 
         foreach ($modules as $moduleName => $data) {
             if (strtolower($moduleName) === strtolower($input->getArgument('module'))) {

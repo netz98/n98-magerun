@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Cache;
 
+use Mage;
+use Exception;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -55,7 +57,7 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $noReinitOption = $input->getOption('no-reinit');
         if (!$noReinitOption) {
@@ -64,24 +66,24 @@ HELP;
 
         $this->detectMagento($output, true);
         if (!$this->initMagento(true)) {
-            return;
+            return 0;
         }
 
         try {
-            \Mage::app()->loadAreaPart('adminhtml', 'events');
-        } catch (\Exception $e) {
+            Mage::app()->loadAreaPart('adminhtml', 'events');
+        } catch (Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
 
-        $allTypes = \Mage::app()->getCacheInstance()->getTypes();
+        $allTypes = Mage::app()->getCacheInstance()->getTypes();
         $typesToClean = $input->getArgument('type');
         $this->validateCacheCodes($typesToClean);
         $typeKeys = array_keys($allTypes);
 
         foreach ($typeKeys as $type) {
-            if (count($typesToClean) == 0 || in_array($type, $typesToClean)) {
-                \Mage::app()->getCacheInstance()->cleanType($type);
-                \Mage::dispatchEvent('adminhtml_cache_refresh_type', array('type' => $type));
+            if ((is_countable($typesToClean) ? count($typesToClean) : 0) == 0 || in_array($type, $typesToClean)) {
+                Mage::app()->getCacheInstance()->cleanType($type);
+                Mage::dispatchEvent('adminhtml_cache_refresh_type', ['type' => $type]);
                 $output->writeln('<info>Cache <comment>' . $type . '</comment> cleaned</info>');
             }
         }
@@ -89,5 +91,6 @@ HELP;
         if (!$noReinitOption) {
             $this->reinitCache();
         }
+        return 0;
     }
 }

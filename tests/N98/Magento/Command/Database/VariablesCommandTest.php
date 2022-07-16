@@ -28,9 +28,7 @@ class VariablesCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array_merge(array(
-                'command' => $command->getName(),
-            ), $options)
+            array_merge(['command' => $command->getName()], $options)
         );
 
         return $commandTester;
@@ -46,15 +44,13 @@ class VariablesCommandTest extends TestCase
 
     public function testExecute()
     {
-        $commandTester = $this->getCommand(array(
-            '--format' => 'csv',
-        ));
+        $commandTester = $this->getCommand(['--format' => 'csv']);
         $display = $commandTester->getDisplay();
 
-        self::assertContains('have_query_cache', $display);
-        self::assertContains('innodb_log_buffer_size', $display);
-        self::assertContains('max_connections', $display);
-        self::assertContains('thread_cache_size', $display);
+        self::assertStringContainsString('have_query_cache', $display);
+        self::assertStringContainsString('innodb_log_buffer_size', $display);
+        self::assertStringContainsString('max_connections', $display);
+        self::assertStringContainsString('thread_cache_size', $display);
     }
 
     /**
@@ -62,21 +58,18 @@ class VariablesCommandTest extends TestCase
      */
     public function testSearch()
     {
-        $commandTester = $this->getCommand(array(
-            '--format' => 'csv',
-            'search'   => 'Innodb%',
-        ));
+        $commandTester = $this->getCommand(['--format' => 'csv', 'search'   => 'Innodb%']);
 
         $dbHelper = $this->getDatabaseHelper();
 
         $display = $commandTester->getDisplay();
 
-        self::assertContains('innodb_concurrency_tickets', $display);
+        self::assertStringContainsString('innodb_concurrency_tickets', $display);
         // innodb_force_load_corrupted Introduced in 5.6.3
         if (-1 < version_compare($dbHelper->getMysqlVariable('version'), '5.6.3')) {
-            self::assertContains('innodb_force_load_corrupted', $display);
+            self::assertStringContainsString('innodb_force_load_corrupted', $display);
         }
-        self::assertContains('innodb_log_file_size', $display);
+        self::assertStringContainsString('innodb_log_file_size', $display);
         self::assertRegExp('~innodb_(?:file|read)_io_threads~', $display);
     }
 
@@ -85,11 +78,7 @@ class VariablesCommandTest extends TestCase
      */
     public function testRounding()
     {
-        $commandTester = $this->getCommand(array(
-            '--format'   => 'csv',
-            '--rounding' => '2',
-            'search'     => '%size%',
-        ));
+        $commandTester = $this->getCommand(['--format'   => 'csv', '--rounding' => '2', 'search'     => '%size%']);
 
         $dbHelper = $this->getDatabaseHelper();
 

@@ -16,21 +16,13 @@ class LogCommand extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'  => $command->getName(),
-                '--global' => true,
-                '--on'     => true,
-            )
+            ['command'  => $command->getName(), '--global' => true, '--on'     => true]
         );
         self::assertRegExp('/Development Log/', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'  => $command->getName(),
-                '--global' => true,
-                '--off'    => true,
-            )
+            ['command'  => $command->getName(), '--global' => true, '--off'    => true]
         );
 
         self::assertRegExp('/Development Log/', $commandTester->getDisplay());

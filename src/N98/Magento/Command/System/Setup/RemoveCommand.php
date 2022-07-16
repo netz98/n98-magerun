@@ -35,12 +35,12 @@ class RemoveCommand extends AbstractSetupCommand
      *
      * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
 
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $moduleName = $this->getModule($input);
@@ -50,7 +50,7 @@ class RemoveCommand extends AbstractSetupCommand
         if (empty($moduleSetups)) {
             $output->writeln(sprintf('No setup resources found for module: "%s"', $moduleName));
 
-            return;
+            return 0;
         }
 
         if ($setupName === 'all') {
@@ -62,6 +62,7 @@ class RemoveCommand extends AbstractSetupCommand
         } else {
             throw new InvalidArgumentException(sprintf('Error no setup found with the name: "%s"', $setupName));
         }
+        return 0;
     }
 
     /**
@@ -80,7 +81,7 @@ class RemoveCommand extends AbstractSetupCommand
         }
         $table = $model->getTableName('core_resource');
 
-        if ($writeAdapter->delete($table, array('code = ?' => $setupResource)) > 0) {
+        if ($writeAdapter->delete($table, ['code = ?' => $setupResource]) > 0) {
             $output->writeln(
                 sprintf(
                     '<info>Successfully removed setup resource: "%s" from module: "%s" </info>',

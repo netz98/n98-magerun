@@ -2,6 +2,7 @@
 
 namespace N98\Magento;
 
+use InvalidArgumentException;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -97,6 +98,7 @@ class MagerunCommandTester
      */
     private function getCommandTester()
     {
+        $command = null;
         if (isset($this->commandTester)) {
             return $this->commandTester;
         }
@@ -124,7 +126,7 @@ class MagerunCommandTester
         );
 
         if (!$command instanceof Command) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf('Command "%s" is not a console command', $this->commandName)
             );
         }

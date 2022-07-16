@@ -7,6 +7,7 @@
 
 namespace N98\Util;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase as TestCase;
 use RuntimeException;
 
@@ -36,8 +37,8 @@ class VerifyOrDieTest extends TestCase
         try {
             VerifyOrDie::filename('-fail', $message);
             self::fail('An expected exception has not been thrown.');
-        } catch (RuntimeException $e) {
-            self::assertSame($message, $e->getMessage());
+        } catch (RuntimeException $runtimeException) {
+            self::assertSame($message, $runtimeException->getMessage());
         }
     }
 
@@ -56,7 +57,7 @@ class VerifyOrDieTest extends TestCase
      */
     public function invalidArugment()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Parameter basename must be of type string, NULL given');
         VerifyOrDie::filename(null);
     }
@@ -67,7 +68,7 @@ class VerifyOrDieTest extends TestCase
     public function startWithDashFilename()
     {
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Filename \'-rf\' starts with a dash');
+        $this->expectExceptionMessage("Filename '-rf' starts with a dash");
         VerifyOrDie::filename('-rf');
     }
 
@@ -87,10 +88,6 @@ class VerifyOrDieTest extends TestCase
      */
     public function provideNonPortableFilenames()
     {
-        return array(
-            array('no-slash-/-in.there'),
-            array('windoze-limits-<>:"/\\|?*'),
-            array('lets-keep-spaces   out'),
-        );
+        return [['no-slash-/-in.there'], ['windoze-limits-<>:"/\\|?*'], ['lets-keep-spaces   out']];
     }
 }

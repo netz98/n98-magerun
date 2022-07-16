@@ -16,21 +16,13 @@ class DemoNoticeCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'  => $command->getName(),
-                'store'    => 'admin',
-                '--on'     => true,
-            )
+            ['command'  => $command->getName(), 'store'    => 'admin', '--on'     => true]
         );
         self::assertRegExp('/Demo Notice enabled/', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'  => $command->getName(),
-                'store'    => 'admin',
-                '--off'    => true,
-            )
+            ['command'  => $command->getName(), 'store'    => 'admin', '--off'    => true]
         );
 
         self::assertRegExp('/Demo Notice disabled/', $commandTester->getDisplay());

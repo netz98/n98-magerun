@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Database\Maintain;
 
+use N98\Util\Console\Helper\DatabaseHelper;
+use PDO;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
@@ -12,8 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckTablesCommand extends AbstractMagentoCommand
 {
-    const MESSAGE_CHECK_NOT_SUPPORTED = 'The storage engine for the table doesn\'t support check';
-    const MESSAGE_REPAIR_NOT_SUPPORTED = 'The storage engine for the table doesn\'t support repair';
+    public const MESSAGE_CHECK_NOT_SUPPORTED = 'The storage engine for the table doesn\'t support check';
+    public const MESSAGE_REPAIR_NOT_SUPPORTED = 'The storage engine for the table doesn\'t support repair';
 
     /**
      * @var InputInterface
@@ -26,7 +28,7 @@ class CheckTablesCommand extends AbstractMagentoCommand
     protected $output = null;
 
     /**
-     * @var \N98\Util\Console\Helper\DatabaseHelper
+     * @var DatabaseHelper
      */
     protected $dbHelper = null;
 
@@ -38,13 +40,7 @@ class CheckTablesCommand extends AbstractMagentoCommand
     /**
      * @var array
      */
-    protected $allowedTypes = array(
-        'QUICK',
-        'FAST',
-        'CHANGED',
-        'MEDIUM',
-        'EXTENDED',
-    );
+    protected $allowedTypes = ['QUICK', 'FAST', 'CHANGED', 'MEDIUM', 'EXTENDED'];
 
     protected function configure()
     {
@@ -129,7 +125,7 @@ HELP;
      * @throws InvalidArgumentException
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->input = $input;
         $this->output = $output;
@@ -139,16 +135,10 @@ HELP;
         $this->showProgress = $input->getOption('format') == null;
 
         if ($input->getOption('table')) {
-            $resolvedTables = array(
-                $this->dbHelper->resolveTables(
-                    array('@check'),
-                    array(
-                        'check' => array(
-                            'tables' => explode(' ', $input->getOption('table')),
-                        ),
-                    )
-                ),
-            );
+            $resolvedTables = [$this->dbHelper->resolveTables(
+                ['@check'],
+                ['check' => ['tables' => explode(' ', $input->getOption('table'))]]
+            )];
             $tables = $resolvedTables[0];
         } else {
             $tables = $this->dbHelper->getTables();
@@ -156,30 +146,21 @@ HELP;
 
         $allTableStatus = $this->dbHelper->getTablesStatus();
 
-        $tableOutput = array();
+        $tableOutput = [];
         /** @var \Symfony\Component\Console\Helper\ProgressHelper $progress */
         $progress = $this->getHelper('progress');
         if ($this->showProgress) {
-            $progress->start($output, count($tables));
+            $progress->start($output, is_countable($tables) ? count($tables) : 0);
         }
 
-        $methods = array(
-            'InnoDB' => 1,
-            'MEMORY' => 1,
-            'MyISAM' => 1,
-        );
+        $methods = ['InnoDB' => 1, 'MEMORY' => 1, 'MyISAM' => 1];
 
         foreach ($tables as $tableName) {
             if (isset($allTableStatus[$tableName]) && isset($methods[$allTableStatus[$tableName]['Engine']])) {
                 $m = '_check' . $allTableStatus[$tableName]['Engine'];
                 $tableOutput = array_merge($tableOutput, $this->$m($tableName));
             } else {
-                $tableOutput[] = array(
-                    'table'     => $tableName,
-                    'operation' => 'not supported',
-                    'type'      => '',
-                    'status'    => '',
-                );
+                $tableOutput[] = ['table'     => $tableName, 'operation' => 'not supported', 'type'      => '', 'status'    => ''];
             }
             $this->progressAdvance();
         }
@@ -191,8 +172,9 @@ HELP;
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('Table', 'Operation', 'Type', 'Status'))
+            ->setHeaders(['Table', 'Operation', 'Type', 'Status'])
             ->renderByFormat($this->output, $tableOutput, $this->input->getOption('format'));
+        return 0;
     }
 
     /**
@@ -203,19 +185,12 @@ HELP;
      */
     protected function _queryAlterTable($tableName, $engine)
     {
-        /** @var \PDO $connection */
+        /** @var PDO $connection */
         $connection = $this->dbHelper->getConnection($this->output);
         $start = microtime(true);
         $affectedRows = $connection->exec(sprintf('ALTER TABLE %s ENGINE=%s', $tableName, $engine));
 
-        return array(
-            array(
-                'table'     => $tableName,
-                'operation' => 'ENGINE ' . $engine,
-                'type'      => sprintf('%15s rows', (string) $affectedRows),
-                'status'    => sprintf('%.3f secs', microtime(true) - $start),
-            ),
-        );
+        return [['table'     => $tableName, 'operation' => 'ENGINE ' . $engine, 'type'      => sprintf('%15s rows', (string) $affectedRows), 'status'    => sprintf('%.3f secs', microtime(true) - $start)]];
     }
 
     /**
@@ -245,31 +220,21 @@ HELP;
      */
     protected function _checkMyISAM($tableName)
     {
-        $table = array();
+        $table = [];
         $type = $this->input->getOption('type');
         $result = $this->_query(sprintf('CHECK TABLE %s %s', $tableName, $type));
         if ($result['Msg_text'] == self::MESSAGE_CHECK_NOT_SUPPORTED) {
-            return array();
+            return [];
         }
 
-        $table[] = array(
-            'table'     => $tableName,
-            'operation' => $result['Op'],
-            'type'      => $type,
-            'status'    => $result['Msg_text'],
-        );
+        $table[] = ['table'     => $tableName, 'operation' => $result['Op'], 'type'      => $type, 'status'    => $result['Msg_text']];
 
         if ($result['Msg_text'] != 'OK'
             && $this->input->getOption('repair')
         ) {
             $result = $this->_query(sprintf('REPAIR TABLE %s %s', $tableName, $type));
             if ($result['Msg_text'] != self::MESSAGE_REPAIR_NOT_SUPPORTED) {
-                $table[] = array(
-                    'table'     => $tableName,
-                    'operation' => $result['Op'],
-                    'type'      => $type,
-                    'status'    => $result['Msg_text'],
-                );
+                $table[] = ['table'     => $tableName, 'operation' => $result['Op'], 'type'      => $type, 'status'    => $result['Msg_text']];
             }
         }
 
@@ -283,11 +248,11 @@ HELP;
      */
     protected function _query($sql)
     {
-        /** @var \PDO $connection */
+        /** @var PDO $connection */
         $connection = $this->dbHelper->getConnection($this->output);
         $query = $connection->prepare($sql);
         $query->execute();
-        $result = $query->fetch(\PDO::FETCH_ASSOC);
+        $result = $query->fetch(PDO::FETCH_ASSOC);
 
         return $result;
     }

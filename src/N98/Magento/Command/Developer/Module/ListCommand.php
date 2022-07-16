@@ -19,7 +19,7 @@ class ListCommand extends AbstractMagentoCommand
             ->addOption('codepool', null, InputOption::VALUE_OPTIONAL, 'Show modules in a specific codepool')
             ->addOption('status', null, InputOption::VALUE_OPTIONAL, 'Show modules with a specific status')
             ->addOption('vendor', null, InputOption::VALUE_OPTIONAL, 'Show modules of a specified vendor')
-            ->setAliases(array('sys:modules:list'))// deprecated
+            ->setAliases(['sys:modules:list'])// deprecated
             ->setDescription('List all installed modules')
             ->addOption(
                 'format',
@@ -35,7 +35,7 @@ class ListCommand extends AbstractMagentoCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
 
@@ -48,14 +48,15 @@ class ListCommand extends AbstractMagentoCommand
 
         if (!count($modules)) {
             $output->writeln("No modules match the specified criteria.");
-            return;
+            return 0;
         }
 
         /* @var $table TableHelper */
         $table = $this->getHelper('table');
         $table
-            ->setHeaders(array('codePool', 'Name', 'Version', 'Status'))
+            ->setHeaders(['codePool', 'Name', 'Version', 'Status'])
             ->renderByFormat($output, iterator_to_array($modules), $input->getOption('format'));
+        return 0;
     }
 
     /**

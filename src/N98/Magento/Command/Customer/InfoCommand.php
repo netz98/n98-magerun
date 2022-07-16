@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Customer;
 
+use Mage_Customer_Model_Attribute;
+use Attribute;
 use Exception;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,10 +14,7 @@ class InfoCommand extends AbstractCustomerCommand
     /**
      * @var array
      */
-    protected $blacklist = array(
-        'password_hash',
-        'increment_id',
-    );
+    protected $blacklist = ['password_hash', 'increment_id'];
 
     protected function configure()
     {
@@ -32,11 +31,11 @@ class InfoCommand extends AbstractCustomerCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $email = $this->getHelper('parameter')->askEmail($input, $output);
@@ -47,33 +46,31 @@ class InfoCommand extends AbstractCustomerCommand
             ->loadByEmail($email);
         if ($customer->getId() <= 0) {
             $output->writeln('<error>Customer was not found</error>');
-            return;
+            return 0;
         }
 
         $customer->load();
-        $table = array();
+        $table = [];
         foreach ($customer->toArray() as $key => $value) {
             if (in_array($key, $this->blacklist)) {
                 continue;
             }
             try {
                 $attribute = $customer->getResource()->getAttribute($key);
-                $table[] = array(
-                    $attribute instanceof \Mage_Customer_Model_Attribute
-                        ? $attribute->getFrontend()->getLabel() : $key,
-                    $attribute instanceof \Mage_Customer_Model_Attribute
-                        ? $attribute->getFrontend()->getValue($customer) : $value,
-                );
+                $table[] = [$attribute instanceof Mage_Customer_Model_Attribute
+                    ? $attribute->getFrontend()->getLabel() : $key, $attribute instanceof Mage_Customer_Model_Attribute
+                    ? $attribute->getFrontend()->getValue($customer) : $value];
             } catch (Exception $e) {
-                $table[] = array($key, $value);
+                $table[] = [$key, $value];
             }
         }
 
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('Attribute', 'Value'))
+            ->setHeaders([Attribute::class, 'Value'])
             ->setRows($table)
             ->render($output);
+        return 0;
     }
 }

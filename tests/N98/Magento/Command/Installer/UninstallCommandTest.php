@@ -27,12 +27,9 @@ class UninstallCommandTest extends TestCase
 
         $dialog = new DialogHelper();
         $dialog->setInputStream($this->getInputStream('no\n'));
-        $command->setHelperSet(new HelperSet(array($dialog)));
+        $command->setHelperSet(new HelperSet([$dialog]));
 
-        $commandTester->execute(array(
-            'command'               => $command->getName(),
-            '--installationFolder'  => $this->getTestMagentoRoot(),
-        ));
+        $commandTester->execute(['command'               => $command->getName(), '--installationFolder'  => $this->getTestMagentoRoot()]);
         self::assertEquals("Really uninstall ? [n]: ", $commandTester->getDisplay());
 
         //check magento still installed
@@ -51,16 +48,12 @@ class UninstallCommandTest extends TestCase
         $commandTester = new CommandTester($command);
 
         $commandTester->execute(
-            array(
-                'command'               => $command->getName(),
-                '--force'               => true,
-                '--installationFolder'  => $this->getTestMagentoRoot(),
-            )
+            ['command'               => $command->getName(), '--force'               => true, '--installationFolder'  => $this->getTestMagentoRoot()]
         );
 
-        self::assertContains("Dropped database", $commandTester->getDisplay());
-        self::assertContains("Remove directory " . $this->getTestMagentoRoot(), $commandTester->getDisplay());
-        self::assertContains("Done", $commandTester->getDisplay());
+        self::assertStringContainsString("Dropped database", $commandTester->getDisplay());
+        self::assertStringContainsString("Remove directory " . $this->getTestMagentoRoot(), $commandTester->getDisplay());
+        self::assertStringContainsString("Done", $commandTester->getDisplay());
         self::assertFileNotExists($this->getTestMagentoRoot() . '/app/etc/local.xml');
     }
 

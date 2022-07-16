@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\GiftCard;
 
+use Symfony\Component\Console\Input\InputArgument;
+use Mage;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -16,7 +18,7 @@ class RemoveCommand extends AbstractGiftCardCommand
     {
         $this
             ->setName('giftcard:remove')
-            ->addArgument('code', \Symfony\Component\Console\Input\InputArgument::REQUIRED, 'Gift card code')
+            ->addArgument('code', InputArgument::REQUIRED, 'Gift card code')
             ->setDescription('Remove a gift card account by code');
     }
 
@@ -26,13 +28,13 @@ class RemoveCommand extends AbstractGiftCardCommand
      *
      * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
-        $accounts = \Mage::getModel('enterprise_giftcardaccount/giftcardaccount')->getCollection()
+        $accounts = Mage::getModel('enterprise_giftcardaccount/giftcardaccount')->getCollection()
             ->addFieldToFilter('code', $input->getArgument('code'));
         if (!$accounts->count()) {
             $output->writeln('<info>No gift cards with matching code found</info>');
@@ -43,5 +45,6 @@ class RemoveCommand extends AbstractGiftCardCommand
                 $output->writeln('<info>Deleted gift card account id <comment>' . $id . '</comment></info>');
             }
         }
+        return 0;
     }
 }

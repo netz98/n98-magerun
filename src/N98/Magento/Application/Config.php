@@ -27,20 +27,20 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Config
 {
-    const PSR_0 = 'PSR-0';
-    const PSR_4 = 'PSR-4';
+    public const PSR_0 = 'PSR-0';
+    public const PSR_4 = 'PSR-4';
 
-    const COMMAND_CLASS = 'Symfony\Component\Console\Command\Command';
+    public const COMMAND_CLASS = 'Symfony\Component\Console\Command\Command';
 
     /**
      * @var array config data
      */
-    private $config = array();
+    private $config = [];
 
     /**
      * @var array
      */
-    private $partialConfig = array();
+    private $partialConfig = [];
 
     /**
      * @var ConfigurationLoader
@@ -50,7 +50,7 @@ class Config
     /**
      * @var array
      */
-    private $initConfig = array();
+    private $initConfig = [];
 
     /**
      * @var boolean
@@ -69,7 +69,7 @@ class Config
      * @param bool $isPharMode
      * @param OutputInterface $output [optional]
      */
-    public function __construct(array $initConfig = array(), $isPharMode = false, OutputInterface $output = null)
+    public function __construct(array $initConfig = [], $isPharMode = false, OutputInterface $output = null)
     {
         $this->initConfig = $initConfig;
         $this->isPharMode = (bool) $isPharMode;
@@ -84,7 +84,7 @@ class Config
      */
     public function checkConfigCommandAlias(InputInterface $input)
     {
-        foreach ($this->getArray(array('commands', 'aliases')) as $alias) {
+        foreach ($this->getArray(['commands', 'aliases']) as $alias) {
             if (!is_array($alias)) {
                 continue;
             }
@@ -118,19 +118,19 @@ class Config
      */
     public function registerConfigCommandAlias(Command $command)
     {
-        foreach ($this->getArray(array('commands', 'aliases')) as $alias) {
+        foreach ($this->getArray(['commands', 'aliases']) as $alias) {
             if (!is_array($alias)) {
                 continue;
             }
 
             $aliasCommandName = key($alias);
             $commandString = $alias[$aliasCommandName];
-            list($originalCommand) = explode(' ', $commandString, 2);
+            [$originalCommand] = explode(' ', $commandString, 2);
             if ($command->getName() !== $originalCommand) {
                 continue;
             }
 
-            $command->setAliases(array_merge($command->getAliases(), array($aliasCommandName)));
+            $command->setAliases(array_merge($command->getAliases(), [$aliasCommandName]));
         }
     }
 
@@ -139,7 +139,7 @@ class Config
      */
     public function registerCustomCommands(Application $application)
     {
-        foreach ($this->getArray(array('commands', 'customCommands')) as $commandClass) {
+        foreach ($this->getArray(['commands', 'customCommands']) as $commandClass) {
             $commandName = null;
             if (is_array($commandClass)) {
                 // Support for key => value (name -> class)
@@ -264,7 +264,7 @@ class Config
     {
         if (!$this->loader) {
             $this->loader = $this->createLoader($this->initConfig, $this->isPharMode, $this->output);
-            $this->initConfig = array();
+            $this->initConfig = [];
         }
 
         return $this->loader;
@@ -295,7 +295,7 @@ class Config
             return $this->partialConfig['detect']['subFolders'];
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -332,7 +332,7 @@ class Config
      * @param array $default [optional]
      * @return array
      */
-    private function getArray($key, $default = array())
+    private function getArray($key, $default = [])
     {
         $result = $this->traverse((array) $key);
         if (null === $result) {

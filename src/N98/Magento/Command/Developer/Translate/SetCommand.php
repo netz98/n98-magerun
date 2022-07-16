@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Translate;
 
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,19 +29,19 @@ class SetCommand extends AbstractMagentoCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $store = $this->getHelper('parameter')->askStore($input, $output);
 
-        $locale = \Mage::getStoreConfig('general/locale/code', $store->getId());
+        $locale = Mage::getStoreConfig('general/locale/code', $store->getId());
 
         /* @var $store \Mage_Core_Model_Store */
-        $resource = \Mage::getResourceModel('core/translate_string');
+        $resource = Mage::getResourceModel('core/translate_string');
         $resource->saveTranslate(
             $input->getArgument('string'),
             $input->getArgument('translate'),
@@ -59,5 +60,6 @@ class SetCommand extends AbstractMagentoCommand
 
         $input = new StringInput('cache:flush');
         $this->getApplication()->run($input, new NullOutput());
+        return 0;
     }
 }

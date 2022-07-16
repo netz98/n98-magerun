@@ -7,6 +7,8 @@
 
 namespace N98\Magento\Application;
 
+use RuntimeException;
+use InvalidArgumentException;
 use N98\Magento\Command\TestCase;
 
 /**
@@ -23,10 +25,10 @@ class ConfigFileTest extends TestCase
     public function creation()
     {
         $configFile = new ConfigFile();
-        self::assertInstanceOf('\N98\Magento\Application\ConfigFile', $configFile);
+        self::assertInstanceOf(ConfigFile::class, $configFile);
 
         $configFile = ConfigFile::createFromFile(__FILE__);
-        self::assertInstanceOf('\N98\Magento\Application\ConfigFile', $configFile);
+        self::assertInstanceOf(ConfigFile::class, $configFile);
     }
 
     /**
@@ -38,7 +40,7 @@ class ConfigFileTest extends TestCase
         $configFile->loadFile('data://,- %root%');
         $configFile->applyVariables("root-folder");
 
-        self::assertSame(array('root-folder'), $configFile->toArray());
+        self::assertSame(['root-folder'], $configFile->toArray());
     }
 
     /**
@@ -48,9 +50,9 @@ class ConfigFileTest extends TestCase
     {
         $configFile = new ConfigFile();
         $configFile->loadFile('data://,- bar');
-        $result = $configFile->mergeArray(array('foo'));
+        $result = $configFile->mergeArray(['foo']);
 
-        self::assertSame(array('foo', 'bar'), $result);
+        self::assertSame(['foo', 'bar'], $result);
     }
 
     /**
@@ -58,7 +60,7 @@ class ConfigFileTest extends TestCase
      */
     public function parseEmptyFile()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Failed to parse config-file \'data://,\'');
         $configFile = new ConfigFile();
         $configFile->loadFile('data://,');
@@ -72,7 +74,7 @@ class ConfigFileTest extends TestCase
      */
     public function invalidFileThrowsException()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         @ConfigFile::createFromFile(":");
     }
 }

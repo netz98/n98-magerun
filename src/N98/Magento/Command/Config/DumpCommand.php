@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Config;
 
+use Mage;
+use DOMDocument;
 use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -46,21 +48,22 @@ HELP;
      * @return int|null
      * @throws InvalidArgumentException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
-        $config = \Mage::app()->getConfig()->getNode($input->getArgument('xpath'));
+        $config = Mage::app()->getConfig()->getNode($input->getArgument('xpath'));
         if (!$config) {
             throw new InvalidArgumentException('xpath was not found');
         }
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         $dom->loadXML($config->asXml());
         $output->writeln($dom->saveXML(), OutputInterface::OUTPUT_RAW);
+        return 0;
     }
 }

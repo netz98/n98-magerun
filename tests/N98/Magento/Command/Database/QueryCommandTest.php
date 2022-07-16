@@ -15,14 +15,11 @@ class QueryCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-                'query'   => 'SHOW TABLES;',
-            )
+            ['command' => $command->getName(), 'query'   => 'SHOW TABLES;']
         );
 
-        self::assertContains('admin_user', $commandTester->getDisplay());
-        self::assertContains('catalog_product_entity', $commandTester->getDisplay());
-        self::assertContains('wishlist', $commandTester->getDisplay());
+        self::assertStringContainsString('admin_user', $commandTester->getDisplay());
+        self::assertStringContainsString('catalog_product_entity', $commandTester->getDisplay());
+        self::assertStringContainsString('wishlist', $commandTester->getDisplay());
     }
 }

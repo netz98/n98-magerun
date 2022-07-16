@@ -22,11 +22,11 @@ class FlushCommandTest extends TestCase
     {
         $command = $this->prepareCommand(new FlushCommand());
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $commandTester->execute(['command' => $command->getName()]);
 
         $display = $commandTester->getDisplay();
-        self::assertContains('Flushing cache directory ', $display);
-        self::assertContains('Cache directory flushed', $display);
+        self::assertStringContainsString('Flushing cache directory ', $display);
+        self::assertStringContainsString('Cache directory flushed', $display);
     }
 
     /**

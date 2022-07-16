@@ -62,7 +62,7 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectDbSettings($output);
 
@@ -81,5 +81,6 @@ HELP;
                 $output->writeln('<error>' . $commandOutput . '</error>');
             }
         }
+        return 0;
     }
 }

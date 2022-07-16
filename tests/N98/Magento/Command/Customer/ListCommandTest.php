@@ -14,7 +14,7 @@ class ListCommandTest extends TestCase
         $command = $this->getApplication()->find('customer:list');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $commandTester->execute(['command' => $command->getName()]);
 
         self::assertRegExp('/email/', $commandTester->getDisplay());
     }

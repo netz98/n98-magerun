@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Cms\Block;
 
+use Mage;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -18,22 +19,22 @@ class ToggleCommandTest extends TestCase
         $application->add(new ToggleCommand());
         $command = $this->getApplication()->find('cms:block:toggle');
         $commandTester = new CommandTester($command);
-        $victim = \Mage::getModel('cms/block')->getCollection()->getFirstItem();
+        $victim = Mage::getModel('cms/block')->getCollection()->getFirstItem();
         $commandTester->execute(
-            array(
+            [
                 'command'  => $command->getName(),
                 // id should work
                 'block_id' => $victim->getId(),
-            )
+            ]
         );
-        self::assertContains('disabled', $commandTester->getDisplay());
+        self::assertStringContainsString('disabled', $commandTester->getDisplay());
         $commandTester->execute(
-            array(
+            [
                 'command'  => $command->getName(),
                 // identifier should work
                 'block_id' => $victim->getIdentifier(),
-            )
+            ]
         );
-        self::assertContains('enabled', $commandTester->getDisplay());
+        self::assertStringContainsString('enabled', $commandTester->getDisplay());
     }
 }

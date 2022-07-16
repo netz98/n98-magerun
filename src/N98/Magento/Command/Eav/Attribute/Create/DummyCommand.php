@@ -2,6 +2,10 @@
 
 namespace N98\Magento\Command\Eav\Attribute\Create;
 
+use N98\Magento\Command\AbstractMagentoCommand;
+use Locale;
+use Exception;
+use RuntimeException;
 use Mage;
 use Mage_Eav_Model_Entity_Attribute;
 use Symfony\Component\Console\Input\InputArgument;
@@ -10,11 +14,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
-class DummyCommand extends \N98\Magento\Command\AbstractMagentoCommand
+class DummyCommand extends AbstractMagentoCommand
 {
-    private $supportedLocales = array(
-        'en_US', 'en_GB',
-    );
+    private $supportedLocales = ['en_US', 'en_GB'];
 
     protected function configure()
     {
@@ -25,7 +27,7 @@ Supported Locales:
 - en_GB
 HELP;
         $this
-            ->setName('eav:attribute:create-dummy-values')->addArgument('locale', InputArgument::OPTIONAL, 'Locale')
+            ->setName('eav:attribute:create-dummy-values')->addArgument('locale', InputArgument::OPTIONAL, Locale::class)
             ->addArgument('attribute-id', InputArgument::OPTIONAL, 'Attribute ID to add values')
             ->addArgument('values-type', InputArgument::OPTIONAL, 'Types of Values to create (default int)')
             ->addArgument('values-number', InputArgument::OPTIONAL, 'Number of Values to create (default 1)')
@@ -39,11 +41,11 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $output->writeln(
@@ -71,14 +73,15 @@ HELP;
             $value = $dummyValues->createValue($argument['values-type'], $argument['locale']);
             if (!$this->attributeValueExists($attribute, $value)) {
                 try {
-                    $attribute->setData('option', array('value' => array('option' => array($value, $value))));
+                    $attribute->setData('option', ['value' => ['option' => [$value, $value]]]);
                     $attribute->save();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $output->writeln("<error>" . $e->getMessage() . "</error>");
                 }
                 $output->writeln("<comment>ATTRIBUTE VALUE: '" . $value . "' ADDED!</comment>\r");
             }
         }
+        return 0;
     }
 
     /**
@@ -92,17 +95,17 @@ HELP;
     private function askForArguments(InputInterface $input, OutputInterface $output)
     {
         $helper = $this->getHelper('question');
-        $argument = array();
+        $argument = [];
 
         // Attribute ID
         if (is_null($input->getArgument('attribute-id'))) {
             $attribute_code = Mage::getModel('eav/entity_attribute')
                 ->getCollection()->addFieldToSelect('*')
-                ->addFieldToFilter('entity_type_id', array('eq' => 4))
-                ->addFieldToFilter('backend_type', array('in' => array('int')))
+                ->addFieldToFilter('entity_type_id', ['eq' => 4])
+                ->addFieldToFilter('backend_type', ['in' => ['int']])
                 ->setOrder('attribute_id', 'ASC')
             ;
-            $attribute_codes = array();
+            $attribute_codes = [];
 
             foreach ($attribute_code as $item) {
                 $attribute_codes[$item['attribute_id']] = $item['attribute_id'] . "|" . $item['attribute_code'];
@@ -132,7 +135,7 @@ HELP;
             $question->setValidator(function ($answer) {
                 $answer = (int) ($answer);
                 if (!is_int($answer) || $answer <= 0) {
-                    throw new \RuntimeException('Please enter an integer value or > 0');
+                    throw new RuntimeException('Please enter an integer value or > 0');
                 }
 
                 return $answer;

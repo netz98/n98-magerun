@@ -7,6 +7,7 @@
 
 namespace N98;
 
+use N98\Magento\Application;
 use Composer\Autoload\ClassLoader;
 use ErrorException;
 
@@ -28,7 +29,7 @@ class MagerunBootstrap
             $loader = self::getLoader();
         }
 
-        $application = new Magento\Application($loader);
+        $application = new Application($loader);
 
         return $application;
     }

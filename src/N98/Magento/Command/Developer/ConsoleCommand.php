@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer;
 
+use Mage;
 use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\Developer\Console\Psy\Shell;
@@ -29,7 +30,7 @@ class ConsoleCommand extends AbstractMagentoCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $initialized = false;
         try {
@@ -47,21 +48,22 @@ class ConsoleCommand extends AbstractMagentoCommand
             $ok = Charset::convertInteger(Charset::UNICODE_CHECKMARK_CHAR);
             $edition = $this->getApplication()->isMagentoEnterprise() ? 'EE' : 'CE';
             $consoleOutput->writeln(
-                '<fg=black;bg=green>Magento ' . \Mage::getVersion() . ' ' . $edition .
+                '<fg=black;bg=green>Magento ' . Mage::getVersion() . ' ' . $edition .
                 ' initialized.</fg=black;bg=green> ' . $ok
             );
         } else {
             $consoleOutput->writeln('<fg=black;bg=yellow>Magento is not initialized.</fg=black;bg=yellow>');
         }
 
-        $help = <<<'help'
+        $help = <<<'help_WRAP'
 At the prompt, type <comment>help</comment> for some help.
 
 To exit the shell, type <comment>^D</comment>.
-help;
+help_WRAP;
 
         $consoleOutput->writeln($help);
 
         $shell->run($input, $consoleOutput);
+        return 0;
     }
 }

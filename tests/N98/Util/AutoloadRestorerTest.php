@@ -7,21 +7,22 @@
 
 namespace N98\Util;
 
+use PHPUnit\Framework\TestCase;
 /**
  * Class AutoloadRestorerTest
  *
  * @package N98\Util
  */
-class AutoloadRestorerTest extends \PHPUnit\Framework\TestCase
+class AutoloadRestorerTest extends TestCase
 {
     /**
      * @test
      */
     public function creation()
     {
-        $restorer = new AutoloadRestorer();
+        $autoloadRestorer = new AutoloadRestorer();
 
-        self::assertInstanceOf('N98\Util\AutoloadRestorer', $restorer);
+        self::assertInstanceOf(AutoloadRestorer::class, $autoloadRestorer);
     }
 
     /**
@@ -34,7 +35,7 @@ class AutoloadRestorerTest extends \PHPUnit\Framework\TestCase
 
         self::assertTrue(spl_autoload_register($callbackStub));
 
-        $restorer = new AutoloadRestorer();
+        $autoloadRestorer = new AutoloadRestorer();
 
         self::assertContains($callbackStub, spl_autoload_functions());
 
@@ -42,7 +43,7 @@ class AutoloadRestorerTest extends \PHPUnit\Framework\TestCase
 
         self::assertNotContains($callbackStub, spl_autoload_functions());
 
-        $restorer->restore();
+        $autoloadRestorer->restore();
 
         self::assertContains($callbackStub, spl_autoload_functions());
     }

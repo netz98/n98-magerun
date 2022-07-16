@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Database\Maintain;
 
+use Symfony\Component\Console\Command\Command;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -16,14 +17,9 @@ class CheckTablesCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'  => $command->getName(),
-                '--format' => 'csv',
-                '--type'   => 'quick',
-                '--table'  => 'catalogsearch_*',
-            )
+            ['command'  => $command->getName(), '--format' => 'csv', '--type'   => 'quick', '--table'  => 'catalogsearch_*']
         );
-        self::assertContains('catalogsearch_fulltext,check,quick,OK', $commandTester->getDisplay());
+        self::assertStringContainsString('catalogsearch_fulltext,check,quick,OK', $commandTester->getDisplay());
         $timeRegex = '"\s+[0-9]+\srows","[0-9\.]+\ssecs"';
         self::assertRegExp(
             '~catalogsearch_query,"ENGINE InnoDB",' . $timeRegex . '~',
@@ -36,7 +32,7 @@ class CheckTablesCommandTest extends TestCase
     }
 
     /**
-     * @return \Symfony\Component\Console\Command\Command
+     * @return Command
      */
     protected function getCommand()
     {

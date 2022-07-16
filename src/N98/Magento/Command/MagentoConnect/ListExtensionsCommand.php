@@ -15,7 +15,7 @@ class ListExtensionsCommand extends AbstractConnectCommand
     {
         $this
             ->setName('extension:list')
-            ->setAliases(array('extension:search'))
+            ->setAliases(['extension:search'])
             ->addArgument('search', InputArgument::OPTIONAL, 'Search string')
             ->setDescription('List magento connection extensions')
             ->addOption(
@@ -39,37 +39,25 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $extensions = $this->callMageScript($input, $output, 'list-available');
         if (!strstr($extensions, 'Please initialize Magento Connect installer')) {
             $searchString = $input->getArgument('search');
-            $table = array();
+            $table = [];
             foreach (preg_split('/' . PHP_EOL . '/', $extensions) as $line) {
                 if (strpos($line, ':') > 0) {
                     $matches = null;
                     if ($matches = $this->matchConnectLine($line)) {
-                        if (!empty($searchString) && !stristr($line, $searchString)) {
+                        if (!empty($searchString) && !stristr($line, (string) $searchString)) {
                             continue;
                         }
-                        $table[] = array(
-                            $matches[1],
-                            $matches[2],
-                            $matches[3],
-                        );
+                        $table[] = [$matches[1], $matches[2], $matches[3]];
                         if (isset($matches[4]) && isset($matches[5])) {
-                            $table[] = array(
-                                $matches[1],
-                                $matches[4],
-                                $matches[5],
-                            );
+                            $table[] = [$matches[1], $matches[4], $matches[5]];
                         }
                         if (isset($matches[6]) && isset($matches[7])) {
-                            $table[] = array(
-                                $matches[1],
-                                $matches[6],
-                                $matches[7],
-                            );
+                            $table[] = [$matches[1], $matches[6], $matches[7]];
                         }
                     }
                 }
@@ -79,11 +67,12 @@ HELP;
                 /* @var $tableHelper TableHelper */
                 $tableHelper = $this->getHelper('table');
                 $tableHelper
-                    ->setHeaders(array('Package', 'Version', 'Stability'))
+                    ->setHeaders(['Package', 'Version', 'Stability'])
                     ->renderByFormat($output, $table, $input->getOption('format'));
             }
         } else {
             $output->writeln('<error>' . $extensions . '</error>');
         }
+        return 0;
     }
 }

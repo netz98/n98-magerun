@@ -7,6 +7,7 @@
 
 namespace N98\Magento;
 
+use SimpleXMLElement;
 use N98\Magento\Command\TestCase;
 
 /**
@@ -68,6 +69,6 @@ class DbSettingsTest extends TestCase
         self::assertNull($settings['unix_socket']);
 
         // it's still leaky:
-        self::assertInstanceOf('SimpleXMLElement', $settings['pdoType']);
+        self::assertInstanceOf(SimpleXMLElement::class, $settings['pdoType']);
     }
 }

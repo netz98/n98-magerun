@@ -9,10 +9,12 @@ use N98\Util\Console\Helper\DatabaseHelper;
 use N98\Util\Exec;
 use N98\Util\VerifyOrDie;
 use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class DumpCommand extends AbstractDatabaseCommand
 {
@@ -206,7 +208,7 @@ HELP;
 HELP;
 
         $definitions = $this->getTableDefinitions();
-        $list = array();
+        $list = [];
         $maxNameLen = 0;
         foreach ($definitions as $id => $definition) {
             $name = '@' . $id;
@@ -215,17 +217,17 @@ HELP;
             if ($nameLen > $maxNameLen) {
                 $maxNameLen = $nameLen;
             }
-            $list[] = array($name, $description);
+            $list[] = [$name, $description];
         }
 
         $decrSize = 78 - $maxNameLen - 3;
 
         foreach ($list as $entry) {
-            list($name, $description) = $entry;
+            [$name, $description] = $entry;
             $delta = max(0, $maxNameLen - strlen($name));
             $spacer = $delta ? str_repeat(' ', $delta) : '';
             $buffer = wordwrap($description, $decrSize);
-            $buffer = strtr($buffer, array("\n" => "\n" . str_repeat(' ', 3 + $maxNameLen)));
+            $buffer = strtr($buffer, ["\n" => "\n" . str_repeat(' ', 3 + $maxNameLen)]);
             $messages .= sprintf(" <info>%s</info>%s  %s\n", $name, $spacer, $buffer);
         }
 
@@ -251,7 +253,7 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // communicate early what is required for this command to run (is enabled)
         $enabler = new Enabler($this);
@@ -266,7 +268,7 @@ HELP;
             $this->writeSection($output, 'Dump MySQL Database');
         }
 
-        list($fileName, $execs) = $this->createExecsArray($input, $output);
+        [$fileName, $execs] = $this->createExecsArray($input, $output);
 
         $success = $this->runExecs($execs, $fileName, $input, $output);
 
@@ -280,7 +282,7 @@ HELP;
      */
     private function createExecsArray(InputInterface $input, OutputInterface $output)
     {
-        $execs = array();
+        $execs = [];
 
         $dumpOptions = '';
         if (!$input->getOption('no-single-transaction')) {
@@ -308,7 +310,7 @@ HELP;
         }
 
         $options = $input->getOption('dump-option');
-        if (count($options) > 0) {
+        if ((is_countable($options) ? count($options) : 0) > 0) {
             $dumpOptions .= implode(' ', $options) . ' ';
         }
 
@@ -347,7 +349,7 @@ HELP;
             $exec .= (count($stripTables) > 0 ? ' >> ' : ' > ') . escapeshellarg($fileName);
         }
         $execs[] = $exec;
-        return array($fileName, $execs);
+        return [$fileName, $execs];
     }
 
     /**
@@ -371,7 +373,7 @@ HELP;
                 );
             }
 
-            $commands = $input->getOption('dry-run') ? array() : $execs;
+            $commands = $input->getOption('dry-run') ? [] : $execs;
 
             foreach ($commands as $command) {
                 if (!$this->runExec($command, $input, $output)) {
@@ -425,7 +427,7 @@ HELP;
     private function stripTables(InputInterface $input, OutputInterface $output)
     {
         if (!$input->getOption('strip')) {
-            return array();
+            return [];
         }
 
         $stripTables = $this->resolveDatabaseTables($input->getOption('strip'));
@@ -451,7 +453,7 @@ HELP;
         }
 
         if (!$input->getOption('exclude')) {
-            $excludeTables = array();
+            $excludeTables = [];
         } else {
             $excludeTables = $this->resolveDatabaseTables($input->getOption('exclude'));
 
@@ -515,7 +517,7 @@ HELP;
         }
 
         $optionAddTime = $input->getOption('add-time');
-        list($namePrefix, $nameSuffix) = $this->getFileNamePrefixSuffix($optionAddTime);
+        [$namePrefix, $nameSuffix] = $this->getFileNamePrefixSuffix($optionAddTime);
 
         if (
             (
@@ -531,12 +533,11 @@ HELP;
                 $defaultName = rtrim($fileName, '/') . '/' . $defaultName;
             }
             if (!$input->getOption('force')) {
-                /** @var DialogHelper $dialog */
-                $dialog = $this->getHelper('dialog');
+                $dialog = new QuestionHelper();
                 $fileName = $dialog->ask(
+                    $input,
                     $output,
-                    '<question>Filename for SQL dump:</question> [<comment>' . $defaultName . '</comment>]',
-                    $defaultName
+                    new Question('<question>Filename for SQL dump:</question> [<comment>' . $defaultName . '</comment>]', $defaultName),
                 );
             } else {
                 $fileName = $defaultName;
@@ -563,12 +564,12 @@ HELP;
         $namePrefix = '';
         $nameSuffix = '';
         if ($optionAddTime === null) {
-            return array($namePrefix, $nameSuffix);
+            return [$namePrefix, $nameSuffix];
         }
 
         $timeStamp = date('Y-m-d_His');
 
-        if (in_array($optionAddTime, array('suffix', true), true)) {
+        if (in_array($optionAddTime, ['suffix', true], true)) {
             $nameSuffix = '_' . $timeStamp;
         } elseif ($optionAddTime === 'prefix') {
             $namePrefix = $timeStamp . '_';
@@ -581,7 +582,7 @@ HELP;
             );
         }
 
-        return array($namePrefix, $nameSuffix);
+        return [$namePrefix, $nameSuffix];
     }
 
     /**

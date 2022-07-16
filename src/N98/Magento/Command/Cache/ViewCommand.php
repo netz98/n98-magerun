@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Cache;
 
+use Enterprise_PageCache_Model_Cache;
+use Mage;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -32,20 +34,20 @@ class ViewCommand extends AbstractCacheCommand
      * @return int|void
      * @throws RuntimeException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         if ($input->hasOption('fpc') && $input->getOption('fpc')) {
             if (!class_exists('\Enterprise_PageCache_Model_Cache')) {
                 throw new RuntimeException('Enterprise page cache not found');
             }
-            $cacheInstance = \Enterprise_PageCache_Model_Cache::getCacheInstance()->getFrontend();
+            $cacheInstance = Enterprise_PageCache_Model_Cache::getCacheInstance()->getFrontend();
         } else {
-            $cacheInstance = \Mage::app()->getCache();
+            $cacheInstance = Mage::app()->getCache();
         }
         /* @var $cacheInstance \Varien_Cache_Core */
         $cacheData = $cacheInstance->load($input->getArgument('id'));
@@ -55,5 +57,6 @@ class ViewCommand extends AbstractCacheCommand
         }
 
         $output->writeln($cacheData);
+        return 0;
     }
 }
