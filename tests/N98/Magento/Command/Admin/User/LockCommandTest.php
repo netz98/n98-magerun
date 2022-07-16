@@ -26,9 +26,6 @@ class LockCommandTest extends TestCase
      */
     public function daysProvider()
     {
-        return array(
-            array(1, 86400),
-            array(31, 2678400),
-        );
+        return [[1, 86400], [31, 2678400]];
     }
 }

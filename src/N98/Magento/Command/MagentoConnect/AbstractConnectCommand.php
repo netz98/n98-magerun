@@ -64,7 +64,7 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
      */
     protected function matchConnectLine($line)
     {
-        $matches = array();
+        $matches = [];
         // expected format "Package: Version Stability[,Version Stability][,Version Stability]"
         $pattern = '/([a-zA-Z0-9-_]+):\s([0-9.]+)\s([a-z]+),?([0-9.]+)?\s?([a-z]+)?,?([0-9.]+)?\s?([a-z]+)?/';
         preg_match($pattern, $line, $matches);
@@ -114,10 +114,10 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $found = false;
-        $alternatives = array();
+        $alternatives = [];
         $extensions = $this->callMageScript($input, $output, 'list-available');
         $searchPackage = $input->getArgument('package');
         foreach (preg_split('/' . PHP_EOL . '/', $extensions) as $line) {
@@ -142,5 +142,6 @@ abstract class AbstractConnectCommand extends AbstractMagentoCommand
                 $this->doAction($input, $output, $this->askForAlternativePackage($alternatives, $output));
             }
         }
+        return 0;
     }
 }

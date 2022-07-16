@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System\Store\Config;
 
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
@@ -31,8 +32,9 @@ class BaseUrlListCommand extends AbstractMagentoCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $table = [];
         $this->detectMagento($output, true);
 
         if (!$input->getOption('format')) {
@@ -40,20 +42,16 @@ class BaseUrlListCommand extends AbstractMagentoCommand
         }
         $this->initMagento();
 
-        foreach (\Mage::app()->getStores() as $store) {
-            $table[$store->getId()] = array(
-                $store->getId(),
-                $store->getCode(),
-                \Mage::getStoreConfig('web/unsecure/base_url', $store),
-                \Mage::getStoreConfig('web/secure/base_url', $store),
-            );
+        foreach (Mage::app()->getStores() as $store) {
+            $table[$store->getId()] = [$store->getId(), $store->getCode(), Mage::getStoreConfig('web/unsecure/base_url', $store), Mage::getStoreConfig('web/secure/base_url', $store)];
         }
 
         ksort($table);
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('id', 'code', 'unsecure_baseurl', 'secure_baseurl'))
+            ->setHeaders(['id', 'code', 'unsecure_baseurl', 'secure_baseurl'])
             ->renderByFormat($output, $table, $input->getOption('format'));
+        return 0;
     }
 }

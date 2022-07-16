@@ -17,7 +17,7 @@ class ConfigurationLoaderTest extends TestCase
      */
     public function creation()
     {
-        $loader = new ConfigurationLoader(array(), false, new NullOutput());
+        $loader = new ConfigurationLoader([], false, new NullOutput());
         self::assertInstanceOf(__NAMESPACE__ . '\\ConfigurationLoader', $loader);
     }
 }

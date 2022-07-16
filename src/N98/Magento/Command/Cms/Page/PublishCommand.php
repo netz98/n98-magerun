@@ -60,12 +60,12 @@ class PublishCommand extends AbstractMagentoCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         $this->requireEnterprise($output);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $this->writeSection($output, 'CMS Publish');
@@ -77,7 +77,7 @@ class PublishCommand extends AbstractMagentoCommand
         if (!$revision->getId()) {
             $output->writeln('<error>Revision was not found</error>');
 
-            return;
+            return 0;
         }
 
         if ($revision->getPageId() != $pageId) {
@@ -86,9 +86,10 @@ class PublishCommand extends AbstractMagentoCommand
                 $revision->getPageId()
             ));
 
-            return;
+            return 0;
         }
         $revision->publish();
         $output->writeln('<info>Page published</info>');
+        return 0;
     }
 }

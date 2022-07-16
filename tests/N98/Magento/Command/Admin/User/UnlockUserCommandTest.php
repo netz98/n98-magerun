@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Admin\User;
 
+use Symfony\Component\Console\Helper\DialogHelper;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -22,7 +23,7 @@ class UnlockUserCommandTest extends TestCase
 
     public function testUnlockAllUsersPromptNo()
     {
-        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\DialogHelper::class)
+        $dialog = $this->getMockBuilder(DialogHelper::class)
             ->disableOriginalConstructor()
             ->setMethods(['ask'])
             ->getMock();
@@ -37,14 +38,14 @@ class UnlockUserCommandTest extends TestCase
         $command->getHelperSet()->set($dialog, 'dialog');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $commandTester->execute(['command' => $command->getName()]);
 
-        self::assertNotContains('All admins unlocked', $commandTester->getDisplay());
+        self::assertStringNotContainsString('All admins unlocked', $commandTester->getDisplay());
     }
 
     public function testUnlockAllUsersPromptYes()
     {
-        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\DialogHelper::class)
+        $dialog = $this->getMockBuilder(DialogHelper::class)
             ->disableOriginalConstructor()
             ->setMethods(['ask'])
             ->getMock();
@@ -59,8 +60,8 @@ class UnlockUserCommandTest extends TestCase
         $command->getHelperSet()->set($dialog, 'dialog');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $commandTester->execute(['command' => $command->getName()]);
 
-        self::assertContains('All admins unlocked', $commandTester->getDisplay());
+        self::assertStringContainsString('All admins unlocked', $commandTester->getDisplay());
     }
 }

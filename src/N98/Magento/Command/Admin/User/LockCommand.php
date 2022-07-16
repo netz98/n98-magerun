@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Admin\User;
 
+use Mage;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,7 +13,7 @@ class LockCommand extends AbstractAdminUserCommand
      * The number of days to lock for (by default)
      * @var int
      */
-    const LIFETIME_DEFAULT = 31;
+    public const LIFETIME_DEFAULT = 31;
 
     /**
      * Setup
@@ -46,23 +47,23 @@ HELP
      *
      * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $username = $input->getArgument('username');
         $lifetime = $input->getArgument('lifetime') ?: $this->daysToSeconds(self::LIFETIME_DEFAULT);
 
-        $user = \Mage::getModel('admin/user')->loadByUsername($username);
+        $user = Mage::getModel('admin/user')->loadByUsername($username);
         if (!$user || !$user->getId()) {
             $output->writeln("<error>Couldn't find admin username '{$username}'</error>");
-            return;
+            return 0;
         }
 
-        \Mage::getResourceModel('enterprise_pci/admin_user')->lock($user->getId(), 0, $lifetime);
+        Mage::getResourceModel('enterprise_pci/admin_user')->lock($user->getId(), 0, $lifetime);
 
         $lifetimeMessage = '';
         if ($input->getArgument('lifetime')) {
@@ -72,6 +73,7 @@ HELP
         $output->writeln(
             sprintf('<info><comment>%s</comment> locked%s</info>', $username, $lifetimeMessage)
         );
+        return 0;
     }
 
     /**

@@ -15,28 +15,25 @@ class MetaCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'  => $command->getName(),
-                '--stdout' => true,
-            )
+            ['command'  => $command->getName(), '--stdout' => true]
         );
 
         $fileContent = $commandTester->getDisplay(true);
 
-        self::assertContains('\'catalog\' => \Mage_Catalog_Helper_Data', $fileContent);
-        self::assertContains('\'core/config\' => \Mage_Core_Model_Config', $fileContent);
+        self::assertStringContainsString('\'catalog\' => \Mage_Catalog_Helper_Data', $fileContent);
+        self::assertStringContainsString('\'core/config\' => \Mage_Core_Model_Config', $fileContent);
 
         if (class_exists('\Mage_Core_Model_Resource_Config')) { // since magento 1.7
-            self::assertContains('\'core/config\' => \Mage_Core_Model_Resource_Config', $fileContent);
+            self::assertStringContainsString('\'core/config\' => \Mage_Core_Model_Resource_Config', $fileContent);
         }
 
-        self::assertContains('\'wishlist\' => \Mage_Wishlist_Helper_Data', $fileContent);
+        self::assertStringContainsString('\'wishlist\' => \Mage_Wishlist_Helper_Data', $fileContent);
 
         if (class_exists('\Mage_Core_Model_Resource_Helper_Mysql4')) {
-            self::assertContains('\'core\' => \Mage_Core_Model_Resource_Helper_Mysql4', $fileContent);
+            self::assertStringContainsString('\'core\' => \Mage_Core_Model_Resource_Helper_Mysql4', $fileContent);
         }
 
-        self::assertNotContains(
+        self::assertStringNotContainsString(
             '\'payment/paygate_request\' => \Mage_Payment_Model_Paygate_Request',
             $fileContent
         );

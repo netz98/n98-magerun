@@ -7,7 +7,7 @@ class PhpView implements View
     /**
      * @var array
      */
-    protected $vars = array();
+    protected $vars = [];
 
     /**
      * @var

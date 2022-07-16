@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\System\Cron;
 
+use IteratorIterator;
 use AppendIterator;
 use Mage;
 use Mage_Core_Model_Config_Element;
@@ -17,7 +18,7 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
      */
     protected function getJobs()
     {
-        $table = array();
+        $table = [];
 
         $jobs = $this->getJobConfigElements();
 
@@ -26,7 +27,7 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
             if (isset($job->run->model)) {
                 $model = $job->run->model;
             }
-            $table[$name] = array('Job' => $name, 'Model' => $model) + $this->getSchedule($job);
+            $table[$name] = ['Job' => $name, 'Model' => $model] + $this->getSchedule($job);
         }
 
         ksort($table, SORT_STRING);
@@ -40,7 +41,7 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
      */
     protected function getSchedule(Mage_Core_Model_Config_Element $job)
     {
-        $keys = array('m', 'h', 'D', 'M', 'WD');
+        $keys = ['m', 'h', 'D', 'M', 'WD'];
         $expr = null;
 
         if (isset($job->schedule->config_path)) {
@@ -65,11 +66,11 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
     {
         $jobs = new AppendIterator();
 
-        $paths = array('crontab/jobs', 'default/crontab/jobs');
+        $paths = ['crontab/jobs', 'default/crontab/jobs'];
 
         foreach ($paths as $path) {
             if ($jobConfig = Mage::getConfig()->getNode($path)) {
-                $jobs->append(new \IteratorIterator($jobConfig->children()));
+                $jobs->append(new IteratorIterator($jobConfig->children()));
             };
         }
 

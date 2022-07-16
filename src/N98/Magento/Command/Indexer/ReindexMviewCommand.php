@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Indexer;
 
+use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,18 +30,18 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
         $tableName = $input->getArgument('table_name');
 
         $indexers = $this->getIndexers();
 
         if (!array_key_exists($tableName, $indexers)) {
-            throw new \InvalidArgumentException("$tableName is not a view table");
+            throw new InvalidArgumentException("$tableName is not a view table");
         }
 
         $indexerData = $indexers[$tableName];
@@ -50,11 +51,12 @@ HELP;
         $client = $this->getMviewClient();
         $client->init($indexTable);
         if (!$client->getMetadata()->getId()) {
-            throw new \InvalidArgumentException("Could not load metadata for $tableName");
+            throw new InvalidArgumentException("Could not load metadata for $tableName");
         }
 
         $output->writeln("<info>Starting mview indexer <comment>{$indexTable}</comment> with action <comment>{$actionName}</comment> </info>");
         $client->execute($actionName);
         $output->writeln("<info>Done</info>");
+        return 0;
     }
 }

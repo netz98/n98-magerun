@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Database;
 
+use Description;
+use N98\Util\Console\Helper\DatabaseHelper;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use N98\Util\Filesystem;
@@ -27,21 +29,21 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
     /**
      * @var array
      */
-    protected $_importantVars = array();
+    protected $_importantVars = [];
 
     /**
      * Key = variable name => value method name in this class
      *
      * @var array
      */
-    protected $_specialFormat = array();
+    protected $_specialFormat = [];
 
     /**
      * Contains all variables
      *
      * @var array
      */
-    protected $_allVariables = array();
+    protected $_allVariables = [];
 
     protected function configure()
     {
@@ -78,7 +80,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
      *
      * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->_input = $input;
         $this->_output = $output;
@@ -89,15 +91,15 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
         }
 
         $outputVars = $this->formatVariables($outputVars);
-        reset($this->_importantVars);
-        $hasDescription = isset($this->_importantVars[key($this->_importantVars)]['desc']) &&
+        $hasDescription = isset($this->_importantVars[array_key_first($this->_importantVars)]['desc']) &&
             false === $this->_input->getOption('no-description');
-        $header = array('Variable Name', 'Value');
+        $header = ['Variable Name', 'Value'];
         if (true === $hasDescription) {
-            $header[] = 'Description';
+            $header[] = Description::class;
         }
 
         $this->renderTable($header, $this->generateRows($outputVars, $hasDescription));
+        return 0;
     }
 
     /**
@@ -108,10 +110,10 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
      */
     protected function generateRows(array $outputVars, $hasDescription)
     {
-        $rows = array();
+        $rows = [];
         $i = 0;
         foreach ($outputVars as $variableName => $variableValue) {
-            $rows[$i] = array($variableName, $variableValue);
+            $rows[$i] = [$variableName, $variableValue];
             if (
                 true === $hasDescription &&
                 isset($this->_importantVars[$variableName], $this->_importantVars[$variableName]['desc'])
@@ -175,7 +177,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
      */
     protected function initVariables($variable = null)
     {
-        /** @var \N98\Util\Console\Helper\DatabaseHelper $database */
+        /** @var DatabaseHelper $database */
         $database = $this->getHelper('database');
         $this->_allVariables = $database->{$this->showMethod}($variable);
     }

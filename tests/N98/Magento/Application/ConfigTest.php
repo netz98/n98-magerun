@@ -5,6 +5,10 @@
 
 namespace N98\Magento\Application;
 
+use Symfony\Component\Console\Input\InputInterface;
+use N98\Magento\Command\Config\GetCommand;
+use N98\Magento\Application;
+use PHPUnit\Framework\MockObject\MockObject;
 use Composer\Autoload\ClassLoader;
 use ErrorException;
 use N98\Magento\Command\TestCase;
@@ -45,7 +49,7 @@ class ConfigTest extends TestCase
             self::assertEquals('Configuration not yet fully loaded', $e->getMessage());
         }
 
-        self::assertEquals(array(), $config->getConfig());
+        self::assertEquals([], $config->getConfig());
 
         $loader = $config->getLoader();
         self::assertInstanceOf(__NAMESPACE__ . '\\ConfigurationLoader', $loader);
@@ -54,7 +58,7 @@ class ConfigTest extends TestCase
         $loader->loadStageTwo("");
         $config->load();
 
-        self::assertInternalType('array', $config->getConfig());
+        self::assertIsArray($config->getConfig());
         self::assertGreaterThan(4, count($config->getConfig()));
 
         $config->setLoader($loader);
@@ -68,7 +72,7 @@ class ConfigTest extends TestCase
     public function setConfig()
     {
         $config = new Config();
-        $config->setConfig(array(0, 1, 2));
+        $config->setConfig([0, 1, 2]);
         $actual = $config->getConfig();
         self::assertSame($actual[1], 1);
     }
@@ -81,15 +85,15 @@ class ConfigTest extends TestCase
         $config = new Config();
         $input = new ArgvInput();
         $actual = $config->checkConfigCommandAlias($input);
-        self::assertInstanceOf('Symfony\Component\Console\Input\InputInterface', $actual);
+        self::assertInstanceOf(InputInterface::class, $actual);
 
         $saved = $_SERVER['argv'];
         {
-            $config->setConfig(array('commands' => array('aliases' => array(array('list-help' => 'list --help')))));
+            $config->setConfig(['commands' => ['aliases' => [['list-help' => 'list --help']]]]);
             $definition = new InputDefinition();
             $definition->addArgument(new InputArgument('command'));
 
-            $argv = array('/path/to/command', 'list-help');
+            $argv = ['/path/to/command', 'list-help'];
             $_SERVER['argv'] = $argv;
             $input = new ArgvInput($argv, $definition);
             self::assertSame('list-help', (string) $input);
@@ -103,7 +107,7 @@ class ConfigTest extends TestCase
 
         $config->registerConfigCommandAlias($command);
 
-        self::assertSame(array('list-help'), $command->getAliases());
+        self::assertSame(['list-help'], $command->getAliases());
     }
 
     /**
@@ -115,8 +119,8 @@ class ConfigTest extends TestCase
         $configArray = [
             'commands' => [
                 'customCommands' => [
-                    'N98\Magento\Command\Config\GetCommand',
-                    ['name' => 'N98\Magento\Command\Config\GetCommand'],
+                    GetCommand::class,
+                    ['name' => GetCommand::class],
                 ],
             ],
         ];
@@ -127,8 +131,8 @@ class ConfigTest extends TestCase
         $config = new Config([], false, $output);
         $config->setConfig($configArray);
 
-        /** @var \N98\Magento\Application|\PHPUnit\Framework\MockObject\MockObject $application */
-        $application = $this->createMock(\N98\Magento\Application::class);
+        /** @var Application|MockObject $application */
+        $application = $this->createMock(Application::class);
         $application->expects(self::exactly(2))->method('add');
 
         $config->registerCustomCommands($application);
@@ -139,10 +143,7 @@ class ConfigTest extends TestCase
      */
     public function registerCustomAutoloaders()
     {
-        $array = array(
-            'autoloaders'      => array('$prefix' => '$path'),
-            'autoloaders_psr4' => array('$prefix\\' => '$path'),
-        );
+        $array = ['autoloaders'      => ['$prefix' => '$path'], 'autoloaders_psr4' => ['$prefix\\' => '$path']];
 
         $expected =
             '<debug>Registered PSR-0 autoloader </debug> $prefix -> $path' . "\n" .
@@ -150,7 +151,7 @@ class ConfigTest extends TestCase
 
         $output = new BufferedOutput();
 
-        $config = new Config(array(), false, $output);
+        $config = new Config([], false, $output);
         $config->setConfig($array);
 
         $autloader = new ClassLoader();
@@ -168,10 +169,10 @@ class ConfigTest extends TestCase
     public function loadPartialConfig()
     {
         $config = new Config();
-        self::assertEquals(array(), $config->getDetectSubFolders());
+        self::assertEquals([], $config->getDetectSubFolders());
         $config->loadPartialConfig(false);
         $actual = $config->getDetectSubFolders();
-        self::assertInternalType('array', $actual);
-        self::assertNotEquals(array(), $actual);
+        self::assertIsArray($actual);
+        self::assertNotEquals([], $actual);
     }
 }

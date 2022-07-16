@@ -14,7 +14,7 @@ use Symfony\Component\Console\Helper\Helper;
 class TwigHelper extends Helper
 {
     /**
-     * @var \N98\Util\Template\Twig
+     * @var Twig
      */
     protected $twig;
 
@@ -40,7 +40,7 @@ class TwigHelper extends Helper
      * @param array $variables
      * @return mixed
      */
-    public function render($template, $variables = array())
+    public function render($template, $variables = [])
     {
         return $this->twig->render($template, $variables);
     }
@@ -53,7 +53,7 @@ class TwigHelper extends Helper
      *
      * @return string
      */
-    public function renderString($string, $variables = array())
+    public function renderString($string, $variables = [])
     {
         return $this->twig->renderString($string, $variables);
     }
@@ -74,9 +74,9 @@ class TwigHelper extends Helper
     {
         $baseDir = __DIR__ . '/../../../../..'; # root of project source tree
 
-        $baseDirs = array();
+        $baseDirs = [];
 
-        $dirs = array_reverse($config->getConfig(array('twig', 'baseDirs')));
+        $dirs = array_reverse($config->getConfig(['twig', 'baseDirs']));
 
         foreach ($dirs as $dir) {
             if (!is_string($dir)) {

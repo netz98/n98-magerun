@@ -15,12 +15,10 @@ class InfoCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-            )
+            ['command' => $command->getName()]
         );
 
-        self::assertContains('base/default', $commandTester->getDisplay());
-        self::assertContains('Design Package Name', $commandTester->getDisplay());
+        self::assertStringContainsString('base/default', $commandTester->getDisplay());
+        self::assertStringContainsString('Design Package Name', $commandTester->getDisplay());
     }
 }

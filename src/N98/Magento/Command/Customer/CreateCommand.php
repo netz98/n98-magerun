@@ -4,10 +4,12 @@ namespace N98\Magento\Command\Customer;
 
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class CreateCommand extends AbstractCustomerCommand
 {
@@ -35,31 +37,33 @@ class CreateCommand extends AbstractCustomerCommand
      * @param OutputInterface $output
      * @return int|null|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
-        $dialog = $this->getHelper('dialog');
+        $dialog = new QuestionHelper();
 
         // Email
         $email = $this->getHelper('parameter')->askEmail($input, $output);
 
         // Password
         if (($password = $input->getArgument('password')) == null) {
-            $password = $dialog->askHiddenResponse($output, '<question>Password:</question>');
+            $question = new Question('<question>Password:</question>');
+            $question->setHidden(true);
+            $password = $dialog->ask($input, $output, $question);
         }
 
         // Firstname
         if (($firstname = $input->getArgument('firstname')) == null) {
-            $firstname = $dialog->ask($output, '<question>Firstname:</question>');
+            $firstname = $dialog->ask($input, $output, new Question('<question>Firstname:</question>'));
         }
 
         // Lastname
         if (($lastname = $input->getArgument('lastname')) == null) {
-            $lastname = $dialog->ask($output, '<question>Lastname:</question>');
+            $lastname = $dialog->ask($input, $output, new Question('<question>Lastname:</question>'));
         }
 
         $website = $this->getHelper('parameter')->askWebsite($input, $output);
@@ -71,7 +75,7 @@ class CreateCommand extends AbstractCustomerCommand
 
         $outputPlain = $input->getOption('format') === null;
 
-        $table = array();
+        $table = [];
         if (!$customer->getId()) {
             $customer->setWebsiteId($website->getId());
             $customer->setEmail($email);
@@ -85,9 +89,7 @@ class CreateCommand extends AbstractCustomerCommand
             if ($outputPlain) {
                 $output->writeln('<info>Customer <comment>' . $email . '</comment> successfully created</info>');
             } else {
-                $table[] = array(
-                    $email, $password, $firstname, $lastname,
-                );
+                $table[] = [$email, $password, $firstname, $lastname];
             }
         } else {
             if ($outputPlain) {
@@ -99,8 +101,9 @@ class CreateCommand extends AbstractCustomerCommand
             /* @var $tableHelper TableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
-                ->setHeaders(array('email', 'password', 'firstname', 'lastname'))
+                ->setHeaders(['email', 'password', 'firstname', 'lastname'])
                 ->renderByFormat($output, $table, $input->getOption('format'));
         }
+        return 0;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\System\Url;
 
+use Mage;
+use Mage_Core_Model_Store;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -67,11 +69,11 @@ HELP;
      * @throws InvalidArgumentException
      * @throws \Mage_Core_Model_Store_Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         if ($input->getOption('add-all')) {
@@ -82,15 +84,15 @@ HELP;
 
         $stores = explode(',', $input->getArgument('stores'));
 
-        $urls = array();
+        $urls = [];
 
         foreach ($stores as $storeId) {
-            $currentStore = \Mage::app()->getStore($storeId); /* @var $currentStore \Mage_Core_Model_Store */
+            $currentStore = Mage::app()->getStore($storeId); /* @var $currentStore \Mage_Core_Model_Store */
 
             // base url
-            $urls[] = $currentStore->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_WEB);
+            $urls[] = $currentStore->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
 
-            $linkBaseUrl = $currentStore->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK);
+            $linkBaseUrl = $currentStore->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
 
             if ($input->getOption('add-categories')) {
                 $urls = $this->getUrls('sitemap/catalog_category', $linkBaseUrl, $storeId, $urls);
@@ -106,7 +108,7 @@ HELP;
         }
 
         if (count($urls) === 0) {
-            return;
+            return 0;
         }
 
         foreach ($urls as $url) {
@@ -123,6 +125,7 @@ HELP;
             // ... and output
             $output->writeln($line);
         }
+        return 0;
     }
 
     /**
@@ -135,7 +138,7 @@ HELP;
      */
     protected function getUrls($resourceModel, $linkBaseUrl, $storeId, array $urls)
     {
-        $collection = \Mage::getResourceModel($resourceModel)->getCollection($storeId);
+        $collection = Mage::getResourceModel($resourceModel)->getCollection($storeId);
         if (!$collection) {
             return $urls;
         }

@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer;
 
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,7 +25,7 @@ class ClassLookupCommand extends AbstractMagentoCommand
      */
     protected function _getConfig()
     {
-        return \Mage::getConfig();
+        return Mage::getConfig();
     }
 
     /**
@@ -33,11 +34,11 @@ class ClassLookupCommand extends AbstractMagentoCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $resolved = $this->_getConfig()->getGroupedClassName(
@@ -52,5 +53,6 @@ class ClassLookupCommand extends AbstractMagentoCommand
         if (!class_exists('\\' . $resolved)) {
             $output->writeln('<info>Note:</info> Class <comment>' . $resolved . '</comment> does not exist!');
         }
+        return 0;
     }
 }

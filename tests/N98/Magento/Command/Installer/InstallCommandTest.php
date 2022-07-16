@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Installer;
 
+use InvalidArgumentException;
 use N98\Magento\Command\TestCase;
 use RuntimeException;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -16,7 +17,7 @@ class InstallCommandTest extends TestCase
     /**
      * Create temp dir for install
      */
-    public function setup()
+    public function setup(): void
     {
         $installDir = sys_get_temp_dir() . "/mageinstall";
         if (is_readable($installDir)) {
@@ -41,34 +42,19 @@ class InstallCommandTest extends TestCase
         $application->add(new InstallCommand());
         $command = $this->getApplication()->find('install');
         $command->setCliArguments(
-            array(
-                '--dbName=magento',
-                '--dbHost=hostWhichDoesntExist',
-                '--dbUser=user',
-                '--dbPass=pa$$w0rd',
-            )
+            ['--dbName=magento', '--dbHost=hostWhichDoesntExist', '--dbUser=user', '--dbPass=pa$$w0rd']
         );
 
         $commandTester = new CommandTester($command);
 
         try {
             $commandTester->execute(
-                array(
-                    'command'                  => $command->getName(),
-                    '--noDownload'             => true,
-                    '--installSampleData'      => 'no',
-                    '--useDefaultConfigParams' => 'yes',
-                    '--installationFolder'     => $this->installDir,
-                    '--dbHost'                 => 'hostWhichDoesNotExists',
-                    '--dbUser'                 => 'user',
-                    '--dbPass'                 => 'pa$$w0rd',
-                    '--dbName'                 => 'magento',
-                )
+                ['command'                  => $command->getName(), '--noDownload'             => true, '--installSampleData'      => 'no', '--useDefaultConfigParams' => 'yes', '--installationFolder'     => $this->installDir, '--dbHost'                 => 'hostWhichDoesNotExists', '--dbUser'                 => 'user', '--dbPass'                 => 'pa$$w0rd', '--dbName'                 => 'magento']
             );
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             self::assertEquals("Database configuration is invalid", $e->getMessage());
             $display = $commandTester->getDisplay(true);
-            self::assertContains('SQLSTATE', $display);
+            self::assertStringContainsString('SQLSTATE', $display);
 
             return;
         }
@@ -79,7 +65,7 @@ class InstallCommandTest extends TestCase
     /**
      * Remove directory made by installer
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         if (is_readable($this->installDir)) {
             @rmdir($this->installDir);

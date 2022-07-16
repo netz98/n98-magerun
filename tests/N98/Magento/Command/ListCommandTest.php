@@ -12,12 +12,10 @@ class ListCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command' => 'list',
-        )
+            ['command' => 'list']
         );
 
-        self::assertContains(
+        self::assertStringContainsString(
             sprintf('n98-magerun version %s by netz98 GmbH', $this->getApplication()->getVersion()),
             $commandTester->getDisplay()
         );

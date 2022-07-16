@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Admin\User;
 
+use Symfony\Component\Console\Helper\DialogHelper;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -14,9 +15,9 @@ class ChangeStatusCommandTest extends TestCase
     protected $userModel;
     protected $commandName = 'admin:user:change-status';
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->command = $this->getMockBuilder(\N98\Magento\Command\Admin\User\ChangeStatusCommand::class)
+        $this->command = $this->getMockBuilder(ChangeStatusCommand::class)
             ->setMethods(['getUserModel'])
             ->getMock();
 
@@ -83,13 +84,10 @@ class ChangeStatusCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'id'        => $username,
-            )
+            ['command'   => $command->getName(), 'id'        => $username]
         );
 
-        self::assertContains("User $username is now active", $commandTester->getDisplay());
+        self::assertStringContainsString("User $username is now active", $commandTester->getDisplay());
     }
 
     public function testCanDisableUser()
@@ -145,13 +143,10 @@ class ChangeStatusCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'id'        => $username,
-            )
+            ['command'   => $command->getName(), 'id'        => $username]
         );
 
-        self::assertContains("User $username is now inactive", $commandTester->getDisplay());
+        self::assertStringContainsString("User $username is now inactive", $commandTester->getDisplay());
     }
 
     public function testCanToggleUserByEmail()
@@ -212,13 +207,10 @@ class ChangeStatusCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'id'        => $username,
-            )
+            ['command'   => $command->getName(), 'id'        => $username]
         );
 
-        self::assertContains("User $username is now active", $commandTester->getDisplay());
+        self::assertStringContainsString("User $username is now active", $commandTester->getDisplay());
     }
 
     public function testReturnEarlyIfUserNotFound()
@@ -250,18 +242,15 @@ class ChangeStatusCommandTest extends TestCase
         $command = $this->getApplication()->find($this->commandName);
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
-            'command'   => $command->getName(),
-            'id'        => 'notauser',
-        ));
+        $commandTester->execute(['command'   => $command->getName(), 'id'        => 'notauser']);
 
-        self::assertContains('User was not found', $commandTester->getDisplay());
+        self::assertStringContainsString('User was not found', $commandTester->getDisplay());
     }
 
     public function testIfNoIdIsPresentItIsPromptedFor()
     {
         $userEmail = 'aydin@hotmail.co.uk';
-        $dialog = $this->getMockBuilder(\Symfony\Component\Console\Helper\DialogHelper::class)
+        $dialog = $this->getMockBuilder(DialogHelper::class)
             ->disableOriginalConstructor()
             ->setMethods(['ask'])
             ->getMock();
@@ -292,10 +281,8 @@ class ChangeStatusCommandTest extends TestCase
         $command->getHelperSet()->set($dialog, 'dialog');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
-            'command'   => $command->getName(),
-        ));
+        $commandTester->execute(['command'   => $command->getName()]);
 
-        self::assertContains("User aydin is now inactive", $commandTester->getDisplay());
+        self::assertStringContainsString("User aydin is now inactive", $commandTester->getDisplay());
     }
 }

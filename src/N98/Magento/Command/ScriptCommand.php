@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command;
 
+use Mage;
 use InvalidArgumentException;
 use N98\Util\BinaryString;
 use N98\Util\Exec;
@@ -18,7 +19,7 @@ class ScriptCommand extends AbstractMagentoCommand
     /**
      * @var array
      */
-    protected $scriptVars = array();
+    protected $scriptVars = [];
 
     /**
      * @var string
@@ -113,7 +114,7 @@ HELP;
         return Exec::allowed();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->_scriptFilename = $input->getArgument('filename');
         $this->_stopOnError = $input->getOption('stop-on-error');
@@ -150,6 +151,7 @@ HELP;
                     $this->runMagerunCommand($input, $output, $commandString);
             }
         }
+        return 0;
     }
 
     /**
@@ -160,9 +162,9 @@ HELP;
     {
         $defines = $input->getOption('define');
         if (is_string($defines)) {
-            $defines = array($defines);
+            $defines = [$defines];
         }
-        if (count($defines) > 0) {
+        if ((is_countable($defines) ? count($defines) : 0) > 0) {
             foreach ($defines as $define) {
                 if (!strstr($define, '=')) {
                     throw new InvalidArgumentException('Invalid define');
@@ -296,9 +298,9 @@ HELP;
     {
         if (class_exists('\Mage')) {
             $this->scriptVars['${magento.root}'] = $this->getApplication()->getMagentoRootFolder();
-            $this->scriptVars['${magento.version}'] = \Mage::getVersion();
-            $this->scriptVars['${magento.edition}'] = is_callable(array('\Mage', 'getEdition'))
-                ? \Mage::getEdition() : 'Community';
+            $this->scriptVars['${magento.version}'] = Mage::getVersion();
+            $this->scriptVars['${magento.edition}'] = is_callable(['\Mage', 'getEdition'])
+                ? Mage::getEdition() : 'Community';
         }
 
         $this->scriptVars['${php.version}'] = substr(phpversion(), 0, strpos(phpversion(), '-'));

@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\LocalConfig;
 
+use DateTime;
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -40,7 +42,7 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         $configFile = $this->_getLocalConfigFilename();
@@ -50,26 +52,26 @@ HELP;
             $output->writeln(
                 sprintf('<info>local.xml file already exists in folder "%s/app/etc"</info>', dirname($configFile))
             );
-            return;
+            return 0;
         }
 
         $this->writeSection($output, 'Generate Magento local.xml');
         $this->askForArguments($input, $output);
         if (!file_exists($configFileTemplate)) {
             $output->writeln(sprintf('<error>File %s does not exist.</error>', $configFileTemplate));
-            return;
+            return 0;
         }
 
         if (!is_writable(dirname($configFileTemplate))) {
             $output->writeln(sprintf('<error>Folder %s is not writeable</error>', dirname($configFileTemplate)));
-            return;
+            return 0;
         }
 
         $content = file_get_contents($configFileTemplate);
-        $key = $input->getArgument('encryption-key') ? $input->getArgument('encryption-key') : md5(uniqid());
+        $key = $input->getArgument('encryption-key') ?: md5(uniqid());
 
-        $replace = array(
-            '{{date}}'               => $this->_wrapCData(date(\DateTime::RFC2822)),
+        $replace = [
+            '{{date}}'               => $this->_wrapCData(date(DateTime::RFC2822)),
             '{{key}}'                => $this->_wrapCData($key),
             '{{db_prefix}}'          => $this->_wrapCData(''),
             '{{db_host}}'            => $this->_wrapCData($input->getArgument('db-host')),
@@ -83,15 +85,16 @@ HELP;
             '{{db_pdo_type}}'        => $this->_wrapCData(''),
             '{{session_save}}'       => $this->_wrapCData($input->getArgument('session-save')),
             '{{admin_frontname}}'    => $this->_wrapCData($input->getArgument('admin-frontname')),
-        );
+        ];
 
         $newFileContent = str_replace(array_keys($replace), array_values($replace), $content);
         if (false === file_put_contents($configFile, $newFileContent)) {
             $output->writeln('<error>could not save config</error>');
-            return;
+            return 0;
         }
 
         $output->writeln('<info>Generated config</info>');
+        return 0;
     }
 
     /**
@@ -105,14 +108,7 @@ HELP;
         $dialog->setInput($input);
         $messagePrefix = 'Please enter the ';
 
-        $arguments = array(
-            'db-host'         => array('prompt' => 'database host', 'required' => true),
-            'db-user'         => array('prompt' => 'database username', 'required' => true),
-            'db-pass'         => array('prompt' => 'database password', 'required' => false),
-            'db-name'         => array('prompt' => 'database name', 'required' => true),
-            'session-save'    => array('prompt' => 'session save', 'required' => true, 'default' => 'files'),
-            'admin-frontname' => array('prompt' => 'admin frontname', 'required' => true, 'default' => 'admin'),
-        );
+        $arguments = ['db-host'         => ['prompt' => 'database host', 'required' => true], 'db-user'         => ['prompt' => 'database username', 'required' => true], 'db-pass'         => ['prompt' => 'database password', 'required' => false], 'db-name'         => ['prompt' => 'database name', 'required' => true], 'session-save'    => ['prompt' => 'session save', 'required' => true, 'default' => 'files'], 'admin-frontname' => ['prompt' => 'admin frontname', 'required' => true, 'default' => 'admin']];
 
         foreach ($arguments as $argument => $options) {
             if (isset($options['default']) && $input->getArgument($argument) === null) {
@@ -132,7 +128,7 @@ HELP;
             }
 
             if ($options['required'] && $input->getArgument($argument) === null) {
-                throw new \InvalidArgumentException(sprintf('%s was not set', $argument));
+                throw new InvalidArgumentException(sprintf('%s was not set', $argument));
             }
         }
     }
@@ -158,9 +154,9 @@ HELP;
      */
     protected function _wrapCData($string)
     {
-        $buffer = strtr($string, array(']]>' => ']]>]]&gt;<![CDATA['));
+        $buffer = strtr($string, [']]>' => ']]>]]&gt;<![CDATA[']);
         $buffer = '<![CDATA[' . $buffer . ']]>';
-        $buffer = strtr($buffer, array('<![CDATA[]]>' => ''));
+        $buffer = strtr($buffer, ['<![CDATA[]]>' => '']);
 
         return $buffer;
     }

@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Script\Repository;
 
+use Location;
+use Description;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,20 +46,16 @@ HELP;
      *
      * @return int|null|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $files = $this->getScripts();
         if (count($files) > 0) {
-            $table = array();
+            $table = [];
             foreach ($files as $file) {
-                $table[] = array(
-                    substr($file['fileinfo']->getFilename(), 0, -strlen(self::MAGERUN_EXTENSION)),
-                    $file['location'],
-                    $file['description'],
-                );
+                $table[] = [substr($file['fileinfo']->getFilename(), 0, -strlen(self::MAGERUN_EXTENSION)), $file['location'], $file['description']];
             }
         } else {
-            $table = array();
+            $table = [];
         }
 
         if ($input->getOption('format') === null && count($table) === 0) {
@@ -67,7 +65,8 @@ HELP;
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('Script', 'Location', 'Description'))
+            ->setHeaders(['Script', Location::class, Description::class])
             ->renderByFormat($output, $table, $input->getOption('format'));
+        return 0;
     }
 }

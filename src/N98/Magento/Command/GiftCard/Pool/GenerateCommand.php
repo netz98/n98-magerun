@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\GiftCard\Pool;
 
+use Mage;
 use N98\Magento\Command\GiftCard\AbstractGiftCardCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,14 +24,15 @@ class GenerateCommand extends AbstractGiftCardCommand
      * @param OutputInterface $output
      * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
-        \Mage::getModel('enterprise_giftcardaccount/pool')->generatePool();
+        Mage::getModel('enterprise_giftcardaccount/pool')->generatePool();
         $output->writeln('<comment>New pool was generated.</comment>');
+        return 0;
     }
 }

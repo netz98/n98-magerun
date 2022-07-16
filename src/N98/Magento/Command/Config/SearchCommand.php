@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Config;
 
+use Mage;
+use stdClass;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,17 +30,17 @@ EOT
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $this->writeSection($output, 'Config Search');
 
         $searchString = $input->getArgument('text');
-        $system = \Mage::getConfig()->loadModulesConfiguration('system.xml');
+        $system = Mage::getConfig()->loadModulesConfiguration('system.xml');
         $matches = $this->_searchConfiguration($searchString, $system);
 
         if (count($matches) > 0) {
@@ -62,6 +64,7 @@ EOT
         } else {
             $output->writeln('<info>No matches for <comment>' . $searchString . '</comment></info>');
         }
+        return 0;
     }
 
     /**
@@ -72,13 +75,9 @@ EOT
      */
     protected function _searchConfiguration($searchString, $system)
     {
-        $xpathSections = array(
-            'sections/*',
-            'sections/*/groups/*',
-            'sections/*/groups/*/fields/*',
-        );
+        $xpathSections = ['sections/*', 'sections/*/groups/*', 'sections/*/groups/*/fields/*'];
 
-        $matches = array();
+        $matches = [];
         foreach ($xpathSections as $xpath) {
             $tmp = $this->_searchConfigurationNodes(
                 $searchString,
@@ -98,7 +97,7 @@ EOT
      */
     protected function _searchConfigurationNodes($searchString, $nodes)
     {
-        $matches = array();
+        $matches = [];
         foreach ($nodes as $node) {
             $match = $this->_searchNode($searchString, $node);
             if ($match) {
@@ -113,11 +112,11 @@ EOT
      * @param string $searchString
      * @param object $node
      *
-     * @return bool|\stdClass
+     * @return bool|stdClass
      */
     protected function _searchNode($searchString, $node)
     {
-        $match = new \stdClass;
+        $match = new stdClass;
         $match->type = $this->_getNodeType($node);
         if (stristr((string) $node->label, $searchString)) {
             $match->match_type = 'label';

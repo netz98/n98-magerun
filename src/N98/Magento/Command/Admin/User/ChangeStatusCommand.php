@@ -28,7 +28,7 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if ($this->initMagento()) {
@@ -43,7 +43,7 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
 
             if (!$user->getId()) {
                 $output->writeln('<error>User was not found</error>');
-                return;
+                return 0;
             }
 
             try {
@@ -83,5 +83,6 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
             }
         }
+        return 0;
     }
 }

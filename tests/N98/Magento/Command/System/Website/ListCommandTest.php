@@ -14,7 +14,7 @@ class ListCommandTest extends TestCase
         $command = $this->getApplication()->find('sys:website:list');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $commandTester->execute(['command' => $command->getName()]);
 
         self::assertRegExp('/Magento Websites/', $commandTester->getDisplay());
         self::assertRegExp('/id/', $commandTester->getDisplay());

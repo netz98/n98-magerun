@@ -13,7 +13,7 @@ class ConsoleCommand extends AbstractDatabaseCommand
     {
         $this
             ->setName('db:console')
-            ->setAliases(array('mysql-client'))
+            ->setAliases(['mysql-client'])
             ->addOption(
                 'use-mycli-instead-of-mysql',
                 null,
@@ -36,13 +36,11 @@ class ConsoleCommand extends AbstractDatabaseCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectDbSettings($output);
 
-        $args = array(
-            $input->getOption('use-mycli-instead-of-mysql') ? 'mycli' : 'mysql',
-        );
+        $args = [$input->getOption('use-mycli-instead-of-mysql') ? 'mycli' : 'mysql'];
 
         if ($input->getOption('no-auto-rehash')) {
             $args[] = '--no-auto-rehash';
@@ -51,6 +49,7 @@ class ConsoleCommand extends AbstractDatabaseCommand
         $args[] = $this->getMysqlClientToolConnection();
 
         $this->processCommand(implode(' ', $args));
+        return 0;
     }
 
     /**
@@ -60,13 +59,9 @@ class ConsoleCommand extends AbstractDatabaseCommand
      */
     private function processCommand($command)
     {
-        $descriptorSpec = array(
-            0 => STDIN,
-            1 => STDOUT,
-            2 => STDERR,
-        );
+        $descriptorSpec = [0 => STDIN, 1 => STDOUT, 2 => STDERR];
 
-        $pipes = array();
+        $pipes = [];
         $process = proc_open($command, $descriptorSpec, $pipes);
 
         if (is_resource($process)) {

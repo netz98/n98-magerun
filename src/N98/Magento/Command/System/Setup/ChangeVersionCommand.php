@@ -32,12 +32,12 @@ class ChangeVersionCommand extends AbstractSetupCommand
      *
      * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
 
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $moduleVersion = $input->getArgument('version');
@@ -47,7 +47,7 @@ class ChangeVersionCommand extends AbstractSetupCommand
 
         if (empty($moduleSetups)) {
             $output->writeln(sprintf('No setup resources found for module: "%s"', $moduleName));
-            return;
+            return 0;
         }
 
         if ($setupName === 'all') {
@@ -59,6 +59,7 @@ class ChangeVersionCommand extends AbstractSetupCommand
         } else {
             throw new InvalidArgumentException(sprintf('Error no setup found with the name: "%s"', $setupName));
         }
+        return 0;
     }
 
     /**

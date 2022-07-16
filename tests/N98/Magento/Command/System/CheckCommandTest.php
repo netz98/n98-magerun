@@ -14,7 +14,7 @@ class CheckCommandTest extends TestCase
         $command = $this->getApplication()->find('sys:check');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $commandTester->execute(['command' => $command->getName()]);
 
         self::assertRegExp('/SETTINGS/', $commandTester->getDisplay());
         self::assertRegExp('/FILESYSTEM/', $commandTester->getDisplay());

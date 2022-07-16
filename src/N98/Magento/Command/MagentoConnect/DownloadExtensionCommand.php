@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\MagentoConnect;
 
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -11,7 +12,7 @@ class DownloadExtensionCommand extends AbstractConnectCommand
     {
         $this
             ->setName('extension:download')
-            ->addArgument('package', \Symfony\Component\Console\Input\InputArgument::REQUIRED, 'Package to download')
+            ->addArgument('package', InputArgument::REQUIRED, 'Package to download')
             ->setDescription('Download magento-connect package')
         ;
 

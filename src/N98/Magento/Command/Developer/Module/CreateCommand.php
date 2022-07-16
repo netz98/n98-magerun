@@ -19,7 +19,7 @@ class CreateCommand extends AbstractMagentoCommand
     /**
      * @var array
      */
-    protected $twigVars = array();
+    protected $twigVars = [];
 
     /**
      * @var string
@@ -85,7 +85,7 @@ class CreateCommand extends AbstractMagentoCommand
      * @return int|void
      * @throws InvalidArgumentException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->output = $output;
 
@@ -107,7 +107,7 @@ class CreateCommand extends AbstractMagentoCommand
         $this->vendorNamespace = ucfirst($input->getArgument('vendorNamespace'));
         $this->moduleName = ucfirst($input->getArgument('moduleName'));
         $this->codePool = $input->getArgument('codePool');
-        if (!in_array($this->codePool, array('local', 'community'))) {
+        if (!in_array($this->codePool, ['local', 'community'])) {
             throw new InvalidArgumentException('Code pool must "community" or "local"');
         }
         $this->initView($input);
@@ -120,23 +120,12 @@ class CreateCommand extends AbstractMagentoCommand
         }
         $this->writeComposerConfig($input, $output);
         $this->addAdditionalFiles($output);
+        return 0;
     }
 
     protected function initView(InputInterface $input)
     {
-        $this->twigVars = array(
-            'vendorNamespace'   => $this->vendorNamespace,
-            'moduleName'        => $this->moduleName,
-            'codePool'          => $this->codePool,
-            'createControllers' => $input->getOption('add-controllers'),
-            'createBlocks'      => $input->getOption('add-blocks'),
-            'createModels'      => $input->getOption('add-models'),
-            'createHelpers'     => $input->getOption('add-helpers'),
-            'createSetup'       => $input->getOption('add-setup'),
-            'authorName'        => $input->getOption('author-name'),
-            'authorEmail'       => $input->getOption('author-email'),
-            'description'       => $input->getOption('description'),
-        );
+        $this->twigVars = ['vendorNamespace'   => $this->vendorNamespace, 'moduleName'        => $this->moduleName, 'codePool'          => $this->codePool, 'createControllers' => $input->getOption('add-controllers'), 'createBlocks'      => $input->getOption('add-blocks'), 'createModels'      => $input->getOption('add-models'), 'createHelpers'     => $input->getOption('add-helpers'), 'createSetup'       => $input->getOption('add-setup'), 'authorName'        => $input->getOption('author-name'), 'authorEmail'       => $input->getOption('author-email'), 'description'       => $input->getOption('description')];
     }
 
     /**
@@ -326,10 +315,7 @@ class CreateCommand extends AbstractMagentoCommand
      */
     private function getOutfile($filename)
     {
-        $paths = array(
-            'rootDir'   => $this->_magentoRootFolder,
-            'moduleDir' => $this->moduleDirectory,
-        );
+        $paths = ['rootDir'   => $this->_magentoRootFolder, 'moduleDir' => $this->moduleDirectory];
 
         /** @var $twig TwigHelper */
         $twig = $this->getHelper('twig');

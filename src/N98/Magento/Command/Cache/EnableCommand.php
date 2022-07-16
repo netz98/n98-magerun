@@ -24,11 +24,11 @@ class EnableCommand extends AbstractCacheCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $codeArgument = BinaryString::trimExplodeEmpty(',', $input->getArgument('code'));
@@ -41,5 +41,6 @@ class EnableCommand extends AbstractCacheCommand
         } else {
             $output->writeln('<info>Caches enabled</info>');
         }
+        return 0;
     }
 }

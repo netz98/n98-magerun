@@ -113,7 +113,7 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectDbSettings($output);
 
@@ -146,14 +146,14 @@ HELP;
 
         if ($input->getOption('only-command')) {
             $output->writeln($exec);
-            return;
+            return 0;
         } else {
             if ($input->getOption('only-if-empty')
-                && count($dbHelper->getTables()) > 0
+                && (is_countable($dbHelper->getTables()) ? count($dbHelper->getTables()) : 0) > 0
             ) {
                 $output->writeln('<comment>Skip import. Database is not empty</comment>');
 
-                return;
+                return 0;
             }
         }
 
@@ -170,6 +170,7 @@ HELP;
         if ($input->getOption('optimize')) {
             unlink($fileName);
         }
+        return 0;
     }
 
     public function asText()

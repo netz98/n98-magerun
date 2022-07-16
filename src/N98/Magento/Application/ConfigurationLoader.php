@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Application;
 
+use ErrorException;
 use N98\Util\ArrayFunctions;
 use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -136,14 +137,14 @@ class ConfigurationLoader
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      *
      * @return array
      */
     public function toArray()
     {
         if ($this->_configArray == null) {
-            throw new \ErrorException('Configuration not yet fully loaded');
+            throw new ErrorException('Configuration not yet fully loaded');
         }
 
         return $this->_configArray;
@@ -189,7 +190,7 @@ class ConfigurationLoader
                 $this->logDebug('Load system config <comment>' . $systemWideConfigFile . '</comment>');
                 $this->_systemConfig = Yaml::parse($systemWideConfigFile);
             } else {
-                $this->_systemConfig = array();
+                $this->_systemConfig = [];
             }
         }
 
@@ -209,7 +210,7 @@ class ConfigurationLoader
     public function loadPluginConfig(array $config, $magentoRootFolder)
     {
         if (null === $this->_pluginConfig) {
-            $this->_pluginConfig = array();
+            $this->_pluginConfig = [];
             $customName = pathinfo($this->_customConfigFilename, PATHINFO_FILENAME);
             if (OperatingSystem::isWindows()) {
                 $config['plugin']['folders'][] = getenv('WINDIR') . '/' . $customName . '/modules';
@@ -270,7 +271,7 @@ class ConfigurationLoader
     public function loadUserConfig(array $config, $magentoRootFolder = null)
     {
         if (null === $this->_userConfig) {
-            $this->_userConfig = array();
+            $this->_userConfig = [];
             $locator = new ConfigLocator($this->_customConfigFilename, $magentoRootFolder);
             if ($userConfigFile = $locator->getUserConfigFile()) {
                 $this->logDebug('Load user config <comment>' . $userConfigFile->getPath() . '</comment>');
@@ -298,7 +299,7 @@ class ConfigurationLoader
             return ArrayFunctions::mergeArrays($config, $this->_projectConfig);
         }
 
-        $this->_projectConfig = array();
+        $this->_projectConfig = [];
 
         $locator = new ConfigLocator($this->_customConfigFilename, $magentoRootFolder);
 

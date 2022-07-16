@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Log;
 
+use N98\Util\Filesystem;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,11 +27,11 @@ class SizeCommand extends AbstractLogCommand
      * @throws RuntimeException
      * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $fileName = $input->getArgument('log_filename');
@@ -51,9 +52,10 @@ class SizeCommand extends AbstractLogCommand
         }
 
         if ($input->getOption('human')) {
-            $output->writeln(\N98\Util\Filesystem::humanFileSize($size));
+            $output->writeln(Filesystem::humanFileSize($size));
         } else {
             $output->writeln("$size");
         }
+        return 0;
     }
 }

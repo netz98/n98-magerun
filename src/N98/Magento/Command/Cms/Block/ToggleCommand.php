@@ -44,11 +44,11 @@ class ToggleCommand extends AbstractMagentoCommand
      *
      * @return int|null|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
         $blockId = $input->getArgument('block_id');
         if (is_numeric($blockId)) {
@@ -57,7 +57,7 @@ class ToggleCommand extends AbstractMagentoCommand
             $block = $this->_getBlockModel()->load($blockId, 'identifier');
         }
         if (!$block->getId()) {
-            return $output->writeln('<error>Block was not found</error>');
+            return (int) $output->writeln('<error>Block was not found</error>');
         }
         $newStatus = !$block->getIsActive();
         $block
@@ -67,5 +67,6 @@ class ToggleCommand extends AbstractMagentoCommand
             '<comment>Block</comment> <info>%s</info>',
             $newStatus ? 'enabled' : 'disabled'
         ));
+        return 0;
     }
 }

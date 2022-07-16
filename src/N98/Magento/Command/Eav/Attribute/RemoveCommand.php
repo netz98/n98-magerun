@@ -2,6 +2,9 @@
 
 namespace N98\Magento\Command\Eav\Attribute;
 
+use Mage;
+use Mage_Core_Exception;
+use Mage_Eav_Model_Entity_Setup;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -30,22 +33,22 @@ class RemoveCommand extends AbstractMagentoCommand
      *
      * @return int|null|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $entityType = $input->getArgument('entityType');
 
         try {
-            $attributes = \Mage::getModel('eav/config')->getEntityAttributeCodes($entityType);
-        } catch (\Mage_Core_Exception $e) {
+            $attributes = Mage::getModel('eav/config')->getEntityAttributeCodes($entityType);
+        } catch (Mage_Core_Exception $e) {
             throw new InvalidArgumentException($e->getMessage());
         }
 
-        $setup = new \Mage_Eav_Model_Entity_Setup('core_setup');
+        $setup = new Mage_Eav_Model_Entity_Setup('core_setup');
         foreach ($input->getArgument('attributeCode') as $attributeCode) {
             if (!in_array($attributeCode, $attributes)) {
                 $message = sprintf(
@@ -66,5 +69,6 @@ class RemoveCommand extends AbstractMagentoCommand
                 );
             }
         }
+        return 0;
     }
 }

@@ -2,6 +2,11 @@
 
 namespace N98\Magento\Command\System\Check\Security;
 
+use Mage;
+use Mage_Core_Model_Store;
+use Varien_Http_Adapter_Curl;
+use Zend_Http_Client;
+use Zend_Http_Response;
 use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Magento\Command\System\Check\SimpleCheck;
@@ -20,15 +25,15 @@ class LocalConfigAccessableCheck implements SimpleCheck
     {
         $result = $results->createResult();
         $filePath = 'app/etc/local.xml';
-        $defaultUnsecureBaseURL = (string) \Mage::getConfig()->getNode(
-            'default/' . \Mage_Core_Model_Store::XML_PATH_UNSECURE_BASE_URL
+        $defaultUnsecureBaseURL = (string) Mage::getConfig()->getNode(
+            'default/' . Mage_Core_Model_Store::XML_PATH_UNSECURE_BASE_URL
         );
 
-        $http = new \Varien_Http_Adapter_Curl();
-        $http->setConfig(array('timeout' => $this->_verificationTimeOut));
-        $http->write(\Zend_Http_Client::POST, $defaultUnsecureBaseURL . $filePath);
+        $http = new Varien_Http_Adapter_Curl();
+        $http->setConfig(['timeout' => $this->_verificationTimeOut]);
+        $http->write(Zend_Http_Client::POST, $defaultUnsecureBaseURL . $filePath);
         $responseBody = $http->read();
-        $responseCode = \Zend_Http_Response::extractCode($responseBody);
+        $responseCode = Zend_Http_Response::extractCode($responseBody);
         $http->close();
 
         if ($responseCode === 200) {

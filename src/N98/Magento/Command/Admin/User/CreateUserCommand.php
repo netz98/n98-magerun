@@ -2,10 +2,12 @@
 
 namespace N98\Magento\Command\Admin\User;
 
-use Symfony\Component\Console\Helper\DialogHelper;
+use Mage_Backend_Model_Acl_Config;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class CreateUserCommand extends AbstractAdminUserCommand
 {
@@ -28,16 +30,17 @@ class CreateUserCommand extends AbstractAdminUserCommand
      * @param OutputInterface $output
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if ($this->initMagento()) {
             $username = $this->getOrAskForArgument('username', $input, $output);
             $email = $this->getOrAskForArgument('email', $input, $output);
             if (($password = $input->getArgument('password')) === null) {
-                /* @var $dialog DialogHelper */
-                $dialog = $this->getHelper('dialog');
-                $password = $dialog->askHiddenResponse($output, '<question>Password:</question>');
+                $dialog = new QuestionHelper();
+                $question = new Question('<question>Password:</question>');
+                $question->setHidden(true);
+                $password = $dialog->ask($input, $output, $question);
             }
 
             $firstname = $this->getOrAskForArgument('firstname', $input, $output);
@@ -46,7 +49,7 @@ class CreateUserCommand extends AbstractAdminUserCommand
                 $role = $this->getRoleModel()->load($roleName, 'role_name');
                 if (!$role->getId()) {
                     $output->writeln('<error>Role was not found</error>');
-                    return;
+                    return 0;
                 }
             } else {
                 // create new role if not yet existing
@@ -57,12 +60,12 @@ class CreateUserCommand extends AbstractAdminUserCommand
                         ->save();
 
                     $resourceAll = ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) ?
-                        \Mage_Backend_Model_Acl_Config::ACL_RESOURCE_ALL : 'all';
+                        Mage_Backend_Model_Acl_Config::ACL_RESOURCE_ALL : 'all';
 
                     // give "all" privileges to role
                     $this->getRulesModel()
                         ->setRoleId($role->getId())
-                        ->setResources(array($resourceAll))
+                        ->setResources([$resourceAll])
                         ->saveRel();
 
                     $output->writeln('<info>The role <comment>Development</comment> was automatically created.</info>');
@@ -71,25 +74,19 @@ class CreateUserCommand extends AbstractAdminUserCommand
 
             // create new user
             $user = $this->getUserModel()
-                ->setData(array(
-                    'username'  => $username,
-                    'firstname' => $firstname,
-                    'lastname'  => $lastname,
-                    'email'     => $email,
-                    'password'  => $password,
-                    'is_active' => 1,
-                ))->save();
+                ->setData(['username'  => $username, 'firstname' => $firstname, 'lastname'  => $lastname, 'email'     => $email, 'password'  => $password, 'is_active' => 1])->save();
 
             if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
                 $user->setRoleId($role->getId())
                     ->save();
             } else {
-                $user->setRoleIds(array($role->getId()))
+                $user->setRoleIds([$role->getId()])
                     ->setRoleUserId($user->getUserId())
                     ->saveRelations();
             }
 
             $output->writeln('<info>User <comment>' . $username . '</comment> successfully created</info>');
         }
+        return 0;
     }
 }

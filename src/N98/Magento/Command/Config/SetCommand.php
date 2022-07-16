@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Config;
 
+use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -58,17 +59,17 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $config = $this->_getConfigModel();
         if (!$config->getResourceModel()) {
             // without a resource model, a config option can't be saved.
-            return;
+            return 0;
         }
 
         $allowZeroScope = $input->getOption('force');
@@ -81,12 +82,12 @@ HELP;
 
         if ($value === "NULL" && !$input->getOption('no-null')) {
             if ($input->getOption('encrypt')) {
-                throw new \InvalidArgumentException("Encryption is not possbile for NULL values");
+                throw new InvalidArgumentException("Encryption is not possbile for NULL values");
             }
             $value = null;
             $valueDisplay = self::DISPLAY_NULL_UNKNOWN_VALUE;
         } else {
-            $value = str_replace(array('\n', '\r'), array("\n", "\r"), $value);
+            $value = str_replace(['\n', '\r'], ["\n", "\r"], $value);
             $value = $this->_formatValue($value, ($input->getOption('encrypt') ? 'encrypt' : false));
         }
 
@@ -101,5 +102,6 @@ HELP;
             '<comment>' . $input->getArgument('path') . "</comment> => <comment>" . $valueDisplay .
             '</comment>'
         );
+        return 0;
     }
 }

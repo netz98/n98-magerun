@@ -16,9 +16,10 @@ class ShellCommand extends AbstractMagentoCommand
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $shell = new Shell($this->getApplication());
         $shell->run();
+        return 0;
     }
 }

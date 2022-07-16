@@ -5,9 +5,11 @@ namespace N98\Magento\Command\Customer;
 use Exception;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class ChangePasswordCommand extends AbstractCustomerCommand
 {
@@ -33,20 +35,21 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
-        /* @var $dialog DialogHelper */
-        $dialog = $this->getHelper('dialog');
+        $dialog = new QuestionHelper();
         $email = $this->getHelper('parameter')->askEmail($input, $output);
 
         // Password
         if (($password = $input->getArgument('password')) == null) {
-            $password = $dialog->askHiddenResponse($output, '<question>Password:</question>');
+            $question = new Question('<question>Password:</question>');
+            $question->setHidden(true);
+            $password = $dialog->ask($input, $output, $question);
         }
 
         $website = $this->getHelper('parameter')->askWebsite($input, $output);
@@ -56,7 +59,7 @@ HELP;
             ->loadByEmail($email);
         if ($customer->getId() <= 0) {
             $output->writeln('<error>Customer was not found</error>');
-            return;
+            return 0;
         }
 
         try {
@@ -70,5 +73,6 @@ HELP;
         } catch (Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
+        return 0;
     }
 }

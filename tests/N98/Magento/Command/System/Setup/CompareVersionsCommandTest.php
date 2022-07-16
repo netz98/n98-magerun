@@ -16,9 +16,7 @@ class CompareVersionsCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-            )
+            ['command' => $command->getName()]
         );
 
         self::assertRegExp('/Setup/', $commandTester->getDisplay());
@@ -37,10 +35,7 @@ class CompareVersionsCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'     => $command->getName(),
-                '--log-junit' => vfsStream::url('root/junit.xml'),
-            )
+            ['command'     => $command->getName(), '--log-junit' => vfsStream::url('root/junit.xml')]
         );
 
         self::assertFileExists(vfsStream::url('root/junit.xml'));

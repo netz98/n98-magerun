@@ -15,11 +15,7 @@ class DumpCommand extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'  => $command->getName(),
-                'filename' => tempnam('media_'),
-                '--strip'  => true,
-            )
+            ['command'  => $command->getName(), 'filename' => tempnam('media_'), '--strip'  => true]
         );
 
         self::assertContains('Compress directory', $commandTester->getDisplay());

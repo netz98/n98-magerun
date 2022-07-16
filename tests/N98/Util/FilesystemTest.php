@@ -7,27 +7,29 @@
 
 namespace N98\Util;
 
+use PHPUnit\Framework\TestCase;
+use RuntimeException;
 /**
  * Class FilesystemTest
  * @package N98\Util
  * @author Aydin Hassan <aydin@hotmail.co.uk>
  * @covers N98\Util\Filesystem
  */
-class FilesystemTest extends \PHPUnit\Framework\TestCase
+class FilesystemTest extends TestCase
 {
     /**
      * @var Filesystem
      */
     protected $fileSystem;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->fileSystem = new Filesystem();
     }
 
     public function testRecursiveCopy()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $tmp = sys_get_temp_dir();
         $basePath = $tmp . "/n98_testdir";
         $folder1 = $basePath . "/folder1";
@@ -61,7 +63,9 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
         self::assertFileNotExists($dest . "/folder1/file1.txt");
         self::assertFileNotExists($dest);
 
-        is_dir($tmp . '/a') || mkdir($tmp . '/a');
+        if (!is_dir($tmp . '/a')) {
+            mkdir($tmp . '/a');
+        }
         touch($tmp . '/file1.txt');
         $this->fileSystem->recursiveCopy($tmp . '/a', $tmp . '/file1.txt');
         unlink($tmp . '/file1.txt');
@@ -86,7 +90,7 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
         touch($ignoreMe);
         touch($file2);
 
-        $this->fileSystem->recursiveCopy($basePath, $dest, array('ignore.me'));
+        $this->fileSystem->recursiveCopy($basePath, $dest, ['ignore.me']);
         self::assertFileExists($dest . "/folder1/file1.txt");
         self::assertFileNotExists($dest . "/folder1/ignore.me");
         self::assertFileExists($dest . "/folder2/file2.txt");
@@ -216,12 +220,6 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
      */
     public static function convertedBytesProvider()
     {
-        return array(
-            array(20000000,     2,  '19.07M'),
-            array(20000000,     3,  '19.073M'),
-            array(2000000000,   2,  '1.86G'),
-            array(2,            2,  '2.00B'),
-            array(2048,         2,  '2.00K'),
-        );
+        return [[20_000_000, 2, '19.07M'], [20_000_000, 3, '19.073M'], [2_000_000_000, 2, '1.86G'], [2, 2, '2.00B'], [2048, 2, '2.00K']];
     }
 }

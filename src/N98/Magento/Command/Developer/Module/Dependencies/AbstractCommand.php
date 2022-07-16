@@ -19,10 +19,10 @@ abstract class AbstractCommand extends AbstractMagentoCommand
      *
      * @var string
      */
-    const COMMAND_NAME = '';
-    const COMMAND_DESCRIPTION = '';
-    const COMMAND_SECTION_TITLE_TEXT = '';
-    const COMMAND_NO_RESULTS_TEXT = '';
+    public const COMMAND_NAME = '';
+    public const COMMAND_DESCRIPTION = '';
+    public const COMMAND_SECTION_TITLE_TEXT = '';
+    public const COMMAND_NO_RESULTS_TEXT = '';
     /**#@-*/
 
     /**
@@ -56,7 +56,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
      *
      * @return int|null|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $moduleName = $input->getArgument('moduleName');
         $recursive = $input->getOption('all');
@@ -69,11 +69,11 @@ abstract class AbstractCommand extends AbstractMagentoCommand
         try {
             $dependencies = $this->findModuleDependencies($moduleName, $recursive);
             if (!empty($dependencies)) {
-                usort($dependencies, array($this, 'sortDependencies'));
+                usort($dependencies, [$this, 'sortDependencies']);
                 /* @var $tableHelper TableHelper */
                 $tableHelper = $this->getHelper('table');
                 $tableHelper
-                    ->setHeaders(array('Name', 'Status', 'Current installed version', 'Code pool'))
+                    ->setHeaders(['Name', 'Status', 'Current installed version', 'Code pool'])
                     ->setPadType(STR_PAD_LEFT)
                     ->renderByFormat($output, $dependencies, $input->getOption('format'));
             } else {
@@ -82,6 +82,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
         } catch (Exception $e) {
             $output->writeln($e->getMessage());
         }
+        return 0;
     }
 
     /**

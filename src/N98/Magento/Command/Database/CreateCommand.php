@@ -27,8 +27,9 @@ HELP;
      * @param OutputInterface $output
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->getHelper('database')->createDatabase($output);
+        return 0;
     }
 }

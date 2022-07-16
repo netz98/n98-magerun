@@ -2,6 +2,9 @@
 
 namespace N98\Magento;
 
+use N98\Util\Console\Helper\TwigHelper;
+use Mage_Core_Model_Config_Options;
+use N98\Magento\Application\Console\Event;
 use Composer\Autoload\ClassLoader;
 use Exception;
 use Mage;
@@ -31,22 +34,22 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const APP_NAME = 'n98-magerun';
+    public const APP_NAME = 'n98-magerun';
 
     /**
      * @var string
      */
-    const APP_VERSION = '2.3.0';
+    public const APP_VERSION = '2.3.0';
 
     /**
      * @var int
      */
-    const MAGENTO_MAJOR_VERSION_1 = 1;
+    public const MAGENTO_MAJOR_VERSION_1 = 1;
 
     /**
      * @var int
      */
-    const MAGENTO_MAJOR_VERSION_2 = 2;
+    public const MAGENTO_MAJOR_VERSION_2 = 2;
 
     /**
      * @var string
@@ -256,7 +259,7 @@ class Application extends BaseApplication
         if (!$this->_directRootDir) {
             $subFolders = $this->config->getDetectSubFolders();
         } else {
-            $subFolders = array();
+            $subFolders = [];
         }
 
         $this->_magentoDetected = $magentoHelper->detect($folder, $subFolders);
@@ -286,7 +289,7 @@ class Application extends BaseApplication
             }
 
             // Twig helper needs the config-file
-            $helper = 'N98\Util\Console\Helper\TwigHelper' === $helperClass
+            $helper = TwigHelper::class === $helperClass
                 ? new $helperClass($this->config)
                 : new $helperClass()
             ;
@@ -333,7 +336,7 @@ class Application extends BaseApplication
     {
         trigger_error(__METHOD__ . ' moved, use config directly instead', E_USER_DEPRECATED);
 
-        return 0 < count($this->config->getConfig(array('commands', 'customCommands')));
+        return 0 < count($this->config->getConfig(['commands', 'customCommands']));
     }
 
     /**
@@ -427,29 +430,17 @@ class Application extends BaseApplication
             return;
         }
 
-        $configOptions = new \Mage_Core_Model_Config_Options();
+        $configOptions = new Mage_Core_Model_Config_Options();
         $currentVarDir = $configOptions->getVarDir();
 
         if ($currentVarDir == $tempVarDir) {
-            $output->writeln(array(
-                sprintf('<warning>Fallback folder %s is used in n98-magerun</warning>', $tempVarDir),
-                '',
-                'n98-magerun is using the fallback folder. If there is another folder configured for Magento, this ' .
-                'can cause serious problems.',
-                'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
-                'for more information.',
-                '',
-            ));
+            $output->writeln([sprintf('<warning>Fallback folder %s is used in n98-magerun</warning>', $tempVarDir), '', 'n98-magerun is using the fallback folder. If there is another folder configured for Magento, this ' .
+            'can cause serious problems.', 'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
+            'for more information.', '']);
         } else {
-            $output->writeln(array(
-                sprintf('<warning>Folder %s found, but not used in n98-magerun</warning>', $tempVarDir),
-                '',
-                "This might cause serious problems. n98-magerun is using the configured var-folder " .
-                "<comment>$currentVarDir</comment>",
-                'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
-                'for more information.',
-                '',
-            ));
+            $output->writeln([sprintf('<warning>Folder %s found, but not used in n98-magerun</warning>', $tempVarDir), '', "This might cause serious problems. n98-magerun is using the configured var-folder " .
+            "<comment>$currentVarDir</comment>", 'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
+            'for more information.', '']);
 
             return false;
         }
@@ -593,7 +584,7 @@ class Application extends BaseApplication
      */
     public function doRun(InputInterface $input, OutputInterface $output)
     {
-        $event = new Application\Console\Event($this, $input, $output);
+        $event = new Event($this, $input, $output);
         $this->dispatcher->dispatch(Events::RUN_BEFORE, $event);
 
         /**
@@ -633,7 +624,7 @@ class Application extends BaseApplication
         $this->configureIO($input, $output);
 
         try {
-            $this->init(array(), $input, $output);
+            $this->init([], $input, $output);
         } catch (Exception $e) {
             $output = new ConsoleOutput();
             $this->renderException($e, $output->getErrorOutput());
@@ -656,7 +647,7 @@ class Application extends BaseApplication
      *
      * @return void
      */
-    public function init(array $initConfig = array(), InputInterface $input = null, OutputInterface $output = null)
+    public function init(array $initConfig = [], InputInterface $input = null, OutputInterface $output = null)
     {
         if ($this->_isInitialized) {
             return;
@@ -704,7 +695,7 @@ class Application extends BaseApplication
      * @param InputInterface $input [optional]
      * @param OutputInterface $output [optional]
      */
-    public function reinit($initConfig = array(), InputInterface $input = null, OutputInterface $output = null)
+    public function reinit($initConfig = [], InputInterface $input = null, OutputInterface $output = null)
     {
         $this->_isInitialized = false;
         $this->_magentoDetected = false;
@@ -833,12 +824,7 @@ MAGENTOHINT;
         /** @var $formatter FormatterHelper */
         $formatter = $this->getHelperSet()->get('formatter');
 
-        $output->writeln(array(
-            '',
-            $formatter->formatBlock('Compatibility Notice', 'bg=blue;fg=white', true),
-            '',
-            $magentoHint,
-        ));
+        $output->writeln(['', $formatter->formatBlock('Compatibility Notice', 'bg=blue;fg=white', true), '', $magentoHint]);
 
         throw new RuntimeException('This version of n98-magerun is not compatible with Magento ' . $version);
     }
@@ -895,6 +881,6 @@ MAGENTOHINT;
     protected function _addOutputStyles(OutputInterface $output)
     {
         $output->getFormatter()->setStyle('debug', new OutputFormatterStyle('magenta', 'white'));
-        $output->getFormatter()->setStyle('warning', new OutputFormatterStyle('red', 'yellow', array('bold')));
+        $output->getFormatter()->setStyle('warning', new OutputFormatterStyle('red', 'yellow', ['bold']));
     }
 }

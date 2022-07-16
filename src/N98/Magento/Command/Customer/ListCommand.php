@@ -38,49 +38,40 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $config = $this->getCommandConfig();
 
         $collection = $this->getCustomerCollection();
-        $collection->addAttributeToSelect(array('entity_id', 'email', 'firstname', 'lastname', 'website_id'));
+        $collection->addAttributeToSelect(['entity_id', 'email', 'firstname', 'lastname', 'website_id']);
 
         if ($input->getArgument('search')) {
             $collection->addAttributeToFilter(
-                array(
-                    array('attribute' => 'email', 'like' => '%' . $input->getArgument('search') . '%'),
-                    array('attribute' => 'firstname', 'like' => '%' . $input->getArgument('search') . '%'),
-                    array('attribute' => 'lastname', 'like' => '%' . $input->getArgument('search') . '%'),
-                )
+                [['attribute' => 'email', 'like' => '%' . $input->getArgument('search') . '%'], ['attribute' => 'firstname', 'like' => '%' . $input->getArgument('search') . '%'], ['attribute' => 'lastname', 'like' => '%' . $input->getArgument('search') . '%']]
             );
         }
 
         $collection->setPageSize($config['limit']);
 
-        $table = array();
+        $table = [];
         foreach ($collection as $customer) {
-            $table[] = array(
-                $customer->getId(),
-                $customer->getEmail(),
-                $customer->getFirstname(),
-                $customer->getLastname(),
-                $this->_getWebsiteCodeById($customer->getwebsiteId()),
-            );
+            $table[] = [$customer->getId(), $customer->getEmail(), $customer->getFirstname(), $customer->getLastname(), $this->_getWebsiteCodeById($customer->getwebsiteId())];
         }
 
         if (count($table) > 0) {
             /* @var $tableHelper TableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
-                ->setHeaders(array('id', 'email', 'firstname', 'lastname', 'website'))
+                ->setHeaders(['id', 'email', 'firstname', 'lastname', 'website'])
                 ->renderByFormat($output, $table, $input->getOption('format'));
         } else {
             $output->writeln('<comment>No customers found</comment>');
         }
+        return 0;
     }
 }

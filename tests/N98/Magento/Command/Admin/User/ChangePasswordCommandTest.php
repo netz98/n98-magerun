@@ -14,14 +14,14 @@ class ChangePasswordCommandTest extends TestCase
     protected $userModel;
     protected $commandName = 'admin:user:change-password';
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->command = $this->getMockBuilder('\N98\Magento\Command\Admin\User\ChangePasswordCommand')
-            ->setMethods(array('getUserModel'))
+        $this->command = $this->getMockBuilder(ChangePasswordCommand::class)
+            ->setMethods(['getUserModel'])
             ->getMock();
 
         $this->userModel = $this->getMockBuilder('Mage_Admin_Model_User')
-            ->setMethods(array('loadByUsername', 'load', 'getId', 'setPassword', 'validate', 'save'))
+            ->setMethods(['loadByUsername', 'load', 'getId', 'setPassword', 'validate', 'save'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -57,14 +57,10 @@ class ChangePasswordCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'   => $command->getName(),
-                'username'  => 'aydin',
-                'password'  => 'password',
-            )
+            ['command'   => $command->getName(), 'username'  => 'aydin', 'password'  => 'password']
         );
 
-        self::assertContains('Password successfully changed', $commandTester->getDisplay());
+        self::assertStringContainsString('Password successfully changed', $commandTester->getDisplay());
     }
 
     public function testReturnEarlyIfUserNotFound()
@@ -85,11 +81,8 @@ class ChangePasswordCommandTest extends TestCase
         $command = $this->getApplication()->find($this->commandName);
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
-            'command'   => $command->getName(),
-            'username'  => 'notauser',
-        ));
+        $commandTester->execute(['command'   => $command->getName(), 'username'  => 'notauser']);
 
-        self::assertContains('User was not found', $commandTester->getDisplay());
+        self::assertStringContainsString('User was not found', $commandTester->getDisplay());
     }
 }

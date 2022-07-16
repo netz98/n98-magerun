@@ -9,17 +9,17 @@ class Result
     /**
      * @var string
      */
-    const STATUS_OK = 'ok';
+    public const STATUS_OK = 'ok';
 
     /**
      * @var string
      */
-    const STATUS_ERROR = 'error';
+    public const STATUS_ERROR = 'error';
 
     /**
      * @var string
      */
-    const STATUS_WARNING = 'warning';
+    public const STATUS_WARNING = 'warning';
 
     /**
      * @var string
@@ -61,7 +61,7 @@ class Result
             $status = $status ? self::STATUS_OK : self::STATUS_ERROR;
         }
 
-        if (!in_array($status, array(self::STATUS_OK, self::STATUS_ERROR, self::STATUS_WARNING))) {
+        if (!in_array($status, [self::STATUS_OK, self::STATUS_ERROR, self::STATUS_WARNING])) {
             throw new LogicException(
                 'Wrong status was given. Use constants: Result::OK, Result::ERROR, Result::WARNING'
             );

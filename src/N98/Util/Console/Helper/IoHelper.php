@@ -26,7 +26,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class IoHelper implements HelperInterface, EventSubscriberInterface
 {
-    const HELPER_NAME = 'io';
+    public const HELPER_NAME = 'io';
 
     /**
      * @var HelperSet
@@ -127,8 +127,6 @@ class IoHelper implements HelperInterface, EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            ConsoleEvents::COMMAND => 'initializeEventIo', /** @see initializeEventIo */
-        );
+        return [ConsoleEvents::COMMAND => 'initializeEventIo'];
     }
 }

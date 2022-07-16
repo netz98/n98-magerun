@@ -21,7 +21,7 @@ class Twig
     public function __construct(array $baseDirs)
     {
         $loader = new Twig_Loader_Filesystem($baseDirs);
-        $this->twigEnv = new Twig_Environment($loader, array('debug' => true));
+        $this->twigEnv = new Twig_Environment($loader, ['debug' => true]);
         $this->addExtensions($this->twigEnv);
         $this->addFilters($this->twigEnv);
     }
@@ -46,7 +46,7 @@ class Twig
     public function renderString($string, $variables)
     {
         $loader = new Twig_Loader_String();
-        $twig = new Twig_Environment($loader, array('debug' => true));
+        $twig = new Twig_Environment($loader, ['debug' => true]);
         $this->addExtensions($twig);
         $this->addFilters($twig);
 
@@ -62,7 +62,7 @@ class Twig
          * cast_to_array
          */
         $twig->addFilter(
-            new Twig_SimpleFilter('cast_to_array', array($this, 'filterCastToArray'))
+            new Twig_SimpleFilter('cast_to_array', [$this, 'filterCastToArray'])
         );
     }
 

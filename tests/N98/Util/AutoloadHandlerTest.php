@@ -7,25 +7,25 @@
 
 namespace N98\Util;
 
+use PHPUnit\Framework\TestCase;
+use BadMethodCallException;
 /**
  * Class AutoloadHandlerTest
  *
  * @covers \N98\Util\AutoloadHandler
  * @package N98\Util
  */
-class AutoloadHandlerTest extends \PHPUnit\Framework\TestCase
+class AutoloadHandlerTest extends TestCase
 {
-    /**
-     * @var array
-     */
-    private $cleanup = array();
+    private array $cleanup = [];
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         foreach ($this->cleanup as $key => $task) {
             $task();
             unset($this->cleanup[$key]);
         }
+
         parent::tearDown();
     }
 
@@ -36,15 +36,15 @@ class AutoloadHandlerTest extends \PHPUnit\Framework\TestCase
     {
         $handler = $this->create(null);
         self::assertInstanceOf(__NAMESPACE__ . '\AutoloadHandler', $handler);
-        self::assertInternalType('callable', $handler);
+        self::assertIsCallable($handler);
     }
 
     /**
      * @test
      */
-    public function noRegistrationOnCreation()
+    public function noRegistrationOnCreation(): never
     {
-        $this->expectException(\BadMethodCallException::class);
+        $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('Autoload callback is not callable');
 
         $handler = $this->create(null, AutoloadHandler::NO_AUTO_REGISTER);
@@ -63,10 +63,10 @@ class AutoloadHandlerTest extends \PHPUnit\Framework\TestCase
 
     private function create($implementation, $flags = null)
     {
-        $handler = AutoloadHandler::create($implementation, $flags);
-        $this->cleanup[] = $handler->getCleanupCallback();
+        $autoloadHandler = AutoloadHandler::create($implementation, $flags);
+        $this->cleanup[] = $autoloadHandler->getCleanupCallback();
 
-        return $handler;
+        return $autoloadHandler;
     }
 
     /**
@@ -74,9 +74,9 @@ class AutoloadHandlerTest extends \PHPUnit\Framework\TestCase
      */
     public function registrationAndDeregistration()
     {
-        $calls = (object) array('retval' => true);
+        $calls = (object) ['retval' => true];
         $assertAble = function ($className) use (&$calls) {
-            $calls->log[] = array($className);
+            $calls->log[] = [$className];
             $calls->count[$className] = 1 + @$calls->count[$className];
 
             return $calls->retval;
@@ -96,9 +96,9 @@ class AutoloadHandlerTest extends \PHPUnit\Framework\TestCase
      */
     public function changingCallback()
     {
-        $calls = (object) array('retval' => true);
+        $calls = (object) ['retval' => true];
         $assertAble = function ($className) use (&$calls) {
-            $calls->log[] = array($className);
+            $calls->log[] = [$className];
             $calls->count[$className] = 1 + @$calls->count[$className];
 
             return $calls->retval;
@@ -120,13 +120,13 @@ class AutoloadHandlerTest extends \PHPUnit\Framework\TestCase
     /**
      * @test
      */
-    public function disablingAndEnabling()
+    public function disablingAndEnabling(): never
     {
         $handler = $this->create(null);
         $handler->setEnabled(false);
         self::assertFalse($handler->__invoke("Test"));
         $handler->setEnabled(true);
-        $this->expectException(\BadMethodCallException::class);
+        $this->expectException(BadMethodCallException::class);
         self::assertFalse($handler->__invoke("Test"));
         self::fail('An expected exception has not been thrown');
     }
@@ -136,7 +136,7 @@ class AutoloadHandlerTest extends \PHPUnit\Framework\TestCase
      */
     public function callbackSelfReference()
     {
-        $testClass = 'MyOf' . mt_rand(1000, 9999) . 'Fake' . mt_rand(1000, 9999) . 'Class';
+        $testClass = 'MyOf' . random_int(1000, 9999) . 'Fake' . random_int(1000, 9999) . 'Class';
         $test = $this;
         $handler = $this->create(function ($className) use (&$handler, $test, $testClass) {
             /** @var $handler AutoloadHandler */
@@ -155,9 +155,9 @@ class AutoloadHandlerTest extends \PHPUnit\Framework\TestCase
      */
     public function cleanupCallback()
     {
-        $calls = (object) array('retval' => true);
+        $calls = (object) ['retval' => true];
         $assertAble = function ($className) use (&$calls) {
-            $calls->log[] = array($className);
+            $calls->log[] = [$className];
             $calls->count[$className] = 1 + @$calls->count[$className];
 
             return $calls->retval;

@@ -9,7 +9,7 @@ class AbstractRepositoryCommand extends AbstractMagentoCommand
     /**
      * Extension of n98-magerun scripts
      */
-    const MAGERUN_EXTENSION = '.magerun';
+    public const MAGERUN_EXTENSION = '.magerun';
 
     /**
      * @return array

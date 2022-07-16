@@ -2,6 +2,9 @@
 
 namespace N98\Magento\Command;
 
+use Mage_Core_Model_App;
+use Mage;
+use Mage_Core_Model_Store;
 use N98\Util\Exec;
 use N98\Util\OperatingSystem;
 use RuntimeException;
@@ -34,24 +37,25 @@ class OpenBrowserCommand extends AbstractMagentoCommand
      * @throws RuntimeException
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $store = $this->getHelper('parameter')->askStore($input, $output, 'store', true);
-        if ($store->getId() == \Mage_Core_Model_App::ADMIN_STORE_ID) {
-            $adminFrontName = (string) \Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
-            $url = rtrim($store->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_WEB), '/') . '/' . $adminFrontName;
+        if ($store->getId() == Mage_Core_Model_App::ADMIN_STORE_ID) {
+            $adminFrontName = (string) Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
+            $url = rtrim($store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB), '/') . '/' . $adminFrontName;
         } else {
-            $url = $store->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK) . '?___store=' . $store->getCode();
+            $url = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK) . '?___store=' . $store->getCode();
         }
         $output->writeln('Opening URL <comment>' . $url . '</comment> in browser');
 
         $opener = $this->resolveOpenerCommand($output);
         Exec::run(escapeshellcmd($opener . ' ' . $url));
+        return 0;
     }
 
     /**

@@ -51,11 +51,11 @@ class ListCommand extends AbstractMagentoCommand
      *
      * @return int|null|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $cmsBlockCollection = $this->_getBlockModel()->getCollection()->addFieldToSelect('*');
@@ -63,23 +63,18 @@ class ListCommand extends AbstractMagentoCommand
         /** @var \Mage_Cms_Model_Resource_Block $resourceModel */
         $resourceModel = $this->_getBlockModel()->getResource();
 
-        $table = array();
+        $table = [];
         foreach ($cmsBlockCollection as $cmsBlock) {
             $storeIds = implode(',', $resourceModel->lookupStoreIds($cmsBlock->getId()));
 
-            $table[] = array(
-                $cmsBlock->getData('block_id'),
-                $cmsBlock->getData('identifier'),
-                $cmsBlock->getData('title'),
-                $cmsBlock->getData('is_active') ? 'active' : 'inactive',
-                $storeIds,
-            );
+            $table[] = [$cmsBlock->getData('block_id'), $cmsBlock->getData('identifier'), $cmsBlock->getData('title'), $cmsBlock->getData('is_active') ? 'active' : 'inactive', $storeIds];
         }
 
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('block_id', 'identifier', 'title', 'is_active', 'store_ids'))
+            ->setHeaders(['block_id', 'identifier', 'title', 'is_active', 'store_ids'])
             ->renderByFormat($output, $table, $input->getOption('format'));
+        return 0;
     }
 }

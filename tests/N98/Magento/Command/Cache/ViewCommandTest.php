@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Cache;
 
+use Mage;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -13,14 +14,11 @@ class ViewCommandTest extends TestCase
         $application->add(new ListCommand());
         $command = $this->getApplication()->find('cache:view');
 
-        \Mage::app()->getCache()->save('TEST n98-magerun', 'n98-magerun-unittest');
+        Mage::app()->getCache()->save('TEST n98-magerun', 'n98-magerun-unittest');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-                'id'      => 'n98-magerun-unittest',
-            )
+            ['command' => $command->getName(), 'id'      => 'n98-magerun-unittest']
         );
 
         self::assertRegExp('/TEST n98-magerun/', $commandTester->getDisplay());
@@ -32,21 +30,12 @@ class ViewCommandTest extends TestCase
         $application->add(new ListCommand());
         $command = $this->getApplication()->find('cache:view');
 
-        $cacheData = array(
-            1,
-            2,
-            3,
-            'foo' => array('bar'),
-        );
-        \Mage::app()->getCache()->save(serialize($cacheData), 'n98-magerun-unittest');
+        $cacheData = [1, 2, 3, 'foo' => ['bar']];
+        Mage::app()->getCache()->save(serialize($cacheData), 'n98-magerun-unittest');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command'       => $command->getName(),
-                'id'            => 'n98-magerun-unittest',
-                '--unserialize' => true,
-            )
+            ['command'       => $command->getName(), 'id'            => 'n98-magerun-unittest', '--unserialize' => true]
         );
 
         self::assertEquals(print_r($cacheData, true) . "\n", $commandTester->getDisplay(true));

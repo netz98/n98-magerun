@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Ide\PhpStorm;
 
+use Directory;
+use Mage;
 use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,128 +19,30 @@ class MetaCommand extends AbstractMagentoCommand
     /**
      * @var array
      */
-    protected $groups = array(
-        'blocks',
-        'helpers',
-        'models',
-        'resource models',
-        'resource helpers',
-    );
+    protected $groups = ['blocks', 'helpers', 'models', 'resource models', 'resource helpers'];
 
     /**
      * List of supported static factory methods
      *
      * @var array
      */
-    protected $groupFactories = array(
-        'blocks' => array(
-            '\Mage::getBlockSingleton',
-        ),
-        'helpers' => array(
-            '\Mage::helper',
-        ),
-        'models' => array(
-            '\Mage::getModel',
-            '\Mage::getSingleton',
-        ),
-        'resource helpers' => array(
-            '\Mage::getResourceHelper',
-        ),
-        'resource models' => array(
-            '\Mage::getResourceModel',
-            '\Mage::getResourceSingleton',
-        ),
-    );
+    protected $groupFactories = ['blocks' => ['\Mage::getBlockSingleton'], 'helpers' => ['\Mage::helper'], 'models' => ['\Mage::getModel', '\Mage::getSingleton'], 'resource helpers' => ['\Mage::getResourceHelper'], 'resource models' => ['\Mage::getResourceModel', '\Mage::getResourceSingleton']];
 
     /**
      * List of supported helper methods
      *
      * @var array
      */
-    protected $methodFactories = array(
-        'blocks' => array(
-            '\Mage_Core_Model_Layout::createBlock',
-        ),
-        'helpers' => array(
-            '\Mage_Admin_Model_User::_getHelper',
-            '\Mage_Adminhtml_Controller_Rss_Abstract::_getHelper',
-            '\Mage_Adminhtml_Tax_RuleController::_getHelperModel',
-            '\Mage_Api_Model_User::_getHelper',
-            '\Mage_Bundle_Model_Product_Price::_getHelperData',
-            '\Mage_Core_Block_Abstract::helper',
-            '\Mage_Core_Model_App::getHelper',
-            '\Mage_Core_Model_Factory::getHelper',
-            '\Mage_Core_Model_Layout::helper',
-            '\Mage_Customer_AccountController::_getHelper',
-            '\Mage_Customer_Model_Customer::_getHelper',
-            '\Mage_ImportExport_Model_Import_Entity_Product::getHelper',
-            '\Mage_Rss_Controller_Abstract::_getHelper',
-            '\Mage_SalesRule_Model_Validator::_getHelper',
-            '\Mage_Weee_Helper_Data::_getHelper',
-            '\Mage_Weee_Model_Config_Source_Fpt_Tax::_getHelper',
-        ),
-        'models' => array(
-            '\Mage_Adminhtml_Tax_RuleController::_getSingletonModel',
-            '\Mage_Catalog_Block_Product_Abstract::_getSingletonModel',
-            '\Mage_Checkout_Helper_Cart::_getSingletonModel',
-            '\Mage_Core_Model_Factory::getModel',
-            '\Mage_Core_Model_Factory::getSingleton',
-            '\Mage_Customer_AccountController::_getModel',
-            '\Mage_SalesRule_Model_Validator::_getSingleton',
-            '\Mage_Shipping_Model_Carrier_Tablerate::_getModel',
-            '\Mage_Wishlist_Helper_Data::_getSingletonModel',
-        ),
-        'resource models' => array(
-            '\Mage_Core_Model_Factory::getResourceModel',
-        ),
-    );
+    protected $methodFactories = ['blocks' => ['\Mage_Core_Model_Layout::createBlock'], 'helpers' => ['\Mage_Admin_Model_User::_getHelper', '\Mage_Adminhtml_Controller_Rss_Abstract::_getHelper', '\Mage_Adminhtml_Tax_RuleController::_getHelperModel', '\Mage_Api_Model_User::_getHelper', '\Mage_Bundle_Model_Product_Price::_getHelperData', '\Mage_Core_Block_Abstract::helper', '\Mage_Core_Model_App::getHelper', '\Mage_Core_Model_Factory::getHelper', '\Mage_Core_Model_Layout::helper', '\Mage_Customer_AccountController::_getHelper', '\Mage_Customer_Model_Customer::_getHelper', '\Mage_ImportExport_Model_Import_Entity_Product::getHelper', '\Mage_Rss_Controller_Abstract::_getHelper', '\Mage_SalesRule_Model_Validator::_getHelper', '\Mage_Weee_Helper_Data::_getHelper', '\Mage_Weee_Model_Config_Source_Fpt_Tax::_getHelper'], 'models' => ['\Mage_Adminhtml_Tax_RuleController::_getSingletonModel', '\Mage_Catalog_Block_Product_Abstract::_getSingletonModel', '\Mage_Checkout_Helper_Cart::_getSingletonModel', '\Mage_Core_Model_Factory::getModel', '\Mage_Core_Model_Factory::getSingleton', '\Mage_Customer_AccountController::_getModel', '\Mage_SalesRule_Model_Validator::_getSingleton', '\Mage_Shipping_Model_Carrier_Tablerate::_getModel', '\Mage_Wishlist_Helper_Data::_getSingletonModel'], 'resource models' => ['\Mage_Core_Model_Factory::getResourceModel']];
 
     /**
      * @var array
      */
-    protected $missingHelperDefinitionModules = array(
-        'Backup',
-        'Bundle',
-        'Captcha',
-        'Catalog',
-        'Centinel',
-        'Checkout',
-        'Cms',
-        'Core',
-        'Customer',
-        'Dataflow',
-        'Directory',
-        'Downloadable',
-        'Eav',
-        'Index',
-        'Install',
-        'Log',
-        'Media',
-        'Newsletter',
-        'Page',
-        'Payment',
-        'Paypal',
-        'Persistent',
-        'Poll',
-        'Rating',
-        'Reports',
-        'Review',
-        'Rss',
-        'Rule',
-        'Sales',
-        'Shipping',
-        'Sitemap',
-        'Tag',
-        'Tax',
-        'Usa',
-        'Weee',
-        'Widget',
-        'Wishlist',
-    );
+    protected $missingHelperDefinitionModules = ['Backup', 'Bundle', 'Captcha', 'Catalog', 'Centinel', 'Checkout', 'Cms', 'Core', 'Customer', 'Dataflow', Directory::class, 'Downloadable', 'Eav', 'Index', 'Install', 'Log', 'Media', 'Newsletter', 'Page', 'Payment', 'Paypal', 'Persistent', 'Poll', 'Rating', 'Reports', 'Review', 'Rss', 'Rule', 'Sales', 'Shipping', 'Sitemap', 'Tag', 'Tax', 'Usa', 'Weee', 'Widget', 'Wishlist'];
 
-    const VERSION_OLD = 'old';
-    const VERSION_2017 = '2016.2+';
-    const VERSION_2019 = '2019.1+';
+    public const VERSION_OLD = 'old';
+    public const VERSION_2017 = '2016.2+';
+    public const VERSION_2019 = '2019.1+';
 
     protected function configure()
     {
@@ -162,15 +66,15 @@ class MetaCommand extends AbstractMagentoCommand
      * @internal param string $package
      * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_1) {
-            $classMaps = array();
+            $classMaps = [];
 
             foreach ($this->groups as $group) {
                 $classMaps[$group] = $this->getClassMapForGroup($group, $output);
@@ -193,6 +97,7 @@ class MetaCommand extends AbstractMagentoCommand
         } else {
             $output->write('Magento 2 is currently not supported');
         }
+        return 0;
     }
 
     /**
@@ -262,17 +167,17 @@ class MetaCommand extends AbstractMagentoCommand
      */
     protected function getResourceHelperMap()
     {
-        $classes = array();
+        $classes = [];
 
-        if (($this->_magentoEnterprise && version_compare(\Mage::getVersion(), '1.11.2.0', '<='))
-            || (!$this->_magentoEnterprise && version_compare(\Mage::getVersion(), '1.6.2.0', '<'))
+        if (($this->_magentoEnterprise && version_compare(Mage::getVersion(), '1.11.2.0', '<='))
+            || (!$this->_magentoEnterprise && version_compare(Mage::getVersion(), '1.6.2.0', '<'))
         ) {
             return $classes;
         }
 
-        $modelAliases = array_keys((array) \Mage::getConfig()->getNode('global/models'));
+        $modelAliases = array_keys((array) Mage::getConfig()->getNode('global/models'));
         foreach ($modelAliases as $modelAlias) {
-            $resourceHelper = @\Mage::getResourceHelper($modelAlias);
+            $resourceHelper = @Mage::getResourceHelper($modelAlias);
             if (is_object($resourceHelper)) {
                 $classes[$modelAlias] = get_class($resourceHelper);
             }
@@ -296,14 +201,14 @@ class MetaCommand extends AbstractMagentoCommand
             return $this->getResourceHelperMap();
         }
 
-        $classes = array();
+        $classes = [];
         foreach ($this->getGroupXmlDefinition($group) as $prefix => $modelDefinition) {
             if ($group == 'resource models') {
                 if (empty($modelDefinition->resourceModel)) {
                     continue;
                 }
                 $resourceModelNodePath = 'global/models/' . strval($modelDefinition->resourceModel);
-                $resourceModelConfig = \Mage::getConfig()->getNode($resourceModelNodePath);
+                $resourceModelConfig = Mage::getConfig()->getNode($resourceModelNodePath);
                 if ($resourceModelConfig) {
                     $classPrefix = strval($resourceModelConfig->class);
                 }
@@ -316,11 +221,7 @@ class MetaCommand extends AbstractMagentoCommand
             }
 
             $classBaseFolder = str_replace('_', '/', $classPrefix);
-            $searchFolders = array(
-                \Mage::getBaseDir('code') . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . $classBaseFolder,
-                \Mage::getBaseDir('code') . DIRECTORY_SEPARATOR . 'community' . DIRECTORY_SEPARATOR . $classBaseFolder,
-                \Mage::getBaseDir('code') . DIRECTORY_SEPARATOR . 'local' . DIRECTORY_SEPARATOR . $classBaseFolder,
-            );
+            $searchFolders = [Mage::getBaseDir('code') . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . $classBaseFolder, Mage::getBaseDir('code') . DIRECTORY_SEPARATOR . 'community' . DIRECTORY_SEPARATOR . $classBaseFolder, Mage::getBaseDir('code') . DIRECTORY_SEPARATOR . 'local' . DIRECTORY_SEPARATOR . $classBaseFolder];
             foreach ($searchFolders as $key => $folder) {
                 if (!is_dir($folder)) {
                     unset($searchFolders[$key]);
@@ -350,20 +251,20 @@ class MetaCommand extends AbstractMagentoCommand
 
                 switch ($group) {
                     case 'blocks':
-                        $classNameAfterRewrites = \Mage::getConfig()->getBlockClassName($classIdentifier);
+                        $classNameAfterRewrites = Mage::getConfig()->getBlockClassName($classIdentifier);
                         break;
 
                     case 'helpers':
-                        $classNameAfterRewrites = \Mage::getConfig()->getHelperClassName($classIdentifier);
+                        $classNameAfterRewrites = Mage::getConfig()->getHelperClassName($classIdentifier);
                         break;
 
                     case 'models':
-                        $classNameAfterRewrites = \Mage::getConfig()->getModelClassName($classIdentifier);
+                        $classNameAfterRewrites = Mage::getConfig()->getModelClassName($classIdentifier);
                         break;
 
                     case 'resource models':
                     default:
-                        $classNameAfterRewrites = \Mage::getConfig()->getResourceModelClassName($classIdentifier);
+                        $classNameAfterRewrites = Mage::getConfig()->getResourceModelClassName($classIdentifier);
                         break;
                 }
 
@@ -396,14 +297,14 @@ class MetaCommand extends AbstractMagentoCommand
      */
     protected function writeToOutputOld(InputInterface $input, OutputInterface $output, $classMaps)
     {
-        $map = <<<PHP
+        $map = <<<PHP_WRAP
 <?php
 namespace PHPSTORM_META {
     /** @noinspection PhpUnusedLocalVariableInspection */
     /** @noinspection PhpIllegalArrayKeyTypeInspection */
     /** @noinspection PhpLanguageLevelInspection */
     \$STATIC_METHOD_TYPES = [
-PHP;
+PHP_WRAP;
         $map .= "\n";
         foreach ($this->groupFactories as $group => $methods) {
             foreach ($methods as $method) {
@@ -438,14 +339,14 @@ PHP;
      */
     protected function writeToOutputV2017(InputInterface $input, OutputInterface $output, $classMaps)
     {
-        $baseMap = <<<PHP
+        $baseMap = <<<PHP_WRAP
 <?php
 namespace PHPSTORM_META {
     /** @noinspection PhpUnusedLocalVariableInspection */
     /** @noinspection PhpIllegalArrayKeyTypeInspection */
     /** @noinspection PhpLanguageLevelInspection */
     \$STATIC_METHOD_TYPES = [
-PHP;
+PHP_WRAP;
         $baseMap .= "\n";
         foreach ($this->groupFactories as $group => $methods) {
             $map = $baseMap;
@@ -479,17 +380,17 @@ PHP;
                         $output->writeln('<info>Directory <comment>.phpstorm.meta.php</comment> created</info>');
                     }
                 }
-                $group = str_replace(array(' ', '/'), '_', $group);
+                $group = str_replace([' ', '/'], '_', $group);
                 if (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php/magento_' . $group . '.meta.php', $map)) {
                     $output->writeln('<info>File <comment>.phpstorm.meta.php/magento_' . $group . '.meta.php</comment> generated</info>');
                 }
             }
         }
 
-        $baseMap = <<<PHP
+        $baseMap = <<<PHP_WRAP
 <?php
 namespace PHPSTORM_META {
-PHP;
+PHP_WRAP;
         $baseMap .= "\n";
         foreach ($this->methodFactories as $group => $methods) {
             $map = $baseMap;
@@ -513,7 +414,7 @@ PHP;
             if ($input->getOption('stdout')) {
                 $output->writeln($map);
             } else {
-                $group = str_replace(array(' ', '/'), '_', $group);
+                $group = str_replace([' ', '/'], '_', $group);
                 if (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php/magento_' . $group . '_methods.meta.php', $map)) {
                     $output->writeln('<info>File <comment>.phpstorm.meta.php/magento_' . $group . '_methods.meta.php</comment> generated</info>');
                 }
@@ -523,10 +424,10 @@ PHP;
 
     protected function writeToOutputV2019(InputInterface $input, OutputInterface $output, $classMaps)
     {
-        $baseMap = <<<PHP
+        $baseMap = <<<PHP_WRAP
 <?php
 namespace PHPSTORM_META {
-PHP;
+PHP_WRAP;
         $baseMap .= "\n";
         foreach ($this->groupFactories as $group => $methods) {
             $map = $baseMap;
@@ -561,17 +462,17 @@ PHP;
                         $output->writeln('<info>Directory <comment>.phpstorm.meta.php</comment> created</info>');
                     }
                 }
-                $group = str_replace(array(' ', '/'), '_', $group);
+                $group = str_replace([' ', '/'], '_', $group);
                 if (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php/magento_' . $group . '.meta.php', $map)) {
                     $output->writeln('<info>File <comment>.phpstorm.meta.php/magento_' . $group . '.meta.php</comment> generated</info>');
                 }
             }
         }
 
-        $baseMap = <<<PHP
+        $baseMap = <<<PHP_WRAP
 <?php
 namespace PHPSTORM_META {
-PHP;
+PHP_WRAP;
         $baseMap .= "\n";
         foreach ($this->methodFactories as $group => $methods) {
             $map = $baseMap;
@@ -595,7 +496,7 @@ PHP;
             if ($input->getOption('stdout')) {
                 $output->writeln($map);
             } else {
-                $group = str_replace(array(' ', '/'), '_', $group);
+                $group = str_replace([' ', '/'], '_', $group);
                 if (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php/magento_' . $group . '_methods.meta.php', $map)) {
                     $output->writeln('<info>File <comment>.phpstorm.meta.php/magento_' . $group . '_methods.meta.php</comment> generated</info>');
                 }
@@ -613,7 +514,7 @@ PHP;
             $group = 'models';
         }
 
-        $definitions = \Mage::getConfig()->getNode('global/' . $group);
+        $definitions = Mage::getConfig()->getNode('global/' . $group);
 
         switch ($group) {
             case 'blocks':

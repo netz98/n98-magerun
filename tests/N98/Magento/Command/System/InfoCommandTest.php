@@ -14,7 +14,7 @@ class InfoCommandTest extends TestCase
         $command = $this->getApplication()->find('sys:info');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $commandTester->execute(['command' => $command->getName()]);
 
         self::assertRegExp('/Magento System Information/', $commandTester->getDisplay());
         self::assertRegExp('/Install Date/', $commandTester->getDisplay());
@@ -22,10 +22,7 @@ class InfoCommandTest extends TestCase
 
         // Settings argument
         $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-                'key'     => 'version',
-            )
+            ['command' => $command->getName(), 'key'     => 'version']
         );
 
         $commandResult = $commandTester->getDisplay();

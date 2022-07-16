@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\GiftCard;
 
+use Symfony\Component\Console\Input\InputArgument;
+use Mage;
 use Enterprise_GiftCardAccount_Model_Giftcardaccount as Giftcardaccount;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
@@ -20,7 +22,7 @@ class InfoCommand extends AbstractGiftCardCommand
     {
         $this
             ->setName('giftcard:info')
-            ->addArgument('code', \Symfony\Component\Console\Input\InputArgument::REQUIRED, 'Gift card code')
+            ->addArgument('code', InputArgument::REQUIRED, 'Gift card code')
             ->addOption(
                 'format',
                 null,
@@ -36,33 +38,24 @@ class InfoCommand extends AbstractGiftCardCommand
      *
      * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
-        $card = \Mage::getModel('enterprise_giftcardaccount/giftcardaccount')->loadByCode($input->getArgument('code'));
+        $card = Mage::getModel('enterprise_giftcardaccount/giftcardaccount')->loadByCode($input->getArgument('code'));
         if (!$card->getId()) {
             $output->writeln('<error>No gift card found for that code</error>');
-            return;
+            return 0;
         }
-        $data = array(
-            array('Gift Card Account ID', $card->getId()),
-            array('Code', $card->getCode()),
-            array('Status', Giftcardaccount::STATUS_ENABLED == $card->getStatus() ? 'Enabled' : 'Disabled'),
-            array('Date Created', $card->getDateCreated()),
-            array('Expiration Date', $card->getDateExpires()),
-            array('Website ID', $card->getWebsiteId()),
-            array('Remaining Balance', $card->getBalance()),
-            array('State', $card->getStateText()),
-            array('Is Redeemable', $card->getIsRedeemable()),
-        );
+        $data = [['Gift Card Account ID', $card->getId()], ['Code', $card->getCode()], ['Status', Giftcardaccount::STATUS_ENABLED == $card->getStatus() ? 'Enabled' : 'Disabled'], ['Date Created', $card->getDateCreated()], ['Expiration Date', $card->getDateExpires()], ['Website ID', $card->getWebsiteId()], ['Remaining Balance', $card->getBalance()], ['State', $card->getStateText()], ['Is Redeemable', $card->getIsRedeemable()]];
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('Name', 'Value'))
+            ->setHeaders(['Name', 'Value'])
             ->setRows($data)
             ->renderByFormat($output, $data, $input->getOption('format'));
+        return 0;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Cache;
 
+use Enterprise_PageCache_Model_Cache;
+use Mage;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use RuntimeException;
@@ -51,26 +53,26 @@ class ReportCommand extends AbstractCacheCommand
      * @throws RuntimeException
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         if ($input->hasOption('fpc') && $input->getOption('fpc')) {
             if (!class_exists('\Enterprise_PageCache_Model_Cache')) {
                 throw new RuntimeException('Enterprise page cache not found');
             }
-            $cacheInstance = \Enterprise_PageCache_Model_Cache::getCacheInstance()->getFrontend();
+            $cacheInstance = Enterprise_PageCache_Model_Cache::getCacheInstance()->getFrontend();
         } else {
-            $cacheInstance = \Mage::app()->getCache();
+            $cacheInstance = Mage::app()->getCache();
         }
         /* @var $cacheInstance \Varien_Cache_Core */
         $cacheIds = $cacheInstance->getIds();
-        $table = array();
+        $table = [];
         foreach ($cacheIds as $cacheId) {
-            if ($input->getOption('filter-id') !== null && !stristr($cacheId, $input->getOption('filter-id'))) {
+            if ($input->getOption('filter-id') !== null && !stristr($cacheId, (string) $input->getOption('filter-id'))) {
                 continue;
             }
 
@@ -79,10 +81,7 @@ class ReportCommand extends AbstractCacheCommand
                 continue;
             }
 
-            $row = array(
-                $cacheId,
-                date('Y-m-d H:i:s', $metaData['expire']),
-            );
+            $row = [$cacheId, date('Y-m-d H:i:s', $metaData['expire'])];
             if ($input->getOption('mtime')) {
                 $row[] = date('Y-m-d H:i:s', $metaData['mtime']);
             }
@@ -93,7 +92,7 @@ class ReportCommand extends AbstractCacheCommand
             $table[] = $row;
         }
 
-        $headers = array('ID', 'EXPIRE');
+        $headers = ['ID', 'EXPIRE'];
         if ($input->getOption('mtime')) {
             $headers[] = 'MTIME';
         }
@@ -106,5 +105,6 @@ class ReportCommand extends AbstractCacheCommand
         $tableHelper
             ->setHeaders($headers)
             ->renderByFormat($output, $table, $input->getOption('format'));
+        return 0;
     }
 }

@@ -7,6 +7,7 @@
 
 namespace N98\Magento\Command\System\Check\Settings;
 
+use Mage_Core_Model_Store;
 use N98\Magento\Command\System\Check\Result;
 
 /**
@@ -30,7 +31,7 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
      * @param string                 $baseUrl      setting
      * @param string                 $cookieDomain setting
      */
-    protected function checkSettings(Result $result, \Mage_Core_Model_Store $store, $baseUrl, $cookieDomain)
+    protected function checkSettings(Result $result, Mage_Core_Model_Store $store, $baseUrl, $cookieDomain)
     {
         $errorMessage = 'cookie-domain and ' . $this->class . ' base-URL do not match';
 

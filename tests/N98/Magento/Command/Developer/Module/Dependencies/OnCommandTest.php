@@ -14,62 +14,21 @@ class OnCommandTest extends TestCase
 {
     public static function dataProviderTestExecute()
     {
-        return array(
-            'Not existing module, no --all' => array(
-                '$moduleName'   => 'NotExistentModule',
-                '$all'          => 0,
-                '$expectations' => array("Module NotExistentModule was not found"),
-                '$notContains'  => array(),
-            ),
-            'Not existing module, with --all' => array(
-                '$moduleName'   => 'NotExistentModule',
-                '$all'          => 1,
-                '$expectations' => array("Module NotExistentModule was not found"),
-                '$notContains'  => array(),
-            ),
-            'Not existing module, with -a' => array(
-                '$moduleName'   => 'NotExistentModule',
-                '$all'          => 2,
-                '$expectations' => array("Module NotExistentModule was not found"),
-                '$notContains'  => array(),
-            ),
-            'Mage_Core module, no --all' => array(
-                '$moduleName'   => 'Mage_Core',
-                '$all'          => 0,
-                '$expectations' => array("Module Mage_Core doesn't have dependencies"),
-                '$notContains'  => array(),
-            ),
-            'Mage_Core module, with --all' => array(
-                '$moduleName'   => 'Mage_Core',
-                '$all'          => 1,
-                '$expectations' => array("Module Mage_Core doesn't have dependencies"),
-                '$notContains'  => array(),
-            ),
-            'Mage_Core module, with -a' => array(
-                '$moduleName'   => 'Mage_Core',
-                '$all'          => 2,
-                '$expectations' => array("Module Mage_Core doesn't have dependencies"),
-                '$notContains'  => array(),
-            ),
-            'Mage_Customer module, no --all' => array(
-                '$moduleName'   => 'Mage_Customer',
-                '$all'          => 0,
-                '$expectations' => array('Mage_Dataflow', /*'Mage_Directory',*/ 'Mage_Eav'),
-                '$notContains'  => array('Mage_Core'),
-            ),
-            'Mage_Customer module, with --all' => array(
-                '$moduleName'   => 'Mage_Customer',
-                '$all'          => 1,
-                '$expectations' => array('Mage_Core', 'Mage_Dataflow', /*'Mage_Directory',*/ 'Mage_Eav'),
-                '$notContains'  => array(),
-            ),
-            'Mage_Customer module, with -a' => array(
-                '$moduleName'   => 'Mage_Customer',
-                '$all'          => 2,
-                '$expectations' => array('Mage_Core', 'Mage_Dataflow', /*'Mage_Directory',*/ 'Mage_Eav'),
-                '$notContains'  => array(),
-            ),
-        );
+        return ['Not existing module, no --all' => ['$moduleName'   => 'NotExistentModule', '$all'          => 0, '$expectations' => ["Module NotExistentModule was not found"], '$notContains'  => []], 'Not existing module, with --all' => ['$moduleName'   => 'NotExistentModule', '$all'          => 1, '$expectations' => ["Module NotExistentModule was not found"], '$notContains'  => []], 'Not existing module, with -a' => ['$moduleName'   => 'NotExistentModule', '$all'          => 2, '$expectations' => ["Module NotExistentModule was not found"], '$notContains'  => []], 'Mage_Core module, no --all' => ['$moduleName'   => 'Mage_Core', '$all'          => 0, '$expectations' => ["Module Mage_Core doesn't have dependencies"], '$notContains'  => []], 'Mage_Core module, with --all' => ['$moduleName'   => 'Mage_Core', '$all'          => 1, '$expectations' => ["Module Mage_Core doesn't have dependencies"], '$notContains'  => []], 'Mage_Core module, with -a' => ['$moduleName'   => 'Mage_Core', '$all'          => 2, '$expectations' => ["Module Mage_Core doesn't have dependencies"], '$notContains'  => []], 'Mage_Customer module, no --all' => ['$moduleName'   => 'Mage_Customer', '$all'          => 0, '$expectations' => [
+            'Mage_Dataflow',
+            /*'Mage_Directory',*/
+            'Mage_Eav',
+        ], '$notContains'  => ['Mage_Core']], 'Mage_Customer module, with --all' => ['$moduleName'   => 'Mage_Customer', '$all'          => 1, '$expectations' => [
+            'Mage_Core',
+            'Mage_Dataflow',
+            /*'Mage_Directory',*/
+            'Mage_Eav',
+        ], '$notContains'  => []], 'Mage_Customer module, with -a' => ['$moduleName'   => 'Mage_Customer', '$all'          => 2, '$expectations' => [
+            'Mage_Core',
+            'Mage_Dataflow',
+            /*'Mage_Directory',*/
+            'Mage_Eav',
+        ], '$notContains'  => []]];
     }
 
     /**
@@ -86,9 +45,7 @@ class OnCommandTest extends TestCase
         $command = $this->getApplication()->find('dev:module:dependencies:on');
 
         $commandTester = new CommandTester($command);
-        $input = array(
-            'command' => $command->getName(), 'moduleName' => $moduleName,
-        );
+        $input = ['command' => $command->getName(), 'moduleName' => $moduleName];
 
         switch ($all) {
             case 2:
@@ -103,10 +60,10 @@ class OnCommandTest extends TestCase
 
         $commandTester->execute($input);
         foreach ($contains as $expectation) {
-            self::assertContains($expectation, $commandTester->getDisplay());
+            self::assertStringContainsString($expectation, $commandTester->getDisplay());
         }
         foreach ($notContains as $expectation) {
-            self::assertNotContains($expectation, $commandTester->getDisplay());
+            self::assertStringNotContainsString($expectation, $commandTester->getDisplay());
         }
     }
 }

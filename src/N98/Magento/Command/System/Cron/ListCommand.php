@@ -35,7 +35,7 @@ class ListCommand extends AbstractCronCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
 
@@ -52,5 +52,6 @@ class ListCommand extends AbstractCronCommand
         $tableHelper
             ->setHeaders(array_keys(current($table)))
             ->renderByFormat($output, $table, $input->getOption('format'));
+        return 0;
     }
 }

@@ -24,7 +24,7 @@ class IncrementalCommandStub extends IncrementalCommand
      * @param array         $args
      * @return mixed
      */
-    public function callProtectedMethodFromObject($method, $object, $args = array())
+    public function callProtectedMethodFromObject($method, $object, $args = [])
     {
         return $this->_callProtectedMethodFromObject($method, $object, $args);
     }

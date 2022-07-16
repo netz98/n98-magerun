@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Code\Model;
 
+use PDO;
+use Mage;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
@@ -40,7 +42,7 @@ class MethodCommand extends AbstractMagentoCommand
      * @var array
      * @see initTableColumns
      */
-    protected $_tableColumns = array();
+    protected $_tableColumns = [];
 
     protected function configure()
     {
@@ -60,7 +62,7 @@ class MethodCommand extends AbstractMagentoCommand
      * @return int|null|void
      * @throws RuntimeException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->_input = $input;
         $this->_output = $output;
@@ -73,6 +75,7 @@ class MethodCommand extends AbstractMagentoCommand
         $this->initTableColumns();
         $this->writeToClassFile();
         $this->_output->writeln("Wrote getter and setter @methods into file: " . $this->_fileName);
+        return 0;
     }
 
     protected function writeToClassFile()
@@ -105,7 +108,7 @@ class MethodCommand extends AbstractMagentoCommand
     protected function getGetterSetter()
     {
         $modelClassName = get_class($this->_mageModel);
-        $getterSetter = array();
+        $getterSetter = [];
         foreach ($this->_tableColumns as $colName => $colProp) {
             $getterSetter[] = sprintf(' * @method %s get%s()', $this->getColumnType($colProp['Type']),
                 $this->camelize($colName));
@@ -137,26 +140,9 @@ class MethodCommand extends AbstractMagentoCommand
     {
         $cte = explode('(', $columnType);
         $columnType = strtolower($cte[0]);
-        $typeMapper = array(
-            'int'        => 'int',
-            'tinyint'    => 'int',
-            'smallint'   => 'int',
-            'decimal'    => 'float',
-            'float'      => 'float',
-            'double'     => 'float',
-            'real'       => 'float',
-            'char'       => 'string',
-            'varchar'    => 'string',
-            'text'       => 'string',
-            'tinytext'   => 'string',
-            'mediumtext' => 'string',
-            'longtext'   => 'string',
-            'date'       => 'string',
-            'datetime'   => 'string',
-            'timestamp'  => 'string',
-        );
+        $typeMapper = ['int'        => 'int', 'tinyint'    => 'int', 'smallint'   => 'int', 'decimal'    => 'float', 'float'      => 'float', 'double'     => 'float', 'real'       => 'float', 'char'       => 'string', 'varchar'    => 'string', 'text'       => 'string', 'tinytext'   => 'string', 'mediumtext' => 'string', 'longtext'   => 'string', 'date'       => 'string', 'datetime'   => 'string', 'timestamp'  => 'string'];
 
-        return isset($typeMapper[$columnType]) ? $typeMapper[$columnType] : '';
+        return $typeMapper[$columnType] ?? '';
     }
 
     /**
@@ -168,9 +154,9 @@ class MethodCommand extends AbstractMagentoCommand
     {
         $dbHelper = $this->getHelper('database');
         /* @var $dbHelper \N98\Util\Console\Helper\DatabaseHelper */
-        /** @var \PDO $connection */
+        /** @var PDO $connection */
         $connection = $dbHelper->getConnection($this->_output);
-        $stmt = $connection->query('SHOW COLUMNS FROM ' . $this->_mageModelTable, \PDO::FETCH_ASSOC);
+        $stmt = $connection->query('SHOW COLUMNS FROM ' . $this->_mageModelTable, PDO::FETCH_ASSOC);
         foreach ($stmt as $row) {
             $this->_tableColumns[$row['Field']] = $row;
         }
@@ -213,7 +199,7 @@ class MethodCommand extends AbstractMagentoCommand
 
     protected function checkModel()
     {
-        $this->_mageModel = \Mage::getModel($this->_input->getArgument('modelName'));
+        $this->_mageModel = Mage::getModel($this->_input->getArgument('modelName'));
         if (true === empty($this->_mageModel)) {
             throw new InvalidArgumentException('Model ' . $this->_input->getArgument('modelName') . ' not found!');
         }

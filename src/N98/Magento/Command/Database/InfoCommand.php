@@ -42,11 +42,11 @@ HELP;
      * @throws InvalidArgumentException
      * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectDbSettings($output);
 
-        $settings = array();
+        $settings = [];
         foreach ($this->dbSettings as $key => $value) {
             $settings[$key] = (string) $value;
         }
@@ -54,7 +54,7 @@ HELP;
         $isSocketConnect = $this->dbSettings->isSocketConnect();
 
         // note: there is no need to specify the default port neither for PDO, nor JDBC nor CLI.
-        $portOrDefault = isset($this->dbSettings['port']) ? $this->dbSettings['port'] : 3306;
+        $portOrDefault = $this->dbSettings['port'] ?? 3306;
 
         $pdoConnectionString = '';
         if ($isSocketConnect) {
@@ -94,9 +94,9 @@ HELP;
         $mysqlCliString = 'mysql ' . $database->getMysqlClientToolConnectionString();
         $settings['MySQL-Cli-String'] = $mysqlCliString;
 
-        $rows = array();
+        $rows = [];
         foreach ($settings as $settingName => $settingValue) {
-            $rows[] = array($settingName, $settingValue);
+            $rows[] = [$settingName, $settingValue];
         }
 
         if (($settingArgument = $input->getArgument('setting')) !== null) {
@@ -108,8 +108,9 @@ HELP;
             /* @var $tableHelper TableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
-                ->setHeaders(array('Name', 'Value'))
+                ->setHeaders(['Name', 'Value'])
                 ->renderByFormat($output, $rows, $input->getOption('format'));
         }
+        return 0;
     }
 }

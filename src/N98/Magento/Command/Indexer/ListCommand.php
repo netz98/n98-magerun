@@ -35,26 +35,23 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
-        $table = array();
+        $table = [];
         foreach ($this->getIndexerList() as $index) {
-            $table[] = array(
-                $index['code'],
-                $index['status'],
-                $index['last_runtime'],
-            );
+            $table[] = [$index['code'], $index['status'], $index['last_runtime']];
         }
 
         /* @var $tableHelper TableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
-            ->setHeaders(array('code', 'status', 'time'))
+            ->setHeaders(['code', 'status', 'time'])
             ->renderByFormat($output, $table, $input->getOption('format'));
+        return 0;
     }
 }

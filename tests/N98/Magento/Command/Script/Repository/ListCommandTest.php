@@ -19,13 +19,11 @@ class ListCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-            )
+            ['command' => $command->getName()]
         );
 
-        self::assertContains('Cache Flush Command Test (Hello World)', $commandTester->getDisplay());
-        self::assertContains('Foo command', $commandTester->getDisplay());
-        self::assertContains('Bar command', $commandTester->getDisplay());
+        self::assertStringContainsString('Cache Flush Command Test (Hello World)', $commandTester->getDisplay());
+        self::assertStringContainsString('Foo command', $commandTester->getDisplay());
+        self::assertStringContainsString('Bar command', $commandTester->getDisplay());
     }
 }

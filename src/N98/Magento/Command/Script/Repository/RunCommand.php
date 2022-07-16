@@ -47,11 +47,11 @@ HELP;
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $files = $this->getScripts();
         if ($input->getArgument('script') == null && $input->isInteractive()) {
-            $question = array();
+            $question = [];
             $i = 0;
             foreach ($files as $file) {
                 $files[$i] = $file;
@@ -83,10 +83,7 @@ HELP;
             $selectedFile = $files[$script]['fileinfo']->getPathname();
         }
 
-        $scriptArray = array(
-            'command'  => 'script',
-            'filename' => $selectedFile,
-        );
+        $scriptArray = ['command'  => 'script', 'filename' => $selectedFile];
         foreach ($input->getOption('define') as $define) {
             $scriptArray['--define'][] = $define;
         }
@@ -95,5 +92,6 @@ HELP;
         }
         $input = new ArrayInput($scriptArray);
         $this->getApplication()->run($input, $output);
+        return 0;
     }
 }

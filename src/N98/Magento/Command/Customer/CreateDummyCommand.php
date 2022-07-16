@@ -2,6 +2,9 @@
 
 namespace N98\Magento\Command\Customer;
 
+use Locale;
+use Faker\Factory;
+use N98\Util\Faker\Provider\Internet;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -36,7 +39,7 @@ HELP;
         $this
             ->setName('customer:create:dummy')
             ->addArgument('count', InputArgument::REQUIRED, 'Count')
-            ->addArgument('locale', InputArgument::REQUIRED, 'Locale')
+            ->addArgument('locale', InputArgument::REQUIRED, Locale::class)
             ->addArgument('website', InputArgument::OPTIONAL, 'Website')
             ->addOption(
                 'with-addresses',
@@ -60,17 +63,17 @@ HELP;
      * @param OutputInterface $output
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $res = $this->getCustomerModel()->getResource();
 
-        $faker = \Faker\Factory::create($input->getArgument('locale'));
-        $faker->addProvider(new \N98\Util\Faker\Provider\Internet($faker));
+        $faker = Factory::create($input->getArgument('locale'));
+        $faker->addProvider(new Internet($faker));
 
         $website = $this->getHelper('parameter')->askWebsite($input, $output);
 
@@ -78,7 +81,7 @@ HELP;
         $count = $input->getArgument('count');
         $outputPlain = $input->getOption('format') === null;
 
-        $table = array();
+        $table = [];
         for ($i = 0; $i < $count; $i++) {
             $customer = $this->getCustomerModel();
 
@@ -110,9 +113,7 @@ HELP;
                         '</comment> successfully created</info>'
                     );
                 } else {
-                    $table[] = array(
-                        $email, $password, $customer->getFirstname(), $customer->getLastname(),
-                    );
+                    $table[] = [$email, $password, $customer->getFirstname(), $customer->getLastname()];
                 }
             } else {
                 if ($outputPlain) {
@@ -130,9 +131,10 @@ HELP;
             /* @var $tableHelper TableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
-                ->setHeaders(array('email', 'password', 'firstname', 'lastname'))
+                ->setHeaders(['email', 'password', 'firstname', 'lastname'])
                 ->renderByFormat($output, $table, $input->getOption('format'));
         }
+        return 0;
     }
 
     private function createAddress($faker)

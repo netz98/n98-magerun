@@ -2,12 +2,13 @@
 
 namespace N98\Util;
 
+use PHPUnit\Framework\TestCase;
 /**
  * Class BinaryStringTest
  *
  * @covers \N98\Util\BinaryString
  */
-class BinaryStringTest extends \PHPUnit\Framework\TestCase
+class BinaryStringTest extends TestCase
 {
     /**
      * @test
@@ -18,7 +19,7 @@ class BinaryStringTest extends \PHPUnit\Framework\TestCase
      */
     public function trimExplodeEmpty($delimiter, $string, $expected)
     {
-        self::assertEquals($expected, BinaryString::trimExplodeEmpty($delimiter, $string), '', 0.0, 10, true);
+        self::assertEqualsCanonicalizing($expected, BinaryString::trimExplodeEmpty($delimiter, $string));
     }
 
     /**
@@ -26,23 +27,7 @@ class BinaryStringTest extends \PHPUnit\Framework\TestCase
      */
     public function trimExplodeEmptyProvider()
     {
-        return array(
-            array(
-                ',',
-                'Foo,Bar',
-                array('Foo', 'Bar'),
-            ),
-            array(
-                '#',
-                ' Foo# Bar',
-                array('Foo', 'Bar'),
-            ),
-            array(
-                ',',
-                ',,Foo, Bar,,',
-                array('Foo', 'Bar'),
-            ),
-        );
+        return [[',', 'Foo,Bar', ['Foo', 'Bar']], ['#', ' Foo# Bar', ['Foo', 'Bar']], [',', ',,Foo, Bar,,', ['Foo', 'Bar']]];
     }
 
     /**

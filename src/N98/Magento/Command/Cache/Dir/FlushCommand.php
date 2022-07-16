@@ -26,7 +26,7 @@ class FlushCommand extends AbstractMagentoCommand
      */
     private $output;
 
-    const NAME = 'cache:dir:flush';
+    public const NAME = 'cache:dir:flush';
 
     protected function configure()
     {
@@ -59,13 +59,13 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->output = $output;
         $this->detectMagento($output, true);
 
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $workingDirectory = getcwd();
@@ -80,6 +80,7 @@ HELP;
         $this->emptyDirectory($cacheDir);
 
         $output->writeln('Cache directory flushed');
+        return 0;
     }
 
     /**
@@ -89,7 +90,7 @@ HELP;
      */
     private function emptyDirectory($path)
     {
-        $errors = array();
+        $errors = [];
 
         $dir = new FilesystemIterator($path);
         foreach ($dir as $file => $info) {

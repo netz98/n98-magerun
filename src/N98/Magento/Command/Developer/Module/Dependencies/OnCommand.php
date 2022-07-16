@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Developer\Module\Dependencies;
 
+use Mage;
 use Exception;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
@@ -38,7 +39,7 @@ class OnCommand extends AbstractMagentoCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $moduleName = $input->getArgument('moduleName');
         $recursive = $input->getOption('all');
@@ -53,9 +54,9 @@ class OnCommand extends AbstractMagentoCommand
         try {
             $dependencies = $this->findModuleDependencies($moduleName, $recursive);
             if (!empty($dependencies)) {
-                usort($dependencies, array($this, 'sortDependencies'));
+                usort($dependencies, [$this, 'sortDependencies']);
             } else {
-                $dependencies = array();
+                $dependencies = [];
             }
             if ($input->getOption('format') === null && count($dependencies) === 0) {
                 $output->writeln(sprintf("Module %s doesn't have dependencies", $moduleName));
@@ -63,13 +64,14 @@ class OnCommand extends AbstractMagentoCommand
                 /* @var $tableHelper TableHelper */
                 $tableHelper = $this->getHelper('table');
                 $tableHelper
-                    ->setHeaders(array('Name', 'Status', 'Current installed version', 'Code pool'))
+                    ->setHeaders(['Name', 'Status', 'Current installed version', 'Code pool'])
                     ->setPadType(STR_PAD_LEFT)
                     ->renderByFormat($output, $dependencies, $input->getOption('format'));
             }
         } catch (Exception $e) {
             $output->writeln($e->getMessage());
         }
+        return 0;
     }
 
     /**
@@ -84,23 +86,18 @@ class OnCommand extends AbstractMagentoCommand
     protected function findModuleDependencies($moduleName, $recursive = false)
     {
         if ($this->modules === null) {
-            $this->modules = \Mage::app()->getConfig()->getNode('modules')->asArray();
+            $this->modules = Mage::app()->getConfig()->getNode('modules')->asArray();
         }
 
         if (isset($this->modules[$moduleName])) {
-            $dependencies = array();
+            $dependencies = [];
             $module = $this->modules[$moduleName];
             if (isset($module['depends']) && is_array($module['depends']) && count($module['depends']) > 0) {
                 foreach (array_keys($module['depends']) as $dependencyName) {
                     if (isset($this->modules[$dependencyName])) {
-                        $dependencies[] = array(
-                            $dependencyName, isset($this->modules[$dependencyName]['active'])
-                                ? $this->formatActive($this->modules[$dependencyName]['active'])
-                                : '-', isset($this->modules[$dependencyName]['version'])
-                                ? $this->modules[$dependencyName]['version']
-                                : '-', isset($this->modules[$dependencyName]['codePool'])
-                                ? $this->modules[$dependencyName]['codePool'] : '-',
-                        );
+                        $dependencies[] = [$dependencyName, isset($this->modules[$dependencyName]['active'])
+                            ? $this->formatActive($this->modules[$dependencyName]['active'])
+                            : '-', $this->modules[$dependencyName]['version'] ?? '-', $this->modules[$dependencyName]['codePool'] ?? '-'];
                         if ($recursive) {
                             $dependencies = array_merge(
                                 $dependencies,
@@ -108,7 +105,7 @@ class OnCommand extends AbstractMagentoCommand
                             );
                         }
                     } else {
-                        $dependencies[] = array($dependencyName, 'Not installed', '-', '-');
+                        $dependencies[] = [$dependencyName, 'Not installed', '-', '-'];
                     }
                 }
             }

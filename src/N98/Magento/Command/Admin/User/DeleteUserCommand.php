@@ -4,10 +4,12 @@ namespace N98\Magento\Command\Admin\User;
 
 use Exception;
 use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
  * Class DeleteUserCommand
@@ -33,15 +35,14 @@ class DeleteUserCommand extends AbstractAdminUserCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
-        /** @var $dialog DialogHelper */
-        $dialog = $this->getHelper('dialog');
+        $dialog = new QuestionHelper();
 
         // Username
         $id = $this->getOrAskForArgument('id', $input, $output, 'Username or Email');
@@ -53,15 +54,15 @@ class DeleteUserCommand extends AbstractAdminUserCommand
 
         if (!$user->getId()) {
             $output->writeln('<error>User was not found</error>');
-            return;
+            return 0;
         }
 
         $shouldRemove = $input->getOption('force');
         if (!$shouldRemove) {
-            $shouldRemove = $dialog->askConfirmation(
+            $shouldRemove = $dialog->ask(
+                $input,
                 $output,
-                '<question>Are you sure?</question> <comment>[n]</comment>: ',
-                false
+                new ConfirmationQuestion('<question>Are you sure?</question> <comment>[n]</comment>: ', false),
             );
         }
 
@@ -75,5 +76,6 @@ class DeleteUserCommand extends AbstractAdminUserCommand
         } else {
             $output->writeln('<error>Aborting delete</error>');
         }
+        return 0;
     }
 }

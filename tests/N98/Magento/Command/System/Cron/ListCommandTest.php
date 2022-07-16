@@ -14,7 +14,7 @@ class ListCommandTest extends TestCase
         $command = $this->getApplication()->find('sys:cron:list');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $commandTester->execute(['command' => $command->getName()]);
 
         self::assertRegExp('/Cronjob List/', $commandTester->getDisplay());
     }

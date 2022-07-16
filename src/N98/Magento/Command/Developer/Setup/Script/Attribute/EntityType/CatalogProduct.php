@@ -11,7 +11,7 @@ class CatalogProduct extends AbstractEntityType implements EntityType
      */
     protected function _getKeyMapping()
     {
-        return array(
+        return [
             //catalog
             'frontend_input_renderer'       => 'input_renderer',
             'is_global'                     => 'global',
@@ -35,7 +35,7 @@ class CatalogProduct extends AbstractEntityType implements EntityType
             'is_user_defined'               => 'user_defined',
             'default_value'                 => 'default',
             'is_unique'                     => 'unique',
-        );
+        ];
     }
 
     /**
@@ -49,7 +49,7 @@ class CatalogProduct extends AbstractEntityType implements EntityType
         // swap keys from above
         $data = $this->attribute->getData();
         $keysLegend = array_keys($realToSetupKeyLegend);
-        $newData = array();
+        $newData = [];
 
         foreach ($data as $key => $value) {
             if (in_array($key, $keysLegend)) {

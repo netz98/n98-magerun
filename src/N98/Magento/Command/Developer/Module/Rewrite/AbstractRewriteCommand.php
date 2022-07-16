@@ -2,16 +2,13 @@
 
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Finder\Finder;
 
 abstract class AbstractRewriteCommand extends AbstractMagentoCommand
 {
-    protected $_rewriteTypes = array(
-        'blocks',
-        'helpers',
-        'models',
-    );
+    protected $_rewriteTypes = ['blocks', 'helpers', 'models'];
 
     /**
      * Return all rewrites
@@ -21,10 +18,10 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
     protected function loadRewrites()
     {
         $prototype = $this->_rewriteTypes;
-        $return = array_combine($prototype, array_fill(0, count($prototype), array()));
+        $return = array_combine($prototype, array_fill(0, is_countable($prototype) ? count($prototype) : 0, []));
 
         // Load config of each module because modules can overwrite config each other. Global config is already merged
-        $modules = \Mage::getConfig()->getNode('modules')->children();
+        $modules = Mage::getConfig()->getNode('modules')->children();
         foreach ($modules as $moduleName => $moduleData) {
             // Check only active modules
             if (!$moduleData->is('active')) {
@@ -32,7 +29,7 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
             }
 
             // Load config of module
-            $configXmlFile = \Mage::getConfig()->getModuleDir('etc', $moduleName) . DIRECTORY_SEPARATOR . 'config.xml';
+            $configXmlFile = Mage::getConfig()->getModuleDir('etc', $moduleName) . DIRECTORY_SEPARATOR . 'config.xml';
             if (!is_readable($configXmlFile)) {
                 continue;
             }
@@ -82,15 +79,10 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
      */
     protected function loadAutoloaderRewritesByCodepool($codePool)
     {
-        $return = array();
-        $localCodeFolder = \Mage::getBaseDir('code') . '/' . $codePool;
+        $return = [];
+        $localCodeFolder = Mage::getBaseDir('code') . '/' . $codePool;
 
-        $folders = array(
-            'Mage'       => $localCodeFolder . '/Mage',
-            'Enterprise' => $localCodeFolder . '/Enterprise',
-            'Varien'     => $localCodeFolder . '/Varien',
-            'Zend'       => $localCodeFolder . '/Zend',
-        );
+        $folders = ['Mage'       => $localCodeFolder . '/Mage', 'Enterprise' => $localCodeFolder . '/Enterprise', 'Varien'     => $localCodeFolder . '/Varien', 'Zend'       => $localCodeFolder . '/Zend'];
 
         foreach ($folders as $vendorPrefix => $folder) {
             if (is_dir($folder)) {

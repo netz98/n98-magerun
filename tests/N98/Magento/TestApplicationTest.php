@@ -7,7 +7,8 @@
 
 namespace N98\Magento;
 
-class TestApplicationTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+class TestApplicationTest extends TestCase
 {
     /**
      * @test
@@ -25,7 +26,7 @@ class TestApplicationTest extends \PHPUnit\Framework\TestCase
     {
         $application = new TestApplication($this);
         $actual = $application->getTestMagentoRoot();
-        self::assertInternalType('string', $actual);
+        self::assertIsString($actual);
         self::assertGreaterThan(10, strlen($actual));
         self::assertDirectoryExists($actual);
     }

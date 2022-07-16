@@ -20,8 +20,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class XmlRenderer implements RendererInterface
 {
-    const NAME_ROOT = 'table';
-    const NAME_ROW = 'row';
+    public const NAME_ROOT = 'table';
+    public const NAME_ROW = 'row';
 
     private $headers;
 

@@ -22,16 +22,13 @@ class RunCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-                'script'  => 'hello-world',
-            )
+            ['command' => $command->getName(), 'script'  => 'hello-world']
         );
 
         // Runs sys:info -> Check for any output
-        self::assertContains('Vendors (core)', $commandTester->getDisplay());
+        self::assertStringContainsString('Vendors (core)', $commandTester->getDisplay());
 
-        self::assertContains(
+        self::assertStringContainsString(
             $testDir . '/hello-world.magerun',
             $this->normalizePathSeparators($commandTester->getDisplay())
         );

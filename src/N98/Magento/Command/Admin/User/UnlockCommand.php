@@ -2,9 +2,13 @@
 
 namespace N98\Magento\Command\Admin\User;
 
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputArgument;
+use Mage;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class UnlockCommand extends AbstractAdminUserCommand
 {
@@ -19,7 +23,7 @@ class UnlockCommand extends AbstractAdminUserCommand
             ->setName('admin:user:unlock')
             ->addArgument(
                 'username',
-                \Symfony\Component\Console\Input\InputArgument::OPTIONAL,
+                InputArgument::OPTIONAL,
                 'Admin Username to Unlock'
             )
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Dry run mode')
@@ -40,11 +44,11 @@ class UnlockCommand extends AbstractAdminUserCommand
      *
      * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         if ($dryrun = $input->getOption('dry-run')) {
@@ -53,42 +57,44 @@ class UnlockCommand extends AbstractAdminUserCommand
 
         // Unlock a single admin account
         if ($username = $input->getArgument('username')) {
-            $user = \Mage::getModel('admin/user')->loadByUsername($username);
+            $user = Mage::getModel('admin/user')->loadByUsername($username);
             if (!$user || !$user->getId()) {
                 $output->writeln('<error>Couldn\'t find admin ' . $username . '</error>');
-                return;
+                return 0;
             }
-            \Mage::getResourceModel('enterprise_pci/admin_user')->unlock($user->getId());
+            Mage::getResourceModel('enterprise_pci/admin_user')->unlock($user->getId());
             $output->writeln('<info><comment>' . $username . '</comment> unlocked</info>');
-            return;
+            return 0;
         }
 
         // Unlock all admin accounts
-        $userIds = \Mage::getModel('admin/user')->getCollection()->getAllIds();
+        $userIds = Mage::getModel('admin/user')->getCollection()->getAllIds();
 
         if (empty($userIds)) {
             $output->writeln('<error>No admin users found.</error>');
-            return;
+            return 0;
         }
 
-        /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
-        $dialog = $this->getHelper('dialog');
-        $shouldUnlockAll = $dialog->askConfirmation(
+        $dialog = new QuestionHelper();
+        $shouldUnlockAll = $dialog->ask(
+            $input,
             $output,
-            sprintf(
+            new ConfirmationQuestion(sprintf(
                 '<question>Really unlock all %d admin users?</question> <comment>[n]</comment>: ',
-                count($userIds)
-            ),
-            false
+                is_countable($userIds) ? count($userIds) : 0
+                ),
+                false
+            )
         );
 
         if ($shouldUnlockAll) {
             if (!$dryrun) {
-                \Mage::getResourceModel('enterprise_pci/admin_user')->unlock($userIds);
+                Mage::getResourceModel('enterprise_pci/admin_user')->unlock($userIds);
             }
             $output->writeln(
-                sprintf('<info><comment>All %d admin users</comment> unlocked</info>', count($userIds))
+                sprintf('<info><comment>All %d admin users</comment> unlocked</info>', is_countable($userIds) ? count($userIds) : 0)
             );
         }
+        return 0;
     }
 }

@@ -7,25 +7,21 @@
 
 namespace N98\Util;
 
+use PHPUnit\Framework\TestCase;
 /**
  * Class OperatingSystemTest
  *
  * @package N98\Util
  * @covers N98\Util\OperatingSystem
  */
-class OperatingSystemTest extends \PHPUnit\Framework\TestCase
+class OperatingSystemTest extends TestCase
 {
     /**
      * @test
      */
     public function osDetection()
     {
-        $matrix = array(
-            OperatingSystem::isLinux(),
-            OperatingSystem::isWindows(),
-            OperatingSystem::isMacOs(),
-            OperatingSystem::isNetware(),
-        );
+        $matrix = [OperatingSystem::isLinux(), OperatingSystem::isWindows(), OperatingSystem::isMacOs(), OperatingSystem::isNetware()];
 
         self::assertCount(4, $matrix, 'Number of OSes to check for');
         self::assertCount(1, array_filter($matrix), 'One OS must be detected');

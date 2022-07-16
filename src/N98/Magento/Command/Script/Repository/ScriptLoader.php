@@ -16,7 +16,7 @@ class ScriptLoader
     /**
      * @var array
      */
-    protected $_scriptFiles = array();
+    protected $_scriptFiles = [];
 
     /**
      * @var string
@@ -32,7 +32,7 @@ class ScriptLoader
     /**
      * @var array
      */
-    protected $_scriptFolders = array();
+    protected $_scriptFolders = [];
 
     /**
      * @param array  $scriptFolders
@@ -69,25 +69,20 @@ class ScriptLoader
         $scriptFolders = array_filter(array_filter($scriptFolders, 'strlen'), 'is_dir');
 
         $this->_scriptFolders = $scriptFolders;
-        $this->_scriptFiles = array();
+        $this->_scriptFiles = [];
         if (1 > count($scriptFolders)) {
             return;
         }
 
         $finder = Finder::create()
-            ->files()
-            ->followLinks(true)
+            ->files()->followLinks()
             ->ignoreUnreadableDirs(true)
             ->name('*.magerun')
             ->in($scriptFolders);
 
-        $scriptFiles = array();
+        $scriptFiles = [];
         foreach ($finder as $file) { /* @var $file SplFileInfo */
-            $scriptFiles[$file->getFilename()] = array(
-                'fileinfo'    => $file,
-                'description' => $this->_readFirstLineOfFile($file->getPathname()),
-                'location'    => $this->_getLocation($file->getPathname()),
-            );
+            $scriptFiles[$file->getFilename()] = ['fileinfo'    => $file, 'description' => $this->_readFirstLineOfFile($file->getPathname()), 'location'    => $this->_getLocation($file->getPathname())];
         }
 
         ksort($scriptFiles);

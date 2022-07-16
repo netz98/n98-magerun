@@ -48,12 +48,12 @@ class ToggleCommand extends AbstractMagentoCommand
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         $this->requireEnterprise($output);
         if (!$this->initMagento()) {
-            return;
+            return 0;
         }
 
         $this->writeSection($output, 'Banner Toggle');
@@ -63,7 +63,7 @@ class ToggleCommand extends AbstractMagentoCommand
 
         if (!$banner->getId()) {
             $output->writeln('<error>Banner was not found</error>');
-            return;
+            return 0;
         }
 
         $disabled = !$banner->getIsEnabled();
@@ -73,5 +73,6 @@ class ToggleCommand extends AbstractMagentoCommand
         $banner->setIsEnabled($disabled);
         $banner->save();
         $output->writeln($comment);
+        return 0;
     }
 }

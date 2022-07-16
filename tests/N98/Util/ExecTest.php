@@ -2,12 +2,14 @@
 
 namespace N98\Util;
 
+use PHPUnit\Framework\TestCase;
+use RuntimeException;
 /**
  * Class ExecTest
  *
  * @package N98\Util
  */
-class ExecTest extends \PHPUnit\Framework\TestCase
+class ExecTest extends TestCase
 {
     /**
      * @test
@@ -35,7 +37,7 @@ class ExecTest extends \PHPUnit\Framework\TestCase
      */
     public function exception()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         Exec::run('foobar');
     }
 }

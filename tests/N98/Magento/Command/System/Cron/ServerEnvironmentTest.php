@@ -2,17 +2,20 @@
 
 namespace N98\Magento\Command\System\Cron;
 
+use N98\Magento\Application;
+use Mage;
+use Mage_Core_Model_Store;
 use N98\Magento\Command\TestCase;
 
 class ServerEnvironmentTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         // Initialise Magento autoloader (if not yet)
         $application = $this->getApplication();
-        self::assertInstanceOf('N98\Magento\Application', $application);
+        self::assertInstanceOf(Application::class, $application);
     }
 
     /**
@@ -20,9 +23,9 @@ class ServerEnvironmentTest extends TestCase
      */
     public function regression()
     {
-        $store = \Mage::app()->getStore(null);
-        $actual = $store->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK);
-        self::assertInternalType('string', $actual);
+        $store = Mage::app()->getStore(null);
+        $actual = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
+        self::assertIsString($actual);
         self::assertRegExp('~/(ide-phpunit.php|phpunit)/$~', $actual);
     }
 
@@ -31,22 +34,22 @@ class ServerEnvironmentTest extends TestCase
      */
     public function environmentFix()
     {
-        $store = \Mage::app()->getStore(null);
+        $store = Mage::app()->getStore(null);
         $store->resetConfig();
 
         $environment = new ServerEnvironment();
         $environment->initalize();
 
-        $actual = $store->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK);
-        self::assertInternalType('string', $actual);
+        $actual = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
+        self::assertIsString($actual);
         self::assertStringEndsWith('/index.php/', $actual);
 
         $store->resetConfig();
 
         $environment->reset();
 
-        $actual = \Mage::app()->getStore(null)->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK);
-        self::assertInternalType('string', $actual);
+        $actual = Mage::app()->getStore(null)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
+        self::assertIsString($actual);
         self::assertRegExp('~/(ide-phpunit.php|phpunit)/$~', $actual);
     }
 }

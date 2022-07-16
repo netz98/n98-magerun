@@ -43,14 +43,14 @@ HELP;
      *
      * @return int exit code: 0 no conflicts found, 1 conflicts found, 2 magento could not be initialized
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
             return 2;
         }
 
-        $conflicts = array();
+        $conflicts = [];
         $time = microtime(true);
         $rewrites = $this->loadRewrites();
 
@@ -63,12 +63,7 @@ HELP;
                     continue;
                 }
 
-                $conflicts[] = array(
-                    'Type'         => $type,
-                    'Class'        => $class,
-                    'Rewrites'     => implode(', ', $rewriteClasses),
-                    'Loaded Class' => $this->_getLoadedClass($type, $class),
-                );
+                $conflicts[] = ['Type'         => $type, 'Class'        => $class, 'Rewrites'     => implode(', ', $rewriteClasses), 'Loaded Class' => $this->_getLoadedClass($type, $class)];
             }
         }
 
@@ -179,9 +174,9 @@ HELP;
         }
 
         $number = count($conflicts);
-        $table = new Zend_Text_Table(array('columnWidths' => array(8, 30, 60, 60)));
+        $table = new Zend_Text_Table(['columnWidths' => [8, 30, 60, 60]]);
 
-        array_map(array($table, 'appendRow'), $conflicts);
+        array_map([$table, 'appendRow'], $conflicts);
         $output->write($table->render());
         $message = sprintf(
             '%d %s found!',

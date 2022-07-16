@@ -75,8 +75,8 @@ final class ClassExistsChecker
     {
         $context = new stdClass();
         $context->lastException = null;
-        $context->stack = array();
-        $context->terminator = AutoloadHandler::create(array($this, 'autoloadTerminator'));
+        $context->stack = [];
+        $context->terminator = AutoloadHandler::create([$this, 'autoloadTerminator']);
         $context->className = $this->className;
 
         return $this->context = $context;
@@ -135,7 +135,7 @@ final class ClassExistsChecker
             return;
         }
 
-        $context->stack[] = array($notFoundClass, $className);
+        $context->stack[] = [$notFoundClass, $className];
 
         $context->lastException = new CanNotAutoloadCollaboratorClassException(
             sprintf('%s for %s', $notFoundClass, $className)

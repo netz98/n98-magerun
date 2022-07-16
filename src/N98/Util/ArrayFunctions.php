@@ -94,7 +94,7 @@ class ArrayFunctions
 
         if (PHP_VERSION_ID < 50400) {
             $closure = function (array $array) use ($columns) {
-                return call_user_func(__CLASS__ . '::columnOrder', $columns, $array);
+                return call_user_func(self::class . '::columnOrder', $columns, $array);
             };
         }
 
@@ -125,7 +125,7 @@ class ArrayFunctions
         $arrayLeftover = array_diff_key($array, $keyed);
         $keysLeftover = array_diff_key($keys, $keyed);
 
-        $target = array();
+        $target = [];
         if ($keysLeftover) {
             foreach ($arrayLeftover as $key => $value) {
                 if (is_string($key)) {

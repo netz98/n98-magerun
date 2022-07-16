@@ -2,9 +2,11 @@
 
 namespace N98\Magento\Command\Database;
 
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class DropCommand extends AbstractDatabaseCommand
 {
@@ -31,21 +33,21 @@ HELP;
      *
      * @return int|void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectDbSettings($output);
 
-        $dialog = $this->getHelper('dialog');
+        $dialog = new QuestionHelper();
         $dbHelper = $this->getHelper('database');
 
         if ($input->getOption('force')) {
             $shouldDrop = true;
         } else {
-            $shouldDrop = $dialog->askConfirmation(
+            $shouldDrop = $dialog->ask(
+                $input,
                 $output,
-                '<question>Really drop database ' . $this->dbSettings['dbname'] .
-                ' ?</question> <comment>[n]</comment>: ',
-                false
+                new ConfirmationQuestion('<question>Really drop database ' . $this->dbSettings['dbname'] .
+                    ' ?</question> <comment>[n]</comment>: ', false)
             );
         }
 
@@ -56,5 +58,6 @@ HELP;
                 $dbHelper->dropDatabase($output);
             }
         }
+        return 0;
     }
 }
