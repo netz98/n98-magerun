@@ -12,7 +12,7 @@ Build Status
 ------------
 
 +------------------------+-----------------------------------------------------------------------------------------------+
-| **Latest Release**     | .. image:: https://img.shields.io/maintenance/yes/2021.svg                                    | 
+| **Latest Release**     | .. image:: https://img.shields.io/maintenance/yes/2022.svg                                    | 
 |                        | .. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=master                         |
 |                        |    :target: https://travis-ci.org/netz98/n98-magerun                                          |
 |                        | .. image:: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=master  |
