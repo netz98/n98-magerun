@@ -182,6 +182,22 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
+      - name: openmage-20.0.16
+        version: 20.0.16
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v20.0.16.zip
+          type: zip
+          shasum: 27e768cdc4ab10b48d532e65363f6567724e6dbb
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.0.15
+        version: 20.0.15
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v20.0.15.zip
+          type: zip
+          shasum: a4ae4520893e6016491fbd6af1d49658351ca4b3
+        extra:
+          sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.14
         version: 20.0.14
         dist:
@@ -190,12 +206,52 @@ commands:
           shasum: 15172228925d2f03db00712e591f14b15210bea1
         extra:
           sample-data: sample-data-1.9.2.4
+      - name: openmage-20.0.13
+        version: 20.0.13
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v20.0.13.zip
+          type: zip
+          shasum: 797c0d967569c50b0916866aad53e4ddead9a788
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.0.12
+        version: 20.0.12
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v20.0.12.zip
+          type: zip
+          shasum: be32223b4eaad1952642a47bd21eb628a6437844
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.0.11
+        version: 20.0.11
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v20.0.11.zip
+          type: zip
+          shasum: 354e29cf663ddcddd4fc9f9b65b43890607d9301
+        extra:
+          sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.10
         version: 20.0.10
         dist:
           url: https://github.com/OpenMage/magento-lts/archive/v20.0.10.zip
           type: zip
           shasum: 2702a588b6d8668707b1a785f9b634d1fdb4ec01
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.0.8
+        version: 20.0.8
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v20.0.8.zip
+          type: zip
+          shasum: 8780144e9a362bd87255bdfdac837cd7de1ee046
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.0.7
+        version: 20.0.7
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v20.0.7.zip
+          type: zip
+          shasum: 9d3996b300ce325ce2d8ec302df351f22a47098d
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.6
@@ -252,6 +308,70 @@ commands:
           url: https://github.com/OpenMage/magento-lts/archive/v20.0.0.zip
           type: zip
           shasum: b8bcc1101af9e25a695647cdc8693620a65768f5
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.18
+        version: 19.4.18
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.18.zip
+          type: zip
+          shasum: 343e9678b2e79fde825f65cb111e632861bb7925
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.17
+        version: 19.4.17
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.17.zip
+          type: zip
+          shasum: 574bbaa05238e3a7d733d3335f1640bd34b6815d
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.16
+        version: 19.4.16
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.16.zip
+          type: zip
+          shasum: 94e396fb565451ae99fcfc23f8db52ab796d9d12
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.15
+        version: 19.4.15
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.15.zip
+          type: zip
+          shasum: 7fa0b52a6fe137ebf1363efff9642d10335246d9
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.14
+        version: 19.4.14
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.14.zip
+          type: zip
+          shasum: bcc2472f7cf9fad91bf548a1ab137f40e8e3753d
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.13
+        version: 19.4.13
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.13.zip
+          type: zip
+          shasum: ae7c0261838ea0199c9d7040a590400b3a37beb5
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.12
+        version: 19.4.12
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.12.zip
+          type: zip
+          shasum: d09bc41b4bfa55ba772a7a90ca5d23abf84c4323
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.11
+        version: 19.4.11
+        dist:
+          url: https://github.com/OpenMage/magento-lts/archive/v19.4.11.zip
+          type: zip
+          shasum: 01aec2c38b50f617147f02e627ece1fb0745355b
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.10
@@ -639,37 +759,37 @@ commands:
       - name: sample-data-1.9.2.4
         version: 1.9.2.4
         dist:
-          url: https://github.com/sreichel/magento-1-compressed-sample-data/raw/master/magento-sample-data-1.9.2.4.zip
-          type: zip
-          shasum: 243a47cf216c83074f8b657f42d6707940646823
+          url: https://github.com/Vinai/compressed-magento-sample-data/raw/master/compressed-magento-sample-data-1.9.2.4.tgz
+          type: tar
+          shasum: bb009ed09e1cf23d1aa43ca74a9a518bccb14545
 
       - name: sample-data-1.9.1.0
         version: 1.9.1.0
         dist:
-          url: https://github.com/sreichel/magento-1-compressed-sample-data/raw/master/magento-sample-data-1.9.1.0.zip
-          type: zip
-          shasum: 0d4145ae3fc732de24f2ae504c908991db3bc01c
+          url: https://github.com/Vinai/compressed-magento-sample-data/raw/1.9.1.0/compressed-magento-sample-data-1.9.1.0.tgz
+          type: tar
+          shasum: d1e4768b4cae4d90ec87a314343cad18b92d567e
 
       - name: sample-data-1.9.0.0
         version: 1.9.0.0
         dist:
-          url: https://github.com/sreichel/magento-1-compressed-sample-data/raw/master/magento-sample-data-1.9.0.0.zip
-          type: zip
-          shasum: 24c7144d106fb1165e3e730fd040780e23dd9c60
+          url: https://github.com/Vinai/compressed-magento-sample-data/raw/1.9.0.0/compressed-magento-sample-data-1.9.0.0.tgz
+          type: tar
+          shasum: 476fa24a58c3f9a6a944b603d5e81474182a5be3
 
       - name: sample-data-1.6.1.0
         version: 1.6.1.0
         dist:
-          url: https://github.com/sreichel/magento-1-compressed-sample-data/raw/master/magento-sample-data-1.6.1.0.zip
-          type: zip
-          shasum: 81b7b82d4223fdcd823ab62f7fac9c38efad47b8
+          url: https://sourceforge.net/projects/mageloads/files/assets/1.6.1.0/magento-sample-data-1.6.1.0.tar.gz
+          type: tar
+          shasum: a9226bc92966855327f6eb62ff8f6c562b2113a2
 
       - name: sample-data-1.1.2
         version: 1.1.2
         dist:
-          url: https://github.com/sreichel/magento-1-compressed-sample-data/raw/master/magento-sample-data-1.1.2.zip
+          url: https://sourceforge.net/projects/mageloads/files/assets/1.1.2/magento-sample-data-1.1.2.zip
           type: zip
-          shasum: c816cb97ec089eed73101324a9b154a88e00b262
+          shasum: 6bbb57e387c59da2752fe013aadef6dcd3cd2b29
 
     installation:
       pre-check:
