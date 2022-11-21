@@ -15,7 +15,7 @@
     "require": {
         "php": "~7.3.0 || ~8.0.0 || ~8.1.0",
         "composer/composer": "^2.2.18",
-        "fzaninotto/faker": "~1.4",
+        "fakerphp/faker": "^1.20",
         "n98/junit-xml": "~1.0",
         "psy/psysh": "~0.4",
         "symfony/console": "~5.4",
@@ -62,6 +62,7 @@
     "config": {
         "platform": {
             "php": "7.3.0"
-        }
+        },
+        "sort-packages": true
     }
 }
