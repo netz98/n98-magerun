@@ -4,10 +4,10 @@ namespace N98\Magento\Command\Developer\Theme;
 
 use Mage;
 use Mage_Core_Model_Store;
-use Parameter;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
 use N98\Util\Console\Helper\TableHelper;
+use Parameter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -37,7 +37,9 @@ class InfoCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return int|void
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -47,9 +49,9 @@ class InfoCommand extends AbstractMagentoCommand
         }
 
         foreach (Mage::app()->getWebsites() as $website) {
-            /* @var $website \Mage_Core_Model_Website */
+            /* @var \Mage_Core_Model_Website $website */
             foreach ($website->getStores() as $store) {
-                /* @var $store \Mage_Core_Model_Store */
+                /* @var \Mage_Core_Model_Store $store */
                 $this->_displayTable($output, $store);
             }
         }
@@ -59,12 +61,13 @@ class InfoCommand extends AbstractMagentoCommand
     protected function _displayTable(OutputInterface $output, Mage_Core_Model_Store $store)
     {
         $this->writeSection(
-            $output, 'Current design setting on store: ' . $store->getWebsite()->getCode() . '/' . $store->getCode()
+            $output,
+            'Current design setting on store: ' . $store->getWebsite()->getCode() . '/' . $store->getCode()
         );
         $storeInfoLines = $this->_parse($this->_configNodesWithExceptions, $store, true);
         $storeInfoLines = array_merge($storeInfoLines, $this->_parse($this->_configNodes, $store));
 
-        /* @var $tableHelper TableHelper */
+        /* @var TableHelper $tableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
             ->setHeaders([Parameter::class, 'Value'])

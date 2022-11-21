@@ -2,8 +2,9 @@
 
 namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
 
-use Mage_Eav_Model_Entity_Attribute;
 use Mage;
+use Mage_Eav_Model_Entity_Attribute;
+
 /**
  * Class AbstractEntityType
  *

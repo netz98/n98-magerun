@@ -36,7 +36,7 @@ class CreateCommand extends AbstractCustomerCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -104,7 +104,7 @@ class CreateCommand extends AbstractCustomerCommand
         }
 
         if (!$outputPlain) {
-            /* @var $tableHelper TableHelper */
+            /* @var TableHelper $tableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
                 ->setHeaders(['email', 'password', 'firstname', 'lastname'])

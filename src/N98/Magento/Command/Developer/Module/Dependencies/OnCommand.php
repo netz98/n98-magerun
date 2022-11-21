@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\Developer\Module\Dependencies;
 
-use Mage;
 use Exception;
 use InvalidArgumentException;
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
@@ -34,10 +34,10 @@ class OnCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -61,7 +61,7 @@ class OnCommand extends AbstractMagentoCommand
             if ($input->getOption('format') === null && count($dependencies) === 0) {
                 $output->writeln(sprintf("Module %s doesn't have dependencies", $moduleName));
             } else {
-                /* @var $tableHelper TableHelper */
+                /* @var TableHelper $tableHelper */
                 $tableHelper = $this->getHelper('table');
                 $tableHelper
                     ->setHeaders(['Name', 'Status', 'Current installed version', 'Code pool'])

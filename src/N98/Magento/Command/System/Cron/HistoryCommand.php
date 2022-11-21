@@ -4,13 +4,13 @@ namespace N98\Magento\Command\System\Cron;
 
 use Mage;
 use Mage_Cron_Model_Schedule;
-use Varien_Data_Collection_Db;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Varien_Data_Collection_Db;
 
 class HistoryCommand extends AbstractMagentoCommand
 {
@@ -40,10 +40,10 @@ class HistoryCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -69,7 +69,7 @@ class HistoryCommand extends AbstractMagentoCommand
         foreach ($collection as $job) {
             $table[] = [$job->getJobCode(), $job->getStatus(), $job->getFinishedAt() ? $date->gmtDate(null, $date->timestamp($job->getFinishedAt()) + $offset) : ''];
         }
-        /* @var $tableHelper TableHelper */
+        /* @var TableHelper $tableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
             ->setHeaders(['Job', 'Status', 'Finished'])

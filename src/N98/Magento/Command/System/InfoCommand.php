@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\System;
 
-use Mage;
 use Exception;
 use InvalidArgumentException;
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
@@ -40,10 +40,10 @@ class InfoCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -94,7 +94,7 @@ class InfoCommand extends AbstractMagentoCommand
             }
             $output->writeln((string) $this->infos[$settingArgument]);
         } else {
-            /* @var $tableHelper TableHelper */
+            /* @var TableHelper $tableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
                 ->setHeaders(['name', 'value'])
@@ -126,9 +126,6 @@ class InfoCommand extends AbstractMagentoCommand
         }
     }
 
-    /**
-     * @return int|void
-     */
     protected function findCoreOverwrites()
     {
         $folders = [$this->_magentoRootFolder . '/app/code/local/Mage', $this->_magentoRootFolder . '/app/code/local/Enterprise', $this->_magentoRootFolder . '/app/code/community/Mage', $this->_magentoRootFolder . '/app/code/community/Enterprise'];
@@ -148,9 +145,6 @@ class InfoCommand extends AbstractMagentoCommand
         }
     }
 
-    /**
-     * @return int|void
-     */
     protected function findVendors()
     {
         $codePools = ['core'      => $this->_magentoRootFolder . '/app/code/core/', 'community' => $this->_magentoRootFolder . '/app/code/community/'];

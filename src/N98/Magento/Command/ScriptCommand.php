@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command;
 
-use Mage;
 use InvalidArgumentException;
+use Mage;
 use N98\Util\BinaryString;
 use N98\Util\Exec;
 use RuntimeException;
@@ -134,7 +134,6 @@ HELP;
             $firstChar = substr($commandString, 0, 1);
 
             switch ($firstChar) {
-
                 // comment
                 case '#':
                     break;
@@ -214,7 +213,6 @@ HELP;
     {
         if (preg_match('/^(\$\{[a-zA-Z0-9-_.]+\})=(.+)/', $commandString, $matches)) {
             if (isset($matches[2]) && $matches[2][0] == '?') {
-
                 // Variable is already defined
                 if (isset($this->scriptVars[$matches[1]])) {
                     return $this->scriptVars[$matches[1]];

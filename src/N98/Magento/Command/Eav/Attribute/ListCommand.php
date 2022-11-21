@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\Eav\Attribute;
 
+use Exception;
 use Mage;
 use Mage_Eav_Model_Entity_Type;
-use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
@@ -31,10 +31,10 @@ class ListCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -85,7 +85,7 @@ class ListCommand extends AbstractMagentoCommand
             $headers[] = 'backend_type';
         }
 
-        /* @var $tableHelper TableHelper */
+        /* @var TableHelper $tableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
             ->setHeaders($headers)

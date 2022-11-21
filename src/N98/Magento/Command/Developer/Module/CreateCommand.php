@@ -79,11 +79,10 @@ class CreateCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
-     * @throws InvalidArgumentException
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -214,7 +213,7 @@ class CreateCommand extends AbstractMagentoCommand
             $this->moduleName
         );
 
-        /** @var $helper TwigHelper */
+        /** @var TwigHelper $helper */
         $helper = $this->getHelper('twig');
         $buffer = $helper->render('dev/module/create/app/etc/modules/definition.twig', $this->twigVars);
         $size = file_put_contents($outFile, $buffer);
@@ -317,7 +316,7 @@ class CreateCommand extends AbstractMagentoCommand
     {
         $paths = ['rootDir'   => $this->_magentoRootFolder, 'moduleDir' => $this->moduleDirectory];
 
-        /** @var $twig TwigHelper */
+        /** @var TwigHelper $twig */
         $twig = $this->getHelper('twig');
         return $twig->renderString($filename, array_merge($this->twigVars, $paths));
     }

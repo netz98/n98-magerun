@@ -33,10 +33,10 @@ HELP;
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -64,7 +64,7 @@ HELP;
         }
 
         if (count($table) > 0) {
-            /* @var $tableHelper TableHelper */
+            /* @var TableHelper $tableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
                 ->setHeaders(['id', 'email', 'firstname', 'lastname', 'website'])

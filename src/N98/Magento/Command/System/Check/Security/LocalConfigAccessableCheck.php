@@ -4,12 +4,12 @@ namespace N98\Magento\Command\System\Check\Security;
 
 use Mage;
 use Mage_Core_Model_Store;
-use Varien_Http_Adapter_Curl;
-use Zend_Http_Client;
-use Zend_Http_Response;
 use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Magento\Command\System\Check\SimpleCheck;
+use Varien_Http_Adapter_Curl;
+use Zend_Http_Client;
+use Zend_Http_Response;
 
 class LocalConfigAccessableCheck implements SimpleCheck
 {

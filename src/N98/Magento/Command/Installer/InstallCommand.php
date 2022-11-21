@@ -18,13 +18,13 @@ use PDO;
 use PDOException;
 use RuntimeException;
 use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -163,7 +163,7 @@ HELP;
      * @param InputInterface $input
      * @param OutputInterface $output
      * @throws RuntimeException
-     * @return int|null|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -343,7 +343,7 @@ HELP;
             );
 
             if ($this->isSourceTypeRepository($package->getSourceType())) {
-                $filesystem = new Filesystem;
+                $filesystem = new Filesystem();
                 $filesystem->recursiveCopy($targetFolder, $installationFolder, ['.git', '.hg']);
             } else {
                 $filesystem = new \Composer\Util\Filesystem();
@@ -548,7 +548,7 @@ HELP;
     protected function installSampleData(InputInterface $input, OutputInterface $output)
     {
         $magentoPackage = $this->config['magentoPackage'];
-        /* @var $magentoPackage \Composer\Package\MemoryPackage */
+        /* @var \Composer\Package\MemoryPackage $magentoPackage */
         $extra = $magentoPackage->getExtra();
         if (!isset($extra['sample-data'])) {
             return;
@@ -602,7 +602,7 @@ HELP;
                         $this->config['installationFolder'] . '/_temp_demo_data/magento_*sample_data*sql'
                     );
                     $db = $this->config['db'];
-                    /* @var $db PDO */
+                    /* @var PDO $db */
                     if (isset($sampleDataSqlFile[0])) {
                         if (OperatingSystem::isProgramInstalled('mysql')) {
                             $exec = 'mysql '
@@ -676,8 +676,6 @@ HELP;
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
-     * @return array
      * @throws InvalidArgumentException parameter mismatch (e.g. base-url components like hostname)
      * @throws RuntimeException
      */
@@ -979,7 +977,7 @@ HELP;
                 ->ignoreUnreadableDirs(true)
                 ->in([$varFolder, $mediaFolder]);
             foreach ($finder as $dir) {
-                @chmod($dir->getRealpath(), 0777);
+                @chmod($dir->getRealPath(), 0777);
             }
         } catch (Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');

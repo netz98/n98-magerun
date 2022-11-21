@@ -57,10 +57,10 @@ HELP;
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -68,7 +68,7 @@ HELP;
 
         $query = $this->getOrAskForArgument('query', $input, $output, 'SQL Query');
 
-        /** @var $helper \N98\Util\Console\Helper\DatabaseHelper */
+        /** @var \N98\Util\Console\Helper\DatabaseHelper $helper */
         $helper = $this->getHelper('database');
         $exec = sprintf('mysql %s -e %s', $helper->getMysqlClientToolConnectionString(), escapeshellarg($query));
 

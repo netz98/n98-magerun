@@ -8,13 +8,13 @@
 
 namespace N98\Magento\Command\Developer\EmailTemplate;
 
-use Path;
 use Mage;
 use Mage_Adminhtml_Model_Email_Template;
 use Mage_Core_Model_Template;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
+use Path;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,7 +38,7 @@ class UsageCommand extends AbstractMagentoCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -47,7 +47,7 @@ class UsageCommand extends AbstractMagentoCommand
         $templates = $this->findEmailTemplates();
 
         if (!empty($templates)) {
-            /* @var $tableHelper TableHelper */
+            /* @var TableHelper $tableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
                 ->setHeaders(['id', 'Name', 'Scope', 'Scope Id', Path::class])

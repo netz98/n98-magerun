@@ -25,10 +25,10 @@ class ListCommand extends AbstractAdminUserCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -37,7 +37,7 @@ class ListCommand extends AbstractAdminUserCommand
             return 0;
         }
 
-        /** @var $userModel \Mage_Admin_Model_User  */
+        /** @var \Mage_Admin_Model_User $userModel */
         $userModel = $this->getUserModel();
         $userList = $userModel->getCollection();
         $table = [];
@@ -45,7 +45,7 @@ class ListCommand extends AbstractAdminUserCommand
             $table[] = [$user->getId(), $user->getUsername(), $user->getEmail(), $user->getIsActive() ? 'active' : 'inactive'];
         }
 
-        /* @var $tableHelper TableHelper */
+        /* @var TableHelper $tableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
             ->setHeaders(['id', 'username', 'email', 'status'])

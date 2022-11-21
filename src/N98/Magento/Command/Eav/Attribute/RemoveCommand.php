@@ -2,10 +2,10 @@
 
 namespace N98\Magento\Command\Eav\Attribute;
 
+use InvalidArgumentException;
 use Mage;
 use Mage_Core_Exception;
 use Mage_Eav_Model_Entity_Setup;
-use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,7 +31,7 @@ class RemoveCommand extends AbstractMagentoCommand
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return int|null|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

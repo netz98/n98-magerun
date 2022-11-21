@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Module\Observer;
 
-use Mage;
 use InvalidArgumentException;
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
@@ -35,11 +35,10 @@ class ListCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @throws InvalidArgumentException
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -77,7 +76,7 @@ class ListCommand extends AbstractMagentoCommand
             $table[] = [$eventName, implode("\n", $observerList)];
         }
 
-        /* @var $tableHelper TableHelper */
+        /* @var TableHelper $tableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
             ->setHeaders(['Event', 'Observers'])

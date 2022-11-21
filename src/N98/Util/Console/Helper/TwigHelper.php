@@ -38,7 +38,7 @@ class TwigHelper extends Helper
      *
      * @param string $template
      * @param array $variables
-     * @return mixed
+     * @return string
      */
     public function render($template, $variables = [])
     {

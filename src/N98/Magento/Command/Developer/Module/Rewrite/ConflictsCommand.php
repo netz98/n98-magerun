@@ -135,7 +135,7 @@ HELP;
      * If yes we have no conflict. The top class can extend every core class.
      * So we cannot check this.
      *
-     * @var array $classes
+     * @param array $classes
      * @return bool
      */
     protected function _isInheritanceConflict(array $classes)
@@ -144,8 +144,7 @@ HELP;
         foreach (array_reverse($classes) as $class) {
             $earlier = ClassUtil::create($class);
             try {
-                if (
-                    $later instanceof ClassUtil
+                if ($later instanceof ClassUtil
                     && $later->exists()
                     && $earlier->exists()
                     && !$later->isA($earlier)
@@ -164,7 +163,6 @@ HELP;
     /**
      * @param OutputInterface $output
      * @param array           $conflicts
-     * @return int
      */
     private function writeOutput(OutputInterface $output, array $conflicts)
     {

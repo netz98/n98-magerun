@@ -40,10 +40,10 @@ HELP;
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -97,7 +97,7 @@ HELP;
             ->in($baseFolder);
         $checksums = [];
         foreach ($finder as $file) {
-            /* @var $file \Symfony\Component\Finder\SplFileInfo */
+            /* @var \Symfony\Component\Finder\SplFileInfo $file */
             if (file_exists($file->getRealPath())) {
                 $checksums[$file->getRelativePathname()] = md5_file($file->getRealPath());
             }

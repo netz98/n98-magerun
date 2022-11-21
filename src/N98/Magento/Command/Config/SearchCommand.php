@@ -3,8 +3,8 @@
 namespace N98\Magento\Command\Config;
 
 use Mage;
-use stdClass;
 use RuntimeException;
+use stdClass;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,10 +25,10 @@ EOT
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -116,7 +116,7 @@ EOT
      */
     protected function _searchNode($searchString, $node)
     {
-        $match = new stdClass;
+        $match = new stdClass();
         $match->type = $this->_getNodeType($node);
         if (stristr((string) $node->label, $searchString)) {
             $match->match_type = 'label';

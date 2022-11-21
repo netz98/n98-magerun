@@ -29,7 +29,7 @@ class Result
     /**
      * @var array[string]
      */
-    protected $_messages;
+    protected $_message;
 
     /**
      * @var string

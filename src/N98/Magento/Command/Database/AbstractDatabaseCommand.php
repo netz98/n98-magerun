@@ -34,7 +34,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
     /**
      * @param $name
      *
-     * @return mixed
+     * @return \PDO|void
      */
     public function __get($name)
     {

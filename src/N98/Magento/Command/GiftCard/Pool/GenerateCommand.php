@@ -22,7 +22,7 @@ class GenerateCommand extends AbstractGiftCardCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

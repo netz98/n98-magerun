@@ -2,10 +2,8 @@
 
 namespace N98\Magento\Command\Indexer;
 
-use UnexpectedValueException;
-use Varien_Simplexml_Element;
-use DateTimeZone;
 use DateInterval;
+use DateTimeZone;
 use Exception;
 use Mage;
 use Mage_Index_Model_Indexer;
@@ -13,6 +11,8 @@ use Mage_Index_Model_Process;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\DateTime as DateTimeUtils;
 use Symfony\Component\Console\Output\OutputInterface;
+use UnexpectedValueException;
+use Varien_Simplexml_Element;
 
 /**
  * Class AbstractIndexerCommand
@@ -26,7 +26,7 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
      */
     protected function getIndexerModel()
     {
-        /* @var $indexer Mage_Index_Model_Indexer */
+        /* @var Mage_Index_Model_Indexer $indexer */
         $indexer = Mage::getModel('index/indexer');
         if (!$indexer instanceof Mage_Index_Model_Indexer) {
             throw new UnexpectedValueException('Failure getting indexer model');

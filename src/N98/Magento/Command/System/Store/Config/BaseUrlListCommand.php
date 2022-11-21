@@ -27,10 +27,10 @@ class BaseUrlListCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -47,7 +47,7 @@ class BaseUrlListCommand extends AbstractMagentoCommand
         }
 
         ksort($table);
-        /* @var $tableHelper TableHelper */
+        /* @var TableHelper $tableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
             ->setHeaders(['id', 'code', 'unsecure_baseurl', 'secure_baseurl'])

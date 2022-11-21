@@ -17,11 +17,11 @@ abstract class AbstractCompressor implements Compressor
         switch ($type) {
             case null:
             case 'none':
-                return new Uncompressed;
+                return new Uncompressed();
 
             case 'gz':
             case 'gzip':
-                return new Gzip;
+                return new Gzip();
 
             default:
                 throw new InvalidArgumentException("Compression type '{$type}' is not supported.");

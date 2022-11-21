@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\System\Check;
 
-use IteratorAggregate;
 use ArrayObject;
+use IteratorAggregate;
 use Traversable;
 
 /**

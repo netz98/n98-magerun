@@ -114,8 +114,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
         $i = 0;
         foreach ($outputVars as $variableName => $variableValue) {
             $rows[$i] = [$variableName, $variableValue];
-            if (
-                true === $hasDescription &&
+            if (true === $hasDescription &&
                 isset($this->_importantVars[$variableName], $this->_importantVars[$variableName]['desc'])
             ) {
                 $rows[$i][] = $this->formatDesc($this->_importantVars[$variableName]['desc']);

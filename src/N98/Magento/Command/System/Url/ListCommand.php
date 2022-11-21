@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\System\Url;
 
+use InvalidArgumentException;
 use Mage;
 use Mage_Core_Model_Store;
-use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -65,9 +65,7 @@ HELP;
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
-     * @throws InvalidArgumentException
-     * @throws \Mage_Core_Model_Store_Exception
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -87,7 +85,7 @@ HELP;
         $urls = [];
 
         foreach ($stores as $storeId) {
-            $currentStore = Mage::app()->getStore($storeId); /* @var $currentStore \Mage_Core_Model_Store */
+            $currentStore = Mage::app()->getStore($storeId); /* @var \Mage_Core_Model_Store $currentStore */
 
             // base url
             $urls[] = $currentStore->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
@@ -112,7 +110,6 @@ HELP;
         }
 
         foreach ($urls as $url) {
-
             // pre-process
             $line = $input->getArgument('linetemplate');
             $line = str_replace('{url}', $url, $line);
@@ -138,12 +135,18 @@ HELP;
      */
     protected function getUrls($resourceModel, $linkBaseUrl, $storeId, array $urls)
     {
-        $collection = Mage::getResourceModel($resourceModel)->getCollection($storeId);
+        $resourceModel = Mage::getResourceModel($resourceModel);
+        if (!$resourceModel) {
+            return $urls;
+        }
+
+        $collection = $resourceModel->getCollection($storeId);
         if (!$collection) {
             return $urls;
         }
+
         foreach ($collection as $item) {
-            /* @var $item \Varien_Object */
+            /* @var \Varien_Object $item */
             $urls[] = $linkBaseUrl . $item->getUrl();
         }
         return $urls;

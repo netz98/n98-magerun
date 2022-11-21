@@ -25,10 +25,11 @@ class SetCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -44,7 +45,7 @@ class SetCommand extends AbstractMagentoCommand
 
         $locale = Mage::getStoreConfig('general/locale/code', $store->getId());
 
-        /* @var $store \Mage_Core_Model_Store */
+        /* @var \Mage_Core_Model_Store $store */
         $resource = Mage::getResourceModel('core/translate_string');
         $resource->saveTranslate(
             $input->getArgument('string'),

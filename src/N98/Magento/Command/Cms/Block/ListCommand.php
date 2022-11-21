@@ -49,7 +49,7 @@ class ListCommand extends AbstractMagentoCommand
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return int|null|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -70,7 +70,7 @@ class ListCommand extends AbstractMagentoCommand
             $table[] = [$cmsBlock->getData('block_id'), $cmsBlock->getData('identifier'), $cmsBlock->getData('title'), $cmsBlock->getData('is_active') ? 'active' : 'inactive', $storeIds];
         }
 
-        /* @var $tableHelper TableHelper */
+        /* @var TableHelper $tableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
             ->setHeaders(['block_id', 'identifier', 'title', 'is_active', 'store_ids'])

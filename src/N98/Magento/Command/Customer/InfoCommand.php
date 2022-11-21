@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\Customer;
 
-use Mage_Customer_Model_Attribute;
 use Attribute;
 use Exception;
+use Mage_Customer_Model_Attribute;
 use N98\Util\Console\Helper\ParameterHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,10 +27,10 @@ class InfoCommand extends AbstractCustomerCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -69,7 +69,7 @@ class InfoCommand extends AbstractCustomerCommand
             }
         }
 
-        /* @var $tableHelper TableHelper */
+        /* @var TableHelper $tableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
             ->setHeaders([Attribute::class, 'Value'])

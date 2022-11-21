@@ -7,11 +7,11 @@
 
 namespace N98\Magento\Command\System\Check\Settings;
 
-use Mage_Core_Model_Store;
-use ReflectionMethod;
 use Mage;
+use Mage_Core_Model_Store;
 use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Magento\Command\System\Check\StoreCheck;
+use ReflectionMethod;
 
 /**
  * Class CheckAbstract

@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\Cache;
 
-use Mage;
-use Exception;
 use Enterprise_PageCache_Model_Cache;
+use Exception;
+use Mage;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -43,10 +43,10 @@ HELP;
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -80,7 +80,7 @@ HELP;
         }
 
         /* Since Magento 1.10 we have an own cache handler for FPC */
-        if ($this->isEnterpriseFullPageCachePresent()) {
+        if ($this->isEnterpriseFullPageCachePresent() && class_exists('Enterprise_PageCache_Model_Cache')) {
             $result = Enterprise_PageCache_Model_Cache::getCacheInstance()->flush();
             if ($result) {
                 $output->writeln('<info>FPC cleared</info>');

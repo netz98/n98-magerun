@@ -2,12 +2,12 @@
 
 namespace N98\Magento\Command\Database\Maintain;
 
-use N98\Util\Console\Helper\DatabaseHelper;
-use PDO;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\Console\Helper\DatabaseHelper;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
+use PDO;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -122,8 +122,7 @@ HELP;
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @throws InvalidArgumentException
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -169,7 +168,7 @@ HELP;
             $progress->finish();
         }
 
-        /* @var $tableHelper TableHelper */
+        /* @var TableHelper $tableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
             ->setHeaders(['Table', 'Operation', 'Type', 'Status'])
@@ -185,7 +184,6 @@ HELP;
      */
     protected function _queryAlterTable($tableName, $engine)
     {
-        /** @var PDO $connection */
         $connection = $this->dbHelper->getConnection($this->output);
         $start = microtime(true);
         $affectedRows = $connection->exec(sprintf('ALTER TABLE %s ENGINE=%s', $tableName, $engine));
@@ -248,7 +246,6 @@ HELP;
      */
     protected function _query($sql)
     {
-        /** @var PDO $connection */
         $connection = $this->dbHelper->getConnection($this->output);
         $query = $connection->prepare($sql);
         $query->execute();

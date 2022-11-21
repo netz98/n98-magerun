@@ -2,12 +2,12 @@
 
 namespace N98\Magento\Command\System\Setup;
 
-use Mage_Core_Model_Resource_Setup;
-use ReflectionObject;
-use Mage;
 use Exception;
+use Mage;
+use Mage_Core_Model_Resource_Setup;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\TableHelper;
+use ReflectionObject;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
@@ -37,7 +37,7 @@ HELP;
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -92,7 +92,7 @@ HELP;
             return $row;
         });
 
-        /* @var $tableHelper TableHelper */
+        /* @var TableHelper $tableHelper */
         $tableHelper = $this->getHelper('table');
         $rows = [];
         $i = 1;
@@ -111,7 +111,7 @@ HELP;
     protected function printFile(OutputInterface $output, Exception $e)
     {
         if (preg_match('/Error\sin\sfile\:\s"(.+)\"\s-/', $e->getMessage(), $matches)) {
-            /* @var $tableHelper TableHelper */
+            /* @var TableHelper $tableHelper */
             $tableHelper = $this->getHelper('table');
             $lines = \file($matches[1]);
             $rows = [];

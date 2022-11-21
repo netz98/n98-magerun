@@ -89,7 +89,7 @@ final class ClassExistsChecker
      */
     private function exceptionContext($context, Exception $ex)
     {
-        /** @var $terminator AutoloadHandler */
+        /** @var AutoloadHandler $terminator */
         $terminator = $context->terminator;
         $terminator->reset();
 
@@ -107,7 +107,7 @@ final class ClassExistsChecker
     private function endContext($context)
     {
         if (isset($context->terminator)) {
-            /** @var $terminator AutoloadHandler */
+            /** @var AutoloadHandler $terminator */
             $terminator = $context->terminator;
             $terminator->reset();
         }

@@ -2,14 +2,14 @@
 
 namespace N98\Magento\Command\Config;
 
-use Path;
-use UnexpectedValueException;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
+use Path;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use UnexpectedValueException;
 
 class GetCommand extends AbstractConfigCommand
 {
@@ -62,7 +62,7 @@ HELP;
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -72,7 +72,7 @@ HELP;
             return 0;
         }
 
-        /* @var $collection \Mage_Core_Model_Resource_Db_Collection_Abstract */
+        /* @var \Mage_Core_Model_Resource_Db_Collection_Abstract $collection */
         $collection = $this->_getConfigDataModel()->getCollection();
 
         $searchPath = $input->getArgument('path');
@@ -139,7 +139,7 @@ HELP;
             $formattedTable[] = [$row['path'], $row['scope'], $row['scope_id'], $this->renderTableValue($row['value'], $format)];
         }
 
-        /* @var $tableHelper TableHelper */
+        /* @var TableHelper $tableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
             ->setHeaders([Path::class, 'Scope', 'Scope-ID', 'Value'])

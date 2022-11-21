@@ -25,10 +25,10 @@ class ListCommand extends AbstractRewriteCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -54,7 +54,7 @@ class ListCommand extends AbstractRewriteCommand
             if (count($table) == 0) {
                 $table = [];
             }
-            /* @var $tableHelper TableHelper */
+            /* @var TableHelper $tableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
                 ->setHeaders(['Type', 'Class', 'Rewrite'])

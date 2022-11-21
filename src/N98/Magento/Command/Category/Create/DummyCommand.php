@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\Category\Create;
 
-use N98\Magento\Command\AbstractMagentoCommand;
 use Mage;
 use Mage_Catalog_Model_Category;
+use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,7 +42,7 @@ class DummyCommand extends AbstractMagentoCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -79,7 +79,7 @@ class DummyCommand extends AbstractMagentoCommand
             $storeId = $_argument['store-id'];
             $rootCategoryId = Mage::app()->getStore($storeId)->getRootCategoryId();
 
-            /* @var $category Mage_Catalog_Model_Category */
+            /* @var Mage_Catalog_Model_Category $category */
             $category = Mage::getModel('catalog/category');
             $category->setName($name);
             $category->setIsActive(self::DEFAULT_CATEGORY_STATUS);
@@ -101,7 +101,7 @@ class DummyCommand extends AbstractMagentoCommand
             for ($j = 0; $j < $_argument['children-categories-number']; $j++) {
                 $name_child = $name . " child " . $j;
 
-                /* @var $category Mage_Catalog_Model_Category */
+                /* @var Mage_Catalog_Model_Category $category */
                 $category = Mage::getModel('catalog/category');
                 $category->setName($name_child);
                 $category->setIsActive(self::DEFAULT_CATEGORY_STATUS);

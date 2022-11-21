@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Database;
 
 use DateTime;
+
 class StatusCommand extends AbstractShowCommand
 {
     protected $showMethod = 'getGlobalStatus';
@@ -115,7 +116,7 @@ HELP;
             $datetime = '@' . $datetime;
         }
 
-        $now = new DateTime;
+        $now = new DateTime();
         $ago = new DateTime($datetime);
         $diff = $now->diff($ago);
 

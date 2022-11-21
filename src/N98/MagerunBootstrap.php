@@ -7,9 +7,9 @@
 
 namespace N98;
 
-use N98\Magento\Application;
 use Composer\Autoload\ClassLoader;
 use ErrorException;
+use N98\Magento\Application;
 
 /**
  * Bootstrap class for the Magerun applications (Symfony console based application)
@@ -41,8 +41,7 @@ class MagerunBootstrap
     public static function getLoader()
     {
         $projectBasedir = __DIR__ . '/../..';
-        if (
-            !($loader = self::includeIfExists($projectBasedir . '/vendor/autoload.php'))
+        if (!($loader = self::includeIfExists($projectBasedir . '/vendor/autoload.php'))
             && !($loader = self::includeIfExists($projectBasedir . '/../../autoload.php'))
         ) {
             throw new ErrorException(

@@ -2,10 +2,10 @@
 
 namespace N98\Magento\Command\Developer\Code\Model;
 
-use PDO;
-use Mage;
 use InvalidArgumentException;
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
+use PDO;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -59,7 +59,7 @@ class MethodCommand extends AbstractMagentoCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|null|void
+     * @return int
      * @throws RuntimeException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -110,10 +110,17 @@ class MethodCommand extends AbstractMagentoCommand
         $modelClassName = get_class($this->_mageModel);
         $getterSetter = [];
         foreach ($this->_tableColumns as $colName => $colProp) {
-            $getterSetter[] = sprintf(' * @method %s get%s()', $this->getColumnType($colProp['Type']),
-                $this->camelize($colName));
-            $getterSetter[] = sprintf(' * @method %s set%s(%s $value)', $modelClassName, $this->camelize($colName),
-                $this->getColumnType($colProp['Type']));
+            $getterSetter[] = sprintf(
+                ' * @method %s get%s()',
+                $this->getColumnType($colProp['Type']),
+                $this->camelize($colName)
+            );
+            $getterSetter[] = sprintf(
+                ' * @method %s set%s(%s $value)',
+                $modelClassName,
+                $this->camelize($colName),
+                $this->getColumnType($colProp['Type'])
+            );
         }
 
         return $getterSetter;
@@ -153,7 +160,7 @@ class MethodCommand extends AbstractMagentoCommand
     protected function initTableColumns()
     {
         $dbHelper = $this->getHelper('database');
-        /* @var $dbHelper \N98\Util\Console\Helper\DatabaseHelper */
+        /* @var \N98\Util\Console\Helper\DatabaseHelper $dbHelper */
         /** @var PDO $connection */
         $connection = $dbHelper->getConnection($this->_output);
         $stmt = $connection->query('SHOW COLUMNS FROM ' . $this->_mageModelTable, PDO::FETCH_ASSOC);

@@ -39,14 +39,14 @@ class ToggleCommand extends AbstractMagentoCommand
      */
     protected function _getBannerModel()
     {
-        $this->_getModel('enterprise_banner/banner', '\Enterprise_Banner_Model_Banner');
+        return $this->_getModel('enterprise_banner/banner', '\Enterprise_Banner_Model_Banner');
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

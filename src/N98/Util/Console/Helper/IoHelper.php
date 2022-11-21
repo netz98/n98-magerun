@@ -55,7 +55,7 @@ class IoHelper implements HelperInterface, EventSubscriberInterface
             return;
         }
 
-        /** @var  $helper IoHelper */
+        /** @var  IoHelper $helper */
         $helper = $set->get(self::HELPER_NAME);
         $helper->initializeIo($event->getInput(), $event->getOutput());
     }

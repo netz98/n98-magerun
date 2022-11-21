@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Customer;
 
-use Mage_Customer_Model_Customer;
 use Exception;
+use Mage_Customer_Model_Customer;
 use Mage_Customer_Model_Entity_Customer_Collection;
 use Mage_Customer_Model_Resource_Customer_Collection;
 use N98\Util\Console\Helper\ParameterHelper;
@@ -69,7 +69,7 @@ HELP;
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return false|null
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -90,7 +90,6 @@ HELP;
         $all = $this->input->getOption('all');
         // Get args required
         if (!($id) && !($range) && !($all)) {
-
             // Delete more than one customer ?
             $batchDelete = $this->dialog->ask(
                 $this->input,

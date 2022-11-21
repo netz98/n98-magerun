@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\System;
 
-use RuntimeException;
 use N98\Magento\Command\AbstractMagentoCommand;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,10 +21,10 @@ class MaintenanceCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

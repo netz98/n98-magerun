@@ -2,12 +2,12 @@
 
 namespace N98\Magento\Command\Customer;
 
-use Locale;
 use Faker\Factory;
+use Locale;
 use N98\Util\Console\Helper\ParameterHelper;
-use N98\Util\Faker\Provider\Internet;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
+use N98\Util\Faker\Provider\Internet;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -62,7 +62,7 @@ HELP;
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -132,7 +132,7 @@ HELP;
         $res->commit();
 
         if (!$outputPlain) {
-            /* @var $tableHelper TableHelper */
+            /* @var TableHelper $tableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
                 ->setHeaders(['email', 'password', 'firstname', 'lastname'])
