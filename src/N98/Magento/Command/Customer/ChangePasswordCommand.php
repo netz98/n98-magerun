@@ -3,8 +3,8 @@
 namespace N98\Magento\Command\Customer;
 
 use Exception;
+use N98\Util\Console\Helper\ParameterHelper;
 use RuntimeException;
-use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,17 +42,20 @@ HELP;
             return 0;
         }
 
-        $dialog = new QuestionHelper();
-        $email = $this->getHelper('parameter')->askEmail($input, $output);
-
         // Password
         if (($password = $input->getArgument('password')) == null) {
+            /* @var QuestionHelper $dialog */
+            $dialog = $this->getHelper('question');
             $question = new Question('<question>Password:</question>');
             $question->setHidden(true);
             $password = $dialog->ask($input, $output, $question);
         }
 
-        $website = $this->getHelper('parameter')->askWebsite($input, $output);
+        /** @var ParameterHelper $parameterHelper */
+        $parameterHelper = $this->getHelper('parameter');
+
+        $email = $parameterHelper->askEmail($input, $output);
+        $website = $parameterHelper->askWebsite($input, $output);
 
         $customer = $this->getCustomerModel()
             ->setWebsiteId($website->getId())

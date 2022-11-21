@@ -7,12 +7,14 @@ use InvalidArgumentException;
 use N98\Util\BinaryString;
 use N98\Util\Exec;
 use RuntimeException;
-use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\Question;
 
 class ScriptCommand extends AbstractMagentoCommand
 {
@@ -139,7 +141,7 @@ HELP;
 
                 // set var
                 case '$':
-                    $this->registerVariable($output, $commandString);
+                    $this->registerVariable($input, $output, $commandString);
                     break;
 
                 // run shell script
@@ -202,12 +204,13 @@ HELP;
     }
 
     /**
+     * @param InputInterface $input
      * @param OutputInterface $output
      * @param string $commandString
      * @throws RuntimeException
      * @return void
      */
-    protected function registerVariable(OutputInterface $output, $commandString)
+    protected function registerVariable(InputInterface $input, OutputInterface $output, $commandString)
     {
         if (preg_match('/^(\$\{[a-zA-Z0-9-_.]+\})=(.+)/', $commandString, $matches)) {
             if (isset($matches[2]) && $matches[2][0] == '?') {
@@ -217,8 +220,8 @@ HELP;
                     return $this->scriptVars[$matches[1]];
                 }
 
-                /* @var $dialog DialogHelper */
-                $dialog = $this->getHelper('dialog');
+                /* @var QuestionHelper $dialog */
+                $dialog = $this->getHelper('question');
 
                 /**
                  * Check for select "?["
@@ -226,28 +229,28 @@ HELP;
                 if (isset($matches[2][1]) && $matches[2][1] == '[') {
                     if (preg_match('/\[(.+)\]/', $matches[2], $choiceMatches)) {
                         $choices = BinaryString::trimExplodeEmpty(',', $choiceMatches[1]);
-                        $selectedIndex = $dialog->select(
-                            $output,
+                        $question = new ChoiceQuestion(
                             '<info>Please enter a value for <comment>' . $matches[1] . '</comment>:</info> ',
                             $choices
                         );
-                        $this->scriptVars[$matches[1]] = $choices[$selectedIndex];
+                        $selectedIndex = $dialog->ask($input, $output, $question);
+
+                        $this->scriptVars[$matches[1]] = array_search($selectedIndex, $choices); # @todo check cmuench $choices[$selectedIndex]
                     } else {
                         throw new RuntimeException('Invalid choices');
                     }
                 } else {
                     // normal input
-                    $this->scriptVars[$matches[1]] = $dialog->askAndValidate(
-                        $output,
-                        '<info>Please enter a value for <comment>' . $matches[1] . '</comment>:</info> ',
-                        function ($value) {
-                            if ($value == '') {
-                                throw new RuntimeException('Please enter a value');
-                            }
-
-                            return $value;
+                    $question = new Question('<info>Please enter a value for <comment>' . $matches[1] . '</comment>: </info>');
+                    $question->setValidator(function ($value) {
+                        if ($value == '') {
+                            throw new RuntimeException('Please enter a value');
                         }
-                    );
+
+                        return $value;
+                    });
+
+                    $this->scriptVars[$matches[1]] = $dialog->ask($input, $output, $question);
                 }
             } else {
                 $this->scriptVars[$matches[1]] = $this->_replaceScriptVars($matches[2]);

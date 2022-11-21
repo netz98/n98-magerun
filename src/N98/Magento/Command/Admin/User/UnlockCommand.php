@@ -75,7 +75,8 @@ class UnlockCommand extends AbstractAdminUserCommand
             return 0;
         }
 
-        $dialog = new QuestionHelper();
+        /* @var QuestionHelper $dialog */
+        $dialog = $this->getHelper('question');
         $shouldUnlockAll = $dialog->ask(
             $input,
             $output,

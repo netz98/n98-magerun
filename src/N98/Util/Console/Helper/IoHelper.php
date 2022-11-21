@@ -71,6 +71,14 @@ class IoHelper implements HelperInterface, EventSubscriberInterface
     }
 
     /**
+     * @return InputInterface
+     */
+    public function getInput()
+    {
+        return $this->input;
+    }
+
+    /**
      * @return OutputInterface
      */
     public function getOutput()

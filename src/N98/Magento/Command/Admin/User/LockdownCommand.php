@@ -56,7 +56,8 @@ HELP
             return 0;
         }
 
-        $dialog = new QuestionHelper();
+        /* @var QuestionHelper $dialog */
+        $dialog = $this->getHelper('question');
         $confirm = $dialog->ask(
             $input,
             $output,

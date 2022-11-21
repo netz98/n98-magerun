@@ -4,6 +4,7 @@ namespace N98\Magento\Command\Customer;
 
 use Locale;
 use Faker\Factory;
+use N98\Util\Console\Helper\ParameterHelper;
 use N98\Util\Faker\Provider\Internet;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
@@ -75,7 +76,10 @@ HELP;
         $faker = Factory::create($input->getArgument('locale'));
         $faker->addProvider(new Internet($faker));
 
-        $website = $this->getHelper('parameter')->askWebsite($input, $output);
+        /** @var ParameterHelper $parameterHelper */
+        $parameterHelper = $this->getHelper('parameter');
+
+        $website = $parameterHelper->askWebsite($input, $output);
 
         $res->beginTransaction();
         $count = $input->getArgument('count');

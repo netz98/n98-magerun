@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Customer;
 
+use N98\Util\Console\Helper\ParameterHelper;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -44,10 +45,8 @@ class CreateCommand extends AbstractCustomerCommand
             return 0;
         }
 
-        $dialog = new QuestionHelper();
-
-        // Email
-        $email = $this->getHelper('parameter')->askEmail($input, $output);
+        /* @var QuestionHelper $dialog */
+        $dialog = $this->getHelper('question');
 
         // Password
         if (($password = $input->getArgument('password')) == null) {
@@ -66,7 +65,14 @@ class CreateCommand extends AbstractCustomerCommand
             $lastname = $dialog->ask($input, $output, new Question('<question>Lastname:</question>'));
         }
 
-        $website = $this->getHelper('parameter')->askWebsite($input, $output);
+        /** @var ParameterHelper $parameterHelper */
+        $parameterHelper = $this->getHelper('parameter');
+
+        // Email
+        $email = $parameterHelper->askEmail($input, $output);
+
+        // Website
+        $website = $parameterHelper->askWebsite($input, $output);
 
         // create new customer
         $customer = $this->getCustomerModel();
