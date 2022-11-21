@@ -5,7 +5,7 @@ namespace N98\Magento\Application\Console;
 use N98\Magento\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\EventDispatcher\Event as BaseEvent;
+use Symfony\Contracts\EventDispatcher\Event as BaseEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Event extends BaseEvent

@@ -585,13 +585,13 @@ class Application extends BaseApplication
     public function doRun(InputInterface $input, OutputInterface $output)
     {
         $event = new Event($this, $input, $output);
-        $this->dispatcher->dispatch(Events::RUN_BEFORE, $event);
+        $this->dispatcher->dispatch($event, Events::RUN_BEFORE);
 
         /**
          * only for compatibility to old versions.
          */
         $event = new ConsoleEvent(new Command('dummy'), $input, $output);
-        $this->dispatcher->dispatch('console.run.before', $event);
+        $this->dispatcher->dispatch($event, 'console.run.before');
 
         $input = $this->config->checkConfigCommandAlias($input);
         if ($output instanceof ConsoleOutput) {
