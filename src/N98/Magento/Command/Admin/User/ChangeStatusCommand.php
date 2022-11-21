@@ -23,16 +23,15 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if ($this->initMagento()) {
-
             // Username
 
             $id = $this->getOrAskForArgument('id', $input, $output, 'Username or Email');

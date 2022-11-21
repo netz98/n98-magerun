@@ -20,7 +20,7 @@ class RendererFactory
         if (isset(self::$formats[$format])) {
             $rendererClass = self::$formats[$format];
 
-            return new $rendererClass;
+            return new $rendererClass();
         }
 
         return false;
@@ -33,7 +33,7 @@ class RendererFactory
      */
     public static function render($format, OutputInterface $output, array $rows)
     {
-        $factory = new self;
+        $factory = new self();
 
         if (!$renderer = $factory->create($format)) {
             throw new InvalidArgumentException(

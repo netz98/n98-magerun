@@ -2,16 +2,16 @@
 
 namespace N98\Magento\Command;
 
-use Exception;
-use UnexpectedValueException;
-use PharException;
-use Phar;
 use Composer\Downloader\FilesystemException;
 use Composer\IO\ConsoleIO;
 use Composer\Util\RemoteFilesystem;
+use Exception;
+use Phar;
+use PharException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use UnexpectedValueException;
 
 /**
  * @codeCoverageIgnore
@@ -58,7 +58,7 @@ EOT
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null|void
+     * @return int
      * @throws FilesystemException
      * @throws Exception
      */

@@ -2,17 +2,17 @@
 
 namespace N98\Magento;
 
-use N98\Util\Console\Helper\TwigHelper;
-use Mage_Core_Model_Config_Options;
-use N98\Magento\Application\Console\Event;
 use Composer\Autoload\ClassLoader;
 use Exception;
 use Mage;
+use Mage_Core_Model_Config_Options;
 use Magento\Mtf\EntryPoint\EntryPoint;
 use N98\Magento\Application\Config;
 use N98\Magento\Application\ConfigurationLoader;
+use N98\Magento\Application\Console\Event;
 use N98\Magento\Application\Console\Events;
 use N98\Util\Console\Helper\MagentoHelper;
+use N98\Util\Console\Helper\TwigHelper;
 use N98\Util\OperatingSystem;
 use RuntimeException;
 use Symfony\Component\Console\Application as BaseApplication;
@@ -227,8 +227,8 @@ class Application extends BaseApplication
     /**
      * Search for magento root folder
      *
-     * @param InputInterface $input [optional]
-     * @param OutputInterface $output [optional]
+     * @param InputInterface|null $input [optional]
+     * @param OutputInterface|null $output [optional]
      * @return void
      */
     public function detectMagento(InputInterface $input = null, OutputInterface $output = null)
@@ -255,7 +255,7 @@ class Application extends BaseApplication
 
         $this->getHelperSet()->set(new MagentoHelper($input, $output), 'magento');
         $magentoHelper = $this->getHelperSet()->get('magento');
-        /* @var $magentoHelper MagentoHelper */
+        /* @var MagentoHelper $magentoHelper */
         if (!$this->_directRootDir) {
             $subFolders = $this->config->getDetectSubFolders();
         } else {
@@ -311,6 +311,7 @@ class Application extends BaseApplication
 
     /**
      * @param Command $command
+     * @return null
      */
     protected function registerConfigCommandAlias(Command $command)
     {
@@ -602,10 +603,11 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param InputInterface $input [optional]
-     * @param OutputInterface $output [optional]
+     * @param InputInterface|null $input [optional]
+     * @param OutputInterface|null $output [optional]
      *
      * @return int
+     * @throws Exception
      */
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
@@ -642,8 +644,8 @@ class Application extends BaseApplication
 
     /**
      * @param array $initConfig [optional]
-     * @param InputInterface $input [optional]
-     * @param OutputInterface $output [optional]
+     * @param InputInterface|null $input [optional]
+     * @param OutputInterface|null $output [optional]
      *
      * @return void
      */
@@ -692,8 +694,8 @@ class Application extends BaseApplication
 
     /**
      * @param array $initConfig [optional]
-     * @param InputInterface $input [optional]
-     * @param OutputInterface $output [optional]
+     * @param InputInterface|null $input [optional]
+     * @param OutputInterface|null $output [optional]
      */
     public function reinit($initConfig = [], InputInterface $input = null, OutputInterface $output = null)
     {
@@ -734,7 +736,6 @@ class Application extends BaseApplication
 
     /**
      * @param InputInterface $input
-     * @return string
      */
     protected function _checkRootDirOption(InputInterface $input)
     {
@@ -821,7 +822,7 @@ MAGENTOHINT;
 
         $output = new ConsoleOutput();
 
-        /** @var $formatter FormatterHelper */
+        /** @var FormatterHelper $formatter */
         $formatter = $this->getHelperSet()->get('formatter');
 
         $output->writeln(['', $formatter->formatBlock('Compatibility Notice', 'bg=blue;fg=white', true), '', $magentoHint]);

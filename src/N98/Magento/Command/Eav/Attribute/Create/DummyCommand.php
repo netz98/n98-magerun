@@ -2,12 +2,12 @@
 
 namespace N98\Magento\Command\Eav\Attribute\Create;
 
-use N98\Magento\Command\AbstractMagentoCommand;
-use Locale;
 use Exception;
-use RuntimeException;
+use Locale;
 use Mage;
 use Mage_Eav_Model_Entity_Attribute;
+use N98\Magento\Command\AbstractMagentoCommand;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,10 +36,10 @@ HELP;
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -66,7 +66,7 @@ HELP;
             $argument['locale'] = $input->getArgument('locale');
         }
 
-        /** @var $attribute Mage_Eav_Model_Entity_Attribute */
+        /** @var Mage_Eav_Model_Entity_Attribute $attribute */
         $attribute = Mage::getModel('eav/entity_attribute')->load($argument['attribute-id']);
         $dummyValues = new DummyValues();
         for ($i = 0; $i < $argument['values-number']; $i++) {

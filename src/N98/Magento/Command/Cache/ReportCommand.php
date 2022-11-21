@@ -50,8 +50,7 @@ class ReportCommand extends AbstractCacheCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @throws RuntimeException
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -68,7 +67,7 @@ class ReportCommand extends AbstractCacheCommand
         } else {
             $cacheInstance = Mage::app()->getCache();
         }
-        /* @var $cacheInstance \Varien_Cache_Core */
+        /* @var \Varien_Cache_Core $cacheInstance */
         $cacheIds = $cacheInstance->getIds();
         $table = [];
         foreach ($cacheIds as $cacheId) {
@@ -100,7 +99,7 @@ class ReportCommand extends AbstractCacheCommand
             $headers[] = 'TAGS';
         }
 
-        /* @var $tableHelper TableHelper */
+        /* @var TableHelper $tableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
             ->setHeaders($headers)

@@ -30,7 +30,7 @@ class ChangeVersionCommand extends AbstractSetupCommand
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -67,7 +67,6 @@ class ChangeVersionCommand extends AbstractSetupCommand
      * @param string $setupResource
      * @param $version
      * @param OutputInterface $output
-     * @return mixed
      */
     public function updateSetupResource($moduleName, $setupResource, $version, OutputInterface $output)
     {

@@ -10,7 +10,7 @@ class PhpView implements View
     protected $vars = [];
 
     /**
-     * @var
+     * @var string
      */
     protected $template;
 

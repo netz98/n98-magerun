@@ -2,16 +2,16 @@
 
 namespace N98\Magento\Command;
 
-use N98\Magento\Application;
-use Mage;
-use Composer\Downloader\DownloadManager;
-use Composer\Package\CompletePackage;
 use Composer\Composer;
+use Composer\Downloader\DownloadManager;
 use Composer\Factory as ComposerFactory;
 use Composer\IO\ConsoleIO;
+use Composer\Package\CompletePackage;
 use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Package\PackageInterface;
 use InvalidArgumentException;
+use Mage;
+use N98\Magento\Application;
 use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\OperatingSystem;
 use N98\Util\StringTyped;
@@ -65,6 +65,11 @@ abstract class AbstractMagentoCommand extends Command
      * @var array
      */
     protected $_websiteCodeMap = [];
+
+    /**
+     * @var array
+     */
+    protected $config;
 
     /**
      * Initializes the command just after the input has been validated.
@@ -131,7 +136,6 @@ abstract class AbstractMagentoCommand extends Command
             $commandClass = get_class($this);
         }
 
-        /** @var Application $application */
         $application = $this->getApplication();
         return (array) $application->getConfig('commands', $commandClass);
     }
@@ -506,7 +510,6 @@ abstract class AbstractMagentoCommand extends Command
             }
 
             if ($input->hasOption('noDownload') && $input->getOption('noDownload')) {
-                /** @var MagentoHelper $magentoHelper */
                 $magentoHelper = new MagentoHelper();
                 $magentoHelper->detect($folderName);
                 if ($magentoHelper->getRootFolder() !== $folderName) {

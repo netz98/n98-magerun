@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Module\Dependencies;
 
-use Mage;
 use InvalidArgumentException;
+use Mage;
 
 class FromCommand extends AbstractCommand
 {

@@ -41,10 +41,10 @@ HELP;
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -74,7 +74,7 @@ HELP;
         }
 
         if (count($deleted) > 0) {
-            /* @var $tableHelper TableHelper */
+            /* @var TableHelper $tableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
                 ->setHeaders(['Deleted Path', 'Scope', 'Scope-ID'])
@@ -123,7 +123,7 @@ HELP;
     {
         $paths = [];
 
-        /* @var $collection \Mage_Core_Model_Resource_Db_Collection_Abstract */
+        /* @var \Mage_Core_Model_Resource_Db_Collection_Abstract $collection */
         $collection = $this->_getConfigDataModel()->getCollection();
 
         $likePattern = str_replace('*', '%', $pattern);

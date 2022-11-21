@@ -34,7 +34,7 @@ class ConsoleCommand extends AbstractDatabaseCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -74,7 +74,7 @@ class ConsoleCommand extends AbstractDatabaseCommand
      */
     private function getMysqlClientToolConnection()
     {
-        /* @var $database DatabaseHelper */
+        /* @var DatabaseHelper $database */
         $database = $this->getHelper('database');
 
         return $database->getMysqlClientToolConnectionString();

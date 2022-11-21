@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Log;
 
-use Mage;
 use InvalidArgumentException;
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -64,7 +64,7 @@ class AbstractLogCommand extends AbstractMagentoCommand
      *
      * @return string
      */
-    protected function askLogFile($input, $output)
+    protected function askLogFile(InputInterface $input, OutputInterface $output)
     {
         $logFiles = $this->getLogFileIterator();
         $files = [];

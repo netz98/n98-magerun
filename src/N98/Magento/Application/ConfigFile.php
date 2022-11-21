@@ -50,8 +50,7 @@ class ConfigFile
     {
         $this->path = $path;
 
-        if (
-            'data://' !== substr($path, 0, 7)
+        if ('data://' !== substr($path, 0, 7)
             && !is_readable($path)
         ) {
             throw new InvalidArgumentException(sprintf("Config-file is not readable: '%s'", $path));

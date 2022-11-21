@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\Indexer;
 
-use N98\Util\BinaryString;
 use InvalidArgumentException;
 use Mage_Index_Model_Process;
+use N98\Util\BinaryString;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,7 +43,7 @@ HELP;
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -56,7 +56,7 @@ HELP;
         $this->disableObservers();
         $indexCode = $input->getArgument('index_code');
         if ($indexCode === null) {
-            $indexCodes = $this->askForIndexCodes($output);
+            $indexCodes = $this->askForIndexCodes($input, $output);
         } else {
             // take cli argument
             $indexCodes = BinaryString::trimExplodeEmpty(',', $indexCode);
@@ -79,7 +79,7 @@ HELP;
     {
         $processes = [];
         foreach ($indexCodes as $indexCode) {
-            /* @var $process Mage_Index_Model_Process */
+            /* @var Mage_Index_Model_Process $process */
             $process = $this->getIndexerModel()->getProcessByCode($indexCode);
             if (!$process) {
                 throw new InvalidArgumentException(sprintf('Indexer "%s" was not found!', $indexCode));
@@ -90,11 +90,12 @@ HELP;
     }
 
     /**
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return array
      */
-    private function askForIndexCodes(OutputInterface $output)
+    private function askForIndexCodes(InputInterface $input, OutputInterface $output)
     {
         $indexerList = $this->getIndexerList();
         $choices = [];

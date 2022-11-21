@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Cache;
 
-use Mage;
 use InvalidArgumentException;
+use Mage;
 use Mage_Core_Model_Cache;
 use N98\Magento\Application;
 use N98\Magento\Command\AbstractMagentoCommand;
@@ -28,7 +28,6 @@ class AbstractCacheCommand extends AbstractMagentoCommand
     /**
      * @param array $codeArgument
      * @param bool  $status
-     * @return boolean|null
      */
     protected function saveCacheStatus($codeArgument, $status)
     {

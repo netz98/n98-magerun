@@ -54,6 +54,9 @@ class DatabaseHelper extends AbstractHelper
         }
 
         $application = $this->getApplication();
+        if (!$application instanceof Application) {
+            return;
+        }
         $application->detectMagento();
 
         $configFile = $application->getMagentoRootFolder() . '/app/etc/local.xml';
@@ -644,7 +647,7 @@ class DatabaseHelper extends AbstractHelper
         }
 
         if ($this->getHelperSet()->has('io')) {
-            /** @var $helper IoHelper */
+            /** @var IoHelper $helper */
             $helper = $this->getHelperSet()->get('io');
             $output = $helper->getOutput();
         }

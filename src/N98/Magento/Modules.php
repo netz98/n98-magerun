@@ -86,7 +86,7 @@ class Modules implements IteratorAggregate, Countable
     /**
      * Retrieve an external iterator
      *
-     * @return Traversable|array[]
+     * @return ArrayIterator|array[]
      */
     public function getIterator()
     {

@@ -25,7 +25,7 @@ class SizeCommand extends AbstractLogCommand
      * @param OutputInterface $output
      *
      * @throws RuntimeException
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -36,7 +36,7 @@ class SizeCommand extends AbstractLogCommand
 
         $fileName = $input->getArgument('log_filename');
         if ($fileName === null) {
-            $path = $this->askLogFile($output);
+            $path = $this->askLogFile($input, $output);
         } else {
             $path = $this->getLogDir() . DIRECTORY_SEPARATOR . $fileName;
         }

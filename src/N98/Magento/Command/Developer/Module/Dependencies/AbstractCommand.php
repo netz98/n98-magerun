@@ -51,10 +51,10 @@ abstract class AbstractCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|null|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -70,7 +70,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
             $dependencies = $this->findModuleDependencies($moduleName, $recursive);
             if (!empty($dependencies)) {
                 usort($dependencies, [$this, 'sortDependencies']);
-                /* @var $tableHelper TableHelper */
+                /* @var TableHelper $tableHelper */
                 $tableHelper = $this->getHelper('table');
                 $tableHelper
                     ->setHeaders(['Name', 'Status', 'Current installed version', 'Code pool'])

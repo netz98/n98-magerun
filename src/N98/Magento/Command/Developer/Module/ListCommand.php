@@ -33,7 +33,7 @@ class ListCommand extends AbstractMagentoCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -51,7 +51,7 @@ class ListCommand extends AbstractMagentoCommand
             return 0;
         }
 
-        /* @var $table TableHelper */
+        /* @var TableHelper $table */
         $table = $this->getHelper('table');
         $table
             ->setHeaders(['codePool', 'Name', 'Version', 'Status'])

@@ -20,10 +20,10 @@ class ReindexAllCommand extends AbstractIndexerCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -34,7 +34,7 @@ class ReindexAllCommand extends AbstractIndexerCommand
 
         $this->disableObservers();
 
-        /* @var $processes Mage_Index_Model_Resource_Process_Collection|Mage_Index_Model_Process[] */
+        /* @var Mage_Index_Model_Resource_Process_Collection|Mage_Index_Model_Process[] $processes */
         $processes = $this->getIndexerModel()->getProcessesCollection();
 
         if (!$this->executeProcesses($output, iterator_to_array($processes, false))) {

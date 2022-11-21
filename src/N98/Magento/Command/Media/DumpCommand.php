@@ -27,7 +27,7 @@ class DumpCommand extends AbstractMagentoCommand
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return int|null|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -56,7 +56,7 @@ class DumpCommand extends AbstractMagentoCommand
         $zip->addEmptyDir('media');
         $lastFolder = '';
         foreach ($finder as $file) {
-            /* @var $file SplFileInfo */
+            /* @var SplFileInfo $file */
             $currentFolder = pathinfo($file->getRelativePathname(), PATHINFO_DIRNAME);
             if ($currentFolder != $lastFolder) {
                 $output->writeln(

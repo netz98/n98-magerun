@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\System\Setup;
 
-use Mage;
 use InvalidArgumentException;
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 

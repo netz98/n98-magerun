@@ -14,9 +14,9 @@
 
 namespace N98\Magento\Command\Developer\Setup\Script;
 
-use N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType\Factory;
 use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType\Factory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -33,10 +33,10 @@ class AttributeCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|null|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Developer\Module;
 
-use Mage;
 use InvalidArgumentException;
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
 use SimpleXMLElement;
@@ -132,8 +132,7 @@ class UpdateCommand extends AbstractMagentoCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
-     * @throws InvalidArgumentException
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

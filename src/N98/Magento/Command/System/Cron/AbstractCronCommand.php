@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\System\Cron;
 
-use IteratorIterator;
 use AppendIterator;
+use IteratorIterator;
 use Mage;
 use Mage_Core_Model_Config_Element;
 use Mage_Cron_Exception;
@@ -60,7 +60,7 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
     /**
      * Get job configuration from XML and database. Expression priority is given to the database.
      *
-     * @return Traversable|Mage_Core_Model_Config_Element[]
+     * @return AppendIterator|Mage_Core_Model_Config_Element[]
      */
     private function getJobConfigElements()
     {
@@ -90,7 +90,7 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
             return array_fill(0, 5, '*');
         }
 
-        /** @var $schedule Mage_Cron_Model_Schedule */
+        /** @var Mage_Cron_Model_Schedule $schedule */
         $schedule = Mage::getModel('cron/schedule');
 
         try {

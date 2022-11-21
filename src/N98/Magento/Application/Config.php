@@ -179,7 +179,6 @@ class Config
      */
     private function newCommand($className, $commandName)
     {
-        /** @var Command $command */
         if (!(is_string($className) || is_object($className))) {
             throw new InvalidArgumentException(
                 sprintf('Command classname must be string, %s given', gettype($className))
@@ -196,6 +195,7 @@ class Config
             );
         }
 
+        /** @var Command $command */
         $command = new $className();
         if (null !== $commandName) {
             $command->setName($commandName);

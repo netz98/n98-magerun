@@ -31,8 +31,7 @@ class ViewCommand extends AbstractCacheCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
-     * @throws RuntimeException
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -49,7 +48,7 @@ class ViewCommand extends AbstractCacheCommand
         } else {
             $cacheInstance = Mage::app()->getCache();
         }
-        /* @var $cacheInstance \Varien_Cache_Core */
+        /* @var \Varien_Cache_Core $cacheInstance */
         $cacheData = $cacheInstance->load($input->getArgument('id'));
         if ($input->getOption('unserialize')) {
             $cacheData = unserialize($cacheData);

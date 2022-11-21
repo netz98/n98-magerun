@@ -3,8 +3,8 @@
 namespace N98\Magento\Command\Developer\Ide\PhpStorm;
 
 use Directory;
-use Mage;
 use Exception;
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -64,7 +64,7 @@ class MetaCommand extends AbstractMagentoCommand
      * @param OutputInterface $output
      *
      * @internal param string $package
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

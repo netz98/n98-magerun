@@ -40,7 +40,7 @@ HELP;
      * @param OutputInterface $output
      *
      * @throws InvalidArgumentException
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -89,7 +89,7 @@ HELP;
         }
         $settings['JDBC-Connection-String'] = $jdbcConnectionString;
 
-        /* @var $database DatabaseHelper */
+        /* @var DatabaseHelper $database */
         $database = $this->getHelper('database');
         $mysqlCliString = 'mysql ' . $database->getMysqlClientToolConnectionString();
         $settings['MySQL-Cli-String'] = $mysqlCliString;
@@ -105,7 +105,7 @@ HELP;
             }
             $output->writeln((string) $settings[$settingArgument]);
         } else {
-            /* @var $tableHelper TableHelper */
+            /* @var TableHelper $tableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
                 ->setHeaders(['Name', 'Value'])

@@ -81,7 +81,7 @@ class ScriptLoader
             ->in($scriptFolders);
 
         $scriptFiles = [];
-        foreach ($finder as $file) { /* @var $file SplFileInfo */
+        foreach ($finder as $file) { /* @var SplFileInfo $file */
             $scriptFiles[$file->getFilename()] = ['fileinfo'    => $file, 'description' => $this->_readFirstLineOfFile($file->getPathname()), 'location'    => $this->_getLocation($file->getPathname())];
         }
 

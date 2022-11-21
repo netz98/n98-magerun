@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Script\Repository;
 
-use Location;
 use Description;
+use Location;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,7 +44,7 @@ HELP;
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return int|null|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -62,7 +62,7 @@ HELP;
             $output->writeln('<info>no script file found</info>');
         }
 
-        /* @var $tableHelper TableHelper */
+        /* @var TableHelper $tableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
             ->setHeaders(['Script', Location::class, Description::class])

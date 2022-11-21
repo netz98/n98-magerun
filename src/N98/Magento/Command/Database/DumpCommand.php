@@ -169,7 +169,7 @@ HELP;
         $this->commandConfig = $this->getCommandConfig();
 
         if (is_null($this->tableDefinitions)) {
-            /* @var $dbHelper DatabaseHelper */
+            /* @var DatabaseHelper $dbHelper */
             $dbHelper = $this->getHelper('database');
 
             $this->tableDefinitions = $dbHelper->getTableDefinitions($this->commandConfig);
@@ -250,7 +250,7 @@ HELP;
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -316,7 +316,6 @@ HELP;
         $compressor = $this->getCompressor($input->getOption('compression'));
         $fileName = $this->getFileName($input, $output, $compressor);
 
-        /* @var $database DatabaseHelper */
         $database = $this->getDatabaseHelper();
 
         $mysqlClientToolConnectionString = $database->getMysqlClientToolConnectionString();
@@ -518,11 +517,10 @@ HELP;
         $optionAddTime = $input->getOption('add-time');
         [$namePrefix, $nameSuffix] = $this->getFileNamePrefixSuffix($optionAddTime);
 
-        if (
-            (
-                ($fileName = $input->getArgument('filename')) === null
+        if ((
+            ($fileName = $input->getArgument('filename')) === null
                 || ($isDir = is_dir($fileName))
-            )
+        )
             && !$input->getOption('stdout')
         ) {
             $defaultName = VerifyOrDie::filename(

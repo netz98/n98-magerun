@@ -8,8 +8,8 @@
 
 namespace N98\Magento\Command\System\Cron;
 
-use UnexpectedValueException;
 use BadMethodCallException;
+use UnexpectedValueException;
 
 /**
  * Class ServerEnvironment

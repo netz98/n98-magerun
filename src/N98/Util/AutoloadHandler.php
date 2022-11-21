@@ -8,6 +8,7 @@
 namespace N98\Util;
 
 use BadMethodCallException;
+
 /**
  * Autloader with self-registration, de-registration, muting and implementation switching
  *

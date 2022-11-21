@@ -28,7 +28,7 @@ class CreateUserCommand extends AbstractAdminUserCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -60,6 +60,7 @@ class CreateUserCommand extends AbstractAdminUserCommand
                         ->setRoleType('G')
                         ->save();
 
+                    // @todo check cmuench correct class name?
                     $resourceAll = ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) ?
                         Mage_Backend_Model_Acl_Config::ACL_RESOURCE_ALL : 'all';
 

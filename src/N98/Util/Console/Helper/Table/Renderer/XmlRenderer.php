@@ -43,7 +43,7 @@ class XmlRenderer implements RendererInterface
         $this->appendHeaders($table, $this->headers);
         $this->appendRows($table, $rows);
 
-        /** @var $output \Symfony\Component\Console\Output\StreamOutput */
+        /** @var \Symfony\Component\Console\Output\StreamOutput $output */
         $output->write($dom->saveXML($dom, LIBXML_NOEMPTYTAG), false, $output::OUTPUT_RAW);
     }
 

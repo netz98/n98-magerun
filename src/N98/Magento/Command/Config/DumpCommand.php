@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\Config;
 
-use Mage;
 use DOMDocument;
 use InvalidArgumentException;
+use Mage;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -45,7 +45,7 @@ HELP;
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return int|null
+     * @return int
      * @throws InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int

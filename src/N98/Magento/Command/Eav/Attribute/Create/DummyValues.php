@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Eav\Attribute\Create;
 
 use Faker\Factory;
+
 class DummyValues
 {
     private $faker;

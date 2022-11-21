@@ -33,12 +33,11 @@ class RemoveCommand extends AbstractSetupCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
-
         if (!$this->initMagento()) {
             return 0;
         }
@@ -69,7 +68,6 @@ class RemoveCommand extends AbstractSetupCommand
      * @param string $moduleName
      * @param string $setupResource
      * @param OutputInterface $output
-     * @return mixed
      */
     public function removeSetupResource($moduleName, $setupResource, OutputInterface $output)
     {

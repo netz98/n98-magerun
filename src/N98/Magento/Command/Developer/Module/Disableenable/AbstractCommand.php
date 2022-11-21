@@ -2,15 +2,15 @@
 
 namespace N98\Magento\Command\Developer\Module\Disableenable;
 
-use Mage;
-use Varien_Simplexml_Element;
 use InvalidArgumentException;
+use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Varien_Simplexml_Element;
 
 /**
  * Enable disable Magento module(s)
@@ -52,7 +52,7 @@ class AbstractCommand extends AbstractMagentoCommand
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return void
+     * @return int
      *
      * @throws InvalidArgumentException
      */
@@ -81,8 +81,6 @@ class AbstractCommand extends AbstractMagentoCommand
      *
      * @param string $codePool
      * @param OutputInterface $output
-     *
-     * @return int|void
      */
     protected function enableCodePool($codePool, OutputInterface $output)
     {
@@ -99,8 +97,6 @@ class AbstractCommand extends AbstractMagentoCommand
      *
      * @param string $module
      * @param OutputInterface $output
-     *
-     * @return int|void
      */
     protected function enableModule($module, OutputInterface $output)
     {
@@ -126,7 +122,9 @@ class AbstractCommand extends AbstractMagentoCommand
                     $msg = sprintf('<info><comment>%s: </comment>%sd</info>', $module, $this->commandName);
                 } else {
                     $msg = sprintf(
-                        '<error><comment>%s: </comment>Failed to update declaration file [%s]</error>', $module, $validDecFile
+                        '<error><comment>%s: </comment>Failed to update declaration file [%s]</error>',
+                        $module,
+                        $validDecFile
                     );
                 }
             } else {
@@ -147,7 +145,7 @@ class AbstractCommand extends AbstractMagentoCommand
     {
         $collectModuleFiles = ['base'   => [], 'mage'   => [], 'custom' => []];
 
-        foreach (glob($this->modulesDir . '*.xml')  as $v) {
+        foreach (glob($this->modulesDir . '*.xml') as $v) {
             $name = explode(DIRECTORY_SEPARATOR, $v);
             $name = substr($name[count($name) - 1], 0, -4);
 

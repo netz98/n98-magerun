@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command;
 
-use Mage_Core_Model_App;
 use Mage;
+use Mage_Core_Model_App;
 use Mage_Core_Model_Store;
 use N98\Util\Console\Helper\ParameterHelper;
 use N98\Util\Exec;
@@ -35,8 +35,7 @@ class OpenBrowserCommand extends AbstractMagentoCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @throws RuntimeException
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

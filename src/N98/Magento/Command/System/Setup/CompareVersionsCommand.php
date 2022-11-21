@@ -2,9 +2,9 @@
 
 namespace N98\Magento\Command\System\Setup;
 
-use Mage;
-use Error;
 use DateTime;
+use Error;
+use Mage;
 use N98\JUnitXml\Document as JUnitXmlDocument;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
@@ -44,7 +44,7 @@ HELP;
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return int|null|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -66,6 +66,7 @@ HELP;
 
         $hasStatusErrors = false;
 
+        $dataVersion = null;
         $errorCounter = 0;
         $table = [];
         foreach ($setups as $setupName => $setup) {
@@ -133,7 +134,7 @@ HELP;
         if ($input->getOption('log-junit')) {
             $this->logJUnit($table, $input->getOption('log-junit'), microtime($time) - $time);
         } else {
-            /* @var $tableHelper TableHelper */
+            /* @var TableHelper $tableHelper */
             $tableHelper = $this->getHelper('table');
             $tableHelper
                 ->setHeaders($headers)

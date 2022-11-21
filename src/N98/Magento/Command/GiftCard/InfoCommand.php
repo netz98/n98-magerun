@@ -2,11 +2,10 @@
 
 namespace N98\Magento\Command\GiftCard;
 
-use Symfony\Component\Console\Input\InputArgument;
 use Mage;
-use Enterprise_GiftCardAccount_Model_Giftcardaccount as Giftcardaccount;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,21 +35,39 @@ class InfoCommand extends AbstractGiftCardCommand
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
+        $this->requireEnterprise($output);
+
+        if (!class_exists('Enterprise_GiftCardAccount_Model_Giftcardaccount')) {
+            return 0;
+        }
+
         if (!$this->initMagento()) {
             return 0;
         }
+
+        /** @var \Enterprise_GiftCardAccount_Model_Giftcardaccount $card */
         $card = Mage::getModel('enterprise_giftcardaccount/giftcardaccount')->loadByCode($input->getArgument('code'));
         if (!$card->getId()) {
             $output->writeln('<error>No gift card found for that code</error>');
             return 0;
         }
-        $data = [['Gift Card Account ID', $card->getId()], ['Code', $card->getCode()], ['Status', Giftcardaccount::STATUS_ENABLED == $card->getStatus() ? 'Enabled' : 'Disabled'], ['Date Created', $card->getDateCreated()], ['Expiration Date', $card->getDateExpires()], ['Website ID', $card->getWebsiteId()], ['Remaining Balance', $card->getBalance()], ['State', $card->getStateText()], ['Is Redeemable', $card->getIsRedeemable()]];
-        /* @var $tableHelper TableHelper */
+        $data = [
+            ['Gift Card Account ID', $card->getId()],
+            ['Code', $card->getCode()],
+            ['Status', \Enterprise_GiftCardAccount_Model_Giftcardaccount::STATUS_ENABLED == $card->getStatus() ? 'Enabled' : 'Disabled'],
+            ['Date Created', $card->getDateCreated()],
+            ['Expiration Date', $card->getDateExpires()],
+            ['Website ID', $card->getWebsiteId()],
+            ['Remaining Balance', $card->getBalance()],
+            ['State', $card->getStateText()],
+            ['Is Redeemable', $card->getIsRedeemable()]
+        ];
+        /* @var TableHelper $tableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
             ->setHeaders(['Name', 'Value'])

@@ -30,10 +30,10 @@ class ListCommand extends AbstractCronCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -47,7 +47,7 @@ class ListCommand extends AbstractCronCommand
 
         $table = $this->getJobs();
 
-        /** @var $tableHelper TableHelper */
+        /** @var TableHelper $tableHelper */
         $tableHelper = $this->getHelper('table');
         $tableHelper
             ->setHeaders(array_keys(current($table)))

@@ -21,10 +21,10 @@ abstract class ResourceCheck implements SimpleCheck
      */
     public function check(ResultCollection $results)
     {
-        /** @var $resourceModel Mage_Core_Model_Resource */
+        /** @var Mage_Core_Model_Resource $resourceModel */
         $resourceModel = Mage::getModel('core/resource');
 
-        /** @var $dbAdapter Varien_Db_Adapter_Interface|false */
+        /** @var Varien_Db_Adapter_Interface|false $dbAdapter */
         $dbAdapter = $resourceModel->getConnection('core_write');
 
         $result = $results->createResult();

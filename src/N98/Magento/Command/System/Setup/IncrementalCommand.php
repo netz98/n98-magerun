@@ -2,10 +2,10 @@
 
 namespace N98\Magento\Command\System\Setup;
 
-use Mage_Core_Model_Config;
-use Mage;
-use Mage_Core_Model_Resource_Setup;
 use Exception;
+use Mage;
+use Mage_Core_Model_Config;
+use Mage_Core_Model_Resource_Setup;
 use N98\Magento\Command\AbstractMagentoCommand;
 use ReflectionClass;
 use RuntimeException;
@@ -70,7 +70,7 @@ class IncrementalCommand extends AbstractMagentoCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|null|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -96,7 +96,7 @@ class IncrementalCommand extends AbstractMagentoCommand
 
     protected function _loadSecondConfig()
     {
-        $config = new Mage_Core_Model_Config;
+        $config = new Mage_Core_Model_Config();
         $config->loadBase(); //get app/etc
         $this->_secondConfig = Mage::getConfig()->loadModulesConfiguration('config.xml', $config);
     }
@@ -266,8 +266,7 @@ class IncrementalCommand extends AbstractMagentoCommand
             $db_data_ver = $this->_getDbDataVersionFromName($name);
             $config_ver = $this->_getConfiguredVersionFromResourceObject($setupResource);
 
-            if (
-                (string) $config_ver == (string) $db_ver && //structure
+            if ((string) $config_ver == (string) $db_ver && //structure
                 (string) $config_ver == (string) $db_data_ver //data
             ) {
                 continue;
@@ -384,7 +383,7 @@ class IncrementalCommand extends AbstractMagentoCommand
             throw new RuntimeException('Invalid Type [' . $type . ']: structure, data is valid');
         }
 
-        if (!array_key_Exists($name, $needsUpdate)) {
+        if (!array_key_exists($name, $needsUpdate)) {
             $output->writeln('<error>No updates to run for ' . $name . ', skipping </error>');
 
             return;
