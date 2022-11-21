@@ -5,7 +5,6 @@ namespace N98\Magento\Command\Developer\Log;
 use Mage;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -81,7 +80,8 @@ class AbstractLogCommand extends AbstractMagentoCommand
             return '';
         }
 
-        $dialog = new QuestionHelper();
+        /* @var QuestionHelper $dialog */
+        $dialog = $this->getHelper('question');
         $questionObj = new ChoiceQuestion('<question>Please select a log file: </question>', $choices);
         $questionObj->setValidator(function ($typeInput) use ($files) {
             if (!isset($files[$typeInput - 1])) {

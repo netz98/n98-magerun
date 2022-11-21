@@ -5,10 +5,12 @@ namespace N98\Magento\Command\Indexer;
 use N98\Util\BinaryString;
 use InvalidArgumentException;
 use Mage_Index_Model_Process;
-use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\Question;
 
 class ReindexCommand extends AbstractIndexerCommand
 {
@@ -95,16 +97,15 @@ HELP;
     private function askForIndexCodes(OutputInterface $output)
     {
         $indexerList = $this->getIndexerList();
-        $question = [];
+        $choices = [];
         foreach ($indexerList as $key => $indexer) {
-            $question[] = sprintf(
+            $choices[] = sprintf(
                 "<comment>%-4s</comment> %-40s <info>(last runtime: %s)</info>\n",
                 '[' . ($key + 1) . ']',
                 $indexer['code'],
                 $indexer['last_runtime']
             );
         }
-        $question[] = '<question>Please select a indexer:</question>';
 
         $validator = function ($typeInput) use ($indexerList) {
             if (strstr($typeInput, ',')) {
@@ -125,10 +126,14 @@ HELP;
             return $returnCodes;
         };
 
-        /** @var  DialogHelper $dialog */
-        $dialog = $this->getHelper('dialog');
-        $indexCodes = $dialog->askAndValidate($output, $question, $validator);
+        /* @var QuestionHelper $dialog */
+        $dialog = $this->getHelper('question');
+        $question = new ChoiceQuestion(
+            '<question>Please select a indexer:</question>',
+            $choices
+        );
+        $question->setValidator($validator);
 
-        return $indexCodes;
+        return $dialog->ask($input, $output, $question);
     }
 }

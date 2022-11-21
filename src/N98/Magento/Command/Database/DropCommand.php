@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Database;
 
+use N98\Util\Console\Helper\DatabaseHelper;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -37,7 +38,9 @@ HELP;
     {
         $this->detectDbSettings($output);
 
-        $dialog = new QuestionHelper();
+        /* @var QuestionHelper $dialog */
+        $dialog = $this->getHelper('question');
+        /** @var DatabaseHelper $dbHelper */
         $dbHelper = $this->getHelper('database');
 
         if ($input->getOption('force')) {

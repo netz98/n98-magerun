@@ -17,7 +17,6 @@ use InvalidArgumentException;
 use Mage_Core_Model_Website;
 use N98\Util\Validator\FakeMetadataFactory;
 use RuntimeException;
-use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -244,7 +243,8 @@ class ParameterHelper extends AbstractHelper
      */
     private function askAndValidate(InputInterface $input, OutputInterface $output, $question, $callback)
     {
-        $dialog = new QuestionHelper();
+        /* @var QuestionHelper $dialog */
+        $dialog = $this->getHelper('question');
         $questionObj = new Question($question);
         $questionObj->setValidator($callback);
 
@@ -252,7 +252,7 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      * @param string $name
      * @param string $value

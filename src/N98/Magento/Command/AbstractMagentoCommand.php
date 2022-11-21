@@ -263,7 +263,9 @@ abstract class AbstractMagentoCommand extends Command
             $this->checkRepository($package, $targetFolder);
             $dm->update($package, $package, $targetFolder);
         } else {
-            $dm->download($package, $targetFolder, $preferSource);
+            // @todo check cmuench
+            $dm->setPreferSource($preferSource);
+            $dm->download($package, $targetFolder);
         }
 
         return $package;
@@ -534,15 +536,16 @@ abstract class AbstractMagentoCommand extends Command
 
         if (($installationFolder = $input->getOption('installationFolder')) == null) {
             $defaultFolder = './magento';
-            $question[] = "<question>Enter installation folder:</question> [<comment>" . $defaultFolder . "</comment>]";
 
-            $installationFolder = $this->getHelper('dialog')->askAndValidate(
-                $output,
-                $question,
-                $validateInstallationFolder,
-                false,
+            /* @var QuestionHelper $dialog */
+            $dialog = $this->getHelper('question');
+            $questionObj = new Question(
+                '<question>Enter installation folder:</question> [<comment>' . $defaultFolder . '</comment>]',
                 $defaultFolder
             );
+            $questionObj->setValidator($validateInstallationFolder);
+
+            $installationFolder = $dialog->ask($input, $output, $questionObj);
         } else {
             // @Todo improve validation and bring it to 1 single function
             $installationFolder = $validateInstallationFolder($installationFolder);
@@ -575,7 +578,8 @@ abstract class AbstractMagentoCommand extends Command
         if ($inputArgument === null) {
             $message = $this->getArgumentMessage($argument, $message);
 
-            $dialog = new QuestionHelper();
+            /* @var QuestionHelper $dialog */
+            $dialog = $this->getHelper('question');
             return $dialog->ask($input, $output, new Question($message));
         }
 

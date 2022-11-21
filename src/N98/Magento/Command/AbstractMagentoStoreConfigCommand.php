@@ -5,13 +5,16 @@ namespace N98\Magento\Command;
 use Mage;
 use Mage_Core_Model_App;
 use Mage_Core_Model_Store;
+use N98\Util\Console\Helper\IoHelper;
 use N98\Util\Console\Helper\ParameterHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 {
@@ -167,25 +170,25 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             return;
         }
 
-        /** @var OutputInterface $output */
-        $output = $this->getHelper('io')->getOutput();
-
         if (!$devRestriction = $store->getConfig('dev/restrict/allow_ips')) {
             return;
         }
 
-        $this->askAndSetDeveloperIp($output, $store, $devRestriction);
+        /** @var IoHelper $helper */
+        $helper = $this->getHelper('io');
+        $this->askAndSetDeveloperIp($helper->getInput(), $helper->getOutput(), $store, $devRestriction);
     }
 
     /**
      * Ask if the developer IP should be changed, and change it if required
      *
+     * @param  InputInterface        $input
      * @param  OutputInterface        $output
      * @param  \Mage_Core_Model_Store $store
      * @param  string|null            $devRestriction
      * @return void
      */
-    protected function askAndSetDeveloperIp(OutputInterface $output, Mage_Core_Model_Store $store, $devRestriction)
+    protected function askAndSetDeveloperIp(InputInterface $input, OutputInterface $output, Mage_Core_Model_Store $store, $devRestriction)
     {
         $output->writeln(
             sprintf(
@@ -194,12 +197,10 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             )
         );
 
-        /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
-        $dialog = $this->getHelper('dialog');
-        $newDeveloperIp = $dialog->ask(
-            $output,
-            '<question>Change developer IP? Enter a new IP to change or leave blank</question>: '
-        );
+        /** @var QuestionHelper $dialog */
+        $dialog = $this->getHelper('question');
+        $question = new Question('<question>Change developer IP? Enter a new IP to change or leave blank: </question>');
+        $newDeveloperIp = $dialog->ask($input, $output, $question);
 
         if (empty($newDeveloperIp)) {
             return;

@@ -5,7 +5,7 @@ namespace N98\Magento\Command\LocalConfig;
 use DateTime;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -103,11 +103,10 @@ HELP;
      */
     protected function askForArguments(InputInterface $input, OutputInterface $output)
     {
-        /* @var $dialog DialogHelper */
-        $dialog = $this->getHelper('dialog');
-        $dialog->setInput($input);
-        $messagePrefix = 'Please enter the ';
+        /* @var QuestionHelper $dialog */
+        $dialog = $this->getHelper('question');
 
+        $messagePrefix = 'Please enter the ';
         $arguments = ['db-host'         => ['prompt' => 'database host', 'required' => true], 'db-user'         => ['prompt' => 'database username', 'required' => true], 'db-pass'         => ['prompt' => 'database password', 'required' => false], 'db-name'         => ['prompt' => 'database name', 'required' => true], 'session-save'    => ['prompt' => 'session save', 'required' => true, 'default' => 'files'], 'admin-frontname' => ['prompt' => 'admin frontname', 'required' => true, 'default' => 'admin']];
 
         foreach ($arguments as $argument => $options) {

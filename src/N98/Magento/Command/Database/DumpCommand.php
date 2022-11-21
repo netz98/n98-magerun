@@ -8,7 +8,6 @@ use N98\Util\Console\Enabler;
 use N98\Util\Console\Helper\DatabaseHelper;
 use N98\Util\Exec;
 use N98\Util\VerifyOrDie;
-use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -533,7 +532,8 @@ HELP;
                 $defaultName = rtrim($fileName, '/') . '/' . $defaultName;
             }
             if (!$input->getOption('force')) {
-                $dialog = new QuestionHelper();
+                /* @var QuestionHelper $dialog */
+                $dialog = $this->getHelper('question');
                 $fileName = $dialog->ask(
                     $input,
                     $output,

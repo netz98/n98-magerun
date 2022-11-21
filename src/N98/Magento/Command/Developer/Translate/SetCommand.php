@@ -4,6 +4,7 @@ namespace N98\Magento\Command\Developer\Translate;
 
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Util\Console\Helper\ParameterHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\StringInput;
@@ -36,7 +37,10 @@ class SetCommand extends AbstractMagentoCommand
             return 0;
         }
 
-        $store = $this->getHelper('parameter')->askStore($input, $output);
+        /** @var ParameterHelper $parameterHelper */
+        $parameterHelper = $this->getHelper('parameter');
+
+        $store = $parameterHelper->askStore($input, $output);
 
         $locale = Mage::getStoreConfig('general/locale/code', $store->getId());
 

@@ -4,7 +4,6 @@ namespace N98\Magento\Command\Admin\User;
 
 use Exception;
 use RuntimeException;
-use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -36,7 +35,8 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
             return 0;
         }
 
-        $dialog = new QuestionHelper();
+        /* @var QuestionHelper $dialog */
+        $dialog = $this->getHelper('question');
 
         // Username
         if (($username = $input->getArgument('username')) == null) {

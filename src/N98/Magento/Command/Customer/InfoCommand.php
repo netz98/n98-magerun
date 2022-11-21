@@ -5,6 +5,7 @@ namespace N98\Magento\Command\Customer;
 use Mage_Customer_Model_Attribute;
 use Attribute;
 use Exception;
+use N98\Util\Console\Helper\ParameterHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,8 +39,11 @@ class InfoCommand extends AbstractCustomerCommand
             return 0;
         }
 
-        $email = $this->getHelper('parameter')->askEmail($input, $output);
-        $website = $this->getHelper('parameter')->askWebsite($input, $output);
+        /** @var ParameterHelper $parameterHelper */
+        $parameterHelper = $this->getHelper('parameter');
+
+        $email = $parameterHelper->askEmail($input, $output);
+        $website = $parameterHelper->askWebsite($input, $output);
 
         $customer = $this->getCustomerModel()
             ->setWebsiteId($website->getId())
