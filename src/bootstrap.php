@@ -12,7 +12,7 @@ if (!class_exists(MagerunBootstrap::class)) {
 try {
     return MagerunBootstrap::createApplication();
 } catch (Exception $exception) {
-    printf("%s: %s\n", $exception::class, $exception->getMessage());
+    printf("%s: %s\n", get_class($exception), $exception->getMessage());
     if (array_intersect(['-vvv', '-vv', '-v', '--verbose'], $argv)) {
         printf("%s\n", $exception->getTraceAsString());
     }
