@@ -5,7 +5,7 @@
     "support": {
         "issues": "https://github.com/netz98/n98-magerun/issues"
     },
-    "homepage": "http://netz98.github.com/n98-magerun/",
+    "homepage": "https://netz98.github.com/n98-magerun/",
     "keywords": [
         "magento",
         "installer",
@@ -13,10 +13,10 @@
         "magerun"
     ],
     "require": {
-        "composer/composer": "^1.10.0",
+        "php": "~7.3.0 || ~8.0.0 || ~8.1.0",
+        "composer/composer": "^2.2.18",
         "fzaninotto/faker": "~1.4",
         "n98/junit-xml": "~1.0",
-        "php": "~7.4.0 || ~8.0.0 || ~8.1.0",
         "psy/psysh": "~0.4",
         "symfony/console": "~4.4",
         "symfony/event-dispatcher": "~4.4",
@@ -29,7 +29,7 @@
     "require-dev": {
         "ext-simplexml": "*",
         "bamarni/symfony-console-autocomplete": "^1.2.0",
-        "friendsofphp/php-cs-fixer": "^2.19.3",
+        "friendsofphp/php-cs-fixer": "^3.4",
         "phing/phing": "~2.17.0",
         "phpunit/phpunit": "^8",
         "seld/phar-utils": "1.0.1",
@@ -61,7 +61,7 @@
     ],
     "config": {
         "platform": {
-            "php": "7.4.0"
+            "php": "7.3.0"
         }
     }
 }
