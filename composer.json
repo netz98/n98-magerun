@@ -18,12 +18,12 @@
         "fzaninotto/faker": "~1.4",
         "n98/junit-xml": "~1.0",
         "psy/psysh": "~0.4",
-        "symfony/console": "~4.4",
-        "symfony/event-dispatcher": "~4.4",
-        "symfony/finder": "~4.4",
-        "symfony/process": "~4.4",
-        "symfony/validator": "~4.4",
-        "symfony/yaml": "~4.4",
+        "symfony/console": "~5.4",
+        "symfony/event-dispatcher": "~5.4",
+        "symfony/finder": "~5.4",
+        "symfony/process": "~5.4",
+        "symfony/validator": "~5.4",
+        "symfony/yaml": "~5.4",
         "twig/twig": "~2.13"
     },
     "require-dev": {
