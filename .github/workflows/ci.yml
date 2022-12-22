@@ -183,13 +183,38 @@ jobs:
             composer-${{ hashFiles('composer.lock') }}-
             composer-
 
-      - name: run circle.yml scripts
+      - name: codecov
         env:
           SETUP_DB_PASS: root
           MAGENTO_VERSION: magento-mirror-1.9.4.5
         run: |
-          build/circleci/dependencies_pre.sh
-          build/circleci/test.sh
+          . build/codecov/codecov.lib.sh 2>&1
+
+          codecov_step "install composer dist packages"
+          composer --no-interaction install --prefer-dist
+
+          codecov_step "install magento incl. sampledata with the installer"
+          magerun_install "${MAGENTO_VERSION}" "${INSTALL_SAMPLE_DATA}"
+
+          codecov_step "prepare magerun phpunit testenvironment"
+
+          grep -v 'remove uninstall test' phpunit.xml.dist > phpunit.xml
+
+          php --version
+
+          export N98_MAGERUN_TEST_MAGENTO_ROOT="./${MAGENTO_VERSION}"
+          echo "magento test root '${N98_MAGERUN_TEST_MAGENTO_ROOT}' exported as \$N98_MAGERUN_TEST_MAGENTO_ROOT."
+
+          codecov_step "smokerun"
+          build/codecov/smokerun.sh
+
+          codecov_step "run magerun phpunit testsuite"
+          php -f vendor/phpunit/phpunit/phpunit -- --coverage-clover "${CLOVER_XML}"  \
+                  --log-junit "./build/coverage/junit/junit.xml"
+
+          codecov_step "check coverage percentage"
+          php -f tests/check-coverage.php -- "${CLOVER_XML}" "${COVERAGE}"
+
       - uses: codecov/codecov-action@v3
         with:
           file: ./build/coverage/clover.xml # $CLOVER_XML
