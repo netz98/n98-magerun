@@ -100,7 +100,6 @@ jobs:
           coverage: none
 
       - {name: mysqld,shell: bash,run: 'sudo systemctl start mysql.service'}
-      - {name: mysql_version,shell: bash,run: 'mysql -V '}
       - uses: ktomk/run-travis-yml@v1
         with:
           run-job: ${{ matrix.run-job }}
@@ -112,7 +111,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - {name: mysqld,shell: bash,run: 'sudo systemctl start mysql.service'}
-      - {name: mysql_version,shell: bash,run: 'mysql -V '}
 
       - name: Checkout PR
         uses: actions/checkout@v3
@@ -150,7 +148,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - {name: mysqld,shell: bash,run: 'sudo systemctl start mysql.service'}
-      - {name: mysql_version,shell: bash,run: 'mysql -V '}
 
       - name: Checkout PR
         uses: actions/checkout@v3
