@@ -2,9 +2,12 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-. build/circleci/source.sh
+codecov_step()
+{
+    printf '::group::\e[44m[codecov]\e[49m %s\n' "${1}"
+}
 
-# download and install mangento (by the git cloned magerun version itself)
+# download and install magento (by the git cloned magerun version itself)
 magerun_install()
 {
     local version="${1}"
@@ -22,9 +25,12 @@ magerun_install()
             --baseUrl="http://travis.magento.local/"
 }
 
-# warumup composer dist packages
-composer install --prefer-dist --no-interaction --quiet
+codecov_step "environment"
 
-# on circleci, the magento installation itself counts as a dependency as assets and it can be cached
-buildecho "install magento incl. sampledata with the installer:"
-magerun_install "${MAGENTO_VERSION}" "${INSTALL_SAMPLE_DATA}"
+set -x
+export CLOVER_XML="./build/coverage/clover.xml"
+export MAGENTO_VERSION="${MAGENTO_VERSION-magento-mirror-1.9.2.1}"
+export DB=mysql
+export INSTALL_SAMPLE_DATA=yes
+export COVERAGE=65
+set +x

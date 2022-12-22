@@ -5,7 +5,7 @@ IFS=$'\n\t'
 smokerun() {
     local exit_status=0
 
-    echo -e "\e[43m smokerun \e[49m n98-magerun.phar ""${@}"
+    echo -e "\e[43m smokerun \e[49m n98-magerun.phar" "${@}"
 
     if [ -z ${N98_MAGERUN_TEST_MAGENTO_ROOT+x} ]; then
         php -f bin/n98-magerun -- "${@}"
