@@ -33,6 +33,14 @@ matrix:
       php: 7.3
       env: MAGENTO_VERSION="openmage-20.0.14" DB=mysql INSTALL_SAMPLE_DATA=no
 
+    - name: OpenMage LTS 20.0.14 PHP 7.4
+      php: 7.4
+      env: MAGENTO_VERSION="openmage-20.0.14" DB=mysql INSTALL_SAMPLE_DATA=no
+
+    - name: OpenMage LTS 20.0.14 PHP 8.0
+      php: 8.0
+      env: MAGENTO_VERSION="openmage-20.0.14" DB=mysql INSTALL_SAMPLE_DATA=no
+
 before_install:
   - phpenv config-rm xdebug.ini
   - travis_retry composer self-update --1

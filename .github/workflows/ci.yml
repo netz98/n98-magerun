@@ -70,6 +70,14 @@ jobs:
             php-version: '7.3'
             run-job: 'OpenMage LTS 20.0.14 PHP 7.3'
             experimental: false
+          - machine: 'ubuntu-20.04'
+            php-version: '7.4'
+            run-job: 'OpenMage LTS 20.0.14 PHP 7.4'
+            experimental: false
+          - machine: 'ubuntu-20.04'
+            php-version: '8.0'
+            run-job: 'OpenMage LTS 20.0.14 PHP 8.0'
+            experimental: true
 
     env:
       SETUP_DB_PASS: root
@@ -96,6 +104,7 @@ jobs:
       - uses: ktomk/run-travis-yml@v1
         with:
           run-job: ${{ matrix.run-job }}
+          allow-failure: ${{ matrix.experimental }}
 
 
   test-setup:
