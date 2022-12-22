@@ -17,7 +17,7 @@ on:
 jobs:
   build:
     name: PHP Composer
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-18.04'
     steps:
       - name: Checkout PR
         uses: actions/checkout@v3
@@ -61,12 +61,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        machine: ['ubuntu-20.04']
+        machine: ['ubuntu-18.04']
         php-version: ['7.2']
         run-job: ['SH lint', 'Buildsh', 'Bash Autocompletion', 'Magento 1.9.4.5 PHP 7.2']
         experimental: [false]
         include:
-          - machine: 'ubuntu-20.04'
+          - machine: 'ubuntu-18.04'
             php-version: '7.3'
             run-job: 'OpenMage LTS 20.0.14 PHP 7.3'
             experimental: false
@@ -92,6 +92,7 @@ jobs:
           coverage: none
 
       - {name: mysqld,shell: bash,run: 'sudo systemctl start mysql.service'}
+      - {name: mysql_version,shell: bash,run: 'mysql -V '}
       - uses: ktomk/run-travis-yml@v1
         with:
           run-job: ${{ matrix.run-job }}
@@ -99,9 +100,10 @@ jobs:
 
   test-setup:
     name: Test Setup
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - {name: mysqld,shell: bash,run: 'sudo systemctl start mysql.service'}
+      - {name: mysql_version,shell: bash,run: 'mysql -V '}
 
       - name: Checkout PR
         uses: actions/checkout@v3
@@ -136,9 +138,10 @@ jobs:
 
   codecov: # previously codecov was bound via circleci which paused for ~two years
     name: Code Coverage
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - {name: mysqld,shell: bash,run: 'sudo systemctl start mysql.service'}
+      - {name: mysql_version,shell: bash,run: 'mysql -V '}
 
       - name: Checkout PR
         uses: actions/checkout@v3
