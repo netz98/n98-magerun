@@ -1,0 +1,40 @@
+# https://help.github.com/en/categories/automating-your-workflow-with-github-actions
+
+on:
+  push:
+      tags:
+          - "**"
+
+name: "Release"
+
+jobs:
+    tests:
+        name: "BuildAndAttachPhar"
+        runs-on: 'ubuntu-latest'
+        steps:
+            - name: Set git to use LF
+              run: |
+                  git config --global core.autocrlf false
+                  git config --global core.eol lf
+
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Install PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '7.4'
+
+            - name: Install dependencies
+              uses: ramsey/composer-install@v2
+
+            - name: Phar Build
+              run: ./build.sh
+
+            - name: Attach new asset to release
+              uses: svenstaro/upload-release-action@v2
+              with:
+                repo_token: ${{ secrets.GITHUB_TOKEN }}
+                file: n98-magerun.phar
+                tag: ${{ github.ref }}
+                overwrite: true
