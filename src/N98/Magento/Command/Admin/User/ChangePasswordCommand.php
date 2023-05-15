@@ -52,7 +52,10 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
 
         // Password
         if (($password = $input->getArgument('password')) == null) {
-            $password = $dialog->askHiddenResponse($output, '<question>Password:</question>');
+            $question = new Question('<question>Password:</question>');
+            $question->setHidden(true);
+            $question->setHiddenFallback(false);
+            $password = $dialog->ask($input, $output, $question);
         }
 
         try {
