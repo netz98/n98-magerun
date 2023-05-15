@@ -52,7 +52,7 @@ class ListCommand extends AbstractMagentoCommand
         $areas = ['global', 'adminhtml', 'frontend', 'crontab'];
 
         if ($type === null) {
-            $type = $this->askForArrayEntry($areas, $output, 'Please select an area:');
+            $type = $this->askForArrayEntry($areas, $input, $output, 'Please select an area:');
         }
 
         if (!in_array($type, $areas)) {
