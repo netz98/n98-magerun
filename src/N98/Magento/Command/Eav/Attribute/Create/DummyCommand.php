@@ -8,6 +8,7 @@ use Mage;
 use Mage_Eav_Model_Entity_Attribute;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -94,7 +95,8 @@ HELP;
      */
     private function askForArguments(InputInterface $input, OutputInterface $output)
     {
-        $helper = $this->getHelper('question');
+        /* @var QuestionHelper $dialog */
+        $dialog = $this->getHelper('question');
         $argument = [];
 
         // Attribute ID
@@ -113,7 +115,7 @@ HELP;
 
             $question = new ChoiceQuestion('Please select Attribute ID', $attribute_codes);
             $question->setErrorMessage('Attribute ID "%s" is invalid.');
-            $response = explode("|", $helper->ask($input, $output, $question));
+            $response = explode("|", $dialog->ask($input, $output, $question));
             $input->setArgument('attribute-id', $response[0]);
         }
         $output->writeln('<info>Attribute code selected: ' . $input->getArgument('attribute-id') . "</info>");
@@ -124,7 +126,7 @@ HELP;
             $valueTypes = DummyValues::getValueTypeList();
             $question = new ChoiceQuestion('Please select Attribute Value Type', $valueTypes, 'int');
             $question->setErrorMessage('Attribute Value Type "%s" is invalid.');
-            $input->setArgument('values-type', $helper->ask($input, $output, $question));
+            $input->setArgument('values-type', $dialog->ask($input, $output, $question));
         }
         $output->writeln('<info>Attribute Value Type selected: ' . $input->getArgument('values-type') . "</info>");
         $argument['values-type'] = $input->getArgument('values-type');
@@ -140,7 +142,7 @@ HELP;
 
                 return $answer;
             });
-            $input->setArgument('values-number', $helper->ask($input, $output, $question));
+            $input->setArgument('values-number', $dialog->ask($input, $output, $question));
         }
         $output->writeln('<info>Number of values to create: ' . $input->getArgument('values-number') . "</info>");
         $argument['values-number'] = $input->getArgument('values-number');
