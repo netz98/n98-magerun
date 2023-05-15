@@ -53,7 +53,6 @@ class InfoCommand extends AbstractCustomerCommand
             return 0;
         }
 
-        $customer->load();
         $table = [];
         foreach ($customer->toArray() as $key => $value) {
             if (in_array($key, $this->blacklist)) {
@@ -61,9 +60,14 @@ class InfoCommand extends AbstractCustomerCommand
             }
             try {
                 $attribute = $customer->getResource()->getAttribute($key);
-                $table[] = [$attribute instanceof Mage_Customer_Model_Attribute
-                    ? $attribute->getFrontend()->getLabel() : $key, $attribute instanceof Mage_Customer_Model_Attribute
-                    ? $attribute->getFrontend()->getValue($customer) : $value];
+                $key = $attribute instanceof Mage_Customer_Model_Attribute ? $attribute->getFrontend()->getLabel() : $key;
+                $value = $attribute instanceof Mage_Customer_Model_Attribute ? $attribute->getFrontend()->getValue($customer) : $value;
+
+                if (is_array($value)) {
+                    $value = implode(' - ', $value);
+                }
+
+                $table[] = [$key, $value];
             } catch (Exception $e) {
                 $table[] = [$key, $value];
             }
