@@ -64,7 +64,7 @@ HELP;
             $output->writeln('<info>done</info>');
         } catch (Exception $e) {
             \ob_end_clean();
-            $this->getApplication()->renderException($e, $output);
+            $this->getApplication()->renderThrowable($e, $output);
             $this->printStackTrace($output, $e);
             $this->printFile($output, $e);
 
