@@ -13,7 +13,7 @@
         "magerun"
     ],
     "require": {
-        "php": "~7.3.0 || ~8.0.0 || ~8.1.0",
+        "php": "~7.3.0 || ~7.4.0 || ~8.0.0 || ~8.1.0",
         "composer/composer": "^2.2.18",
         "fakerphp/faker": "^1.20",
         "n98/junit-xml": "~1.0",
@@ -61,7 +61,7 @@
     ],
     "config": {
         "platform": {
-            "php": "7.3.0"
+            "php": "7.4.0"
         },
         "sort-packages": true
     }
