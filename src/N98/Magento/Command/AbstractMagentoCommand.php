@@ -605,6 +605,7 @@ abstract class AbstractMagentoCommand extends Command
             return $typeInput;
         };
 
+        /* @var QuestionHelper $dialog */
         $dialog = $this->getHelper('question');
         $question = new ChoiceQuestion(
             "<question>{$question}</question>",
