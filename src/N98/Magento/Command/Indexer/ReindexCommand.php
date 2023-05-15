@@ -101,8 +101,7 @@ HELP;
         $choices = [];
         foreach ($indexerList as $key => $indexer) {
             $choices[] = sprintf(
-                "<comment>%-4s</comment> %-40s <info>(last runtime: %s)</info>\n",
-                '[' . ($key + 1) . ']',
+                '%-40s <info>(last runtime: %s)</info>',
                 $indexer['code'],
                 $indexer['last_runtime']
             );
@@ -117,11 +116,11 @@ HELP;
 
             $returnCodes = [];
             foreach ($typeInputs as $typeInput) {
-                if (!isset($indexerList[$typeInput - 1])) {
+                if (!isset($indexerList[$typeInput])) {
                     throw new InvalidArgumentException('Invalid indexer');
                 }
 
-                $returnCodes[] = $indexerList[$typeInput - 1]['code'];
+                $returnCodes[] = $indexerList[$typeInput]['code'];
             }
 
             return $returnCodes;
