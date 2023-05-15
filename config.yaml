@@ -912,15 +912,16 @@ commands:
 
     php:
       required-extensions:
-        - simplexml
-        - hash
-        - gd
-        - dom
-        - iconv
         - curl
-        - soap
+        - dom
+        - gd
+        - hash
+        - iconv
+        - intl
         - pdo
         - pdo_mysql
+        - simplexml
+        - soap
 
       bytecode-cache-extensions:
         - apc
