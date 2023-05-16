@@ -101,10 +101,7 @@ class ParameterHelper extends AbstractHelper
 
                 /* @var QuestionHelper $dialog */
                 $dialog = new QuestionHelper();
-                $question = new ChoiceQuestion(
-                    '<question>Please select a store:</question>',
-                    $choices
-                );
+                $question = new ChoiceQuestion('<question>Please select a store:</question>', $choices);
                 $question->setValidator($validator);
 
                 $storeId = $dialog->ask($input, $output, $question);
@@ -151,16 +148,20 @@ class ParameterHelper extends AbstractHelper
             return $storeManager->getWebsite($websites[0]);
         }
 
-        $question[] = '<question>Please select a website: </question>';
-        $callback = function ($typeInput) use ($websites) {
-            if (!isset($websites[$typeInput - 1])) {
+        $validator = function ($typeInput) use ($websites) {
+            if (!isset($websites[$typeInput])) {
                 throw new InvalidArgumentException('Invalid website');
             }
 
-            return $websites[$typeInput - 1];
+            return $websites[$typeInput];
         };
 
-        $websiteId = $this->askAndValidate($input, $output, $question, $callback);
+        /* @var QuestionHelper $dialog */
+        $dialog = new QuestionHelper();
+        $question = new ChoiceQuestion('<question>Please select a website:</question>', $choices);
+        $question->setValidator($validator);
+
+        $websiteId = $dialog->ask($input, $output, $question);
         $website = $storeManager->getWebsite($websiteId);
 
         return $website;
