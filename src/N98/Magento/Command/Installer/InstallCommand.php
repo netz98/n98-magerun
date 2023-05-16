@@ -233,7 +233,7 @@ HELP;
         if ($input->getOption('magentoVersion') == null && $input->getOption('magentoVersionByName') == null) {
             $choices = [];
             foreach ($this->commandConfig['magento-packages'] as $key => $package) {
-                $choices[] = '<comment>' . $package['name'] . '</comment>';
+                $choices[$key + 1] = '<comment>' . $package['name'] . '</comment>';
             }
 
             $commandConfig = $this->commandConfig;
