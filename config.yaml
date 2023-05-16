@@ -146,7 +146,6 @@ commands:
     - N98\Magento\Command\Script\Repository\ListCommand
     - N98\Magento\Command\Script\Repository\RunCommand
     - N98\Magento\Command\SelfUpdateCommand
-    - N98\Magento\Command\ShellCommand
     - N98\Magento\Command\System\CheckCommand
     - N98\Magento\Command\System\Cron\HistoryCommand
     - N98\Magento\Command\System\Cron\ListCommand
