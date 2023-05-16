@@ -50,19 +50,19 @@ class CreateCommand extends AbstractCustomerCommand
 
         // Password
         if (($password = $input->getArgument('password')) == null) {
-            $question = new Question('<question>Password:</question>');
+            $question = new Question('<question>Password:</question> ');
             $question->setHidden(true);
             $password = $dialog->ask($input, $output, $question);
         }
 
         // Firstname
         if (($firstname = $input->getArgument('firstname')) == null) {
-            $firstname = $dialog->ask($input, $output, new Question('<question>Firstname:</question>'));
+            $firstname = $dialog->ask($input, $output, new Question('<question>Firstname:</question> '));
         }
 
         // Lastname
         if (($lastname = $input->getArgument('lastname')) == null) {
-            $lastname = $dialog->ask($input, $output, new Question('<question>Lastname:</question>'));
+            $lastname = $dialog->ask($input, $output, new Question('<question>Lastname:</question> '));
         }
 
         /** @var ParameterHelper $parameterHelper */

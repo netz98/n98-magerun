@@ -40,7 +40,7 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
 
         // Username
         if (($username = $input->getArgument('username')) == null) {
-            $username = $dialog->ask($input, $output, new Question('<question>Username:</question>'));
+            $username = $dialog->ask($input, $output, new Question('<question>Username:</question> '));
         }
 
         $user = $this->getUserModel()->loadByUsername($username);
@@ -52,7 +52,7 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
 
         // Password
         if (($password = $input->getArgument('password')) == null) {
-            $question = new Question('<question>Password:</question>');
+            $question = new Question('<question>Password:</question> ');
             $question->setHidden(true);
             $question->setHiddenFallback(false);
             $password = $dialog->ask($input, $output, $question);

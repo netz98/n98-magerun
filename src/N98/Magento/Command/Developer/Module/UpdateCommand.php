@@ -310,7 +310,7 @@ class UpdateCommand extends AbstractMagentoCommand
         );
 
         if ($dialog->ask($input, $output, $question)) {
-            $question = new Question('<question>Resource Model:</question>');
+            $question = new Question('<question>Resource Model:</question> ');
             $resourceModel = trim($dialog->ask($input, $output, $question));
             $configXml->global->models
                 ->{$this->getLowercaseModuleNamespace()}->addChild('resourceModel', $resourceModel);
@@ -513,13 +513,13 @@ class UpdateCommand extends AbstractMagentoCommand
         $entityName = true;
 
         while ($entityName) {
-            $question = new Question('<question>Entity Name (leave blank to exit):</question>');
+            $question = new Question('<question>Entity Name (leave blank to exit):</question> ');
             $entityName = trim($dialog->ask($input, $output, $question));
             if (!$entityName) {
                 break;
             }
 
-            $question = new Question('<question>Entity Table:</question>');
+            $question = new Question('<question>Entity Table:</question> ');
             $entityTable = trim($dialog->ask($input, $output, $question));
             $this->configNodes['resource_entities'][$entityName] = $entityTable;
         }
@@ -540,15 +540,15 @@ class UpdateCommand extends AbstractMagentoCommand
         $dialog = $this->getHelper('question');
 
         $question = new ChoiceQuestion(
-            '<question>Area (frontend|admin):</question>',
+            '<question>Area (frontend|admin):</question> ',
             ['frontend', 'admin']
         );
         $area = trim($dialog->ask($input, $output, $question));
 
-        $question = new Question('<question>Use:</question>');
+        $question = new Question('<question>Use:</question> ');
         $use = trim($dialog->ask($input, $output, $question));
 
-        $question = new Question('<question>Frontname:</question>');
+        $question = new Question('<question>Frontname:</question> ');
         $frontName = trim($dialog->ask($input, $output, $question));
 
         if ($area != 'frontend' && $area != 'admin') {
@@ -575,21 +575,21 @@ class UpdateCommand extends AbstractMagentoCommand
         $dialog = $this->getHelper('question');
 
         $question = new ChoiceQuestion(
-            '<question>Area (global|frontend|adminhtml):</question>',
+            '<question>Area (global|frontend|adminhtml):</question> ',
             ['global', 'frontend', 'admin']
         );
         $area = trim($dialog->ask($input, $output, $question));
 
-        $question = new Question('<question>Event:</question>');
+        $question = new Question('<question>Event:</question> ');
         $event = trim($dialog->ask($input, $output, $question));
 
-        $question = new Question('<question>Event Observer:</question>');
+        $question = new Question('<question>Event Observer:</question> ');
         $observer = trim($dialog->ask($input, $output, $question));
 
-        $question = new Question('<question>Event Observer Class:</question>');
+        $question = new Question('<question>Event Observer Class:</question> ');
         $observerClass = trim($dialog->ask($input, $output, $question));
 
-        $question = new Question('<question>Event Observer Method:</question>');
+        $question = new Question('<question>Event Observer Method:</question> ');
         $observerMethod = trim($dialog->ask($input, $output, $question));
 
         if ($area != 'global' && $area != 'frontend' && $area != 'adminhtml') {
@@ -618,15 +618,15 @@ class UpdateCommand extends AbstractMagentoCommand
         $dialog = $this->getHelper('question');
 
         $question = new ChoiceQuestion(
-            '<question>Area (frontend|admin):</question>',
+            '<question>Area (frontend|admin):</question> ',
             ['frontend', 'admin']
         );
         $area = trim($dialog->ask($input, $output, $question));
 
-        $question = new Question('<question>Module:</question>');
+        $question = new Question('<question>Module:</question> ');
         $module = trim($dialog->ask($input, $output, $question));
 
-        $question = new Question('<question>File:</question>');
+        $question = new Question('<question>File:</question> ');
         $file = trim($dialog->ask($input, $output, $question));
 
         if ($area != 'frontend' && $area != 'adminhtml') {
@@ -653,12 +653,12 @@ class UpdateCommand extends AbstractMagentoCommand
         $dialog = $this->getHelper('question');
 
         $question = new ChoiceQuestion(
-            '<question>Area (frontend|admin):</question>',
+            '<question>Area (frontend|admin):</question> ',
             ['frontend', 'admin']
         );
         $area = trim($dialog->ask($input, $output, $question));
 
-        $question = new Question('<question>File:</question>');
+        $question = new Question('<question>File:</question> ');
         $file = trim($dialog->ask($input, $output, $question));
 
         if ($area != 'frontend' && $area != 'adminhtml') {
@@ -682,16 +682,16 @@ class UpdateCommand extends AbstractMagentoCommand
         /** @var QuestionHelper $dialog */
         $dialog = $this->getHelper('question');
 
-        $question = new Question('<question>Section Name (lowercase):</question>');
+        $question = new Question('<question>Section Name (lowercase):</question> ');
         $sectionName = strtolower(trim($dialog->ask($input, $output, $question)));
 
-        $question = new Question('<question>Group Name (lowercase):</question>');
+        $question = new Question('<question>Group Name (lowercase):</question> ');
         $groupName = strtolower(trim($dialog->ask($input, $output, $question)));
 
-        $question = new Question('<question>Field Name:</question>');
+        $question = new Question('<question>Field Name:</question> ');
         $fieldName = strtolower(trim($dialog->ask($input, $output, $question)));
 
-        $question = new Question('<question>Field Value:</question>');
+        $question = new Question('<question>Field Value:</question> ');
         $fieldValue = strtolower(trim($dialog->ask($input, $output, $question)));
 
         $this->configNodes['default_section_name'] = $sectionName;

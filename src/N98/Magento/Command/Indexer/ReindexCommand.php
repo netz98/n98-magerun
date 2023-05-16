@@ -129,7 +129,7 @@ HELP;
         /* @var QuestionHelper $dialog */
         $dialog = $this->getHelper('question');
         $question = new ChoiceQuestion(
-            '<question>Please select a indexer:</question>',
+            '<question>Please select a indexer:</question> ',
             $choices
         );
         $question->setValidator($validator);

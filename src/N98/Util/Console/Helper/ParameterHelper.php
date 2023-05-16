@@ -101,7 +101,7 @@ class ParameterHelper extends AbstractHelper
 
                 /* @var QuestionHelper $dialog */
                 $dialog = new QuestionHelper();
-                $question = new ChoiceQuestion('<question>Please select a store:</question>', $choices);
+                $question = new ChoiceQuestion('<question>Please select a store:</question> ', $choices);
                 $question->setValidator($validator);
 
                 $storeId = $dialog->ask($input, $output, $question);
@@ -158,7 +158,7 @@ class ParameterHelper extends AbstractHelper
 
         /* @var QuestionHelper $dialog */
         $dialog = new QuestionHelper();
-        $question = new ChoiceQuestion('<question>Please select a website:</question>', $choices);
+        $question = new ChoiceQuestion('<question>Please select a website:</question> ', $choices);
         $question->setValidator($validator);
 
         $websiteId = $dialog->ask($input, $output, $question);

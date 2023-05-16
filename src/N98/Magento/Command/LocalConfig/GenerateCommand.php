@@ -115,7 +115,7 @@ HELP;
                     $argument,
                     $dialog->ask(
                         $output,
-                        sprintf('<question>%s%s:</question>', $messagePrefix, $options['prompt']),
+                        sprintf('<question>%s%s:</question> ', $messagePrefix, $options['prompt']),
                         (string) $options['default']
                     )
                 );
