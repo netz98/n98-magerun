@@ -53,6 +53,12 @@ HELP;
     {
         $files = $this->getScripts();
         if ($input->getArgument('script') == null && $input->isInteractive()) {
+            $choices = [];
+            foreach ($files as $file) {
+                $files[$i] = $file;
+                $choices[] = $file['fileinfo']->getFilename();
+            }
+
             $validator = function ($typeInput) use ($files) {
                 if (!isset($files[$typeInput])) {
                     throw new InvalidArgumentException('Invalid file');
@@ -61,18 +67,14 @@ HELP;
                 return $files[$typeInput]['fileinfo']->getPathname();
             };
 
-            $choices = [];
-            foreach ($files as $file) {
-                $files[$i] = $file;
-                $choices[] = $file['fileinfo']->getFilename();
-            }
-
             /* @var QuestionHelper $dialog */
             $dialog = $this->getHelper('question');
             $question = new ChoiceQuestion(
                 '<question>Please select a script file: </question>',
                 $choices
             );
+            $question->setValidator($validator);
+
             $selectedFile = $dialog->ask($input, $output, $question);
         } else {
             $script = $input->getArgument('script');
