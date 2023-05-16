@@ -199,7 +199,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 
         /** @var QuestionHelper $dialog */
         $dialog = $this->getHelper('question');
-        $question = new Question('<question>Change developer IP? Enter a new IP to change or leave blank: </question>');
+        $question = new Question('<question>Change developer IP? Enter a new IP to change or leave blank:</question> ');
         $newDeveloperIp = $dialog->ask($input, $output, $question);
 
         if (empty($newDeveloperIp)) {

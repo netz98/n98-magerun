@@ -275,7 +275,7 @@ class ParameterHelper extends AbstractHelper
             }
         }
 
-        $question = '<question>' . ucfirst($name) . ': </question>';
+        $question = '<question>' . ucfirst($name) . ':</question> ';
 
         $value = $this->askAndValidate(
             $input,

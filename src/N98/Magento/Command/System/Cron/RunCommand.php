@@ -95,7 +95,7 @@ HELP;
 
         /* @var QuestionHelper $dialog */
         $dialog = $this->getHelper('question');
-        $question = new ChoiceQuestion('<question>Please select job: </question>', $choices);
+        $question = new ChoiceQuestion('<question>Please select job:</question> ', $choices);
         $question->setValidator(function ($typeInput) use ($keyMap, $jobs) {
             $key = $keyMap[$typeInput];
             if (!isset($jobs[$key])) {

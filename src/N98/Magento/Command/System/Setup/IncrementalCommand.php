@@ -459,7 +459,7 @@ class IncrementalCommand extends AbstractMagentoCommand
         if ($magentoExceptionOutput) {
             /* @var QuestionHelper $dialog */
             $dialog = $this->getHelper('question');
-            $question = new Question('<question>Press Enter to view raw Magento error text: </question>');
+            $question = new Question('<question>Press Enter to view raw Magento error text:</question> ');
             $dialog->ask($input, $output, $question);
 
             $output->writeln("Magento Exception Error Text:");
@@ -499,7 +499,7 @@ class IncrementalCommand extends AbstractMagentoCommand
 
         /* @var QuestionHelper $dialog */
         $dialog = $this->getHelper('question');
-        $question = new Question('<question>Press Enter to Run this update: </question>');
+        $question = new Question('<question>Press Enter to Run this update:</question> ');
         $dialog->ask($input, $output, $question);
 
         $start = microtime(true);
@@ -585,7 +585,7 @@ class IncrementalCommand extends AbstractMagentoCommand
 
         /* @var QuestionHelper $dialog */
         $dialog = $this->getHelper('question');
-        $question = new Question('<question>Press Enter to View Update Information: </question>');
+        $question = new Question('<question>Press Enter to View Update Information:</question> ');
         $dialog->ask($input, $output, $question);
 
         $this->writeSection($output, 'Detailed Update Information');

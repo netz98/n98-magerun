@@ -70,7 +70,7 @@ HELP;
             /* @var QuestionHelper $dialog */
             $dialog = $this->getHelper('question');
             $question = new ChoiceQuestion(
-                '<question>Please select a script file: </question>',
+                '<question>Please select a script file:</question> ',
                 $choices
             );
             $question->setValidator($validator);

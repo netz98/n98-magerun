@@ -240,7 +240,7 @@ HELP;
 
             /** @var QuestionHelper $dialog */
             $dialog = $this->getHelper('question');
-            $question = new ChoiceQuestion('<question>Choose a magento version: </question>', $choices);
+            $question = new ChoiceQuestion('<question>Choose a magento version:</question> ', $choices);
             $question->setValidator(function ($typeInput) use ($commandConfig) {
                 if (!in_array($typeInput, range(1, is_countable($commandConfig['magento-packages']) ? count($commandConfig['magento-packages']) : 0))) {
                     throw new InvalidArgumentException('Invalid type');
@@ -818,7 +818,7 @@ HELP;
             if (!$input->isInteractive()) {
                 throw new InvalidArgumentException('Installation base url is mandatory, use --baseUrl.');
             }
-            $question = new Question('<question>Please enter the base url: </question>');
+            $question = new Question('<question>Please enter the base url:</question> ');
             $question->setValidator($validateBaseUrl);
             $baseUrl = $dialog->ask($input, $output, $question);
         }
