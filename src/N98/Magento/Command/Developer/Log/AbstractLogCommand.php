@@ -82,7 +82,7 @@ class AbstractLogCommand extends AbstractMagentoCommand
 
         /* @var QuestionHelper $dialog */
         $dialog = $this->getHelper('question');
-        $questionObj = new ChoiceQuestion('<question>Please select a log file: </question>', $choices);
+        $questionObj = new ChoiceQuestion('<question>Please select a log file:</question> ', $choices);
         $questionObj->setValidator(function ($typeInput) use ($files) {
             if (!isset($files[$typeInput - 1])) {
                 throw new InvalidArgumentException('Invalid file');

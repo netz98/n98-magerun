@@ -258,7 +258,7 @@ class UpdateCommand extends AbstractMagentoCommand
 
             /** @var QuestionHelper $dialog */
             $dialog = $this->getHelper('question');
-            $question = new Question('<question>Enter version number: </question>');
+            $question = new Question('<question>Enter version number:</question> ');
             $version = trim($dialog->ask($input, $output, $question));
             $modulesNode->version = $version;
         }
