@@ -148,7 +148,7 @@ HELP;
             ->getFirstItem();
 
         $regions = $country->getRegions()->getData();
-        $region = $regions[array_rand($regions)];
+        $region = $regions ? $regions[array_rand($regions)] : null;
 
         $address = $this->getAddressModel();
         $address->setFirstname($faker->firstName);
