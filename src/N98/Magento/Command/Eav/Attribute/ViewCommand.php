@@ -49,7 +49,28 @@ class ViewCommand extends AbstractMagentoCommand
             throw new InvalidArgumentException('Attribute was not found.');
         }
 
-        $table = [['ID', $attribute->getId()], ['Code', $attribute->getName()], ['Attribute-Set-ID', $attribute->getAttributeSetId()], ['Visible-On-Front', $attribute->getIsVisibleOnFront() ? 'yes' : 'no'], ['Attribute-Model', $attribute->getAttributeModel() ?: ''], ['Backend-Model', $attribute->getBackendModel() ?: ''], ['Backend-Table', $attribute->getBackendTable() ?: ''], ['Backend-Type', $attribute->getBackendType() ?: ''], ['Source-Model', $attribute->getSourceModel() ?: ''], ['Cache-ID-Tags', $attribute->getCacheIdTags() ? implode(',', $attribute->getCacheIdTags()) : ''], ['Cache-Tags', $attribute->getCacheTags() ? implode(',', $attribute->getCacheTags()) : ''], ['Default-Value', $attribute->getDefaultValue() ?: ''], ['Flat-Columns', $attribute->getFlatColumns() ? implode(',', array_keys($attribute->getFlatColumns())) : ''], ['Flat-Indexes', $attribute->getFlatIndexes() ? implode(',', $attribute->getFlatIndexes()) : '']];
+        $table = [
+            ['ID', $attribute->getId()],
+            ['Code', $attribute->getName()],
+            ['Attribute-Set-ID', $attribute->getAttributeSetId()],
+            ['Visible-On-Front', $attribute->getIsVisibleOnFront() ? 'yes' : 'no'],
+            ['Attribute-Model', $attribute->getAttributeModel() ?: ''],
+            ['Backend-Model', $attribute->getBackendModel() ?: ''],
+            ['Backend-Table', $attribute->getBackendTable() ?: ''],
+            ['Backend-Type', $attribute->getBackendType() ?: ''],
+            ['Source-Model', $attribute->getSourceModel() ?: ''],
+            ['Cache-ID-Tags', $attribute->getCacheIdTags() ? implode(',', $attribute->getCacheIdTags()) : ''],
+            ['Cache-Tags', $attribute->getCacheTags() ? implode(',', $attribute->getCacheTags()) : ''],
+            ['Default-Value', $attribute->getDefaultValue() ?: ''],
+            ['Flat-Columns', $attribute->getFlatColumns() ? implode(',', array_keys($attribute->getFlatColumns())) : '']
+        ];
+
+        $flatIndexes = $attribute->getFlatIndexes() ? $attribute->getFlatIndexes() : '';
+        if ($flatIndexes) {
+            $key = array_key_first($flatIndexes);
+            $flatIndexes = implode(',', $flatIndexes[$key]['fields']);
+        }
+        $table[] = ['Flat-Indexes', $flatIndexes ? $key . ' - ' . $flatIndexes : ''];
 
         if ($attribute->getFrontend()) {
             $table[] = ['Frontend-Label', $attribute->getFrontend()->getLabel()];
