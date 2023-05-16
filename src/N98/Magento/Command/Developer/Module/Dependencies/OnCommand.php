@@ -65,7 +65,6 @@ class OnCommand extends AbstractMagentoCommand
                 $tableHelper = $this->getHelper('table');
                 $tableHelper
                     ->setHeaders(['Name', 'Status', 'Current installed version', 'Code pool'])
-                    ->setPadType(STR_PAD_LEFT)
                     ->renderByFormat($output, $dependencies, $input->getOption('format'));
             }
         } catch (Exception $e) {
