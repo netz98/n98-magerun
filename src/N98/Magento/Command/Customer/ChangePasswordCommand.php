@@ -46,7 +46,7 @@ HELP;
         if (($password = $input->getArgument('password')) == null) {
             /* @var QuestionHelper $dialog */
             $dialog = $this->getHelper('question');
-            $question = new Question('<question>Password:</question>');
+            $question = new Question('<question>Password:</question> ');
             $question->setHidden(true);
             $password = $dialog->ask($input, $output, $question);
         }

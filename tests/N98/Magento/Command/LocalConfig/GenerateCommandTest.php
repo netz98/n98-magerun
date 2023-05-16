@@ -246,7 +246,7 @@ class GenerateCommandTest extends TestCase
             ->method('ask')
             ->with(
                 self::isInstanceOf(StreamOutput::class),
-                sprintf('<question>Please enter the %s:</question>', $prompt)
+                sprintf('<question>Please enter the %s:</question> ', $prompt)
             )
             ->willReturn(null);
 
@@ -295,7 +295,7 @@ class GenerateCommandTest extends TestCase
                 ->method('ask')
                 ->with(
                     self::isInstanceOf(StreamOutput::class),
-                    sprintf('<question>Please enter the %s:</question>', $prompt)
+                    sprintf('<question>Please enter the %s:</question> ', $prompt)
                 )
                 ->willReturn($returnValue);
         }
@@ -330,7 +330,7 @@ class GenerateCommandTest extends TestCase
             ->method('ask')
             ->with(
                 self::isInstanceOf(StreamOutput::class),
-                sprintf('<question>Please enter the database password:</question>')
+                sprintf('<question>Please enter the database password:</question> ')
             )
             ->willReturn(null);
 
@@ -375,7 +375,7 @@ class GenerateCommandTest extends TestCase
             ->method('ask')
             ->with(
                 self::isInstanceOf(StreamOutput::class),
-                '<question>Please enter the database host:</question>'
+                '<question>Please enter the database host:</question> '
             )
             ->willReturn('CDATAdatabasehost');
 

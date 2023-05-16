@@ -629,6 +629,6 @@ abstract class AbstractMagentoCommand extends Command
             $message = ucfirst($argument);
         }
 
-        return sprintf('<question>%s:</question>', $message);
+        return sprintf('<question>%s:</question> ', $message);
     }
 }
