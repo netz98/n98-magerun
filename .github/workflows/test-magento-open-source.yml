@@ -50,7 +50,8 @@ jobs:
           bin/n98-magerun install \
           --magentoVersionByName="magento-mirror-1.9.4.5" \
           --installationFolder="${{ github.workspace }}/magento" \
-          --dbHost="localhost" --dbUser="root" --dbPass="root" \
+          --dbHost="127.0.0.1" --dbPort="${{ job.services.mysql.ports['3306'] }}" \
+          --dbUser="root" --dbPass="root" \
           --dbName="magento_test_db" \
           --installSampleData=no --useDefaultConfigParams=yes \
           --baseUrl="http://magento.local/"
