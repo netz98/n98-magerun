@@ -32,14 +32,20 @@ jobs:
       - name: Start MySQL
         run: sudo systemctl start mysql.service
 
-      - name: Setup Test Database
+      - name: Install Magento
         run: |
-          test_setup_db_pass=root \
-          test_setup_magento_version=1.9 \
-          build/local/test_setup.sh
+          php -dmemory_limit=1g -f vendor/bin/n98-magerun -- install \
+          --magentoVersionByName="magento-mirror-1.9.4.5" --installationFolder="${{ github.workspace }}/magento" \
+          --dbHost="localhost" --dbUser="root" --dbPass="root" \
+          --dbName="magento_test_db" \
+          --installSampleData=no --useDefaultConfigParams=yes \
+          --baseUrl="http://magento.local/"
+
+      - name: Set Magento root environment variable
+        run: echo "N98_MAGERUN_TEST_MAGENTO_ROOT=${{ github.workspace }}/magento" >> $GITHUB_ENV
 
       - name: Run tests
-        run: php -f vendor/phpunit/phpunit/phpunit
+        run: php -f vendor/bin/phpunit
 
       - name: Report coverage
         uses: codecov/codecov-action@v2
