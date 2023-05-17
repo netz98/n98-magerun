@@ -47,7 +47,7 @@ jobs:
 
       - name: Install OpenMage
         run: |
-          bin/n98-magerun install \
+          php bin/n98-magerun install \
           --magentoVersionByName="openmage-20.0.14" \
           --installationFolder="./magento" \
           --dbHost="127.0.0.1" \
