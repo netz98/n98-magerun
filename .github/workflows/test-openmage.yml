@@ -49,10 +49,14 @@ jobs:
         run: |
           bin/n98-magerun install \
           --magentoVersionByName="openmage-20.0.4" --installationFolder="${{ github.workspace }}/magento" \
-          --dbHost="127.0.0.1" --dbPort="${{ job.services.mysql.ports['3306'] }}" \
-          --dbUser="root" --dbPass="root" \
-          --installSampleData=no --useDefaultConfigParams=yes \
-          --baseUrl="http://openmage.local/"
+          --dbHost="127.0.0.1" \
+          --dbPort="${{ job.services.mysql.ports['3306'] }}" \
+          --dbUser="root" \
+          --dbPass="root" \
+          --dbName="magento_test_db" \
+          --installSampleData=no \
+          --useDefaultConfigParams=yes \
+          --baseUrl="http://magento.local/"
 
       - name: Set Magento root environment variable
         run: echo "N98_MAGERUN_TEST_MAGENTO_ROOT=${{ github.workspace }}/magento" >> $GITHUB_ENV
