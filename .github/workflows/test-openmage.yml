@@ -34,7 +34,7 @@ jobs:
 
       - name: Install OpenMage
         run: |
-          php -dmemory_limit=1g -f vendor/bin/n98-magerun -- install \
+          php -dmemory_limit=1g -f bin/n98-magerun -- install \
           --magentoVersionByName="openmage-20.0.4" --installationFolder="${{ github.workspace }}/openmage" \
           --dbHost="localhost" --dbUser="root" --dbPass="root" \
           --dbName="openmage_test_db" \
