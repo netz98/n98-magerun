@@ -47,7 +47,7 @@ jobs:
 
       - name: Install Magento
         run: |
-          bin/n98-magerun install \
+          php bin/n98-magerun install \
           --magentoVersionByName="magento-mirror-1.9.4.5" \
           --installationFolder="./magento" \
           --dbHost="127.0.0.1" \
