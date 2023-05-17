@@ -1,9 +1,9 @@
-name: Test OpenMage 20.0.4 with PHP 8.0
+name: Test OpenMage 20.0.14 with PHP 8.1
 
 on: [push, pull_request]
 
 jobs:
-  test-openmage-20:
+  test-openmage-2-0-14:
     runs-on: ubuntu-latest
 
     services:
@@ -22,7 +22,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.0'
+          php-version: '8.1'
           extensions: yaml
           coverage: none
 
@@ -48,7 +48,8 @@ jobs:
       - name: Install OpenMage
         run: |
           bin/n98-magerun install \
-          --magentoVersionByName="openmage-20.0.4" --installationFolder="${{ github.workspace }}/magento" \
+          --magentoVersionByName="openmage-20.0.14" \
+          --installationFolder="./magento" \
           --dbHost="127.0.0.1" \
           --dbPort="${{ job.services.mysql.ports['3306'] }}" \
           --dbUser="root" \
