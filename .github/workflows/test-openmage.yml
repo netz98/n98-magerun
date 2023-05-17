@@ -3,8 +3,18 @@ name: Test OpenMage 20.0.4 with PHP 8.0
 on: [push, pull_request]
 
 jobs:
-  build:
+  test-openmage-20:
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: magento_test_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - uses: actions/checkout@v3
@@ -29,15 +39,18 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Start MySQL
-        run: sudo systemctl start mysql.service
+      - name: Validate mysql service
+        run: |
+          echo "Checking mysql service"
+          sudo apt-get install -y mysql-client
+          mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -proot -e "SHOW DATABASES"
 
       - name: Install OpenMage
         run: |
           bin/n98-magerun install \
           --magentoVersionByName="openmage-20.0.4" --installationFolder="${{ github.workspace }}/magento" \
           --dbHost="localhost" --dbUser="root" --dbPass="root" \
-          --dbName="openmage_test_db" \
+          --dbName="magento_test_db" \
           --installSampleData=no --useDefaultConfigParams=yes \
           --baseUrl="http://openmage.local/"
 
