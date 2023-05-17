@@ -34,7 +34,7 @@ jobs:
 
       - name: Install Magento
         run: |
-          php -dmemory_limit=1g -f vendor/bin/n98-magerun -- install \
+          php -dmemory_limit=1g -f bin/n98-magerun -- install \
           --magentoVersionByName="magento-mirror-1.9.4.5" --installationFolder="${{ github.workspace }}/magento" \
           --dbHost="localhost" --dbUser="root" --dbPass="root" \
           --dbName="magento_test_db" \
