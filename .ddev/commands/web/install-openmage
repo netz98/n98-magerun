@@ -15,7 +15,6 @@ MAGENTO_VERSION=$1
 MAGENTO_DB_NAME="magento_${MAGENTO_VERSION//[-.]/_}"
 MAGENTO_ROOT_DIR="/opt/magento-test-environments/magento_${MAGENTO_VERSION//[-.]/_}"
 MAGENTO_SUBDOMAIN="${MAGENTO_VERSION//[-_.]/-}"
-USE_ELASTICSEARCH=$2
 
 fix_permissions() {
 	sudo chown -R "$(id -u):$(id -g)" /opt/magento-test-environments
@@ -54,16 +53,15 @@ install_magento() {
 
 		if [ ! -d $MAGENTO_ROOT_DIR ]; then
 
-			#composer --no-interaction create-project --repository-url=https://repo.magento.com/ magento/project-community-edition="$MAGENTO_VERSION" "$MAGENTO_ROOT_DIR"
 			/var/www/html/bin/n98-magerun install \
 				--dbHost="db" \
 				--dbUser="db" \
-       			--dbPass="db" \
+        --dbPass="db" \
 				--dbName="${MAGENTO_DB_NAME}" \
 				--installSampleData=yes \
-       			--useDefaultConfigParams=yes \
-       			--magentoVersionByName="openmage-${MAGENTO_VERSION}" \
-       			--installationFolder="${MAGENTO_ROOT_DIR}" \
+        --useDefaultConfigParams=yes \
+        --magentoVersionByName="openmage-${MAGENTO_VERSION}" \
+        --installationFolder="${MAGENTO_ROOT_DIR}" \
 				--baseUrl="http://${MAGENTO_SUBDOMAIN}.${DDEV_PROJECT}.ddev.site/"
 
 		fi
