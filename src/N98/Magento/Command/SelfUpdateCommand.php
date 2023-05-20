@@ -2,16 +2,19 @@
 
 namespace N98\Magento\Command;
 
-use Composer\Downloader\FilesystemException;
-use Composer\IO\ConsoleIO;
-use Composer\Util\RemoteFilesystem;
 use Exception;
+use N98\Util\Markdown\VersionFilePrinter;
 use Phar;
 use PharException;
+use RuntimeException;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use UnexpectedValueException;
+use WpOrg\Requests\Hooks;
+use WpOrg\Requests\Requests;
 
 /**
  * @codeCoverageIgnore
@@ -34,17 +37,16 @@ class SelfUpdateCommand extends AbstractMagentoCommand
             ->setAliases(['selfupdate'])
             ->addOption('unstable', null, InputOption::VALUE_NONE, 'Load unstable version from develop branch')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Tests if there is a new version without any update.')
-            ->setDescription('Updates n98-magerun.phar to the latest version.')
+            ->setDescription('Updates n98-magerun2.phar to the latest version.')
             ->setHelp(
                 <<<EOT
 The <info>self-update</info> command checks github for newer
-versions of n98-magerun and if found, installs the latest.
+versions of n98-magerun2 and if found, installs the latest.
 
-<info>php n98-magerun.phar self-update</info>
+<info>php n98-magerun2.phar self-update</info>
 
 EOT
-            )
-        ;
+            );
     }
 
     /**
@@ -56,13 +58,12 @@ EOT
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return int
-     * @throws FilesystemException
-     * @throws Exception
+     * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $isDryRun = $input->getOption('dry-run');
         $localFilename = realpath($_SERVER['argv'][0]) ?: $_SERVER['argv'][0];
@@ -70,43 +71,54 @@ EOT
 
         // check for permissions in local filesystem before start connection process
         if (!is_writable($tempDirectory = dirname($tempFilename))) {
-            throw new FilesystemException(
-                'n98-magerun update failed: the "' . $tempDirectory .
+            throw new RuntimeException(
+                'n98-magerun2 update failed: the "' . $tempDirectory .
                 '" directory used to download the temp file could not be written'
             );
         }
 
         if (!is_writable($localFilename)) {
-            throw new FilesystemException(
-                'n98-magerun update failed: the "' . $localFilename . '" file could not be written'
+            throw new RuntimeException(
+                'n98-magerun2 update failed: the "' . $localFilename . '" file could not be written'
             );
         }
-
-        $io = new ConsoleIO($input, $output, $this->getHelperSet());
-        $rfs = new RemoteFilesystem($io);
 
         $loadUnstable = $input->getOption('unstable');
         if ($loadUnstable) {
             $versionTxtUrl = self::VERSION_TXT_URL_UNSTABLE;
-            $remoteFilename = self::MAGERUN_DOWNLOAD_URL_UNSTABLE;
+            $remotePharDownloadUrl = self::MAGERUN_DOWNLOAD_URL_UNSTABLE;
         } else {
             $versionTxtUrl = self::VERSION_TXT_URL_STABLE;
-            $remoteFilename = self::MAGERUN_DOWNLOAD_URL_STABLE;
+            $remotePharDownloadUrl = self::MAGERUN_DOWNLOAD_URL_STABLE;
         }
 
-        $latest = trim($rfs->getContents('raw.githubusercontent.com', $versionTxtUrl, false));
+        $response = Requests::get($versionTxtUrl, [], ['verify' => false]);
 
-        if ($this->isOutdatedVersion($latest, $loadUnstable)) {
-            $output->writeln(sprintf("Updating to version <info>%s</info>.", $latest));
+        if (!$response->success) {
+            throw new RuntimeException('Cannot get version: ' . $response->status_code);
+        }
+
+        $latestVersion = trim($response->body);
+
+        if ($this->isOutdatedVersion($latestVersion, $loadUnstable)) {
+            $output->writeln(sprintf("Updating to version <info>%s</info>.", $latestVersion));
 
             try {
+                $this->downloadNewPhar($output, $remotePharDownloadUrl, $tempFilename);
+                $this->checkNewPharFile($tempFilename, $localFilename);
+
+                $changelog = $this->getChangelog($output, $loadUnstable);
+
                 if (!$isDryRun) {
-                    $this->downloadNewVersion($output, $rfs, $remoteFilename, $tempFilename);
-                    $this->checkNewPharFile($tempFilename, $localFilename);
+                    $this->replaceExistingPharFile($tempFilename, $localFilename);
                 }
 
-                $output->writeln('<info>Successfully updated n98-magerun</info>');
-                $this->showChangelog($output, $loadUnstable, $rfs);
+                $output->writeln('');
+                $output->writeln('');
+                $output->writeln($changelog);
+                $output->writeln('<info>---------------------------------</info>');
+                $output->writeln('<info>Successfully updated n98-magerun2</info>');
+                $output->writeln('<info>---------------------------------</info>');
 
                 $this->_exit(0);
             } catch (Exception $e) {
@@ -118,9 +130,10 @@ EOT
                 $output->writeln('<error>Please re-run the self-update command to try again.</error>');
             }
         } else {
-            $output->writeln("<info>You are using the latest n98-magerun version.</info>");
+            $output->writeln("<info>You are using the latest n98-magerun2 version.</info>");
         }
-        return 0;
+
+        return Command::SUCCESS;
     }
 
     /**
@@ -138,61 +151,107 @@ EOT
     }
 
     /**
-     * @param OutputInterface $output
-     * @param $rfs
-     * @param $remoteFilename
-     * @param $tempFilename
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param string $remoteUrl
+     * @param string $tempFilename
      */
-    private function downloadNewVersion(OutputInterface $output, $rfs, $remoteFilename, $tempFilename)
+    private function downloadNewPhar(OutputInterface $output, string $remoteUrl, string $tempFilename)
     {
-        $rfs->copy('raw.github.com', $remoteFilename, $tempFilename);
+        $progressBar = new ProgressBar($output);
+        $progressBar->setFormat('[%bar%] %current% of %max% bytes downloaded');
+
+        $hooks = new Hooks();
+
+        $response = Requests::head($remoteUrl, [], ['verify' => false]);
+
+        if (!$response->success) {
+            throw new RuntimeException('Cannot download phar file: ' . $response->status_code);
+        }
+
+        $filesize = $response->headers['content-length'];
+
+        $hooks->register('curl.after_request', function (&$headers, &$info) use (&$filesize) {
+            $filesize = $info['size_download'];
+        });
+
+        $progressBar->setMaxSteps($filesize);
+
+        $hooks->register(
+            'request.progress',
+            function ($data, $responseBytes, $responseByteLimit) use ($progressBar) {
+                $progressBar->setProgress($responseBytes);
+            }
+        );
+
+        $response = Requests::get($remoteUrl, [], ['blocking' => true, 'hooks' => $hooks, 'verify' => false]);
+
+        if (!$response->success) {
+            throw new RuntimeException('Cannot download phar file: ' . $response->status_code);
+        }
+
+        file_put_contents($tempFilename, $response->body);
 
         if (!file_exists($tempFilename)) {
-            $output->writeln('<error>The download of the new n98-magerun version failed for an unexpected reason');
+            $output->writeln('<error>The download of the new n98-magerun2 version failed for an unexpected reason');
         }
     }
 
     /**
-     * @param $tempFilename
-     * @param $localFilename
+     * @param string $tempFilename
+     * @param string $localFilename
      */
     private function checkNewPharFile($tempFilename, $localFilename)
     {
-        \error_reporting(E_ALL); // supress notices
+        error_reporting(E_ALL); // supress notices
 
         @chmod($tempFilename, 0777 & ~umask());
         // test the phar validity
         $phar = new Phar($tempFilename);
         // free the variable to unlock the file
         unset($phar);
-        @rename($tempFilename, $localFilename);
     }
 
     /**
-     * @param OutputInterface $output
-     * @param $loadUnstable
-     * @param $rfs
+     * @param string $tempFilename
+     * @param string $localFilename
      */
-    private function showChangelog(OutputInterface $output, $loadUnstable, $rfs)
+    private function replaceExistingPharFile($tempFilename, $localFilename)
     {
+        if (!@rename($tempFilename, $localFilename)) {
+            throw new RuntimeException(
+                sprintf('Cannot replace existing phar file "%s". Please check permissions.', $localFilename)
+            );
+        }
+    }
+
+    /**
+     * Download changelog
+     *
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param bool $loadUnstable
+     * @return string
+     */
+    private function getChangelog(OutputInterface $output, $loadUnstable)
+    {
+        $changelog = '';
+
         if ($loadUnstable) {
-            $changeLogContent = $rfs->getContents(
-                'raw.github.com',
-                self::CHANGELOG_DOWNLOAD_URL_UNSTABLE,
-                false
-            );
+            $changeLogUrl = self::CHANGELOG_DOWNLOAD_URL_UNSTABLE;
         } else {
-            $changeLogContent = $rfs->getContents(
-                'raw.github.com',
-                self::CHANGELOG_DOWNLOAD_URL_STABLE,
-                false
-            );
+            $changeLogUrl = self::CHANGELOG_DOWNLOAD_URL_STABLE;
+        }
+        $response = Requests::get($changeLogUrl, [], ['verify' => false]);
+
+        if (!$response->success) {
+            throw new RuntimeException('Cannot download changelog: ' . $response->status_code);
         }
 
+        $changeLogContent = $response->body;
         if ($changeLogContent) {
-            $output->writeln($changeLogContent);
+            $versionFilePrinter = new VersionFilePrinter($changeLogContent);
+            $previousVersion = $this->getApplication()->getVersion();
+            $changelog .= $versionFilePrinter->printFromVersion($previousVersion) . "\n";
         }
-
         if ($loadUnstable) {
             $unstableFooterMessage = <<<UNSTABLE_FOOTER
 <comment>
@@ -201,8 +260,11 @@ EOT
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 </comment>
 UNSTABLE_FOOTER;
-            $output->writeln($unstableFooterMessage);
+
+            $changelog .= $unstableFooterMessage . "\n";
         }
+
+        return $changelog;
     }
 
     /**
