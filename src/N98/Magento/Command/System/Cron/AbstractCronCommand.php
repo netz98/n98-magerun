@@ -85,7 +85,7 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
      */
     private function parseCronExpression($expr)
     {
-        if ($expr === 'always') {
+        if ((string)$expr === 'always') {
             return array_fill(0, 5, '*');
         }
 
