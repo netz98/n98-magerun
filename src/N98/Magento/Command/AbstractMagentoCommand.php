@@ -12,6 +12,8 @@ use Composer\Package\PackageInterface;
 use InvalidArgumentException;
 use Mage;
 use N98\Magento\Application;
+use N98\Magento\Command\SubCommand\ConfigBag;
+use N98\Magento\Command\SubCommand\SubCommandFactory;
 use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\OperatingSystem;
 use N98\Util\StringTyped;
@@ -457,6 +459,15 @@ abstract class AbstractMagentoCommand extends Command
 
     /**
      * @param string $value
+     * @return bool
+     */
+    public function parseBoolOption($value)
+    {
+        return $this->_parseBoolOption($value);
+    }
+
+    /**
+     * @param string $value
      * @return string
      */
     protected function formatActive($value)
@@ -630,5 +641,34 @@ abstract class AbstractMagentoCommand extends Command
         }
 
         return sprintf('<question>%s:</question> ', $message);
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @param string $baseNamespace If this is set we can use relative class names.
+     *
+     * @return SubCommandFactory
+     */
+    protected function createSubCommandFactory(
+        InputInterface $input,
+        OutputInterface $output,
+        $baseNamespace = ''
+    ) {
+        $configBag = new ConfigBag();
+
+        $commandConfig = $this->getCommandConfig();
+        if (empty($commandConfig)) {
+            $commandConfig = [];
+        }
+
+        return new SubCommandFactory(
+            $this,
+            $baseNamespace,
+            $input,
+            $output,
+            $commandConfig,
+            $configBag
+        );
     }
 }
