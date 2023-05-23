@@ -11,6 +11,7 @@ plugin:
     - /usr/local/share/n98-magerun/modules
 
 helpers:
+  composer: N98\Util\Console\Helper\ComposerHelper
   twig: N98\Util\Console\Helper\TwigHelper
   database: N98\Util\Console\Helper\DatabaseHelper
   parameter: N98\Util\Console\Helper\ParameterHelper
