@@ -248,20 +248,6 @@ class InstallMagento extends AbstractSubCommand
             'session-save'      => $sessionSave,
             'backend-frontname' => $adminFrontname,
             'currency'          => $currency,
-
-            # TEST
-            'dbHost'            => $this->_prepareDbHost(),
-            'dbName'            => $this->config->getString('db_name'),
-            'dbUser'            => $this->config->getString('db_user'),
-            'url'               => $baseUrl,
-            'use_rewrites'      => 1,
-            'use_secure'        => 0,
-            'use_secure-admin'  => 1,
-            'admin_username'    => $adminUsername,
-            'admin_lastname'    => $adminLastname,
-            'admin_firstname'   => $adminFirstname,
-            'admin_email'       => $adminEmail,
-            'admin_password'    => $adminPassword,
         ];
 
         $dbPass = $this->config->getString('db_pass');
