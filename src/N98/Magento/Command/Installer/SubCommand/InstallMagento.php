@@ -23,7 +23,7 @@ class InstallMagento extends AbstractSubCommand
      */
     const EXEC_STATUS_OK = 0;
 
-    const MAGENTO_INSTALL_SCRIPT_PATH = 'bin/magento';
+    const MAGENTO_INSTALL_SCRIPT_PATH = 'install.php';
 
     /**
      * @var \Closure
@@ -329,7 +329,7 @@ class InstallMagento extends AbstractSubCommand
         $output->writeln('<info>Start installation process.</info>');
 
         $installCommand = sprintf(
-            '%s -ddisplay_startup_errors=1 -ddisplay_errors=1 -derror_reporting=-1 -f %s -- setup:install %s',
+            '%s -ddisplay_startup_errors=1 -ddisplay_errors=1 -derror_reporting=-1 -f %s -- %s',
             OperatingSystem::getPhpBinary(),
             escapeshellarg($installationFolder . '/' . self::MAGENTO_INSTALL_SCRIPT_PATH),
             $installArgs
