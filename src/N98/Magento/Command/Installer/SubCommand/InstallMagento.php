@@ -25,6 +25,12 @@ class InstallMagento extends AbstractSubCommand
 
     const MAGENTO_INSTALL_SCRIPT_PATH = 'install.php';
 
+    public const ARG_ADMIN_EMAIL        = 'admin_email'; #admin-email
+    public const ARG_ADMIN_FIRSTNAME    = 'admin_firstname'; #admin-firstname
+    public const ARG_ADMIN_LASTNAME     = 'admin_lastname'; #admin-lastname
+    public const ARG_ADMIN_PASSWORD     = 'admin_password'; #admin-password
+    public const ARG_ADMIN_USERNAME     = 'admin_username'; #admin-user
+
     /**
      * @var \Closure
      */
@@ -125,12 +131,12 @@ class InstallMagento extends AbstractSubCommand
         $question = new Question(
             sprintf(
                 '<question>Please enter the admin username:</question> <comment>[%s]</comment>: ',
-                $defaults['admin-user']
+                $defaults[self::ARG_ADMIN_USERNAME]
             ),
-            $defaults['admin-user']
+            $defaults[self::ARG_ADMIN_USERNAME]
         );
         $question->setValidator($this->notEmptyCallback);
-        $adminUsername = $useDefaultConfigParams ? $defaults['admin-user'] : $questionHelper->ask(
+        $adminUsername = $useDefaultConfigParams ? $defaults[self::ARG_ADMIN_USERNAME] : $questionHelper->ask(
             $this->input,
             $this->output,
             $question
@@ -139,12 +145,12 @@ class InstallMagento extends AbstractSubCommand
         $question = new Question(
             sprintf(
                 '<question>Please enter the admin password:</question> <comment>[%s]</comment>: ',
-                $defaults['admin-password']
+                $defaults[self::ARG_ADMIN_PASSWORD]
             ),
-            $defaults['admin-password']
+            $defaults[self::ARG_ADMIN_PASSWORD]
         );
         $question->setValidator($this->notEmptyCallback);
-        $adminPassword = $useDefaultConfigParams ? $defaults['admin-password'] : $questionHelper->ask(
+        $adminPassword = $useDefaultConfigParams ? $defaults[self::ARG_ADMIN_PASSWORD] : $questionHelper->ask(
             $this->input,
             $this->output,
             $question
@@ -153,12 +159,12 @@ class InstallMagento extends AbstractSubCommand
         $question = new Question(
             sprintf(
                 "<question>Please enter the admin's firstname:</question> <comment>[%s]</comment>: ",
-                $defaults['admin-firstname']
+                $defaults[self::ARG_ADMIN_FIRSTNAME]
             ),
-            $defaults['admin-firstname']
+            $defaults[self::ARG_ADMIN_FIRSTNAME]
         );
         $question->setValidator($this->notEmptyCallback);
-        $adminFirstname = $useDefaultConfigParams ? $defaults['admin-firstname'] : $questionHelper->ask(
+        $adminFirstname = $useDefaultConfigParams ? $defaults[self::ARG_ADMIN_FIRSTNAME] : $questionHelper->ask(
             $this->input,
             $this->output,
             $question
@@ -167,12 +173,12 @@ class InstallMagento extends AbstractSubCommand
         $question = new Question(
             sprintf(
                 "<question>Please enter the admin's lastname:</question> <comment>[%s]</comment>: ",
-                $defaults['admin-lastname']
+                $defaults[self::ARG_ADMIN_LASTNAME]
             ),
-            $defaults['admin-lastname']
+            $defaults[self::ARG_ADMIN_LASTNAME]
         );
         $question->setValidator($this->notEmptyCallback);
-        $adminLastname = $useDefaultConfigParams ? $defaults['admin-lastname'] : $questionHelper->ask(
+        $adminLastname = $useDefaultConfigParams ? $defaults[self::ARG_ADMIN_LASTNAME] : $questionHelper->ask(
             $this->input,
             $this->output,
             $question
@@ -181,12 +187,12 @@ class InstallMagento extends AbstractSubCommand
         $question = new Question(
             sprintf(
                 "<question>Please enter the admin's email:</question> <comment>[%s]</comment>: ",
-                $defaults['admin-email']
+                $defaults[self::ARG_ADMIN_EMAIL]
             ),
-            $defaults['admin-email']
+            $defaults[self::ARG_ADMIN_EMAIL]
         );
         $question->setValidator($this->notEmptyCallback);
-        $adminEmail = $useDefaultConfigParams ? $defaults['admin-email'] : $questionHelper->ask(
+        $adminEmail = $useDefaultConfigParams ? $defaults[self::ARG_ADMIN_EMAIL] : $questionHelper->ask(
             $this->input,
             $this->output,
             $question
@@ -240,11 +246,11 @@ class InstallMagento extends AbstractSubCommand
             'use-rewrites'      => 1,
             'use-secure'        => 0,
             'use-secure-admin'  => 1,
-            'admin-user'        => $adminUsername,
-            'admin-lastname'    => $adminLastname,
-            'admin-firstname'   => $adminFirstname,
-            'admin-email'       => $adminEmail,
-            'admin-password'    => $adminPassword,
+            self::ARG_ADMIN_USERNAME    => $adminUsername,
+            self::ARG_ADMIN_LASTNAME    => $adminLastname,
+            self::ARG_ADMIN_FIRSTNAME   => $adminFirstname,
+            self::ARG_ADMIN_EMAIL       => $adminEmail,
+            self::ARG_ADMIN_PASSWORD    => $adminPassword,
             'session-save'      => $sessionSave,
             'backend-frontname' => $adminFrontname,
             'currency'          => $currency,
