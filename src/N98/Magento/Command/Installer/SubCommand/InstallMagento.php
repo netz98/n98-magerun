@@ -231,29 +231,30 @@ class InstallMagento extends AbstractSubCommand
         $this->_getDefaultSessionFolder($sessionSave);
 
         $argv = [
-            'locale'            => $locale,
-            'timezone'          => $timezone,
-            'db_host'           => $this->_prepareDbHost(),
-            'db_name'           => $this->config->getString('db_name'),
-            'db_user'           => $this->config->getString('db_user'),
-            'url'               => $baseUrl,
-            'use_rewrites'      => 1,
-            'use_secure'        => 0,
-            'use_secure_admin'  => 1,
-            'admin_username'    => $adminUsername,
-            'admin_lastname'    => $adminLastname,
-            'admin_firstname'   => $adminFirstname,
-            'admin_email'       => $adminEmail,
-            'admin_password'    => $adminPassword,
-            'session_save'      => $sessionSave,
-            'backend_frontname' => $adminFrontname,
-            'default_currency'  => $currency,
+            'locale'                     => $locale,
+            'timezone'                   => $timezone,
+            'db_host'                    => $this->_prepareDbHost(),
+            'db_name'                    => $this->config->getString('db_name'),
+            'db_user'                    => $this->config->getString('db_user'),
+            'url'                        => $baseUrl,
+            'use_rewrites'               => 1,
+            'use_secure'                 => 0,
+            'use_secure_admin'           => 1,
+            'admin_username'             => $adminUsername,
+            'admin_lastname'             => $adminLastname,
+            'admin_firstname'            => $adminFirstname,
+            'admin_email'                => $adminEmail,
+            'admin_password'             => $adminPassword,
+            'session_save'               => $sessionSave,
+            'backend_frontname'          => $adminFrontname,
+            'default_currency'           => $currency,
             'license_agreement_accepted' => 'yes',
+            'skip_url_validation'        => 'yes',
         ];
 
         $dbPass = $this->config->getString('db_pass');
         if (!empty($dbPass)) {
-            $argv['db_password'] = $dbPass;
+            $argv['db_pass'] = $dbPass;
         }
 
         if ($useDefaultConfigParams) {
