@@ -55,12 +55,12 @@ class InstallMagento extends AbstractSubCommand
         $question = new Question(
             sprintf(
                 '<question>Please enter the session save:</question> <comment>[%s]</comment>: ',
-                $defaults['session-save']
+                $defaults['session_save']
             ),
-            $defaults['session-save']
+            $defaults['session_save']
         );
 
-        $sessionSave = $useDefaultConfigParams ? $defaults['session-save'] : $questionHelper->ask(
+        $sessionSave = $useDefaultConfigParams ? $defaults['session_save'] : $questionHelper->ask(
             $this->input,
             $this->output,
             $question
@@ -125,12 +125,12 @@ class InstallMagento extends AbstractSubCommand
         $question = new Question(
             sprintf(
                 '<question>Please enter the admin username:</question> <comment>[%s]</comment>: ',
-                $defaults['admin-user']
+                $defaults['admin_username']
             ),
-            $defaults['admin-user']
+            $defaults['admin_username']
         );
         $question->setValidator($this->notEmptyCallback);
-        $adminUsername = $useDefaultConfigParams ? $defaults['admin-user'] : $questionHelper->ask(
+        $adminUsername = $useDefaultConfigParams ? $defaults['admin_username'] : $questionHelper->ask(
             $this->input,
             $this->output,
             $question
@@ -139,12 +139,12 @@ class InstallMagento extends AbstractSubCommand
         $question = new Question(
             sprintf(
                 '<question>Please enter the admin password:</question> <comment>[%s]</comment>: ',
-                $defaults['admin-password']
+                $defaults['admin_password']
             ),
-            $defaults['admin-password']
+            $defaults['admin_password']
         );
         $question->setValidator($this->notEmptyCallback);
-        $adminPassword = $useDefaultConfigParams ? $defaults['admin-password'] : $questionHelper->ask(
+        $adminPassword = $useDefaultConfigParams ? $defaults['admin_password'] : $questionHelper->ask(
             $this->input,
             $this->output,
             $question
@@ -153,12 +153,12 @@ class InstallMagento extends AbstractSubCommand
         $question = new Question(
             sprintf(
                 "<question>Please enter the admin's firstname:</question> <comment>[%s]</comment>: ",
-                $defaults['admin-firstname']
+                $defaults['admin_firstname']
             ),
-            $defaults['admin-firstname']
+            $defaults['admin_firstname']
         );
         $question->setValidator($this->notEmptyCallback);
-        $adminFirstname = $useDefaultConfigParams ? $defaults['admin-firstname'] : $questionHelper->ask(
+        $adminFirstname = $useDefaultConfigParams ? $defaults['admin_firstname'] : $questionHelper->ask(
             $this->input,
             $this->output,
             $question
@@ -167,12 +167,12 @@ class InstallMagento extends AbstractSubCommand
         $question = new Question(
             sprintf(
                 "<question>Please enter the admin's lastname:</question> <comment>[%s]</comment>: ",
-                $defaults['admin-lastname']
+                $defaults['admin_lastname']
             ),
-            $defaults['admin-lastname']
+            $defaults['admin_lastname']
         );
         $question->setValidator($this->notEmptyCallback);
-        $adminLastname = $useDefaultConfigParams ? $defaults['admin-lastname'] : $questionHelper->ask(
+        $adminLastname = $useDefaultConfigParams ? $defaults['admin_lastname'] : $questionHelper->ask(
             $this->input,
             $this->output,
             $question
@@ -181,12 +181,12 @@ class InstallMagento extends AbstractSubCommand
         $question = new Question(
             sprintf(
                 "<question>Please enter the admin's email:</question> <comment>[%s]</comment>: ",
-                $defaults['admin-email']
+                $defaults['admin_email']
             ),
-            $defaults['admin-email']
+            $defaults['admin_email']
         );
         $question->setValidator($this->notEmptyCallback);
-        $adminEmail = $useDefaultConfigParams ? $defaults['admin-email'] : $questionHelper->ask(
+        $adminEmail = $useDefaultConfigParams ? $defaults['admin_email'] : $questionHelper->ask(
             $this->input,
             $this->output,
             $question
@@ -231,40 +231,41 @@ class InstallMagento extends AbstractSubCommand
         $this->_getDefaultSessionFolder($sessionSave);
 
         $argv = [
-            'language'          => $locale,
+            'locale'            => $locale,
             'timezone'          => $timezone,
-            'db-host'           => $this->_prepareDbHost(),
-            'db-name'           => $this->config->getString('db_name'),
-            'db-user'           => $this->config->getString('db_user'),
-            'base-url'          => $baseUrl,
-            'use-rewrites'      => 1,
-            'use-secure'        => 0,
-            'use-secure-admin'  => 1,
-            'admin-user'        => $adminUsername,
-            'admin-lastname'    => $adminLastname,
-            'admin-firstname'   => $adminFirstname,
-            'admin-email'       => $adminEmail,
-            'admin-password'    => $adminPassword,
-            'session-save'      => $sessionSave,
-            'backend-frontname' => $adminFrontname,
-            'currency'          => $currency,
+            'db_host'           => $this->_prepareDbHost(),
+            'db_name'           => $this->config->getString('db_name'),
+            'db_user'           => $this->config->getString('db_user'),
+            'url'               => $baseUrl,
+            'use_rewrites'      => 1,
+            'use_secure'        => 0,
+            'use_secure_admin'  => 1,
+            'admin_username'    => $adminUsername,
+            'admin_lastname'    => $adminLastname,
+            'admin_firstname'   => $adminFirstname,
+            'admin_email'       => $adminEmail,
+            'admin_password'    => $adminPassword,
+            'session_save'      => $sessionSave,
+            'backend_frontname' => $adminFrontname,
+            'default_currency'  => $currency,
+            'license_agreement_accepted' => 'yes',
         ];
 
         $dbPass = $this->config->getString('db_pass');
         if (!empty($dbPass)) {
-            $argv['db-password'] = $dbPass;
+            $argv['db_password'] = $dbPass;
         }
 
         if ($useDefaultConfigParams) {
-            if (isset($defaults['encryption-key']) && $defaults['encryption-key'] != '') {
-                $argv['encryption-key'] = $defaults['encryption-key'];
+            if (isset($defaults['encryption_key']) && $defaults['encryption_key'] != '') {
+                $argv['encryption_key'] = $defaults['encryption_key'];
             }
-            if ($defaults['use-secure'] != '') {
-                $argv['use-secure'] = $defaults['use-secure'];
-                $argv['base-url-secure'] = str_replace('http://', 'https://', $baseUrl);
+            if ($defaults['use_secure'] != '') {
+                $argv['use_secure'] = $defaults['use_secure'];
+                $argv['secure_base_url'] = str_replace('http://', 'https://', $baseUrl);
             }
-            if ($defaults['use-rewrites'] != '') {
-                $argv['use-rewrites'] = $defaults['use-rewrites'];
+            if ($defaults['use_rewrites'] != '') {
+                $argv['use_rewrites'] = $defaults['use_rewrites'];
             }
         }
 
@@ -320,9 +321,9 @@ class InstallMagento extends AbstractSubCommand
             if ($argValue === null) {
                 $installArgs .= '--' . $argName . ' ';
             } elseif (is_bool($argValue)) {
-                $installArgs .= '--' . $argName . '=' . (int) $argValue . ' ';
+                $installArgs .= '--' . $argName . ' ' . (int) $argValue . ' ';
             } else {
-                $installArgs .= '--' . $argName . '=' . escapeshellarg($argValue) . ' ';
+                $installArgs .= '--' . $argName . ' ' . escapeshellarg($argValue) . ' ';
             }
         }
 
