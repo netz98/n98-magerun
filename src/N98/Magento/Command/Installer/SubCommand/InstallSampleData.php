@@ -27,7 +27,7 @@ class InstallSampleData extends AbstractSubCommand
         $flag = $this->getOptionalBooleanOption(
             'installSampleData',
             'Install sample data?',
-            $this->commandConfig['installation']['sample-data']
+            'no'
         );
 
         if ($flag) {

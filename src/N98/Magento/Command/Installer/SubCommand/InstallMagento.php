@@ -69,12 +69,12 @@ class InstallMagento extends AbstractSubCommand
         $question = new Question(
             sprintf(
                 '<question>Please enter the admin/backend frontname:</question> <comment>[%s]</comment> ',
-                $defaults['backend-frontname']
+                $defaults['admin_frontname']
             ),
-            $defaults['backend-frontname']
+            $defaults['admin_frontname']
         );
         $question->setValidator($this->notEmptyCallback);
-        $adminFrontname = $useDefaultConfigParams ? $defaults['backend-frontname'] : $questionHelper->ask(
+        $adminFrontname = $useDefaultConfigParams ? $defaults['admin_frontname'] : $questionHelper->ask(
             $this->input,
             $this->output,
             $question
@@ -206,7 +206,7 @@ class InstallMagento extends AbstractSubCommand
             return $url;
         };
 
-        $defaultBaseUrl = $this->commandConfig['installation']['base-url'];
+        $defaultBaseUrl = $this->commandConfig['installation']['base_url'];
         $question = new Question(
             sprintf(
                 '<question>Please enter the base url:</question> <comment>[%s]</comment>:',
@@ -246,7 +246,7 @@ class InstallMagento extends AbstractSubCommand
             'admin_email'                => $adminEmail,
             'admin_password'             => $adminPassword,
             'session_save'               => $sessionSave,
-            'backend_frontname'          => $adminFrontname,
+            'admin_frontname'          => $adminFrontname,
             'default_currency'           => $currency,
             'license_agreement_accepted' => 'yes',
             'skip_url_validation'        => 'yes',
