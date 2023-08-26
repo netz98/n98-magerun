@@ -515,10 +515,10 @@ HELP;
         try {
             $dsn = sprintf("mysql:host=%s;port=%s", $this->config['db_host'], $this->config['db_port']);
             $db = new PDO($dsn, $this->config['db_user'], $this->config['db_pass']);
-            if (!$db->query('USE ' . $this->config['db_name'])) {
+            if (!$db->query("USE `" . $this->config['db_name'] . "`")) {
                 $db->query("CREATE DATABASE `" . $this->config['db_name'] . "`");
                 $output->writeln('<info>Created database ' . $this->config['db_name'] . '</info>');
-                $db->query('USE ' . $this->config['db_name']);
+                $db->query("USE `" . $this->config['db_name'] . "`");
 
                 return $db;
             }
