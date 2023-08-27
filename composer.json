@@ -30,11 +30,11 @@
         "ext-simplexml": "*",
         "bamarni/symfony-console-autocomplete": "^1.2.0",
         "friendsofphp/php-cs-fixer": "^3.4",
-        "phing/phing": "~2.17.0",
-        "phpunit/phpunit": "^8",
-        "seld/phar-utils": "1.0.1",
         "mikey179/vfsstream": "^1.6",
-        "rector/rector": "^0.13.8"
+        "phing/phing": "~2.17.0",
+        "phpunit/phpunit": "^9",
+        "rector/rector": "^0.13.8",
+        "seld/phar-utils": "1.0.1"
     },
     "autoload": {
         "psr-4": {
