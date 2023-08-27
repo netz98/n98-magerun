@@ -112,7 +112,6 @@ class ConfigTest extends TestCase
 
     /**
      * @test
-     * @doesNotPerformAssertions
      */
     public function customCommands()
     {
