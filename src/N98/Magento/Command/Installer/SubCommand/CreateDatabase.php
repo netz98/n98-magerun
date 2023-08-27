@@ -194,20 +194,21 @@ class CreateDatabase extends AbstractSubCommand
             );
 
             $db = new \PDO($dsn, $this->config->getString('db_user'), $this->config->getString('db_pass'));
+            $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
             $dbName = $this->config->getString('db_name');
-            if (!$db->query('USE `' . $dbName . '`')) {
+
+            // Query to check if the database "foo" exists
+            $query = sprintf("SHOW DATABASES LIKE '%s'", $dbName);
+            $stmt = $db->prepare($query);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+
+            // Check if database exists
+            if (count($result) === 0) {
                 $db->query('CREATE DATABASE `' . $dbName . '`');
                 $output->writeln('<info>Created database ' . $dbName . '</info>');
                 $db->query('USE `' . $dbName . '`');
-
-                // Check DB version
-                $statement = $db->query('SELECT VERSION()');
-                $mysqlVersion = $statement->fetchColumn(0);
-                if (version_compare($mysqlVersion, '5.6.0', '<')) {
-                    throw new \Exception('MySQL Version must be >= 5.6.0');
-                }
-
                 return $db;
             }
 

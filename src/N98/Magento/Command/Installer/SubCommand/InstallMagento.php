@@ -206,14 +206,7 @@ class InstallMagento extends AbstractSubCommand
             return $url;
         };
 
-        $defaultBaseUrl = $this->commandConfig['installation']['base_url'];
-        $question = new Question(
-            sprintf(
-                '<question>Please enter the base url:</question> <comment>[%s]</comment>:',
-                $defaultBaseUrl
-            ),
-            $defaultBaseUrl
-        );
+        $question = new Question('<question>Please enter the base url:</question> ');
         $question->setValidator($validateBaseUrl);
         $baseUrl = $this->input->getOption('baseUrl') ?? $questionHelper->ask(
             $this->input,
@@ -308,7 +301,7 @@ class InstallMagento extends AbstractSubCommand
     }
 
     /**
-     * Invoke Magento PHP install script bin/magento setup:install
+     * Invoke Magento PHP install script
      *
      * @param OutputInterface $output
      * @param string $installationFolder folder where magento is installed in, must exists setup script in

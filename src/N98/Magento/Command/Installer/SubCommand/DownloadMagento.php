@@ -8,8 +8,10 @@ use N98\Util\Console\Helper\ComposerHelper;
 use N98\Util\Exec;
 use N98\Util\ProcessArguments;
 use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Process\Process;
 
@@ -41,8 +43,20 @@ class DownloadMagento extends AbstractSubCommand
         $package = $this->config['magentoVersionData'];
         $this->config->setArray('magentoPackage', $package);
 
-        if (file_exists($this->config->getString('installationFolder') . '/' . $this->getConfigDir() . '/env.php')) {
-            throw new RuntimeException('A magento installation already exists in this folder');
+        if (file_exists($this->config->getString('installationFolder') . '/app/etc/local.xml')) {
+
+            /* @var QuestionHelper $dialog */
+            $dialog = $this->command->getHelper('question');
+            $skipInstallation = $dialog->ask(
+                $this->input,
+                $this->output,
+                new ConfirmationQuestion('<question>A magento installation already exists in this folder. Skip download?</question> <comment>[y]</comment>: ', true)
+            );
+
+            if ($skipInstallation) {
+                return;
+            }
+
         }
 
         $this->composerCreateProject($package);
