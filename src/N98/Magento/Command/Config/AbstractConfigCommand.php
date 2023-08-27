@@ -114,7 +114,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
         }
 
         $this->invalidScopeId(
-            $scopeId !== (string) (int) $scopeId,
+            (string) $scopeId !== (string) (int) $scopeId,
             "Invalid scope parameter, %s is not an integer value",
             $scopeId
         );

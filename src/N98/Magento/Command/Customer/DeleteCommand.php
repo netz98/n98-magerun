@@ -35,7 +35,7 @@ class DeleteCommand extends AbstractCustomerCommand
     /**
      * @var QuestionHelper
      */
-    protected $dialog;
+    protected $questionHelper;
 
     /**
      * Set up options
@@ -80,7 +80,7 @@ HELP;
 
         $this->input = $input;
         $this->output = $output;
-        $this->dialog = $this->getHelper('question');
+        $this->questionHelper = $this->getHelperSet()->get('question');
 
         // Defaults
         $range = $all = false;
@@ -91,7 +91,7 @@ HELP;
         // Get args required
         if (!($id) && !($range) && !($all)) {
             // Delete more than one customer ?
-            $batchDelete = $this->dialog->ask(
+            $batchDelete = $this->questionHelper->ask(
                 $this->input,
                 $this->output,
                 $this->getQuestion('Delete more than 1 customer?', 'n'),
@@ -99,14 +99,14 @@ HELP;
 
             if ($batchDelete) {
                 // Batch deletion
-                $all = $this->dialog->ask(
+                $all = $this->questionHelper->ask(
                     $this->input,
                     $this->output,
                     new ConfirmationQuestion('Delete all customers?', 'n'),
                 );
 
                 if (!$all) {
-                    $range = $this->dialog->ask(
+                    $range = $this->questionHelper->ask(
                         $this->input,
                         $this->output,
                         new ConfirmationQuestion('Delete a range of customers?', 'n'),
@@ -124,7 +124,7 @@ HELP;
         if (!$range && !$all) {
             // Single customer deletion
             if (!$id) {
-                $id = $this->dialog->ask($this->input, $this->output, $this->getQuestion('Customer Id'), null);
+                $id = $this->questionHelper->ask($this->input, $this->output, $this->getQuestion('Customer Id'), null);
             }
 
             try {
@@ -149,11 +149,13 @@ HELP;
             if ($range) {
                 // Get Range
                 $ranges = [];
-                $ranges[0] = $this->dialog->ask(
+                $ranges[0] = $this->questionHelper->ask(
+                    $this->input,
                     $this->output,
                     $this->getQuestion('Range start Id', '1')->setValidator([$this, 'validateInt']),
                 );
-                $ranges[1] = $this->dialog->askAndValidate(
+                $ranges[1] = $this->questionHelper->ask(
+                    $this->input,
                     $this->output,
                     $this->getQuestion('Range end Id', '1')->setValidator([$this, 'validateInt']),
                 );
@@ -182,7 +184,7 @@ HELP;
     {
         $shouldRemove = $this->input->getOption('force');
         if (!$shouldRemove) {
-            $shouldRemove = $this->dialog->ask(
+            $shouldRemove = $this->questionHelper->ask(
                 $this->input,
                 $this->output,
                 $this->getQuestion('Are you sure?', 'n'),

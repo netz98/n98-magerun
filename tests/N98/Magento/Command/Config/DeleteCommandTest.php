@@ -38,7 +38,12 @@ class DeleteCommandTest extends TestCase
             // add multiple entries
             $commandTester = new CommandTester($setCommand);
             $commandTester->execute(
-                ['command'     => $setCommand->getName(), 'path'        => 'n98_magerun/foo/bar', '--scope'     => 'stores', '--scope-id'  => $store->getId(), 'value'       => 'store-' . $store->getId()]
+                [
+                    'command'    => $setCommand->getName(),
+                    'path'       => 'n98_magerun/foo/bar',
+                    '--scope'    => 'stores',
+                    '--scope-id' => $store->getId(),
+                    'value'      => 'store-' . $store->getId()]
             );
         }
 

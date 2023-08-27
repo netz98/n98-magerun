@@ -50,7 +50,7 @@ class MagerunCommandTester
         $this->testCase = $testCase;
 
         $testCase->assertArrayHasKey('command', $input);
-        $testCase->assertInternalType('string', $input['command']);
+        $testCase->assertIsString($input['command']);
         $this->commandName = $input['command'];
         $this->input = $input;
     }

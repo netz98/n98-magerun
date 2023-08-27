@@ -53,28 +53,28 @@ class CreateUserCommandTest extends TestCase
 
     public function testArgumentPromptsWhenNotPresent()
     {
-        $dialog = $this->getMockBuilder(QuestionHelper::class)
+        $questionHelper = $this->getMockBuilder(QuestionHelper::class)
             ->disableOriginalConstructor()
-            ->setMethods(['ask', 'askHiddenResponse'])
+            ->onlyMethods(['ask'])
             ->getMock();
 
-        $dialog->expects(self::at(0))
+        $questionHelper->expects(self::at(0))
             ->method('ask')
             ->willReturn('aydin');
 
-        $dialog->expects(self::at(1))
+        $questionHelper->expects(self::at(1))
             ->method('ask')
             ->willReturn('aydin@hotmail.co.uk');
 
-        $dialog->expects(self::at(2))
-            ->method('askHiddenResponse')
+        $questionHelper->expects(self::at(2))
+            ->method('ask')
             ->willReturn('p4ssw0rd');
 
-        $dialog->expects(self::at(3))
+        $questionHelper->expects(self::at(3))
             ->method('ask')
             ->willReturn('Aydin');
 
-        $dialog->expects(self::at(4))
+        $questionHelper->expects(self::at(4))
             ->method('ask')
             ->willReturn('Hassan');
 
@@ -132,10 +132,10 @@ class CreateUserCommandTest extends TestCase
         $command = $this->getApplication()->find($this->commandName);
 
         // We override the standard helper with our mock
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($questionHelper, 'question');
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(['command'   => $command->getName(), 'role'      => 'Administrators']);
+        $commandTester->execute(['command' => $command->getName(), 'role' => 'Administrators']);
 
         self::assertStringContainsString('User aydin successfully created', $commandTester->getDisplay());
     }
