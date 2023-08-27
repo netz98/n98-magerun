@@ -3,8 +3,8 @@
 namespace N98\Magento\Command\Admin\User;
 
 use Exception;
-use Symfony\Component\Console\Helper\DialogHelper;
 use N98\Magento\Command\TestCase;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -217,16 +217,16 @@ class DeleteUserCommandTest extends TestCase
         $application->add($this->command);
         $command = $this->getApplication()->find('admin:user:delete');
 
-        $dialog = $this->getMockBuilder(DialogHelper::class)
-            ->setMethods(['askConfirmation'])
+        $questionHelper = $this->getMockBuilder(QuestionHelper::class)
+            ->onlyMethods(['ask'])
             ->getMock();
 
-        $dialog->expects(self::once())
-            ->method('askConfirmation')
+        $questionHelper->expects(self::once())
+            ->method('ask')
             ->willReturn(true);
 
         // We override the standard helper with our mock
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($questionHelper, 'question');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command'   => $command->getName(), 'id'        => 'notauser']);
@@ -266,16 +266,16 @@ class DeleteUserCommandTest extends TestCase
         $application->add($this->command);
         $command = $this->getApplication()->find('admin:user:delete');
 
-        $dialog = $this->getMockBuilder(DialogHelper::class)
-            ->setMethods(['askConfirmation'])
+        $questionHelper = $this->getMockBuilder(QuestionHelper::class)
+            ->onlyMethods(['ask'])
             ->getMock();
 
-        $dialog->expects(self::once())
-            ->method('askConfirmation')
+        $questionHelper->expects(self::once())
+            ->method('ask')
             ->willReturn(false);
 
         // We override the standard helper with our mock
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($questionHelper, 'question');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
@@ -288,11 +288,11 @@ class DeleteUserCommandTest extends TestCase
 
     public function testIfNoIdIsPresentItIsPromptedFor()
     {
-        $dialog = $this->getMockBuilder(DialogHelper::class)
-            ->setMethods(['ask'])
+        $questionHelper = $this->getMockBuilder(QuestionHelper::class)
+            ->onlyMethods(['ask'])
             ->getMock();
 
-        $dialog->expects(self::once())
+        $questionHelper->expects(self::once())
             ->method('ask')
             ->willReturn('aydin@hotmail.co.uk');
 
@@ -327,7 +327,7 @@ class DeleteUserCommandTest extends TestCase
         $command = $this->getApplication()->find('admin:user:delete');
 
         // We override the standard helper with our mock
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($questionHelper, 'dialog');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command'   => $command->getName(), '--force'   => true]);

@@ -4,6 +4,7 @@ namespace N98\Magento\Command\Admin\User;
 
 use Symfony\Component\Console\Helper\DialogHelper;
 use N98\Magento\Command\TestCase;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -23,19 +24,19 @@ class UnlockUserCommandTest extends TestCase
 
     public function testUnlockAllUsersPromptNo()
     {
-        $dialog = $this->getMockBuilder(DialogHelper::class)
+        $questionHelper = $this->getMockBuilder(QuestionHelper::class)
             ->disableOriginalConstructor()
-            ->setMethods(['ask'])
+            ->onlyMethods(['ask'])
             ->getMock();
 
-        $dialog->expects(self::once())
+        $questionHelper->expects(self::once())
             ->method('ask')
             ->willReturn('n');
 
         $application = $this->getApplication();
         $application->add($this->getCommand());
         $command = $this->getApplication()->find('admin:user:unlock');
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($questionHelper, 'question');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command' => $command->getName()]);
@@ -45,19 +46,19 @@ class UnlockUserCommandTest extends TestCase
 
     public function testUnlockAllUsersPromptYes()
     {
-        $dialog = $this->getMockBuilder(DialogHelper::class)
+        $questionHelperMock = $this->getMockBuilder(QuestionHelper::class)
             ->disableOriginalConstructor()
-            ->setMethods(['ask'])
+            ->onlyMethods(['ask'])
             ->getMock();
 
-        $dialog->expects(self::once())
+        $questionHelperMock->expects(self::once())
             ->method('ask')
             ->willReturn('y');
 
         $application = $this->getApplication();
         $application->add($this->getCommand());
         $command = $this->getApplication()->find('admin:user:unlock');
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($questionHelperMock, 'question');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command' => $command->getName()]);

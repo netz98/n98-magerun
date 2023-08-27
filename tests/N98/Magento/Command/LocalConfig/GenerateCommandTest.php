@@ -5,6 +5,7 @@
 namespace N98\Magento\Command\LocalConfig;
 
 use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Output\StreamOutput;
 use InvalidArgumentException;
 use ReflectionClass;
@@ -237,12 +238,12 @@ class GenerateCommandTest extends TestCase
 
         unset($options[$param]);
 
-        $dialog = $this->getMockBuilder(DialogHelper::class)
+        $questionHelperMock = $this->getMockBuilder(QuestionHelper::class)
             ->disableOriginalConstructor()
-            ->setMethods(['ask'])
+            ->onlyMethods(['ask'])
             ->getMock();
 
-        $dialog->expects(self::once())
+        $questionHelperMock->expects(self::once())
             ->method('ask')
             ->with(
                 self::isInstanceOf(StreamOutput::class),
@@ -250,7 +251,7 @@ class GenerateCommandTest extends TestCase
             )
             ->willReturn(null);
 
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($questionHelperMock, 'question');
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -275,9 +276,9 @@ class GenerateCommandTest extends TestCase
     public function testExecuteInteractively()
     {
         $command = $this->getApplication()->find('local-config:generate');
-        $dialog = $this->getMockBuilder(DialogHelper::class)
+        $questionHelperMock = $this->getMockBuilder(QuestionHelper::class)
             ->disableOriginalConstructor()
-            ->setMethods(['ask'])
+            ->onlyMethods(['ask'])
             ->getMock();
 
         $inputs = [
@@ -291,7 +292,7 @@ class GenerateCommandTest extends TestCase
 
         foreach ($inputs as $i => $input) {
             [$prompt, $returnValue] = $input;
-            $dialog->expects(self::at($i))
+            $questionHelperMock->expects(self::at($i))
                 ->method('ask')
                 ->with(
                     self::isInstanceOf(StreamOutput::class),
@@ -300,7 +301,7 @@ class GenerateCommandTest extends TestCase
                 ->willReturn($returnValue);
         }
 
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($questionHelperMock, 'dialog');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command' => $command->getName()]);
@@ -321,12 +322,12 @@ class GenerateCommandTest extends TestCase
     public function testIfPasswordOmittedItIsWrittenBlank()
     {
         $command = $this->getApplication()->find('local-config:generate');
-        $dialog = $this->getMockBuilder(DialogHelper::class)
+        $questionHelperMock = $this->getMockBuilder(QuestionHelper::class)
             ->disableOriginalConstructor()
-            ->setMethods(['ask'])
+            ->onlyMethods(['ask'])
             ->getMock();
 
-        $dialog->expects(self::once())
+        $questionHelperMock->expects(self::once())
             ->method('ask')
             ->with(
                 self::isInstanceOf(StreamOutput::class),
@@ -334,7 +335,7 @@ class GenerateCommandTest extends TestCase
             )
             ->willReturn(null);
 
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($questionHelperMock, 'question');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -366,12 +367,12 @@ class GenerateCommandTest extends TestCase
     public function testCdataTagIsNotAddedIfPresentInInput()
     {
         $command = $this->getApplication()->find('local-config:generate');
-        $dialog = $this->getMockBuilder(DialogHelper::class)
+        $questionHelperMock = $this->getMockBuilder(QuestionHelper::class)
             ->disableOriginalConstructor()
-            ->setMethods(['ask'])
+            ->onlyMethods(['ask'])
             ->getMock();
 
-        $dialog->expects(self::once())
+        $questionHelperMock->expects(self::once())
             ->method('ask')
             ->with(
                 self::isInstanceOf(StreamOutput::class),
@@ -379,7 +380,7 @@ class GenerateCommandTest extends TestCase
             )
             ->willReturn('CDATAdatabasehost');
 
-        $command->getHelperSet()->set($dialog, 'dialog');
+        $command->getHelperSet()->set($questionHelperMock, 'question');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
