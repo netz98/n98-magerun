@@ -2,8 +2,8 @@
 
 namespace N98\Magento\Command\Admin\User;
 
-use Symfony\Component\Console\Helper\DialogHelper;
 use N98\Magento\Command\TestCase;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -250,7 +250,7 @@ class ChangeStatusCommandTest extends TestCase
     public function testIfNoIdIsPresentItIsPromptedFor()
     {
         $userEmail = 'aydin@hotmail.co.uk';
-        $dialog = $this->getMockBuilder(DialogHelper::class)
+        $dialog = $this->getMockBuilder(QuestionHelper::class)
             ->disableOriginalConstructor()
             ->setMethods(['ask'])
             ->getMock();
