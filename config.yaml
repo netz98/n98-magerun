@@ -604,6 +604,13 @@ commands:
             - ctype
             - gd
 
+      db:
+        host: localhost
+        user: root
+        pass:
+        port: 3306
+        name: magento
+
       defaults:
         currency: EUR
         locale: de_DE
