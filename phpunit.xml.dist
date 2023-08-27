@@ -1,35 +1,22 @@
-<phpunit backupGlobals="true"
-         bootstrap="tests/bootstrap.php"
-         backupStaticAttributes="false"
-         cacheTokens="false"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         forceCoversAnnotation="false"
-         mapTestClassNameToCoveredClassName="false"
-         processIsolation="false"
-         stopOnError="false"
-         stopOnFailure="false"
-         stopOnIncomplete="false"
-         stopOnSkipped="false">
-    <testsuites>
-        <testsuite name="n98-magerun-tests">
-            <directory>./tests</directory>
-            <exclude>tests/N98/Magento/Command/Installer/UninstallCommandTest.php</exclude>
-        </testsuite>
-        <!-- remove uninstall test
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="true" bootstrap="tests/bootstrap.php" backupStaticAttributes="false" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" forceCoversAnnotation="false" processIsolation="false" stopOnError="false" stopOnFailure="false" stopOnIncomplete="false" stopOnSkipped="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage includeUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+    <exclude>
+      <file>src/bootstrap.php</file>
+    </exclude>
+  </coverage>
+  <testsuites>
+    <testsuite name="n98-magerun-tests">
+      <directory>./tests</directory>
+      <exclude>tests/N98/Magento/Command/Installer/UninstallCommandTest.php</exclude>
+    </testsuite>
+    <!-- remove uninstall test
         <testsuite name="n98-magerun-magento-uninstall-tests">
           <file>./tests/N98/Magento/Command/Installer/UninstallCommandTest.php</file>
         </testsuite>
         remove uninstall test -->
-    </testsuites>
-    <filter>
-        <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src</directory>
-            <exclude>
-                <file>src/bootstrap.php</file>
-            </exclude>
-        </whitelist>
-    </filter>
+  </testsuites>
 </phpunit>
