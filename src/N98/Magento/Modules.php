@@ -88,7 +88,7 @@ class Modules implements IteratorAggregate, Countable
      *
      * @return ArrayIterator|array[]
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->list);
     }
@@ -100,7 +100,7 @@ class Modules implements IteratorAggregate, Countable
      *
      * @return int The custom count as an integer.
      */
-    public function count()
+    public function count(): int
     {
         return count($this->list);
     }
