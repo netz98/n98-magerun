@@ -17,6 +17,6 @@ class ListCommandTest extends TestCase
         $commandTester->execute(['command' => $command->getName()]);
 
         // check if i.e. at least one index is listed
-        self::assertRegExp('/catalog_product_flat/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/catalog_product_flat/', $commandTester->getDisplay());
     }
 }

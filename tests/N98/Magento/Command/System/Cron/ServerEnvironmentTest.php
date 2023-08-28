@@ -26,7 +26,7 @@ class ServerEnvironmentTest extends TestCase
         $store = Mage::app()->getStore(null);
         $actual = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
         self::assertIsString($actual);
-        self::assertRegExp('~/(ide-phpunit.php|phpunit)/$~', $actual);
+        self::assertMatchesRegularExpression('~/(ide-phpunit.php|phpunit)/$~', $actual);
     }
 
     /**
@@ -50,6 +50,6 @@ class ServerEnvironmentTest extends TestCase
 
         $actual = Mage::app()->getStore(null)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
         self::assertIsString($actual);
-        self::assertRegExp('~/(ide-phpunit.php|phpunit)/$~', $actual);
+        self::assertMatchesRegularExpression('~/(ide-phpunit.php|phpunit)/$~', $actual);
     }
 }

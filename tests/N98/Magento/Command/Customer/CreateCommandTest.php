@@ -24,7 +24,7 @@ class CreateCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $options = ['command'   => $command->getName(), 'email'     => $generatedEmail, 'password'  => 'password123', 'firstname' => 'John', 'lastname'  => 'Doe', 'website'   => $website->getCode()];
         $commandTester->execute($options);
-        self::assertRegExp('/Customer ' . $generatedEmail . ' successfully created/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/Customer ' . $generatedEmail . ' successfully created/', $commandTester->getDisplay());
 
         // Format option
         $commandTester = new CommandTester($command);
@@ -60,7 +60,7 @@ class CreateCommandTest extends TestCase
         $options = ['command'   => $command->getName(), 'email'     => $generatedEmail, 'password'  => 'pass', 'firstname' => 'John', 'lastname'  => 'Doe'];
         $commandTester = new CommandTester($command);
         $commandTester->execute($options);
-        self::assertRegExp('/The password must have at least 6 characters. Leading or trailing spaces will be ignored./', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/The password must have at least 6 characters. Leading or trailing spaces will be ignored./', $commandTester->getDisplay());
     }
 
     /**

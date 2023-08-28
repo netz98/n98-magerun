@@ -23,8 +23,8 @@ class DummyCommandTest extends TestCase
             ['command'                    => $command->getName(), 'store-id'                   => 1, 'children-categories-number' => 1, 'category-name-prefix'       => 'My Awesome Category', 'category-number'            => 1]
         );
 
-        self::assertRegExp('/CATEGORY: \'My Awesome Category (.+)\' WITH ID: \'(.+)\' CREATED!/', $commandTester->getDisplay());
-        self::assertRegExp('/CATEGORY CHILD: \'My Awesome Category (.+)\' WITH ID: \'(.+)\' CREATED!/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/CATEGORY: \'My Awesome Category (.+)\' WITH ID: \'(.+)\' CREATED!/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/CATEGORY CHILD: \'My Awesome Category (.+)\' WITH ID: \'(.+)\' CREATED!/', $commandTester->getDisplay());
 
         // Check if the category is created correctly
         $match_parent = "";

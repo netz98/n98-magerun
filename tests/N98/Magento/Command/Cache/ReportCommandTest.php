@@ -18,9 +18,9 @@ class ReportCommandTest extends TestCase
             ['command' => $command->getName(), '--tags'  => true, '--mtime' => true]
         );
 
-        self::assertRegExp('/ID/', $commandTester->getDisplay());
-        self::assertRegExp('/EXPIRE/', $commandTester->getDisplay());
-        self::assertRegExp('/MTIME/', $commandTester->getDisplay());
-        self::assertRegExp('/TAGS/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/ID/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/EXPIRE/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/MTIME/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/TAGS/', $commandTester->getDisplay());
     }
 }

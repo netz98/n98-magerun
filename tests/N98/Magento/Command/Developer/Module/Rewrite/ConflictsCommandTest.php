@@ -81,7 +81,7 @@ class ConflictsCommandTest extends TestCase
         $commandMock = $this->getMockBuilder(ConflictsCommand::class)
             ->setMockClassName('ConflictsCommandMock')
             ->enableOriginalClone()
-            ->setMethods(['loadRewrites'])
+            ->onlyMethods(['loadRewrites'])
             ->getMock();
         $this->getApplication()->add($commandMock);
         $commandMock

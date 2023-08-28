@@ -22,7 +22,7 @@ class DummyCommandTest extends TestCase
             ['command'       => $command->getName(), 'locale'        => "en_US", 'attribute-id'  => 92, 'values-type'   => 'int', 'values-number' => 1]
         );
 
-        self::assertRegExp('/ATTRIBUTE VALUE: \'(.+)\' ADDED!/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/ATTRIBUTE VALUE: \'(.+)\' ADDED!/', $commandTester->getDisplay());
     }
 
     public function testmanageArguments()

@@ -18,7 +18,7 @@ class BaseUrlListCommandTest extends TestCase
             ['command' => $command->getName()]
         );
 
-        self::assertRegExp('/secure_baseurl/', $commandTester->getDisplay());
-        self::assertRegExp('/unsecure_baseurl/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/secure_baseurl/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/unsecure_baseurl/', $commandTester->getDisplay());
     }
 }

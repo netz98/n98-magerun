@@ -18,13 +18,13 @@ class TemplateHintsCommandTest extends TestCase
         $commandTester->execute(
             ['command'  => $command->getName(), '--on'     => true, 'store'    => 'admin']
         );
-        self::assertRegExp('/Template Hints enabled/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/Template Hints enabled/', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             ['command'  => $command->getName(), '--off'    => true, 'store'    => 'admin']
         );
 
-        self::assertRegExp('/Template Hints disabled/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/Template Hints disabled/', $commandTester->getDisplay());
     }
 }

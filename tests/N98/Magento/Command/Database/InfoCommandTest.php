@@ -16,7 +16,7 @@ class InfoCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command' => $command->getName()]);
 
-        self::assertRegExp('/PDO-Connection-String/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/PDO-Connection-String/', $commandTester->getDisplay());
     }
 
     public function testExecuteWithSettingArgument()
@@ -30,7 +30,7 @@ class InfoCommandTest extends TestCase
             ['command' => $command->getName(), 'setting' => 'MySQL-Cli-String']
         );
 
-        self::assertNotRegExp('/MySQL-Cli-String/', $commandTester->getDisplay());
+        self::assertDoesNotMatchRegularExpression('/MySQL-Cli-String/', $commandTester->getDisplay());
         self::assertStringContainsString('mysql -h', $commandTester->getDisplay());
     }
 }

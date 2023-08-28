@@ -121,7 +121,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $display = $this->getMagerunTester($command)->getDisplay();
 
-        self::assertRegExp($pattern, $display, $message);
+        self::assertMatchesRegularExpression($pattern, $display, $message);
     }
 
     /**

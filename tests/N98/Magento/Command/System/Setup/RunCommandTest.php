@@ -18,6 +18,6 @@ class RunCommandTest extends TestCase
             ['command' => $command->getName()]
         );
 
-        self::assertRegExp('/done/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/done/', $commandTester->getDisplay());
     }
 }

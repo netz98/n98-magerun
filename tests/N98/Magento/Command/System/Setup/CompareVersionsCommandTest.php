@@ -19,11 +19,11 @@ class CompareVersionsCommandTest extends TestCase
             ['command' => $command->getName()]
         );
 
-        self::assertRegExp('/Setup/', $commandTester->getDisplay());
-        self::assertRegExp('/Module/', $commandTester->getDisplay());
-        self::assertRegExp('/DB/', $commandTester->getDisplay());
-        self::assertRegExp('/Data/', $commandTester->getDisplay());
-        self::assertRegExp('/Status/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/Setup/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/Module/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/DB/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/Data/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/Status/', $commandTester->getDisplay());
     }
 
     public function testJunit()

@@ -52,7 +52,7 @@ class StatusCommandTest extends TestCase
     public function testRounding()
     {
         $commandTester = $this->getCommand(['--format'   => 'csv', '--rounding' => '2', 'search'     => '%size%']);
-        self::assertRegExp(
+        self::assertMatchesRegularExpression(
             '~Innodb_page_size,[0-9\.]+K,~',
             $commandTester->getDisplay()
         );

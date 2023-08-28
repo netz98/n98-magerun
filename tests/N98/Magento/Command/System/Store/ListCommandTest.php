@@ -16,7 +16,7 @@ class ListCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command' => $command->getName()]);
 
-        self::assertRegExp('/id/', $commandTester->getDisplay());
-        self::assertRegExp('/code/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/id/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/code/', $commandTester->getDisplay());
     }
 }

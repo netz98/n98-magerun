@@ -18,7 +18,7 @@ class RunCommandTest extends TestCase
             ['command' => $command->getName(), 'job'     => 'log_clean']
         );
 
-        self::assertRegExp('/Run Mage_Log_Model_Cron::logClean done/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/Run Mage_Log_Model_Cron::logClean done/', $commandTester->getDisplay());
     }
 
     /**
@@ -35,6 +35,6 @@ class RunCommandTest extends TestCase
             ['command' => $command->getName(), 'job'     => 'log_clean']
         );
 
-        self::assertRegExp('/Run Mage_Log_Model_Cron::logClean done/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/Run Mage_Log_Model_Cron::logClean done/', $commandTester->getDisplay());
     }
 }

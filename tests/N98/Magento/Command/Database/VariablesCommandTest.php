@@ -70,7 +70,7 @@ class VariablesCommandTest extends TestCase
             self::assertStringContainsString('innodb_force_load_corrupted', $display);
         }
         self::assertStringContainsString('innodb_log_file_size', $display);
-        self::assertRegExp('~innodb_(?:file|read)_io_threads~', $display);
+        self::assertMatchesRegularExpression('~innodb_(?:file|read)_io_threads~', $display);
     }
 
     /**
@@ -84,11 +84,11 @@ class VariablesCommandTest extends TestCase
 
         $display = $commandTester->getDisplay();
 
-        self::assertRegExp('~myisam_max_sort_file_size,[0-9\.]+[A-Z]~', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('~myisam_max_sort_file_size,[0-9\.]+[A-Z]~', $commandTester->getDisplay());
 
         // max_binlog_stmt_cache_size Introduced in 5.5.9
         if (-1 < version_compare($dbHelper->getMysqlVariable('version'), '5.5.9')) {
-            self::assertRegExp('~max_binlog_stmt_cache_size,[0-9\.]+[A-Z]~', $display);
+            self::assertMatchesRegularExpression('~max_binlog_stmt_cache_size,[0-9\.]+[A-Z]~', $display);
         }
     }
 }
