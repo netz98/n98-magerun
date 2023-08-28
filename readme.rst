@@ -2,6 +2,8 @@
 netz98 magerun CLI tools for Magento 1
 ======================================
 
+.. image:: .github/doc/magerun-logo.png
+
 The n98 magerun cli tools provides some handy tools to work with Magento from command line.
 
 .. image:: https://badges.gitter.im/netz98/magerun.svg
@@ -12,7 +14,7 @@ Build Status
 ------------
 
 +------------------------+-----------------------------------------------------------------------------------------------+
-| **Latest Release**     | .. image:: https://img.shields.io/maintenance/yes/2022.svg                                    | 
+| **Latest Release**     | .. image:: https://img.shields.io/maintenance/yes/2021.svg                                    |
 |                        | .. image:: https://travis-ci.org/netz98/n98-magerun.png?branch=master                         |
 |                        |    :target: https://travis-ci.org/netz98/n98-magerun                                          |
 |                        | .. image:: https://scrutinizer-ci.com/g/netz98/n98-magerun/badges/quality-score.png?b=master  |
