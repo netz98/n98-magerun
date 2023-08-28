@@ -21,7 +21,7 @@ $timestamp = $_SERVER['argv'][1];
 # seld/phar-utils via build requirements
 require_once $projectDir . '/vendor/seld/phar-utils/src/Timestamps.php';
 
-$pharFilepath = $projectDir . '/n98-magerun2.phar';
+$pharFilepath = $projectDir . '/n98-magerun.phar';
 
 if (!is_file($pharFilepath) || !is_readable($pharFilepath)) {
     throw new RuntimeException(sprintf('Is not a phar or not readable: %s', var_export($pharFilepath, true)));

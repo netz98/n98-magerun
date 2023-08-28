@@ -43,7 +43,7 @@ build_dir="build/output"
 
 echo "$0 executed in ${base_dir}"
 
-trap exit_trap EXIT
+#trap exit_trap EXIT
 
 rm -rf "${build_dir}"
 if [[ -d "${build_dir}" ]]; then
@@ -112,7 +112,6 @@ php -f "${phing_bin}" -dphar.readonly=0 -- \
   dist_clean
 
 LAST_COMMIT_TIMESTAMP="$(git log --format=format:%ct HEAD -1)"
-php -f build/phar/phar-timestamp.php -- $LAST_COMMIT_TIMESTAMP
 
 php -f "${phar}" -- --version
 ls -al "${phar}"
@@ -120,6 +119,8 @@ ls -al "${phar}"
 cd -
 cp -vp "${build_dir}"/"${phar}" "${phar}"
 rm -rf "${build_dir}"
+
+php -f build/phar/phar-timestamp.php -- $LAST_COMMIT_TIMESTAMP
 
 trap - EXIT
 
