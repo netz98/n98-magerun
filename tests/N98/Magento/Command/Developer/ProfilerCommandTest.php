@@ -18,13 +18,13 @@ class ProfilerCommandTest extends TestCase
         $commandTester->execute(
             ['command'  => $command->getName(), '--global' => true, '--on'     => true]
         );
-        self::assertRegExp('/Profiler enabled/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/Profiler enabled/', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             ['command'  => $command->getName(), '--global' => true, '--off'    => true]
         );
 
-        self::assertRegExp('/Profiler disabled/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/Profiler disabled/', $commandTester->getDisplay());
     }
 }

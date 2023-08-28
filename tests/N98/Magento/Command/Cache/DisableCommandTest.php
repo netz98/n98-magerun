@@ -18,7 +18,7 @@ class DisableCommandTest extends TestCase
             $commandTester = new CommandTester($command);
             $commandTester->execute(['command' => $command->getName()]);
 
-            self::assertRegExp('/Caches disabled/', $commandTester->getDisplay());
+            self::assertMatchesRegularExpression('/Caches disabled/', $commandTester->getDisplay());
         }
     }
 
@@ -34,8 +34,8 @@ class DisableCommandTest extends TestCase
                 ['command' => $command->getName(), 'code'    => 'eav,config']
             );
 
-            self::assertRegExp('/Cache config disabled/', $commandTester->getDisplay());
-            self::assertRegExp('/Cache eav disabled/', $commandTester->getDisplay());
+            self::assertMatchesRegularExpression('/Cache config disabled/', $commandTester->getDisplay());
+            self::assertMatchesRegularExpression('/Cache eav disabled/', $commandTester->getDisplay());
         }
     }
 }

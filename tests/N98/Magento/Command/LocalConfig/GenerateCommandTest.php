@@ -145,7 +145,7 @@ class GenerateCommandTest extends TestCase
         self::assertStringContainsString('<dbname><![CDATA[my_db_name]]></dbname>', $fileContent);
         self::assertStringContainsString('<session_save><![CDATA[my_session_save]]></session_save>', $fileContent);
         self::assertStringContainsString('<frontName><![CDATA[my_admin_frontname]]></frontName>', $fileContent);
-        self::assertRegExp('/<key><!\[CDATA\[[a-f0-9]{32}\]\]><\/key>/', $fileContent);
+        self::assertMatchesRegularExpression('/<key><!\[CDATA\[[a-f0-9]{32}\]\]><\/key>/', $fileContent);
 
         $xml = \simplexml_load_file($this->configFile);
         self::assertIsNotBool($xml);

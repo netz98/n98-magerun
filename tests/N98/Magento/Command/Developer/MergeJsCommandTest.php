@@ -18,13 +18,13 @@ class MergeJsCommandTest extends TestCase
         $commandTester->execute(
             ['command'  => $command->getName(), '--on'     => true, 'store'    => 'admin']
         );
-        self::assertRegExp('/JS Merging enabled/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/JS Merging enabled/', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             ['command'  => $command->getName(), '--off'    => true, 'store'    => 'admin']
         );
 
-        self::assertRegExp('/JS Merging disabled/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/JS Merging disabled/', $commandTester->getDisplay());
     }
 }

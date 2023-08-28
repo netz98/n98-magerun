@@ -21,7 +21,7 @@ class ViewCommandTest extends TestCase
             ['command' => $command->getName(), 'id'      => 'n98-magerun-unittest']
         );
 
-        self::assertRegExp('/TEST n98-magerun/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/TEST n98-magerun/', $commandTester->getDisplay());
     }
 
     public function testExecuteUnserialize()

@@ -39,8 +39,8 @@ class DumpCommandTest extends TestCase
             ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--compression'  => 'gz']
         );
 
-        self::assertRegExp('/mysqldump/', $commandTester->getDisplay());
-        self::assertRegExp('/\.sql/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/mysqldump/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/\.sql/', $commandTester->getDisplay());
         self::assertStringContainsString(".sql.gz", $commandTester->getDisplay());
     }
 
@@ -100,11 +100,11 @@ class DumpCommandTest extends TestCase
         $dbConfig = $this->getDatabaseConnection()->getConfig();
         $db = $dbConfig['dbname'];
 
-        self::assertRegExp("/--ignore-table=$db.customer_entity/", $commandTester->getDisplay());
-        self::assertRegExp("/--ignore-table=$db.customer_address_entity/", $commandTester->getDisplay());
-        self::assertRegExp("/--ignore-table=$db.sales_flat_order/", $commandTester->getDisplay());
-        self::assertRegExp("/--ignore-table=$db.sales_flat_order_item/", $commandTester->getDisplay());
-        self::assertRegExp("/--ignore-table=$db.sales_flat_order_item/", $commandTester->getDisplay());
+        self::assertMatchesRegularExpression("/--ignore-table=$db.customer_entity/", $commandTester->getDisplay());
+        self::assertMatchesRegularExpression("/--ignore-table=$db.customer_address_entity/", $commandTester->getDisplay());
+        self::assertMatchesRegularExpression("/--ignore-table=$db.sales_flat_order/", $commandTester->getDisplay());
+        self::assertMatchesRegularExpression("/--ignore-table=$db.sales_flat_order_item/", $commandTester->getDisplay());
+        self::assertMatchesRegularExpression("/--ignore-table=$db.sales_flat_order_item/", $commandTester->getDisplay());
         self::assertStringNotContainsString("not_existing_table_1", $commandTester->getDisplay());
         self::assertStringContainsString(".sql.gz", $commandTester->getDisplay());
 
@@ -132,7 +132,7 @@ class DumpCommandTest extends TestCase
         $commandTester->execute(
             ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--exclude'      => 'core_config_data', '--compression'  => 'gzip']
         );
-        self::assertRegExp("/--ignore-table=$db\.core_config_data/", $commandTester->getDisplay());
+        self::assertMatchesRegularExpression("/--ignore-table=$db\.core_config_data/", $commandTester->getDisplay());
 
         /**
          * Include
@@ -141,8 +141,8 @@ class DumpCommandTest extends TestCase
         $commandTester->execute(
             ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--include'      => 'core_config_data', '--compression'  => 'gzip']
         );
-        self::assertNotRegExp("/--ignore-table=$db\.core_config_data/", $commandTester->getDisplay());
-        self::assertRegExp("/--ignore-table=$db\.catalog_product_entity/", $commandTester->getDisplay());
+        self::assertDoesNotMatchRegularExpression("/--ignore-table=$db\.core_config_data/", $commandTester->getDisplay());
+        self::assertMatchesRegularExpression("/--ignore-table=$db\.catalog_product_entity/", $commandTester->getDisplay());
     }
 
     public function testIncludeExcludeMutualExclusivity()
@@ -170,7 +170,7 @@ class DumpCommandTest extends TestCase
         if ($dumpFile->isReadable()) {
             self::assertTrue(unlink($dumpFile), 'Precondition to unlink that the file does not exists');
         }
-        self::assertNotIsReadable((string)$dumpFile, 'Precondition that the file does not exists');
+        self::assertIsNotReadable((string)$dumpFile, 'Precondition that the file does not exists');
 
         $command = $this->getCommand();
         $commandTester = new CommandTester($command);

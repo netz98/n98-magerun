@@ -24,7 +24,7 @@ class RemoveCommandTest extends TestCase
             ->method('delete')
             ->willReturn(1);
 
-        $coreResource = $this->createMock('\Mage_Core_Model_Resource');
+        $coreResource = $this->createMock(\Mage_Core_Model_Resource::clas);
         $coreResource->expects(self::once())
             ->method('getConnection')
             ->willReturn($mockAdapter);

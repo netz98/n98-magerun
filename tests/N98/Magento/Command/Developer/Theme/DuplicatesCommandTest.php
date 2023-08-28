@@ -46,6 +46,6 @@ class DuplicatesCommandTest extends TestCase
         }
         $pattern .= '~';
 
-        self::assertRegExp($pattern, $haystack);
+        self::assertMatchesRegularExpression($pattern, $haystack);
     }
 }

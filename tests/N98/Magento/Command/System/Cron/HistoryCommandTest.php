@@ -18,6 +18,6 @@ class HistoryCommandTest extends TestCase
             ['command' => $command->getName()]
         );
 
-        self::assertRegExp('/Last executed jobs/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/Last executed jobs/', $commandTester->getDisplay());
     }
 }

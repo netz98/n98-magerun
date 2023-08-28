@@ -16,10 +16,10 @@ class CheckCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command' => $command->getName()]);
 
-        self::assertRegExp('/SETTINGS/', $commandTester->getDisplay());
-        self::assertRegExp('/FILESYSTEM/', $commandTester->getDisplay());
-        self::assertRegExp('/PHP/', $commandTester->getDisplay());
-        self::assertRegExp('/SECURITY/', $commandTester->getDisplay());
-        self::assertRegExp('/MYSQL/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/SETTINGS/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/FILESYSTEM/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/PHP/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/SECURITY/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/MYSQL/', $commandTester->getDisplay());
     }
 }

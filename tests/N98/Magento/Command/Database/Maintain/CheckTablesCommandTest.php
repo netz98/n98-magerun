@@ -21,11 +21,11 @@ class CheckTablesCommandTest extends TestCase
         );
         self::assertStringContainsString('catalogsearch_fulltext,check,quick,OK', $commandTester->getDisplay());
         $timeRegex = '"\s+[0-9]+\srows","[0-9\.]+\ssecs"';
-        self::assertRegExp(
+        self::assertMatchesRegularExpression(
             '~catalogsearch_query,"ENGINE InnoDB",' . $timeRegex . '~',
             $commandTester->getDisplay()
         );
-        self::assertRegExp(
+        self::assertMatchesRegularExpression(
             '~catalogsearch_result,"ENGINE InnoDB",' . $timeRegex . '~',
             $commandTester->getDisplay()
         );
