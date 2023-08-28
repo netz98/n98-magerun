@@ -13,25 +13,25 @@
         "magerun"
     ],
     "require": {
-        "composer/composer": "^1.3.0",
+        "composer/composer": "^1.10.0",
         "fzaninotto/faker": "~1.4",
         "n98/junit-xml": "~1.0",
         "php": ">=5.4.0",
         "psy/psysh": "~0.4",
-        "symfony/console": "~2.3",
+        "symfony/console": "~4.4",
         "symfony/event-dispatcher": "~4.4",
         "symfony/finder": "~4.4",
         "symfony/process": "~4.4",
-        "symfony/validator": "~2.3",
-        "symfony/yaml": "~2.3",
+        "symfony/validator": "~4.4",
+        "symfony/yaml": "~4.4",
         "twig/twig": "~2.13"
     },
     "require-dev": {
         "ext-simplexml": "*",
         "bamarni/symfony-console-autocomplete": "^1.2.0",
-        "friendsofphp/php-cs-fixer": "~2.2.20",
+        "friendsofphp/php-cs-fixer": "^2.19.3",
         "phing/phing": "~2.17.0",
-        "phpunit/phpunit": "^6",
+        "phpunit/phpunit": "^8",
         "seld/phar-utils": "1.0.1",
         "mikey179/vfsstream": "^1.6"
     },
@@ -60,7 +60,7 @@
     ],
     "config": {
         "platform": {
-            "php": "7.2.0"
+            "php": "7.4.0"
         }
     }
 }
