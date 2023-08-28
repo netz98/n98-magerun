@@ -1,0 +1,47 @@
+name: Test Magento Open Source 1.9 with PHP 7.4
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: yaml
+          coverage: none
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/composer
+            vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Start MySQL
+        run: sudo systemctl start mysql.service
+
+      - name: Setup Test Database
+        run: |
+          test_setup_db_pass=root \
+          test_setup_magento_version=1.9 \
+          build/local/test_setup.sh
+
+      - name: Run tests
+        run: php -f vendor/phpunit/phpunit/phpunit
+
+      - name: Report coverage
+        uses: codecov/codecov-action@v2
+        with:
+          file: ./build/coverage/clover.xml # Or your specific coverage file
