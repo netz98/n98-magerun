@@ -170,576 +170,387 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
+      - name: openmage-20.0.20
+        package: openmage/magento-lts
+        version: 20.0.20
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.0.19
+        package: openmage/magento-lts
+        version: 20.0.19
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.0.18
+        package: openmage/magento-lts
+        version: 20.0.18
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.0.17
+        package: openmage/magento-lts
+        version: 20.0.17
+        extra:
+          sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.16
+        package: openmage/magento-lts
         version: 20.0.16
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.16.zip
-          type: zip
-          shasum: 27e768cdc4ab10b48d532e65363f6567724e6dbb
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.15
+        package: openmage/magento-lts
         version: 20.0.15
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.15.zip
-          type: zip
-          shasum: a4ae4520893e6016491fbd6af1d49658351ca4b3
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.14
+        package: openmage/magento-lts
         version: 20.0.14
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.14.zip
-          type: zip
-          shasum: 15172228925d2f03db00712e591f14b15210bea1
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.13
+        package: openmage/magento-lts
         version: 20.0.13
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.13.zip
-          type: zip
-          shasum: 797c0d967569c50b0916866aad53e4ddead9a788
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.12
+        package: openmage/magento-lts
         version: 20.0.12
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.12.zip
-          type: zip
-          shasum: be32223b4eaad1952642a47bd21eb628a6437844
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.11
+        package: openmage/magento-lts
         version: 20.0.11
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.11.zip
-          type: zip
-          shasum: 354e29cf663ddcddd4fc9f9b65b43890607d9301
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.10
+        package: openmage/magento-lts
         version: 20.0.10
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.10.zip
-          type: zip
-          shasum: 2702a588b6d8668707b1a785f9b634d1fdb4ec01
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.8
+        package: openmage/magento-lts
         version: 20.0.8
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.8.zip
-          type: zip
-          shasum: 8780144e9a362bd87255bdfdac837cd7de1ee046
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.7
+        package: openmage/magento-lts
         version: 20.0.7
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.7.zip
-          type: zip
-          shasum: 9d3996b300ce325ce2d8ec302df351f22a47098d
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.6
+        package: openmage/magento-lts
         version: 20.0.6
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.6.zip
-          type: zip
-          shasum: d404d4d927abc79f2fd418999beb77aa99fee85c
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.5
+        package: openmage/magento-lts
         version: 20.0.5
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.5.zip
-          type: zip
-          shasum: cc38fa0da68ab933b7b22ccd529b9184589dea08
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.4
+        package: openmage/magento-lts
         version: 20.0.4
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.4.zip
-          type: zip
-          shasum: 1746da6779554048028e5f342a9a95ba6b48ec19
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.3
+        package: openmage/magento-lts
         version: 20.0.3
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.3.zip
-          type: zip
-          shasum: f7e9241c8b246518d84942de78c031228cb4e3f1
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.2
+        package: openmage/magento-lts
         version: 20.0.2
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.2.zip
-          type: zip
-          shasum: a3f2a8cc6eb055a9994cf593e0ab018bd6c42f5d
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.1
+        package: openmage/magento-lts
         version: 20.0.1
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.1.zip
-          type: zip
-          shasum: 0284936a971df6815e96bbc0630b1c5bf160aa94
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-20.0.0
+        package: openmage/magento-lts
         version: 20.0.0
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v20.0.0.zip
-          type: zip
-          shasum: b8bcc1101af9e25a695647cdc8693620a65768f5
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.23
+        package: openmage/magento-lts
+        version: 19.4.23
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.22
+        package: openmage/magento-lts
+        version: 19.4.22
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.21
+        package: openmage/magento-lts
+        version: 19.4.21
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.20
+        package: openmage/magento-lts
+        version: 19.4.20
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-19.4.19
+        package: openmage/magento-lts
+        version: 19.4.19
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.18
+        package: openmage/magento-lts
         version: 19.4.18
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.18.zip
-          type: zip
-          shasum: 343e9678b2e79fde825f65cb111e632861bb7925
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.17
+        package: openmage/magento-lts
         version: 19.4.17
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.17.zip
-          type: zip
-          shasum: 574bbaa05238e3a7d733d3335f1640bd34b6815d
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.16
+        package: openmage/magento-lts
         version: 19.4.16
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.16.zip
-          type: zip
-          shasum: 94e396fb565451ae99fcfc23f8db52ab796d9d12
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.15
+        package: openmage/magento-lts
         version: 19.4.15
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.15.zip
-          type: zip
-          shasum: 7fa0b52a6fe137ebf1363efff9642d10335246d9
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.14
+        package: openmage/magento-lts
         version: 19.4.14
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.14.zip
-          type: zip
-          shasum: bcc2472f7cf9fad91bf548a1ab137f40e8e3753d
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.13
+        package: openmage/magento-lts
         version: 19.4.13
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.13.zip
-          type: zip
-          shasum: ae7c0261838ea0199c9d7040a590400b3a37beb5
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.12
+        package: openmage/magento-lts
         version: 19.4.12
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.12.zip
-          type: zip
-          shasum: d09bc41b4bfa55ba772a7a90ca5d23abf84c4323
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.11
+        package: openmage/magento-lts
         version: 19.4.11
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.11.zip
-          type: zip
-          shasum: 01aec2c38b50f617147f02e627ece1fb0745355b
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.10
+        package: openmage/magento-lts
         version: 19.4.10
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.10.zip
-          type: zip
-          shasum: ae4c788ea6e941b5c60b62b9fd18ff44bd10da91
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.9
+        package: openmage/magento-lts
         version: 19.4.9
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.9.zip
-          type: zip
-          shasum: 213f77f78b307dfbab54ace73c71a8fe08e4340a
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.8
+        package: openmage/magento-lts
         version: 19.4.8
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.8.zip
-          type: zip
-          shasum: b9370267b37fc2b111683c447d47d5881e7762c3
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.7
+        package: openmage/magento-lts
         version: 19.4.7
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.7.zip
-          type: zip
-          shasum: a4f752bc0d972e4ae8033b6e9e4370e80b5f6e2b
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.6
+        package: openmage/magento-lts
         version: 19.4.6
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.6.zip
-          type: zip
-          shasum: d0c1d4b63fafe6c5a3fabe2dcbc9bf839805436d
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.5
+        package: openmage/magento-lts
         version: 19.4.5
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.5.zip
-          type: zip
-          shasum: cadf8bbbaee97072f5d731c4af7737a43655f3e1
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.4
+        package: openmage/magento-lts
         version: 19.4.4
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.4.zip
-          type: zip
-          shasum: d6024a0358c35dbc4a16dcc165704008022fc96c
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.3
+        package: openmage/magento-lts
         version: 19.4.3
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.3.zip
-          type: zip
-          shasum: ea65e1674cf2a0aab87f28f078b8b6f647f5898a
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.2
+        package: openmage/magento-lts
         version: 19.4.2
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.2.zip
-          type: zip
-          shasum: 7b2c5192702ba85d5d5144a77de1054f54930dd7
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.1
+        package: openmage/magento-lts
         version: 19.4.1
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.1.zip
-          type: zip
-          shasum: f905741d7423b21cedc8a906f6f0e3bda3838650
         extra:
           sample-data: sample-data-1.9.2.4
       - name: openmage-19.4.0
+        package: openmage/magento-lts
         version: 19.4.0
-        dist:
-          url: https://github.com/OpenMage/magento-lts/archive/v19.4.0.zip
-          type: zip
-          shasum: cf2529703607f326b23d8e8fd9897a579a4721d5
         extra:
           sample-data: sample-data-1.9.2.4
       - name: magento-mirror-1.9.4.5
+        package: firegento/magento
         version: 1.9.4.5
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.4.5.zip
-          type: zip
-          shasum: 5a80d32ff1486722d5eb5cc4926b3171b10449d7
         extra:
           sample-data: sample-data-1.9.2.4
       - name: magento-mirror-1.9.4.4
+        package: firegento/magento
         version: 1.9.4.4
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.4.4.zip
-          type: zip
-          shasum: 9f2a91503546213d287819e644aee0d1c8ab89d0
         extra:
           sample-data: sample-data-1.9.2.4
       - name: magento-mirror-1.9.4.3
+        package: firegento/magento
         version: 1.9.4.3
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.4.3.zip
-          type: zip
-          shasum: d063cf051972fa6dd1befff1929907b991cf3829
         extra:
           sample-data: sample-data-1.9.2.4
       - name: magento-mirror-1.9.4.2
+        package: firegento/magento
         version: 1.9.4.2
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.4.2.zip
-          type: zip
-          shasum: b553b16d9469bdf33cf8a96803531e08154814cc
         extra:
           sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.4.1
+        package: firegento/magento
         version: 1.9.4.1
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.4.1.zip
-          type: zip
-          shasum: c1045a378aadbb453f0e01a9b1e0234bb9aac749
         extra:
           sample-data: sample-data-1.9.2.4
       - name: magento-mirror-1.9.4.0
+        package: firegento/magento
         version: 1.9.4.0
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.4.0.zip
-          type: zip
-          shasum: e79ea1a5e9fb175cd9a48af8e8b94e9485dfeffb
         extra:
           sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.3.10
+        package: firegento/magento
         version: 1.9.3.10
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.10.zip
-          type: zip
-          shasum: c4eb4a0728154cfdae2781c15d9a1405136efa1e
         extra:
           sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.3.9
         version: 1.9.3.9
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.9.zip
-          type: zip
-          shasum: 55172f38d18f12c62fa8b331ba85bb65d6c476e5
+        package: firegento/magento
         extra:
           sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.3.8
+        package: firegento/magento
         version: 1.9.3.8
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.8.zip
-          type: zip
-          shasum: 1d23757eb2314a5979bbe8222840d27303c51a9c
         extra:
           sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.3.7
+        package: firegento/magento
         version: 1.9.3.7
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.7.zip
-          type: zip
-          shasum: 018b9c8a21c05fcb67e78202cb2331ec2862b7a2
         extra:
           sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.3.6
+        package: firegento/magento
         version: 1.9.3.6
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.6.zip
-          type: zip
-          shasum: 7ecc735c1d7d80f7b412caded7ab160013b00eb2
         extra:
           sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.3.4
+        package: firegento/magento
         version: 1.9.3.4
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.4.zip
-          type: zip
-          shasum: 6dadf8de337ae7033839839caeb15cbb2e98e4b8
         extra:
           sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.3.3
+        package: firegento/magento
         version: 1.9.3.3
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.3.zip
-          type: zip
-          shasum: f613968e1ea667ec1a0f0198b7c1d319e2598580
         extra:
           sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.3.2
+        package: firegento/magento
         version: 1.9.3.2
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.2.zip
-          type: zip
-          shasum: 8dccfa5a8ab6131f0e536e8c7269e5fb8559e03d
         extra:
           sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.3.1
+        package: firegento/magento
         version: 1.9.3.1
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.1.zip
-          type: zip
-          shasum: e46ebd867142427b1f1587df2fd8198f73dc6595
         extra:
           sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.3.0
+        package: firegento/magento
         version: 1.9.3.0
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.3.0.zip
-          type: zip
-          shasum: a1f18d56c03f74207a712b12b2d93d7c524d1f1d
         extra:
           sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.2.4
+        package: firegento/magento
         version: 1.9.2.4
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.2.4.zip
-          type: zip
-          shasum: 4a32fb868cf8194c958e01bcd85779b7855fe36c
         extra:
           sample-data: sample-data-1.9.2.4
 
       - name: magento-mirror-1.9.2.3
+        package: firegento/magento
         version: 1.9.2.3
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.2.3.zip
-          type: zip
-          shasum: 8a93762d4897203dd77e3a527887199f66620678
         extra:
           sample-data: sample-data-1.9.1.0
 
       - name: magento-mirror-1.9.2.2
+        package: firegento/magento
         version: 1.9.2.2
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.2.2.zip
-          type: zip
-          shasum: 4abf582992311935cf1edcd888bf9024bc752cdf
         extra:
           sample-data: sample-data-1.9.1.0
 
       - name: magento-mirror-1.9.2.1
+        package: firegento/magento
         version: 1.9.2.1
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.2.1.zip
-          type: zip
-          shasum: ce0c435a7320c4cac47290337b64861c2674e3f8
         extra:
           sample-data: sample-data-1.9.1.0
 
       - name: magento-mirror-1.9.2.0
+        package: firegento/magento
         version: 1.9.2.0
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.2.0.zip
-          type: zip
-          shasum: 019538c04b6359ad61e4c6d2f54c835bd76f7141
         extra:
           sample-data: sample-data-1.9.1.0
 
       - name: magento-mirror-1.9.1.1
+        package: firegento/magento
         version: 1.9.1.1
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.1.1.zip
-          type: zip
-          shasum: 3aa497d245affb273cc55851163f5133cecef650
         extra:
           sample-data: sample-data-1.9.1.0
 
       - name: magento-mirror-1.9.1.0
+        package: firegento/magento
         version: 1.9.1.0
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.1.0.zip
-          type: zip
-          shasum: e3dcfea601ada21ce84ee4836d801dd2feeb08d1
         extra:
           sample-data: sample-data-1.9.1.0
 
       - name: magento-mirror-1.9.0.1
+        package: firegento/magento
         version: 1.9.0.1
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.0.1.zip
-          type: zip
-          shasum: 9c87abc997957ebbf646e1a4d87d3d09e4d773f5
         extra:
           sample-data: sample-data-1.9.0.0
 
       - name: magento-mirror-1.9.0.0
+        package: firegento/magento
         version: 1.9.0.0
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.9.0.0.zip
-          type: zip
-          shasum: 98dc5a70d0d12fa595032a7e4257e9a8ee8e293c
         extra:
           sample-data: sample-data-1.9.0.0
 
       - name: magento-mirror-1.8.1.0
+        package: firegento/magento
         version: 1.8.1.0
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.8.1.0.zip
-          type: zip
-          shasum: 3fbff399799177e8048cc4048f66213fedd132c1
         extra:
           sample-data: sample-data-1.6.1.0
 
       - name: magento-mirror-1.8.0.0
+        package: firegento/magento
         version: 1.8.0.0
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.8.0.0.zip
-          type: zip
-          shasum: 9b1dee54d0b047b66d7ad6b8ea1ff414b7773093
         extra:
           sample-data: sample-data-1.6.1.0
 
       - name: magento-mirror-1.7.0.2
+        package: firegento/magento
         version: 1.7.0.2
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.7.0.2.zip
-          type: zip
-          shasum: e7f761d1ca60d16db867e24b5219de8815d0ea25
-        extra:
-          sample-data: sample-data-1.6.1.0
-
-      - name: magento-mirror-1.6.2.0
-        version: 1.6.2.0
-        dist:
-          url: https://github.com/OpenMage/magento-mirror/archive/1.6.2.0.zip
-          type: zip
-          shasum: db0de6d0d82427d997a206554bcd7e5874099671
-        extra:
-          sample-data: sample-data-1.6.1.0
-
-      - name: magento-mirror-1.5.1.0
-        version: 1.5.1.0
-        source:
-          url: git://github.com/OpenMage/magento-mirror.git
-          type: git
-          reference: magento-1.5
-        extra:
-          sample-data: sample-data-1.1.2
-
-      - name: magento-mirror-1.4.2.0
-        version: 1.4.2.0
-        source:
-          url: git://github.com/OpenMage/magento-mirror.git
-          type: git
-          reference: magento-1.4
-        extra:
-          sample-data: sample-data-1.1.2
-
-      - name: openmage-lts-1.9.4.x
-        version: dev-1.9.4.x
-        source:
-          url: https://github.com/OpenMage/magento-lts.git
-          type: git
-          reference: 1.9.4.x
-        extra:
-          sample-data: sample-data-1.9.2.4
-
-      - name: mageplus-master
-        version: dev-master
-        source:
-          url: https://github.com/mageplus/mageplus.git
-          type: git
-          reference: master
         extra:
           sample-data: sample-data-1.6.1.0
 

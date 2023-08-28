@@ -48,7 +48,7 @@ jobs:
       - name: Install Magento
         run: |
           php bin/n98-magerun install \
-          --magentoVersionByName="magento-mirror-1.9.4.5" \
+          --magentoVersionByName="openmage-19.4.23" \
           --installationFolder="./magento" \
           --dbHost="127.0.0.1" \
           --dbPort="${{ job.services.mysql.ports['3306'] }}" \
