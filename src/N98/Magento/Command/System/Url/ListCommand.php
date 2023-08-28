@@ -80,7 +80,7 @@ HELP;
             $input->setOption('add-cmspages', true);
         }
 
-        $stores = explode(',', $input->getArgument('stores'));
+        $stores = explode(',', $input->getArgument('stores') ?? '');
 
         $urls = [];
 
