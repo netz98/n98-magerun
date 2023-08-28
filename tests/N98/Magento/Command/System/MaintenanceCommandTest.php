@@ -29,6 +29,6 @@ class MaintenanceCommandTest extends TestCase
             ['command' => $command->getName(), '--off'   => '']
         );
         self::assertMatchesRegularExpression('/Maintenance mode off/', $commandTester->getDisplay());
-        self::assertFileNotExists($magentoRootFolder . '/maintenance.flag');
+        self::assertFileDoesNotExist($magentoRootFolder . '/maintenance.flag');
     }
 }

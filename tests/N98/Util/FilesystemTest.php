@@ -60,8 +60,8 @@ class FilesystemTest extends TestCase
         rmdir($dest . "/folder2");
         rmdir($dest);
 
-        self::assertFileNotExists($dest . "/folder1/file1.txt");
-        self::assertFileNotExists($dest);
+        self::assertFileDoesNotExist($dest . "/folder1/file1.txt");
+        self::assertFileDoesNotExist($dest);
 
         if (!is_dir($tmp . '/a')) {
             mkdir($tmp . '/a');
@@ -92,7 +92,7 @@ class FilesystemTest extends TestCase
 
         $this->fileSystem->recursiveCopy($basePath, $dest, ['ignore.me']);
         self::assertFileExists($dest . "/folder1/file1.txt");
-        self::assertFileNotExists($dest . "/folder1/ignore.me");
+        self::assertFileDoesNotExist($dest . "/folder1/ignore.me");
         self::assertFileExists($dest . "/folder2/file2.txt");
 
         //cleanup
@@ -131,7 +131,7 @@ class FilesystemTest extends TestCase
         $this->fileSystem->recursiveRemoveDirectory($basePath);
 
         self::assertFileExists($symLinkedFile);
-        self::assertFileNotExists($basePath);
+        self::assertFileDoesNotExist($basePath);
     }
 
     public function testRecursiveRemove()
@@ -149,7 +149,7 @@ class FilesystemTest extends TestCase
         touch($file2);
 
         $this->fileSystem->recursiveRemoveDirectory($basePath);
-        self::assertFileNotExists($basePath);
+        self::assertFileDoesNotExist($basePath);
     }
 
     public function testRecursiveRemoveWithTrailingSlash()
@@ -167,7 +167,7 @@ class FilesystemTest extends TestCase
         touch($file2);
 
         $this->fileSystem->recursiveRemoveDirectory($basePath . "/");
-        self::assertFileNotExists($basePath);
+        self::assertFileDoesNotExist($basePath);
     }
 
     public function testFalseIsReturnedIfDirectoryNotExist()
@@ -199,8 +199,8 @@ class FilesystemTest extends TestCase
 
         $this->fileSystem->recursiveRemoveDirectory($basePath, true);
         self::assertFileExists($basePath);
-        self::assertFileNotExists($folder1);
-        self::assertFileNotExists($folder2);
+        self::assertFileDoesNotExist($folder1);
+        self::assertFileDoesNotExist($folder2);
     }
 
     /**

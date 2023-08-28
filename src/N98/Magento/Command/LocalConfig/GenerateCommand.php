@@ -9,6 +9,7 @@ use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class GenerateCommand extends AbstractMagentoCommand
 {
@@ -107,16 +108,46 @@ HELP;
         $dialog = $this->getHelper('question');
 
         $messagePrefix = 'Please enter the ';
-        $arguments = ['db-host'         => ['prompt' => 'database host', 'required' => true], 'db-user'         => ['prompt' => 'database username', 'required' => true], 'db-pass'         => ['prompt' => 'database password', 'required' => false], 'db-name'         => ['prompt' => 'database name', 'required' => true], 'session-save'    => ['prompt' => 'session save', 'required' => true, 'default' => 'files'], 'admin-frontname' => ['prompt' => 'admin frontname', 'required' => true, 'default' => 'admin']];
+        $arguments = [
+            'db-host' => [
+                'prompt' => 'database host',
+                'required' => true
+            ],
+            'db-user' => [
+                'prompt' => 'database username',
+                'required' => true
+            ],
+            'db-pass' => [
+                'prompt' => 'database password',
+                'required' => false
+            ],
+            'db-name' => [
+                'prompt' => 'database name',
+                'required' => true
+            ],
+            'session-save' => [
+                'prompt' => 'session save',
+                'required' => true,
+                'default' => 'files'
+            ],
+            'admin-frontname' => [
+                'prompt' => 'admin frontname',
+                'required' => true,
+                'default' => 'admin'
+            ]
+        ];
 
         foreach ($arguments as $argument => $options) {
             if (isset($options['default']) && $input->getArgument($argument) === null) {
                 $input->setArgument(
                     $argument,
                     $dialog->ask(
+                        $input,
                         $output,
-                        sprintf('<question>%s%s:</question> ', $messagePrefix, $options['prompt']),
-                        (string) $options['default']
+                        new Question(
+                            sprintf('<question>%s%s:</question> ', $messagePrefix, $options['prompt']),
+                            (string) $options['default']
+                        ),
                     )
                 );
             } else {

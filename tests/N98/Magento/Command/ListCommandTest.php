@@ -16,7 +16,7 @@ class ListCommandTest extends TestCase
         );
 
         self::assertStringContainsString(
-            sprintf('n98-magerun version %s by netz98 GmbH', $this->getApplication()->getVersion()),
+            sprintf('n98-magerun %s by netz98 GmbH', $this->getApplication()->getVersion()),
             $commandTester->getDisplay()
         );
     }

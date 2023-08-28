@@ -54,7 +54,7 @@ class UninstallCommandTest extends TestCase
         self::assertStringContainsString("Dropped database", $commandTester->getDisplay());
         self::assertStringContainsString("Remove directory " . $this->getTestMagentoRoot(), $commandTester->getDisplay());
         self::assertStringContainsString("Done", $commandTester->getDisplay());
-        self::assertFileNotExists($this->getTestMagentoRoot() . '/app/etc/local.xml');
+        self::assertFileDoesNotExist($this->getTestMagentoRoot() . '/app/etc/local.xml');
     }
 
     /**

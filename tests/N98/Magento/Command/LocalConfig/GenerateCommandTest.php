@@ -4,12 +4,13 @@
 
 namespace N98\Magento\Command\LocalConfig;
 
-use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 use InvalidArgumentException;
 use ReflectionClass;
 use N98\Magento\Command\TestCase;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class GenerateCommandTest extends TestCase
@@ -24,7 +25,7 @@ class GenerateCommandTest extends TestCase
         $this->configFile = sprintf('%s/%s/local.xml', sys_get_temp_dir(), $this->getName());
         mkdir(dirname($this->configFile), 0777, true);
         $commandMock = $this->getMockBuilder(GenerateCommand::class)
-            ->setMethods(['_getLocalConfigFilename'])
+            ->onlyMethods(['_getLocalConfigFilename'])
             ->getMock();
 
         $commandMock
@@ -220,8 +221,9 @@ class GenerateCommandTest extends TestCase
      * @dataProvider requiredFieldsProvider
      * @param string $param
      * @param string $prompt
+     * @param mixed $default
      */
-    public function testRequiredOptionsThrowExceptionIfNotSet($param, $prompt)
+    public function testRequiredOptionsThrowExceptionIfNotSet($param, $prompt, $default)
     {
         $command = $this->getApplication()->find('local-config:generate');
 
@@ -246,8 +248,12 @@ class GenerateCommandTest extends TestCase
         $questionHelperMock->expects(self::once())
             ->method('ask')
             ->with(
+                self::isInstanceOf(InputInterface::class),
                 self::isInstanceOf(StreamOutput::class),
-                sprintf('<question>Please enter the %s:</question> ', $prompt)
+                new Question(
+                    sprintf('<question>Please enter the %s:</question> ', $prompt),
+                    $default
+                )
             )
             ->willReturn(null);
 
@@ -265,11 +271,11 @@ class GenerateCommandTest extends TestCase
     public function requiredFieldsProvider()
     {
         return [
-            ['db-host', 'database host'],
-            ['db-user', 'database username'],
-            ['db-name', 'database name'],
-            ['session-save', 'session save'],
-            ['admin-frontname', 'admin frontname'],
+            ['db-host', 'database host', ''],
+            ['db-user', 'database username', ''],
+            ['db-name', 'database name', ''],
+            ['session-save', 'session save', 'files'],
+            ['admin-frontname', 'admin frontname', 'admin'],
         ];
     }
 
@@ -282,26 +288,30 @@ class GenerateCommandTest extends TestCase
             ->getMock();
 
         $inputs = [
-            ['database host', 'some-db-host'],
-            ['database username', 'some-db-username'],
-            ['database password', 'some-db-password'],
-            ['database name', 'some-db-name'],
-            ['session save', 'some-session-save'],
-            ['admin frontname', 'some-admin-front-name'],
+            ['database host', 'some-db-host', ''],
+            ['database username', 'some-db-username', ''],
+            ['database password', 'some-db-password', ''],
+            ['database name', 'some-db-name', ''],
+            ['session save', 'some-session-save', 'files'],
+            ['admin frontname', 'some-admin-front-name', 'admin'],
         ];
 
         foreach ($inputs as $i => $input) {
-            [$prompt, $returnValue] = $input;
+            [$prompt, $returnValue, $default] = $input;
             $questionHelperMock->expects(self::at($i))
                 ->method('ask')
                 ->with(
+                    self::isInstanceOf(InputInterface::class),
                     self::isInstanceOf(StreamOutput::class),
-                    sprintf('<question>Please enter the %s:</question> ', $prompt)
+                    new Question(
+                        sprintf('<question>Please enter the %s:</question> ', $prompt),
+                        $default
+                    )
                 )
                 ->willReturn($returnValue);
         }
 
-        $command->getHelperSet()->set($questionHelperMock, 'dialog');
+        $command->getHelperSet()->set($questionHelperMock, 'question');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command' => $command->getName()]);
@@ -330,8 +340,9 @@ class GenerateCommandTest extends TestCase
         $questionHelperMock->expects(self::once())
             ->method('ask')
             ->with(
+                self::isInstanceOf(InputInterface::class),
                 self::isInstanceOf(StreamOutput::class),
-                sprintf('<question>Please enter the database password:</question> ')
+                new Question('<question>Please enter the database password:</question> ')
             )
             ->willReturn(null);
 
@@ -375,8 +386,11 @@ class GenerateCommandTest extends TestCase
         $questionHelperMock->expects(self::once())
             ->method('ask')
             ->with(
+                self::isInstanceOf(InputInterface::class),
                 self::isInstanceOf(StreamOutput::class),
-                '<question>Please enter the database host:</question> '
+                new Question(
+                    '<question>Please enter the database host:</question> '
+                )
             )
             ->willReturn('CDATAdatabasehost');
 
