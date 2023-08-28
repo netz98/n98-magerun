@@ -86,7 +86,7 @@ class DatabaseHelperTest extends TestCase
             $helper->getMysqlVariableValue('nonexistent');
             self::fail('An expected exception has not been thrown');
         } catch (RuntimeException $runtimeException) {
-            self::assertEquals("Failed to query mysql variable 'nonexistent'", $runtimeException->getMessage());
+            self::assertEquals("SQLSTATE[HY000]: General error: 1193 Unknown system variable 'nonexistent'", $runtimeException->getMessage());
         }
     }
 
@@ -104,7 +104,7 @@ class DatabaseHelperTest extends TestCase
         // behavior with existent session variable (INTEGER)
         $helper->getConnection()->query('SET @existent = 14;');
         $actual = $helper->getMysqlVariable('existent', '@');
-        self::assertSame("14", $actual);
+        self::assertSame(14, $actual);
 
         // behavior with non-existent session variable
         $actual = $helper->getMysqlVariable('nonexistent', '@');
@@ -117,7 +117,7 @@ class DatabaseHelperTest extends TestCase
         } catch (RuntimeException $runtimeException) {
             // test against the mysql error message
             self::assertStringEndsWith(
-                "SQLSTATE[HY000]: 1193: Unknown system variable 'nonexistent'",
+                "SQLSTATE[HY000]: General error: 1193 Unknown system variable 'nonexistent'",
                 $runtimeException->getMessage()
             );
         }
