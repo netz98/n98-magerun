@@ -72,7 +72,7 @@ fi
 # remove fake-phar directly after clone
 remove_assume_unchanged "${build_dir}" "n98-magerun.phar"
 
-composer_bin="${base_dir}/vendor/bin/composer"
+composer_bin="composer"
 phing_bin="${base_dir}/vendor/bin/phing"
 
 # Set COMPOSER_HOME if HOME and COMPOSER_HOME not set (shell with no home-dir, e.g. build server with webhook)
@@ -96,6 +96,15 @@ echo "provision: ulimits (soft) set from $(ulimit -Sn) to $(ulimit -Hn) (hard) f
 ulimit -Sn "$(ulimit -Hn)"
 timestamp="$(git log --format=format:%ct HEAD -1)" # reproduceable build
 echo "build timestamp: ${timestamp}"
+
+if command -v composer &>/dev/null; then
+  true; # do nothing
+else
+  echo "Composer was not found. Try to install it ..."
+  # install composer
+  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+fi
 
 php -f "${phing_bin}" -dphar.readonly=0 -- \
   -Dcomposer_suffix="${nice_name}${timestamp}" \

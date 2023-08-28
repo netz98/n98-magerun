@@ -1,6 +1,6 @@
 <?php
 /**
- * update phar file timestamp to the last commit in the repository for binary reproduceable build
+ * update phar phar timestamp to the last commit in the repository for binary reproduceable build
  * of phar-files.
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
@@ -8,32 +8,25 @@
 
 use Seld\PharUtils\Timestamps;
 
-echo "reset phar file timestamps to latest commit timestamp (reproducible builds)\n";
-
-# seld/phar-utils via build requirements
-require __DIR__ . '/../../vendor/seld/phar-utils/src/Timestamps.php';
-
 $projectDir = __DIR__ . '/../..';
 
-$build = new SimpleXMLElement($projectDir . '/build.xml', 0, true);
-
-$file = $projectDir . '/' . $build['name'] . '.phar';
-
-list($signature) = $build->xpath('//patched-pharpackage/@signature') + array(null);
-
-echo "Signature: ", $signature, " (from build.xml) \n";
-$const = "Phar::" . strtoupper($signature);
-
-$sig = constant($const);
-echo "Phar Algo: ", var_export($sig, true), " ($const)\n";
-
-if (!is_file($file) || !is_readable($file)) {
-    throw new RuntimeException(sprintf('Is not a file or not readable: %s', var_export($file, true)));
+if (!isset($_SERVER['argv'][1])) {
+    echo sprintf("usage: %s <timestamp-to-set>\n", $_SERVER['argv'][0]);
+    exit(1);
 }
 
-$commitHash = `git log --format=format:%H HEAD -1`;
-$timestamp = (int) `git log --format=format:%ct HEAD -1`;
-printf("Commit...: %s\n", $commitHash);
+echo "reset phar phar timestamps to latest commit timestamp (reproducible builds)\n";
+$timestamp = $_SERVER['argv'][1];
+
+# seld/phar-utils via build requirements
+require_once $projectDir . '/vendor/seld/phar-utils/src/Timestamps.php';
+
+$pharFilepath = $projectDir . '/n98-magerun2.phar';
+
+if (!is_file($pharFilepath) || !is_readable($pharFilepath)) {
+    throw new RuntimeException(sprintf('Is not a phar or not readable: %s', var_export($pharFilepath, true)));
+}
+
 printf("Timestamp: %d (%s, date of commit)\n", $timestamp, date(DATE_RFC3339, $timestamp));
 $threshold = 1343826993; # 2012-08-01T15:14:33Z
 if ($timestamp < $threshold) {
@@ -42,15 +35,15 @@ if ($timestamp < $threshold) {
     );
 }
 
-$tmp = $file . '.tmp';
+$tmp = $pharFilepath . '.tmp';
 
-if ($tmp !== $file && file_exists($tmp)) {
+if ($tmp !== $pharFilepath && file_exists($tmp)) {
     unlink($tmp);
 }
 
-if (!rename($file, $tmp)) {
+if (!rename($pharFilepath, $tmp)) {
     throw new RuntimeException(
-        sprintf('Failed to move file %s to %s', var_export($file, true), var_export($tmp, true))
+        sprintf('Failed to move phar %s to %s', var_export($pharFilepath, true), var_export($tmp, true))
     );
 }
 
@@ -60,9 +53,9 @@ if (!is_file($tmp)) {
 
 $timestamps = new Timestamps($tmp);
 $timestamps->updateTimestamps($timestamp);
-$timestamps->save($file, $sig);
+$timestamps->save($pharFilepath, Phar::SHA512);
 
-echo "SHA1.....: ", sha1_file($file), "\nMD5......: ", md5_file($file), "\n";
+echo "SHA1.....: ", sha1_file($pharFilepath), "\nMD5......: ", md5_file($pharFilepath), "\n";
 
 if (!unlink($tmp)) {
     throw new RuntimeException('Error deleting tempfile %s', var_export($tmp, true));
