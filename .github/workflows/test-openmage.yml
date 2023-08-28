@@ -1,4 +1,4 @@
-name: Test OpenMage 20.0.14 with PHP 8.1
+name: Test OpenMage 20.0.20 with PHP 8.1
 
 on: [push, pull_request]
 
@@ -48,7 +48,7 @@ jobs:
       - name: Install OpenMage
         run: |
           php bin/n98-magerun install \
-          --magentoVersionByName="openmage-20.0.14" \
+          --magentoVersionByName="openmage-20.0.20" \
           --installationFolder="./magento" \
           --dbHost="127.0.0.1" \
           --dbPort="${{ job.services.mysql.ports['3306'] }}" \
