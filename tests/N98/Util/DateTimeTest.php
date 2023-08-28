@@ -16,7 +16,7 @@ class DateTimeTest extends TestCase
      */
     public function getDifferenceAsString(DateTime $time1, DateTime $time2, $expected)
     {
-        $dateTime = new DateTime();
+        $dateTime = new \N98\Util\DateTime();
         self::assertEquals($expected, $dateTime->getDifferenceAsString($time1, $time2));
     }
 
