@@ -34,7 +34,7 @@
         "phing/phing": "~2.17.0",
         "phpunit/phpunit": "^9",
         "rector/rector": "^0.13.8",
-        "seld/phar-utils": "1.0.1"
+        "seld/phar-utils": "~1.2.0"
     },
     "autoload": {
         "psr-4": {

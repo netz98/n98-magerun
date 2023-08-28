@@ -111,7 +111,8 @@ php -f "${phing_bin}" -dphar.readonly=0 -- \
   -Dcomposer_bin="${composer_bin}" \
   dist_clean
 
-php -f build/phar/phar-timestamp.php
+LAST_COMMIT_TIMESTAMP="$(git log --format=format:%ct HEAD -1)"
+php -f phar-timestamp.php -- $LAST_COMMIT_TIMESTAMP
 
 php -f "${phar}" -- --version
 ls -al "${phar}"
