@@ -1,6 +1,13 @@
 RECENT CHANGES
 ==============
 
+3.0.0-dev
+---------
+
+- Add: PHP 8.1 support
+- Imp: Update 3rd party dependencies 
+       (twig, phing, symfony, composer, psysh, vsfstream)
+
 2.3.0
 -----
 
