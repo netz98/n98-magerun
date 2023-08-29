@@ -73,7 +73,7 @@ class ConfigLocator
      */
     public function getProjectConfigFile()
     {
-        if (!strlen($this->magentoRootFolder)) {
+        if (!strlen($this->magentoRootFolder ?? '')) {
             return;
         }
         $projectConfigFilePath = $this->magentoRootFolder . '/app/etc/' . $this->customConfigFilename;
@@ -129,7 +129,7 @@ class ConfigLocator
 
         $homeDirectory = OperatingSystem::getHomeDir();
 
-        if (!strlen($homeDirectory)) {
+        if (!strlen($homeDirectory ?? '')) {
             return $paths;
         }
 

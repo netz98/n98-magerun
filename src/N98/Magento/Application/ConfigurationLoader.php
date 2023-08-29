@@ -221,7 +221,7 @@ class ConfigurationLoader
 
             # Modules placed in vendor folder
             $vendorDir = $this->getVendorDir();
-            if (strlen($vendorDir)) {
+            if (strlen($vendorDir ?? '')) {
                 $this->logDebug('Vendor directory <comment>' . $vendorDir . '</comment>');
                 $this->traversePluginFoldersForConfigFile($magentoRootFolder, $vendorDir, 2);
             }
