@@ -1,6 +1,7 @@
 <?php
 
 use N98\MagerunBootstrap;
+
 if (defined('E_DEPRECATED')) {
     error_reporting(error_reporting() & ~E_DEPRECATED);
 }
