@@ -1,0 +1,54 @@
+---
+name: Phar build and update test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          tools: composer:2
+          php-version: '7.4'
+
+      - name: Checkout PR
+        uses: actions/checkout@v3.4.0
+        if: github.event_name == 'pull_request'
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Checkout HEAD
+        uses: actions/checkout@v3.4.0
+        if: github.event_name == 'push'
+
+      - name: Check Security
+        uses: symfonycorp/security-checker-action@v5
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Create phar
+        run: bash ./build.sh
+
+      - name: Test self-update command
+        run: php ./n98-magerun.phar self-update --unstable
