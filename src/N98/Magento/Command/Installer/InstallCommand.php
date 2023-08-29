@@ -16,17 +16,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InstallCommand extends AbstractMagentoCommand
 {
-    const EXEC_STATUS_OK = 0;
-
     /**
      * @var array
      */
     protected $commandConfig;
-
-    /**
-     * @var \Closure
-     */
-    protected $notEmptyCallback;
 
     /**
      * @var SubCommandFactory;

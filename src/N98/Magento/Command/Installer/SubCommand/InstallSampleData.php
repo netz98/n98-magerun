@@ -8,6 +8,8 @@ use N98\Util\Database;
 use N98\Util\Exec;
 use N98\Util\Filesystem;
 use N98\Util\OperatingSystem;
+use N98\Util\StringTyped;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Process\Process;
 use WpOrg\Requests\Requests;
 
@@ -23,6 +25,20 @@ class InstallSampleData extends AbstractSubCommand
     public function execute()
     {
         if ($this->input->getOption('noDownload')) {
+            return;
+        }
+
+        $questionHelper = $this->command->getHelper('question');
+
+        $installSampleData = ($this->input->getOption('installSampleData') !== null)
+            ? StringTyped::parseBoolOption($this->input->getOption('installSampleData'))
+            : $questionHelper->ask(
+                $this->input,
+                $this->output,
+                new ConfirmationQuestion('<question>Install sample data?</question> <comment>[yes]</comment>: ', true)
+            );
+
+        if (!$installSampleData) {
             return;
         }
 
