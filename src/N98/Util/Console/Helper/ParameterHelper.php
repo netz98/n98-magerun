@@ -143,7 +143,7 @@ class ParameterHelper extends AbstractHelper
             }
         }
 
-        [$websites, $question] = $this->websitesQuestion($storeManager);
+        [$websites, $choices] = $this->websitesQuestion($storeManager);
         if ((is_countable($websites) ? count($websites) : 0) === 1) {
             return $storeManager->getWebsite($websites[0]);
         }
@@ -173,18 +173,12 @@ class ParameterHelper extends AbstractHelper
      */
     private function websitesQuestion($storeManager)
     {
-        $i = 0;
         $websites = [];
         $question = [];
         /* @var Mage_Core_Model_Website $website */
         foreach ($storeManager->getWebsites() as $website) {
-            $position = $i++;
-            $websites[$position] = $website->getId();
-            $question[$position] = sprintf(
-                '<comment>[%d]</comment> %s' . PHP_EOL,
-                $position + 1,
-                sprintf('%s - %s', $website->getCode(), $website->getName())
-            );
+            $websites[] = $website->getId();
+            $question[] = sprintf('%s - %s', $website->getCode(), $website->getName());
         }
 
         return [$websites, $question];
