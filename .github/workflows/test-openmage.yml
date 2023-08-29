@@ -3,7 +3,7 @@ name: Test OpenMage 20.0.20 with PHP 8.1
 on: [push, pull_request]
 
 jobs:
-  test-openmage-2-0-14:
+  test-openmage-20-0-20:
     runs-on: ubuntu-latest
 
     services:
