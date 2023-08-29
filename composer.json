@@ -24,7 +24,10 @@
         "symfony/process": "~5.4",
         "symfony/validator": "~5.4",
         "symfony/yaml": "~5.4",
-        "twig/twig": "^3.7.1"
+        "twig/twig": "^3.7.1",
+        "ext-pdo": "*",
+        "ext-libxml": "*",
+        "ext-json": "*"
     },
     "require-dev": {
         "ext-simplexml": "*",
