@@ -19,6 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Linux Setup
+        run: ./.github/workflows/linux-setup.sh
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -69,3 +72,8 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           file: ./build/coverage/clover.xml
+
+      - name: Run functional tests
+        run: bats tests/bats/functional.bats
+        env:
+          N98_MAGERUN_BIN: ./bin/n98-magerun2

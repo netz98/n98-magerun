@@ -14,6 +14,7 @@ database:
 hooks:
     post-start:
         - composer: install
+        - exec: bash .ddev/post-start.sh
 webimage_extra_packages: [gawk]
 use_dns_when_possible: true
 composer_version: "2"
@@ -56,7 +57,7 @@ nodejs_version: "16"
 # "ddev xhprof" to enable xhprof and "ddev xhprof off" to disable it work better,
 # as leaving xhprof enabled all the time is a big performance hit.
 
-# webserver_type: nginx-fpm, apache-fpm, or nginx-gunicorn 
+# webserver_type: nginx-fpm, apache-fpm, or nginx-gunicorn
 
 # timezone: Europe/Berlin
 # This is the timezone used in the containers and by PHP;
@@ -98,7 +99,7 @@ nodejs_version: "16"
 # Please take care with this because it can cause great confusion.
 
 # upload_dirs: "custom/upload/dir"
-#    
+#
 # upload_dirs:
 #   - custom/upload/dir
 #   - ../private
