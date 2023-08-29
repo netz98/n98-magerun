@@ -55,7 +55,7 @@ HELP;
         if ($input->getArgument('script') == null && $input->isInteractive()) {
             $choices = [];
             foreach ($files as $file) {
-                $files[$i] = $file;
+                $files[] = $file;
                 $choices[] = $file['fileinfo']->getFilename();
             }
 
