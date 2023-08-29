@@ -175,7 +175,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
      * Connects to the database without initializing magento
      *
      * @throws RuntimeException if pdo_mysql extension is not installed
-     * @return PDO
+     * @return \PDO
      */
     public function getConnection()
     {
@@ -336,9 +336,9 @@ class DbSettings implements ArrayAccess, IteratorAggregate
      */
 
     /**
-     * @return boolean true on success or false on failure.
+     * @return bool true on success or false on failure.
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->config[$offset]);
     }
@@ -351,27 +351,27 @@ class DbSettings implements ArrayAccess, IteratorAggregate
         if (isset($this->config[$offset])) {
             return $this->config[$offset];
         }
-
-        return;
     }
 
     /**
      * @param mixed $offset
      * @param mixed $value
+     * @return void
      *
      * @throws BadMethodCallException
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         throw new BadMethodCallException('dbSettings are read-only');
     }
 
     /**
      * @param mixed $offset
+     * @return void
      *
      * @throws BadMethodCallException
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         throw new BadMethodCallException('dbSettings are read-only');
     }
@@ -381,9 +381,9 @@ class DbSettings implements ArrayAccess, IteratorAggregate
      */
 
     /**
-     * @return ArrayIterator
+     * @return \Traversable
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new ArrayIterator($this->config);
     }
