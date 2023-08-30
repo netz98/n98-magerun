@@ -1,5 +1,4 @@
-
-name: Test OpenMage
+name: Test OpenMage 20.0.x
 
 on: [push, pull_request]
 
@@ -10,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        openmage_version: ["20.0.20", "20.0.10"]
+        openmage_version: ["20.0.20"]
         php_version: ["8.1", "7.4"]
         mysql_version: ["8.0", "5.7"]
 

@@ -1,5 +1,5 @@
 
-name: Test OpenMage
+name: Test OpenMage 20.1.x
 
 on: [push, pull_request]
 
