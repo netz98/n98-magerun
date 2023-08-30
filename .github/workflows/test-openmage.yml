@@ -1,14 +1,20 @@
-name: Test OpenMage 20.0.20 with PHP 8.1
+
+name: Test OpenMage
 
 on: [push, pull_request]
 
 jobs:
-  test-openmage-20-0-20:
+  test-openmage:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        openmage_version: ["20.1.0", "20.0.20"]
+        php_version: ["8.1", "7.4"]
+        mysql_version: ["8.0", "5.7"]
 
     services:
       mysql:
-        image: mysql:5.7
+        image: mysql:${{ matrix.mysql_version }}
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: magento_test_db
@@ -25,7 +31,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: ${{ matrix.php_version }}
           extensions: yaml
           coverage: none
 
@@ -51,16 +57,16 @@ jobs:
       - name: Install OpenMage
         run: |
           php bin/n98-magerun install \
-          --magentoVersionByName="openmage-20.0.20" \
-          --installationFolder="./magento" \
-          --dbHost="127.0.0.1" \
-          --dbPort="${{ job.services.mysql.ports['3306'] }}" \
-          --dbUser="root" \
-          --dbPass="root" \
-          --dbName="magento_test_db" \
-          --installSampleData=no \
-          --useDefaultConfigParams=yes \
-          --baseUrl="http://magento.local/"
+            --magentoVersionByName="openmage-${{ matrix.openmage_version }}" \ 
+            --installationFolder="./magento" \
+            --dbHost="127.0.0.1" \
+            --dbPort="${{ job.services.mysql.ports['3306'] }}" \
+            --dbUser="root" \
+            --dbPass="root" \         
+            --dbName="magento_test_db" \           
+            --installSampleData=no \     
+            --useDefaultConfigParams=yes \           
+            --baseUrl="http://magento.local/"
 
       - name: Set Magento root environment variable
         run: echo "N98_MAGERUN_TEST_MAGENTO_ROOT=${{ github.workspace }}/magento" >> $GITHUB_ENV
@@ -77,3 +83,4 @@ jobs:
         run: bats tests/bats/functional.bats
         env:
           N98_MAGERUN_BIN: "${{ github.workspace }}/bin/n98-magerun"
+          N98_MAGERUN_TEST_MAGENTO_ROOT: "${{ github.workspace }}/magento"
