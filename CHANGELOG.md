@@ -4,9 +4,17 @@ RECENT CHANGES
 3.0.0-dev
 ---------
 
-- Add: PHP 8.1 support
+- Add: PHP 8.1 support (by Sven Reichel, Christian Münch)
+- Add: Functional tests based on bats
+- Add: phar build and update Gitub Action Workflow
 - Imp: Update 3rd party dependencies 
-       (twig, phing, symfony, composer, psysh, vsfstream)
+  (twig, phing, symfony, composer, psysh, vsfstream, php-cs-fixer, Github Actions)
+- Imp: New installer based on composer packages
+- Imp: Replace old installer config with new package based config
+- Del: Removed bundled Composer package
+- Del: Removed shell command
+- Imp: Github Actions update to Ubuntu 20.04
+- Fix: Install Command: Fix issue with unescaped characters in database name (by Christoph Massmann)
 
 2.3.0
 -----
