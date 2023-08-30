@@ -2,9 +2,8 @@
 
 use N98\MagerunBootstrap;
 
-if (defined('E_DEPRECATED')) {
-    error_reporting(error_reporting() & ~E_DEPRECATED);
-}
+// hide PHP Deprecated warnings if enabled
+error_reporting(error_reporting() & ~E_USER_DEPRECATED & ~E_DEPRECATED);
 
 if (!class_exists(MagerunBootstrap::class)) {
     require_once __DIR__ . '/N98/MagerunBootstrap.php';
