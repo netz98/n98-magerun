@@ -56,16 +56,16 @@ jobs:
 
       - name: Install OpenMage
         run: |
-          php bin/n98-magerun install \
-            --magentoVersionByName="openmage-${{ matrix.openmage_version }}" \ 
+          php bin/n98-magerun --no-interaction install \
+            --magentoVersionByName="openmage-${{ matrix.openmage_version }}" \
             --installationFolder="./magento" \
             --dbHost="127.0.0.1" \
             --dbPort="${{ job.services.mysql.ports['3306'] }}" \
             --dbUser="root" \
-            --dbPass="root" \         
-            --dbName="magento_test_db" \           
-            --installSampleData=no \     
-            --useDefaultConfigParams=yes \           
+            --dbPass="root" \
+            --dbName="magento_test_db" \  
+            --installSampleData=no \
+            --useDefaultConfigParams=yes \        
             --baseUrl="http://magento.local/"
 
       - name: Set Magento root environment variable
