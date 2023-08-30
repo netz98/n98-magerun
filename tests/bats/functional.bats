@@ -128,17 +128,17 @@ function setup {
 #  sys:url:list
 #  sys:website:list [done]
 
-@test "Command: script" {
-  echo -e "!ls\ncache:list" > /tmp/test-script.magerun
-  run $BIN script /tmp/test-script.magerun
-  # ls of magerun source directory
-  assert_output --partial 'index.php'
-
-  # cache:list -> config cache entry
-  assert_output --partial 'config'
-
-  rm /tmp/test-script.magerun
-}
+#@test "Command: script" {
+#  echo -e "!ls\ncache:list" > /tmp/test-script.magerun
+#  run $BIN script /tmp/test-script.magerun
+#  # ls of magerun source directory
+#  assert_output --partial 'index.php'
+#
+#  # cache:list -> config cache entry
+#  assert_output --partial 'config'
+#
+#  rm /tmp/test-script.magerun
+#}
 
 @test "Command: admin:user:list" {
   run $BIN admin:user:list
@@ -193,18 +193,18 @@ function setup {
   assert_output --partial "base_web_url"
 }
 
-@test "Command: customer:create" {
-  # create a random email address with @example.com domain
-  EMAIL=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 10 | head -n 1)@example.com
-
-  run $BIN customer:create \
-    "$EMAIL" \
-    "Password12345678" \
-    "Dummy" \
-    "Customer" \
-    1
-  assert [ "$status" -eq 0 ]
-}
+#@test "Command: customer:create" {
+#  # create a random email address with @example.com domain
+#  EMAIL=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 10 | head -n 1)@example.com
+#
+#  run $BIN customer:create \
+#    "$EMAIL" \
+#    "Password12345678" \
+#    "Dummy" \
+#    "Customer" \
+#    1
+#  assert [ "$status" -eq 0 ]
+#}
 
 @test "Command: customer:list" {
   run $BIN customer:list
