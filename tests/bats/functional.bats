@@ -128,17 +128,17 @@ function setup {
 #  sys:url:list
 #  sys:website:list [done]
 
-#@test "Command: script" {
-#  echo -e "!ls\ncache:list" > /tmp/test-script.magerun
-#  run $BIN script /tmp/test-script.magerun
-#  # ls of magerun source directory
-#  assert_output --partial 'index.php'
-#
-#  # cache:list -> config cache entry
-#  assert_output --partial 'config'
-#
-#  rm /tmp/test-script.magerun
-#}
+@test "Command: script" {
+  echo -e "!ls\ncache:list" > /tmp/test-script.magerun
+  run $BIN script /tmp/test-script.magerun
+  # ls of magerun source directory
+  assert_output --partial 'index.php'
+
+  # cache:list -> config cache entry
+  assert_output --partial 'config'
+
+  rm /tmp/test-script.magerun
+}
 
 @test "Command: admin:user:list" {
   run $BIN admin:user:list
