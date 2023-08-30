@@ -8,6 +8,7 @@ jobs:
     name: OpenMage ${{ matrix.openmage_version }} / PHP ${{ matrix.php_version }} / MySQL ${{ matrix.mysql_version }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         openmage_version: ["20.1.0", "20.0.20"]
         php_version: ["8.1", "7.4"]
