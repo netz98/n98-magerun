@@ -64,9 +64,9 @@ jobs:
             --dbPort="${{ job.services.mysql.ports['3306'] }}" \
             --dbUser="root" \
             --dbPass="root" \
-            --dbName="magento_test_db" \  
+            --dbName="magento_test_db" \
             --installSampleData=no \
-            --useDefaultConfigParams=yes \        
+            --useDefaultConfigParams=yes \
             --baseUrl="http://magento.local/"
 
       - name: Set Magento root environment variable
