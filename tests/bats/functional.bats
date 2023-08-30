@@ -14,7 +14,7 @@ function setup {
     exit 1
   fi
 
-  BIN="$N98_MAGERUN_BIN --no-interaction --root-dir=$N98_MAGERUN_TEST_MAGENTO_ROOT"
+  BIN="$N98_MAGERUN_BIN --root-dir=$N98_MAGERUN_TEST_MAGENTO_ROOT"
 }
 
 # Command coverage
