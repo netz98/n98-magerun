@@ -14,7 +14,7 @@ function setup {
     exit 1
   fi
 
-  BIN="$N98_MAGERUN_BIN --root-dir=$N98_MAGERUN_TEST_MAGENTO_ROOT"
+  BIN="$N98_MAGERUN_BIN --no-interaction --root-dir=$N98_MAGERUN_TEST_MAGENTO_ROOT"
 }
 
 # Command coverage
@@ -24,7 +24,7 @@ function setup {
 #  list
 #  mysql-client
 #  open-browser
-#  script
+#  script [done]
 #  uninstall
 #  admin:notifications
 #  admin:user:change-password
@@ -36,15 +36,15 @@ function setup {
 #  cache:dir:flush
 #  cache:disable
 #  cache:enable
-#  cache:flush
+#  cache:flush [done]
 #  cache:list [done]
 #  cache:report
 #  cache:view
 #  category:create:dummy
-#  cms:block:list
+#  cms:block:list [done]
 #  cms:block:toggle
 #  config:delete [done]
-#  config:dump
+#  config:dump [done]
 #  config:get [done]
 #  config:search [done]
 #  config:set [done]
@@ -80,7 +80,7 @@ function setup {
 #  dev:module:dependencies:on
 #  dev:module:disable
 #  dev:module:enable
-#  dev:module:list
+#  dev:module:list [done]
 #  dev:module:observer:list [done]
 #  dev:module:rewrite:conflicts [done]
 #  dev:module:rewrite:list [done]
@@ -88,12 +88,12 @@ function setup {
 #  dev:profiler
 #  dev:report:count
 #  dev:setup:script:attribute
-#  dev:symlinks
+#  dev:symlinks [done]
 #  dev:template-hints
 #  dev:template-hints-blocks
 #  dev:theme:duplicates
-#  dev:theme:info
-#  dev:theme:list
+#  dev:theme:info [done]
+#  dev:theme:list [done]
 #  dev:translate:admin
 #  dev:translate:export
 #  dev:translate:set
@@ -101,7 +101,7 @@ function setup {
 #  eav:attribute:create-dummy-values
 #  eav:attribute:list [done]
 #  eav:attribute:remove
-#  eav:attribute:view
+#  eav:attribute:view [done]
 #  index:list [done]
 #  index:reindex
 #  index:reindex:all
@@ -116,7 +116,7 @@ function setup {
 #  sys:cron:list [done]
 #  sys:cron:run
 #  sys:info [done]
-#  sys:maintenance
+#  sys:maintenance [done]
 #  sys:modules:list [done]
 #  sys:setup:change-version
 #  sys:setup:compare-versions
@@ -128,15 +128,37 @@ function setup {
 #  sys:url:list
 #  sys:website:list [done]
 
+@test "Command: script" {
+  echo -e "!ls\ncache:list" > /tmp/test-script.magerun
+  run $BIN script /tmp/test-script.magerun
+  # ls of magerun source directory
+  assert_output --partial 'index.php'
+
+  # cache:list -> config cache entry
+  assert_output --partial 'config'
+
+  rm /tmp/test-script.magerun
+}
+
 @test "Command: admin:user:list" {
   run $BIN admin:user:list
   assert_output --partial 'username'
+}
+
+@test "Command: cache:flush" {
+  run $BIN cache:flush
+  assert_output --partial 'Cache cleared'
 }
 
 @test "Command: cache:list" {
   run $BIN cache:list
   assert_output --partial 'config'
   assert_output --partial 'eav'
+}
+
+@test "Command: cms:block:list" {
+  run $BIN cms:block:list
+  assert_output --partial 'block_id'
 }
 
 @test "Command: config:get" {
@@ -163,6 +185,25 @@ function setup {
 @test "Command: config:delete" {
   run $BIN config:delete --all 'foo/bar/baz'
   assert_output --partial "foo/bar/baz"
+}
+
+@test "Command: config:dump" {
+  run $BIN config:dump
+  assert_output --partial '<?xml version="1.0"?>'
+  assert_output --partial "base_web_url"
+}
+
+@test "Command: customer:create" {
+  # create a random email address with @example.com domain
+  EMAIL=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 10 | head -n 1)@example.com
+
+  run $BIN customer:create \
+    "$EMAIL" \
+    "Password12345678" \
+    "Dummy" \
+    "Customer" \
+    1
+  assert [ "$status" -eq 0 ]
 }
 
 @test "Command: customer:list" {
@@ -198,6 +239,19 @@ function setup {
   assert_output --partial 'Mage_Catalog_Helper_Data'
 }
 
+@test "Command: sys:maintenance" {
+  run $BIN sys:maintenance --on
+  assert_output --partial 'Maintenance mode on'
+
+  run $BIN sys:maintenance --off
+  assert_output --partial 'Maintenance mode off'
+}
+
+@test "Command: dev:module:list" {
+  run $BIN dev:module:list
+  assert_output --partial 'Mage_Adminhtml'
+}
+
 @test "Command: dev:module:observer:list" {
   run $BIN dev:module:observer:list global
   assert_output --partial 'catalog_product_save_after'
@@ -211,9 +265,33 @@ function setup {
   run $BIN dev:module:rewrite:list
 }
 
+@test "Command: dev:symlinks" {
+  run $BIN dev:symlinks --on default
+  assert_output --partial 'allowed'
+
+  run $BIN dev:symlinks --off default
+  assert_output --partial 'denied'
+}
+
+@test "Command: dev:theme:info" {
+  run $BIN dev:theme:info
+  assert_output --partial 'Design Package Name'
+}
+
+@test "Command: dev:theme:list" {
+  run $BIN dev:theme:list
+  assert_output --partial 'base/default'
+}
+
 @test "Command: eav:attribute:list" {
   run $BIN eav:attribute:list
   assert_output --partial 'price'
+}
+
+@test "Command: eav:attribute:view" {
+  run $BIN eav:attribute:view catalog_product sku
+  assert_output --partial 'Attribute-Set-ID'
+  assert_output --partial 'SKU'
 }
 
 @test "Command: index:list" {
