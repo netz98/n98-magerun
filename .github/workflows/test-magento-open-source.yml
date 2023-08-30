@@ -50,7 +50,7 @@ jobs:
 
       - name: Install Magento
         run: |
-          php bin/n98-magerun install \
+          php bin/n98-magerun --no-interaction install \
           --magentoVersionByName="openmage-19.4.23" \
           --installationFolder="./magento" \
           --dbHost="127.0.0.1" \
