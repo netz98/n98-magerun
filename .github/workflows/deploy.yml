@@ -128,12 +128,14 @@ jobs:
     needs: [ "create-signed-phar-file" ]
     if: startsWith(github.ref, 'refs/tags/')
     steps:
+      - name: Checkout HEAD
+        uses: actions/checkout@v3.6.0
+      - uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.DIST_REPO_DEPLOY_KEY }}
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
           name: n98-magerun.phar
       - name: Update dist repo
-        run: |
-          eval "$(ssh-agent -s)"
-          echo "${{ secrets.DIST_REPO_DEPLOY_KEY }}" | tr -d '\r' | ssh-add - > /dev/null
-          ./github/workflows/update-dist-repo.sh
+        run: .github/workflows/update-dist-repo.sh

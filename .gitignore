@@ -17,3 +17,8 @@
 
 # Phpunit configuration
 /phpunit.xml
+
+# Act
+act.env
+act.secrets
+

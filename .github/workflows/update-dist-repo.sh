@@ -6,11 +6,6 @@ set -x
 REF_TYPE=$(cut -d'/' -f2 <<< "$GITHUB_REF");
 TAG=$(cut -d'/' -f3 <<< "$GITHUB_REF");
 
-if [ ! "$REF_TYPE" = 'tags' ]; then
-    echo "no tag release. Skip!";
-    exit 0;
-fi
-
 echo "Deploy tag: $TAG";
 
 # prepare git commit
@@ -28,5 +23,11 @@ ls -l ./n98-magerun;
 git add ./n98-magerun;
 git commit -m "Version: $TAG" ./n98-magerun;
 git tag "$TAG";
-git push;
-git push --tags;
+
+if [ "$REF_TYPE" = 'tags' ]; then
+  echo "Pushing to dist repo."
+  git push;
+  git push --tags;
+else
+  git push --dry-run;
+fi
