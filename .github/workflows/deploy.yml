@@ -14,14 +14,28 @@ jobs:
   create-signed-phar-file:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout HEAD
+        uses: actions/checkout@v3.6.0
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           tools: composer:2
           php-version: '7.4'
 
-      - name: Checkout HEAD
-        uses: actions/checkout@v3.6.0
+      # Allow only newer versions
+      - name: Collect versions
+        run: |
+          # extract tag part of github.ref
+          PUSHED_VERSION=$(cut -d'/' -f3 <<< "$GITHUB_REF")
+          LATEST_RELEASED_VERSION=$(curl -s https://raw.githubusercontent.com/netz98/n98-magerun/master/version.txt | tr -d '[:space:]')
+          echo "pushed_version=$PUSHED_VERSION" >> $GITHUB_ENV
+          echo "latest_released_version=$LATEST_RELEASED_VERSION" >> $GITHUB_ENV
+      - uses: jackbilestech/semver-compare@1.0.4
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          head: '${{ env.pushed_version }}'
+          base: '${{ env.latest_released_version }}'
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
