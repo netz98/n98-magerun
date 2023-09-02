@@ -165,10 +165,20 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: n98-magerun.phar
+      - name: 'Build Changelog'
+        uses: mikepenz/release-changelog-builder-action@v4
+        with:
+          owner: "netz98"
+          repo: "n98-magerun"
+        id: build_changelog
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
+          body: ${{steps.build_changelog.outputs.changelog}}
           files: |
             n98-magerun.phar
             n98-magerun.phar.asc
+
