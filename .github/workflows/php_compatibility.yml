@@ -1,0 +1,41 @@
+---
+name: PHP Compatibility
+on:
+  - push
+  - pull_request
+
+env:
+  MIN_PHP_VERSION: 7.4
+
+jobs:
+  php-compatibility:
+      name: PHP Compatibility
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout PR
+          uses: actions/checkout@v4.0.0
+          if: github.event_name == 'pull_request_target'
+          with:
+            ref: ${{ github.event.pull_request.head.sha }}
+        - name: Checkout HEAD
+          uses: actions/checkout@v4.0.0
+          if: github.event_name == 'push'
+        - name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            tools: composer:${{ matrix.composer-version }}, cs2pr
+            php-version: 8.2
+            extensions: mcrypt, mbstring, intl
+            coverage: none
+        - name: Test src directory
+          uses: pantheon-systems/phpcompatibility-action@v1
+          with:
+            skip-php-setup: true
+            test-versions: ${{ env.MIN_PHP_VERSION }}-
+            paths: ${{ github.workspace }}/src
+        - name: Test tests directory
+          uses: pantheon-systems/phpcompatibility-action@v1
+          with:
+            skip-php-setup: true
+            test-versions: ${{ env.MIN_PHP_VERSION }}-
+            paths: ${{ github.workspace }}/tests
