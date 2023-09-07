@@ -2,26 +2,35 @@
 
 namespace N98\Util\Unicode;
 
+/**
+ * Class Charset
+ * @package N98\Util\Unicode
+ */
 class Charset
 {
     /**
      * @var int
      */
-    public const UNICODE_CHECKMARK_CHAR = 10004;
+    const UNICODE_CHECKMARK_CHAR = 10004;
 
     /**
      * @var int
      */
-    public const UNICODE_CROSS_CHAR = 10006;
+    const UNICODE_CROSS_CHAR = 10006;
+
+    /**
+     * @var int
+     */
+    const UNICODE_WHITE_SQUARE_CHAR = 9633;
 
     /**
      * @param int|array $codes
      * @return string
      */
-    public static function convertInteger($codes)
+    public static function convertInteger(...$codes)
     {
-        if (is_scalar($codes)) {
-            $codes = func_get_args();
+        if (count($codes) === 1 && is_array($codes[0])) {
+            $codes = $codes[0];
         }
 
         $str = '';
