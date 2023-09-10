@@ -14,7 +14,7 @@ jobs:
       steps:
         - name: Checkout PR
           uses: actions/checkout@v4.0.0
-          if: github.event_name == 'pull_request_target'
+          if: github.event_name == 'pull_request'
           with:
             ref: ${{ github.event.pull_request.head.sha }}
         - name: Checkout HEAD
