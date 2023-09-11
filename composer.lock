@@ -351,16 +351,16 @@
         },
         {
             "name": "rmccue/requests",
-            "version": "v2.0.7",
+            "version": "v2.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/WordPress/Requests.git",
-                "reference": "e14a6f4e7438d3f8da3f2657759e6367b906ee23"
+                "reference": "fae75bcb83d9d00d0e31ee86a472a036f9f91519"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WordPress/Requests/zipball/e14a6f4e7438d3f8da3f2657759e6367b906ee23",
-                "reference": "e14a6f4e7438d3f8da3f2657759e6367b906ee23",
+                "url": "https://api.github.com/repos/WordPress/Requests/zipball/fae75bcb83d9d00d0e31ee86a472a036f9f91519",
+                "reference": "fae75bcb83d9d00d0e31ee86a472a036f9f91519",
                 "shasum": ""
             },
             "require": {
@@ -377,6 +377,12 @@
                 "squizlabs/php_codesniffer": "^3.6",
                 "wp-coding-standards/wpcs": "^2.0",
                 "yoast/phpunit-polyfills": "^1.0.0"
+            },
+            "suggest": {
+                "art4/requests-psr18-adapter": "For using Requests as a PSR-18 HTTP Client",
+                "ext-curl": "For improved performance",
+                "ext-openssl": "For secure transport support",
+                "ext-zlib": "For improved performance when decompressing encoded streams"
             },
             "type": "library",
             "autoload": {
@@ -428,7 +434,7 @@
                 "issues": "https://github.com/WordPress/Requests/issues",
                 "source": "https://github.com/WordPress/Requests"
             },
-            "time": "2023-06-02T07:35:42+00:00"
+            "time": "2023-09-11T08:27:57+00:00"
         },
         {
             "name": "symfony/console",
