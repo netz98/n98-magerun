@@ -629,7 +629,7 @@ class Application extends BaseApplication
             $this->init([], $input, $output);
         } catch (Exception $e) {
             $output = new ConsoleOutput();
-            $this->renderException($e, $output->getErrorOutput());
+            $this->renderThrowable($e, $output->getErrorOutput());
         }
 
         $return = parent::run($input, $output);
