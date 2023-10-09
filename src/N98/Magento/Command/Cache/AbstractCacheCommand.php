@@ -18,11 +18,7 @@ class AbstractCacheCommand extends AbstractMagentoCommand
      */
     protected function _getCacheModel()
     {
-        if ($this->_magentoMajorVersion == AbstractMagentoCommand::MAGENTO_MAJOR_VERSION_2) {
-            throw new RuntimeException('There global Mage class was removed from Magento 2. What should we do here?');
-        } else {
-            return Mage::app()->getCacheInstance();
-        }
+        return Mage::app()->getCacheInstance();
     }
 
     /**
@@ -92,13 +88,5 @@ class AbstractCacheCommand extends AbstractMagentoCommand
     protected function _canUseBanCacheFunction()
     {
         return method_exists('\Mage_Core_Model_App', 'baseInit');
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return $this->getApplication()->getMagentoMajorVersion() === Application::MAGENTO_MAJOR_VERSION_1;
     }
 }

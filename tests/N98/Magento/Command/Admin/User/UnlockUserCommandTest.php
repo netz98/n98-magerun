@@ -16,9 +16,7 @@ class UnlockUserCommandTest extends TestCase
     {
         $command = new UnlockCommand();
         $command->setApplication($this->getApplication());
-        if (!$command->isEnabled()) {
-            self::markTestSkipped('UnlockCommand is not enabled.');
-        }
+
         return $command;
     }
 

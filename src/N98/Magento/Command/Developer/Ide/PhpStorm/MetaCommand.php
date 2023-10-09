@@ -73,30 +73,27 @@ class MetaCommand extends AbstractMagentoCommand
             return 0;
         }
 
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_1) {
-            $classMaps = [];
+        $classMaps = [];
 
-            foreach ($this->groups as $group) {
-                $classMaps[$group] = $this->getClassMapForGroup($group, $output);
+        foreach ($this->groups as $group) {
+            $classMaps[$group] = $this->getClassMapForGroup($group, $output);
 
-                if (!$input->getOption('stdout') && count($classMaps[$group]) > 0) {
-                    $output->writeln(
-                        '<info>Generated definitions for <comment>' . $group . '</comment> group</info>'
-                    );
-                }
+            if (!$input->getOption('stdout') && count($classMaps[$group]) > 0) {
+                $output->writeln(
+                    '<info>Generated definitions for <comment>' . $group . '</comment> group</info>'
+                );
             }
-
-            $version = $input->getOption('meta-version');
-            if ($version == self::VERSION_OLD) {
-                $this->writeToOutputOld($input, $output, $classMaps);
-            } elseif ($version == self::VERSION_2017) {
-                $this->writeToOutputV2017($input, $output, $classMaps);
-            } elseif ($version == self::VERSION_2019) {
-                $this->writeToOutputV2019($input, $output, $classMaps);
-            }
-        } else {
-            $output->write('Magento 2 is currently not supported');
         }
+
+        $version = $input->getOption('meta-version');
+        if ($version == self::VERSION_OLD) {
+            $this->writeToOutputOld($input, $output, $classMaps);
+        } elseif ($version == self::VERSION_2017) {
+            $this->writeToOutputV2017($input, $output, $classMaps);
+        } elseif ($version == self::VERSION_2019) {
+            $this->writeToOutputV2019($input, $output, $classMaps);
+        }
+
         return 0;
     }
 

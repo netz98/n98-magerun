@@ -19,10 +19,6 @@ class CleanCommandTest extends TestCase
     {
         $application = parent::getApplication();
 
-        if ($application::MAGENTO_MAJOR_VERSION_1 !== $application->getMagentoMajorVersion()) {
-            return $application;
-        }
-
         // FIXME #613 make install command work with 1.9+ and cache initialization
         $version = Mage::getVersion();
         $against = '1.9.0.0';
