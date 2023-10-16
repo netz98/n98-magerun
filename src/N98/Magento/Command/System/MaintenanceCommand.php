@@ -1,22 +1,57 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * @package N98\Magento\Command\System
+ */
 class MaintenanceCommand extends AbstractMagentoCommand
 {
+    private const COMMAND_OPTION_ON = 'on';
+    private const COMMAND_OPTION_OFF = 'off';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'sys:maintenance';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Toggles maintenance mode';
+
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this
-            ->setName('sys:maintenance')
-            ->addOption('on', null, InputOption::VALUE_NONE, 'Enable maintenance mode')
-            ->addOption('off', null, InputOption::VALUE_NONE, 'Disable maintenance mode')
-            ->setDescription('Toggles maintenance mode.')
+            ->addOption(
+                self::COMMAND_OPTION_ON,
+                null,
+                InputOption::VALUE_NONE,
+                'Enable maintenance mode'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_OFF,
+                null,
+                InputOption::VALUE_NONE,
+                'Disable maintenance mode'
+            )
         ;
     }
 
@@ -31,25 +66,26 @@ class MaintenanceCommand extends AbstractMagentoCommand
         $this->detectMagento($output);
         $flagFile = $this->_magentoRootFolder . '/maintenance.flag';
 
-        if ($input->getOption('off')) {
-            $this->_switchOff($output, $flagFile);
-        } elseif ($input->getOption('on')) {
-            $this->_switchOn($output, $flagFile);
+        if ($input->getOption(self::COMMAND_OPTION_OFF)) {
+            $this->switchOff($output, $flagFile);
+        } elseif ($input->getOption(self::COMMAND_OPTION_ON)) {
+            $this->switchOn($output, $flagFile);
         } else {
             if (file_exists($flagFile)) {
-                $this->_switchOff($output, $flagFile);
+                $this->switchOff($output, $flagFile);
             } else {
-                $this->_switchOn($output, $flagFile);
+                $this->switchOn($output, $flagFile);
             }
         }
-        return 0;
+
+        return Command::SUCCESS;
     }
 
     /**
      * @param OutputInterface $output
-     * @param $flagFile
+     * @param string $flagFile
      */
-    protected function _switchOn(OutputInterface $output, $flagFile)
+    private function switchOn(OutputInterface $output, string $flagFile): void
     {
         if (!file_exists($flagFile)) {
             if (!touch($flagFile)) {
@@ -63,7 +99,7 @@ class MaintenanceCommand extends AbstractMagentoCommand
      * @param OutputInterface $output
      * @param string $flagFile
      */
-    protected function _switchOff($output, $flagFile)
+    private function switchOff(OutputInterface $output, string $flagFile): void
     {
         if (file_exists($flagFile)) {
             if (!unlink($flagFile)) {
