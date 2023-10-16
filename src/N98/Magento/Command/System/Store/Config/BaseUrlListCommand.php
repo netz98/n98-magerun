@@ -1,57 +1,67 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Store\Config;
 
 use Mage;
+use Mage_Core_Model_Store as Store;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
+use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class BaseUrlListCommand extends AbstractMagentoCommand
+/**
+ * List base urls command
+ *
+ * @package N98\Magento\Command\System\Store\Config
+ */
+class BaseUrlListCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
 {
-    protected function configure()
-    {
-        $this
-            ->setName('sys:store:config:base-url:list')
-            ->setDescription('Lists all base urls')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
-        ;
-    }
+    public const COMMAND_SECTION_TITLE_TEXT = 'Stores - Base URLs';
+
+    /**
+     * @var array<int|string, array<int|string, mixed>>|null
+     */
+    private ?array $data = null;
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'sys:store:config:base-url:list';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Lists all base urls.';
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
-     * @return int
+     * @return array<int|string, array<int|string, mixed>>
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        $table = [];
-        $this->detectMagento($output, true);
+        if (is_null($this->data)) {
+            $this->data = [];
+            foreach ($this->_getMage()->getStores() as $store) {
+                $storeId = (string) $store->getId();
+                $this->data[$storeId] = [
+                    'ID'                => $storeId,
+                    'Code'              => $store->getCode(),
+                    'Unsecure base URL' => Mage::getStoreConfig(Store::XML_PATH_UNSECURE_BASE_URL, $store),
+                    'Secure base URL'   => Mage::getStoreConfig(Store::XML_PATH_SECURE_BASE_URL, $store)
+                ];
+            }
 
-        if (!$input->getOption('format')) {
-            $this->writeSection($output, 'Magento Stores - Base URLs');
+            ksort($this->data);
         }
-        $this->initMagento();
 
-        foreach (Mage::app()->getStores() as $store) {
-            $table[$store->getId()] = [$store->getId(), $store->getCode(), Mage::getStoreConfig('web/unsecure/base_url', $store), Mage::getStoreConfig('web/secure/base_url', $store)];
-        }
-
-        ksort($table);
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
-        $tableHelper
-            ->setHeaders(['id', 'code', 'unsecure_baseurl', 'secure_baseurl'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $this->data;
     }
 }
