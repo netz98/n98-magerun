@@ -1,72 +1,80 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cms\Block;
 
-use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 /**
- * CMS Block ToggleCommand
+ * Toggle CMS block command
  *
  * @package N98\Magento\Command\Cms\Block
  */
-class ToggleCommand extends AbstractMagentoCommand
+class ToggleCommand extends AbstractCmsBlockCommand
 {
+    private const COMMAND_ARGUMENT_BLOCK_ID = 'block_id';
+
     /**
-     * Configure command
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'cms:block:toggle';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Toggle a cms block.';
+
+    /**
+     * @return void
      */
     protected function configure()
     {
-        $this
-            ->setName('cms:block:toggle')
-            ->addArgument('block_id', InputArgument::REQUIRED, 'Block ID or Identifier')
-            ->setDescription('Toggle a cms block')
-        ;
+        $this->addArgument(
+            self::COMMAND_ARGUMENT_BLOCK_ID,
+            InputArgument::REQUIRED,
+            'Block ID or Identifier'
+        );
     }
 
     /**
-     * Get an instance of cms/block
-     *
-     * @return \Mage_Cms_Model_Block
-     */
-    protected function _getBlockModel()
-    {
-        return $this->_getModel('cms/block', '\Mage_Cms_Model_Block');
-    }
-
-    /**
-     * Execute the command
-     *
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
+     * @throws Throwable
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
-        $blockId = $input->getArgument('block_id');
-        if (is_numeric($blockId)) {
-            $block = $this->_getBlockModel()->load($blockId);
-        } else {
-            $block = $this->_getBlockModel()->load($blockId, 'identifier');
-        }
+        $this->detectMagento($output);
+        $this->initMagento();
+
+        $blockId = $this->getArgumentString($input, self::COMMAND_ARGUMENT_BLOCK_ID);
+        $block = $this->_getBlockModel()->load($blockId, is_numeric($blockId) ? null : 'identifier');
+
         if (!$block->getId()) {
-            return (int) $output->writeln('<error>Block was not found</error>');
+            $output->writeln('<error>Block was not found</error>');
+            return Command::INVALID;
         }
-        $newStatus = !$block->getIsActive();
+
         $block
-            ->setIsActive($newStatus)
+            ->setIsActive(!$block->getIsActive())
             ->save();
+
         $output->writeln(sprintf(
-            '<comment>Block</comment> <info>%s</info>',
-            $newStatus ? 'enabled' : 'disabled'
+            '<comment>Block "%s"</comment> <info>%s</info>',
+            $block->getTitle(),
+            $block->getIsActive() ? 'enabled' : 'disabled'
         ));
-        return 0;
+
+        return Command::SUCCESS;
     }
 }
