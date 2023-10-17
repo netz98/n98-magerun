@@ -22,29 +22,19 @@ class DeleteCommandTest extends TestCase
     protected $website;
     protected $application;
 
-    protected function getResourceClassName($mage1Code, $mage2Code)
+    protected function getResourceClassName($class)
     {
-        // Get correct model classes to mock
-        if ($this->application->getMagentoMajorVersion() == 2) {
-            return get_class(Mage::getResourceModel($mage2Code));
-        } else {
-            return get_class(Mage::getResourceModel($mage1Code));
-        }
+        return get_class(Mage::getResourceModel($class));
     }
 
-    protected function getModelClassName($mage1Code, $mage2Code)
+    protected function getModelClassName($class)
     {
-        // Get correct model classes to mock
-        if ($this->application->getMagentoMajorVersion() == 2) {
-            return get_class(Mage::getModel($mage2Code));
-        } else {
-            return get_class(Mage::getModel($mage1Code));
-        }
+        return get_class(Mage::getModel($class));
     }
 
     protected function getCustomerModel(array $methods)
     {
-        $className = $this->getModelClassName('customer/customer', 'Mage_Customer_Model_Customer');
+        $className = $this->getModelClassName('customer/customer');
         return $this->getMockBuilder($className)
             ->setMethods($methods)
             ->disableOriginalConstructor()
@@ -54,8 +44,7 @@ class DeleteCommandTest extends TestCase
     protected function getCustomerCollection(array $methods)
     {
         $className = $this->getResourceClassName(
-            'customer/customer_collection',
-            'Mage_Customer_Model_Resource_Customer_Collection'
+            'customer/customer_collection'
         );
 
         return $this->getMockBuilder($className)

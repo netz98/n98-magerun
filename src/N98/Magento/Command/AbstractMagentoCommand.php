@@ -33,24 +33,9 @@ use Symfony\Component\Console\Question\Question;
 abstract class AbstractMagentoCommand extends Command
 {
     /**
-     * @var int
-     */
-    public const MAGENTO_MAJOR_VERSION_1 = 1;
-
-    /**
-     * @var int
-     */
-    public const MAGENTO_MAJOR_VERSION_2 = 2;
-
-    /**
      * @var string
      */
     protected $_magentoRootFolder = null;
-
-    /**
-     * @var int
-     */
-    protected $_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_1;
 
     /**
      * @var bool
@@ -181,7 +166,6 @@ abstract class AbstractMagentoCommand extends Command
 
         $this->_magentoEnterprise = $this->getApplication()->isMagentoEnterprise();
         $this->_magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
-        $this->_magentoMajorVersion = $this->getApplication()->getMagentoMajorVersion();
 
         if (!$silent) {
             $editionString = ($this->_magentoEnterprise ? ' (Enterprise Edition) ' : '');
@@ -213,9 +197,6 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function getCoreHelper()
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return Mage::helper('Mage_Core_Helper_Data');
-        }
         return Mage::helper('core');
     }
 
@@ -369,83 +350,48 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * Magento 1 / 2 switches
-     *
-     * @param string $mage1code Magento 1 class code
-     * @param string $mage2class Magento 2 class name
+     * @param string $class class code
      * @return \Mage_Core_Model_Abstract
      */
-    protected function _getModel($mage1code, $mage2class)
+    protected function _getModel($class)
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return Mage::getModel($mage2class);
-        } else {
-            return Mage::getModel($mage1code);
-        }
+        return Mage::getModel($class);
     }
 
     /**
-     * Magento 1 / 2 switches
-     *
-     * @param string $mage1code Magento 1 class code
-     * @param string $mage2class Magento 2 class name
+     * @param string $class class code
      * @return \Mage_Core_Helper_Abstract
      */
-    protected function _getHelper($mage1code, $mage2class)
+    protected function _getHelper($class)
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return Mage::helper($mage2class);
-        } else {
-            return Mage::helper($mage1code);
-        }
+        return Mage::helper($class);
     }
 
     /**
-     * Magento 1 / 2 switches
-     *
-     * @param string $mage1code Magento 1 class code
-     * @param string $mage2class Magento 2 class name
+     * @param string $class class code
      * @return \Mage_Core_Model_Abstract
      */
-    protected function _getSingleton($mage1code, $mage2class)
+    protected function _getSingleton($class)
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return Mage::getModel($mage2class);
-        } else {
-            return Mage::getModel($mage1code);
-        }
+        return Mage::getModel($class);
     }
 
     /**
-     * Magento 1 / 2 switches
-     *
-     * @param string $mage1code Magento 1 class code
-     * @param string $mage2class Magento 2 class name
+     * @param string $class class code
      * @return \Mage_Core_Model_Abstract
      */
-    protected function _getResourceModel($mage1code, $mage2class)
+    protected function _getResourceModel($class)
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return Mage::getResourceModel($mage2class);
-        } else {
-            return Mage::getResourceModel($mage1code);
-        }
+        return Mage::getResourceModel($class);
     }
 
     /**
-     * Magento 1 / 2 switches
-     *
-     * @param string $mage1code Magento 1 class code
-     * @param string $mage2class Magento 2 class name
+     * @param string $class class code
      * @return \Mage_Core_Model_Abstract
      */
-    protected function _getResourceSingleton($mage1code, $mage2class)
+    protected function _getResourceSingleton($class)
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            return Mage::getResourceSingleton($mage2class);
-        } else {
-            return Mage::getResourceSingleton($mage1code);
-        }
+        return Mage::getResourceSingleton($class);
     }
 
     /**

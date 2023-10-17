@@ -19,9 +19,6 @@ class DumpCommandTest extends TestCase
     protected function getCommand()
     {
         $dumpCommand = new DumpCommand();
-        if (!$dumpCommand->isEnabled()) {
-            self::markTestSkipped('DumpCommand is not enabled.');
-        }
 
         $application = $this->getApplication();
         $application->add($dumpCommand);

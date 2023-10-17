@@ -24,11 +24,6 @@ class MagentoHelper extends AbstractHelper
     protected $_magentoRootFolder = null;
 
     /**
-     * @var int
-     */
-    protected $_magentoMajorVersion = Application::MAGENTO_MAJOR_VERSION_1;
-
-    /**
      * @var bool
      */
     protected $_magentoEnterprise = false;
@@ -124,25 +119,12 @@ class MagentoHelper extends AbstractHelper
         return $this->_magentoRootFolder;
     }
 
-    public function getEdition()
-    {
-        return $this->_magentoMajorVersion;
-    }
-
     /**
      * @return bool
      */
     public function isEnterpriseEdition()
     {
         return $this->_magentoEnterprise;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMajorVersion()
-    {
-        return $this->_magentoMajorVersion;
     }
 
     /**
@@ -319,12 +301,6 @@ class MagentoHelper extends AbstractHelper
             }
 
             $this->_magentoRootFolder = $searchFolder;
-
-            // Magento 2 does not have a god class and thus if this file is not there it is version 2
-            if ($hasMageFile === false) {
-                $this->_magentoMajorVersion = Application::MAGENTO_MAJOR_VERSION_2;
-                return true; // the rest of this does not matter since we are simply exiting with a notice
-            }
 
             if (is_callable(['\Mage', 'getEdition'])) {
                 $this->_magentoEnterprise = (Mage::getEdition() == 'Enterprise');

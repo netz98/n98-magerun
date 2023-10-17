@@ -1,62 +1,61 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Website;
 
-use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
+use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListCommand extends AbstractMagentoCommand
+/**
+ * List websites command
+ *
+ * @package 98\Magento\Command\System\Website
+ */
+class ListCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
 {
     /**
-     * @var array
+     * @var array<string, array<string, string>>|null
      */
-    protected $infos;
+    private ?array $data = null;
 
-    protected function configure()
-    {
-        $this
-            ->setName('sys:website:list')
-            ->setDescription('Lists all websites')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
-        ;
-    }
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'sys:website:list';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Lists all websites';
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
-     * @return int
+     * @return array<string, array<string, string>>
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        $table = [];
-        $this->detectMagento($output, true);
+        if (is_null($this->data)) {
+            $this->data = [];
+            foreach ($this->_getMage()->getWebsites() as $store) {
+                $storeId = (string) $store->getId();
+                $this->data[$storeId] = [
+                    'id'    => $storeId,
+                    'code'  => $store->getCode()
+                ];
+            }
 
-        if ($input->getOption('format') === null) {
-            $this->writeSection($output, 'Magento Websites');
+            ksort($this->data);
         }
-        $this->initMagento();
 
-        foreach (Mage::app()->getWebsites() as $store) {
-            $table[$store->getId()] = [$store->getId(), $store->getCode()];
-        }
-
-        ksort($table);
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
-        $tableHelper
-            ->setHeaders(['id', 'code'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $this->data;
     }
 }

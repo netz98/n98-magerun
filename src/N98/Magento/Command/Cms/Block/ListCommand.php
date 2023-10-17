@@ -1,80 +1,70 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cms\Block;
 
-use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
+use Mage_Cms_Model_Block;
+use Mage_Core_Exception;
+use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * CMS Block ListCommand
+ * List CMS blocks command
  *
  * @package N98\Magento\Command\Cms\Block
  */
-class ListCommand extends AbstractMagentoCommand
+class ListCommand extends AbstractCmsBlockCommand implements AbstractMagentoCommandFormatInterface
 {
     /**
-     * Configure command
+     * @var array<int, array<string, int|string>>|null
      */
-    protected function configure()
-    {
-        $this
-            ->setName('cms:block:list')
-            ->setDescription('List all cms blocks')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
-        ;
-    }
+    private ?array $data = null;
 
     /**
-     * Get an instance of cms/block
-     *
-     * @return \Mage_Cms_Model_Block
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
      */
-    protected function _getBlockModel()
-    {
-        return $this->_getModel('cms/block', '\Mage_Cms_Model_Block');
-    }
+    protected static $defaultName = 'cms:block:list';
 
     /**
-     * Execute the command
-     *
-     * @param InputInterface  $input
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'List all cms blocks';
+
+    /**
+     * @param InputInterface $input
      * @param OutputInterface $output
-     *
-     * @return int
+     * @return array<int, array<string, int|string>>
+     * @throws Mage_Core_Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
+        if (is_null($this->data)) {
+            /** @var Mage_Cms_Model_Block[] $cmsBlockCollection */
+            $cmsBlockCollection = $this->_getBlockModel()->getCollection()->addFieldToSelect('*');
+
+            $resourceModel = $this->_getBlockModel()->getResource();
+
+            $this->data = [];
+            foreach ($cmsBlockCollection as $cmsBlock) {
+                $storeIds = implode(',', $resourceModel->lookupStoreIds((int)$cmsBlock->getId()));
+
+                $this->data[] = [
+                    'block_id'      => $cmsBlock->getBlockId(),
+                    'title'         => $cmsBlock->getTitle(),
+                    'identifier'    => $cmsBlock->getIdentifier(),
+                    'is_active'     => $cmsBlock->getIsActive() ? 'active' : 'inactive',
+                    'store_ids'     => $storeIds
+                ];
+            }
         }
 
-        $cmsBlockCollection = $this->_getBlockModel()->getCollection()->addFieldToSelect('*');
-
-        /** @var \Mage_Cms_Model_Resource_Block $resourceModel */
-        $resourceModel = $this->_getBlockModel()->getResource();
-
-        $table = [];
-        foreach ($cmsBlockCollection as $cmsBlock) {
-            $storeIds = implode(',', $resourceModel->lookupStoreIds($cmsBlock->getId()));
-
-            $table[] = [$cmsBlock->getData('block_id'), $cmsBlock->getData('identifier'), $cmsBlock->getData('title'), $cmsBlock->getData('is_active') ? 'active' : 'inactive', $storeIds];
-        }
-
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
-        $tableHelper
-            ->setHeaders(['block_id', 'identifier', 'title', 'is_active', 'store_ids'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $this->data;
     }
 }

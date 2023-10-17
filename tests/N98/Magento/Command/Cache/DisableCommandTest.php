@@ -11,31 +11,27 @@ class DisableCommandTest extends TestCase
     public function testExecute()
     {
         $application = $this->getApplication();
-        if ($application->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1) {
-            $application->add(new DisableCommand());
+        $application->add(new DisableCommand());
 
-            $command = $this->getApplication()->find('cache:disable');
-            $commandTester = new CommandTester($command);
-            $commandTester->execute(['command' => $command->getName()]);
+        $command = $this->getApplication()->find('cache:disable');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(['command' => $command->getName()]);
 
-            self::assertMatchesRegularExpression('/Caches disabled/', $commandTester->getDisplay());
-        }
+        self::assertMatchesRegularExpression('/Caches disabled/', $commandTester->getDisplay());
     }
 
     public function testExecuteMultipleCaches()
     {
         $application = $this->getApplication();
-        if ($application->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1) {
-            $application->add(new DisableCommand());
+        $application->add(new DisableCommand());
 
-            $command = $this->getApplication()->find('cache:disable');
-            $commandTester = new CommandTester($command);
-            $commandTester->execute(
-                ['command' => $command->getName(), 'code'    => 'eav,config']
-            );
+        $command = $this->getApplication()->find('cache:disable');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            ['command' => $command->getName(), 'code'    => 'eav,config']
+        );
 
-            self::assertMatchesRegularExpression('/Cache config disabled/', $commandTester->getDisplay());
-            self::assertMatchesRegularExpression('/Cache eav disabled/', $commandTester->getDisplay());
-        }
+        self::assertMatchesRegularExpression('/Cache config disabled/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/Cache eav disabled/', $commandTester->getDisplay());
     }
 }

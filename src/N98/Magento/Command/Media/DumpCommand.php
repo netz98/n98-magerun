@@ -1,8 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Media;
 
+use N98\Magento\Application;
 use N98\Magento\Command\AbstractMagentoCommand;
+use RuntimeException;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -11,38 +17,82 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use ZipArchive;
 
+/**
+ * Dump media command
+ *
+ * @package N98\Magento\Command\Media
+ */
 class DumpCommand extends AbstractMagentoCommand
 {
+    private const COMMAND_ARGUMENT_FILENAME = 'filename';
+    private const COMMAND_OPTION_STRIP = 'strip';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'media:dump';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Creates an archive with content of media folder';
+
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this
-            ->setName('media:dump')
-            ->addOption('strip', '', InputOption::VALUE_NONE, 'Excludes image cache')
-            ->addArgument('filename', InputArgument::OPTIONAL, 'Dump filename')
-            ->setDescription('Creates an archive with content of media folder.')
+            ->addOption(
+                self::COMMAND_OPTION_STRIP,
+                '',
+                InputOption::VALUE_NONE,
+                'Excludes image cache'
+            )
+            ->addArgument(
+                self::COMMAND_ARGUMENT_FILENAME,
+                InputArgument::OPTIONAL,
+                'Dump filename'
+            )
         ;
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->detectMagento($output);
+
+        /** @var Application $app */
+        $app = $this->getApplication();
+        if (!$app) {
+            throw new RuntimeException('Could not run application.');
+        }
+
+        $rootFolder = $app->getMagentoRootFolder();
+        if (!$rootFolder) {
+            throw new RuntimeException('Could not find root folder.');
+        }
+
         $commandConfig = $this->getCommandConfig();
 
-        $this->detectMagento($output);
         $finder = new Finder();
         $finder
             ->files()->followLinks()
-            ->in($this->getApplication()->getMagentoRootFolder() . DIRECTORY_SEPARATOR . 'media');
-        if ($input->getOption('strip')) {
+            ->in($rootFolder . DIRECTORY_SEPARATOR . 'media');
+
+        if ($input->getOption(self::COMMAND_OPTION_STRIP)) {
             $finder->exclude($commandConfig['strip']['folders']);
         }
 
-        $filename = (string) $input->getArgument('filename');
+        $filename = $this->getArgumentString($input, self::COMMAND_ARGUMENT_FILENAME);
         if (is_dir($filename)) { // support for dot dir
             $filename = realpath($filename);
             $filename .= '/';
@@ -69,6 +119,7 @@ class DumpCommand extends AbstractMagentoCommand
         }
 
         $zip->close();
-        return 0;
+
+        return Command::SUCCESS;
     }
 }

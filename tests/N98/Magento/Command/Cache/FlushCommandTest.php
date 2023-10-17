@@ -11,15 +11,12 @@ class FlushCommandTest extends TestCase
     public function testExecute()
     {
         $application = $this->getApplication();
-        if ($application->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1) {
-            $application = $this->getApplication();
-            $application->add(new FlushCommand());
-            $command = $this->getApplication()->find('cache:flush');
+        $application->add(new FlushCommand());
 
-            $commandTester = new CommandTester($command);
-            $commandTester->execute(['command' => $command->getName()]);
+        $command = $this->getApplication()->find('cache:flush');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(['command' => $command->getName()]);
 
-            self::assertMatchesRegularExpression('/Cache cleared/', $commandTester->getDisplay());
-        }
+        self::assertMatchesRegularExpression('/Cache cleared/', $commandTester->getDisplay());
     }
 }

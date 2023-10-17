@@ -1,58 +1,61 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Store;
 
-use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
+use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListCommand extends AbstractMagentoCommand
+/**
+ * List stores command
+ *
+ * @package N98\Magento\Command\System\Store
+ */
+class ListCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
 {
     /**
-     * @var array
+     * @var array<int|string, array<string, string>>|null
      */
-    protected $infos;
+    private ?array $data = null;
 
-    protected function configure()
-    {
-        $this
-            ->setName('sys:store:list')
-            ->setDescription('Lists all installed store-views')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
-        ;
-    }
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'sys:store:list';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Lists all installed store-views';
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
-     * @return int
+     * @return array<int|string, array<string, string>>
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        $table = [];
-        $this->detectMagento($output, true);
-        $this->initMagento();
+        if (is_null($this->data)) {
+            $this->data = [];
+            foreach ($this->_getMage()->getStores() as $store) {
+                $storeId = (string) $store->getId();
+                $this->data[$storeId] = [
+                    'id'    => $storeId,
+                    'code'  => $store->getCode()
+                ];
+            }
 
-        foreach (Mage::app()->getStores() as $store) {
-            $table[$store->getId()] = [$store->getId(), $store->getCode()];
+            ksort($this->data);
         }
 
-        ksort($table);
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
-        $tableHelper
-            ->setHeaders(['id', 'code'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $this->data;
     }
 }
