@@ -675,6 +675,10 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
+     * Adds console command "format" option
+     *
+     * Output result as csv, json, xml or text
+     *
      * @return $this
      */
     public function addFormatOption(): AbstractMagentoCommand
