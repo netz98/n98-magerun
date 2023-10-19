@@ -4,7 +4,6 @@ namespace N98\Magento\Command\Cache;
 
 use Enterprise_PageCache_Model_Cache;
 use Mage;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,7 +24,7 @@ class ReportCommand extends AbstractCacheCommand
                 'filter-tag',
                 '',
                 InputOption::VALUE_OPTIONAL,
-                'Filter output by TAG (seperate multiple tags by comma)'
+                'Filter output by TAG (separate multiple tags by comma)'
             )
             ->addOption(
                 'fpc',
@@ -33,12 +32,7 @@ class ReportCommand extends AbstractCacheCommand
                 InputOption::VALUE_NONE,
                 'Use full page cache instead of core cache (Enterprise only!)'
             )
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
+            ->addFormatOption()
         ;
     }
 

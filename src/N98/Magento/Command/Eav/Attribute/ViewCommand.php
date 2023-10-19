@@ -5,10 +5,8 @@ namespace N98\Magento\Command\Eav\Attribute;
 use InvalidArgumentException;
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ViewCommand extends AbstractMagentoCommand
@@ -20,12 +18,7 @@ class ViewCommand extends AbstractMagentoCommand
             ->addArgument('entityType', InputArgument::REQUIRED, 'Entity Type Code like catalog_product')
             ->addArgument('attributeCode', InputArgument::REQUIRED, 'Attribute Code')
             ->setDescription('View informations about an EAV attribute')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            );
+            ->addFormatOption();
     }
 
     /**

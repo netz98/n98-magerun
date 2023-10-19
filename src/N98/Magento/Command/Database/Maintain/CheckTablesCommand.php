@@ -5,7 +5,6 @@ namespace N98\Magento\Command\Database\Maintain;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\DatabaseHelper;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use PDO;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -90,12 +89,7 @@ HELP;
                 InputOption::VALUE_OPTIONAL,
                 'Process only given table (wildcards are supported)'
             )
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
+            ->addFormatOption()
             ->setHelp($help);
     }
 

@@ -7,7 +7,6 @@ use Error;
 use Mage;
 use N98\JUnitXml\Document as JUnitXmlDocument;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -27,12 +26,7 @@ class CompareVersionsCommand extends AbstractMagentoCommand
                 InputOption::VALUE_NONE,
                 'Only display Setup resources where Status equals Error.'
             )
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
+            ->addFormatOption()
             ->setDescription('Compare module version with core_resource table.');
         $help = <<<HELP
 Compares module version with saved setup version in `core_resource` table and displays version mismatch.

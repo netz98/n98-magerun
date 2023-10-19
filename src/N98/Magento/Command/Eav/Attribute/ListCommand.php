@@ -6,7 +6,6 @@ use Exception;
 use Mage;
 use Mage_Eav_Model_Entity_Type;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,12 +21,7 @@ class ListCommand extends AbstractMagentoCommand
             ->addOption('filter-type', null, InputOption::VALUE_OPTIONAL, 'Filter attributes by entity type')
             ->addOption('add-source', null, InputOption::VALUE_NONE, 'Add source models to list')
             ->addOption('add-backend', null, InputOption::VALUE_NONE, 'Add backend type to list')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            );
+            ->addFormatOption();
     }
 
     /**
