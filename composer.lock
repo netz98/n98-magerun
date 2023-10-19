@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "351863d5709b14b83e3f8638985c6359",
+    "content-hash": "ffc38369ad6ea2816ad00638e5270c89",
     "packages": [
         {
             "name": "fakerphp/faker",
@@ -2042,16 +2042,16 @@
     "packages-dev": [
         {
             "name": "bamarni/symfony-console-autocomplete",
-            "version": "v1.5.4",
+            "version": "v1.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bamarni/symfony-console-autocomplete.git",
-                "reference": "5adeafbc238e896b780eb8353e82cf7d6539e781"
+                "reference": "0623ac892aeb2a81ffcdf0e963bcbc450d52638d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bamarni/symfony-console-autocomplete/zipball/5adeafbc238e896b780eb8353e82cf7d6539e781",
-                "reference": "5adeafbc238e896b780eb8353e82cf7d6539e781",
+                "url": "https://api.github.com/repos/bamarni/symfony-console-autocomplete/zipball/0623ac892aeb2a81ffcdf0e963bcbc450d52638d",
+                "reference": "0623ac892aeb2a81ffcdf0e963bcbc450d52638d",
                 "shasum": ""
             },
             "require": {
@@ -2091,9 +2091,9 @@
             "description": "Shell completion for Symfony Console based scripts",
             "support": {
                 "issues": "https://github.com/bamarni/symfony-console-autocomplete/issues",
-                "source": "https://github.com/bamarni/symfony-console-autocomplete/tree/v1.5.4"
+                "source": "https://github.com/bamarni/symfony-console-autocomplete/tree/v1.5.5"
             },
-            "time": "2022-04-11T12:08:44+00:00"
+            "time": "2022-12-21T16:40:50+00:00"
         },
         {
             "name": "composer/pcre",
@@ -2811,16 +2811,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.37",
+            "version": "1.10.39",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "058ba07e92f744d4dcf6061ae75283d0c6456f2e"
+                "reference": "d9dedb0413f678b4d03cbc2279a48f91592c97c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/058ba07e92f744d4dcf6061ae75283d0c6456f2e",
-                "reference": "058ba07e92f744d4dcf6061ae75283d0c6456f2e",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/d9dedb0413f678b4d03cbc2279a48f91592c97c4",
+                "reference": "d9dedb0413f678b4d03cbc2279a48f91592c97c4",
                 "shasum": ""
             },
             "require": {
@@ -2869,7 +2869,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-10-02T16:18:37+00:00"
+            "time": "2023-10-17T15:46:26+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -4664,9 +4664,10 @@
     "prefer-lowest": false,
     "platform": {
         "php": "~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0",
-        "ext-pdo": "*",
+        "ext-json": "*",
         "ext-libxml": "*",
-        "ext-json": "*"
+        "ext-pdo": "*",
+        "ext-zip": "*"
     },
     "platform-dev": {
         "ext-simplexml": "*"
