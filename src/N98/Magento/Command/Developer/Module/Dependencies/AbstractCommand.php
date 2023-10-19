@@ -5,7 +5,6 @@ namespace N98\Magento\Command\Developer\Module\Dependencies;
 use Exception;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,12 +40,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
             ->addArgument('moduleName', InputArgument::REQUIRED, 'Module to show dependencies')
             ->addOption('all', 'a', InputOption::VALUE_NONE, 'Show all dependencies (dependencies of dependencies)')
             ->setDescription(static::COMMAND_DESCRIPTION)
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
+            ->addFormatOption()
         ;
     }
 

@@ -5,7 +5,6 @@ namespace N98\Magento\Command\System\Cron;
 use Mage;
 use Mage_Cron_Model_Schedule;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -30,12 +29,7 @@ class HistoryCommand extends AbstractMagentoCommand
                 InputOption::VALUE_OPTIONAL,
                 'Timezone to show finished at in'
             )
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
+            ->addFormatOption()
         ;
     }
 

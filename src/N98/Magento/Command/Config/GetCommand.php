@@ -2,7 +2,6 @@
 
 namespace N98\Magento\Command\Config;
 
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use Path;
 use Symfony\Component\Console\Input\InputArgument;
@@ -45,12 +44,7 @@ EOT
             )
             ->addOption('update-script', null, InputOption::VALUE_NONE, 'Output as update script lines')
             ->addOption('magerun-script', null, InputOption::VALUE_NONE, 'Output for usage with config:set')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            );
+            ->addFormatOption();
 
         $help = <<<HELP
 If path is not set, all available config items will be listed. path may contain wildcards (*)

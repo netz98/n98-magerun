@@ -2,10 +2,8 @@
 
 namespace N98\Magento\Command\Indexer;
 
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ListMviewCommand extends AbstractMviewIndexerCommand
@@ -15,12 +13,7 @@ class ListMviewCommand extends AbstractMviewIndexerCommand
         $this
             ->setName('index:list:mview')
             ->setDescription('Lists all magento mview indexes')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
+            ->addFormatOption()
         ;
 
         $help = <<<HELP

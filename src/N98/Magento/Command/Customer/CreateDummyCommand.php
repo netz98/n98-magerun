@@ -5,7 +5,6 @@ namespace N98\Magento\Command\Customer;
 use Faker\Factory;
 use Locale;
 use N98\Util\Console\Helper\ParameterHelper;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use N98\Util\Faker\Provider\Internet;
 use Symfony\Component\Console\Input\InputArgument;
@@ -49,12 +48,7 @@ HELP;
                 'Create dummy billing/shipping addresses for each customers'
             )
             ->setDescription('Generate dummy customers. You can specify a count and a locale.')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
+            ->addFormatOption()
             ->setHelp($help)
         ;
     }

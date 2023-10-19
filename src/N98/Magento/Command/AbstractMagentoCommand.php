@@ -15,12 +15,14 @@ use N98\Magento\Application;
 use N98\Magento\Command\SubCommand\ConfigBag;
 use N98\Magento\Command\SubCommand\SubCommandFactory;
 use N98\Util\Console\Helper\MagentoHelper;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\OperatingSystem;
 use N98\Util\StringTyped;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
@@ -670,5 +672,19 @@ abstract class AbstractMagentoCommand extends Command
             $commandConfig,
             $configBag
         );
+    }
+
+    /**
+     * @return $this
+     */
+    public function addFormatOption(): AbstractMagentoCommand
+    {
+        $this->addOption(
+            'format',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+        );
+        return $this;
     }
 }

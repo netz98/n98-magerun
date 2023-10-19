@@ -5,7 +5,6 @@ namespace N98\Magento\Command\Developer\Module\Observer;
 use InvalidArgumentException;
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,12 +19,7 @@ class ListCommand extends AbstractMagentoCommand
             ->setName('dev:module:observer:list')
             ->addArgument('type', InputArgument::OPTIONAL, 'Observer type (global, admin, frontend, crontab)')
             ->setDescription('Lists all registered observers')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
+            ->addFormatOption()
             ->addOption(
                 'sort',
                 null,

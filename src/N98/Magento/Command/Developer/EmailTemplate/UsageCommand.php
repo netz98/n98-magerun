@@ -12,11 +12,9 @@ use Mage;
 use Mage_Adminhtml_Model_Email_Template;
 use Mage_Core_Model_Template;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
 use Path;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class UsageCommand extends AbstractMagentoCommand
@@ -26,12 +24,7 @@ class UsageCommand extends AbstractMagentoCommand
         $this
             ->setName('dev:email-template:usage')
             ->setDescription('Display database transactional email template usage')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            );
+            ->addFormatOption();
     }
 
     /**
