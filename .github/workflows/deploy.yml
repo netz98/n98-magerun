@@ -120,7 +120,7 @@ jobs:
           overwrite: true
 
       - name: Run update tasks on files.magerun.net
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.0.1
         with:
           host: ${{ secrets.SSH_DEPLOY_HOST }}
           username: ${{ secrets.SSH_DEPLOY_USERNAME }}
