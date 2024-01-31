@@ -152,6 +152,9 @@ jobs:
         with:
           name: n98-magerun.phar
       - name: Update dist repo
+        env:
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
         run: .github/workflows/update-dist-repo.sh
 
   create-github-release:
