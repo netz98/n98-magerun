@@ -25,9 +25,14 @@ git commit -m "Version: $TAG" ./n98-magerun;
 git tag "$TAG";
 
 if [ "$REF_TYPE" = 'tags' ]; then
+  echo "----------------------------------------------------"
   echo "Pushing to dist repo."
+  echo "----------------------------------------------------"
   git push;
   git push --tags;
 else
+  echo "----------------------------------------------------"
+  echo " Dry run. Not pushing to dist repo."
+  echo "----------------------------------------------------"
   git push --dry-run;
 fi
