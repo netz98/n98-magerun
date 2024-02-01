@@ -69,7 +69,7 @@ jobs:
         run: php -f vendor/bin/phpunit
 
       - name: Report coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           file: ./build/coverage/clover.xml # Or your specific coverage file
 
