@@ -144,7 +144,7 @@ jobs:
     steps:
       - name: Checkout HEAD
         uses: actions/checkout@v4
-      - uses: webfactory/ssh-agent@v0.8.0
+      - uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.DIST_REPO_DEPLOY_KEY }}
       - name: Download artifacts
