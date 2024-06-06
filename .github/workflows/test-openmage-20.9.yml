@@ -1,0 +1,90 @@
+
+name: Test OpenMage 20.9.x
+
+on: [push, pull_request]
+
+jobs:
+  test-openmage-20-9-matrix:
+    name: OpenMage ${{ matrix.openmage_version }} / PHP ${{ matrix.php_version }} / MySQL ${{ matrix.mysql_version }}
+    # Job is currently disabled until we know why the build matrix fails but the local ddev setup no
+    if: false
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        openmage_version: ["20.9.0"]
+        php_version: ["8.3", "8.2", "8.1", "7.4"]
+        mysql_version: ["8.0", "5.7"]
+
+    services:
+      mysql:
+        image: mysql:${{ matrix.mysql_version }}
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: magento_test_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Linux Setup
+        run: ./.github/workflows/linux-setup.sh
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php_version }}
+          extensions: yaml
+          coverage: none
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/composer
+            vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Validate mysql service
+        run: |
+          echo "Checking mysql service"
+          sudo apt-get install -y mysql-client
+          mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -proot -e "SHOW DATABASES"
+
+      - name: Install OpenMage
+        run: |
+          php bin/n98-magerun --no-interaction install \
+            --magentoVersionByName="openmage-${{ matrix.openmage_version }}" \
+            --installationFolder="./magento" \
+            --dbHost="127.0.0.1" \
+            --dbPort="${{ job.services.mysql.ports['3306'] }}" \
+            --dbUser="root" \
+            --dbPass="root" \
+            --dbName="magento_test_db" \
+            --installSampleData=no \
+            --useDefaultConfigParams=yes \
+            --baseUrl="http://magento.local/"
+
+      - name: Set Magento root environment variable
+        run: echo "N98_MAGERUN_TEST_MAGENTO_ROOT=${{ github.workspace }}/magento" >> $GITHUB_ENV
+
+      - name: Run tests
+        run: php -f vendor/bin/phpunit
+
+      - name: Report coverage
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./build/coverage/clover.xml
+
+      - name: Run functional tests
+        run: bats tests/bats/functional.bats
+        env:
+          N98_MAGERUN_BIN: "${{ github.workspace }}/bin/n98-magerun"
+          N98_MAGERUN_TEST_MAGENTO_ROOT: "${{ github.workspace }}/magento"
