@@ -6,8 +6,6 @@ on: [push, pull_request]
 jobs:
   test-openmage-20-9-matrix:
     name: OpenMage ${{ matrix.openmage_version }} / PHP ${{ matrix.php_version }} / MySQL ${{ matrix.mysql_version }}
-    # Job is currently disabled until we know why the build matrix fails but the local ddev setup no
-    if: false
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
