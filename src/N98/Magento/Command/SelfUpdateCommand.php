@@ -50,14 +50,6 @@ EOT
     }
 
     /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return $this->getApplication()->isPharMode();
-    }
-
-    /**
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return int
@@ -66,6 +58,13 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $isDryRun = $input->getOption('dry-run');
+
+        if (!$this->getApplication()->isPharMode()) {
+            $isDryRun = true;
+            $output->writeln('<warning>Self-update is supported only for phar files.</warning>');
+            $output->writeln('Dry-run mode is enabled.');
+        }
+
         $localFilename = realpath($_SERVER['argv'][0]) ?: $_SERVER['argv'][0];
         $tempFilename = dirname($localFilename) . '/' . basename($localFilename, '.phar') . '-temp.phar';
 
@@ -92,7 +91,13 @@ EOT
             $remotePharDownloadUrl = self::MAGERUN_DOWNLOAD_URL_STABLE;
         }
 
-        $response = Requests::get($versionTxtUrl, [], ['verify' => false]);
+        $response = Requests::get(
+            $versionTxtUrl,
+            [],
+            [
+                'verify' => true,
+            ]
+        );
 
         if (!$response->success) {
             throw new RuntimeException('Cannot get version: ' . $response->status_code);
@@ -162,7 +167,16 @@ EOT
 
         $hooks = new Hooks();
 
-        $response = Requests::head($remoteUrl, [], ['verify' => false]);
+        $response = Requests::head(
+            $remoteUrl,
+            [],
+            [
+                'verify' => true,
+                'headers' => [
+                    'Accept-Encoding' => 'deflate, gzip, br, zstd'
+                ]
+            ]
+        );
 
         if (!$response->success) {
             throw new RuntimeException('Cannot download phar file: ' . $response->status_code);
@@ -183,7 +197,18 @@ EOT
             }
         );
 
-        $response = Requests::get($remoteUrl, [], ['blocking' => true, 'hooks' => $hooks, 'verify' => false]);
+        $response = Requests::get(
+            $remoteUrl,
+            [],
+            [
+                'blocking' => true,
+                'hooks' => $hooks,
+                'verify' => true,
+                'headers' => [
+                    'Accept-Encoding' => 'deflate, gzip, br, zstd'
+                ]
+            ]
+        );
 
         if (!$response->success) {
             throw new RuntimeException('Cannot download phar file: ' . $response->status_code);
@@ -240,7 +265,17 @@ EOT
         } else {
             $changeLogUrl = self::CHANGELOG_DOWNLOAD_URL_STABLE;
         }
-        $response = Requests::get($changeLogUrl, [], ['verify' => false]);
+
+        $response = Requests::get(
+            $changeLogUrl,
+            [],
+            [
+                'verify' => true,
+                'headers' => [
+                    'Accept-Encoding' => 'deflate, gzip, br, zstd'
+                ]
+            ]
+        );
 
         if (!$response->success) {
             throw new RuntimeException('Cannot download changelog: ' . $response->status_code);
