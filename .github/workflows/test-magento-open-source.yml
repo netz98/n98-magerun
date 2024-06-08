@@ -40,7 +40,7 @@ jobs:
             ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress
 
       - name: Validate mysql service
         run: |
@@ -61,6 +61,8 @@ jobs:
           --installSampleData=no \
           --useDefaultConfigParams=yes \
           --baseUrl="http://magento.local/"
+        env:
+          COMPOSER_VENDOR_PATH : vendor
 
       - name: Set Magento root environment variable
         run: echo "N98_MAGERUN_TEST_MAGENTO_ROOT=${{ github.workspace }}/magento" >> $GITHUB_ENV
