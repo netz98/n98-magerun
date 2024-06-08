@@ -22,3 +22,6 @@
 act.env
 act.secrets
 
+# Local Magento src
+/magento
+
