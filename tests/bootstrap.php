@@ -19,6 +19,6 @@ if (false === $base) {
 $loader = require __DIR__ . '/../vendor/autoload.php';
 $loader->setUseIncludePath(true);
 
-$paths = [$base . '/app/code/local', $base . '/app/code/community', $base . '/app/code/core', $base . '/lib'];
+$paths = [$base . '/app/code/local', $base . '/app/code/community', $base . '/app/code/core', $base . '/lib', $base . '/vendor'];
 set_include_path(implode(PATH_SEPARATOR, $paths) . PATH_SEPARATOR . get_include_path());
 unset($paths, $base);
