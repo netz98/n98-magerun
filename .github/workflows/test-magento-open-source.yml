@@ -69,6 +69,8 @@ jobs:
 
       - name: Run tests
         run: php -f vendor/bin/phpunit
+        env:
+          COMPOSER_VENDOR_PATH : vendor
 
       - name: Report coverage
         uses: codecov/codecov-action@v4
