@@ -175,6 +175,41 @@ commands:
         version: 20.9.0
         extra:
           sample-data: sample-data-1.9.2.4
+      - name: openmage-20.8.0
+        package: openmage/magento-lts
+        version: 20.8.0
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.7.0
+        package: openmage/magento-lts
+        version: 20.7.0
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.6.0
+        package: openmage/magento-lts
+        version: 20.6.0
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.5.0
+        package: openmage/magento-lts
+        version: 20.5.0
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.4.0
+        package: openmage/magento-lts
+        version: 20.4.0
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.3.0
+        package: openmage/magento-lts
+        version: 20.3.0
+        extra:
+          sample-data: sample-data-1.9.2.4
+      - name: openmage-20.2.0
+        package: openmage/magento-lts
+        version: 20.2.0
+        extra:
+          sample-data: sample-data-1.9.2.4
       - name: openmage-20.1.0
         package: openmage/magento-lts
         version: 20.1.0
