@@ -62,13 +62,15 @@ jobs:
           --useDefaultConfigParams=yes \
           --baseUrl="http://magento.local/"
         env:
-          COMPOSER_VENDOR_PATH : vendor
+          COMPOSER_VENDOR_PATH : "${{ github.workspace }}/magento/vendor"
 
       - name: Set Magento root environment variable
         run: echo "N98_MAGERUN_TEST_MAGENTO_ROOT=${{ github.workspace }}/magento" >> $GITHUB_ENV
 
       - name: Run tests
         run: php -f vendor/bin/phpunit
+        env:
+          COMPOSER_VENDOR_PATH : "${{ github.workspace }}/magento/vendor"
 
       - name: Report coverage
         uses: codecov/codecov-action@v4
