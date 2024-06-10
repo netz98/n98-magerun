@@ -11,16 +11,20 @@ use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Package\PackageInterface;
 use InvalidArgumentException;
 use Mage;
+use Mage_Core_Model_App;
 use N98\Magento\Application;
 use N98\Magento\Command\SubCommand\ConfigBag;
 use N98\Magento\Command\SubCommand\SubCommandFactory;
 use N98\Util\Console\Helper\MagentoHelper;
+use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Console\Helper\TableHelper;
 use N98\Util\OperatingSystem;
 use N98\Util\StringTyped;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
@@ -32,30 +36,39 @@ use Symfony\Component\Console\Question\Question;
  */
 abstract class AbstractMagentoCommand extends Command
 {
+    protected const COMMAND_SECTION_TITLE_TEXT = '';
+
+    protected const NO_DATA_MESSAGE = 'No data found';
+
     /**
-     * @var string
+     * @var string|null
      */
-    protected $_magentoRootFolder = null;
+    protected ?string $_magentoRootFolder = null;
 
     /**
      * @var bool
      */
-    protected $_magentoEnterprise = false;
+    protected bool $_magentoEnterprise = false;
 
     /**
      * @var array
      */
-    protected $_deprecatedAlias = [];
+    protected array $_deprecatedAlias = [];
 
     /**
      * @var array
      */
-    protected $_websiteCodeMap = [];
+    protected array $_websiteCodeMap = [];
 
     /**
      * @var array
      */
     protected $config;
+
+    /**
+     * @var array<string, array<string, string>>|null
+     */
+    protected ?array $data = null;
 
     /**
      * Initializes the command just after the input has been validated.
@@ -616,5 +629,59 @@ abstract class AbstractMagentoCommand extends Command
             $commandConfig,
             $configBag
         );
+    }
+
+    public function getTableHelper(): TableHelper
+    {
+        return $this->getHelper('table');
+    }
+
+    protected function configure()
+    {
+        if ($this instanceof AbstractMagentoCommandFormatInterface) {
+            $this->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            );
+        }
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     *
+     * @return int
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->detectMagento($output);
+        if (!$this->initMagento()) {
+            return Command::FAILURE;
+        }
+
+        if (static::COMMAND_SECTION_TITLE_TEXT && $input->getOption('format') === null) {
+            $this->writeSection($output, static::COMMAND_SECTION_TITLE_TEXT);
+        }
+
+        $data = $this->getData($input, $output);
+
+        if (count($data) > 0) {
+            $header = array_keys(reset($data));
+            $tableHelper = $this->getTableHelper();
+            $tableHelper
+                ->setHeaders($header)
+                ->renderByFormat($output, $data, $input->getOption('format'));
+        } else {
+            $output->writeln(sprintf('<comment>%s</comment>', static::NO_DATA_MESSAGE));
+        }
+
+        return Command::SUCCESS;
+    }
+
+    protected function _getMage(): Mage_Core_Model_App
+    {
+        return Mage::app();
     }
 }
