@@ -1,63 +1,59 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Theme;
 
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
+use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListCommand extends AbstractMagentoCommand
+class ListCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
 {
-    protected function configure()
-    {
-        $this
-            ->setName('dev:theme:list')
-            ->setDescription('Lists all available themes')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
-        ;
-    }
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'dev:theme:list';
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $this->detectMagento($output);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+    protected static $defaultDescription = 'Lists all available themes.';
 
-        $packages = $this->getThemes();
-        $table = [];
-        foreach ($packages as $package => $themes) {
-            foreach ($themes as $theme) {
-                $table[] = [($package ? $package . '/' : '') . $theme];
+    /**
+     * {@inheritdoc}
+     * @return array<int|string, array<string, string>>
+     *
+     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     */
+    public function getData(InputInterface $input, OutputInterface $output): array
+    {
+        if (is_null($this->data)) {
+            $this->data = [];
+
+            foreach ($this->getThemes() as $package => $themes) {
+                foreach ($themes as $theme) {
+                    $this->data[] = [
+                        'Theme' => ($package ? $package . '/' : '') . $theme
+                    ];
+                }
             }
         }
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
-        $tableHelper
-            ->setHeaders(['Theme'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $this->data;
     }
 
     /**
      * @return array
      */
-    protected function getThemes()
+    protected function getThemes(): array
     {
         return Mage::getModel('core/design_package')->getThemeList();
     }
