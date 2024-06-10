@@ -1,57 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Cron;
 
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
+use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListCommand extends AbstractCronCommand
+class ListCommand extends AbstractCronCommand implements AbstractMagentoCommandFormatInterface
 {
+    protected const COMMAND_SECTION_TITLE_TEXT = 'Cronjob List';
+
     /**
-     * @var array
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
      */
-    protected $infos;
-
-    protected function configure()
-    {
-        $this
-            ->setName('sys:cron:list')
-            ->setDescription('Lists all cronjobs')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
-        ;
-    }
+    protected static $defaultName = 'sys:cron:list';
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Lists all cronjobs.';
+
+    /**
+     * {@inheritdoc}
+     * @return array<int|string, array<string, string>>
      *
-     * @return int
+     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        $this->detectMagento($output, true);
-
-        if ($input->getOption('format') === null) {
-            $this->writeSection($output, 'Cronjob List');
-        }
-
-        $this->initMagento();
-
-        $table = $this->getJobs();
-
-        /** @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
-        $tableHelper
-            ->setHeaders(array_keys(current($table)))
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $this->getJobs();
     }
 }
