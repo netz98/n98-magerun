@@ -1,103 +1,116 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Eav\Attribute;
 
 use Exception;
 use Mage;
 use Mage_Eav_Model_Entity_Type;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
+use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListCommand extends AbstractMagentoCommand
+class ListCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
 {
+    protected const COMMAND_OPTION_FILTER_TYPE = 'filter-type';
+
+    protected const COMMAND_OPTION_ADD_SOURCE = 'add-source';
+
+    protected const COMMAND_OPTION_ADD_BACKEND = 'add-backend';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'eav:attribute:list';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Lists all EAV attributes.';
+
     protected function configure()
     {
         $this
-            ->setName('eav:attribute:list')
-            ->setDescription('Lists all EAV attributes')
-            ->addOption('filter-type', null, InputOption::VALUE_OPTIONAL, 'Filter attributes by entity type')
-            ->addOption('add-source', null, InputOption::VALUE_NONE, 'Add source models to list')
-            ->addOption('add-backend', null, InputOption::VALUE_NONE, 'Add backend type to list')
             ->addOption(
-                'format',
+                self::COMMAND_OPTION_FILTER_TYPE,
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+                'Filter attributes by entity type'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_ADD_SOURCE,
+                null,
+                InputOption::VALUE_NONE,
+                'Add source models to list'
+            )
+            ->addOption(
+                'add-backend',
+                null,
+                InputOption::VALUE_NONE,
+                'Add backend type to list'
             );
+
+        parent::configure();
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * {@inheritdoc}
+     * @return array<int|string, array<string, string>>
      *
-     * @return int
+     *  phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        $this->detectMagento($output);
-        if (!$this->initMagento()) {
-            return 0;
-        }
-        $table = [];
-        $attributesCollection = Mage::getResourceModel('eav/entity_attribute_collection');
-        $attributesCollection->setOrder('attribute_code', 'asc');
-        foreach ($attributesCollection as $attribute) {
-            $entityType = $this->_getEntityType($attribute);
+        if (is_null($this->data)) {
+            $this->data = [];
 
-            /**
-             * Filter by type
-             */
-            if ($input->getOption('filter-type') !== null
-                && $input->getOption('filter-type') !== $entityType
-            ) {
-                continue;
+            $attributesCollection = Mage::getResourceModel('eav/entity_attribute_collection');
+            $attributesCollection->setOrder('attribute_code', 'asc');
+            foreach ($attributesCollection as $attribute) {
+                $entityType = $this->_getEntityType($attribute);
+
+                /**
+                 * Filter by type
+                 */
+                if ($input->getOption(self::COMMAND_OPTION_FILTER_TYPE) !== null
+                    && $input->getOption(self::COMMAND_OPTION_FILTER_TYPE) !== $entityType
+                ) {
+                    continue;
+                }
+
+                $row = [];
+                $row['code']        = $attribute->getAttributeCode();
+                $row['id']          = $attribute->getId();
+                $row['entity_type'] = $entityType;
+                $row['label']       = $attribute->getFrontendLabel();
+
+                if ($input->getOption(self::COMMAND_OPTION_ADD_SOURCE)) {
+                    $row['source'] = $attribute->getSourceModel() ?: '';
+                }
+                if ($input->getOption(self::COMMAND_OPTION_ADD_BACKEND)) {
+                    $row['backend_type'] = $attribute->getBackendType();
+                }
+
+                $this->data[] = $row;
             }
-
-            $row = [];
-            $row[] = $attribute->getAttributeCode();
-            $row[] = $attribute->getId();
-            $row[] = $entityType;
-            $row[] = $attribute->getFrontendLabel();
-
-            if ($input->getOption('add-source')) {
-                $row[] = $attribute->getSourceModel() ?: '';
-            }
-            if ($input->getOption('add-backend')) {
-                $row[] = $attribute->getBackendType();
-            }
-
-            $table[] = $row;
         }
 
-        $headers = [];
-        $headers[] = 'code';
-        $headers[] = 'id';
-        $headers[] = 'entity_type';
-        $headers[] = 'label';
-        if ($input->getOption('add-source')) {
-            $headers[] = 'source';
-        }
-        if ($input->getOption('add-backend')) {
-            $headers[] = 'backend_type';
-        }
-
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
-        $tableHelper
-            ->setHeaders($headers)
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $this->data;
     }
 
     /**
      * @param $attribute
      * @return null|string
      */
-    protected function _getEntityType($attribute)
+    protected function _getEntityType($attribute): ?string
     {
         $entityTypeCode = '';
         try {
