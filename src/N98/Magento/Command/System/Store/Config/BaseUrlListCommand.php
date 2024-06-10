@@ -19,12 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class BaseUrlListCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
 {
-    public const COMMAND_SECTION_TITLE_TEXT = 'Stores - Base URLs';
-
-    /**
-     * @var array<int|string, array<int|string, mixed>>|null
-     */
-    private ?array $data = null;
+    protected const COMMAND_SECTION_TITLE_TEXT = 'Stores - Base URLs';
 
     /**
      * @var string
@@ -41,9 +36,10 @@ class BaseUrlListCommand extends AbstractMagentoCommand implements AbstractMagen
     protected static $defaultDescription = 'Lists all base urls.';
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return array<int|string, array<int|string, mixed>>
+     * {@inheritdoc}
+     * @return array<int|string, array<string, string>>
+     *
+     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
     public function getData(InputInterface $input, OutputInterface $output): array
     {
