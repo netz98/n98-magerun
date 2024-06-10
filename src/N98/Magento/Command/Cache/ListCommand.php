@@ -1,52 +1,48 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cache;
 
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
+use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListCommand extends AbstractCacheCommand
+class ListCommand extends AbstractCacheCommand implements AbstractMagentoCommandFormatInterface
 {
-    protected function configure()
-    {
-        $this
-            ->setName('cache:list')
-            ->setDescription('Lists all magento caches')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
-        ;
-    }
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'cache:list';
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected static $defaultDescription = 'Lists all magento caches.';
+
+    /**
+     * {@inheritdoc}
+     * @return array<int|string, array<string, string>>
+     *
+     *  phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     */
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
+        if (is_null($this->data)) {
+            $this->data = [];
+            foreach ($this->_getCacheModel()->getTypes() as $cacheCode => $cacheInfo) {
+                $this->data[] = [
+                    'code'      => $cacheCode,
+                    'status'    => $cacheInfo['status'] ? 'enabled' : 'disabled'
+                ];
+            }
         }
 
-        $cacheTypes = $this->_getCacheModel()->getTypes();
-        $table = [];
-        foreach ($cacheTypes as $cacheCode => $cacheInfo) {
-            $table[] = [$cacheCode, $cacheInfo['status'] ? 'enabled' : 'disabled'];
-        }
-
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
-        $tableHelper
-            ->setHeaders(['code', 'status'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $this->data;
     }
 }
