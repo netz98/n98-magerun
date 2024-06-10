@@ -18,11 +18,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ListCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
 {
     /**
-     * @var array<int|string, array<string, string>>|null
-     */
-    private ?array $data = null;
-
-    /**
      * @var string
      * @deprecated with symfony 6.1
      * @see AsCommand
@@ -37,9 +32,10 @@ class ListCommand extends AbstractMagentoCommand implements AbstractMagentoComma
     protected static $defaultDescription = 'Lists all installed store-views';
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * {@inheritdoc}
      * @return array<int|string, array<string, string>>
+     *
+     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
     public function getData(InputInterface $input, OutputInterface $output): array
     {
