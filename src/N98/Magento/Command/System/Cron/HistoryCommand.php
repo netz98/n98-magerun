@@ -19,6 +19,8 @@ class HistoryCommand extends AbstractMagentoCommand implements AbstractMagentoCo
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Last executed jobs';
 
+    protected const COMMAND_OPTION_TIMEZONE = 'timezone';
+
     /**
      * @var string
      * @deprecated with symfony 6.1
@@ -36,7 +38,7 @@ class HistoryCommand extends AbstractMagentoCommand implements AbstractMagentoCo
     protected function configure()
     {
         $this->addOption(
-            'timezone',
+            self::COMMAND_OPTION_TIMEZONE,
             null,
             InputOption::VALUE_OPTIONAL,
             'Timezone to show finished at in'
@@ -47,9 +49,8 @@ class HistoryCommand extends AbstractMagentoCommand implements AbstractMagentoCo
 
     /**
      * {@inheritdoc}
-     * @return array<int|string, array<string, string>>
+     * @return array<int|string, array<string, string>
      *
-     * @return array
      * @throws Mage_Core_Model_Store_Exception
      * @throws Mage_Core_Exception
      */
@@ -58,7 +59,7 @@ class HistoryCommand extends AbstractMagentoCommand implements AbstractMagentoCo
         if (is_null($this->data)) {
             $this->data = [];
 
-            $timezone = $input->getOption('timezone')
+            $timezone = $input->getOption(self::COMMAND_OPTION_TIMEZONE)
                 ?: $this->_getMage()->getStore()->getConfig('general/locale/timezone');
 
             $output->writeln('<info>Times shown in <comment>' . $timezone . '</comment></info>');
