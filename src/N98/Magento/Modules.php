@@ -1,9 +1,6 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
+
+declare(strict_types=1);
 
 namespace N98\Magento;
 
@@ -40,7 +37,7 @@ class Modules implements IteratorAggregate, Countable
     /**
      * @return Modules
      */
-    public function findInstalledModules()
+    public function findInstalledModules(): Modules
     {
         $list = [];
 
@@ -50,7 +47,12 @@ class Modules implements IteratorAggregate, Countable
             $version = $moduleInfo['version'] ?? '';
             $active = $moduleInfo['active'] ?? '';
 
-            $list[] = ['codePool' => trim($codePool), 'Name'     => trim($moduleName), 'Version'  => trim($version), 'Status'   => StringTyped::formatActive($active)];
+            $list[] = [
+                'codePool' => trim($codePool),
+                'Name'     => trim($moduleName),
+                'Version'  => trim($version),
+                'Status'   => StringTyped::formatActive($active)
+            ];
         }
 
         return new Modules($list);
@@ -62,7 +64,7 @@ class Modules implements IteratorAggregate, Countable
      * @param InputInterface $input
      * @return Modules
      */
-    public function filterModules(InputInterface $input)
+    public function filterModules(InputInterface $input): Modules
     {
         $filtered = $this->list;
 
