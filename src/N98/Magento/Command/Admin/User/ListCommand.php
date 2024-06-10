@@ -1,55 +1,55 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Admin\User;
 
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
+use Mage_Admin_Model_User;
+use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListCommand extends AbstractAdminUserCommand
+class ListCommand extends AbstractAdminUserCommand implements AbstractMagentoCommandFormatInterface
 {
-    protected function configure()
-    {
-        $this
-            ->setName('admin:user:list')
-            ->setDescription('List admin users.')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
-        ;
-    }
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'admin:user:list';
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected static $defaultDescription = 'List admin users.';
+
+    /**
+     * {@inheritdoc}
+     * @return array<int|string, array<string, string>>
+     *
+     *  phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     */
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
+        if (is_null($this->data)) {
+            $this->data = [];
+
+            /** @var Mage_Admin_Model_User $userModel */
+            $userModel = $this->getUserModel();
+            $userList = $userModel->getCollection();
+            foreach ($userList as $user) {
+                $this->data[] = [
+                    'id'        => $user->getId(),
+                    'username'  => $user->getUsername(),
+                    'email'     => $user->getEmail(),
+                    'status'    => $user->getIsActive() ? 'active' : 'inactive'
+                ];
+            }
         }
 
-        /** @var \Mage_Admin_Model_User $userModel */
-        $userModel = $this->getUserModel();
-        $userList = $userModel->getCollection();
-        $table = [];
-        foreach ($userList as $user) {
-            $table[] = [$user->getId(), $user->getUsername(), $user->getEmail(), $user->getIsActive() ? 'active' : 'inactive'];
-        }
-
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
-        $tableHelper
-            ->setHeaders(['id', 'username', 'email', 'status'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $this->data;
     }
 }
