@@ -17,7 +17,8 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
 /**
- * Class DeleteCommand
+ * Delete customer command
+ *
  * @package N98\Magento\Command\Customer
  */
 class DeleteCommand extends AbstractCustomerCommand
@@ -74,9 +75,7 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->initMagento();
 
         $this->input = $input;
         $this->output = $output;

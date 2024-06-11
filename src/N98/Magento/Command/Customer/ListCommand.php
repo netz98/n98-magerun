@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * List customer command
+ *
+ * @package N98\Magento\Command\Customer
+ */
 class ListCommand extends AbstractCustomerCommand implements AbstractMagentoCommandFormatInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Customers';

@@ -13,6 +13,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Create dummy customer command
+ *
+ * @package N98\Magento\Command\Customer
+ */
 class CreateDummyCommand extends AbstractCustomerCommand
 {
     protected function configure()
@@ -67,9 +72,7 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->initMagento();
 
         $res = $this->getCustomerModel()->getResource();
 

@@ -5,13 +5,17 @@ namespace N98\Magento\Command\Customer;
 use N98\Util\Console\Helper\ParameterHelper;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Console\Helper\TableHelper;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
+/**
+ * Create customer command
+ *
+ * @package N98\Magento\Command\Customer
+ */
 class CreateCommand extends AbstractCustomerCommand
 {
     protected function configure()
@@ -41,12 +45,9 @@ class CreateCommand extends AbstractCustomerCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->initMagento();
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
 
         // Password
         if (($password = $input->getArgument('password')) == null) {

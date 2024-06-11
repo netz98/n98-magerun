@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
+/**
+ * Change password command
+ *
+ * @package N98\Magento\Command\Customer
+ */
 class ChangePasswordCommand extends AbstractCustomerCommand
 {
     protected function configure()
@@ -38,9 +43,7 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->initMagento();
 
         // Password
         if (($password = $input->getArgument('password')) == null) {

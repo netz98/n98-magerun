@@ -1,9 +1,6 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
+
+declare(strict_types=1);
 
 namespace N98\Magento\Command\Cache\Dir;
 
@@ -64,9 +61,7 @@ HELP;
         $this->output = $output;
         $this->detectMagento($output, true);
 
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->initMagento();
 
         $workingDirectory = getcwd();
         $magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
