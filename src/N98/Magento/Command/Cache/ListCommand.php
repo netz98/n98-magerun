@@ -11,6 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ListCommand extends AbstractCacheCommand implements AbstractMagentoCommandFormatInterface
 {
+    protected const COMMAND_SECTION_TITLE_TEXT = 'Caches';
+
     /**
      * @var string
      * @deprecated with symfony 6.1
@@ -23,7 +25,7 @@ class ListCommand extends AbstractCacheCommand implements AbstractMagentoCommand
      * @deprecated with symfony 6.1
      * @see AsCommand
      */
-    protected static $defaultDescription = 'Lists all magento caches.';
+    protected static $defaultDescription = 'Lists all caches.';
 
     /**
      * {@inheritdoc}

@@ -1,31 +1,46 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cache;
 
 use InvalidArgumentException;
 use Mage;
 use Mage_Core_Model_Cache;
-use N98\Magento\Application;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
+use Symfony\Component\Console\Input\InputArgument;
 
 class AbstractCacheCommand extends AbstractMagentoCommand
 {
+    protected const COMMAND_ARGUMENT_CODE = 'code';
+
+    protected function configure()
+    {
+        $this->addArgument(
+            self::COMMAND_ARGUMENT_CODE,
+            InputArgument::OPTIONAL,
+            'Code of cache (Multiple codes operated by comma)'
+        );
+
+        parent::configure();
+    }
+
     /**
      * @return Mage_Core_Model_Cache
      *
      * @throws RuntimeException
      */
-    protected function _getCacheModel()
+    protected function _getCacheModel(): Mage_Core_Model_Cache
     {
         return Mage::app()->getCacheInstance();
     }
 
     /**
      * @param array $codeArgument
-     * @param bool  $status
+     * @param bool $status
      */
-    protected function saveCacheStatus($codeArgument, $status)
+    protected function saveCacheStatus(array $codeArgument, bool $status)
     {
         $this->validateCacheCodes($codeArgument);
 
@@ -44,7 +59,7 @@ class AbstractCacheCommand extends AbstractMagentoCommand
      * @param array $codes
      * @throws InvalidArgumentException
      */
-    protected function validateCacheCodes(array $codes)
+    protected function validateCacheCodes(array $codes): void
     {
         $cacheTypes = $this->_getCacheModel()->getTypes();
         foreach ($codes as $cacheCode) {
@@ -85,7 +100,7 @@ class AbstractCacheCommand extends AbstractMagentoCommand
     /**
      * @return bool
      */
-    protected function _canUseBanCacheFunction()
+    protected function _canUseBanCacheFunction(): bool
     {
         return method_exists('\Mage_Core_Model_App', 'baseInit');
     }

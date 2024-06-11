@@ -18,7 +18,9 @@ use Throwable;
  */
 class ToggleCommand extends AbstractCmsBlockCommand
 {
-    private const COMMAND_ARGUMENT_BLOCK_ID = 'block_id';
+    protected const COMMAND_SECTION_TITLE_TEXT = 'Enable/disable CMS block';
+
+    protected const COMMAND_ARGUMENT_BLOCK_ID = 'block_id';
 
     /**
      * @var string
@@ -32,7 +34,7 @@ class ToggleCommand extends AbstractCmsBlockCommand
      * @deprecated with symfony 6.1
      * @see AsCommand
      */
-    protected static $defaultDescription = 'Toggle a cms block.';
+    protected static $defaultDescription = 'Toggle a CMS block.';
 
     /**
      * @return void
@@ -54,10 +56,14 @@ class ToggleCommand extends AbstractCmsBlockCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
+        $this->writeSection($output, static::COMMAND_SECTION_TITLE_TEXT);
 
-        $blockId = $this->getArgumentString($input, self::COMMAND_ARGUMENT_BLOCK_ID);
+        $this->detectMagento($output);
+        if (!$this->initMagento()) {
+            return Command::FAILURE;
+        }
+
+        $blockId = $input->getArgument(self::COMMAND_ARGUMENT_BLOCK_ID);
         $block = $this->_getBlockModel()->load($blockId, is_numeric($blockId) ? null : 'identifier');
 
         if (!$block->getId()) {
@@ -66,7 +72,7 @@ class ToggleCommand extends AbstractCmsBlockCommand
         }
 
         $block
-            ->setIsActive(!$block->getIsActive())
+            ->setIsActive((int)!$block->getIsActive())
             ->save();
 
         $output->writeln(sprintf(

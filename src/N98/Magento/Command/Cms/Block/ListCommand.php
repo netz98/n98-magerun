@@ -18,6 +18,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ListCommand extends AbstractCmsBlockCommand implements AbstractMagentoCommandFormatInterface
 {
+    protected const COMMAND_SECTION_TITLE_TEXT = 'CMS blocks';
+
     /**
      * @var string
      * @deprecated with symfony 6.1
@@ -30,7 +32,7 @@ class ListCommand extends AbstractCmsBlockCommand implements AbstractMagentoComm
      * @deprecated with symfony 6.1
      * @see AsCommand
      */
-    protected static $defaultDescription = 'List all cms blocks.';
+    protected static $defaultDescription = 'List all CMS blocks.';
 
     /**
      * {@inheritdoc}

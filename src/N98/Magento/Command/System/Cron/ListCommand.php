@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ListCommand extends AbstractCronCommand implements AbstractMagentoCommandFormatInterface
 {
-    protected const COMMAND_SECTION_TITLE_TEXT = 'Cronjob List';
+    protected const COMMAND_SECTION_TITLE_TEXT = 'Cronjobs';
 
     /**
      * @var string

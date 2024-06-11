@@ -12,6 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ListCommand extends AbstractAdminUserCommand implements AbstractMagentoCommandFormatInterface
 {
+    protected const COMMAND_SECTION_TITLE_TEXT = 'Admin users';
+
     /**
      * @var string
      * @deprecated with symfony 6.1

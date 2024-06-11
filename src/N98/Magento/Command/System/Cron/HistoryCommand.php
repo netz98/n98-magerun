@@ -19,7 +19,7 @@ class HistoryCommand extends AbstractMagentoCommand implements AbstractMagentoCo
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Last executed jobs';
 
-    protected const COMMAND_OPTION_TIMEZONE = 'timezone';
+    public const COMMAND_OPTION_TIMEZONE = 'timezone';
 
     /**
      * @var string

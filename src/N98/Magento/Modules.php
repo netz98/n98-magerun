@@ -8,6 +8,7 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Mage;
+use N98\Magento\Command\Developer\Module\ListCommand;
 use N98\Util\ArrayFunctions;
 use N98\Util\StringTyped;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,7 +24,7 @@ class Modules implements IteratorAggregate, Countable
     /**
      * @var array
      */
-    private $list;
+    private array $list;
 
     public function __construct(array $list = null)
     {
@@ -68,16 +69,19 @@ class Modules implements IteratorAggregate, Countable
     {
         $filtered = $this->list;
 
-        if ($input->getOption('codepool')) {
-            $filtered = ArrayFunctions::matrixFilterByValue($filtered, 'codePool', $input->getOption('codepool'));
+        $codepool = $input->getOption(ListCommand::COMMAND_OPTION_COODPOOL);
+        if ($codepool) {
+            $filtered = ArrayFunctions::matrixFilterByValue($filtered, 'codePool', $codepool);
         }
 
-        if ($input->getOption('status')) {
-            $filtered = ArrayFunctions::matrixFilterByValue($filtered, 'Status', $input->getOption('status'));
+        $status = $input->getOption(ListCommand::COMMAND_OPTION_STATUS);
+        if ($status) {
+            $filtered = ArrayFunctions::matrixFilterByValue($filtered, 'Status', $status);
         }
 
-        if ($input->getOption('vendor')) {
-            $filtered = ArrayFunctions::matrixFilterStartswith($filtered, 'Name', $input->getOption('vendor'));
+        $vendor = $input->getOption(ListCommand::COMMAND_OPTION_VENDOR);
+        if ($vendor) {
+            $filtered = ArrayFunctions::matrixFilterStartswith($filtered, 'Name', $vendor);
         }
 
         return new self($filtered);

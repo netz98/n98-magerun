@@ -16,6 +16,12 @@ class ListCommand extends AbstractMagentoCommand implements AbstractMagentoComma
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Installed Modules';
 
+    public const COMMAND_OPTION_COODPOOL = 'codepool';
+
+    public const COMMAND_OPTION_STATUS = 'status';
+
+    public const COMMAND_OPTION_VENDOR = 'vendor';
+
     protected const NO_DATA_MESSAGE = 'No modules match the specified criteria.';
 
     /**
@@ -35,11 +41,25 @@ class ListCommand extends AbstractMagentoCommand implements AbstractMagentoComma
     protected function configure()
     {
         $this
-            ->addOption('codepool', null, InputOption::VALUE_OPTIONAL, 'Show modules in a specific codepool')
-            ->addOption('status', null, InputOption::VALUE_OPTIONAL, 'Show modules with a specific status')
-            ->addOption('vendor', null, InputOption::VALUE_OPTIONAL, 'Show modules of a specified vendor')
-            ->setAliases(['sys:modules:list'])// deprecated
-        ;
+            ->addOption(
+                self::COMMAND_OPTION_COODPOOL,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Show modules in a specific codepool'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_STATUS,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Show modules with a specific status'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_VENDOR,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Show modules of a specified vendor'
+            )
+            ->setAliases(['sys:modules:list']); // deprecated
 
         parent::configure();
     }
@@ -52,9 +72,7 @@ class ListCommand extends AbstractMagentoCommand implements AbstractMagentoComma
      */
     public function getData(InputInterface $input, OutputInterface $output): array
     {
-        $modules = $this->filterModules($input);
-
-        return iterator_to_array($modules);
+        return iterator_to_array($this->filterModules($input));
     }
 
     /**
@@ -65,9 +83,8 @@ class ListCommand extends AbstractMagentoCommand implements AbstractMagentoComma
     private function filterModules(InputInterface $input)
     {
         $modules = new Modules();
-        $modules = $modules->findInstalledModules()
+        return $modules
+            ->findInstalledModules()
             ->filterModules($input);
-
-        return $modules;
     }
 }

@@ -16,11 +16,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ListCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
 {
-    protected const COMMAND_OPTION_FILTER_TYPE = 'filter-type';
+    protected const COMMAND_SECTION_TITLE_TEXT = 'EAV attributes';
 
-    protected const COMMAND_OPTION_ADD_SOURCE = 'add-source';
+    public const COMMAND_OPTION_FILTER_TYPE = 'filter-type';
 
-    protected const COMMAND_OPTION_ADD_BACKEND = 'add-backend';
+    public const COMMAND_OPTION_ADD_SOURCE = 'add-source';
+
+    public const COMMAND_OPTION_ADD_BACKEND = 'add-backend';
 
     /**
      * @var string
@@ -52,7 +54,7 @@ class ListCommand extends AbstractMagentoCommand implements AbstractMagentoComma
                 'Add source models to list'
             )
             ->addOption(
-                'add-backend',
+                self::COMMAND_OPTION_ADD_BACKEND,
                 null,
                 InputOption::VALUE_NONE,
                 'Add backend type to list'

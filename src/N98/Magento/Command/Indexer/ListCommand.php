@@ -11,6 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ListCommand extends AbstractIndexerCommand implements AbstractMagentoCommandFormatInterface
 {
+    protected const COMMAND_SECTION_TITLE_TEXT = 'Indexes';
+
     /**
      * @var string
      * @deprecated with symfony 6.1

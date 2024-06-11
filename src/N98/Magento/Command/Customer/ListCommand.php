@@ -13,6 +13,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ListCommand extends AbstractCustomerCommand implements AbstractMagentoCommandFormatInterface
 {
+    protected const COMMAND_SECTION_TITLE_TEXT = 'Customers';
+
+    public const COMMAND_ARGUMENT_SEARCH = 'search';
+
     protected const NO_DATA_MESSAGE = 'No customers found';
 
     /**
@@ -31,7 +35,11 @@ class ListCommand extends AbstractCustomerCommand implements AbstractMagentoComm
 
     protected function configure()
     {
-        $this->addArgument('search', InputArgument::OPTIONAL, 'Search query');
+        $this->addArgument(
+            self::COMMAND_ARGUMENT_SEARCH,
+            InputArgument::OPTIONAL,
+            'Search query'
+        );
 
         parent::configure();
     }
@@ -61,12 +69,13 @@ HELP;
             $collection = $this->getCustomerCollection();
             $collection->addAttributeToSelect(['entity_id', 'email', 'firstname', 'lastname', 'website_id']);
 
-            if ($input->getArgument('search')) {
+            $search = $input->getArgument(self::COMMAND_ARGUMENT_SEARCH);
+            if ($search) {
                 $collection->addAttributeToFilter(
                     [
-                        ['attribute' => 'email', 'like' => '%' . $input->getArgument('search') . '%'],
-                        ['attribute' => 'firstname', 'like' => '%' . $input->getArgument('search') . '%'],
-                        ['attribute' => 'lastname', 'like' => '%' . $input->getArgument('search') . '%']
+                        ['attribute' => 'email', 'like' => '%' . $search . '%'],
+                        ['attribute' => 'firstname', 'like' => '%' . $search . '%'],
+                        ['attribute' => 'lastname', 'like' => '%' . $search . '%']
                     ]
                 );
             }
