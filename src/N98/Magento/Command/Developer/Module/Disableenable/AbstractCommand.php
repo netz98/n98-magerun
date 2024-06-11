@@ -1,11 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module\Disableenable;
 
+use Exception;
 use InvalidArgumentException;
 use Mage;
+use Mage_Core_Model_Config;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -13,10 +18,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Varien_Simplexml_Element;
 
 /**
- * Enable disable Magento module(s)
+ * Abstract enable/disable Magento module(s)
+ *
+ * @package N98\Magento\Command\Developer\Module\Disableenable
  */
 class AbstractCommand extends AbstractMagentoCommand
 {
+    public const COMMAND_ARGUMENT_MODULE = 'moduleName';
+
+    public const COMMAND_OPTION_CODEPOOL = 'codepool';
+
     /**
      * @var Mage_Core_Model_Config
      */
@@ -25,12 +36,7 @@ class AbstractCommand extends AbstractMagentoCommand
     /**
      * @var string
      */
-    protected $modulesDir;
-
-    /**
-     * @var string
-     */
-    protected $commandName;
+    protected string $modulesDir;
 
     /**
      * Setup
@@ -39,41 +45,54 @@ class AbstractCommand extends AbstractMagentoCommand
      */
     protected function configure()
     {
+        $action = $this->getCommandAction();
+
         $this
-            ->setName('dev:module:' . $this->commandName)
-            ->addArgument('moduleName', InputArgument::OPTIONAL, 'Name of module to ' . $this->commandName)
-            ->addOption('codepool', null, InputOption::VALUE_OPTIONAL, 'Name of codePool to ' . $this->commandName)
-            ->setDescription(ucwords($this->commandName) . ' a module or all modules in codePool');
+            ->addArgument(
+                self::COMMAND_ARGUMENT_MODULE,
+                InputArgument::OPTIONAL,
+                'Name of module to ' . $action
+            )
+            ->addOption(
+                self::COMMAND_OPTION_CODEPOOL,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Name of codePool to ' . $action
+            )
+        ;
     }
 
     /**
      * Execute command
      *
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int
-     *
      * @throws InvalidArgumentException
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output, true);
-        if (false === $this->initMagento()) {
-            throw new RuntimeException('Magento could not be loaded');
+        $this->detectMagento($output);
+        if (!$this->initMagento()) {
+            throw new RuntimeException('Application could not be loaded');
         }
+
         $this->config = Mage::getConfig();
         $this->modulesDir = $this->config->getOptions()->getEtcDir() . DS . 'modules' . DS;
-        if ($codePool = $input->getOption('codepool')) {
-            $output->writeln('<info>' . ($this->commandName == 'enable' ? 'Enabling' : 'Disabling') .
+
+        if ($codePool = $input->getOption(self::COMMAND_OPTION_CODEPOOL)) {
+            $output->writeln('<info>' . ($this->getCommandAction() == 'enable' ? 'Enabling' : 'Disabling') .
                 ' modules in <comment>' . $codePool . '</comment> codePool...</info>');
             $this->enableCodePool($codePool, $output);
-        } elseif ($module = $input->getArgument('moduleName')) {
+        } elseif ($module = $input->getArgument(self::COMMAND_ARGUMENT_MODULE)) {
             $this->enableModule($module, $output);
         } else {
             throw new InvalidArgumentException('No code-pool option nor module-name argument');
         }
-        return 0;
+
+        return Command::SUCCESS;
     }
 
     /**
@@ -81,8 +100,9 @@ class AbstractCommand extends AbstractMagentoCommand
      *
      * @param string $codePool
      * @param OutputInterface $output
+     * @throws Exception
      */
-    protected function enableCodePool($codePool, OutputInterface $output)
+    protected function enableCodePool(string $codePool, OutputInterface $output): void
     {
         $modules = $this->config->getNode('modules')->asArray();
         foreach ($modules as $module => $data) {
@@ -97,8 +117,9 @@ class AbstractCommand extends AbstractMagentoCommand
      *
      * @param string $module
      * @param OutputInterface $output
+     * @throws Exception
      */
-    protected function enableModule($module, OutputInterface $output)
+    protected function enableModule(string $module, OutputInterface $output): void
     {
         $xml = null;
         $validDecFile = false;
@@ -115,11 +136,11 @@ class AbstractCommand extends AbstractMagentoCommand
         } elseif (!is_writable($validDecFile)) {
             $msg = sprintf('<error><comment>%s: </comment>Can\'t write to declaration file</error>', $module);
         } else {
-            $setTo = $this->commandName == 'enable' ? 'true' : 'false';
+            $setTo = $this->getCommandAction() == 'enable' ? 'true' : 'false';
             if ((string) $xml->modules->{$module}->active != $setTo) {
                 $xml->modules->{$module}->active = $setTo;
                 if (file_put_contents($validDecFile, $xml->asXML()) !== false) {
-                    $msg = sprintf('<info><comment>%s: </comment>%sd</info>', $module, $this->commandName);
+                    $msg = sprintf('<info><comment>%s: </comment>%sd</info>', $module, $this->getCommandAction());
                 } else {
                     $msg = sprintf(
                         '<error><comment>%s: </comment>Failed to update declaration file [%s]</error>',
@@ -128,7 +149,7 @@ class AbstractCommand extends AbstractMagentoCommand
                     );
                 }
             } else {
-                $msg = sprintf('<info><comment>%s: already %sd</comment></info>', $module, $this->commandName);
+                $msg = sprintf('<info><comment>%s: already %sd</comment></info>', $module, $this->getCommandAction());
             }
         }
 
@@ -141,9 +162,13 @@ class AbstractCommand extends AbstractMagentoCommand
      *
      * @return array
      */
-    protected function getDeclaredModuleFiles()
+    protected function getDeclaredModuleFiles(): array
     {
-        $collectModuleFiles = ['base'   => [], 'mage'   => [], 'custom' => []];
+        $collectModuleFiles = [
+            'base'   => [],
+            'mage'   => [],
+            'custom' => []
+        ];
 
         foreach (glob($this->modulesDir . '*.xml') as $v) {
             $name = explode(DIRECTORY_SEPARATOR, $v);
@@ -163,5 +188,13 @@ class AbstractCommand extends AbstractMagentoCommand
             $collectModuleFiles['mage'],
             $collectModuleFiles['custom']
         ));
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCommandAction(): string
+    {
+        return substr(static::$defaultName, strrpos(static::$defaultName, ':') + 1);
     }
 }
