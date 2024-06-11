@@ -4,16 +4,25 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Cache;
 
+use Enterprise_PageCache_Model_Cache;
 use InvalidArgumentException;
-use Mage;
 use Mage_Core_Model_Cache;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Zend_Cache_Core;
 
+/**
+ * Abstract cache command
+ *
+ * @package N98\Magento\Command\Cache
+ */
 class AbstractCacheCommand extends AbstractMagentoCommand
 {
-    protected const COMMAND_ARGUMENT_CODE = 'code';
+    public const COMMAND_ARGUMENT_CODE = 'code';
+
+    public const COMMAND_OPTION_FPC = 'fpc';
 
     protected function configure()
     {
@@ -33,7 +42,23 @@ class AbstractCacheCommand extends AbstractMagentoCommand
      */
     protected function _getCacheModel(): Mage_Core_Model_Cache
     {
-        return Mage::app()->getCacheInstance();
+        return $this->_getMage()->getCacheInstance();
+    }
+
+    /**
+     * @param InputInterface $input
+     * @return Zend_Cache_Core
+     */
+    protected function getCacheInstance(InputInterface $input): Zend_Cache_Core
+    {
+        if ($input->hasOption(static::COMMAND_OPTION_FPC) && $input->getOption(static::COMMAND_OPTION_FPC)) {
+            if (!class_exists('\Enterprise_PageCache_Model_Cache')) {
+                throw new RuntimeException('Enterprise page cache not found');
+            }
+            return Enterprise_PageCache_Model_Cache::getCacheInstance()->getFrontend();
+        }
+
+        return $this->_getMage()->getCache();
     }
 
     /**
@@ -45,14 +70,14 @@ class AbstractCacheCommand extends AbstractMagentoCommand
         $this->validateCacheCodes($codeArgument);
 
         $cacheTypes = $this->_getCacheModel()->getTypes();
-        $enable = Mage::app()->useCache();
+        $enable = $this->_getMage()->useCache();
         foreach ($cacheTypes as $cacheCode => $cacheModel) {
             if (empty($codeArgument) || in_array($cacheCode, $codeArgument)) {
                 $enable[$cacheCode] = $status ? 1 : 0;
             }
         }
 
-        Mage::app()->saveUseCache($enable);
+        $this->_getMage()->saveUseCache($enable);
     }
 
     /**
@@ -93,8 +118,8 @@ class AbstractCacheCommand extends AbstractMagentoCommand
             return;
         }
 
-        Mage::getConfig()->getOptions()->setData('global_ban_use_cache', false);
-        Mage::getConfig()->reinit();
+        $this->_getMage()->getConfig()->getOptions()->setData('global_ban_use_cache', false);
+        $this->_getMage()->getConfig()->reinit();
     }
 
     /**

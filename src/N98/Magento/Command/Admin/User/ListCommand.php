@@ -32,7 +32,7 @@ class ListCommand extends AbstractAdminUserCommand implements AbstractMagentoCom
      * {@inheritdoc}
      * @return array<int|string, array<string, string>>
      *
-     *  phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
     public function getData(InputInterface $input, OutputInterface $output): array
     {
