@@ -1,33 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Log;
 
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+/**
+ * Toggle development log command
+ *
+ * @package N98\Magento\Command\Developer\Log
+ */
 class LogCommand extends AbstractMagentoStoreConfigCommand
 {
     /**
      * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
      */
-    protected $commandName = 'dev:log';
+    protected static $defaultName = 'dev:log';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Toggle development log (system.log, exception.log)';
 
     /**
      * @var string
      */
-    protected $commandDescription = 'Toggle development log (system.log, exception.log)';
+    protected string $toggleComment = 'Development Log';
 
     /**
      * @var string
      */
-    protected $toggleComment = 'Development Log';
+    protected string $configPath = 'dev/log/active';
 
     /**
      * @var string
      */
-    protected $configPath = 'dev/log/active';
-
-    /**
-     * @var string
-     */
-    protected $scope = self::SCOPE_STORE_VIEW_GLOBAL;
+    protected string $scope = self::SCOPE_STORE_VIEW_GLOBAL;
 }
