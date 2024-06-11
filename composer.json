@@ -58,6 +58,11 @@
         {
             "name": "Alexander Menk",
             "email": "a.menk@netz98.de"
+        },
+        {
+            "name": "Sven Reichel",
+            "email": "github-sr@hotmail.com",
+            "role": "Maintainer"
         }
     ],
     "bin": [
