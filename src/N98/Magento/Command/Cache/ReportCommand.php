@@ -1,109 +1,137 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cache;
 
-use Enterprise_PageCache_Model_Cache;
-use Mage;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
-use RuntimeException;
+use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ReportCommand extends AbstractCacheCommand
+/**
+ * Report cache command
+ *
+ * @package N98\Magento\Command\Cache
+ */
+class ReportCommand extends AbstractCacheCommand implements AbstractMagentoCommandFormatInterface
 {
+    public const COMMAND_OPTION_FILTER_ID = 'filter-id';
+
+    public const COMMAND_OPTION_FILTER_TAG = 'filter-tag';
+
+    public const COMMAND_OPTION_TAGS = 'tags';
+
+    public const COMMAND_OPTION_MTIME = 'mtime';
+
+    protected const DATE_FORMAT = 'Y-m-d H:i:s';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'cache:report';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'View inside the cache.';
+
     protected function configure()
     {
         $this
-            ->setName('cache:report')
-            ->setDescription('View inside the cache')
-            ->addOption('tags', 't', InputOption::VALUE_NONE, 'Output tags')
-            ->addOption('mtime', 'm', InputOption::VALUE_NONE, 'Output last modification time')
-            ->addOption('filter-id', '', InputOption::VALUE_OPTIONAL, 'Filter output by ID (substring)')
             ->addOption(
-                'filter-tag',
-                '',
-                InputOption::VALUE_OPTIONAL,
-                'Filter output by TAG (seperate multiple tags by comma)'
+                self::COMMAND_OPTION_TAGS,
+                't', InputOption::VALUE_NONE,
+                'Output tags'
             )
             ->addOption(
-                'fpc',
+                self::COMMAND_OPTION_MTIME,
+                'm',
+                InputOption::VALUE_NONE,
+                'Output last modification time'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_FILTER_ID,
+                '',
+                InputOption::VALUE_OPTIONAL,
+                'Filter output by ID (substring)'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_FILTER_TAG,
+                '',
+                InputOption::VALUE_OPTIONAL,
+                'Filter output by TAG (separate multiple tags by comma)'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_FPC,
                 null,
                 InputOption::VALUE_NONE,
                 'Use full page cache instead of core cache (Enterprise only!)'
             )
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
         ;
-    }
 
-    protected function isTagFiltered($metaData, $input)
-    {
-        return (bool) count(array_intersect($metaData['tags'], explode(',', $input->getOption('filter-tag'))));
+        parent::configure();
     }
 
     /**
+     * @param array $metaData
      * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * @return bool
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function isTagFiltered(array $metaData, InputInterface $input): bool
     {
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
+        return (bool) count(array_intersect(
+            $metaData['tags'], explode(',', $input->getOption(self::COMMAND_OPTION_FILTER_TAG)))
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     * @return array<int|string, array<string, string>>
+     *
+     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     */
+    public function getData(InputInterface $input, OutputInterface $output): array
+    {
+        if (is_null($this->data)) {
+            $this->data = [];
+
+            $filterId = $input->getOption(self::COMMAND_OPTION_FILTER_ID);
+            $cacheInstance = $this->getCacheInstance($input);
+            foreach ($cacheInstance->getIds() as $cacheId) {
+                if ($filterId !== null && !stristr($cacheId, (string) $filterId)) {
+                    continue;
+                }
+
+                $metaData = $cacheInstance->getMetadatas($cacheId);
+                if ($input->getOption(self::COMMAND_OPTION_FILTER_TAG) !== null
+                    && !$this->isTagFiltered($metaData, $input)
+                ) {
+                    continue;
+                }
+
+                $row = [
+                    'ID' => $cacheId,
+                    'EXPIRE' => date(self::DATE_FORMAT, $metaData['expire'])
+                ];
+
+                if ($input->getOption(self::COMMAND_OPTION_MTIME)) {
+                    $row['MTIME'] = date(self::DATE_FORMAT, $metaData['mtime']);
+                }
+
+                if ($input->getOption(self::COMMAND_OPTION_TAGS)) {
+                    $row['TAGS'] = implode(',', $metaData['tags']);
+                }
+
+                $this->data[] = $row;
+            }
         }
 
-        if ($input->hasOption('fpc') && $input->getOption('fpc')) {
-            if (!class_exists('\Enterprise_PageCache_Model_Cache')) {
-                throw new RuntimeException('Enterprise page cache not found');
-            }
-            $cacheInstance = Enterprise_PageCache_Model_Cache::getCacheInstance()->getFrontend();
-        } else {
-            $cacheInstance = Mage::app()->getCache();
-        }
-        /* @var \Varien_Cache_Core $cacheInstance */
-        $cacheIds = $cacheInstance->getIds();
-        $table = [];
-        foreach ($cacheIds as $cacheId) {
-            if ($input->getOption('filter-id') !== null && !stristr($cacheId, (string) $input->getOption('filter-id'))) {
-                continue;
-            }
-
-            $metaData = $cacheInstance->getMetadatas($cacheId);
-            if ($input->getOption('filter-tag') !== null && !$this->isTagFiltered($metaData, $input)) {
-                continue;
-            }
-
-            $row = [$cacheId, date('Y-m-d H:i:s', $metaData['expire'])];
-            if ($input->getOption('mtime')) {
-                $row[] = date('Y-m-d H:i:s', $metaData['mtime']);
-            }
-            if ($input->getOption('tags')) {
-                $row[] = implode(',', $metaData['tags']);
-            }
-
-            $table[] = $row;
-        }
-
-        $headers = ['ID', 'EXPIRE'];
-        if ($input->getOption('mtime')) {
-            $headers[] = 'MTIME';
-        }
-        if ($input->getOption('tags')) {
-            $headers[] = 'TAGS';
-        }
-
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
-        $tableHelper
-            ->setHeaders($headers)
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $this->data;
     }
 }
