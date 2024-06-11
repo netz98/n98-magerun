@@ -20,7 +20,7 @@ class ToggleCommand extends AbstractCmsBlockCommand
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Enable/disable CMS block';
 
-    protected const COMMAND_ARGUMENT_BLOCK_ID = 'block_id';
+    public const COMMAND_ARGUMENT_BLOCK_ID = 'block_id';
 
     /**
      * @var string
