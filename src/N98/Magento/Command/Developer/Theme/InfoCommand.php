@@ -1,64 +1,87 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Theme;
 
 use Mage;
 use Mage_Core_Model_Store;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
-use N98\Util\Console\Helper\TableHelper;
 use Parameter;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class InfoCommand
+ * Theme info command
+ *
  * @package N98\Magento\Command\Developer\Theme
  */
 class InfoCommand extends AbstractMagentoCommand
 {
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'dev:theme:info';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Displays settings of current design on particular store view.';
+
     public const THEMES_EXCEPTION = '_ua_regexp';
 
     /**
      * @var array
      */
-    protected $_configNodes = ['Theme translations' => 'design/theme/locale'];
+    protected array $_configNodes = ['Theme translations' => 'design/theme/locale'];
 
     /**
      * @var array
      */
-    protected $_configNodesWithExceptions = ['Design Package Name' => 'design/package/name', 'Theme template'      => 'design/theme/template', 'Theme skin'          => 'design/theme/skin', 'Theme layout'        => 'design/theme/layout', 'Theme default'       => 'design/theme/default'];
-
-    protected function configure()
-    {
-        $this
-            ->setName('dev:theme:info')
-            ->setDescription('Displays settings of current design on particular store view');
-    }
+    protected array $_configNodesWithExceptions = [
+        'Design Package Name' => 'design/package/name',
+        'Theme template'      => 'design/theme/template',
+        'Theme skin'          => 'design/theme/skin',
+        'Theme layout'        => 'design/theme/layout',
+        'Theme default'       => 'design/theme/default'
+    ];
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
+     *
+     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::FAILURE;
         }
 
-        foreach (Mage::app()->getWebsites() as $website) {
-            /* @var \Mage_Core_Model_Website $website */
+        foreach ($this->_getMage()->getWebsites() as $website) {
             foreach ($website->getStores() as $store) {
-                /* @var \Mage_Core_Model_Store $store */
                 $this->_displayTable($output, $store);
             }
         }
-        return 0;
+
+        return Command::SUCCESS;
     }
 
-    protected function _displayTable(OutputInterface $output, Mage_Core_Model_Store $store)
+    /**
+     * @param OutputInterface $output
+     * @param Mage_Core_Model_Store $store
+     * @return $this
+     */
+    protected function _displayTable(OutputInterface $output, Mage_Core_Model_Store $store): InfoCommand
     {
         $this->writeSection(
             $output,
@@ -67,8 +90,7 @@ class InfoCommand extends AbstractMagentoCommand
         $storeInfoLines = $this->_parse($this->_configNodesWithExceptions, $store, true);
         $storeInfoLines = array_merge($storeInfoLines, $this->_parse($this->_configNodes, $store));
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders([Parameter::class, 'Value'])
             ->renderByFormat($output, $storeInfoLines);
@@ -77,9 +99,12 @@ class InfoCommand extends AbstractMagentoCommand
     }
 
     /**
+     * @param array $nodes
+     * @param Mage_Core_Model_Store $store
+     * @param bool $withExceptions
      * @return array
      */
-    protected function _parse(array $nodes, Mage_Core_Model_Store $store, $withExceptions = false)
+    protected function _parse(array $nodes, Mage_Core_Model_Store $store, bool $withExceptions = false): array
     {
         $result = [];
 
@@ -98,9 +123,11 @@ class InfoCommand extends AbstractMagentoCommand
     }
 
     /**
+     * @param string $node
+     * @param Mage_Core_Model_Store $store
      * @return string
      */
-    protected function _parseException($node, Mage_Core_Model_Store $store)
+    protected function _parseException(string $node, Mage_Core_Model_Store $store): string
     {
         $exception = (string) Mage::getConfig()->getNode(
             $node . self::THEMES_EXCEPTION,
