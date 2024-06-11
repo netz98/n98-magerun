@@ -9,6 +9,11 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * List cache command
+ *
+ * @package N98\Magento\Command\Cache
+ */
 class ListCommand extends AbstractCacheCommand implements AbstractMagentoCommandFormatInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Caches';
@@ -31,7 +36,7 @@ class ListCommand extends AbstractCacheCommand implements AbstractMagentoCommand
      * {@inheritdoc}
      * @return array<int|string, array<string, string>>
      *
-     *  phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
     public function getData(InputInterface $input, OutputInterface $output): array
     {

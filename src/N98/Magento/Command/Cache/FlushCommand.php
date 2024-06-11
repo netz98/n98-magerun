@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cache;
 
 use Enterprise_PageCache_Model_Cache;
@@ -9,6 +11,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Flush cache command
+ *
+ * @package N98\Magento\Command\Cache
+ */
 class FlushCommand extends AbstractCacheCommand
 {
     protected function configure()
@@ -57,9 +64,7 @@ HELP;
             $this->banUseCache();
         }
 
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->initMagento();
 
         try {
             Mage::app()->loadAreaPart('adminhtml', 'events');

@@ -67,9 +67,7 @@ class ViewCommand extends AbstractCacheCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
-        if (!$this->initMagento()) {
-            return Command::FAILURE;
-        }
+        $this->initMagento();
 
         $cacheInstance = $this->getCacheInstance($input);
         $cacheData = $cacheInstance->load($input->getArgument(self::COMMAND_ARGUMENT_ID));
