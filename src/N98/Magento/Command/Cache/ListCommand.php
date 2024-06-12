@@ -34,7 +34,7 @@ class ListCommand extends AbstractCacheCommand implements AbstractMagentoCommand
 
     /**
      * {@inheritdoc}
-     * @return array<int|string, array<string, string>>
+     * @return array<int<0, max>|string, array<string, int|string>>
      *
      * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
