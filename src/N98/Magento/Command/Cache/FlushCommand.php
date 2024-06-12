@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Cache
  */
-class FlushCommand extends AbstractCacheCommand implements CacheCommandReinitInterface
+class FlushCommand extends AbstractCacheCommandReinit
 {
     /**
      * @var string
