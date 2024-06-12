@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Cache;
 
-use N98\Util\BinaryString;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * View cache command
+     * Enable cache command
  *
  * @package N98\Magento\Command\Cache
  */
-class EnableCommand extends AbstractCacheCommand
+class EnableCommand extends AbstractCacheCommandToggle
 {
     /**
      * @var string
@@ -31,27 +28,13 @@ class EnableCommand extends AbstractCacheCommand
     protected static $defaultDescription = 'Enables caches.';
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
+     * @var bool
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $this->detectMagento($output, true);
-        $this->initMagento();
+    protected static bool $cacheStatus = true;
 
-        $codeArgument = BinaryString::trimExplodeEmpty(',', $input->getArgument(self::COMMAND_ARGUMENT_CODE));
-        $this->saveCacheStatus($codeArgument, true);
 
-        if ($codeArgument !== []) {
-            foreach ($codeArgument as $code) {
-                $output->writeln('<info>Cache <comment>' . $code . '</comment> enabled</info>');
-            }
-        } else {
-            $output->writeln('<info>Caches enabled</info>');
-        }
-
-        return 0;
-    }
+    /**
+     * @var string
+     */
+    protected static string $toggleName = 'enabled';
 }

@@ -9,8 +9,6 @@ use InvalidArgumentException;
 use Mage_Core_Model_Cache;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Zend_Cache_Core;
 
@@ -19,45 +17,9 @@ use Zend_Cache_Core;
  *
  * @package N98\Magento\Command\Cache
  */
-class AbstractCacheCommand extends AbstractMagentoCommand
+abstract class AbstractCacheCommand extends AbstractMagentoCommand
 {
-    public const COMMAND_ARGUMENT_CODE = 'code';
-
     public const COMMAND_OPTION_FPC = 'fpc';
-
-    public const COMMAND_OPTION_REINIT = 'reinit';
-
-    public const COMMAND_OPTION_NO_REINIT = 'no-reinit';
-
-    protected function configure(): void
-    {
-        if ($this instanceof CacheCommandToggleInterface) {
-            $this
-                ->addArgument(
-                    self::COMMAND_ARGUMENT_CODE,
-                    InputArgument::OPTIONAL,
-                    'Code of cache (Multiple codes operated by comma)'
-                );
-        }
-
-        if ($this instanceof CacheCommandReinitInterface) {
-            $this
-                ->addOption(
-                    self::COMMAND_OPTION_REINIT,
-                    null,
-                    InputOption::VALUE_NONE,
-                    'Reinitialise the config cache after cleaning or flushing.'
-                )
-                ->addOption(
-                    self::COMMAND_OPTION_NO_REINIT,
-                    null,
-                    InputOption::VALUE_NONE,
-                    "Don't reinitialise the config cache after cleaning or flushing."
-                );
-        }
-
-        parent::configure();
-    }
 
     /**
      * @return Mage_Core_Model_Cache
@@ -86,29 +48,6 @@ class AbstractCacheCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param string[] $codeArgument
-     * @param bool $status
-     * @return void
-     */
-    protected function saveCacheStatus(array $codeArgument, bool $status): void
-    {
-        $this->validateCacheCodes($codeArgument);
-
-        $cacheTypes = $this->_getCacheModel()->getTypes();
-        $enable = $this->_getMage()->useCache();
-
-        if (is_array($enable)) {
-            foreach ($cacheTypes as $cacheCode => $cacheModel) {
-                if (empty($codeArgument) || in_array($cacheCode, $codeArgument)) {
-                    $enable[$cacheCode] = $status ? 1 : 0;
-                }
-            }
-
-            $this->_getMage()->saveUseCache($enable);
-        }
-    }
-
-    /**
      * @param string[] $codes
      * @throws InvalidArgumentException
      */
@@ -120,42 +59,5 @@ class AbstractCacheCommand extends AbstractMagentoCommand
                 throw new InvalidArgumentException('Invalid cache type: ' . $cacheCode);
             }
         }
-    }
-
-    /**
-     * Ban cache usage before cleanup to get the latest values.
-     *
-     * @see https://github.com/netz98/n98-magerun/issues/483
-     */
-    protected function banUseCache(): void
-    {
-        if (!$this->_canUseBanCacheFunction()) {
-            return;
-        }
-
-        $config = $this->getApplication()->getConfig();
-        if (empty($config['init']['options'])) {
-            $config['init']['options'] = ['global_ban_use_cache' => true];
-            $this->getApplication()->setConfig($config);
-        }
-    }
-
-    protected function reinitCache(): void
-    {
-        if (!$this->_canUseBanCacheFunction()) {
-            return;
-        }
-
-        $this->_getMage()->getConfig()->getOptions()->setData('global_ban_use_cache', false);
-        $this->_getMage()->getConfig()->reinit();
-    }
-
-    /**
-     * @return bool
-     */
-    protected function _canUseBanCacheFunction(): bool
-    {
-        // @phpstan-ignore function.alreadyNarrowedType (Phpstan Bleeding edge only)
-        return method_exists('\Mage_Core_Model_App', 'baseInit');
     }
 }
