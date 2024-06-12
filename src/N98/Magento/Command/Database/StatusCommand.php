@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Database;
 
 use DateTime;
+use Exception;
 
 class StatusCommand extends AbstractShowCommand
 {
@@ -13,18 +14,58 @@ class StatusCommand extends AbstractShowCommand
      *
      * @var array
      */
-    protected $_importantVars = ['Threads_connected'              => ['desc' => 'Total number of clients that have currently open connections to the server.'], 'Created_tmp_disk_tables'        => ['desc' => 'Number of temporary tables that have been created on disk instead of in-memory. Lower is
-            better.'], 'Handler_read_first'             => ['desc' => 'Number of times a table handler made a request to read the first row of a table index.'], 'Handler_read_rnd_next'          => ['desc' => 'Number of requests to read the next row in the data file. This value is high if you
+    protected array $_importantVars = [
+        'Threads_connected'              => [
+            'desc' => 'Total number of clients that have currently open connections to the server.'
+        ],
+        'Created_tmp_disk_tables'        => [
+            'desc' => 'Number of temporary tables that have been created on disk instead of in-memory. Lower is better.'
+        ],
+        'Handler_read_first'             => [
+            'desc' => 'Number of times a table handler made a request to read the first row of a table index.'
+        ],
+        'Handler_read_rnd_next'          => [
+            'desc' => 'Number of requests to read the next row in the data file. This value is high if you
                 are doing a lot of table scans. Generally this suggests that your tables are not properly indexed or
-                that your queries are not written to take advantage of the indexes you have.'], 'Innodb_buffer_pool_wait_free'   => ['desc' => 'Number of times MySQL has to wait for memory pages to be flushed.'], 'Innodb_buffer_pool_pages_dirty' => ['desc' => 'Indicates the number of InnoDB buffer pool data pages that have been changed in memory,
-                 but the changes are not yet written (flushed) to the InnoDB data files'], 'Key_reads'                      => ['desc' => 'Number of filesystem accesses MySQL performed to fetch database indexes.'], 'Max_used_connections'           => ['desc' => 'Max number of connections MySQL has had open at the same time since the server was
-                 last restarted.'], 'Open_tables'                    => ['desc' => 'Number of tables that are currently open.'], 'Select_full_join'               => ['desc' => 'Number of full joins MySQL has performed to satisfy client queries.'], 'Slow_queries'                   => ['desc' => 'Number of queries that have taken longer than usual to execute.'], 'Uptime'                         => ['desc' => 'Time since the server was last restarted.'], 'Aborted_connects'               => ['desc' => 'Total number of failed attempts to connect to MySQL.']];
+                that your queries are not written to take advantage of the indexes you have.'
+        ],
+        'Innodb_buffer_pool_wait_free'   => [
+            'desc' => 'Number of times MySQL has to wait for memory pages to be flushed.'
+        ],
+        'Innodb_buffer_pool_pages_dirty' => [
+            'desc' => 'Indicates the number of InnoDB buffer pool data pages that have been changed in memory,
+                 but the changes are not yet written (flushed) to the InnoDB data files'
+        ],
+        'Key_reads'                      => [
+            'desc' => 'Number of filesystem accesses MySQL performed to fetch database indexes.'
+        ],
+        'Max_used_connections'           => [
+            'desc' => 'Max number of connections MySQL has had open at the same time since the server was
+                 last restarted.'
+        ],
+        'Open_tables'                    => [
+            'desc' => 'Number of tables that are currently open.'
+        ],
+        'Select_full_join'               => [
+            'desc' => 'Number of full joins MySQL has performed to satisfy client queries.'
+        ],
+        'Slow_queries'                   => [
+            'desc' => 'Number of queries that have taken longer than usual to execute.'
+        ],
+        'Uptime'                         => [
+            'desc' => 'Time since the server was last restarted.'
+        ],
+        'Aborted_connects'               => [
+            'desc' => 'Total number of failed attempts to connect to MySQL.'
+        ]
+    ];
+
     /**
      * @var array
      */
-    protected $_specialFormat = ['Uptime' => 'timeElapsedString'];
+    protected array $_specialFormat = ['Uptime' => 'timeElapsedString'];
 
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
         $this
@@ -40,10 +81,9 @@ HELP;
     /**
      * @param array $outputVars
      * @param bool $hasDescription
-     *
      * @return array
      */
-    protected function generateRows(array $outputVars, $hasDescription)
+    protected function generateRows(array $outputVars, bool $hasDescription): array
     {
         $rows = parent::generateRows($outputVars, $hasDescription);
 
@@ -87,14 +127,11 @@ HELP;
 
     /**
      * @param string $name
-     *
      * @return bool
      */
-    protected function allowRounding($name)
+    protected function allowRounding(string $name): bool
     {
-        $isSize = false !== strpos($name, '_size');
-
-        return $isSize;
+        return false !== strpos($name, '_size');
     }
 
     /**
@@ -106,10 +143,10 @@ HELP;
      *
      * @param      $datetime
      * @param bool $full
-     *
      * @return string
+     * @throws Exception
      */
-    protected function timeElapsedString($datetime, $full = false)
+    protected function timeElapsedString($datetime, bool $full = false): string
     {
         if (is_numeric($datetime)) {
             $datetime = time() - $datetime;
@@ -123,7 +160,15 @@ HELP;
         $diff->w = floor($diff->d / 7);
         $diff->d -= $diff->w * 7;
 
-        $string = ['y' => 'year', 'm' => 'month', 'w' => 'week', 'd' => 'day', 'h' => 'hour', 'i' => 'minute', 's' => 'second'];
+        $string = [
+            'y' => 'year',
+            'm' => 'month',
+            'w' => 'week',
+            'd' => 'day',
+            'h' => 'hour',
+            'i' => 'minute',
+            's' => 'second'
+        ];
         foreach ($string as $k => &$v) {
             if ($diff->$k) {
                 $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
