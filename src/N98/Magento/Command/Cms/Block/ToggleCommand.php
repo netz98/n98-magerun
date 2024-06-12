@@ -61,6 +61,7 @@ class ToggleCommand extends AbstractCmsBlockCommand
         $this->detectMagento($output);
         $this->initMagento();
 
+        /** @var string $blockId */
         $blockId = $input->getArgument(self::COMMAND_ARGUMENT_BLOCK_ID);
         $block = $this->_getBlockModel()->load($blockId, is_numeric($blockId) ? null : 'identifier');
 

@@ -2,6 +2,8 @@
 
 namespace N98\Magento\Command\Cms\Page;
 
+use Enterprise_Cms_Model_Page_Revision;
+use Mage_Cms_Model_Page;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class PublishCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('cms:page:publish')
@@ -39,19 +41,19 @@ class PublishCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return \Mage_Cms_Model_Page
+     * @return Mage_Cms_Model_Page
      */
     protected function _getPageModel()
     {
-        return $this->_getModel('cms/page', 'Mage_Cms_Model_Page');
+        return $this->_getModel('cms/page');
     }
 
     /**
-     * @return \Enterprise_Cms_Model_Page_Revision
+     * @return Enterprise_Cms_Model_Page_Revision
      */
     protected function _getPageRevisionModel()
     {
-        return $this->_getModel('enterprise_cms/page_revision', '\Enterprise_Cms_Model_Page_Revision');
+        return $this->_getModel('enterprise_cms/page_revision');
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Cms\Banner;
 
+use Enterprise_Banner_Model_Banner;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ToggleCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('cms:banner:toggle')
@@ -35,11 +36,11 @@ class ToggleCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return \Enterprise_Banner_Model_Banner
+     * @return Enterprise_Banner_Model_Banner
      */
     protected function _getBannerModel()
     {
-        return $this->_getModel('enterprise_banner/banner', '\Enterprise_Banner_Model_Banner');
+        return $this->_getModel('enterprise_banner/banner');
     }
 
     /**
@@ -52,9 +53,7 @@ class ToggleCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output, true);
         $this->requireEnterprise($output);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->initMagento();
 
         $this->writeSection($output, 'Banner Toggle');
         $bannerId = $input->getArgument('banner_id');
