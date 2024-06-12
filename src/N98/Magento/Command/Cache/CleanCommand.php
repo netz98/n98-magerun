@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Cache
  */
-class CleanCommand extends AbstractCacheCommand implements CacheCommandReinitInterface
+class CleanCommand extends AbstractCacheCommandReinit
 {
     public const COMMAND_ARGUMENT_TYPE = 'type';
 
