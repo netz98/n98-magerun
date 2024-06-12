@@ -69,7 +69,10 @@ class ViewCommand extends AbstractCacheCommand
         $this->initMagento();
 
         $cacheInstance = $this->getCacheInstance($input);
-        $cacheData = $cacheInstance->load($input->getArgument(self::COMMAND_ARGUMENT_ID));
+        /** @var string $cacheId */
+        $cacheId = $input->getArgument(self::COMMAND_ARGUMENT_ID);
+        /** @var string $cacheData */
+        $cacheData = $cacheInstance->load($cacheId);
         if ($input->getOption(self::COMMAND_OPTION_UNSERIALZE)) {
             $cacheData = unserialize($cacheData);
             $cacheData = print_r($cacheData, true);
