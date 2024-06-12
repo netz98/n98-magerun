@@ -24,8 +24,9 @@ use ZipArchive;
  */
 class DumpCommand extends AbstractMagentoCommand
 {
-    private const COMMAND_ARGUMENT_FILENAME = 'filename';
-    private const COMMAND_OPTION_STRIP = 'strip';
+    public const COMMAND_ARGUMENT_FILENAME = 'filename';
+
+    public const COMMAND_OPTION_STRIP = 'strip';
 
     /**
      * @var string
@@ -93,6 +94,7 @@ class DumpCommand extends AbstractMagentoCommand
             $finder->exclude($commandConfig['strip']['folders']);
         }
 
+        /** @var string $filename */
         $filename = $input->getArgument(self::COMMAND_ARGUMENT_FILENAME);
         if (is_dir($filename)) { // support for dot dir
             $filename = realpath($filename);
