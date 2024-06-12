@@ -46,7 +46,8 @@ class ReportCommand extends AbstractCacheCommand implements AbstractMagentoComma
         $this
             ->addOption(
                 self::COMMAND_OPTION_TAGS,
-                't', InputOption::VALUE_NONE,
+                't',
+                InputOption::VALUE_NONE,
                 'Output tags'
             )
             ->addOption(
@@ -98,13 +99,16 @@ class ReportCommand extends AbstractCacheCommand implements AbstractMagentoComma
                 $cacheIds = $cacheInstance->getIds();
             }
 
+            /** @var string $filterId */
             $filterId = $input->getOption(self::COMMAND_OPTION_FILTER_ID);
             if ($filterId !== null) {
+                // @phpstan-ignore argument.type (@todo SR)
                 $cacheIds = array_filter($cacheIds, function ($cacheId) use ($filterId) {
-                    return stristr($cacheId, (string)$filterId);
+                    return stristr($cacheId, $filterId);
                 });
             }
 
+            /** @var string[] $cacheIds */
             foreach ($cacheIds as $cacheId) {
                 $metaData = $cacheInstance->getMetadatas($cacheId);
 
