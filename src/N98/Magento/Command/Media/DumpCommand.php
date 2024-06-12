@@ -44,7 +44,7 @@ class DumpCommand extends AbstractMagentoCommand
     /**
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addOption(
@@ -56,7 +56,8 @@ class DumpCommand extends AbstractMagentoCommand
             ->addArgument(
                 self::COMMAND_ARGUMENT_FILENAME,
                 InputArgument::OPTIONAL,
-                'Dump filename'
+                'Dump filename',
+                ''
             )
         ;
     }
@@ -92,7 +93,7 @@ class DumpCommand extends AbstractMagentoCommand
             $finder->exclude($commandConfig['strip']['folders']);
         }
 
-        $filename = $this->getArgumentString($input, self::COMMAND_ARGUMENT_FILENAME);
+        $filename = $input->getArgument(self::COMMAND_ARGUMENT_FILENAME);
         if (is_dir($filename)) { // support for dot dir
             $filename = realpath($filename);
             $filename .= '/';
@@ -119,6 +120,8 @@ class DumpCommand extends AbstractMagentoCommand
         }
 
         $zip->close();
+
+        $output->writeln(sprintf('<info>Media dumped to:</info> <comment>%s</comment>', $filename));
 
         return Command::SUCCESS;
     }
