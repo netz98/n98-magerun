@@ -36,7 +36,7 @@ class ViewCommand extends AbstractCacheCommand
      */
     protected static $defaultDescription = 'Prints a cache entry.';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument(
@@ -61,7 +61,6 @@ class ViewCommand extends AbstractCacheCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
