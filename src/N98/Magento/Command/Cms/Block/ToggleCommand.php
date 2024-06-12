@@ -39,7 +39,7 @@ class ToggleCommand extends AbstractCmsBlockCommand
     /**
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->addArgument(
             self::COMMAND_ARGUMENT_BLOCK_ID,
@@ -59,9 +59,7 @@ class ToggleCommand extends AbstractCmsBlockCommand
         $this->writeSection($output, static::COMMAND_SECTION_TITLE_TEXT);
 
         $this->detectMagento($output);
-        if (!$this->initMagento()) {
-            return Command::FAILURE;
-        }
+        $this->initMagento();
 
         $blockId = $input->getArgument(self::COMMAND_ARGUMENT_BLOCK_ID);
         $block = $this->_getBlockModel()->load($blockId, is_numeric($blockId) ? null : 'identifier');
