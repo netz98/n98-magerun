@@ -41,7 +41,7 @@ class ReportCommand extends AbstractCacheCommand implements AbstractMagentoComma
      */
     protected static $defaultDescription = 'View inside the cache.';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addOption(
@@ -79,18 +79,6 @@ class ReportCommand extends AbstractCacheCommand implements AbstractMagentoComma
     }
 
     /**
-     * @param array $metaData
-     * @param InputInterface $input
-     * @return bool
-     */
-    protected function isTagFiltered(array $metaData, InputInterface $input): bool
-    {
-        return (bool) count(array_intersect(
-            $metaData['tags'], explode(',', $input->getOption(self::COMMAND_OPTION_FILTER_TAG)))
-        );
-    }
-
-    /**
      * {@inheritdoc}
      * @return array<int|string, array<string, string>>
      *
@@ -101,19 +89,24 @@ class ReportCommand extends AbstractCacheCommand implements AbstractMagentoComma
         if (is_null($this->data)) {
             $this->data = [];
 
-            $filterId = $input->getOption(self::COMMAND_OPTION_FILTER_ID);
             $cacheInstance = $this->getCacheInstance($input);
-            foreach ($cacheInstance->getIds() as $cacheId) {
-                if ($filterId !== null && !stristr($cacheId, (string) $filterId)) {
-                    continue;
-                }
 
+            $filterTag = $input->getOption(self::COMMAND_OPTION_FILTER_TAG);
+            if ($filterTag !== null) {
+                $cacheIds = $cacheInstance->getIdsMatchingAnyTags([$filterTag]);
+            } else {
+                $cacheIds = $cacheInstance->getIds();
+            }
+
+            $filterId = $input->getOption(self::COMMAND_OPTION_FILTER_ID);
+            if ($filterId !== null) {
+                $cacheIds = array_filter($cacheIds, function ($cacheId) use ($filterId) {
+                    return stristr($cacheId, (string)$filterId);
+                });
+            }
+
+            foreach ($cacheIds as $cacheId) {
                 $metaData = $cacheInstance->getMetadatas($cacheId);
-                if ($input->getOption(self::COMMAND_OPTION_FILTER_TAG) !== null
-                    && !$this->isTagFiltered($metaData, $input)
-                ) {
-                    continue;
-                }
 
                 $row = [
                     'ID' => $cacheId,
