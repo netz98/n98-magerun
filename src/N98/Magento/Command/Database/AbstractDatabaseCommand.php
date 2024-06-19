@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\Database\Compressor\AbstractCompressor;
 use N98\Magento\Command\Database\Compressor\Compressor;
 use N98\Magento\DbSettings;
-use N98\Util\Console\Helper\DatabaseHelper;
+use PDO;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
@@ -19,7 +21,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
     /**
      * @var bool
      */
-    protected $isSocketConnect = false;
+    protected bool $isSocketConnect = false;
 
     /**
      * @param OutputInterface $output
@@ -27,14 +29,14 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      */
     protected function detectDbSettings(OutputInterface $output, $connectionNode = null)
     {
-        $database = $database = $this->getDatabaseHelper();
+        $database = $this->getDatabaseHelper();
         $this->dbSettings = $database->getDbSettings($output);
     }
 
     /**
      * @param $name
      *
-     * @return \PDO|void
+     * @return PDO|void
      */
     public function __get($name)
     {
@@ -49,7 +51,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      *
      * @return string
      */
-    protected function getCompressionHelp()
+    protected function getCompressionHelp(): string
     {
         $messages = [];
         $messages[] = '';
@@ -66,7 +68,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      * @return Compressor
      * @deprecated Since 1.97.29; use AbstractCompressor::create() instead
      */
-    protected function getCompressor($type)
+    protected function getCompressor(string $type): Compressor
     {
         return AbstractCompressor::create($type);
     }
@@ -76,7 +78,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      *
      * @deprecated Please use database helper
      */
-    protected function getMysqlClientToolConnectionString()
+    protected function getMysqlClientToolConnectionString(): string
     {
         return $this->getDatabaseHelper()->getMysqlClientToolConnectionString();
     }
@@ -89,17 +91,9 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      *
      * @deprecated Please use database helper
      */
-    protected function _dsn()
+    protected function _dsn(): string
     {
         return $this->getDatabaseHelper()->dsn();
-    }
-
-    /**
-     * @return DatabaseHelper
-     */
-    protected function getDatabaseHelper()
-    {
-        return $this->getHelper('database');
     }
 
     /**
@@ -111,8 +105,8 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      *
      * @deprecated Please use database helper
      */
-    protected function resolveTables(array $excludes, array $definitions, array $resolved = [])
+    protected function resolveTables(array $excludes, array $definitions, array $resolved = []): array
     {
-        return $this->getHelper('database')->resolveTables($excludes, $definitions, $resolved);
+        return $this->getDatabaseHelper()->resolveTables($excludes, $definitions, $resolved);
     }
 }
