@@ -1,61 +1,98 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Cron;
 
 use Exception;
 use Mage;
+use Mage_Core_Exception;
+use Mage_Core_Model_Abstract;
 use Mage_Core_Model_Config_Element;
 use Mage_Cron_Model_Schedule;
 use RuntimeException;
-use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
+use Throwable;
 
+/**
+ * Cron run command
+ *
+ * @package N98\Magento\Command\Cron
+ */
 class RunCommand extends AbstractCronCommand
 {
     public const REGEX_RUN_MODEL = '#^([a-z0-9_]+/[a-z0-9_]+)::([a-z0-9_]+)$#i';
-    /**
-     * @var array
-     */
-    protected $infos;
 
-    protected function configure()
+    public const COMMAND_ARGUMENT_JOB = 'job';
+
+    public const COMMAND_OPTION_SCHEDULE = 'schedule';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'sys:cron:run';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Runs a cronjob by job code.';
+
+    protected function configure(): void
     {
         $this
-            ->setName('sys:cron:run')
-            ->addArgument('job', InputArgument::OPTIONAL, 'Job code')
-            ->addOption('schedule', 's', InputOption::VALUE_NONE, 'Schedule cron instead of run with current user')
-            ->setDescription('Runs a cronjob by job code');
-        $help = <<<HELP
+            ->addArgument(
+                self::COMMAND_ARGUMENT_JOB,
+                InputArgument::OPTIONAL,
+                'Job code'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_SCHEDULE,
+                's',
+                InputOption::VALUE_NONE,
+                'Schedule cron instead of run with current user'
+            )
+        ;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 If no `job` argument is passed you can select a job from a list.
-See it in action: http://www.youtube.com/watch?v=QkzkLgrfNaM
+See it in action: https://www.youtube.com/watch?v=QkzkLgrfNaM
 If option schedule is present, cron is not launched, but just scheduled immediately in magento crontab.
 HELP;
-        $this->setHelp($help);
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
      * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->detectMagento($output);
+        $this->initMagento();
 
-        $jobCode = $input->getArgument('job');
+        /** @var string $jobCode */
+        $jobCode = $input->getArgument(self::COMMAND_ARGUMENT_JOB);
         if (!$jobCode) {
             $this->writeSection($output, 'Cronjob');
+            /** @var string $jobCode */
             $jobCode = $this->askJobCode($input, $output, $this->getJobs());
         }
 
@@ -65,36 +102,36 @@ HELP;
 
         $output->write('<info>Run </info><comment>' . $callableName . '</comment> ');
 
-        if ($input->hasOption('schedule') && $input->getOption('schedule')) {
+        if ($input->hasOption(self::COMMAND_OPTION_SCHEDULE) && $input->getOption(self::COMMAND_OPTION_SCHEDULE)) {
             $this->scheduleConfigModel($callback, $jobCode);
         } else {
             $this->executeConfigModel($callback, $jobCode);
         }
 
         $output->writeln('<info>done</info>');
-        return 0;
+
+        return Command::SUCCESS;
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @param array $jobs array of array containing "job" keyed string entries of job-codes
+     * @param array<string, array<string, Mage_Core_Model_Config_Element|string|null>> $jobs
+     *  array of array containing "job" keyed string entries of job-codes
      *
-     * @return string         job-code
+     * @return mixed         job-code
      * @throws InvalidArgumentException|Exception when user selects invalid job interactively
      */
     protected function askJobCode(InputInterface $input, OutputInterface $output, array $jobs)
     {
-        $index = 0;
         $keyMap = array_keys($jobs);
 
         $choices = [];
-        foreach ($jobs as $key => $job) {
+        foreach ($jobs as $job) {
             $choices[] = '<comment>' . $job['Job'] . '</comment>';
         }
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
         $question = new ChoiceQuestion('<question>Please select job:</question> ', $choices);
         $question->setValidator(function ($typeInput) use ($keyMap, $jobs) {
             $key = $keyMap[$typeInput];
@@ -111,9 +148,9 @@ HELP;
     /**
      * @param string $runConfigModel
      * @param string $jobCode
-     * @return array
+     * @return array{array{Mage_Core_Model_Abstract, string}&callable(): mixed, callable-string}
      */
-    private function getCallbackFromRunConfigModel($runConfigModel, $jobCode)
+    private function getCallbackFromRunConfigModel(string $runConfigModel, string $jobCode): array
     {
         if (!preg_match(self::REGEX_RUN_MODEL, $runConfigModel, $runMatches)) {
             throw new RuntimeException(
@@ -141,23 +178,20 @@ HELP;
     }
 
     /**
-     * @param array $callback
+     * @param mixed $callback
      * @param string $jobCode
-     * @throws Exception
+     * @throws Exception|Throwable
      */
-    private function executeConfigModel($callback, $jobCode)
+    private function executeConfigModel($callback, string  $jobCode): void
     {
-        Mage::getConfig()->init()->loadEventObservers('crontab');
+        $this->_getMageConfig()->init()->loadEventObservers('crontab');
         Mage::app()->addEventArea('crontab');
 
         /* @var Mage_Cron_Model_Schedule $schedule */
         $schedule = Mage::getModel('cron/schedule');
-        if (false === $schedule) {
-            throw new RuntimeException('Failed to create new Mage_Cron_Model_Schedule model');
-        }
 
         $environment = new ServerEnvironment();
-        $environment->initalize();
+        $environment->initialize();
 
         try {
             $timestamp = strftime('%Y-%m-%d %H:%M:%S', time());
@@ -169,7 +203,9 @@ HELP;
                 ->setScheduledAt($timestamp)
                 ->save();
 
-            $callback($schedule);
+            if (is_callable($callback)) {
+                $callback($schedule);
+            }
 
             $schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS);
         } catch (Exception $cronException) {
@@ -192,16 +228,14 @@ HELP;
     }
 
     /**
-     * @param array $callback
+     * @param mixed $callback
      * @param string $jobCode
+     * @throws Mage_Core_Exception
      */
-    private function scheduleConfigModel($callback, $jobCode)
+    private function scheduleConfigModel($callback, string $jobCode): void
     {
         /* @var Mage_Cron_Model_Schedule $schedule */
         $schedule = Mage::getModel('cron/schedule');
-        if (false === $schedule) {
-            throw new RuntimeException('Failed to create new Mage_Cron_Model_Schedule model');
-        }
 
         if (empty($callback)) {
             Mage::throwException(Mage::helper('cron')->__('No callbacks found'));
@@ -221,19 +255,19 @@ HELP;
                 0,
                 $cronException
             );
+        } catch (Throwable $e) {
         }
     }
 
     /**
-     * @param $jobCode
+     * @param string $jobCode
      * @return string
      */
-    private function getRunConfigModelByJobCode($jobCode)
+    private function getRunConfigModelByJobCode(string$jobCode): string
     {
-        $jobsRoot = Mage::getConfig()->getNode('crontab/jobs');
-        $defaultJobsRoot = Mage::getConfig()->getNode('default/crontab/jobs');
+        $jobsRoot = $this->_getMageConfigNode('crontab/jobs');
+        $defaultJobsRoot = $this->_getMageConfigNode('default/crontab/jobs');
 
-        /* @var Mage_Core_Model_Config_Element $jobConfig */
         $jobConfig = $jobsRoot->{$jobCode};
         if (!$jobConfig || !$jobConfig->run) {
             $jobConfig = $defaultJobsRoot->{$jobCode};
@@ -242,7 +276,6 @@ HELP;
             throw new RuntimeException(sprintf('No job-config found for job "%s"!', $jobCode));
         }
 
-        /* @var Mage_Core_Model_Config_Element $runConfig */
         $runConfig = $jobConfig->run;
         if (empty($runConfig->model)) {
             throw new RuntimeException(sprintf('No run-config found for job "%s"!', $jobCode));
