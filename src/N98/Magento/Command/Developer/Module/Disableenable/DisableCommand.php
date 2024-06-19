@@ -26,4 +26,9 @@ class DisableCommand extends AbstractCommand
      * @see AsCommand
      */
     protected static $defaultDescription = 'Disables a module or all modules in codePool.';
+
+    /**
+     * @var string
+     */
+    protected string $commandName = 'enable';
 }

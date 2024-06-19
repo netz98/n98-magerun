@@ -6,10 +6,8 @@ namespace N98\Magento\Command\Developer\Module\Disableenable;
 
 use Exception;
 use InvalidArgumentException;
-use Mage;
 use Mage_Core_Model_Config;
 use N98\Magento\Command\AbstractMagentoCommand;
-use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,9 +27,14 @@ class AbstractCommand extends AbstractMagentoCommand
     public const COMMAND_OPTION_CODEPOOL = 'codepool';
 
     /**
+     * @var string
+     */
+    protected string $commandName = '';
+
+    /**
      * @var Mage_Core_Model_Config
      */
-    protected $config;
+    protected Mage_Core_Model_Config $mageConfig;
 
     /**
      * @var string
@@ -43,21 +46,19 @@ class AbstractCommand extends AbstractMagentoCommand
      *
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
-        $action = $this->getCommandAction();
-
         $this
             ->addArgument(
                 self::COMMAND_ARGUMENT_MODULE,
                 InputArgument::OPTIONAL,
-                'Name of module to ' . $action
+                'Name of module to ' . $this->commandName
             )
             ->addOption(
                 self::COMMAND_OPTION_CODEPOOL,
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Name of codePool to ' . $action
+                'Name of codePool to ' . $this->commandName
             )
         ;
     }
@@ -75,24 +76,32 @@ class AbstractCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
-        if (!$this->initMagento()) {
-            throw new RuntimeException('Application could not be loaded');
-        }
+        $this->initMagento();
 
-        $this->config = Mage::getConfig();
-        $this->modulesDir = $this->config->getOptions()->getEtcDir() . DS . 'modules' . DS;
+        $this->mageConfig = $this->_getMageConfig();
+        $this->modulesDir = $this->mageConfig->getOptions()->getEtcDir() . DS . 'modules' . DS;
 
-        if ($codePool = $input->getOption(self::COMMAND_OPTION_CODEPOOL)) {
-            $output->writeln('<info>' . ($this->getCommandAction() == 'enable' ? 'Enabling' : 'Disabling') .
+        /** @var string $codePool */
+        $codePool = $input->getOption(self::COMMAND_OPTION_CODEPOOL);
+        if ($codePool) {
+            $output->writeln('<info>' . ($this->commandName == 'enable' ? 'Enabling' : 'Disabling') .
                 ' modules in <comment>' . $codePool . '</comment> codePool...</info>');
             $this->enableCodePool($codePool, $output);
-        } elseif ($module = $input->getArgument(self::COMMAND_ARGUMENT_MODULE)) {
-            $this->enableModule($module, $output);
-        } else {
-            throw new InvalidArgumentException('No code-pool option nor module-name argument');
+
+            return Command::SUCCESS;
         }
 
-        return Command::SUCCESS;
+        /** @var string $module */
+        $module = $input->getArgument(self::COMMAND_ARGUMENT_MODULE);
+        if ($module) {
+            $output->writeln('<info>' . ($this->commandName == 'enable' ? 'Enabling' : 'Disabling') .
+                ' module <comment>' . $module . '</comment></info>');
+            $this->enableModule($module, $output);
+
+            return Command::SUCCESS;
+        }
+
+        throw new InvalidArgumentException('No code-pool option nor module-name argument');
     }
 
     /**
@@ -104,10 +113,12 @@ class AbstractCommand extends AbstractMagentoCommand
      */
     protected function enableCodePool(string $codePool, OutputInterface $output): void
     {
-        $modules = $this->config->getNode('modules')->asArray();
-        foreach ($modules as $module => $data) {
-            if (isset($data['codePool']) && $data['codePool'] == $codePool) {
-                $this->enableModule($module, $output);
+        $modules = $this->mageConfig->getNode('modules');
+        if ($modules) {
+            foreach ($modules->asArray() as $module => $data) {
+                if (isset($data['codePool']) && $data['codePool'] == $codePool) {
+                    $this->enableModule($module, $output);
+                }
             }
         }
     }
@@ -124,23 +135,36 @@ class AbstractCommand extends AbstractMagentoCommand
         $xml = null;
         $validDecFile = false;
         foreach ($this->getDeclaredModuleFiles() as $decFile) {
-            $xml = new Varien_Simplexml_Element(file_get_contents($decFile));
-            if ($xml->modules->{$module}) {
-                $validDecFile = $decFile;
-                break;
+            $content = file_get_contents($decFile);
+            if ($content) {
+                $xml = new Varien_Simplexml_Element($content);
+                if ($xml->modules->{$module}) {
+                    $validDecFile = $decFile;
+                    break;
+                }
             }
         }
 
         if (!$validDecFile) {
-            $msg = sprintf('<error><comment>%s: </comment>Couldn\'t find declaration file</error>', $module);
+            $msg = sprintf(
+                '<error><comment>%s: </comment>Couldn\'t find declaration file</error>',
+                $module
+            );
         } elseif (!is_writable($validDecFile)) {
-            $msg = sprintf('<error><comment>%s: </comment>Can\'t write to declaration file</error>', $module);
+            $msg = sprintf(
+                '<error><comment>%s: </comment>Can\'t write to declaration file</error>',
+                $module
+            );
         } else {
-            $setTo = $this->getCommandAction() == 'enable' ? 'true' : 'false';
-            if ((string) $xml->modules->{$module}->active != $setTo) {
+            $setTo = $this->commandName == 'enable' ? 'true' : 'false';
+            if ($xml && (string) $xml->modules->{$module}->active != $setTo) {
                 $xml->modules->{$module}->active = $setTo;
                 if (file_put_contents($validDecFile, $xml->asXML()) !== false) {
-                    $msg = sprintf('<info><comment>%s: </comment>%sd</info>', $module, $this->getCommandAction());
+                    $msg = sprintf(
+                        '<info><comment>%s: </comment>%sd</info>',
+                        $module,
+                        $this->commandName
+                    );
                 } else {
                     $msg = sprintf(
                         '<error><comment>%s: </comment>Failed to update declaration file [%s]</error>',
@@ -149,7 +173,7 @@ class AbstractCommand extends AbstractMagentoCommand
                     );
                 }
             } else {
-                $msg = sprintf('<info><comment>%s: already %sd</comment></info>', $module, $this->getCommandAction());
+                $msg = sprintf('<info><comment>%s: already %sd</comment></info>', $module, $this->commandName);
             }
         }
 
@@ -160,7 +184,7 @@ class AbstractCommand extends AbstractMagentoCommand
      * Load module files in the opposite order to core Magento, so that we find the last loaded declaration
      * of a module first.
      *
-     * @return array
+     * @return array<int, string>
      */
     protected function getDeclaredModuleFiles(): array
     {
@@ -170,16 +194,19 @@ class AbstractCommand extends AbstractMagentoCommand
             'custom' => []
         ];
 
-        foreach (glob($this->modulesDir . '*.xml') as $v) {
-            $name = explode(DIRECTORY_SEPARATOR, $v);
-            $name = substr($name[count($name) - 1], 0, -4);
+        $moduleDirs = glob($this->modulesDir . '*.xml');
+        if ($moduleDirs) {
+            foreach ($moduleDirs as $v) {
+                $name = explode(DIRECTORY_SEPARATOR, $v);
+                $name = substr($name[count($name) - 1], 0, -4);
 
-            if ($name == 'Mage_All') {
-                $collectModuleFiles['base'][] = $v;
-            } elseif (substr($name, 0, 5) == 'Mage_') {
-                $collectModuleFiles['mage'][] = $v;
-            } else {
-                $collectModuleFiles['custom'][] = $v;
+                if ($name == 'Mage_All') {
+                    $collectModuleFiles['base'][] = $v;
+                } elseif (substr($name, 0, 5) == 'Mage_') {
+                    $collectModuleFiles['mage'][] = $v;
+                } else {
+                    $collectModuleFiles['custom'][] = $v;
+                }
             }
         }
 
@@ -188,13 +215,5 @@ class AbstractCommand extends AbstractMagentoCommand
             $collectModuleFiles['mage'],
             $collectModuleFiles['custom']
         ));
-    }
-
-    /**
-     * @return string
-     */
-    protected function getCommandAction(): string
-    {
-        return substr(static::$defaultName, strrpos(static::$defaultName, ':') + 1);
     }
 }
