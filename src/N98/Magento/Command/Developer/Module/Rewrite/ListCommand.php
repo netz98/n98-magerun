@@ -1,66 +1,64 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
+use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListCommand extends AbstractRewriteCommand
+/**
+ * List rewrites command
+ *
+ * @package N98\Magento\Command\Developer\Module
+ */
+class ListCommand extends AbstractRewriteCommand implements AbstractMagentoCommandFormatInterface
 {
-    protected function configure()
-    {
-        $this
-            ->setName('dev:module:rewrite:list')
-            ->setDescription('Lists all magento rewrites')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
-        ;
-    }
+    protected const COMMAND_SECTION_TITLE_TEXT = 'Rewrites';
+
+    protected const NO_DATA_MESSAGE = 'No rewrites were found.';
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected static $defaultName = 'dev:module:rewrite:list';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Lists all rewrites.';
+
+    /**
+     * {@inheritdoc}
+     * @return array<int, array<string, string>>
+     *
+     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     */
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        if (is_null($this->data)) {
+            $this->data = [];
 
-        $rewrites = array_merge($this->loadRewrites(), $this->loadAutoloaderRewrites());
-
-        $table = [];
-        foreach ($rewrites as $type => $data) {
-            if ((is_countable($data) ? count($data) : 0) > 0) {
-                foreach ($data as $class => $rewriteClass) {
-                    $table[] = [$type, $class, implode(', ', $rewriteClass)];
+            $rewrites = array_merge($this->loadRewrites(), $this->loadAutoloaderRewrites());
+            foreach ($rewrites as $type => $data) {
+                if ((is_countable($data) ? count($data) : 0) > 0) {
+                    foreach ($data as $class => $rewriteClass) {
+                        $this->data[] = [
+                            'Type' => $type,
+                            'Class' => $class,
+                            'Rewrite' => implode(', ', $rewriteClass)
+                        ];
+                    }
                 }
             }
         }
 
-        if (count($table) === 0 && $input->getOption('format') === null) {
-            $output->writeln('<info>No rewrites were found.</info>');
-        } else {
-            if (count($table) == 0) {
-                $table = [];
-            }
-            /* @var TableHelper $tableHelper */
-            $tableHelper = $this->getHelper('table');
-            $tableHelper
-                ->setHeaders(['Type', 'Class', 'Rewrite'])
-                ->setRows($table)
-                ->renderByFormat($output, $table, $input->getOption('format'));
-        }
-        return 0;
+        return $this->data;
     }
 }
