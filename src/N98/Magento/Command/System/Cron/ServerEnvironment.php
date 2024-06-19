@@ -1,10 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mot
- * Date: 13.12.16
- * Time: 00:08
- */
+
+declare(strict_types=1);
 
 namespace N98\Magento\Command\System\Cron;
 
@@ -17,30 +13,26 @@ use UnexpectedValueException;
  * Set $_SERVER environment for URL generating while sys:cron:run
  *
  * @see https://github.com/netz98/n98-magerun/issues/871
- *
  * @package N98\Magento\Command\System\Cron
  */
 class ServerEnvironment
 {
     /**
-     * @var array
+     * @var array<string, string>|null
      */
-    private $backup;
+    private ?array $backup;
 
     /**
-     * @var array
+     * @var array<int, string>
      */
-    private $keys;
+    private array $keys;
 
     public function __construct()
     {
         $this->keys = ['SCRIPT_NAME', 'SCRIPT_FILENAME'];
     }
 
-    /**
-     *
-     */
-    public function initalize()
+    public function initialize(): void
     {
         if (isset($this->backup)) {
             throw new BadMethodCallException('Environment already backed up, can\'t initialize any longer');
@@ -50,19 +42,23 @@ class ServerEnvironment
             throw new UnexpectedValueException('Need argv to work');
         }
 
-        $basename = basename($GLOBALS['argv'][0]);
+        $basename = $GLOBALS['argv'][0];
+        if (is_string($basename)) {
+            $basename = basename($basename);
 
-        foreach ($this->keys as $key) {
-            $buffer = $_SERVER[$key];
-            $this->backup[$key] = $buffer;
-            $_SERVER[$key] = str_replace($basename, 'index.php', $buffer);
+            foreach ($this->keys as $key) {
+                /** @var string $buffer */
+                $buffer = $_SERVER[$key];
+                $this->backup[$key] = $buffer;
+                $_SERVER[$key] = str_replace($basename, 'index.php', $buffer);
+            }
         }
     }
 
-    public function reset()
+    public function reset(): void
     {
         if (false === isset($this->backup)) {
-            throw new BadMethodCallException('Environment not yet backed up, initalize first, can\'t reset');
+            throw new BadMethodCallException('Environment not yet backed up, initialize first, can\'t reset');
         }
 
         foreach ($this->backup as $key => $value) {

@@ -23,8 +23,8 @@ class ServerEnvironmentTest extends TestCase
      */
     public function regression()
     {
-        $store = Mage::app()->getStore(null);
-        $actual = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
+        $store = Mage::app()->getStore();
+        $actual = $store->getBaseUrl();
         self::assertIsString($actual);
         self::assertMatchesRegularExpression('~/(ide-phpunit.php|phpunit)/$~', $actual);
     }
@@ -34,13 +34,13 @@ class ServerEnvironmentTest extends TestCase
      */
     public function environmentFix()
     {
-        $store = Mage::app()->getStore(null);
+        $store = Mage::app()->getStore();
         $store->resetConfig();
 
         $environment = new ServerEnvironment();
-        $environment->initalize();
+        $environment->initialize();
 
-        $actual = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
+        $actual = $store->getBaseUrl();
         self::assertIsString($actual);
         self::assertStringEndsWith('/index.php/', $actual);
 
@@ -48,7 +48,7 @@ class ServerEnvironmentTest extends TestCase
 
         $environment->reset();
 
-        $actual = Mage::app()->getStore(null)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
+        $actual = Mage::app()->getStore(null)->getBaseUrl();
         self::assertIsString($actual);
         self::assertMatchesRegularExpression('~/(ide-phpunit.php|phpunit)/$~', $actual);
     }
