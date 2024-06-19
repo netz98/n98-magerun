@@ -22,9 +22,7 @@ class CleanCommandTest extends TestCase
         // FIXME #613 make install command work with 1.9+ and cache initialization
         $version = Mage::getVersion();
         $against = '1.9.0.0';
-        if ($application->isMagentoEnterprise()) {
-            $against = '1.14.0.0';
-        }
+
         if (-1 != version_compare($version, $against)) {
             self::markTestSkipped(
                 sprintf(

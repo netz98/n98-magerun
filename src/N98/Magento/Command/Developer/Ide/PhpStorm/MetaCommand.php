@@ -44,7 +44,7 @@ class MetaCommand extends AbstractMagentoCommand
     public const VERSION_2017 = '2016.2+';
     public const VERSION_2019 = '2019.1+';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('dev:ide:phpstorm:meta')
@@ -165,12 +165,6 @@ class MetaCommand extends AbstractMagentoCommand
     protected function getResourceHelperMap()
     {
         $classes = [];
-
-        if (($this->_magentoEnterprise && version_compare(Mage::getVersion(), '1.11.2.0', '<='))
-            || (!$this->_magentoEnterprise && version_compare(Mage::getVersion(), '1.6.2.0', '<'))
-        ) {
-            return $classes;
-        }
 
         $modelAliases = array_keys((array) Mage::getConfig()->getNode('global/models'));
         foreach ($modelAliases as $modelAlias) {

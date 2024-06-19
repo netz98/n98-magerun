@@ -50,12 +50,7 @@ class ViewCommand extends AbstractCacheCommand
                 InputOption::VALUE_NONE,
                 'Unserialize output'
             )
-            ->addOption(
-                self::COMMAND_OPTION_FPC,
-                null,
-                InputOption::VALUE_NONE,
-                'Use full page cache instead of core cache (Enterprise only!)'
-            );
+        ;
     }
 
     /**
@@ -68,7 +63,7 @@ class ViewCommand extends AbstractCacheCommand
         $this->detectMagento($output);
         $this->initMagento();
 
-        $cacheInstance = $this->getCacheInstance($input);
+        $cacheInstance = $this->getCacheInstance();
         /** @var string $cacheId */
         $cacheId = $input->getArgument(self::COMMAND_ARGUMENT_ID);
         /** @var string $cacheData */

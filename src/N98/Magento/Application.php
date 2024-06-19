@@ -19,7 +19,6 @@ use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
-use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
@@ -80,11 +79,6 @@ class Application extends BaseApplication
      * @var string
      */
     protected $_magentoRootFolder = null;
-
-    /**
-     * @var bool
-     */
-    protected $_magentoEnterprise = false;
 
     /**
      * @var bool
@@ -244,7 +238,6 @@ class Application extends BaseApplication
 
         $this->_magentoDetected = $magentoHelper->detect($folder, $subFolders);
         $this->_magentoRootFolder = $magentoHelper->getRootFolder();
-        $this->_magentoEnterprise = $magentoHelper->isEnterpriseEdition();
         $this->_magerunStopFileFound = $magentoHelper->isMagerunStopFileFound();
         $this->_magerunStopFileFolder = $magentoHelper->getMagerunStopFileFolder();
         $this->_magerunUseDeveloperMode = ($input->getParameterOption('--developer-mode'));
@@ -433,7 +426,7 @@ class Application extends BaseApplication
      *
      * @return bool false if magento root folder is not set, true otherwise
      */
-    public function initMagento($soft = false)
+    public function initMagento(bool $soft = false): bool
     {
         if ($this->getMagentoRootFolder() === null) {
             return false;
@@ -455,14 +448,6 @@ class Application extends BaseApplication
     public function getLongVersion()
     {
         return parent::getLongVersion() . ' by <info>netz98 GmbH</info>';
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isMagentoEnterprise()
-    {
-        return $this->_magentoEnterprise;
     }
 
     /**
@@ -734,7 +719,7 @@ class Application extends BaseApplication
      *
      * @return void
      */
-    protected function _initMagento1($soft = false)
+    protected function _initMagento1(bool $soft = false)
     {
         // Load Mage class definition
         Initialiser::bootstrap($this->_magentoRootFolder);

@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ConsoleCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('dev:console')
@@ -46,9 +46,8 @@ class ConsoleCommand extends AbstractMagentoCommand
 
         if ($initialized) {
             $ok = Charset::convertInteger(Charset::UNICODE_CHECKMARK_CHAR);
-            $edition = $this->getApplication()->isMagentoEnterprise() ? 'EE' : 'CE';
             $consoleOutput->writeln(
-                '<fg=black;bg=green>Magento ' . Mage::getVersion() . ' ' . $edition .
+                '<fg=black;bg=green>Magento ' . Mage::getVersion() . ' ' . 'CE' .
                 ' initialized.</fg=black;bg=green> ' . $ok
             );
         } else {

@@ -26,11 +26,6 @@ class MagentoHelper extends AbstractHelper
     /**
      * @var bool
      */
-    protected $_magentoEnterprise = false;
-
-    /**
-     * @var bool
-     */
     protected $_magerunStopFileFound = false;
 
     /**
@@ -117,14 +112,6 @@ class MagentoHelper extends AbstractHelper
     public function getRootFolder()
     {
         return $this->_magentoRootFolder;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEnterpriseEdition()
-    {
-        return $this->_magentoEnterprise;
     }
 
     /**
@@ -301,13 +288,6 @@ class MagentoHelper extends AbstractHelper
             }
 
             $this->_magentoRootFolder = $searchFolder;
-
-            if (is_callable(['\Mage', 'getEdition'])) {
-                $this->_magentoEnterprise = (Mage::getEdition() == 'Enterprise');
-            } else {
-                $this->_magentoEnterprise = is_dir($this->_magentoRootFolder . '/app/code/core/Enterprise') ||
-                    is_dir($this->_magentoRootFolder . '/app/design/frontend/enterprise/default/layout');
-            }
 
             if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
                 $this->output->writeln(

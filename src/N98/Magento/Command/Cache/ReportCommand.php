@@ -68,12 +68,6 @@ class ReportCommand extends AbstractCacheCommand implements AbstractMagentoComma
                 InputOption::VALUE_OPTIONAL,
                 'Filter output by TAG (separate multiple tags by comma)'
             )
-            ->addOption(
-                self::COMMAND_OPTION_FPC,
-                null,
-                InputOption::VALUE_NONE,
-                'Use full page cache instead of core cache (Enterprise only!)'
-            )
         ;
 
         parent::configure();
@@ -90,7 +84,7 @@ class ReportCommand extends AbstractCacheCommand implements AbstractMagentoComma
         if (is_null($this->data)) {
             $this->data = [];
 
-            $cacheInstance = $this->getCacheInstance($input);
+            $cacheInstance = $this->getCacheInstance();
 
             $filterTag = $input->getOption(self::COMMAND_OPTION_FILTER_TAG);
             if ($filterTag !== null) {
