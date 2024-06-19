@@ -15,6 +15,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Cron history command
+ *
+ * @package N98\Magento\Command\Cron
+ */
 class HistoryCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Last executed jobs';
@@ -35,7 +40,7 @@ class HistoryCommand extends AbstractMagentoCommand implements AbstractMagentoCo
      */
     protected static $defaultDescription = 'Last executed cronjobs with status.';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addOption(
             self::COMMAND_OPTION_TIMEZONE,
@@ -49,7 +54,7 @@ class HistoryCommand extends AbstractMagentoCommand implements AbstractMagentoCo
 
     /**
      * {@inheritdoc}
-     * @return array<int|string, array<string, string>
+     * @return array<int|string, array<string, string>>
      *
      * @throws Mage_Core_Model_Store_Exception
      * @throws Mage_Core_Exception
@@ -59,10 +64,11 @@ class HistoryCommand extends AbstractMagentoCommand implements AbstractMagentoCo
         if (is_null($this->data)) {
             $this->data = [];
 
+            /** @var string $timezone */
             $timezone = $input->getOption(self::COMMAND_OPTION_TIMEZONE)
-                ?: $this->_getMage()->getStore()->getConfig('general/locale/timezone');
+                ?: $this->_getMageStore()->getConfig('general/locale/timezone');
 
-            $output->writeln('<info>Times shown in <comment>' . $timezone . '</comment></info>');
+            $output->writeln(sprintf('<info>Times shown in <comment>%s</comment></info>', $timezone));
 
             $date = Mage::getSingleton('core/date');
             $offset = $date->calculateOffset($timezone);
@@ -71,6 +77,7 @@ class HistoryCommand extends AbstractMagentoCommand implements AbstractMagentoCo
                 ->addFieldToFilter('status', ['neq' => Mage_Cron_Model_Schedule::STATUS_PENDING])
                 ->addOrder('finished_at');
 
+            /** @var Mage_Cron_Model_Schedule $job */
             foreach ($collection as $job) {
                 $this->data[] = [
                     'Job'       => $job->getJobCode(),
