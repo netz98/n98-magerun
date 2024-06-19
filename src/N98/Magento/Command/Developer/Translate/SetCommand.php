@@ -1,55 +1,95 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Translate;
 
+use Exception;
 use Mage;
+use Mage_Core_Model_Store;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\ParameterHelper;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Set translations command
+ *
+ * @package NN98\Magento\Command\Developer\Translate
+ */
 class SetCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    public const COMMAND_ARGUMENT_STRING = 'string';
+
+    public const COMMAND_ARGUMENT_TRANSLATE = 'translate';
+
+    public const COMMAND_ARGUMENT_STORE = 'store';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'dev:translate:set';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Adds a translation to core_translate table. <comment>Globally for locale</comment>';
+
+    protected function configure(): void
     {
         $this
-            ->setName('dev:translate:set')
-            ->addArgument('string', InputArgument::REQUIRED, 'String to translate')
-            ->addArgument('translate', InputArgument::REQUIRED, 'Translated string')
-            ->addArgument('store', InputArgument::OPTIONAL)
-            ->setDescription('Adds a translation to core_translate table. <comment>Globally for locale</comment>')
+            ->addArgument(
+                self::COMMAND_ARGUMENT_STRING,
+                InputArgument::REQUIRED,
+                'String to translate')
+            ->addArgument(
+                self::COMMAND_ARGUMENT_TRANSLATE,
+                InputArgument::REQUIRED,
+                'Translated string')
+            ->addArgument(
+                self::COMMAND_ARGUMENT_STORE,
+                InputArgument::OPTIONAL
+            )
         ;
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
-     * @throws \Exception
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->initMagento();
 
-        /** @var ParameterHelper $parameterHelper */
-        $parameterHelper = $this->getHelper('parameter');
+        $parameterHelper = $this->getParameterHelper();
 
+        /** @var Mage_Core_Model_Store $store */
         $store = $parameterHelper->askStore($input, $output);
 
+        /** @var string $locale */
         $locale = Mage::getStoreConfig('general/locale/code', $store->getId());
 
-        /* @var \Mage_Core_Model_Store $store */
+        /** @var string $string */
+        $string = $input->getArgument(self::COMMAND_ARGUMENT_STRING);
+
+        /** @var string $translate */
+        $translate = $input->getArgument(self::COMMAND_ARGUMENT_TRANSLATE);
+
         $resource = Mage::getResourceModel('core/translate_string');
         $resource->saveTranslate(
-            $input->getArgument('string'),
-            $input->getArgument('translate'),
+            $string,
+            $translate,
             $locale,
             $store->getId()
         );
@@ -58,13 +98,14 @@ class SetCommand extends AbstractMagentoCommand
             sprintf(
                 'Translated (<info>%s</info>): <comment>%s</comment> => <comment>%s</comment>',
                 $locale,
-                $input->getArgument('string'),
-                $input->getArgument('translate')
+                $string,
+                $translate
             )
         );
 
         $input = new StringInput('cache:flush');
         $this->getApplication()->run($input, new NullOutput());
-        return 0;
+
+        return Command::SUCCESS;
     }
 }
