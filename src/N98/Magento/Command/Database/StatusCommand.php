@@ -1,18 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database;
 
 use DateTime;
 use Exception;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+/**
+ * Database status command
+ *
+ * @package N98\Magento\Command\Database
+ */
 class StatusCommand extends AbstractShowCommand
 {
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'db:status';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Shows important server information or custom selected status values.';
+
     protected $showMethod = 'getGlobalStatus';
 
     /**
      * Add more important status variables
      *
-     * @var array
+     * @var array<string, array<string, string>>
      */
     protected array $_importantVars = [
         'Threads_connected'              => [
@@ -61,27 +83,24 @@ class StatusCommand extends AbstractShowCommand
     ];
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     protected array $_specialFormat = ['Uptime' => 'timeElapsedString'];
 
-    protected function configure(): void
+    /**
+     * @return string
+     */
+    public function getHelp(): string
     {
-        parent::configure();
-        $this
-            ->setName('db:status')
-            ->setDescription('Shows important server status information or custom selected status values');
-
-        $help = <<<HELP
+        return <<<HELP
 This command is useful to print important server status information about the current database.
 HELP;
-        $this->setHelp($help);
     }
 
     /**
-     * @param array $outputVars
+     * @param array<int, array<string, string>> $outputVars
      * @param bool $hasDescription
-     * @return array
+     * @return array<int, array<string, string>>
      */
     protected function generateRows(array $outputVars, bool $hasDescription): array
     {
@@ -141,12 +160,12 @@ HELP;
      * echo time_elapsed_string('@1367367755'); # timestamp input
      * echo time_elapsed_string('2013-05-01 00:22:35', true);
      *
-     * @param      $datetime
+     * @param string $datetime
      * @param bool $full
      * @return string
      * @throws Exception
      */
-    protected function timeElapsedString($datetime, bool $full = false): string
+    protected function timeElapsedString(string $datetime, bool $full = false): string
     {
         if (is_numeric($datetime)) {
             $datetime = time() - $datetime;
@@ -157,13 +176,9 @@ HELP;
         $ago = new DateTime($datetime);
         $diff = $now->diff($ago);
 
-        $diff->w = floor($diff->d / 7);
-        $diff->d -= $diff->w * 7;
-
         $string = [
             'y' => 'year',
             'm' => 'month',
-            'w' => 'week',
             'd' => 'day',
             'h' => 'hour',
             'i' => 'minute',

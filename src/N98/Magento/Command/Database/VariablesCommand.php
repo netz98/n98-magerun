@@ -31,7 +31,7 @@ class VariablesCommand extends AbstractShowCommand
      * variable name => recommended size (but this value must be calculated depending on the server size
      * @see https://launchpadlibrarian.net/78745738/tuning-primer.sh convert that to PHP ... ?
      *      http://www.slideshare.net/shinguz/mysql-configuration-the-most-important-variables GERMAN
-     * @var array
+     * @var array<string, string|array<string, string>>
      */
     protected array $_importantVars = [
         'have_query_cache'                => '',
