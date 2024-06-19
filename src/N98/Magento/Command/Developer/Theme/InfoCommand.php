@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Developer\Theme;
 
-use Mage;
 use Mage_Core_Model_Store;
+use Mage_Core_Model_Website;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
-use Parameter;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,6 +20,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InfoCommand extends AbstractMagentoCommand
 {
+    public const THEMES_EXCEPTION = '_ua_regexp';
+
     /**
      * @var string
      * @deprecated with symfony 6.1
@@ -35,15 +36,13 @@ class InfoCommand extends AbstractMagentoCommand
      */
     protected static $defaultDescription = 'Displays settings of current design on particular store view.';
 
-    public const THEMES_EXCEPTION = '_ua_regexp';
-
     /**
-     * @var array
+     * @var array<string, string>
      */
     protected array $_configNodes = ['Theme translations' => 'design/theme/locale'];
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     protected array $_configNodesWithExceptions = [
         'Design Package Name' => 'design/package/name',
@@ -63,9 +62,7 @@ class InfoCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
-        if (!$this->initMagento()) {
-            return Command::FAILURE;
-        }
+        $this->initMagento();
 
         foreach ($this->_getMage()->getWebsites() as $website) {
             foreach ($website->getStores() as $store) {
@@ -83,39 +80,48 @@ class InfoCommand extends AbstractMagentoCommand
      */
     protected function _displayTable(OutputInterface $output, Mage_Core_Model_Store $store): InfoCommand
     {
+        /** @var Mage_Core_Model_Website $website */
+        $website = $store->getWebsite();
+
         $this->writeSection(
             $output,
-            'Current design setting on store: ' . $store->getWebsite()->getCode() . '/' . $store->getCode()
+            'Current design setting on store: ' . $website->getCode() . '/' . $store->getCode()
         );
         $storeInfoLines = $this->_parse($this->_configNodesWithExceptions, $store, true);
         $storeInfoLines = array_merge($storeInfoLines, $this->_parse($this->_configNodes, $store));
 
         $tableHelper = $this->getTableHelper();
         $tableHelper
-            ->setHeaders([Parameter::class, 'Value'])
+            ->setHeaders(['Parameter', 'Value'])
             ->renderByFormat($output, $storeInfoLines);
 
         return $this;
     }
 
     /**
-     * @param array $nodes
+     * @param array<string, string> $nodes
      * @param Mage_Core_Model_Store $store
      * @param bool $withExceptions
-     * @return array
+     * @return array<int, array<int, string>>
      */
     protected function _parse(array $nodes, Mage_Core_Model_Store $store, bool $withExceptions = false): array
     {
         $result = [];
 
         foreach ($nodes as $nodeLabel => $node) {
-            $result[] = [$nodeLabel, (string) Mage::getConfig()->getNode(
-                $node,
-                AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW,
-                $store->getCode()
-            )];
+            $result[] = [
+                $nodeLabel,
+                (string) $this->_getMageConfig()->getNode(
+                    $node,
+                    AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW,
+                    $store->getCode()
+                )
+            ];
             if ($withExceptions) {
-                $result[] = [$nodeLabel . ' exceptions', $this->_parseException($node, $store)];
+                $result[] = [
+                    $nodeLabel . ' exceptions',
+                    $this->_parseException($node, $store)
+                ];
             }
         }
 
@@ -129,7 +135,7 @@ class InfoCommand extends AbstractMagentoCommand
      */
     protected function _parseException(string $node, Mage_Core_Model_Store $store): string
     {
-        $exception = (string) Mage::getConfig()->getNode(
+        $exception = (string) $this->_getMageConfig()->getNode(
             $node . self::THEMES_EXCEPTION,
             AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW,
             $store->getCode()
@@ -139,6 +145,7 @@ class InfoCommand extends AbstractMagentoCommand
             return '';
         }
 
+        /** @var array<int, array<string, string>> $exceptions */
         $exceptions = unserialize($exception);
         $result = [];
         foreach ($exceptions as $expression) {

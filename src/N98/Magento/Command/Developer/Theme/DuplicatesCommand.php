@@ -5,38 +5,73 @@ namespace N98\Magento\Command\Developer\Theme;
 use DateTime;
 use N98\JUnitXml\Document as JUnitXmlDocument;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
+/**
+ * Theme duplicates command
+ *
+ * @package N98\Magento\Command\Developer\Theme
+ */
 class DuplicatesCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    public const COMMAND_ARGUMENT_THEME = 'theme';
+
+    public const COMMAND_ARGUMENT_ORIG_THEME = 'originalTheme';
+
+    public const COMMAND_OPTION_LOG_JUNIT = 'log-junit';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'dev:theme:duplicates';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Find duplicate files (templates, layout, locale, etc.) between two themes.';
+
+    protected function configure(): void
     {
         $this
-            ->setName('dev:theme:duplicates')
-            ->addArgument('theme', InputArgument::REQUIRED, 'Your theme')
             ->addArgument(
-                'originalTheme',
+                self::COMMAND_ARGUMENT_THEME,
+                InputArgument::REQUIRED,
+                'Your theme'
+            )
+            ->addArgument(
+                self::COMMAND_ARGUMENT_ORIG_THEME,
                 InputArgument::OPTIONAL,
-                'Original theme to comapre. Default is "base/default"',
+                'Original theme to compare. Default is "base/default"',
                 'base/default'
             )
             ->addOption(
-                'log-junit',
+                self::COMMAND_OPTION_LOG_JUNIT,
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Log duplicates in JUnit XML format to defined file.'
             )
-            ->setDescription('Find duplicate files (templates, layout, locale, etc.) between two themes.')
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * @return string
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 * If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
 HELP;
-        $this->setHelp($help);
     }
 
     /**
@@ -51,10 +86,12 @@ HELP;
         $this->detectMagento($output);
 
         $referenceFiles = $this->getChecksums(
-            $this->_magentoRootFolder . '/app/design/frontend/' . $input->getArgument('originalTheme')
+            $this->_magentoRootFolder . '/app/design/frontend/'
+            . $input->getArgument(self::COMMAND_ARGUMENT_ORIG_THEME)
         );
 
-        $themeFolder = $this->_magentoRootFolder . '/app/design/frontend/' . $input->getArgument('theme');
+        $themeFolder = $this->_magentoRootFolder . '/app/design/frontend/'
+            . $input->getArgument(self::COMMAND_ARGUMENT_THEME);
         $themeFiles = $this->getChecksums($themeFolder);
 
         $duplicates = [];
@@ -66,8 +103,15 @@ HELP;
             }
         }
 
-        if ($input->getOption('log-junit')) {
-            $this->logJUnit($input, $duplicates, $input->getOption('log-junit'), microtime($time) - $time);
+        /** @var string $filename */
+        $filename = $input->getOption(self::COMMAND_OPTION_LOG_JUNIT);
+        if ($input->getOption(self::COMMAND_OPTION_LOG_JUNIT)) {
+            $this->logJUnit(
+                $input,
+                $duplicates,
+                $filename,
+                microtime(true) - $time
+            );
         } else {
             if (count($duplicates) === 0) {
                 $output->writeln('<info>No duplicates were found</info>');
@@ -76,26 +120,26 @@ HELP;
             }
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
      * @param string $baseFolder
-     * @return array
+     * @return array<string, string|false>
      */
-    protected function getChecksums($baseFolder)
+    protected function getChecksums(string $baseFolder): array
     {
         $finder = Finder::create();
         $finder
             ->files()
-            ->ignoreUnreadableDirs(true)
+            ->ignoreUnreadableDirs()
             ->ignoreDotFiles(true)
             ->ignoreVCS(true)
             ->followLinks()
             ->in($baseFolder);
         $checksums = [];
         foreach ($finder as $file) {
-            /* @var \Symfony\Component\Finder\SplFileInfo $file */
+            /* @var SplFileInfo $file */
             if (file_exists($file->getRealPath())) {
                 $checksums[$file->getRelativePathname()] = md5_file($file->getRealPath());
             }
@@ -106,11 +150,11 @@ HELP;
 
     /**
      * @param InputInterface $input
-     * @param array          $duplicates
-     * @param string         $filename
-     * @param float          $duration
+     * @param array<int, string> $duplicates
+     * @param string $filename
+     * @param float $duration
      */
-    protected function logJUnit($input, array $duplicates, $filename, $duration)
+    protected function logJUnit(InputInterface $input, array $duplicates, string $filename, float $duration): void
     {
         $document = new JUnitXmlDocument();
         $suite = $document->addTestSuite();
@@ -120,8 +164,8 @@ HELP;
 
         $testCase = $suite->addTestCase();
         $testCase->setName(
-            'Magento Duplicate Theme Files: ' . $input->getArgument('theme') . ' | ' .
-            $input->getArgument('originalTheme')
+            'Magento Duplicate Theme Files: ' . $input->getArgument(self::COMMAND_ARGUMENT_THEME) . ' | ' .
+            $input->getArgument(self::COMMAND_ARGUMENT_ORIG_THEME)
         );
         $testCase->setClassname('ConflictsCommand');
         foreach ($duplicates as $duplicate) {

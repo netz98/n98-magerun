@@ -11,6 +11,11 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Theme list command
+ *
+ * @package N98\Magento\Command\Developer\Theme
+ */
 class ListCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Themes';
@@ -53,7 +58,7 @@ class ListCommand extends AbstractMagentoCommand implements AbstractMagentoComma
     }
 
     /**
-     * @return array
+     * @return array<string, array<string, string>>
      */
     protected function getThemes(): array
     {
