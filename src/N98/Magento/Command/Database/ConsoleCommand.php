@@ -1,33 +1,53 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database;
 
-use N98\Util\Console\Helper\DatabaseHelper;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ConsoleCommand extends AbstractDatabaseCommand
 {
-    protected function configure()
+    public const COMMAND_OPTION_USE_MYCLI_INSTEAD_OF_MYSQL = 'use-mycli-instead-of-mysql';
+
+    public const COMMAND_OPTION_NO_AUTO_REHASH = 'no-auto-rehash';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'db:console';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Opens mysql client by database config from local.xml.';
+
+    protected function configure(): void
     {
         $this
-            ->setName('db:console')
             ->setAliases(['mysql-client'])
             ->addOption(
-                'use-mycli-instead-of-mysql',
+                self::COMMAND_OPTION_USE_MYCLI_INSTEAD_OF_MYSQL,
                 null,
                 InputOption::VALUE_NONE,
                 'Use `mycli` as the MySQL client instead of `mysql`'
             )
             ->addOption(
-                'no-auto-rehash',
+                self::COMMAND_OPTION_NO_AUTO_REHASH,
                 null,
                 InputOption::VALUE_NONE,
                 'Same as `-A` option to MySQL client to turn off ' .
                 'auto-complete (avoids long initial connection time).'
             )
-            ->setDescription('Opens mysql client by database config from local.xml');
+        ;
     }
 
     /**
@@ -40,16 +60,17 @@ class ConsoleCommand extends AbstractDatabaseCommand
     {
         $this->detectDbSettings($output);
 
-        $args = [$input->getOption('use-mycli-instead-of-mysql') ? 'mycli' : 'mysql'];
+        $args = [$input->getOption(self::COMMAND_OPTION_USE_MYCLI_INSTEAD_OF_MYSQL) ? 'mycli' : 'mysql'];
 
-        if ($input->getOption('no-auto-rehash')) {
+        if ($input->getOption(self::COMMAND_OPTION_NO_AUTO_REHASH)) {
             $args[] = '--no-auto-rehash';
         }
 
         $args[] = $this->getMysqlClientToolConnection();
 
         $this->processCommand(implode(' ', $args));
-        return 0;
+
+        return Command::SUCCESS;
     }
 
     /**
@@ -57,7 +78,7 @@ class ConsoleCommand extends AbstractDatabaseCommand
      *
      * @param string $command
      */
-    private function processCommand($command)
+    private function processCommand(string $command): void
     {
         $descriptorSpec = [0 => STDIN, 1 => STDOUT, 2 => STDERR];
 
@@ -72,11 +93,8 @@ class ConsoleCommand extends AbstractDatabaseCommand
     /**
      * @return string
      */
-    private function getMysqlClientToolConnection()
+    private function getMysqlClientToolConnection(): string
     {
-        /* @var DatabaseHelper $database */
-        $database = $this->getHelper('database');
-
-        return $database->getMysqlClientToolConnectionString();
+        return $this->getDatabaseHelper()->getMysqlClientToolConnectionString();
     }
 }
