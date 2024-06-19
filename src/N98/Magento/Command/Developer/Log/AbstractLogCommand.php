@@ -1,26 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Log;
 
 use InvalidArgumentException;
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * Class AbstractLogCommand
+ *
+ * @package N98\Magento\Command\Developer\Log
+ */
 class AbstractLogCommand extends AbstractMagentoCommand
 {
     /**
      * @return Finder
      */
-    protected function getLogFileIterator()
+    protected function getLogFileIterator(): Finder
     {
         $finder = Finder::create();
-        $finder->ignoreUnreadableDirs(true);
+        $finder->ignoreUnreadableDirs();
 
         $logDirs = [$this->getLogDir()];
 
@@ -34,7 +39,7 @@ class AbstractLogCommand extends AbstractMagentoCommand
     /**
      * @return string
      */
-    protected function getLogDir()
+    protected function getLogDir(): string
     {
         return Mage::getBaseDir('log');
     }
@@ -42,17 +47,16 @@ class AbstractLogCommand extends AbstractMagentoCommand
     /**
      * @return string
      */
-    protected function getDebugDir()
+    protected function getDebugDir(): string
     {
         return Mage::getBaseDir('var') . '/debug';
     }
 
     /**
      * @param string $filename
-     *
      * @return bool
      */
-    protected function logfileExists($filename)
+    protected function logfileExists(string $filename): bool
     {
         $iterator = $this->getLogFileIterator();
         return $iterator->name(basename($filename))->count() == 1;
@@ -61,34 +65,33 @@ class AbstractLogCommand extends AbstractMagentoCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
-     * @return string
+     * @return mixed
      */
     protected function askLogFile(InputInterface $input, OutputInterface $output)
     {
         $logFiles = $this->getLogFileIterator();
-        $files = [];
-        $choices = [];
 
-        $i = 0;
-        foreach ($logFiles as $logFile) {
-            $files[$i++] = $logFile->getPathname();
-            $choices[] = '<comment>[' . ($i) . ']</comment> ' . $logFile->getFilename() . PHP_EOL;
-        }
-
-        if ($i === 0) {
+        if (!$logFiles->count()) {
+            $output->writeln('<info>No logfiles found.</info>');
             return '';
         }
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $files = [];
+        $choices = [];
+
+        foreach ($logFiles as $logFile) {
+            $files[] = $logFile->getPathname();
+            $choices[] = $logFile->getFilename() . PHP_EOL;
+        }
+
+        $dialog = $this->getQuestionHelper();
         $questionObj = new ChoiceQuestion('<question>Please select a log file:</question> ', $choices);
         $questionObj->setValidator(function ($typeInput) use ($files) {
-            if (!isset($files[$typeInput - 1])) {
+            if (!isset($files[$typeInput])) {
                 throw new InvalidArgumentException('Invalid file');
             }
 
-            return $files[$typeInput - 1];
+            return $files[$typeInput];
         });
 
         return $dialog->ask($input, $output, $questionObj);
