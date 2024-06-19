@@ -1,26 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Report;
 
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * Count reports command
+ *
+ * @package N98\Magento\Command\Developer\Report
+ */
 class CountCommand extends AbstractMagentoCommand
 {
-    protected function configure()
-    {
-        $this
-            ->setName('dev:report:count')
-            ->setDescription('Get count of report files');
-    }
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'dev:report:count';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Get count of report files.';
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -29,10 +44,11 @@ class CountCommand extends AbstractMagentoCommand
         $this->initMagento();
 
         $dir = Mage::getBaseDir('var') . DIRECTORY_SEPARATOR . 'report' . DIRECTORY_SEPARATOR;
-        $count = $this->getFileCount($dir);
+        $count = (string) $this->getFileCount($dir);
 
         $output->writeln($count);
-        return 0;
+
+        return Command::SUCCESS;
     }
 
     /**
@@ -41,9 +57,9 @@ class CountCommand extends AbstractMagentoCommand
      * @param string $path Path to the directory
      * @return int
      */
-    protected function getFileCount($path)
+    protected function getFileCount(string $path): int
     {
         $finder = Finder::create();
-        return $finder->files()->ignoreUnreadableDirs(true)->in($path)->count();
+        return $finder->files()->ignoreUnreadableDirs()->in($path)->count();
     }
 }
