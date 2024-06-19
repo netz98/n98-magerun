@@ -22,7 +22,6 @@ class ClassLookupCommand extends AbstractMagentoCommand
 
     public const COMMAND_ARGUMENT_NAME = 'name';
 
-
     /**
      * @var string
      * @deprecated with symfony 6.1

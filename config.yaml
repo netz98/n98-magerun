@@ -132,9 +132,7 @@ commands:
     - N98\Magento\Command\GiftCard\RemoveCommand
     - N98\Magento\Command\GiftCard\Pool\GenerateCommand
     - N98\Magento\Command\Indexer\ListCommand
-    - N98\Magento\Command\Indexer\ListMviewCommand
     - N98\Magento\Command\Indexer\ReindexAllCommand
-    - N98\Magento\Command\Indexer\ReindexMviewCommand
     - N98\Magento\Command\Indexer\ReindexCommand
     - N98\Magento\Command\Installer\InstallCommand
     - N98\Magento\Command\Installer\UninstallCommand
