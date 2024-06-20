@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Script\Repository;
 
-use Description;
-use Location;
 use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * List scripts command
+ *
+ * @package N98\Magento\Command\Script\Repository
+ */
 class ListCommand extends AbstractRepositoryCommand implements AbstractMagentoCommandFormatInterface
 {
     protected const NO_DATA_MESSAGE = 'No script file found';
@@ -29,7 +32,10 @@ class ListCommand extends AbstractRepositoryCommand implements AbstractMagentoCo
      */
     protected static $defaultDescription = 'Lists all scripts in repository.';
 
-    public function getHelp()
+    /**
+     * @return string
+     */
+    public function getHelp(): string
     {
         return <<<HELP
 You can organize your scripts in a repository.
@@ -63,8 +69,8 @@ HELP;
                         0,
                         -strlen(self::MAGERUN_EXTENSION)
                     ),
-                    Location::class     => $file['location'],
-                    Description::class  => $file['description']
+                    'Location'          => $file['location'],
+                    'Description'       => $file['description']
                 ];
             }
         }
@@ -76,10 +82,8 @@ HELP;
      * Skip initialisation
      *
      * @param bool $soft
-     * @return true
      */
-    public function initMagento(bool $soft = false)
+    public function initMagento(bool $soft = false): void
     {
-        return true;
     }
 }

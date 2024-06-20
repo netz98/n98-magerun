@@ -1,9 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Script\Repository;
 
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Finder\SplFileInfo;
 
+/**
+ * Abstract repository class
+ *
+ * @package N98\Magento\Command\Script\Repository
+ */
 class AbstractRepositoryCommand extends AbstractMagentoCommand
 {
     /**
@@ -12,15 +20,14 @@ class AbstractRepositoryCommand extends AbstractMagentoCommand
     public const MAGERUN_EXTENSION = '.magerun';
 
     /**
-     * @return array
+     * @return array<string, array{fileinfo: SplFileInfo, description: string, location: string}>
      */
-    protected function getScripts()
+    protected function getScripts(): array
     {
         $folders = (array) $this->getApplication()->getConfig('script', 'folders');
         $magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
         $loader = new ScriptLoader($folders, $magentoRootFolder);
-        $files = $loader->getFiles();
 
-        return $files;
+        return $loader->getFiles();
     }
 }
