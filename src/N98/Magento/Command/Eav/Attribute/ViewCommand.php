@@ -1,96 +1,137 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Eav\Attribute;
 
 use InvalidArgumentException;
 use Mage;
+use Mage_Core_Exception;
+use Mage_Eav_Model_Entity_Attribute_Abstract;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ViewCommand extends AbstractMagentoCommand
+/**
+ * EAV attribute view command
+ *
+ * @package N98\Magento\Command\Eav\Attribute
+ */
+class ViewCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
 {
-    protected function configure()
+    public const COMMAND_ARGUMENT_ENTITY = 'entityType';
+
+    public const COMMAND_ARGUMENT_ATTRIBUTE = 'attributeCode';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'eav:attribute:view';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'View information about an EAV attribute.';
+
+    protected function configure(): void
     {
         $this
-            ->setName('eav:attribute:view')
-            ->addArgument('entityType', InputArgument::REQUIRED, 'Entity Type Code like catalog_product')
-            ->addArgument('attributeCode', InputArgument::REQUIRED, 'Attribute Code')
-            ->setDescription('View informations about an EAV attribute')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            );
+            ->addArgument(
+                self::COMMAND_ARGUMENT_ENTITY,
+                InputArgument::REQUIRED,
+                'Entity Type Code like catalog_product'
+            )
+            ->addArgument(
+                self::COMMAND_ARGUMENT_ATTRIBUTE,
+                InputArgument::REQUIRED,
+                'Attribute Code'
+            )
+        ;
+
+        parent::configure();
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
+     * {@inheritdoc}
+     * @return array<int|string, array<string, string>>
+     * @throws Mage_Core_Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        $this->detectMagento($output);
-        $this->initMagento();
+        if (is_null($this->data)) {
+            /** @var string $entityType */
+            $entityType = $input->getArgument(self::COMMAND_ARGUMENT_ENTITY);
+            /** @var string $attributeCode */
+            $attributeCode = $input->getArgument(self::COMMAND_ARGUMENT_ATTRIBUTE);
 
-        $entityType = $input->getArgument('entityType');
-        $attributeCode = $input->getArgument('attributeCode');
+            $attribute = $this->getAttribute($entityType, $attributeCode);
+            if (!$attribute) {
+                throw new InvalidArgumentException('Attribute was not found.');
+            }
 
-        $attribute = $this->getAttribute($entityType, $attributeCode);
-        if (!$attribute) {
-            throw new InvalidArgumentException('Attribute was not found.');
+            $cacheIdTags = $attribute->getCacheIdTags();
+            $cacheTags = $attribute->getCacheTags();
+            $flatColumns = $attribute->getFlatColumns();
+
+            $this->data = [
+                ['ID', $attribute->getId()],
+                ['Code', $attribute->getName()],
+                ['Attribute-Set-ID', $attribute->getAttributeSetId()],
+                ['Visible-On-Front', $attribute->getIsVisibleOnFront() ? 'yes' : 'no'],
+                ['Attribute-Model', $attribute->getAttributeModel() ?: ''],
+                ['Backend-Model', $attribute->getBackendModel() ?: ''],
+                ['Backend-Table', $attribute->getBackendTable() ?: ''],
+                ['Backend-Type', $attribute->getBackendType() ?: ''],
+                ['Source-Model', $attribute->getSourceModel() ?: ''],
+                ['Cache-ID-Tags', is_array($cacheIdTags) ? implode(',', $cacheIdTags) : ''],
+                ['Cache-Tags', is_array($cacheTags) ? implode(',', $cacheTags) : ''],
+                ['Default-Value', $attribute->getDefaultValue() ?: ''],
+                ['Flat-Columns', is_array($flatColumns) ? implode(',', array_keys($flatColumns)) : '']
+            ];
+
+            $key = '';
+            $flatIndexes = $attribute->getFlatIndexes() ? $attribute->getFlatIndexes() : '';
+            if ($flatIndexes) {
+                $key = array_key_first($flatIndexes);
+                $flatIndexes = implode(',', $flatIndexes[$key]['fields']);
+            }
+            $this->data[] = ['Flat-Indexes', $flatIndexes ? $key . ' - ' . $flatIndexes : ''];
+
+            if ($attribute->getFrontend()) {
+                $this->data[] = ['Frontend-Label', $attribute->getFrontend()->getLabel()];
+                $this->data[] = ['Frontend-Class', trim($attribute->getFrontend()->getClass())];
+                $this->data[] = ['Frontend-Input', trim($attribute->getFrontend()->getInputType())];
+                $this->data[] = ['Frontend-Input-Renderer-Class', trim((string)$attribute->getFrontend()->getInputRendererClass())];
+            }
         }
+//        )
+        return $this->data;
+    }
 
-        $table = [
-            ['ID', $attribute->getId()],
-            ['Code', $attribute->getName()],
-            ['Attribute-Set-ID', $attribute->getAttributeSetId()],
-            ['Visible-On-Front', $attribute->getIsVisibleOnFront() ? 'yes' : 'no'],
-            ['Attribute-Model', $attribute->getAttributeModel() ?: ''],
-            ['Backend-Model', $attribute->getBackendModel() ?: ''],
-            ['Backend-Table', $attribute->getBackendTable() ?: ''],
-            ['Backend-Type', $attribute->getBackendType() ?: ''],
-            ['Source-Model', $attribute->getSourceModel() ?: ''],
-            ['Cache-ID-Tags', $attribute->getCacheIdTags() ? implode(',', $attribute->getCacheIdTags()) : ''],
-            ['Cache-Tags', $attribute->getCacheTags() ? implode(',', $attribute->getCacheTags()) : ''],
-            ['Default-Value', $attribute->getDefaultValue() ?: ''],
-            ['Flat-Columns', $attribute->getFlatColumns() ? implode(',', array_keys($attribute->getFlatColumns())) : '']
-        ];
-
-        $flatIndexes = $attribute->getFlatIndexes() ? $attribute->getFlatIndexes() : '';
-        if ($flatIndexes) {
-            $key = array_key_first($flatIndexes);
-            $flatIndexes = implode(',', $flatIndexes[$key]['fields']);
-        }
-        $table[] = ['Flat-Indexes', $flatIndexes ? $key . ' - ' . $flatIndexes : ''];
-
-        if ($attribute->getFrontend()) {
-            $table[] = ['Frontend-Label', $attribute->getFrontend()->getLabel()];
-            $table[] = ['Frontend-Class', trim($attribute->getFrontend()->getClass())];
-            $table[] = ['Frontend-Input', trim($attribute->getFrontend()->getInputType())];
-            $table[] = ['Frontend-Input-Renderer-Class', trim($attribute->getFrontend()->getInputRendererClass())];
-        }
-
-        $this
-            ->getHelper('table')
-            ->setHeaders(['Type', 'Value'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+    /**
+     * @return array<int, string>
+     *
+     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     */
+    protected function getTableHeaders(InputInterface $input, OutputInterface $output): array
+    {
+        return ['Type', 'Value'];
     }
 
     /**
      * @param string $entityType
      * @param string $attributeCode
-     *
-     * @return \Mage_Eav_Model_Entity_Attribute_Abstract|false
+     * @return Mage_Eav_Model_Entity_Attribute_Abstract|false
+     * @throws Mage_Core_Exception
      */
-    protected function getAttribute($entityType, $attributeCode)
+    protected function getAttribute(string $entityType, string $attributeCode)
     {
         return Mage::getModel('eav/config')->getAttribute($entityType, $attributeCode);
     }
