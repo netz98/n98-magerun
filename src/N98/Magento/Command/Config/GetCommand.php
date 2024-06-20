@@ -1,153 +1,217 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Config;
 
+use Mage_Core_Exception;
+use Mage_Core_Model_Config_Data;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
-use Path;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use UnexpectedValueException;
 
+/**
+ * Config get command
+ *
+ * @package N98\Magento\Command\Config
+ */
 class GetCommand extends AbstractConfigCommand
 {
-    protected function configure()
+    public const COMMAND_ARGUMENT_PATH = 'path';
+
+    public const COMMAND_OPTION_SCOPE = 'scope';
+
+    public const COMMAND_OPTION_SCOPE_ID = 'scope-id';
+
+    public const COMMAND_OPTION_DECRYPT = 'decrypt';
+
+    public const COMMAND_OPTION_UPDATE_SCRIPT = 'update-script';
+
+    public const COMMAND_OPTION_MAGERUN_SCRIPT = 'magerun-script';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'config:get';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Get a core config item.';
+
+    protected function configure(): void
     {
         $this
-            ->setName('config:get')
-            ->setDescription('Get a core config item')
-            ->setHelp(
-                <<<EOT
-                If <info>path</info> is not set, all available config items will be listed.
+            ->addArgument(
+                self::COMMAND_ARGUMENT_PATH,
+                InputArgument::REQUIRED,
+                'The config path'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_SCOPE,
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The config value\'s scope (default, websites, stores)'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_SCOPE_ID,
+                null, InputOption::VALUE_REQUIRED,
+                'The config value\'s scope ID'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_DECRYPT,
+                null,
+                InputOption::VALUE_NONE,
+                'Decrypt the config value using local.xml\'s crypt key'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_UPDATE_SCRIPT,
+                null,
+                InputOption::VALUE_NONE,
+                'Output as update script lines'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_MAGERUN_SCRIPT,
+                null,
+                InputOption::VALUE_NONE,
+                'Output for usage with config:set'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_FORMAT,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            );
+    }
+
+    /**
+     * @return string
+     */
+    public function getHelp(): string
+    {
+        return <<<EOT
+If <info>path</info> is not set, all available config items will be listed.
 The <info>path</info> may contain wildcards (*).
 If <info>path</info> ends with a trailing slash, all child items will be listed. E.g.
 
     config:get web/
 is the same as
     config:get web/*
-EOT
-            )
-            ->addArgument('path', InputArgument::OPTIONAL, 'The config path')
-            ->addOption(
-                'scope',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'The config value\'s scope (default, websites, stores)'
-            )
-            ->addOption('scope-id', null, InputOption::VALUE_REQUIRED, 'The config value\'s scope ID')
-            ->addOption(
-                'decrypt',
-                null,
-                InputOption::VALUE_NONE,
-                'Decrypt the config value using local.xml\'s crypt key'
-            )
-            ->addOption('update-script', null, InputOption::VALUE_NONE, 'Output as update script lines')
-            ->addOption('magerun-script', null, InputOption::VALUE_NONE, 'Output for usage with config:set')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            );
-
-        $help = <<<HELP
-If path is not set, all available config items will be listed. path may contain wildcards (*)
-HELP;
-        $this->setHelp($help);
+EOT;
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
+     * @throws Mage_Core_Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $table = [];
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->detectMagento($output);
+        $this->initMagento();
 
-        /* @var \Mage_Core_Model_Resource_Db_Collection_Abstract $collection */
         $collection = $this->_getConfigDataModel()->getCollection();
 
-        $searchPath = $input->getArgument('path');
+        /** @var string $searchPath */
+        $searchPath = $input->getArgument(self::COMMAND_ARGUMENT_PATH);
 
-        if (substr($input->getArgument('path'), -1, 1) === '/') {
+        if (substr($searchPath, -1, 1) === '/') {
             $searchPath .= '*';
         }
 
         $collection->addFieldToFilter('path', ['like' => str_replace('*', '%', $searchPath)]);
 
-        if ($scope = $input->getOption('scope')) {
+        if ($scope = $input->getOption(self::COMMAND_OPTION_SCOPE)) {
             $collection->addFieldToFilter('scope', ['eq' => $scope]);
         }
 
-        if ($scopeId = $input->getOption('scope-id')) {
-            $collection->addFieldToFilter(
-                'scope_id',
-                ['eq' => $scopeId]
-            );
+        if ($scopeId = $input->getOption(self::COMMAND_OPTION_SCOPE_ID)) {
+            $collection->addFieldToFilter('scope_id', ['eq' => $scopeId]);
         }
 
         $collection->addOrder('path', 'ASC');
-
         // sort according to the config overwrite order
         // trick to force order default -> (f)website -> store , because f comes after d and before s
         $collection->addOrder('REPLACE(scope, "website", "fwebsite")', 'ASC');
-
         $collection->addOrder('scope_id', 'ASC');
 
-        if ($collection->count() == 0) {
-            $output->writeln(sprintf("Couldn't find a config value for \"%s\"", $input->getArgument('path')));
+        if (!$collection->getSize()) {
+            /** @var string $path */
+            $path = $input->getArgument(self::COMMAND_ARGUMENT_PATH);
+            $output->writeln(sprintf("Couldn't find a config value for \"%s\"", $path));
 
-            return 0;
+            return Command::SUCCESS;
         }
 
+        /** @var Mage_Core_Model_Config_Data $item */
         foreach ($collection as $item) {
-            $table[] = ['path'     => $item->getPath(), 'scope'    => $item->getScope(), 'scope_id' => $item->getScopeId(), 'value'    => $this->_formatValue(
-                $item->getValue(),
-                $input->getOption('decrypt') ? 'decrypt' : false
-            )];
+            $table[] = [
+                'path'     => $item->getPath(),
+                'scope'    => $item->getScope(),
+                'scope_id' => $item->getScopeId(),
+                'value'    => $this->_formatValue(
+                    $item->getValue(),
+                    $input->getOption(self::COMMAND_OPTION_DECRYPT) ? 'decrypt' : false
+                )
+            ];
         }
 
         ksort($table);
 
-        if ($input->getOption('update-script')) {
+        if ($input->getOption(self::COMMAND_OPTION_UPDATE_SCRIPT)) {
             $this->renderAsUpdateScript($output, $table);
-        } elseif ($input->getOption('magerun-script')) {
+        } elseif ($input->getOption(self::COMMAND_OPTION_MAGERUN_SCRIPT)) {
             $this->renderAsMagerunScript($output, $table);
         } else {
-            $this->renderAsTable($output, $table, $input->getOption('format'));
+            /** @var string|null $format */
+            $format = $input->getOption(self::COMMAND_OPTION_FORMAT);
+            $this->renderAsTable($output, $table, $format);
         }
-        return 0;
+
+        return Command::SUCCESS;
     }
 
     /**
      * @param OutputInterface $output
-     * @param array $table
-     * @param string $format
+     * @param array<int, array{path: string, scope: string, scope_id: int, value: string|null}> $table
+     * @param string|null $format
      */
-    protected function renderAsTable(OutputInterface $output, $table, $format)
+    protected function renderAsTable(OutputInterface $output, array $table, ?string $format): void
     {
         $formattedTable = [];
         foreach ($table as $row) {
-            $formattedTable[] = [$row['path'], $row['scope'], $row['scope_id'], $this->renderTableValue($row['value'], $format)];
+            $formattedTable[] = [
+                $row['path'],
+                $row['scope'],
+                $row['scope_id'],
+                $this->renderTableValue($row['value'], $format)
+            ];
         }
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $tableHelper
-            ->setHeaders([Path::class, 'Scope', 'Scope-ID', 'Value'])
+            ->setHeaders(['Path', 'Scope', 'Scope-ID', 'Value'])
             ->setRows($formattedTable)
             ->renderByFormat($output, $formattedTable, $format);
     }
 
-    private function renderTableValue($value, $format)
+    /**
+     * @param string|null $value
+     * @param string|null $format
+     * @return string|null
+     */
+    private function renderTableValue(?string $value, ?string$format): ?string
     {
         if ($value === null) {
             switch ($format) {
@@ -172,9 +236,9 @@ HELP;
 
     /**
      * @param OutputInterface $output
-     * @param array $table
+     * @param array<int, array{path: string, scope: string, scope_id: int, value: string|null}> $table
      */
-    protected function renderAsUpdateScript(OutputInterface $output, $table)
+    protected function renderAsUpdateScript(OutputInterface $output, array $table): void
     {
         $output->writeln('<?php');
         $output->writeln('$installer = $this;');
@@ -205,9 +269,9 @@ HELP;
 
     /**
      * @param OutputInterface $output
-     * @param array $table
+     * @param array<int, array{path: string, scope: string, scope_id: int, value: string|null}> $table
      */
-    protected function renderAsMagerunScript(OutputInterface $output, $table)
+    protected function renderAsMagerunScript(OutputInterface $output, array $table): void
     {
         foreach ($table as $row) {
             $value = $row['value'];
