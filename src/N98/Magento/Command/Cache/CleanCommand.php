@@ -44,6 +44,8 @@ class CleanCommand extends AbstractCacheCommandReinit
                 'Cache type code like "config"'
             )
         ;
+
+        parent::configure();
     }
 
     /**
@@ -56,17 +58,18 @@ Cleans expired cache entries.
 
 If you would like to clean only one cache type use like:
 
-   $ n98-magerun.phar cache:clean full_page
+   <info>$ n98-magerun.phar cache:clean block_html</info>
 
 If you would like to clean multiple cache types at once use like:
 
-   $ n98-magerun.phar cache:clean full_page block_html
+   <info>$ n98-magerun.phar cache:clean block_html eav</info>
 
-If you would like to remove all cache entries use `cache:flush`
+If you would like to remove all cache entries use <info>cache:flush</info>
 
-Options:
-    --reinit Reinitialise the config cache after cleaning (Default)
-    --no-reinit Don't reinitialise the config cache after cleaning
+<comment>Options:</comment>
+    <info>--reinit</info> Reinitialise the config cache after cleaning (Default)
+    <info>--no-reinit</info> Don't reinitialise the config cache after cleaning
+
 HELP;
     }
 

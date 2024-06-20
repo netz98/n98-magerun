@@ -265,8 +265,8 @@ HELP;
      */
     private function getRunConfigModelByJobCode(string$jobCode): string
     {
-        $jobsRoot = $this->_getMageConfigNode('crontab/jobs');
-        $defaultJobsRoot = $this->_getMageConfigNode('default/crontab/jobs');
+        $jobsRoot = $this->_getMageConfig()->getNode('crontab/jobs');
+        $defaultJobsRoot = $this->_getMageConfig()->getNode('default/crontab/jobs');
 
         $jobConfig = $jobsRoot->{$jobCode};
         if (!$jobConfig || !$jobConfig->run) {

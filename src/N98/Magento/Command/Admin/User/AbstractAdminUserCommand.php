@@ -9,7 +9,6 @@ use Mage_Admin_Model_Roles;
 use Mage_Admin_Model_Rules;
 use Mage_Admin_Model_User;
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -21,17 +20,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
 {
     public const COMMAND_ARGUMENT_ID = 'id';
-
-    protected function configure(): void
-    {
-        $this
-            ->addArgument(
-                self::COMMAND_ARGUMENT_ID,
-                InputArgument::OPTIONAL,
-                'Username or Email'
-            )
-        ;
-    }
 
     /**
      * @return Mage_Admin_Model_User
