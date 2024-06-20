@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Customer;
 
+use Mage;
 use Mage_Customer_Model_Address;
 use Mage_Customer_Model_Customer;
 use Mage_Customer_Model_Resource_Customer_Collection;
@@ -19,49 +22,40 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
     /**
      * @return Mage_Customer_Model_Customer
      */
-    protected function getCustomerModel()
+    protected function getCustomerModel(): Mage_Customer_Model_Customer
     {
-        return $this->_getModel('customer/customer', 'Mage_Customer_Model_Customer');
+        return Mage::getModel('customer/customer');
     }
 
     /**
      * @return Mage_Customer_Model_Resource_Customer_Collection
      */
-    protected function getCustomerCollection()
+    protected function getCustomerCollection(): Mage_Customer_Model_Resource_Customer_Collection
     {
-        return $this->_getResourceModel(
-            'customer/customer_collection',
-            'Mage_Customer_Model_Resource_Customer_Collection'
-        );
+        return Mage::getResourceModel('customer/customer_collection');
     }
 
     /**
      * @return Mage_Customer_Model_Address
      */
-    protected function getAddressModel()
+    protected function getAddressModel(): Mage_Customer_Model_Address
     {
-        return $this->_getModel('customer/address', 'Mage_Customer_Model_Address');
+        return Mage::getModel('customer/address');
     }
 
     /**
      * @return Mage_Directory_Model_Resource_Region_Collection
      */
-    protected function getRegionCollection()
+    protected function getRegionCollection(): Mage_Directory_Model_Resource_Region_Collection
     {
-        return $this->_getResourceModel(
-            'directory/region_collection',
-            'Mage_Directory_Model_Resource_Region_Collection'
-        );
+        return Mage::getResourceModel('directory/region_collection');
     }
 
     /**
      * @return Mage_Directory_Model_Resource_Country_Collection
      */
-    protected function getCountryCollection()
+    protected function getCountryCollection(): Mage_Directory_Model_Resource_Country_Collection
     {
-        return $this->_getResourceModel(
-            'directory/country_collection',
-            'Mage_Directory_Model_Resource_Country_Collection'
-        );
+        return Mage::getResourceModel('directory/country_collection');
     }
 }

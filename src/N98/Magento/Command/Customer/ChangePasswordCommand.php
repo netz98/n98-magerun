@@ -1,15 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Customer;
 
 use Exception;
-use N98\Util\Console\Helper\ParameterHelper;
+use Mage_Core_Exception;
+use Mage_Core_Model_Website;
 use RuntimeException;
-use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Throwable;
 
 /**
  * Change password command
@@ -18,46 +23,80 @@ use Symfony\Component\Console\Question\Question;
  */
 class ChangePasswordCommand extends AbstractCustomerCommand
 {
-    protected function configure()
+    public const COMMAND_ARGUMENT_EMAIL = 'email';
+
+    public const COMMAND_ARGUMENT_PASSWORD = 'password';
+
+    public const COMMAND_ARGUMENT_WEBSITE = 'website';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'customer:change-password';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Changes the password of a customer.';
+
+    protected function configure(): void
     {
         $this
-            ->setName('customer:change-password')
-            ->addArgument('email', InputArgument::OPTIONAL, 'Email')
-            ->addArgument('password', InputArgument::OPTIONAL, 'Password')
-            ->addArgument('website', InputArgument::OPTIONAL, 'Website of the customer')
-            ->setDescription('Changes the password of a customer.')
+            ->addArgument(
+                self::COMMAND_ARGUMENT_EMAIL,
+                InputArgument::OPTIONAL,
+                'Email'
+            )
+            ->addArgument(
+                self::COMMAND_ARGUMENT_PASSWORD,
+                InputArgument::OPTIONAL,
+                'Password'
+            )
+            ->addArgument(
+                self::COMMAND_ARGUMENT_WEBSITE,
+                InputArgument::OPTIONAL,
+                'Website of the customer'
+            )
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * @return string
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 - Website parameter must only be given if more than one websites are available.
 HELP;
-        $this->setHelp($help);
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
+     * @throws Mage_Core_Exception
+     * @throws Throwable
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         $this->initMagento();
 
-        // Password
-        if (($password = $input->getArgument('password')) == null) {
-            /* @var QuestionHelper $dialog */
-            $dialog = $this->getHelper('question');
+        if (($password = $input->getArgument(self::COMMAND_ARGUMENT_PASSWORD)) == null) {
+            $dialog = $this->getQuestionHelper();
             $question = new Question('<question>Password:</question> ');
             $question->setHidden(true);
             $password = $dialog->ask($input, $output, $question);
         }
 
-        /** @var ParameterHelper $parameterHelper */
-        $parameterHelper = $this->getHelper('parameter');
+        $parameterHelper = $this->getParameterHelper();
 
         $email = $parameterHelper->askEmail($input, $output);
+        /** @var Mage_Core_Model_Website $website */
         $website = $parameterHelper->askWebsite($input, $output);
 
         $customer = $this->getCustomerModel()
@@ -65,7 +104,8 @@ HELP;
             ->loadByEmail($email);
         if ($customer->getId() <= 0) {
             $output->writeln('<error>Customer was not found</error>');
-            return 0;
+
+            return Command::SUCCESS;
         }
 
         try {
@@ -79,6 +119,7 @@ HELP;
         } catch (Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
         }
-        return 0;
+
+        return Command::SUCCESS;
     }
 }
