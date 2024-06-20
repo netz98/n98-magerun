@@ -1,25 +1,57 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Config;
 
 use DOMDocument;
 use InvalidArgumentException;
-use Mage;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Dump config command
+ *
+ * @package N98\Magento\Command\Config
+ */
 class DumpCommand extends AbstractConfigCommand
 {
-    protected function configure()
+    public const COMMAND_ARGUMENT_XPATH = 'xpath';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'config:dump';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Dump merged XML config.';
+
+    protected function configure(): void
     {
         $this
-            ->setName('config:dump')
-            ->addArgument('xpath', InputArgument::OPTIONAL, 'XPath to filter XML output', null)
-            ->setDescription('Dump merged xml config')
+            ->addArgument(
+                self::COMMAND_ARGUMENT_XPATH,
+                InputArgument::OPTIONAL,
+                'XPath to filter XML output'
+            )
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * @return string
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Dumps merged XML configuration to stdout. Useful to see all the XML.
 You can filter the XML with first argument.
 
@@ -38,32 +70,32 @@ Examples:
    $ n98-magerun.phar config:dump > extern_file.xml
 
 HELP;
-        $this->setHelp($help);
     }
 
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
-     *
      * @return int
      * @throws InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->detectMagento($output);
+        $this->initMagento();
 
-        $config = Mage::app()->getConfig()->getNode($input->getArgument('xpath'));
+        /** @var string $xpath */
+        $xpath = $input->getArgument(self::COMMAND_ARGUMENT_XPATH);
+        $config = $this->_getMageConfig()->getNode($xpath);
         if (!$config) {
             throw new InvalidArgumentException('xpath was not found');
         }
+
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
-        $dom->loadXML($config->asXml());
-        $output->writeln($dom->saveXML(), OutputInterface::OUTPUT_RAW);
-        return 0;
+        $dom->loadXML((string)$config->asXML());
+        $output->writeln((string)$dom->saveXML(), OutputInterface::OUTPUT_RAW);
+
+        return Command::SUCCESS;
     }
 }

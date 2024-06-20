@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Admin\User;
 
 use Mage_Core_Exception;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
