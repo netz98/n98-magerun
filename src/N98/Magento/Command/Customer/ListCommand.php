@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Customer;
 
 use Mage_Core_Exception;
+use Mage_Customer_Model_Customer;
 use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ListCommand extends AbstractCustomerCommand implements AbstractMagentoCommandFormatInterface
 {
-    protected const COMMAND_SECTION_TITLE_TEXT = 'Customers';
+    protected const COMMAND_SECTION_TITLE_TEXT = 'Customer list';
 
     public const COMMAND_ARGUMENT_SEARCH = 'search';
 
@@ -38,7 +39,7 @@ class ListCommand extends AbstractCustomerCommand implements AbstractMagentoComm
      */
     protected static $defaultDescription = 'Lists customers.';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addArgument(
             self::COMMAND_ARGUMENT_SEARCH,
@@ -49,7 +50,10 @@ class ListCommand extends AbstractCustomerCommand implements AbstractMagentoComm
         parent::configure();
     }
 
-    public function getHelp()
+    /**
+     * @return string
+     */
+    public function getHelp(): string
     {
         return <<<HELP
 List customers. The output is limited to 1000 (can be changed by overriding config).
@@ -87,6 +91,7 @@ HELP;
 
             $collection->setPageSize($config['limit']);
 
+            /** @var Mage_Customer_Model_Customer $customer */
             foreach ($collection as $customer) {
                 $this->data[] = [
                     'id'        => $customer->getId(),
