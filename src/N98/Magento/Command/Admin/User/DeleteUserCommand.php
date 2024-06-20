@@ -6,7 +6,6 @@ namespace N98\Magento\Command\Admin\User;
 
 use Exception;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,8 +19,6 @@ use Throwable;
  */
 class DeleteUserCommand extends AbstractAdminUserCommand
 {
-    public const COMMAND_ARGUMENT_ID = 'id';
-
     public const COMMAND_OPTION_FORCE = 'force';
 
     /**
@@ -40,12 +37,9 @@ class DeleteUserCommand extends AbstractAdminUserCommand
 
     protected function configure(): void
     {
+        parent::configure();
+
         $this
-            ->addArgument(
-                self::COMMAND_ARGUMENT_ID,
-                InputArgument::OPTIONAL,
-                'Username or Email'
-            )
             ->addOption(
                 self::COMMAND_OPTION_FORCE,
                 'f',
@@ -68,17 +62,11 @@ class DeleteUserCommand extends AbstractAdminUserCommand
 
         $dialog = $this->getQuestionHelper();
 
-        $id = $this->getOrAskForArgument(self::COMMAND_ARGUMENT_ID, $input, $output, 'Username or Email');
-
-        $user = $this->getUserModel()->loadByUsername($id);
-        if (!$user->getId()) {
-            $user = $this->getUserModel()->load($id, 'email');
-        }
-
+        $user = $this->getUserByIdOrEmail($input, $output);
         if (!$user->getId()) {
             $output->writeln('<error>User was not found</error>');
 
-            return Command::SUCCESS;
+            return Command::INVALID;
         }
 
         $shouldRemove = $input->getOption(self::COMMAND_OPTION_FORCE);
