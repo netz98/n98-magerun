@@ -1,107 +1,166 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Config;
 
 use InvalidArgumentException;
+use Mage_Core_Exception;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Config set command
+ *
+ * @package N98\Magento\Command\Config
+ */
 class SetCommand extends AbstractConfigCommand
 {
-    protected function configure()
+    public const COMMAND_ARGUMENT_PATH = 'path';
+
+    public const COMMAND_ARGUMENT_VALUE = 'value';
+
+    public const COMMAND_OPTION_SCOPE = 'scope';
+
+    public const COMMAND_OPTION_SCOPE_ID = 'scope-id';
+
+    public const COMMAND_OPTION_ENCRYPT = 'encrypt';
+
+    public const COMMAND_OPTION_FORCE = 'force';
+
+    public const COMMAND_OPTION_NO_NULL = 'no-null';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'config:set';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Set a core config item.';
+
+    protected function configure(): void
     {
         $this
-            ->setName('config:set')
-            ->setDescription('Set a core config item')
-            ->addArgument('path', InputArgument::REQUIRED, 'The config path')
-            ->addArgument('value', InputArgument::REQUIRED, 'The config value')
+            ->addArgument(
+                self::COMMAND_ARGUMENT_PATH,
+                InputArgument::REQUIRED,
+                'The config path'
+            )
+            ->addArgument(
+                self::COMMAND_ARGUMENT_VALUE,
+                InputArgument::REQUIRED,
+                'The config value'
+            )
             ->addOption(
-                'scope',
+                self::COMMAND_OPTION_SCOPE,
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'The config value\'s scope (default, websites, stores)',
                 'default'
             )
-            ->addOption('scope-id', null, InputOption::VALUE_OPTIONAL, 'The config value\'s scope ID', '0')
             ->addOption(
-                'encrypt',
+                self::COMMAND_OPTION_SCOPE_ID,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'The config value\'s scope ID',
+                '0'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_ENCRYPT,
                 null,
                 InputOption::VALUE_NONE,
                 'The config value should be encrypted using local.xml\'s crypt key'
             )
             ->addOption(
-                'force',
+                self::COMMAND_OPTION_FORCE,
                 null,
                 InputOption::VALUE_NONE,
                 'Allow creation of non-standard scope-id\'s for websites and stores'
             )
             ->addOption(
-                "no-null",
+                self::COMMAND_OPTION_NO_NULL,
                 null,
                 InputOption::VALUE_NONE,
                 "Do not treat value NULL as " . self::DISPLAY_NULL_UNKNOWN_VALUE . " value"
             )
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * @return string
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Set a store config value by path.
 To set a value of a specify store view you must set the "scope" and "scope-id" option.
 
 HELP;
-        $this->setHelp($help);
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
+     * @throws Mage_Core_Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->detectMagento($output);
+        $this->initMagento();
 
         $config = $this->_getConfigModel();
         if (!$config->getResourceModel()) {
             // without a resource model, a config option can't be saved.
-            return 0;
+            return Command::FAILURE;
         }
 
-        $allowZeroScope = $input->getOption('force');
+        /** @var bool $allowZeroScope */
+        $allowZeroScope = $input->getOption(self::COMMAND_OPTION_FORCE);
+        /** @var string $scope */
+        $scope = $input->getOption(self::COMMAND_OPTION_SCOPE);
+        /** @var string $scopeId */
+        $scopeId = $input->getOption(self::COMMAND_OPTION_SCOPE_ID);
 
-        $scope = $input->getOption('scope');
         $this->_validateScopeParam($scope);
-        $scopeId = $this->_convertScopeIdParam($scope, $input->getOption('scope-id'), $allowZeroScope);
+        $scopeId = (int) $this->_convertScopeIdParam($scope, $scopeId, $allowZeroScope);
 
-        $valueDisplay = $value = $input->getArgument('value');
+        /** @var string $value */
+        $value = $input->getArgument(self::COMMAND_ARGUMENT_VALUE);
+        $valueDisplay = $value;
 
-        if ($value === "NULL" && !$input->getOption('no-null')) {
-            if ($input->getOption('encrypt')) {
-                throw new InvalidArgumentException("Encryption is not possbile for NULL values");
+        if ($value === "NULL" && !$input->getOption(self::COMMAND_OPTION_NO_NULL)) {
+            if ($input->getOption(self::COMMAND_OPTION_ENCRYPT)) {
+                throw new InvalidArgumentException("Encryption is not possible for NULL values");
             }
             $value = null;
             $valueDisplay = self::DISPLAY_NULL_UNKNOWN_VALUE;
         } else {
             $value = str_replace(['\n', '\r'], ["\n", "\r"], $value);
-            $value = $this->_formatValue($value, ($input->getOption('encrypt') ? 'encrypt' : false));
+            $value = $this->_formatValue($value, ($input->getOption(self::COMMAND_OPTION_ENCRYPT) ? 'encrypt' : false));
         }
 
-        $config->saveConfig(
-            $input->getArgument('path'),
-            $value,
-            $scope,
-            $scopeId
-        );
+        /** @var string $path */
+        $path = $input->getArgument(self::COMMAND_ARGUMENT_PATH);
+        /** @phpstan-ignore argument.type (Parameter #2 $value of method Mage_Core_Model_Config::saveConfig() expects string, string|null given @TODO(sr)) */
+        $config->saveConfig($path, $value, $scope, $scopeId);
 
-        $output->writeln(
-            '<comment>' . $input->getArgument('path') . "</comment> => <comment>" . $valueDisplay .
-            '</comment>'
-        );
-        return 0;
+        $output->writeln(sprintf(
+            '<comment>%s</comment> => <comment>%s</comment>',
+            $path,
+            $valueDisplay
+        ));
+
+        return Command::SUCCESS;
     }
 }

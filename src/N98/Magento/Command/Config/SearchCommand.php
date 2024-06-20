@@ -7,6 +7,8 @@ namespace N98\Magento\Command\Config;
 use Mage_Core_Model_Config_Element;
 use RuntimeException;
 use stdClass;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -98,7 +100,7 @@ EOT;
             $output->writeln('<info>No matches for <comment>' . $searchString . '</comment></info>');
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
