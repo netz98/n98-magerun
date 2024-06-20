@@ -1,27 +1,60 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Indexer;
 
+use Exception;
 use InvalidArgumentException;
 use Mage_Index_Model_Process;
 use N98\Util\BinaryString;
-use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\Question;
 
+/**
+ * Re-index command
+ *
+ * @package N98\Magento\Command\Indexer
+ */
 class ReindexCommand extends AbstractIndexerCommand
 {
-    protected function configure()
+    public const COMMAND_ARGUMENT_INDEX_CODE = 'index_code';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'index:reindex';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Reindex a index by code.';
+
+    protected function configure(): void
     {
         $this
-            ->setName('index:reindex')
-            ->addArgument('index_code', InputArgument::OPTIONAL, 'Code of indexer.')
-            ->setDescription('Reindex a magento index by code');
+            ->addArgument(
+                self::COMMAND_ARGUMENT_INDEX_CODE,
+                InputArgument::OPTIONAL,
+                'Code of indexer.'
+            )
+        ;
+    }
 
-        $help = <<<HELP
+    /**
+     * @return string
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Index by indexer code. Code is optional. If you don't specify a code you can pick a indexer from a list.
 
    $ n98-magerun.phar index:reindex [code]
@@ -36,26 +69,24 @@ i.e.
 If no index is provided as argument you can select indexers from menu by "number" like "1,3" for first and third
 indexer.
 HELP;
-        $this->setHelp($help);
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->detectMagento($output);
+        $this->initMagento();
 
         $this->writeSection($output, 'Reindex');
         $this->disableObservers();
-        $indexCode = $input->getArgument('index_code');
+        $indexCode = $input->getArgument(self::COMMAND_ARGUMENT_INDEX_CODE);
         if ($indexCode === null) {
+            /** @var array<int, string> $indexCodes */
             $indexCodes = $this->askForIndexCodes($input, $output);
         } else {
             // take cli argument
@@ -64,18 +95,17 @@ HELP;
 
         $processes = $this->getProcessesByIndexCodes($indexCodes);
         if (!$this->executeProcesses($output, $processes)) {
-            return 1; // end with error
+            return Command::FAILURE;
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
-     * @param $indexCodes
-     *
-     * @return array
+     * @param array<int, string> $indexCodes
+     * @return array<int, Mage_Index_Model_Process>
      */
-    private function getProcessesByIndexCodes($indexCodes)
+    private function getProcessesByIndexCodes(array $indexCodes): array
     {
         $processes = [];
         foreach ($indexCodes as $indexCode) {
@@ -92,14 +122,14 @@ HELP;
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
-     * @return array
+     * @return mixed
+     * @throws Exception
      */
     private function askForIndexCodes(InputInterface $input, OutputInterface $output)
     {
         $indexerList = $this->getIndexerList();
         $choices = [];
-        foreach ($indexerList as $key => $indexer) {
+        foreach ($indexerList as $indexer) {
             $choices[] = sprintf(
                 '%-40s <info>(last runtime: %s)</info>',
                 $indexer['code'],
@@ -126,8 +156,7 @@ HELP;
             return $returnCodes;
         };
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
         $question = new ChoiceQuestion(
             '<question>Please select a indexer:</question> ',
             $choices
