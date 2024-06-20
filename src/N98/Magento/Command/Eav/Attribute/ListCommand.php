@@ -6,6 +6,7 @@ namespace N98\Magento\Command\Eav\Attribute;
 
 use Exception;
 use Mage;
+use Mage_Eav_Model_Entity_Attribute;
 use Mage_Eav_Model_Entity_Type;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
@@ -14,6 +15,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * EAV attribute list command
+ *
+ * @package N98\Magento\Command\Eav\Attribute
+ */
 class ListCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'EAV attributes';
@@ -38,7 +44,7 @@ class ListCommand extends AbstractMagentoCommand implements AbstractMagentoComma
      */
     protected static $defaultDescription = 'Lists all EAV attributes.';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addOption(
@@ -76,6 +82,7 @@ class ListCommand extends AbstractMagentoCommand implements AbstractMagentoComma
 
             $attributesCollection = Mage::getResourceModel('eav/entity_attribute_collection');
             $attributesCollection->setOrder('attribute_code', 'asc');
+            /** @var Mage_Eav_Model_Entity_Attribute $attribute */
             foreach ($attributesCollection as $attribute) {
                 $entityType = $this->_getEntityType($attribute);
 
@@ -89,16 +96,16 @@ class ListCommand extends AbstractMagentoCommand implements AbstractMagentoComma
                 }
 
                 $row = [];
-                $row['code']        = $attribute->getAttributeCode();
-                $row['id']          = $attribute->getId();
-                $row['entity_type'] = $entityType;
-                $row['label']       = $attribute->getFrontendLabel();
+                $row['Code']        = $attribute->getAttributeCode();
+                $row['ID']          = $attribute->getId();
+                $row['Entity type'] = $entityType;
+                $row['Label']       = $attribute->getFrontendLabel();
 
                 if ($input->getOption(self::COMMAND_OPTION_ADD_SOURCE)) {
-                    $row['source'] = $attribute->getSourceModel() ?: '';
+                    $row['Source'] = $attribute->getSourceModel() ?: '';
                 }
                 if ($input->getOption(self::COMMAND_OPTION_ADD_BACKEND)) {
-                    $row['backend_type'] = $attribute->getBackendType();
+                    $row['Backend type'] = $attribute->getBackendType();
                 }
 
                 $this->data[] = $row;
@@ -109,10 +116,10 @@ class ListCommand extends AbstractMagentoCommand implements AbstractMagentoComma
     }
 
     /**
-     * @param $attribute
+     * @param Mage_Eav_Model_Entity_Attribute $attribute
      * @return null|string
      */
-    protected function _getEntityType($attribute): ?string
+    protected function _getEntityType(Mage_Eav_Model_Entity_Attribute $attribute): ?string
     {
         $entityTypeCode = '';
         try {
