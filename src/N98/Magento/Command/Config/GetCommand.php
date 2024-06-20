@@ -22,12 +22,6 @@ use UnexpectedValueException;
  */
 class GetCommand extends AbstractConfigCommand
 {
-    public const COMMAND_ARGUMENT_PATH = 'path';
-
-    public const COMMAND_OPTION_SCOPE = 'scope';
-
-    public const COMMAND_OPTION_SCOPE_ID = 'scope-id';
-
     public const COMMAND_OPTION_DECRYPT = 'decrypt';
 
     public const COMMAND_OPTION_UPDATE_SCRIPT = 'update-script';
@@ -162,7 +156,7 @@ EOT;
                 'scope_id' => $item->getScopeId(),
                 'value'    => $this->_formatValue(
                     $item->getValue(),
-                    $input->getOption(self::COMMAND_OPTION_DECRYPT) ? 'decrypt' : false
+                    $input->getOption(self::COMMAND_OPTION_DECRYPT) ? 'decrypt' : null
                 )
             ];
         }

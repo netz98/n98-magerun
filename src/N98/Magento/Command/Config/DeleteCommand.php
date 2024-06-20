@@ -1,67 +1,116 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Config;
 
 use Mage;
-use N98\Util\Console\Helper\TableHelper;
+use Mage_Core_Exception;
+use Mage_Core_Model_Config_Data;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Config delete command
+ *
+ * @package N98\Magento\Command\Config
+ */
 class DeleteCommand extends AbstractConfigCommand
 {
-    protected function configure()
+    public const COMMAND_OPTION_FORCE = 'force';
+
+    public const COMMAND_OPTION_ALL = 'all';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'config:delete';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Deletes a store config item.';
+
+    protected function configure(): void
     {
         $this
-            ->setName('config:delete')
-            ->setDescription('Deletes a store config item')
-            ->addArgument('path', InputArgument::REQUIRED, 'The config path')
+            ->addArgument(
+                self::COMMAND_ARGUMENT_PATH,
+                InputArgument::REQUIRED,
+                'The config path'
+            )
             ->addOption(
-                'scope',
+                self::COMMAND_OPTION_SCOPE,
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'The config value\'s scope (default, websites, stores)',
                 'default'
             )
-            ->addOption('scope-id', null, InputOption::VALUE_OPTIONAL, 'The config value\'s scope ID', '0')
             ->addOption(
-                'force',
+                self::COMMAND_OPTION_SCOPE_ID,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'The config value\'s scope ID', '0'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_FORCE,
                 null,
                 InputOption::VALUE_NONE,
                 'Allow deletion of non-standard scope-id\'s for websites and stores'
             )
-            ->addOption('all', null, InputOption::VALUE_NONE, 'Delete all entries by path')
+            ->addOption(
+                self::COMMAND_OPTION_ALL,
+                null,
+                InputOption::VALUE_NONE,
+                'Delete all entries by path'
+            )
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * @return string
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 To delete all entries of a path you can set the option --all.
 HELP;
-        $this->setHelp($help);
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
+     * @throws Mage_Core_Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output, true);
-
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->detectMagento($output);
+        $this->initMagento();
 
         $deleted = [];
 
-        $allowZeroScope = $input->getOption('force');
+        /** @var bool $allowZeroScope */
+        $allowZeroScope = $input->getOption(self::COMMAND_OPTION_FORCE);
 
-        $scope = $this->_validateScopeParam($input->getOption('scope'));
-        $scopeId = $this->_convertScopeIdParam($scope, $input->getOption('scope-id'), $allowZeroScope);
+        /** @var string $scope */
+        $scope = $input->getOption(self::COMMAND_OPTION_SCOPE);
+        $scope = $this->_validateScopeParam($scope);
 
-        $path = $input->getArgument('path');
+        /** @var string $scopeId */
+        $scopeId = $input->getOption(self::COMMAND_OPTION_SCOPE_ID);
+        $scopeId = (int)$this->_convertScopeIdParam($scope, $scopeId, $allowZeroScope);
+
+        /** @var string $path */
+        $path = $input->getArgument(self::COMMAND_ARGUMENT_PATH);
 
         if (false !== strstr($path, '*')) {
             $paths = $this->expandPathPattern($input, $path);
@@ -74,34 +123,34 @@ HELP;
         }
 
         if (count($deleted) > 0) {
-            /* @var TableHelper $tableHelper */
-            $tableHelper = $this->getHelper('table');
+            $tableHelper = $this->getTableHelper();
             $tableHelper
                 ->setHeaders(['Deleted Path', 'Scope', 'Scope-ID'])
                 ->setRows($deleted)
                 ->render($output);
         }
-        return 0;
+
+        return Command::SUCCESS;
     }
 
     /**
      * @param InputInterface $input
      * @param string $path
-     * @param string $scopeId
-     *
-     * @return array
+     * @param int $scopeId
+     * @return array<int, array<string, string|int>>
      */
-    protected function _deletePath(InputInterface $input, $path, $scopeId)
+    protected function _deletePath(InputInterface $input, string $path, int $scopeId): array
     {
         $deleted = [];
-        $force = $input->getOption('force');
-        if ($input->getOption('all')) {
+        /** @var bool $force */
+        $force = $input->getOption(self::COMMAND_OPTION_FORCE);
+        if ($input->getOption(self::COMMAND_OPTION_ALL)) {
             // Default
             $deleted[] = $this->deleteConfigEntry($path, 'default', 0);
 
             // Delete websites
             foreach (Mage::app()->getWebsites($force) as $website) {
-                $deleted[] = $this->deleteConfigEntry($path, 'websites', $website->getId());
+                $deleted[] = $this->deleteConfigEntry($path, 'websites', (int)$website->getId());
             }
 
             // Delete stores
@@ -109,31 +158,35 @@ HELP;
                 $deleted[] = $this->deleteConfigEntry($path, 'stores', $store->getId());
             }
         } else {
-            $deleted[] = $this->deleteConfigEntry($path, $input->getOption('scope'), $scopeId);
+            /** @var string $scope */
+            $scope = $input->getOption(self::COMMAND_OPTION_SCOPE);
+            $deleted[] = $this->deleteConfigEntry($path, $scope, $scopeId);
         }
 
         return $deleted;
     }
 
     /**
+     * @param InputInterface $input
      * @param string $pattern
-     * @return array
+     * @return array<int, string>
+     * @throws Mage_Core_Exception
      */
-    private function expandPathPattern($input, $pattern)
+    private function expandPathPattern(InputInterface $input, string $pattern): array
     {
         $paths = [];
 
-        /* @var \Mage_Core_Model_Resource_Db_Collection_Abstract $collection */
         $collection = $this->_getConfigDataModel()->getCollection();
 
         $likePattern = str_replace('*', '%', $pattern);
         $collection->addFieldToFilter('path', ['like' => $likePattern]);
 
-        if ($scope = $input->getOption('scope')) {
+        if ($scope = $input->getOption(self::COMMAND_OPTION_SCOPE)) {
             $collection->addFieldToFilter('scope', ['eq' => $scope]);
         }
         $collection->addOrder('path', 'ASC');
 
+        /** @var Mage_Core_Model_Config_Data $item */
         foreach ($collection as $item) {
             $paths[] = $item->getPath();
         }
@@ -147,19 +200,17 @@ HELP;
      * @param string $path
      * @param string $scope
      * @param int $scopeId
-     *
-     * @return array
+     * @return array<string, string|int>
      */
-    private function deleteConfigEntry($path, $scope, $scopeId)
+    private function deleteConfigEntry(string $path, string $scope, int $scopeId): array
     {
         $config = $this->_getConfigModel();
+        $config->deleteConfig($path, $scope, $scopeId);
 
-        $config->deleteConfig(
-            $path,
-            $scope,
-            $scopeId
-        );
-
-        return ['path'    => $path, 'scope'   => $scope, 'scopeId' => $scopeId];
+        return [
+            'path'    => $path,
+            'scope'   => $scope,
+            'scopeId' => $scopeId
+        ];
     }
 }

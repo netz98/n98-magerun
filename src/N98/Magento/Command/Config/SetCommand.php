@@ -20,13 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SetCommand extends AbstractConfigCommand
 {
-    public const COMMAND_ARGUMENT_PATH = 'path';
-
     public const COMMAND_ARGUMENT_VALUE = 'value';
-
-    public const COMMAND_OPTION_SCOPE = 'scope';
-
-    public const COMMAND_OPTION_SCOPE_ID = 'scope-id';
 
     public const COMMAND_OPTION_ENCRYPT = 'encrypt';
 
@@ -147,7 +141,7 @@ HELP;
             $valueDisplay = self::DISPLAY_NULL_UNKNOWN_VALUE;
         } else {
             $value = str_replace(['\n', '\r'], ["\n", "\r"], $value);
-            $value = $this->_formatValue($value, ($input->getOption(self::COMMAND_OPTION_ENCRYPT) ? 'encrypt' : false));
+            $value = $this->_formatValue($value, ($input->getOption(self::COMMAND_OPTION_ENCRYPT) ? 'encrypt' : null));
         }
 
         /** @var string $path */
