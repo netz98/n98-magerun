@@ -1,51 +1,74 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Admin\User;
 
 use Exception;
-use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Throwable;
 
 /**
- * Class DeleteUserCommand
+ * Delete admin command
+ *
+ * @package N98\Magento\Command\Admin\User
  */
 class DeleteUserCommand extends AbstractAdminUserCommand
 {
+    public const COMMAND_ARGUMENT_ID = 'id';
+
+    public const COMMAND_OPTION_FORCE = 'force';
+
     /**
-     * Configure
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
      */
-    protected function configure()
+    protected static $defaultName = 'admin:user:delete';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Delete the account of a adminhtml user.';
+
+    protected function configure(): void
     {
         $this
-            ->setName('admin:user:delete')
-            ->addArgument('id', InputArgument::OPTIONAL, 'Username or Email')
-            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force')
-            ->setDescription('Delete the account of a adminhtml user.')
+            ->addArgument(
+                self::COMMAND_ARGUMENT_ID,
+                InputArgument::OPTIONAL,
+                'Username or Email'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_FORCE,
+                'f',
+                InputOption::VALUE_NONE,
+                'Force'
+            )
         ;
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
+     * @throws Throwable
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->initMagento();
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
 
-        // Username
-        $id = $this->getOrAskForArgument('id', $input, $output, 'Username or Email');
+        $id = $this->getOrAskForArgument(self::COMMAND_ARGUMENT_ID, $input, $output, 'Username or Email');
 
         $user = $this->getUserModel()->loadByUsername($id);
         if (!$user->getId()) {
@@ -54,10 +77,11 @@ class DeleteUserCommand extends AbstractAdminUserCommand
 
         if (!$user->getId()) {
             $output->writeln('<error>User was not found</error>');
-            return 0;
+
+            return Command::SUCCESS;
         }
 
-        $shouldRemove = $input->getOption('force');
+        $shouldRemove = $input->getOption(self::COMMAND_OPTION_FORCE);
         if (!$shouldRemove) {
             $shouldRemove = $dialog->ask(
                 $input,
@@ -76,6 +100,7 @@ class DeleteUserCommand extends AbstractAdminUserCommand
         } else {
             $output->writeln('<error>Aborting delete</error>');
         }
-        return 0;
+
+        return Command::SUCCESS;
     }
 }
