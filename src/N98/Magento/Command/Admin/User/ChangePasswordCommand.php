@@ -6,8 +6,8 @@ namespace N98\Magento\Command\Admin\User;
 
 use Exception;
 use RuntimeException;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,7 +39,7 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
      */
     protected static $defaultDescription = 'Changes the password of a adminhtml user.';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument(
@@ -58,7 +58,6 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
      * @throws Throwable
      */
@@ -69,8 +68,10 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
 
         $dialog = $this->getQuestionHelper();
 
-        // Username
-        if (($username = $input->getArgument(self::COMMAND_ARGUMENT_USERNAME)) == null) {
+        /** @var string|null $username */
+        $username = $input->getArgument(self::COMMAND_ARGUMENT_USERNAME);
+        if ($username === null) {
+            /** @var string $username */
             $username = $dialog->ask($input, $output, new Question('<question>Username:</question> '));
         }
 

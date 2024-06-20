@@ -10,6 +10,11 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * List admin command
+ *
+ * @package N98\Magento\Command\Admin\User
+ */
 class ListCommand extends AbstractAdminUserCommand implements AbstractMagentoCommandFormatInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Admin users';
@@ -39,9 +44,9 @@ class ListCommand extends AbstractAdminUserCommand implements AbstractMagentoCom
         if (is_null($this->data)) {
             $this->data = [];
 
-            /** @var Mage_Admin_Model_User $userModel */
             $userModel = $this->getUserModel();
             $userList = $userModel->getCollection();
+            /** @var Mage_Admin_Model_User $user */
             foreach ($userList as $user) {
                 $this->data[] = [
                     'id'        => $user->getId(),
