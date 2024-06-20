@@ -1,46 +1,79 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Config;
 
-use Mage;
+use Mage_Core_Model_Config_Element;
 use RuntimeException;
 use stdClass;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Varien_Simplexml_Config;
+use Varien_Simplexml_Element;
 
+/**
+ * Config search command
+ *
+ * @package N98\Magento\Command\Config
+ */
 class SearchCommand extends AbstractConfigCommand
 {
-    protected function configure()
+    protected const XPATH_EXPR_PARENT = 'parent::*';
+
+    public const COMMAND_ARGUMENT_TEXT = 'text';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'config:search';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Search system configuration descriptions.';
+
+    protected function configure(): void
     {
         $this
-            ->setName('config:search')
-            ->setDescription('Search system configuration descriptions.')
-            ->setHelp(
-                <<<EOT
-                Searches the merged system.xml configuration tree <labels/> and <comments/> for the indicated text.
-EOT
+            ->addArgument(
+                self::COMMAND_ARGUMENT_TEXT,
+                InputArgument::REQUIRED,
+                'The text to search for'
             )
-            ->addArgument('text', InputArgument::REQUIRED, 'The text to search for');
+        ;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHelp(): string
+    {
+        return <<<EOT
+                Searches the merged system.xml configuration tree <labels/> and <comments/> for the indicated text.
+EOT;
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->initMagento();
 
         $this->writeSection($output, 'Config Search');
 
-        $searchString = $input->getArgument('text');
-        $system = Mage::getConfig()->loadModulesConfiguration('system.xml');
+        /** @var string $searchString */
+        $searchString = $input->getArgument(self::COMMAND_ARGUMENT_TEXT);
+        $system = $this->_getMageConfig()->loadModulesConfiguration('system.xml');
         $matches = $this->_searchConfiguration($searchString, $system);
 
         if (count($matches) > 0) {
@@ -64,25 +97,31 @@ EOT
         } else {
             $output->writeln('<info>No matches for <comment>' . $searchString . '</comment></info>');
         }
+
         return 0;
     }
 
     /**
      * @param string $searchString
-     * @param string $system
-     *
-     * @return array
+     * @param Varien_Simplexml_Config $system
+     * @return array<object{type: string, node: Mage_Core_Model_Config_Element, label: string, comment: string, match_type: string}>
      */
-    protected function _searchConfiguration($searchString, $system)
+    protected function _searchConfiguration(string $searchString, Varien_Simplexml_Config $system): array
     {
         $xpathSections = ['sections/*', 'sections/*/groups/*', 'sections/*/groups/*/fields/*'];
 
         $matches = [];
         foreach ($xpathSections as $xpath) {
+            /** @var Varien_Simplexml_Element $node */
+            $node = $system->getNode();
+            /** @var array<object{type: string, node: Mage_Core_Model_Config_Element, label: string, comment: string, match_type: string}> $elem */
+            $elem = $node->xpath($xpath);
             $tmp = $this->_searchConfigurationNodes(
                 $searchString,
-                $system->getNode()->xpath($xpath)
+                $elem
             );
+
+            /** @var array<object{type: string, node: Mage_Core_Model_Config_Element, label: string, comment: string, match_type: string}> $matches */
             $matches = array_merge($matches, $tmp);
         }
 
@@ -91,11 +130,10 @@ EOT
 
     /**
      * @param string $searchString
-     * @param array  $nodes
-     *
-     * @return array
+     * @param object{type: string, node: Mage_Core_Model_Config_Element, label: string, comment: string, match_type: string}[] $nodes
+     * @return object[]
      */
-    protected function _searchConfigurationNodes($searchString, $nodes)
+    protected function _searchConfigurationNodes(string $searchString, array $nodes): array
     {
         $matches = [];
         foreach ($nodes as $node) {
@@ -110,11 +148,10 @@ EOT
 
     /**
      * @param string $searchString
-     * @param object $node
-     *
-     * @return bool|stdClass
+     * @param object{type: string, node: Mage_Core_Model_Config_Element, label: string, comment: string} $node
+     * @return null|object
      */
-    protected function _searchNode($searchString, $node)
+    protected function _searchNode(string $searchString, object $node): ?object
     {
         $match = new stdClass();
         $match->type = $this->_getNodeType($node);
@@ -132,18 +169,20 @@ EOT
             return $match;
         }
 
-        return false;
+        return null;
     }
 
     /**
-     * @param object $node
-     *
+     * @param object{type: string, node: Mage_Core_Model_Config_Element, label: string, comment: string} $node
      * @return string
      */
-    protected function _getNodeType($node)
+    protected function _getNodeType(object $node)
     {
-        $parent = current($node->xpath('parent::*'));
-        $grandParent = current($parent->xpath('parent::*'));
+        /** @var Mage_Core_Model_Config_Element $node */
+        $parent = current($node->xpath(self::XPATH_EXPR_PARENT));
+        /** @var Mage_Core_Model_Config_Element $parent */
+        $grandParent = current($parent->xpath(self::XPATH_EXPR_PARENT));
+        /** @var Mage_Core_Model_Config_Element $grandParent */
         if ($grandParent->getName() == 'config') {
             return 'section';
         }
@@ -161,12 +200,11 @@ EOT
     }
 
     /**
-     * @param object $match
-     *
+     * @param object{type: string, node: Mage_Core_Model_Config_Element, label: string, comment: string} $match
      * @return string
      * @throws RuntimeException
      */
-    protected function _getPhpMageStoreConfigPathFromMatch($match)
+    protected function _getPhpMageStoreConfigPathFromMatch(object $match): string
     {
         switch ($match->type) {
             case 'section':
@@ -174,18 +212,24 @@ EOT
                 break;
 
             case 'field':
-                $parent = current($match->node->xpath('parent::*'));
-                $parent = current($parent->xpath('parent::*'));
+                /** @var Mage_Core_Model_Config_Element $parent */
+                $parent = current($match->node->xpath(self::XPATH_EXPR_PARENT));
+                /** @var Mage_Core_Model_Config_Element $parent */
+                $parent = current($parent->xpath(self::XPATH_EXPR_PARENT));
 
-                $grand = current($parent->xpath('parent::*'));
-                $grand = current($grand->xpath('parent::*'));
+                /** @var Mage_Core_Model_Config_Element $grand */
+                $grand = current($parent->xpath(self::XPATH_EXPR_PARENT));
+                /** @var Mage_Core_Model_Config_Element $grand */
+                $grand = current($grand->xpath(self::XPATH_EXPR_PARENT));
 
                 $path = $grand->getName() . '/' . $parent->getName() . '/' . $match->node->getName();
                 break;
 
             case 'group':
-                $parent = current($match->node->xpath('parent::*'));
-                $parent = current($parent->xpath('parent::*'));
+                /** @var Mage_Core_Model_Config_Element $parent */
+                $parent = current($match->node->xpath(self::XPATH_EXPR_PARENT));
+                /** @var Mage_Core_Model_Config_Element $parent */
+                $parent = current($parent->xpath(self::XPATH_EXPR_PARENT));
                 $path = $parent->getName() . '/' . $match->node->getName();
                 break;
 
@@ -198,29 +242,34 @@ EOT
     }
 
     /**
-     * @param object $match
-     *
+     * @param object{type: string, node: Mage_Core_Model_Config_Element, label: string, comment: string} $match
      * @return string
      * @throws RuntimeException
      */
-    protected function _getPathFromMatch($match)
+    protected function _getPathFromMatch(object $match): string
     {
         switch ($match->type) {
             case 'section':
                 return (string) $match->node->label . ' -> ... -> ...';
 
             case 'field':
-                $parent = current($match->node->xpath('parent::*'));
-                $parent = current($parent->xpath('parent::*'));
+                /** @var Mage_Core_Model_Config_Element $parent */
+                $parent = current($match->node->xpath(self::XPATH_EXPR_PARENT));
+                /** @var Mage_Core_Model_Config_Element $parent */
+                $parent = current($parent->xpath(self::XPATH_EXPR_PARENT));
 
-                $grand = current($parent->xpath('parent::*'));
-                $grand = current($grand->xpath('parent::*'));
+                /** @var Mage_Core_Model_Config_Element $grand */
+                $grand = current($parent->xpath(self::XPATH_EXPR_PARENT));
+                /** @var Mage_Core_Model_Config_Element $grand */
+                $grand = current($grand->xpath(self::XPATH_EXPR_PARENT));
 
                 return $grand->label . ' -> ' . $parent->label . ' -> <info>' . $match->node->label . '</info>';
 
             case 'group':
-                $parent = current($match->node->xpath('parent::*'));
-                $parent = current($parent->xpath('parent::*'));
+                /** @var Mage_Core_Model_Config_Element $parent */
+                $parent = current($match->node->xpath(self::XPATH_EXPR_PARENT));
+                /** @var Mage_Core_Model_Config_Element $parent */
+                $parent = current($parent->xpath(self::XPATH_EXPR_PARENT));
                 return $parent->label . ' -> <info>' . $match->node->label . '</info> -> ...';
 
             default:
