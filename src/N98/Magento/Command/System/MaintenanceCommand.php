@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\System;
 
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * @package N98\Magento\Command\System
  */
-class MaintenanceCommand extends AbstractMagentoCommand
+class MaintenanceCommand extends AbstractCommand
 {
     public const COMMAND_OPTION_OFF = 'off';
 

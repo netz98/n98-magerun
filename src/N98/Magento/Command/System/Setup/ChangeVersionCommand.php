@@ -16,7 +16,7 @@ class ChangeVersionCommand extends AbstractSetupCommand
     /**
      * Set up CLI options
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('sys:setup:change-version')
@@ -36,9 +36,7 @@ class ChangeVersionCommand extends AbstractSetupCommand
     {
         $this->detectMagento($output, true);
 
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->initMagento();
 
         $moduleVersion = $input->getArgument('version');
         $moduleName = $this->getModule($input);
@@ -65,12 +63,15 @@ class ChangeVersionCommand extends AbstractSetupCommand
     /**
      * @param string $moduleName
      * @param string $setupResource
-     * @param $version
+     * @param string $version
      * @param OutputInterface $output
      */
-    public function updateSetupResource($moduleName, $setupResource, $version, OutputInterface $output)
-    {
-        $resourceModel = $this->_getResourceSingleton('core/resource', 'Mage_Core_Model_Resource_Resource');
+    public function updateSetupResource(
+        string $moduleName,
+        string $setupResource,
+        string $version, OutputInterface $output
+    ): void {
+        $resourceModel = $this->_getResourceSingleton('core/resource');
 
         $resourceModel->setDbVersion($setupResource, $version);
         $resourceModel->setDataVersion($setupResource, $version);

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Developer\Translate;
 
 use Mage_Core_Model_Store;
-use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
+use N98\Magento\Command\AbstractStoreConfigCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 /**
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
  *
  * @package N98\Magento\Command\Developer\Translate
  */
-class InlineShopCommand extends AbstractMagentoStoreConfigCommand
+class InlineShopCommand extends AbstractStoreConfigCommand
 {
     /**
      * @var string

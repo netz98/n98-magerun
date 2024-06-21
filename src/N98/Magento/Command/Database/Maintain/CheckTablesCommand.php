@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Database\Maintain;
 
 use InvalidArgumentException;
-use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use N98\Magento\Command\AbstractCommand;
+use N98\Magento\Command\CommandFormatInterface;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use PDO;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Database\Maintain
  */
-class CheckTablesCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
+class CheckTablesCommand extends AbstractCommand implements CommandFormatInterface
 {
     public const COMMAND_OPTION_TYPE = 'type';
 
@@ -183,10 +183,10 @@ HELP;
                     $data = array_merge($data, $this->$m($input, $output, $tableName));
                 } else {
                     $data[] = [
-                        'table'     => $tableName,
-                        'operation' => 'not supported',
-                        'type'      => '',
-                        'status'    => ''
+                        'Table'     => $tableName,
+                        'Operation' => 'not supported',
+                        'Type'      => '',
+                        'Status'    => ''
                     ];
                 }
                 $this->progressAdvance($progress);
@@ -194,6 +194,7 @@ HELP;
 
             if ($this->showProgress) {
                 $progress->finish();
+                $output->writeln('');
             }
 
             $this->data = $data;
@@ -215,10 +216,10 @@ HELP;
         $affectedRows = $connection->exec(sprintf('ALTER TABLE %s ENGINE=%s', $tableName, $engine));
 
         return [[
-            'table'     => $tableName,
-            'operation' => 'ENGINE ' . $engine,
-            'type'      => sprintf('%15s rows', (string) $affectedRows),
-            'status'    => sprintf('%.3f secs', microtime(true) - $start)
+            'Table'     => $tableName,
+            'Operation' => 'ENGINE ' . $engine,
+            'Type'      => sprintf('%15s rows', (string) $affectedRows),
+            'Status'    => sprintf('%.3f secs', microtime(true) - $start)
         ]];
     }
 
@@ -268,10 +269,10 @@ HELP;
         }
 
         $table[] = [
-            'table'     => $tableName,
-            'operation' => $result['Op'],
-            'type'      => $type,
-            'status'    => $result['Msg_text']
+            'Table'     => $tableName,
+            'Operation' => $result['Op'],
+            'Type'      => $type,
+            'Status'    => $result['Msg_text']
         ];
 
         if ($result['Msg_text'] != 'OK' && $input->getOption(self::COMMAND_OPTION_REPAIR)) {
@@ -279,10 +280,10 @@ HELP;
             $result = $this->_query($output, sprintf('REPAIR TABLE %s %s', $tableName, $type));
             if ($result['Msg_text'] != self::MESSAGE_REPAIR_NOT_SUPPORTED) {
                 $table[] = [
-                    'table'     => $tableName,
-                    'operation' => $result['Op'],
-                    'type'      => $type,
-                    'status'    => $result['Msg_text']
+                    'Table'     => $tableName,
+                    'Operation' => $result['Op'],
+                    'Type'      => $type,
+                    'Status'    => $result['Msg_text']
                 ];
             }
         }

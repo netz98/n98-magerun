@@ -6,7 +6,7 @@ namespace N98\Magento\Command\Customer;
 
 use Mage_Core_Exception;
 use Mage_Customer_Model_Customer;
-use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use N98\Magento\Command\CommandFormatInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Customer
  */
-class ListCommand extends AbstractCustomerCommand implements AbstractMagentoCommandFormatInterface
+class ListCommand extends AbstractCustomerCommand implements CommandFormatInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Customer list';
 

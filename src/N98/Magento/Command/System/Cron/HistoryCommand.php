@@ -8,8 +8,8 @@ use Mage;
 use Mage_Core_Exception;
 use Mage_Core_Model_Store_Exception;
 use Mage_Cron_Model_Schedule;
-use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use N98\Magento\Command\AbstractCommand;
+use N98\Magento\Command\CommandFormatInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Cron
  */
-class HistoryCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
+class HistoryCommand extends AbstractCommand implements CommandFormatInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Last executed jobs';
 

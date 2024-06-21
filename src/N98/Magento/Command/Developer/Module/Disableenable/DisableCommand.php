@@ -11,7 +11,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
  *
  * @package N98\Magento\Command\Developer\Module\Disableenable
  */
-class DisableCommand extends AbstractCommand
+class DisableCommand extends AbstractDisableenableCommand
 {
     /**
      * @var string

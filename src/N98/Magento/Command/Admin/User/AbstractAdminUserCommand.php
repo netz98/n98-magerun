@@ -8,7 +8,7 @@ use Mage;
 use Mage_Admin_Model_Roles;
 use Mage_Admin_Model_Rules;
 use Mage_Admin_Model_User;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Admin\User
  */
-abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
+abstract class AbstractAdminUserCommand extends AbstractCommand
 {
     public const COMMAND_ARGUMENT_ID = 'id';
 

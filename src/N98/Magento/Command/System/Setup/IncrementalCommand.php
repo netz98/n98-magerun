@@ -6,10 +6,9 @@ use Exception;
 use Mage;
 use Mage_Core_Model_Config;
 use Mage_Core_Model_Resource_Setup;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use ReflectionClass;
 use RuntimeException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,7 +20,7 @@ use Symfony\Component\Console\Question\Question;
  * @package N98\Magento\Command\System\Setup
  * @codeCoverageIgnore
  */
-class IncrementalCommand extends AbstractMagentoCommand
+class IncrementalCommand extends AbstractCommand
 {
     public const TYPE_MIGRATION_STRUCTURE = 'structure';
     public const TYPE_MIGRATION_DATA = 'data';
@@ -54,7 +53,7 @@ class IncrementalCommand extends AbstractMagentoCommand
      */
     protected $_config;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('sys:setup:incremental')
@@ -457,8 +456,7 @@ class IncrementalCommand extends AbstractMagentoCommand
         $output->writeln(["<error>Magento encountered an error while running the following setup resource.</error>", "", "    $name ", "", "<error>The Good News:</error> You know the error happened, and the database", "information below will  help you fix this error!", "", "<error>The Bad News:</error> Because Magento/MySQL can't run setup resources", "transactionally your database is now in an half upgraded, invalid", "state. Even if you fix the error, new errors may occur due to", "this half upgraded, invalid state.", '', "What to Do: ", "1. Figure out why the error happened, and manually fix your", "   database and/or system so it won't happen again.", "2. Restore your database from backup.", "3. Re-run the scripts.", "", "Exception Message:", $e->getMessage(), ""]);
 
         if ($magentoExceptionOutput) {
-            /* @var QuestionHelper $dialog */
-            $dialog = $this->getHelper('question');
+            $dialog = $this->getQuestionHelper();
             $question = new Question('<question>Press Enter to view raw Magento error text:</question> ');
             $dialog->ask($input, $output, $question);
 
@@ -497,8 +495,7 @@ class IncrementalCommand extends AbstractMagentoCommand
         $output = $this->_output;
         $output->writeln('The next ' . $type . ' update to run is <info>' . $toUpdate . '</info>');
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
         $question = new Question('<question>Press Enter to Run this update:</question> ');
         $dialog->ask($input, $output, $question);
 
@@ -539,9 +536,7 @@ class IncrementalCommand extends AbstractMagentoCommand
     {
         //bootstrap magento
         $this->detectMagento($this->_output);
-        if (!$this->initMagento()) {
-            return false;
-        }
+        $this->initMagento();
 
         //don't run if cache is off.  If cache is off that means
         //setup resource will run automagically
@@ -583,8 +578,7 @@ class IncrementalCommand extends AbstractMagentoCommand
         $input = $this->_input;
         $output = $this->_output;
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
         $question = new Question('<question>Press Enter to View Update Information:</question> ');
         $dialog->ask($input, $output, $question);
 

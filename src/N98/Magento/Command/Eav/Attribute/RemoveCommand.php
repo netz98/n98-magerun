@@ -9,7 +9,7 @@ use InvalidArgumentException;
 use Mage;
 use Mage_Core_Exception;
 use Mage_Eav_Model_Entity_Setup;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package N98\Magento\Command\Eav\Attribute
  * @author Aydin Hassan <aydin@hotmail.co.uk>
  */
-class RemoveCommand extends AbstractMagentoCommand
+class RemoveCommand extends AbstractCommand
 {
     public const COMMAND_ARGUMENT_ENTITY = 'entityType';
 

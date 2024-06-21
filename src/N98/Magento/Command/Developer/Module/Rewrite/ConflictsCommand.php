@@ -10,10 +10,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Zend_Text_Table;
+use Zend_Text_Table_Exception;
 
 class ConflictsCommand extends AbstractRewriteCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('dev:module:rewrite:conflicts')
@@ -46,9 +47,7 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 2;
-        }
+        $this->initMagento();
 
         $conflicts = [];
         $time = microtime(true);
@@ -84,7 +83,7 @@ HELP;
      * @param string $class
      * @return string
      */
-    protected function _getLoadedClass($type, $class)
+    protected function _getLoadedClass(string $type, string $class): string
     {
         switch ($type) {
             case 'blocks':
@@ -138,7 +137,7 @@ HELP;
      * @param array $classes
      * @return bool
      */
-    protected function _isInheritanceConflict(array $classes)
+    protected function _isInheritanceConflict(array $classes): bool
     {
         $later = null;
         foreach (array_reverse($classes) as $class) {
@@ -162,9 +161,10 @@ HELP;
 
     /**
      * @param OutputInterface $output
-     * @param array           $conflicts
+     * @param array $conflicts
+     * @throws Zend_Text_Table_Exception
      */
-    private function writeOutput(OutputInterface $output, array $conflicts)
+    private function writeOutput(OutputInterface $output, array $conflicts): void
     {
         if (!$conflicts) {
             $output->writeln('<info>No rewrite conflicts were found.</info>');

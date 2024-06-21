@@ -10,14 +10,14 @@ use Mage_Customer_Model_Customer;
 use Mage_Customer_Model_Resource_Customer_Collection;
 use Mage_Directory_Model_Resource_Country_Collection;
 use Mage_Directory_Model_Resource_Region_Collection;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 
 /**
  * Class AbstractCustomerCommand
  *
  * @package N98\Magento\Command\Customer
  */
-abstract class AbstractCustomerCommand extends AbstractMagentoCommand
+abstract class AbstractCustomerCommand extends AbstractCommand
 {
     /**
      * @return Mage_Customer_Model_Customer

@@ -6,7 +6,7 @@ namespace N98\Magento\Command\System\Cron;
 
 use Mage_Core_Exception;
 use Mage_Core_Model_Config_Element;
-use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use N98\Magento\Command\CommandFormatInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Cron
  */
-class ListCommand extends AbstractCronCommand implements AbstractMagentoCommandFormatInterface
+class ListCommand extends AbstractCronCommand implements CommandFormatInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Cronjobs';
 

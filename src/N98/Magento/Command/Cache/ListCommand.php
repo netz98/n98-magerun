@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Cache;
 
-use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use N98\Magento\Command\CommandFormatInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Cache
  */
-class ListCommand extends AbstractCacheCommand implements AbstractMagentoCommandFormatInterface
+class ListCommand extends AbstractCacheCommand implements CommandFormatInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Caches';
 

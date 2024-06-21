@@ -6,12 +6,12 @@ namespace N98\Magento\Command\Cms\Block;
 
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
 use Mage_Cms_Model_Block;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 
 /**
  * @package N98\Magento\Command\Cms\Block
  */
-class AbstractCmsBlockCommand extends AbstractMagentoCommand
+class AbstractCmsBlockCommand extends AbstractCommand
 {
     /**
      * Get an instance of cms/block

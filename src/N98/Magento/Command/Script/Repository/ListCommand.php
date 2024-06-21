@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Script\Repository;
 
-use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use N98\Magento\Command\CommandFormatInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Script\Repository
  */
-class ListCommand extends AbstractRepositoryCommand implements AbstractMagentoCommandFormatInterface
+class ListCommand extends AbstractRepositoryCommand implements CommandFormatInterface
 {
     protected const NO_DATA_MESSAGE = 'No script file found';
 

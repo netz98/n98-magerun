@@ -1,27 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System;
 
 use Exception;
 use InvalidArgumentException;
 use Mage;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
-class InfoCommand extends AbstractMagentoCommand
+class InfoCommand extends AbstractCommand
 {
     /**
      * @var array
      */
     protected $infos;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('sys:info')
@@ -52,13 +53,12 @@ class InfoCommand extends AbstractMagentoCommand
         $softInitMode = in_array($input->getArgument('key'), ['version', 'edition']);
 
         if ($input->getOption('format') == null && $input->getArgument('key') == null) {
-            $this->writeSection($output, 'Magento System Information');
+            $this->writeSection($output, 'System Information');
         }
 
         $this->initMagento($softInitMode);
 
-        $this->infos['Version'] = $this->magentoVersion();
-        $this->infos['Edition'] = ($this->_magentoEnterprise ? 'Enterprise' : 'Community');
+        $this->infos['Version'] = $this->getInstalledVersion();
         $this->infos['Root'] = $this->_magentoRootFolder;
 
         if ($softInitMode === false) {
@@ -88,28 +88,18 @@ class InfoCommand extends AbstractMagentoCommand
 
         if (($settingArgument = $input->getArgument('key')) !== null) {
             $settingArgument = strtolower($settingArgument);
-            $this->infos = array_change_key_case($this->infos, CASE_LOWER);
+            $this->infos = array_change_key_case($this->infos);
             if (!isset($this->infos[$settingArgument])) {
                 throw new InvalidArgumentException('Unknown key: ' . $settingArgument);
             }
             $output->writeln((string) $this->infos[$settingArgument]);
         } else {
-            /* @var TableHelper $tableHelper */
-            $tableHelper = $this->getHelper('table');
+            $tableHelper = $this->getTableHelper();
             $tableHelper
                 ->setHeaders(['name', 'value'])
                 ->renderByFormat($output, $table, $input->getOption('format'));
         }
         return 0;
-    }
-
-    protected function magentoVersion()
-    {
-        if (method_exists('Mage', 'getOpenMageVersion')) {
-            return 'OpenMage LTS ' . Mage::getOpenMageVersion();
-        }
-
-        return Mage::getVersion();
     }
 
     protected function addCacheInfos()
@@ -128,7 +118,10 @@ class InfoCommand extends AbstractMagentoCommand
 
     protected function findCoreOverwrites()
     {
-        $folders = [$this->_magentoRootFolder . '/app/code/local/Mage', $this->_magentoRootFolder . '/app/code/local/Enterprise', $this->_magentoRootFolder . '/app/code/community/Mage', $this->_magentoRootFolder . '/app/code/community/Enterprise'];
+        $folders = [
+            $this->_magentoRootFolder . '/app/code/local/Mage',
+            $this->_magentoRootFolder . '/app/code/community/Mage'
+        ];
         foreach ($folders as $key => $folder) {
             if (!is_dir($folder)) {
                 unset($folders[$key]);
@@ -147,7 +140,9 @@ class InfoCommand extends AbstractMagentoCommand
 
     protected function findVendors()
     {
-        $codePools = ['core'      => $this->_magentoRootFolder . '/app/code/core/', 'community' => $this->_magentoRootFolder . '/app/code/community/'];
+        $codePools = [
+            'core'      => $this->_magentoRootFolder . '/app/code/core/',
+            'community' => $this->_magentoRootFolder . '/app/code/community/'];
 
         if (is_dir($this->_magentoRootFolder . '/app/code/local/')) {
             $codePools['local'] = $this->_magentoRootFolder . '/app/code/local/';

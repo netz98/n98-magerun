@@ -3,10 +3,10 @@
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
 use Mage;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Finder\Finder;
 
-abstract class AbstractRewriteCommand extends AbstractMagentoCommand
+abstract class AbstractRewriteCommand extends AbstractCommand
 {
     protected $_rewriteTypes = ['blocks', 'helpers', 'models'];
 
@@ -72,7 +72,7 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
 
     /**
      * Searches for all rewrites over autoloader in "app/code/<codepool>" of
-     * Mage, Enterprise Zend, Varien namespaces.
+     * Mage, Zend, Varien namespaces.
      *
      * @param string $codePool
      * @return array
@@ -82,7 +82,11 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
         $return = [];
         $localCodeFolder = Mage::getBaseDir('code') . '/' . $codePool;
 
-        $folders = ['Mage'       => $localCodeFolder . '/Mage', 'Enterprise' => $localCodeFolder . '/Enterprise', 'Varien'     => $localCodeFolder . '/Varien', 'Zend'       => $localCodeFolder . '/Zend'];
+        $folders = [
+            'Mage'       => $localCodeFolder . '/Mage',
+            'Varien'     => $localCodeFolder . '/Varien',
+            'Zend'       => $localCodeFolder . '/Zend'
+        ];
 
         foreach ($folders as $vendorPrefix => $folder) {
             if (is_dir($folder)) {

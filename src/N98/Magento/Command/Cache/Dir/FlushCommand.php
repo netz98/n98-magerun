@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Cache\Dir;
 
 use FilesystemIterator;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use N98\Util\Filesystem;
 use RuntimeException;
 use SplFileInfo;
@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Cache\Dir
  */
-class FlushCommand extends AbstractMagentoCommand
+class FlushCommand extends AbstractCommand
 {
     /**
      * @var string

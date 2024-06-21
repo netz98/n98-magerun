@@ -2,7 +2,7 @@
 
 namespace N98\Magento\Command\Installer;
 
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use N98\Magento\Command\SubCommand\SubCommandFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @codeCoverageIgnore  - Travis server uses installer to create a new shop. If it not works complete build fails.
  * @package N98\Magento\Command\Installer
  */
-class InstallCommand extends AbstractMagentoCommand
+class InstallCommand extends AbstractCommand
 {
     /**
      * @var array
@@ -26,7 +26,7 @@ class InstallCommand extends AbstractMagentoCommand
      */
     protected $subCommandFactory;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('install')
@@ -123,7 +123,7 @@ HELP;
      * @throws \RuntimeException
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->commandConfig = $this->getCommandConfig();
         $this->writeSection($output, 'Magento Installation');

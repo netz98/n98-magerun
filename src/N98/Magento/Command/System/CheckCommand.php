@@ -4,7 +4,7 @@ namespace N98\Magento\Command\System;
 
 use LogicException;
 use Mage;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use N98\Magento\Command\CommandAware;
 use N98\Magento\Command\CommandConfigAware;
 use N98\Magento\Command\System\Check\Result;
@@ -13,7 +13,6 @@ use N98\Magento\Command\System\Check\SimpleCheck;
 use N98\Magento\Command\System\Check\StoreCheck;
 use N98\Magento\Command\System\Check\WebsiteCheck;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
 use N98\Util\Unicode\Charset;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -24,16 +23,16 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\System
  */
-class CheckCommand extends AbstractMagentoCommand
+class CheckCommand extends AbstractCommand
 {
     /**
      * Command config
      *
      * @var array
      */
-    protected $config;
+    protected array $config;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('sys:check')
@@ -63,9 +62,7 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->initMagento();
 
         $this->config = $this->getCommandConfig();
 
@@ -159,8 +156,7 @@ HELP;
             $table[] = [$result->getResultGroup(), strip_tags($result->getMessage()), $result->getStatus()];
         }
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders(['Group', 'Message', 'Result'])
             ->renderByFormat($output, $table, $input->getOption('format'));
@@ -231,5 +227,10 @@ HELP;
         foreach ($websites as $website) {
             $check->check($results, $website);
         }
+    }
+
+    protected function getChecks()
+    {
+        return new ResultCollection();
     }
 }

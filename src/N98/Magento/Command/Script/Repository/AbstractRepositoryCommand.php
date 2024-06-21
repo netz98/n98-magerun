@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Script\Repository;
 
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
@@ -12,7 +12,7 @@ use Symfony\Component\Finder\SplFileInfo;
  *
  * @package N98\Magento\Command\Script\Repository
  */
-class AbstractRepositoryCommand extends AbstractMagentoCommand
+class AbstractRepositoryCommand extends AbstractCommand
 {
     /**
      * Extension of n98-magerun scripts

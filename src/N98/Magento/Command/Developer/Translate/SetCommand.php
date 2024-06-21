@@ -7,7 +7,7 @@ namespace N98\Magento\Command\Developer\Translate;
 use Exception;
 use Mage;
 use Mage_Core_Model_Store;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package NN98\Magento\Command\Developer\Translate
  */
-class SetCommand extends AbstractMagentoCommand
+class SetCommand extends AbstractCommand
 {
     public const COMMAND_ARGUMENT_STRING = 'string';
 
@@ -49,11 +49,13 @@ class SetCommand extends AbstractMagentoCommand
             ->addArgument(
                 self::COMMAND_ARGUMENT_STRING,
                 InputArgument::REQUIRED,
-                'String to translate')
+                'String to translate'
+            )
             ->addArgument(
                 self::COMMAND_ARGUMENT_TRANSLATE,
                 InputArgument::REQUIRED,
-                'Translated string')
+                'Translated string'
+            )
             ->addArgument(
                 self::COMMAND_ARGUMENT_STORE,
                 InputArgument::OPTIONAL

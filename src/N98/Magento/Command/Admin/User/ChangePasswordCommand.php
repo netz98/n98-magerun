@@ -99,7 +99,7 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
             $user->save();
             $output->writeln('<info>Password successfully changed</info>');
         } catch (Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
         }
 
         return Command::SUCCESS;

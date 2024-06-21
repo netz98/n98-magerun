@@ -7,7 +7,7 @@ namespace N98\Magento\Command\Developer\Translate;
 use Locale;
 use Mage;
 use Mage_Core_Model_Store_Exception;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package NN98\Magento\Command\Developer\Translate
  */
-class ExportCommand extends AbstractMagentoCommand
+class ExportCommand extends AbstractCommand
 {
     public const COMMAND_ARGUMENT_LOCALE = 'locale';
 

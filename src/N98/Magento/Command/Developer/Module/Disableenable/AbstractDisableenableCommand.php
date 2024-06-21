@@ -7,7 +7,7 @@ namespace N98\Magento\Command\Developer\Module\Disableenable;
 use Exception;
 use InvalidArgumentException;
 use Mage_Core_Model_Config;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,11 +16,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Varien_Simplexml_Element;
 
 /**
- * Abstract enable/disable Magento module(s)
+ * Class AbstractDisableenableCommand
  *
  * @package N98\Magento\Command\Developer\Module\Disableenable
  */
-class AbstractCommand extends AbstractMagentoCommand
+abstract class AbstractDisableenableCommand extends AbstractCommand
 {
     public const COMMAND_ARGUMENT_MODULE = 'moduleName';
 
@@ -173,7 +173,11 @@ class AbstractCommand extends AbstractMagentoCommand
                     );
                 }
             } else {
-                $msg = sprintf('<info><comment>%s: already %sd</comment></info>', $module, $this->commandName);
+                $msg = sprintf(
+                    '<info><comment>%s: already %sd</comment></info>',
+                    $module,
+                    $this->commandName
+                );
             }
         }
 

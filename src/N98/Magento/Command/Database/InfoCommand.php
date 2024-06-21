@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Database;
 
 use InvalidArgumentException;
-use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use N98\Magento\Command\CommandFormatInterface;
 use N98\Magento\DbSettings;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Database
  */
-class InfoCommand extends AbstractDatabaseCommand implements AbstractMagentoCommandFormatInterface
+class InfoCommand extends AbstractDatabaseCommand implements CommandFormatInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Database information';
 

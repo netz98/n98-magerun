@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Developer\Module;
 
-use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use N98\Magento\Command\AbstractCommand;
+use N98\Magento\Command\CommandFormatInterface;
 use N98\Magento\Modules;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
+/**
+ * List module(s) command
+ *
+ * @package N98\Magento\Command\Developer\Module
+ */
+class ListCommand extends AbstractCommand implements CommandFormatInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Installed Modules';
 
@@ -38,7 +43,7 @@ class ListCommand extends AbstractMagentoCommand implements AbstractMagentoComma
      */
     protected static $defaultDescription = 'List all installed modules.';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addOption(
@@ -77,10 +82,9 @@ class ListCommand extends AbstractMagentoCommand implements AbstractMagentoComma
 
     /**
      * @param InputInterface $input
-     *
      * @return Modules
      */
-    private function filterModules(InputInterface $input)
+    private function filterModules(InputInterface $input): Modules
     {
         $modules = new Modules();
         return $modules

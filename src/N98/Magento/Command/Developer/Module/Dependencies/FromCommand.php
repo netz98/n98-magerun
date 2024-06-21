@@ -5,7 +5,7 @@ namespace N98\Magento\Command\Developer\Module\Dependencies;
 use InvalidArgumentException;
 use Mage;
 
-class FromCommand extends AbstractCommand
+class FromCommand extends AbstractDependenciesCommand
 {
     /**#@+
      * Command texts to output
@@ -13,15 +13,18 @@ class FromCommand extends AbstractCommand
      * @var string
      */
     public const COMMAND_NAME = 'dev:module:dependencies:from';
+
     public const COMMAND_DESCRIPTION = 'Show list of modules which depend on %s module';
+
     public const COMMAND_SECTION_TITLE_TEXT = "List of modules which depend on %s module";
+
     public const COMMAND_NO_RESULTS_TEXT = "No modules depend on %s module";
     /**#@-*/
 
     /**
      * @inheritdoc
      */
-    protected function findModuleDependencies($moduleName, $recursive = false)
+    protected function findModuleDependencies($moduleName, $recursive = false): array
     {
         if ($this->modules === null) {
             $this->modules = Mage::app()->getConfig()->getNode('modules')->asArray();

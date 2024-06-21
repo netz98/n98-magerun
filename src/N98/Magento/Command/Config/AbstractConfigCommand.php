@@ -10,9 +10,9 @@ use Mage_Core_Exception;
 use Mage_Core_Model_Config;
 use Mage_Core_Model_Config_Data;
 use Mage_Core_Model_Encryption;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 
-abstract class AbstractConfigCommand extends AbstractMagentoCommand
+abstract class AbstractConfigCommand extends AbstractCommand
 {
     public const DISPLAY_NULL_UNKNOWN_VALUE = "NULL (NULL/\"unknown\" value)";
 

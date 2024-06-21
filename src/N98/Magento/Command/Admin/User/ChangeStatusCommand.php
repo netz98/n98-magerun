@@ -38,7 +38,7 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
      * @deprecated with symfony 6.1
      * @see AsCommand
      */
-    protected static $defaultDescription = 'Set active status of an adminhtml user. If no option is set the status will be toggled.';
+    protected static $defaultDescription = 'Set active status of an adminhtml user.';
 
     protected function configure(): void
     {
@@ -63,6 +63,17 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
                 'Deactivate user'
             )
         ;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
+If no option is set the status will be toggled.
+HELP;
+
     }
 
     /**

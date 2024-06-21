@@ -6,7 +6,7 @@ namespace N98\Magento\Command\Cms\Block;
 
 use Mage_Cms_Model_Block;
 use Mage_Core_Exception;
-use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use N98\Magento\Command\CommandFormatInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Cms\Block
  */
-class ListCommand extends AbstractCmsBlockCommand implements AbstractMagentoCommandFormatInterface
+class ListCommand extends AbstractCmsBlockCommand implements CommandFormatInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'CMS blocks';
 

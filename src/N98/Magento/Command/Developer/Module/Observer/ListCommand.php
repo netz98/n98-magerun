@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Developer\Module\Observer;
 
 use InvalidArgumentException;
-use Mage;
-use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use N98\Magento\Command\AbstractCommand;
+use N98\Magento\Command\CommandFormatInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Developer\Module\Observer
  */
-class ListCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
+class ListCommand extends AbstractCommand implements CommandFormatInterface
 {
     public const COMMAND_ARGUMENT_TYPE = 'type';
 
@@ -84,7 +83,7 @@ class ListCommand extends AbstractMagentoCommand implements AbstractMagentoComma
                 $this->writeSection($output, 'Observers: ' . $type);
             }
 
-            $frontendEvents = $this->_getMageConfigNode($type . '/events')->asArray();
+            $frontendEvents = $this->_getMageConfig()->getNode($type . '/events')->asArray();
             if (true === $input->getOption(self::COMMAND_OPTION_SORT)) {
                 // sorting for Observers is a bad idea because the order in which observers will be called is important.
                 ksort($frontendEvents);

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Developer;
 
-use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
+use N98\Magento\Command\AbstractStoreConfigCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 /**
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
  *
  * @package N98\Magento\Command\Developer
  */
-class ProfilerCommand extends AbstractMagentoStoreConfigCommand
+class ProfilerCommand extends AbstractStoreConfigCommand
 {
     /**
      * @var string

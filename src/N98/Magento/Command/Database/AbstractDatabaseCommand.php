@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Database;
 
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use N98\Magento\Command\Database\Compressor\AbstractCompressor;
 use N98\Magento\Command\Database\Compressor\Compressor;
 use N98\Magento\DbSettings;
 use PDO;
 use Symfony\Component\Console\Output\OutputInterface;
 
-abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
+/**
+ * Class AbstractDatabaseCommand
+ *
+ * @package N98\Magento\Command\Database
+ */
+abstract class AbstractDatabaseCommand extends AbstractCommand
 {
     /**
      * @var array|DbSettings

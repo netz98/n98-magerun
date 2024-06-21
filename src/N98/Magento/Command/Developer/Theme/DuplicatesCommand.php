@@ -4,7 +4,7 @@ namespace N98\Magento\Command\Developer\Theme;
 
 use DateTime;
 use N98\JUnitXml\Document as JUnitXmlDocument;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,7 +19,7 @@ use Symfony\Component\Finder\SplFileInfo;
  *
  * @package N98\Magento\Command\Developer\Theme
  */
-class DuplicatesCommand extends AbstractMagentoCommand
+class DuplicatesCommand extends AbstractCommand
 {
     public const COMMAND_ARGUMENT_THEME = 'theme';
 

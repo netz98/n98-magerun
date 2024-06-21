@@ -7,7 +7,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CreateCommand extends AbstractDatabaseCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('db:create')

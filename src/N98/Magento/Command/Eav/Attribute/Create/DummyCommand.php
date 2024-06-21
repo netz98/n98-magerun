@@ -10,7 +10,7 @@ use Mage;
 use Mage_Core_Exception;
 use Mage_Eav_Model_Entity_Attribute;
 use Mage_Eav_Model_Resource_Entity_Attribute_Collection;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -26,7 +26,7 @@ use Throwable;
  *
  * @package N98\Magento\Command\Eav\Attribute
  */
-class DummyCommand extends AbstractMagentoCommand
+class DummyCommand extends AbstractCommand
 {
     public const COMMAND_ARGUMENT_LOCALE = 'locale';
 

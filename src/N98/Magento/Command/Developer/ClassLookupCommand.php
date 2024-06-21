@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Developer;
 
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Developer
  */
-class ClassLookupCommand extends AbstractMagentoCommand
+class ClassLookupCommand extends AbstractCommand
 {
     public const COMMAND_ARGUMENT_TYPE = 'type';
 

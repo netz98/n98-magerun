@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\System\Website;
 
-use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use N98\Magento\Command\AbstractCommand;
+use N98\Magento\Command\CommandFormatInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package 98\Magento\Command\System\Website
  */
-class ListCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
+class ListCommand extends AbstractCommand implements CommandFormatInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Websites';
 

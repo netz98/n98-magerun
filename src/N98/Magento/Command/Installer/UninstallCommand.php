@@ -3,9 +3,8 @@
 namespace N98\Magento\Command\Installer;
 
 use Exception;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use N98\Util\Filesystem;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
@@ -18,9 +17,9 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  * @codeCoverageIgnore
  * @package N98\Magento\Command\Installer
  */
-class UninstallCommand extends AbstractMagentoCommand
+class UninstallCommand extends AbstractCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('uninstall')
@@ -55,8 +54,7 @@ HELP;
         $this->detectMagento($output);
         $this->getApplication()->setAutoExit(false);
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
 
         $shouldUninstall = $input->getOption('force');
         if (!$shouldUninstall) {

@@ -4,14 +4,14 @@ namespace N98\Magento\Command\System\Setup;
 
 use InvalidArgumentException;
 use Mage;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * Class AbstractSetupCommand
  * @package N98\Magento\Command\System\Setup
  */
-class AbstractSetupCommand extends AbstractMagentoCommand
+class AbstractSetupCommand extends AbstractCommand
 {
     /**
      * @param string $moduleName

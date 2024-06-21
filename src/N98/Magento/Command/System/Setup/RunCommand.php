@@ -5,8 +5,7 @@ namespace N98\Magento\Command\System\Setup;
 use Exception;
 use Mage;
 use Mage_Core_Model_Resource_Setup;
-use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\TableHelper;
+use N98\Magento\Command\AbstractCommand;
 use ReflectionObject;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,9 +13,9 @@ use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class RunCommand extends AbstractMagentoCommand
+class RunCommand extends AbstractCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('sys:setup:run')
@@ -42,9 +41,7 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->initMagento();
 
         try {
             if (false === $input->getOption('no-implicit-cache-flush')) {
@@ -92,8 +89,7 @@ HELP;
             return $row;
         });
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $rows = [];
         $i = 1;
         foreach ($trace as $row) {
@@ -111,8 +107,7 @@ HELP;
     protected function printFile(OutputInterface $output, Exception $e)
     {
         if (preg_match('/Error\sin\sfile\:\s"(.+)\"\s-/', $e->getMessage(), $matches)) {
-            /* @var TableHelper $tableHelper */
-            $tableHelper = $this->getHelper('table');
+            $tableHelper = $this->getTableHelper();
             $lines = \file($matches[1]);
             $rows = [];
             $i = 0;

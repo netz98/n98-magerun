@@ -6,7 +6,7 @@ namespace N98\Magento\Command\Cache;
 
 use InvalidArgumentException;
 use Mage_Core_Model_Cache;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use RuntimeException;
 use Zend_Cache_Core;
 
@@ -15,7 +15,7 @@ use Zend_Cache_Core;
  *
  * @package N98\Magento\Command\Cache
  */
-abstract class AbstractCacheCommand extends AbstractMagentoCommand
+abstract class AbstractCacheCommand extends AbstractCommand
 {
     /**
      * @return Mage_Core_Model_Cache

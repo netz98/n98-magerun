@@ -20,7 +20,7 @@ class RemoveCommand extends AbstractSetupCommand
     /**
      * Set up CLI options
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('sys:setup:remove')
@@ -32,15 +32,12 @@ class RemoveCommand extends AbstractSetupCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->initMagento();
 
         $moduleName = $this->getModule($input);
         $setupName = $input->getArgument('setup');
@@ -69,10 +66,10 @@ class RemoveCommand extends AbstractSetupCommand
      * @param string $setupResource
      * @param OutputInterface $output
      */
-    public function removeSetupResource($moduleName, $setupResource, OutputInterface $output)
+    public function removeSetupResource(string $moduleName, string $setupResource, OutputInterface $output): void
     {
         /** @var Mage_Core_Model_Resource $model */
-        $model = $this->_getModel('core/resource', 'Mage_Core_Model_Resource');
+        $model = $this->_getModel('core/resource');
         $writeAdapter = $model->getConnection('core_write');
         if (!$writeAdapter) {
             throw new RuntimeException('Database not configured');

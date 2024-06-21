@@ -11,7 +11,7 @@ use Exception;
 use Mage;
 use Mage_Index_Model_Indexer;
 use Mage_Index_Model_Process;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use N98\Util\DateTime as DateTimeUtils;
 use Symfony\Component\Console\Output\OutputInterface;
 use UnexpectedValueException;
@@ -22,7 +22,7 @@ use Varien_Simplexml_Element;
  *
  * @package N98\Magento\Command\Indexer
  */
-class AbstractIndexerCommand extends AbstractMagentoCommand
+class AbstractIndexerCommand extends AbstractCommand
 {
     /**
      * @return Mage_Index_Model_Indexer

@@ -10,9 +10,9 @@ use Mage_Core_Exception;
 use Mage_Core_Model_Config_Element;
 use Mage_Cron_Exception;
 use Mage_Cron_Model_Schedule;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 
-abstract class AbstractCronCommand extends AbstractMagentoCommand
+abstract class AbstractCronCommand extends AbstractCommand
 {
     /**
      * @return array<string, array<string, Mage_Core_Model_Config_Element|string|null>>

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Developer\Report;
 
 use Mage;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\Finder\Finder;
  *
  * @package N98\Magento\Command\Developer\Report
  */
-class CountCommand extends AbstractMagentoCommand
+class CountCommand extends AbstractCommand
 {
     /**
      * @var string

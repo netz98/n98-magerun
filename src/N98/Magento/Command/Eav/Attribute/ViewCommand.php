@@ -8,8 +8,8 @@ use InvalidArgumentException;
 use Mage;
 use Mage_Core_Exception;
 use Mage_Eav_Model_Entity_Attribute_Abstract;
-use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Magento\Command\AbstractMagentoCommandFormatInterface;
+use N98\Magento\Command\AbstractCommand;
+use N98\Magento\Command\CommandFormatInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Eav\Attribute
  */
-class ViewCommand extends AbstractMagentoCommand implements AbstractMagentoCommandFormatInterface
+class ViewCommand extends AbstractCommand implements CommandFormatInterface
 {
     public const COMMAND_ARGUMENT_ENTITY = 'entityType';
 

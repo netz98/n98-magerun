@@ -6,7 +6,7 @@ namespace N98\Magento\Command\Developer\Theme;
 
 use Mage_Core_Model_Store;
 use Mage_Core_Model_Website;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Developer\Theme
  */
-class InfoCommand extends AbstractMagentoCommand
+class InfoCommand extends AbstractCommand
 {
     public const THEMES_EXCEPTION = '_ua_regexp';
 

@@ -6,7 +6,7 @@ namespace N98\Magento\Command\Developer\Log;
 
 use InvalidArgumentException;
 use Mage;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -17,7 +17,7 @@ use Symfony\Component\Finder\Finder;
  *
  * @package N98\Magento\Command\Developer\Log
  */
-class AbstractLogCommand extends AbstractMagentoCommand
+class AbstractLogCommand extends AbstractCommand
 {
     /**
      * @return Finder

@@ -4,15 +4,14 @@ namespace N98\Magento\Command\Developer\Module\Dependencies;
 
 use Exception;
 use InvalidArgumentException;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-abstract class AbstractCommand extends AbstractMagentoCommand
+abstract class AbstractDependenciesCommand extends AbstractCommand
 {
     /**#@+
      * Command texts to output
@@ -30,12 +29,12 @@ abstract class AbstractCommand extends AbstractMagentoCommand
      *
      * @var array
      */
-    protected $modules;
+    protected array $modules;
 
     /**
      * Configure command
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName(static::COMMAND_NAME)
             ->addArgument('moduleName', InputArgument::REQUIRED, 'Module to show dependencies')
@@ -70,8 +69,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
             $dependencies = $this->findModuleDependencies($moduleName, $recursive);
             if (!empty($dependencies)) {
                 usort($dependencies, [$this, 'sortDependencies']);
-                /* @var TableHelper $tableHelper */
-                $tableHelper = $this->getHelper('table');
+                $tableHelper = $this->getTableHelper();
                 $tableHelper
                     ->setHeaders(['Name', 'Status', 'Current installed version', 'Code pool'])
                     ->renderByFormat($output, $dependencies, $input->getOption('format'));
@@ -95,7 +93,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
      * @return array
      * @throws InvalidArgumentException of module-name is not found
      */
-    abstract protected function findModuleDependencies($moduleName, $recursive = false);
+    abstract protected function findModuleDependencies(string $moduleName, bool $recursive = false): array;
 
     /**
      * Sort dependencies list by module name ascending

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Media;
 
 use N98\Magento\Application;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -22,7 +22,7 @@ use ZipArchive;
  *
  * @package N98\Magento\Command\Media
  */
-class DumpCommand extends AbstractMagentoCommand
+class DumpCommand extends AbstractCommand
 {
     public const COMMAND_ARGUMENT_FILENAME = 'filename';
 
