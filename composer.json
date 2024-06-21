@@ -14,6 +14,9 @@
     ],
     "require": {
         "php": "~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
+        "ext-json": "*",
+        "ext-libxml": "*",
+        "ext-pdo": "*",
         "fakerphp/faker": "^1.20",
         "n98/junit-xml": "~1.0",
         "psy/psysh": "~0.4",
@@ -25,10 +28,7 @@
         "symfony/process": "~5.4",
         "symfony/validator": "~5.4",
         "symfony/yaml": "~5.4",
-        "twig/twig": "^3.7.1",
-        "ext-pdo": "*",
-        "ext-libxml": "*",
-        "ext-json": "*"
+        "twig/twig": "^3.7.1"
     },
     "require-dev": {
         "ext-simplexml": "*",
