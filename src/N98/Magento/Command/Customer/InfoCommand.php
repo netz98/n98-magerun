@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Customer;
 
-use Attribute;
 use Exception;
+use Mage_Core_Exception;
+use Mage_Core_Model_Website;
 use Mage_Customer_Model_Attribute;
-use N98\Util\Console\Helper\ParameterHelper;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,35 +21,60 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InfoCommand extends AbstractCustomerCommand
 {
-    /**
-     * @var array
-     */
-    protected $blacklist = ['password_hash', 'increment_id'];
+    public const COMMAND_ARGUMENT_EMAIL = 'email';
 
-    protected function configure()
+    public const COMMAND_ARGUMENT_WEBSITE = 'website';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultName = 'customer:info';
+
+    /**
+     * @var string
+     * @deprecated with symfony 6.1
+     * @see AsCommand
+     */
+    protected static $defaultDescription = 'Loads basic customer info by email address.';
+
+    /**
+     * @var array<int, string>
+     */
+    protected array $blacklist = ['password_hash', 'increment_id'];
+
+    protected function configure(): void
     {
         $this
-            ->setName('customer:info')
-            ->addArgument('email', InputArgument::OPTIONAL, 'Email')
-            ->addArgument('website', InputArgument::OPTIONAL, 'Website of the customer')
-            ->setDescription('Loads basic customer info by email address.');
+            ->addArgument(
+                self::COMMAND_ARGUMENT_EMAIL,
+                InputArgument::OPTIONAL,
+                'Customers email'
+            )
+            ->addArgument(
+                self::COMMAND_ARGUMENT_WEBSITE,
+                InputArgument::OPTIONAL,
+                'Website of the customer'
+            )
+        ;
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
+     * @throws Mage_Core_Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         $this->initMagento();
 
-        /** @var ParameterHelper $parameterHelper */
-        $parameterHelper = $this->getHelper('parameter');
+        $parameterHelper = $this->getParameterHelper();
 
         $email = $parameterHelper->askEmail($input, $output);
+        /** @var Mage_Core_Model_Website $website */
         $website = $parameterHelper->askWebsite($input, $output);
 
         $customer = $this->getCustomerModel()
@@ -53,7 +82,8 @@ class InfoCommand extends AbstractCustomerCommand
             ->loadByEmail($email);
         if ($customer->getId() <= 0) {
             $output->writeln('<error>Customer was not found</error>');
-            return 0;
+
+            return Command::SUCCESS;
         }
 
         $table = [];
@@ -63,8 +93,10 @@ class InfoCommand extends AbstractCustomerCommand
             }
             try {
                 $attribute = $customer->getResource()->getAttribute($key);
-                $key = $attribute instanceof Mage_Customer_Model_Attribute ? $attribute->getFrontend()->getLabel() : $key;
-                $value = $attribute instanceof Mage_Customer_Model_Attribute ? $attribute->getFrontend()->getValue($customer) : $value;
+                $key = $attribute instanceof Mage_Customer_Model_Attribute
+                    ? $attribute->getFrontend()->getLabel() : $key;
+                $value = $attribute instanceof Mage_Customer_Model_Attribute
+                    ? $attribute->getFrontend()->getValue($customer) : $value;
 
                 if (is_array($value)) {
                     $value = implode(' - ', $value);
@@ -76,12 +108,12 @@ class InfoCommand extends AbstractCustomerCommand
             }
         }
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $tableHelper
-            ->setHeaders([Attribute::class, 'Value'])
+            ->setHeaders(['Attribute', 'Value'])
             ->setRows($table)
             ->render($output);
-        return 0;
+
+        return Command::SUCCESS;
     }
 }
