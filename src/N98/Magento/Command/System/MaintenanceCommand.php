@@ -11,14 +11,17 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @package N98\Magento\Command\System
  */
 class MaintenanceCommand extends AbstractMagentoCommand
 {
-    private const COMMAND_OPTION_ON = 'on';
-    private const COMMAND_OPTION_OFF = 'off';
+    public const COMMAND_OPTION_OFF = 'off';
+
+    public const COMMAND_OPTION_ON = 'on';
 
     /**
      * @var string
@@ -35,9 +38,21 @@ class MaintenanceCommand extends AbstractMagentoCommand
     protected static $defaultDescription = 'Toggles maintenance mode';
 
     /**
+     * @var Filesystem
+     */
+    private Filesystem $filessystem;
+
+    public function __construct()
+    {
+        parent:: __construct();
+
+        $this->filessystem = new Filesystem();
+    }
+
+    /**
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addOption(
@@ -58,7 +73,6 @@ class MaintenanceCommand extends AbstractMagentoCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -71,7 +85,7 @@ class MaintenanceCommand extends AbstractMagentoCommand
         } elseif ($input->getOption(self::COMMAND_OPTION_ON)) {
             $this->switchOn($output, $flagFile);
         } else {
-            if (file_exists($flagFile)) {
+            if ($this->filessystem->exists($flagFile)) {
                 $this->switchOff($output, $flagFile);
             } else {
                 $this->switchOn($output, $flagFile);
@@ -87,11 +101,12 @@ class MaintenanceCommand extends AbstractMagentoCommand
      */
     private function switchOn(OutputInterface $output, string $flagFile): void
     {
-        if (!file_exists($flagFile)) {
-            if (!touch($flagFile)) {
-                throw new RuntimeException('maintenance.flag file is not writable.');
-            }
+        try {
+            $this->filessystem->touch($flagFile);
+        } catch (IOExceptionInterface $exception) {
+            throw new RuntimeException($exception->getMessage());
         }
+
         $output->writeln('Maintenance mode <info>on</info>');
     }
 
@@ -101,11 +116,12 @@ class MaintenanceCommand extends AbstractMagentoCommand
      */
     private function switchOff(OutputInterface $output, string $flagFile): void
     {
-        if (file_exists($flagFile)) {
-            if (!unlink($flagFile)) {
-                throw new RuntimeException('maintenance.flag file is not removable.');
-            }
+        try {
+            $this->filessystem->remove($flagFile);
+        } catch (IOExceptionInterface $exception) {
+            throw new RuntimeException($exception->getMessage());
         }
+
         $output->writeln('Maintenance mode <info>off</info>');
     }
 }
