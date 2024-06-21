@@ -6,6 +6,7 @@ use Exception;
 use InvalidArgumentException;
 use JsonSchema\Validator;
 use Mage;
+use Mage_Core_Model_App;
 use Mage_Core_Model_Website;
 use N98\Util\Validator\FakeMetadataFactory;
 use RuntimeException;
@@ -25,6 +26,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\ConstraintValidatorFactory;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\Validator\Validation;
 
 /**
  * Helper to init some parameters
@@ -64,7 +66,7 @@ class ParameterHelper extends AbstractHelper
         $argumentName = 'store',
         $withDefaultStore = false
     ) {
-        /* @var \Mage_Core_Model_App $storeManager */
+        /* @var Mage_Core_Model_App $storeManager */
         $storeManager = Mage::app();
 
         try {
@@ -99,7 +101,6 @@ class ParameterHelper extends AbstractHelper
                     return $stores[$typeInput];
                 };
 
-                /* @var QuestionHelper $dialog */
                 $dialog = new QuestionHelper();
                 $question = new ChoiceQuestion('<question>Please select a store:</question> ', $choices);
                 $question->setValidator($validator);
@@ -120,24 +121,22 @@ class ParameterHelper extends AbstractHelper
      * @param InputInterface $input
      * @param OutputInterface $output
      * @param string $argumentName
-     *
-     * @return mixed
+     * @return Mage_Core_Model_Website|null
      * @throws InvalidArgumentException
+     * @throws \Mage_Core_Exception
      */
-    public function askWebsite(InputInterface $input, OutputInterface $output, $argumentName = 'website')
+    public function askWebsite(InputInterface $input, OutputInterface $output, string $argumentName = 'website')
     {
-        /* @var \Mage_Core_Model_App $storeManager */
+        /* @var Mage_Core_Model_App $storeManager */
         $storeManager = Mage::app();
 
-        $website = null;
         $argumentValue = $input->getArgument($argumentName);
         $hasArgument = $argumentValue !== null;
 
         if ($hasArgument) {
             try {
                 /* @var Mage_Core_Model_Website $website */
-                $website = $storeManager->getWebsite($argumentValue);
-                return $website;
+                return $storeManager->getWebsite($argumentValue);
             } catch (Exception $e) {
                 // catch all exceptions
             }
@@ -156,26 +155,23 @@ class ParameterHelper extends AbstractHelper
             return $websites[$typeInput];
         };
 
-        /* @var QuestionHelper $dialog */
         $dialog = new QuestionHelper();
         $question = new ChoiceQuestion('<question>Please select a website:</question> ', $choices);
         $question->setValidator($validator);
 
         $websiteId = $dialog->ask($input, $output, $question);
-        $website = $storeManager->getWebsite($websiteId);
-
-        return $website;
+        return $storeManager->getWebsite($websiteId);
     }
 
     /**
      * @see askWebsite
+     * @param Mage_Core_Model_App $storeManager
      * @return array websites (integers with website IDs, 0-indexed) and question array (strings)
      */
-    private function websitesQuestion($storeManager)
+    private function websitesQuestion(Mage_Core_Model_App $storeManager)
     {
         $websites = [];
         $question = [];
-        /* @var Mage_Core_Model_Website $website */
         foreach ($storeManager->getWebsites() as $website) {
             $websites[] = $website->getId();
             $question[] = sprintf('%s - %s', $website->getCode(), $website->getName());
@@ -188,16 +184,21 @@ class ParameterHelper extends AbstractHelper
      * @param InputInterface $input
      * @param OutputInterface $output
      * @param string $argumentName
-     *
      * @return string
      */
-    public function askEmail(InputInterface $input, OutputInterface $output, $argumentName = 'email')
+    public function askEmail(InputInterface $input, OutputInterface $output, string $argumentName = 'email')
     {
         $constraints = new Collection(
             ['email' => [new NotBlank(), new Email()]]
         );
 
-        return $this->validateArgument($input, $output, $argumentName, $input->getArgument($argumentName), $constraints);
+        return $this->validateArgument(
+            $input,
+            $output,
+            $argumentName,
+            $input->getArgument($argumentName),
+            $constraints
+        );
     }
 
     /**
@@ -211,13 +212,16 @@ class ParameterHelper extends AbstractHelper
     public function askPassword(
         InputInterface $input,
         OutputInterface $output,
-        $argumentName = 'password',
-        $needDigits = true
+        string $argumentName = 'password',
+        bool $needDigits = true
     ) {
         $validators = [];
 
         if ($needDigits) {
-            $regex = ['pattern' => '/^(?=.*\d)(?=.*[a-zA-Z])/', 'message' => 'Password must contain letters and at least one digit'];
+            $regex = [
+                'pattern' => '/^(?=.*\d)(?=.*[a-zA-Z])/',
+                'message' => 'Password must contain letters and at least one digit'
+            ];
             $validators[] = new Regex($regex);
         }
 
@@ -227,11 +231,17 @@ class ParameterHelper extends AbstractHelper
             ['password' => $validators]
         );
 
-        return $this->validateArgument($input, $output, $argumentName, $input->getArgument($argumentName), $constraints);
+        return $this->validateArgument(
+            $input,
+            $output,
+            $argumentName,
+            $input->getArgument($argumentName),
+            $constraints
+        );
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      * @param string|array $question
      * @param callable $callback
@@ -318,7 +328,7 @@ class ParameterHelper extends AbstractHelper
     protected function initValidator()
     {
         if (null === $this->validator) {
-            $this->validator = \Symfony\Component\Validator\Validation::createValidatorBuilder()
+            $this->validator = Validation::createValidatorBuilder()
                 ->setConstraintValidatorFactory(new ConstraintValidatorFactory())
                 ->setMetadataFactory(new FakeMetadataFactory())
                 ->getValidator();

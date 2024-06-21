@@ -61,7 +61,7 @@ class TableHelper extends AbstractHelper
         $rendererFactory = new RendererFactory();
         $renderer = $rendererFactory->create($format);
 
-        if ($renderer && $renderer instanceof RendererInterface) {
+        if ($renderer instanceof RendererInterface) {
             foreach ($rows as &$row) {
                 if (!empty($this->headers)) {
                     $row = array_combine($this->headers, $row);

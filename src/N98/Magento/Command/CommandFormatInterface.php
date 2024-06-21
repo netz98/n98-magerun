@@ -7,7 +7,12 @@ namespace N98\Magento\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-interface AbstractMagentoCommandFormatInterface
+/**
+ * Interface AbstractCommandFormatInterface
+ *
+ * @package N98\Magento\Command
+ */
+interface CommandFormatInterface
 {
     /**
      * @param InputInterface $input

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command;
 
 use Exception;
@@ -21,7 +23,7 @@ use WpOrg\Requests\Requests;
  * @author Igor Wiedler <igor@wiedler.ch>
  * @author Christian Münch <c.muench@netz98.de>
  */
-class SelfUpdateCommand extends AbstractMagentoCommand
+class SelfUpdateCommand extends AbstractCommand
 {
     public const VERSION_TXT_URL_UNSTABLE = 'https://raw.githubusercontent.com/netz98/n98-magerun/develop/version.txt';
     public const MAGERUN_DOWNLOAD_URL_UNSTABLE = 'https://files.magerun.net/n98-magerun-dev.phar';
@@ -30,7 +32,7 @@ class SelfUpdateCommand extends AbstractMagentoCommand
     public const CHANGELOG_DOWNLOAD_URL_UNSTABLE = 'https://raw.github.com/netz98/n98-magerun/develop/CHANGELOG.md';
     public const CHANGELOG_DOWNLOAD_URL_STABLE = 'https://raw.github.com/netz98/n98-magerun/master/CHANGELOG.md';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('self-update')
@@ -52,18 +54,18 @@ EOT
     /**
      * @return bool
      */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return $this->getApplication()->isPharMode();
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return int
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $isDryRun = $input->getOption('dry-run');
         $localFilename = realpath($_SERVER['argv'][0]) ?: $_SERVER['argv'][0];
@@ -145,13 +147,13 @@ EOT
      * @param int $statusCode
      * @return void
      */
-    protected function _exit($statusCode = 0)
+    protected function _exit(int $statusCode = 0)
     {
         exit($statusCode);
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      * @param string $remoteUrl
      * @param string $tempFilename
      */
@@ -227,7 +229,7 @@ EOT
     /**
      * Download changelog
      *
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      * @param bool $loadUnstable
      * @return string
      */

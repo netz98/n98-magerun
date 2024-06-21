@@ -2,13 +2,13 @@
 
 namespace Acme;
 
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class FooCommand extends AbstractMagentoCommand
+class FooCommand extends AbstractCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('acme:foo');
     }

@@ -7,7 +7,6 @@ use Mage;
 use N98\Util\BinaryString;
 use N98\Util\Exec;
 use RuntimeException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
-class ScriptCommand extends AbstractMagentoCommand
+class ScriptCommand extends AbstractCommand
 {
     /**
      * @var array
@@ -33,7 +32,7 @@ class ScriptCommand extends AbstractMagentoCommand
      */
     protected $_stopOnError = false;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('script')
@@ -89,7 +88,7 @@ Pre-defined variables:
 
 * \${magento.root}    -> Magento Root-Folder
 * \${magento.version} -> Magento Version i.e. 1.7.0.2
-* \${magento.edition} -> Magento Edition -> Community or Enterprise
+* \${magento.edition} -> Magento Edition -> Community
 * \${magerun.version} -> Magerun version i.e. 1.66.0
 * \${php.version}     -> PHP Version
 * \${script.file}     -> Current script file path
@@ -218,8 +217,7 @@ HELP;
                     return $this->scriptVars[$matches[1]];
                 }
 
-                /* @var QuestionHelper $dialog */
-                $dialog = $this->getHelper('question');
+                $dialog = $this->getQuestionHelper();
 
                 /**
                  * Check for select "?["
@@ -262,7 +260,7 @@ HELP;
      * @param string $commandString
      * @throws RuntimeException
      */
-    protected function runMagerunCommand(InputInterface $input, OutputInterface $output, $commandString)
+    protected function runMagerunCommand(InputInterface $input, OutputInterface $output, string $commandString)
     {
         $this->getApplication()->setAutoExit(false);
         $commandString = $this->_replaceScriptVars($commandString);
@@ -278,7 +276,7 @@ HELP;
      * @param string $commandString
      * @return string
      */
-    protected function _prepareShellCommand($commandString)
+    protected function _prepareShellCommand(string $commandString)
     {
         $commandString = ltrim($commandString, '!');
 
@@ -312,10 +310,10 @@ HELP;
 
     /**
      * @param OutputInterface $output
-     * @param string          $commandString
+     * @param string $commandString
      * @internal param $returnValue
      */
-    protected function runShellCommand(OutputInterface $output, $commandString)
+    protected function runShellCommand(OutputInterface $output, string $commandString)
     {
         $commandString = $this->_prepareShellCommand($commandString);
         $returnValue = shell_exec($commandString);
@@ -326,13 +324,10 @@ HELP;
 
     /**
      * @param string $commandString
-     *
      * @return string
      */
-    protected function _replaceScriptVars($commandString)
+    protected function _replaceScriptVars(string $commandString): string
     {
-        $commandString = str_replace(array_keys($this->scriptVars), $this->scriptVars, $commandString);
-
-        return $commandString;
+        return str_replace(array_keys($this->scriptVars), $this->scriptVars, $commandString);
     }
 }
