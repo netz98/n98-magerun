@@ -94,11 +94,11 @@ HELP;
             /** @var Mage_Customer_Model_Customer $customer */
             foreach ($collection as $customer) {
                 $this->data[] = [
-                    'id'        => $customer->getId(),
-                    'email'     => $customer->getEmail(),
-                    'firstname' => $customer->getFirstname(),
-                    'lastname'  => $customer->getLastname(),
-                    'website'   => $this->_getWebsiteCodeById($customer->getwebsiteId())
+                    'ID'        => $customer->getId(),
+                    'Email'     => $customer->getEmail(),
+                    'Firstname' => $customer->getFirstname(),
+                    'Lastname'  => $customer->getLastname(),
+                    'Website'   => $this->_getWebsiteCodeById($customer->getwebsiteId())
                 ];
             }
         }
