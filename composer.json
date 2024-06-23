@@ -67,7 +67,7 @@
     "extra": {
         "patches": {
             "symfony/filesystem": {
-                "Add readFile() to symfony/filesystem (from v7.1)": "https://github.com/sreichel/openmage-patches/commit/e3f9027a07f64f196685467951f4949f14b5c1fb/n98/magerun/symfony-filesystem.patch"
+                "Add readFile() to symfony/filesystem (from v7.1)": "https://raw.githubusercontent.com/sreichel/openmage-patches/main/n98/magerun/symfony-filesystem.patch"
             }
         }
     },
