@@ -9,8 +9,7 @@ use Mage_Core_Exception;
 use Mage_Core_Model_Store_Exception;
 use Mage_Cron_Model_Schedule;
 use N98\Magento\Command\AbstractCommand;
-use N98\Magento\Command\CommandFormatInterface;
-use Symfony\Component\Console\Attribute\AsCommand;
+use N98\Magento\Command\CommandDataInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Cron
  */
-class HistoryCommand extends AbstractCommand implements CommandFormatInterface
+class HistoryCommand extends AbstractCommand implements CommandDataInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Last executed jobs';
 
@@ -28,15 +27,11 @@ class HistoryCommand extends AbstractCommand implements CommandFormatInterface
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'sys:cron:history';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Last executed cronjobs with status.';
 
@@ -54,42 +49,37 @@ class HistoryCommand extends AbstractCommand implements CommandFormatInterface
 
     /**
      * {@inheritdoc}
-     * @return array<int|string, array<string, string>>
      *
      * @throws Mage_Core_Model_Store_Exception
      * @throws Mage_Core_Exception
      */
-    public function getData(InputInterface $input, OutputInterface $output): array
+    public function setData(InputInterface $input,OutputInterface $output) : void
     {
-        if (is_null($this->data)) {
-            $this->data = [];
+        $this->data = [];
 
-            /** @var string $timezone */
-            $timezone = $input->getOption(self::COMMAND_OPTION_TIMEZONE)
-                ?: $this->_getMageStore()->getConfig('general/locale/timezone');
+        /** @var string $timezone */
+        $timezone = $input->getOption(self::COMMAND_OPTION_TIMEZONE)
+            ?: $this->_getMageStore()->getConfig('general/locale/timezone');
 
-            $output->writeln(sprintf('<info>Times shown in <comment>%s</comment></info>', $timezone));
+        $output->writeln(sprintf('<info>Times shown in <comment>%s</comment></info>', $timezone));
 
-            $date = Mage::getSingleton('core/date');
-            $offset = $date->calculateOffset($timezone);
-            $collection = Mage::getModel('cron/schedule')->getCollection();
-            $collection
-                ->addFieldToFilter('status', ['neq' => Mage_Cron_Model_Schedule::STATUS_PENDING])
-                ->addOrder('finished_at');
+        $date = Mage::getSingleton('core/date');
+        $offset = $date->calculateOffset($timezone);
+        $collection = Mage::getModel('cron/schedule')->getCollection();
+        $collection
+            ->addFieldToFilter('status', ['neq' => Mage_Cron_Model_Schedule::STATUS_PENDING])
+            ->addOrder('finished_at');
 
-            /** @var Mage_Cron_Model_Schedule $job */
-            foreach ($collection as $job) {
-                $this->data[] = [
-                    'Job'       => $job->getJobCode(),
-                    'Status'    => $job->getStatus(),
-                    'Finished'  => $job->getFinishedAt() ? $date->gmtDate(
-                        null,
-                        $date->timestamp($job->getFinishedAt()) + $offset
-                    ) : ''
-                ];
-            }
+        /** @var Mage_Cron_Model_Schedule $job */
+        foreach ($collection as $job) {
+            $this->data[] = [
+                'Job'       => $job->getJobCode(),
+                'Status'    => $job->getStatus(),
+                'Finished'  => $job->getFinishedAt() ? $date->gmtDate(
+                    null,
+                    $date->timestamp($job->getFinishedAt()) + $offset
+                ) : ''
+            ];
         }
-
-        return $this->data;
     }
 }

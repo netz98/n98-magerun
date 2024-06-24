@@ -6,7 +6,6 @@ namespace N98\Magento\Command\Cache;
 
 use Exception;
 use Mage;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,17 +22,15 @@ class CleanCommand extends AbstractCacheCommandReinit
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'cache:clean';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Clean cache.';
+
+    protected static bool $initMagentoSoftFlag = true;
 
     protected function configure(): void
     {
@@ -84,9 +81,6 @@ HELP;
         if (!$noReinitOption) {
             $this->banUseCache();
         }
-
-        $this->detectMagento($output);
-        $this->initMagento(true);
 
         try {
             Mage::app()->loadAreaPart('adminhtml', 'events');

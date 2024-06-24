@@ -10,7 +10,6 @@ use Mage_Core_Model_Store;
 use N98\Util\Exec;
 use N98\Util\OperatingSystem;
 use RuntimeException;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,15 +25,11 @@ class OpenBrowserCommand extends AbstractCommand
     public const COMMAND_ARGUMENT_STORE = 'store';
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'open-browser';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Open current project in browser <comment>(experimental)</comment>.';
 
@@ -65,9 +60,6 @@ class OpenBrowserCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $parameterHelper = $this->getParameterHelper();
 
         /** @var Mage_Core_Model_Store $store */

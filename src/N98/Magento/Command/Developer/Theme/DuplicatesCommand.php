@@ -5,7 +5,6 @@ namespace N98\Magento\Command\Developer\Theme;
 use DateTime;
 use N98\JUnitXml\Document as JUnitXmlDocument;
 use N98\Magento\Command\AbstractCommand;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,17 +28,15 @@ class DuplicatesCommand extends AbstractCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'dev:theme:duplicates';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Find duplicate files (templates, layout, locale, etc.) between two themes.';
+
+    protected static bool $initMagentoFlag = false;
 
     protected function configure(): void
     {
@@ -83,7 +80,6 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $time = microtime(true);
-        $this->detectMagento($output);
 
         $referenceFiles = $this->getChecksums(
             $this->_magentoRootFolder . '/app/design/frontend/'

@@ -6,7 +6,6 @@ namespace N98\Magento\Command\Config;
 
 use InvalidArgumentException;
 use Mage_Core_Exception;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,15 +29,11 @@ class SetCommand extends AbstractConfigCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'config:set';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Set a core config item.';
 
@@ -110,9 +105,6 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $config = $this->_getConfigModel();
         if (!$config->getResourceModel()) {
             // without a resource model, a config option can't be saved.

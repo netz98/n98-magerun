@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Developer;
 
 use N98\Magento\Command\AbstractCommand;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,15 +23,11 @@ class ClassLookupCommand extends AbstractCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'dev:class:lookup';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Resolves a grouped class name.';
 
@@ -59,9 +54,6 @@ class ClassLookupCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         /** @var string $type */
         $type = $input->getArgument(self::COMMAND_ARGUMENT_TYPE);
         /** @var string $name */

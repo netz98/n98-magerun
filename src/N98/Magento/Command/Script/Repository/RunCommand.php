@@ -29,17 +29,17 @@ class RunCommand extends AbstractRepositoryCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'script:repo:run';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Run script from repository.';
+
+    protected static bool $initMagentoFlag = false;
+
+    protected static bool $detectMagentoFlag = false;
 
     protected function configure(): void
     {
@@ -155,14 +155,5 @@ HELP;
         $this->getApplication()->run($input, $output);
 
         return Command::SUCCESS;
-    }
-
-    /**
-     * Skip initialisation
-     *
-     * @param bool $soft
-     */
-    public function initMagento(bool $soft = false): void
-    {
     }
 }

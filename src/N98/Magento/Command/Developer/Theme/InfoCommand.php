@@ -7,8 +7,6 @@ namespace N98\Magento\Command\Developer\Theme;
 use Mage_Core_Model_Store;
 use Mage_Core_Model_Website;
 use N98\Magento\Command\AbstractCommand;
-use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,15 +22,11 @@ class InfoCommand extends AbstractCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'dev:theme:info';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Displays settings of current design on particular store view.';
 
@@ -61,9 +55,6 @@ class InfoCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         foreach ($this->_getMage()->getWebsites() as $website) {
             foreach ($website->getStores() as $store) {
                 $this->_displayTable($output, $store);

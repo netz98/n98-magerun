@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Developer;
 
 use N98\Magento\Command\AbstractStoreConfigCommand;
-use Symfony\Component\Console\Attribute\AsCommand;
 
 /**
  * Toggle allow symlinks setting command
@@ -16,15 +15,11 @@ class SymlinksCommand extends AbstractStoreConfigCommand
 {
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'dev:symlinks';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Toggles allow symlinks setting';
 

@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace N98\Magento\Command\System;
 
 use N98\Magento\Command\AbstractCommand;
-use RuntimeException;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -25,28 +24,23 @@ class MaintenanceCommand extends AbstractCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'sys:maintenance';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Toggles maintenance mode';
 
     /**
      * @var Filesystem
      */
-    private Filesystem $filessystem;
+    private Filesystem $filesystem;
 
     public function __construct()
     {
         parent:: __construct();
-
-        $this->filessystem = new Filesystem();
+        $this->filesystem = new Filesystem();
     }
 
     /**
@@ -85,7 +79,7 @@ class MaintenanceCommand extends AbstractCommand
         } elseif ($input->getOption(self::COMMAND_OPTION_ON)) {
             $this->switchOn($output, $flagFile);
         } else {
-            if ($this->filessystem->exists($flagFile)) {
+            if ($this->filesystem->exists($flagFile)) {
                 $this->switchOff($output, $flagFile);
             } else {
                 $this->switchOn($output, $flagFile);
@@ -102,9 +96,9 @@ class MaintenanceCommand extends AbstractCommand
     private function switchOn(OutputInterface $output, string $flagFile): void
     {
         try {
-            $this->filessystem->touch($flagFile);
+            $this->filesystem->touch($flagFile);
         } catch (IOExceptionInterface $exception) {
-            throw new RuntimeException($exception->getMessage());
+            throw new IOException($exception->getMessage());
         }
 
         $output->writeln('Maintenance mode <info>on</info>');
@@ -117,9 +111,9 @@ class MaintenanceCommand extends AbstractCommand
     private function switchOff(OutputInterface $output, string $flagFile): void
     {
         try {
-            $this->filessystem->remove($flagFile);
+            $this->filesystem->remove($flagFile);
         } catch (IOExceptionInterface $exception) {
-            throw new RuntimeException($exception->getMessage());
+            throw new IOException($exception->getMessage());
         }
 
         $output->writeln('Maintenance mode <info>off</info>');

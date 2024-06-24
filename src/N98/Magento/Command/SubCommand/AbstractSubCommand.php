@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\SubCommand;
 
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,7 +37,7 @@ abstract class AbstractSubCommand implements SubCommandInterface
     protected $output;
 
     /**
-     * @var AbstractMagentoCommand
+     * @var AbstractCommand
      */
     protected $command;
 
@@ -72,7 +74,7 @@ abstract class AbstractSubCommand implements SubCommandInterface
     }
 
     /**
-     * @return AbstractMagentoCommand
+     * @return AbstractCommand
      */
     public function getCommand()
     {
@@ -80,9 +82,9 @@ abstract class AbstractSubCommand implements SubCommandInterface
     }
 
     /**
-     * @param AbstractMagentoCommand $command
+     * @param AbstractCommand $command
      */
-    public function setCommand(AbstractMagentoCommand $command)
+    public function setCommand(AbstractCommand $command)
     {
         $this->command = $command;
     }
@@ -101,9 +103,7 @@ abstract class AbstractSubCommand implements SubCommandInterface
     final protected function getOptionalBooleanOption($name, $question, $default = true)
     {
         if ($this->input->getOption($name) !== null) {
-            $flag = $this->getCommand()->parseBoolOption($this->input->getOption($name));
-
-            return $flag;
+            return $this->getCommand()->parseBoolOption($this->input->getOption($name));
         } else {
             /** @var $questionHelper QuestionHelper */
             $questionHelper = $this->getCommand()->getHelper('question');
@@ -117,13 +117,11 @@ abstract class AbstractSubCommand implements SubCommandInterface
                 $default
             );
 
-            $flag = $questionHelper->ask(
+            return $questionHelper->ask(
                 $this->input,
                 $this->output,
                 $question
             );
-
-            return $flag;
         }
     }
 
@@ -143,6 +141,6 @@ abstract class AbstractSubCommand implements SubCommandInterface
             return (bool) $default;
         }
 
-        return (bool) $this->getCommand()->parseBoolOption($value);
+        return $this->getCommand()->parseBoolOption($value);
     }
 }

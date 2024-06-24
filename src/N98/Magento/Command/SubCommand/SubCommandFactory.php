@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\SubCommand;
 
-use N98\Magento\Command\AbstractMagentoCommand;
+use InvalidArgumentException;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -15,35 +18,35 @@ class SubCommandFactory
     /**
      * @var string
      */
-    protected $baseNamespace;
+    protected string $baseNamespace;
 
     /**
      * @var InputInterface
      */
-    protected $input;
+    protected InputInterface $input;
 
     /**
      * @var OutputInterface
      */
-    protected $output;
+    protected OutputInterface $output;
 
     /**
      * @var ConfigBag
      */
-    protected $config;
+    protected ConfigBag $config;
 
     /**
      * @var array
      */
-    protected $commandConfig;
+    protected array $commandConfig;
 
     /**
-     * @var AbstractMagentoCommand
+     * @var AbstractCommand
      */
-    protected $command;
+    protected AbstractCommand $command;
 
     /**
-     * @param AbstractMagentoCommand $command
+     * @param AbstractCommand $command
      * @param string $baseNamespace
      * @param InputInterface  $input
      * @param OutputInterface $output
@@ -51,12 +54,12 @@ class SubCommandFactory
      * @param ConfigBag $config
      */
     public function __construct(
-        AbstractMagentoCommand $command,
-        $baseNamespace,
-        InputInterface $input,
+        AbstractCommand $command,
+        string          $baseNamespace,
+        InputInterface  $input,
         OutputInterface $output,
-        array $commandConfig,
-        ConfigBag $config
+        array           $commandConfig,
+        ConfigBag       $config
     ) {
         $this->baseNamespace = $baseNamespace;
         $this->command = $command;
@@ -71,7 +74,7 @@ class SubCommandFactory
      * @param bool $userBaseNamespace
      * @return SubCommandInterface
      */
-    public function create($className, $userBaseNamespace = true)
+    public function create(string $className, bool $userBaseNamespace = true): SubCommandInterface
     {
         if ($userBaseNamespace) {
             $className = rtrim($this->baseNamespace, '\\') . '\\' . $className;
@@ -79,7 +82,7 @@ class SubCommandFactory
 
         $subCommand = new $className();
         if (!$subCommand instanceof SubCommandInterface) {
-            throw new \InvalidArgumentException('Subcommand must implement SubCommandInterface.');
+            throw new InvalidArgumentException('Subcommand must implement SubCommandInterface.');
         }
 
         // Inject objects
@@ -95,7 +98,7 @@ class SubCommandFactory
     /**
      * @return ConfigBag
      */
-    public function getConfig()
+    public function getConfig(): ConfigBag
     {
         return $this->config;
     }

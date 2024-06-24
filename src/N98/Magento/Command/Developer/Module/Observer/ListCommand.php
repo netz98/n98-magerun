@@ -6,8 +6,7 @@ namespace N98\Magento\Command\Developer\Module\Observer;
 
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractCommand;
-use N98\Magento\Command\CommandFormatInterface;
-use Symfony\Component\Console\Attribute\AsCommand;
+use N98\Magento\Command\CommandDataInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Developer\Module\Observer
  */
-class ListCommand extends AbstractCommand implements CommandFormatInterface
+class ListCommand extends AbstractCommand implements CommandDataInterface
 {
     public const COMMAND_ARGUMENT_TYPE = 'type';
 
@@ -26,15 +25,11 @@ class ListCommand extends AbstractCommand implements CommandFormatInterface
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'dev:module:observer:list';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Lists all registered observers.';
 
@@ -57,51 +52,46 @@ class ListCommand extends AbstractCommand implements CommandFormatInterface
     }
 
     /**
-     * {@inheritdoc}
-     * @return array<int|string, array<string, string>>
+     * {@inheritDoc}
      */
-    public function getData(InputInterface $input, OutputInterface $output): array
+    public function setData(InputInterface $input,OutputInterface $output) : void
     {
-        if (is_null($this->data)) {
-            $this->data = [];
+        $this->data = [];
 
+        /** @var string $type */
+        $type = $input->getArgument(self::COMMAND_ARGUMENT_TYPE);
+
+        $areas = ['global', 'adminhtml', 'frontend', 'crontab'];
+
+        if ($type === null) {
             /** @var string $type */
-            $type = $input->getArgument(self::COMMAND_ARGUMENT_TYPE);
-
-            $areas = ['global', 'adminhtml', 'frontend', 'crontab'];
-
-            if ($type === null) {
-                /** @var string $type */
-                $type = $this->askForArrayEntry($areas, $input, $output, 'Please select an area:');
-            }
-
-            if (!in_array($type, $areas)) {
-                throw new InvalidArgumentException('Invalid type! Use one of: ' . implode(', ', $areas));
-            }
-
-            if ($input->getOption(parent::COMMAND_OPTION_FORMAT) === null) {
-                $this->writeSection($output, 'Observers: ' . $type);
-            }
-
-            $frontendEvents = $this->_getMageConfig()->getNode($type . '/events')->asArray();
-            if (true === $input->getOption(self::COMMAND_OPTION_SORT)) {
-                // sorting for Observers is a bad idea because the order in which observers will be called is important.
-                ksort($frontendEvents);
-            }
-
-            foreach ($frontendEvents as $eventName => $eventData) {
-                $observerList = [];
-                foreach ($eventData['observers'] as $observer) {
-                    $observerList[] = $this->getObserver($observer, $type);
-                }
-                $this->data[] = [
-                    'Event' => $eventName,
-                    'Observers' => implode("\n", $observerList)
-                ];
-            }
+            $type = $this->askForArrayEntry($areas, $input, $output, 'Please select an area:');
         }
 
-        return $this->data;
+        if (!in_array($type, $areas)) {
+            throw new InvalidArgumentException('Invalid type! Use one of: ' . implode(', ', $areas));
+        }
+
+        if ($input->getOption(parent::COMMAND_OPTION_FORMAT) === null) {
+            $this->writeSection($output, 'Observers: ' . $type);
+        }
+
+        $frontendEvents = $this->_getMageConfig()->getNode($type . '/events')->asArray();
+        if (true === $input->getOption(self::COMMAND_OPTION_SORT)) {
+            // sorting for Observers is a bad idea because the order in which observers will be called is important.
+            ksort($frontendEvents);
+        }
+
+        foreach ($frontendEvents as $eventName => $eventData) {
+            $observerList = [];
+            foreach ($eventData['observers'] as $observer) {
+                $observerList[] = $this->getObserver($observer, $type);
+            }
+            $this->data[] = [
+                'Event' => $eventName,
+                'Observers' => implode("\n", $observerList)
+            ];
+        }
     }
 
     /**

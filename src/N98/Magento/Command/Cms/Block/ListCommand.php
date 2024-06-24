@@ -6,8 +6,7 @@ namespace N98\Magento\Command\Cms\Block;
 
 use Mage_Cms_Model_Block;
 use Mage_Core_Exception;
-use N98\Magento\Command\CommandFormatInterface;
-use Symfony\Component\Console\Attribute\AsCommand;
+use N98\Magento\Command\CommandDataInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -16,52 +15,43 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Cms\Block
  */
-class ListCommand extends AbstractCmsBlockCommand implements CommandFormatInterface
+class ListCommand extends AbstractCmsBlockCommand implements CommandDataInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'CMS blocks';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'cms:block:list';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'List all CMS blocks.';
 
     /**
      * {@inheritdoc}
-     * @return array<int|string, array<string, string>>
      * @throws Mage_Core_Exception
      *
      * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
-    public function getData(InputInterface $input, OutputInterface $output): array
+    public function setData(InputInterface $input,OutputInterface $output) : void
     {
-        if (is_null($this->data)) {
-            $this->data = [];
+        $this->data = [];
 
-            /** @var Mage_Cms_Model_Block[] $cmsBlockCollection */
-            $cmsBlockCollection = $this->_getBlockModel()->getCollection()->addFieldToSelect('*');
-            $resourceModel = $this->_getBlockModel()->getResource();
-            foreach ($cmsBlockCollection as $cmsBlock) {
-                $storeIds = implode(',', $resourceModel->lookupStoreIds((int)$cmsBlock->getId()));
+        /** @var Mage_Cms_Model_Block[] $cmsBlockCollection */
+        $cmsBlockCollection = $this->_getBlockModel()->getCollection()->addFieldToSelect('*');
+        $resourceModel = $this->_getBlockModel()->getResource();
+        foreach ($cmsBlockCollection as $cmsBlock) {
+            $storeIds = implode(',', $resourceModel->lookupStoreIds((int)$cmsBlock->getId()));
 
-                $this->data[] = [
-                    'block_id'      => $cmsBlock->getBlockId(),
-                    'title'         => $cmsBlock->getTitle(),
-                    'identifier'    => $cmsBlock->getIdentifier(),
-                    'is_active'     => $cmsBlock->getIsActive() ? 'active' : 'inactive',
-                    'store_ids'     => $storeIds
-                ];
-            }
+            $this->data[] = [
+                'block_id'      => $cmsBlock->getBlockId(),
+                'title'         => $cmsBlock->getTitle(),
+                'identifier'    => $cmsBlock->getIdentifier(),
+                'is_active'     => $cmsBlock->getIsActive() ? 'active' : 'inactive',
+                'store_ids'     => $storeIds
+            ];
         }
-
-        return $this->data;
     }
 }

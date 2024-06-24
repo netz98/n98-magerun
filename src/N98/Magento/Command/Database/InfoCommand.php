@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Database;
 
 use InvalidArgumentException;
-use N98\Magento\Command\CommandFormatInterface;
+use N98\Magento\Command\CommandDataInterface;
 use N98\Magento\DbSettings;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Database
  */
-class InfoCommand extends AbstractDatabaseCommand implements CommandFormatInterface
+class InfoCommand extends AbstractDatabaseCommand implements CommandDataInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Database information';
 
@@ -26,15 +25,11 @@ class InfoCommand extends AbstractDatabaseCommand implements CommandFormatInterf
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'db:info';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Dumps database information.';
 
@@ -72,7 +67,7 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (($settingArgument = $input->getArgument(self::COMMAND_ARGUMENT_SETTING)) !== null) {
-            $settings = $this->getData($input, $output);
+            $settings = $this->getData();
             if (!isset($settings[$settingArgument])) {
                 throw new InvalidArgumentException('Unknown setting: ' . $settingArgument);
             }
@@ -86,74 +81,69 @@ HELP;
 
     /**
      * {@inheritdoc}
-     * @return array<string, array<string, string>>
      *
      * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
-    public function getData(InputInterface $input, OutputInterface $output): array
+    public function setData(InputInterface $input,OutputInterface $output) : void
     {
-        if (is_null($this->data)) {
-            $this->detectDbSettings($output);
+        $this->detectDbSettings($output);
 
-            $settings = [];
-            foreach ($this->dbSettings as $key => $value) {
-                $settings[$key] = (string) $value;
-            }
-
-            if ($this->dbSettings instanceof DbSettings) {
-                $isSocketConnect = $this->dbSettings->isSocketConnect();
-            } else {
-                $isSocketConnect = false;
-            }
-
-            // note: there is no need to specify the default port neither for PDO, nor JDBC nor CLI.
-            $portOrDefault = $this->dbSettings['port'] ?? 3306;
-
-            $pdoConnectionString = '';
-            if ($isSocketConnect) {
-                $pdoConnectionString = sprintf(
-                    'mysql:unix_socket=%s;dbname=%s',
-                    $this->dbSettings['unix_socket'],
-                    $this->dbSettings['dbname']
-                );
-            } else {
-                $pdoConnectionString = sprintf(
-                    'mysql:host=%s;port=%s;dbname=%s',
-                    $this->dbSettings['host'],
-                    $portOrDefault,
-                    $this->dbSettings['dbname']
-                );
-            }
-            $settings['PDO-Connection-String'] = $pdoConnectionString;
-
-            $jdbcConnectionString = '';
-            if ($isSocketConnect) {
-                // isn't supported according to this post: http://stackoverflow.com/a/18493673/145829
-                $jdbcConnectionString = 'Connecting using JDBC through a unix socket isn\'t supported!';
-            } else {
-                $jdbcConnectionString = sprintf(
-                    'jdbc:mysql://%s:%s/%s?username=%s&password=%s',
-                    $this->dbSettings['host'],
-                    $portOrDefault,
-                    $this->dbSettings['dbname'],
-                    $this->dbSettings['username'],
-                    $this->dbSettings['password']
-                );
-            }
-            $settings['JDBC-Connection-String'] = $jdbcConnectionString;
-
-            $database = $this->getDatabaseHelper();
-            $mysqlCliString = 'mysql ' . $database->getMysqlClientToolConnectionString();
-            $settings['MySQL-Cli-String'] = $mysqlCliString;
-
-            foreach ($settings as $settingName => $settingValue) {
-                $this->data[$settingName] = [
-                    'Name' => $settingName,
-                    'Value' => $settingValue
-                ];
-            }
+        $settings = [];
+        foreach ($this->dbSettings as $key => $value) {
+            $settings[$key] = (string) $value;
         }
 
-        return $this->data;
+        if ($this->dbSettings instanceof DbSettings) {
+            $isSocketConnect = $this->dbSettings->isSocketConnect();
+        } else {
+            $isSocketConnect = false;
+        }
+
+        // note: there is no need to specify the default port neither for PDO, nor JDBC nor CLI.
+        $portOrDefault = $this->dbSettings['port'] ?? 3306;
+
+        $pdoConnectionString = '';
+        if ($isSocketConnect) {
+            $pdoConnectionString = sprintf(
+                'mysql:unix_socket=%s;dbname=%s',
+                $this->dbSettings['unix_socket'],
+                $this->dbSettings['dbname']
+            );
+        } else {
+            $pdoConnectionString = sprintf(
+                'mysql:host=%s;port=%s;dbname=%s',
+                $this->dbSettings['host'],
+                $portOrDefault,
+                $this->dbSettings['dbname']
+            );
+        }
+        $settings['PDO-Connection-String'] = $pdoConnectionString;
+
+        $jdbcConnectionString = '';
+        if ($isSocketConnect) {
+            // isn't supported according to this post: http://stackoverflow.com/a/18493673/145829
+            $jdbcConnectionString = 'Connecting using JDBC through a unix socket isn\'t supported!';
+        } else {
+            $jdbcConnectionString = sprintf(
+                'jdbc:mysql://%s:%s/%s?username=%s&password=%s',
+                $this->dbSettings['host'],
+                $portOrDefault,
+                $this->dbSettings['dbname'],
+                $this->dbSettings['username'],
+                $this->dbSettings['password']
+            );
+        }
+        $settings['JDBC-Connection-String'] = $jdbcConnectionString;
+
+        $database = $this->getDatabaseHelper();
+        $mysqlCliString = 'mysql ' . $database->getMysqlClientToolConnectionString();
+        $settings['MySQL-Cli-String'] = $mysqlCliString;
+
+        foreach ($settings as $settingName => $settingValue) {
+            $this->data[$settingName] = [
+                'Name' => $settingName,
+                'Value' => $settingValue
+            ];
+        }
     }
 }

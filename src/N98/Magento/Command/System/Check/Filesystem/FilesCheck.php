@@ -15,12 +15,12 @@ class FilesCheck implements SimpleCheck, CommandAware, CommandConfigAware
     /**
      * @var array
      */
-    protected $_commandConfig;
+    protected array $_commandConfig;
 
     /**
      * @var CheckCommand
      */
-    protected $_checkCommand;
+    protected CheckCommand $_checkCommand;
 
     /**
      * @param ResultCollection $results
@@ -54,7 +54,7 @@ class FilesCheck implements SimpleCheck, CommandAware, CommandConfigAware
     }
 
     /**
-     * @param Command $command
+     * @param CheckCommand $command
      */
     public function setCommand(Command $command)
     {

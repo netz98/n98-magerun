@@ -8,7 +8,6 @@ use Exception;
 use Mage_Core_Exception;
 use Mage_Core_Model_Website;
 use Mage_Customer_Model_Attribute;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,15 +26,11 @@ class InfoCommand extends AbstractCustomerCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'customer:info';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Loads basic customer info by email address.';
 
@@ -68,9 +63,6 @@ class InfoCommand extends AbstractCustomerCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $parameterHelper = $this->getParameterHelper();
 
         $email = $parameterHelper->askEmail($input, $output);

@@ -6,7 +6,6 @@ namespace N98\Magento\Command\Admin\User;
 
 use Exception;
 use RuntimeException;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,15 +26,11 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'admin:user:change-password';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Changes the password of a adminhtml user.';
 
@@ -63,9 +58,6 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $dialog = $this->getQuestionHelper();
 
         /** @var string|null $username */

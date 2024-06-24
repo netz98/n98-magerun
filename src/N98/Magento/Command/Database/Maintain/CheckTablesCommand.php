@@ -6,10 +6,8 @@ namespace N98\Magento\Command\Database\Maintain;
 
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractCommand;
-use N98\Magento\Command\CommandFormatInterface;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Magento\Command\CommandDataInterface;
 use PDO;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Database\Maintain
  */
-class CheckTablesCommand extends AbstractCommand implements CommandFormatInterface
+class CheckTablesCommand extends AbstractCommand implements CommandDataInterface
 {
     public const COMMAND_OPTION_TYPE = 'type';
 
@@ -34,15 +32,11 @@ class CheckTablesCommand extends AbstractCommand implements CommandFormatInterfa
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'db:maintain:check-tables';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Check database tables.';
 
@@ -141,66 +135,61 @@ HELP;
 
     /**
      * {@inheritdoc}
-     * @return array<int|string, array<string, string>>
      *
      * @uses self::_checkInnoDB()
      * @uses self::_checkMEMORY()
      * @uses self::_checkMyISAM()
      */
-    public function getData(InputInterface $input, OutputInterface $output): array
+    public function setData(InputInterface $input,OutputInterface $output) : void
     {
-        if (is_null($this->data)) {
-            $data = [];
-            $this->isTypeAllowed($input);
-            $database = $this->getDatabaseHelper();
-            $this->showProgress = $input->getOption(self::COMMAND_OPTION_FORMAT) === null;
+        $data = [];
+        $this->isTypeAllowed($input);
+        $database = $this->getDatabaseHelper();
+        $this->showProgress = $input->getOption(self::COMMAND_OPTION_FORMAT) === null;
 
-            /** @var string $table */
-            $table = $input->getOption(self::COMMAND_OPTION_TABLE);
-            if ($table) {
-                $resolvedTables = [$database->resolveTables(
-                    ['@check'],
-                    ['check' => ['tables' => explode(' ', $table)]]
-                )];
-                $tables = $resolvedTables[0];
-            } else {
-                $tables = $database->getTables();
-            }
-
-            $allTableStatus = $database->getTablesStatus();
-
-            $progress = new ProgressBar($output, 50);
-
-            if ($this->showProgress) {
-                $progress->start(count($tables));
-            }
-
-            $methods = ['InnoDB' => 1, 'MEMORY' => 1, 'MyISAM' => 1];
-
-            foreach ($tables as $tableName) {
-                if (isset($allTableStatus[$tableName]) && isset($methods[$allTableStatus[$tableName]['Engine']])) {
-                    $m = '_check' . $allTableStatus[$tableName]['Engine'];
-                    $data = array_merge($data, $this->$m($input, $output, $tableName));
-                } else {
-                    $data[] = [
-                        'Table'     => $tableName,
-                        'Operation' => 'not supported',
-                        'Type'      => '',
-                        'Status'    => ''
-                    ];
-                }
-                $this->progressAdvance($progress);
-            }
-
-            if ($this->showProgress) {
-                $progress->finish();
-                $output->writeln('');
-            }
-
-            $this->data = $data;
+        /** @var string $table */
+        $table = $input->getOption(self::COMMAND_OPTION_TABLE);
+        if ($table) {
+            $resolvedTables = [$database->resolveTables(
+                ['@check'],
+                ['check' => ['tables' => explode(' ', $table)]]
+            )];
+            $tables = $resolvedTables[0];
+        } else {
+            $tables = $database->getTables();
         }
 
-        return $this->data;
+        $allTableStatus = $database->getTablesStatus();
+
+        $progress = new ProgressBar($output, 50);
+
+        if ($this->showProgress) {
+            $progress->start(count($tables));
+        }
+
+        $methods = ['InnoDB' => 1, 'MEMORY' => 1, 'MyISAM' => 1];
+
+        foreach ($tables as $tableName) {
+            if (isset($allTableStatus[$tableName]) && isset($methods[$allTableStatus[$tableName]['Engine']])) {
+                $m = '_check' . $allTableStatus[$tableName]['Engine'];
+                $data = array_merge($data, $this->$m($input, $output, $tableName));
+            } else {
+                $data[] = [
+                    'Table'     => $tableName,
+                    'Operation' => 'not supported',
+                    'Type'      => '',
+                    'Status'    => ''
+                ];
+            }
+            $this->progressAdvance($progress);
+        }
+
+        if ($this->showProgress) {
+            $progress->finish();
+            $output->writeln('');
+        }
+
+        $this->data = $data;
     }
 
     /**

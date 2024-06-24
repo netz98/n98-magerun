@@ -54,10 +54,10 @@ abstract class AbstractAdminUserCommand extends AbstractCommand
      */
     protected function getUserByIdOrEmail(InputInterface $input, OutputInterface $output): Mage_Admin_Model_User
     {
-        $id = $this->getOrAskForArgument(self::COMMAND_ARGUMENT_ID, $input, $output, 'Username or Email');
-        $user = $this->getUserModel()->loadByUsername($id);
+        $identifier = $this->getOrAskForArgument(self::COMMAND_ARGUMENT_ID, $input, $output, 'Username or Email');
+        $user = $this->getUserModel()->loadByUsername($identifier);
         if (!$user->getId()) {
-            $user = $this->getUserModel()->load($id, 'email');
+            $user = $this->getUserModel()->load($identifier, 'email');
         }
 
         return $user;

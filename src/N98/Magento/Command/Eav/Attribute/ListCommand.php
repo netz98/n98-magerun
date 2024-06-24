@@ -9,8 +9,7 @@ use Mage;
 use Mage_Eav_Model_Entity_Attribute;
 use Mage_Eav_Model_Entity_Type;
 use N98\Magento\Command\AbstractCommand;
-use N98\Magento\Command\CommandFormatInterface;
-use Symfony\Component\Console\Attribute\AsCommand;
+use N98\Magento\Command\CommandDataInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Eav\Attribute
  */
-class ListCommand extends AbstractCommand implements CommandFormatInterface
+class ListCommand extends AbstractCommand implements CommandDataInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'EAV attributes';
 
@@ -32,15 +31,11 @@ class ListCommand extends AbstractCommand implements CommandFormatInterface
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'eav:attribute:list';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Lists all EAV attributes.';
 
@@ -71,48 +66,44 @@ class ListCommand extends AbstractCommand implements CommandFormatInterface
 
     /**
      * {@inheritdoc}
-     * @return array<int|string, array<string, string>>
      *
      * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
-    public function getData(InputInterface $input, OutputInterface $output): array
+    public function setData(InputInterface $input,OutputInterface $output) : void
     {
-        if (is_null($this->data)) {
-            $this->data = [];
+        $this->data = [];
 
-            $attributesCollection = Mage::getResourceModel('eav/entity_attribute_collection');
-            $attributesCollection->setOrder('attribute_code', 'asc');
-            /** @var Mage_Eav_Model_Entity_Attribute $attribute */
-            foreach ($attributesCollection as $attribute) {
-                $entityType = $this->_getEntityType($attribute);
+        $attributesCollection = Mage::getResourceModel('eav/entity_attribute_collection');
+        $attributesCollection->setOrder('attribute_code', 'asc');
+        /** @var Mage_Eav_Model_Entity_Attribute $attribute */
+        foreach ($attributesCollection as $attribute) {
+            $entityType = $this->_getEntityType($attribute);
 
-                /**
-                 * Filter by type
-                 */
-                if ($input->getOption(self::COMMAND_OPTION_FILTER_TYPE) !== null
-                    && $input->getOption(self::COMMAND_OPTION_FILTER_TYPE) !== $entityType
-                ) {
-                    continue;
-                }
-
-                $row = [];
-                $row['Code']        = $attribute->getAttributeCode();
-                $row['ID']          = $attribute->getId();
-                $row['Entity type'] = $entityType;
-                $row['Label']       = $attribute->getFrontendLabel();
-
-                if ($input->getOption(self::COMMAND_OPTION_ADD_SOURCE)) {
-                    $row['Source'] = $attribute->getSourceModel() ?: '';
-                }
-                if ($input->getOption(self::COMMAND_OPTION_ADD_BACKEND)) {
-                    $row['Backend type'] = $attribute->getBackendType();
-                }
-
-                $this->data[] = $row;
+            /**
+             * Filter by type
+             */
+            if ($input->getOption(self::COMMAND_OPTION_FILTER_TYPE) !== null
+                && $input->getOption(self::COMMAND_OPTION_FILTER_TYPE) !== $entityType
+            ) {
+                continue;
             }
+
+            $row = [];
+            $row['Code']        = $attribute->getAttributeCode();
+            $row['ID']          = $attribute->getId();
+            $row['Entity type'] = $entityType;
+            $row['Label']       = $attribute->getFrontendLabel();
+
+            if ($input->getOption(self::COMMAND_OPTION_ADD_SOURCE)) {
+                $row['Source'] = $attribute->getSourceModel() ?: '';
+            }
+            if ($input->getOption(self::COMMAND_OPTION_ADD_BACKEND)) {
+                $row['Backend type'] = $attribute->getBackendType();
+            }
+
+            $this->data[] = $row;
         }
 
-        return $this->data;
     }
 
     /**

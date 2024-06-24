@@ -8,7 +8,6 @@ use Locale;
 use Mage;
 use Mage_Core_Model_Store_Exception;
 use N98\Magento\Command\AbstractCommand;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,15 +29,11 @@ class ExportCommand extends AbstractCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'dev:translate:export';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Export inline translations.';
 
@@ -71,9 +66,6 @@ class ExportCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $helper = $this->getDatabaseHelper();
         $db = $helper->getConnection();
 

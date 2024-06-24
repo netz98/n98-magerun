@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\SubCommand;
 
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -37,15 +39,15 @@ interface SubCommandInterface
     public function setOutput(OutputInterface $output);
 
     /**
-     * @return AbstractMagentoCommand
+     * @return AbstractCommand
      */
     public function getCommand();
 
     /**
-     * @param AbstractMagentoCommand $command
+     * @param AbstractCommand $command
      * @return void
      */
-    public function setCommand(AbstractMagentoCommand $command);
+    public function setCommand(AbstractCommand $command);
 
     /**
      * @return void

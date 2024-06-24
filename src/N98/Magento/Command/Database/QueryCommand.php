@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Database;
 
 use N98\Util\Exec;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,17 +24,17 @@ class QueryCommand extends AbstractDatabaseCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'db:query';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Executes an SQL query on the database defined in local.xml.';
+
+    protected static bool $detectMagentoFlag = false;
+
+    protected static bool $initMagentoFlag = false;
 
     protected function configure(): void
     {
@@ -105,26 +104,35 @@ HELP;
         $this->detectDbSettings($output);
 
         $query = $this->getOrAskForArgument(self::COMMAND_ARGUMENT_QUERY, $input, $output, 'SQL Query');
-
-        $helper = $this->getDatabaseHelper();
-        $exec = sprintf(
-            'mysql %s -e %s',
-            $helper->getMysqlClientToolConnectionString(),
-            escapeshellarg($query)
-        );
+        $exec = $this->getQueryString($query);
 
         if ($input->getOption(self::COMMAND_OPTION_ONLY_COMMAND)) {
             $output->writeln($exec);
-        } else {
-            Exec::run($exec, $commandOutput, $returnValue);
-            if ($commandOutput) {
-                $output->writeln($commandOutput);
-                if ($returnValue > 0) {
-                    $output->writeln('<error>' . $commandOutput . '</error>');
-                }
+            return Command::SUCCESS;
+        }
+
+        Exec::run($exec, $commandOutput, $returnValue);
+        if ($commandOutput) {
+            $output->writeln($commandOutput);
+            if ($returnValue > 0) {
+                $output->writeln('<error>' . $commandOutput . '</error>');
             }
         }
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * @param string $query
+     * @return string
+     */
+    private function getQueryString(string $query): string
+    {
+        $helper = $this->getDatabaseHelper();
+        return sprintf(
+            'mysql %s -e %s',
+            $helper->getMysqlClientToolConnectionString(),
+            escapeshellarg($query)
+        );
     }
 }

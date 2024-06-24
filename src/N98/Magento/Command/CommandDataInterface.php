@@ -8,16 +8,17 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Interface AbstractCommandFormatInterface
+ * Interface CommandDataInterface
  *
  * @package N98\Magento\Command
  */
-interface CommandFormatInterface
+interface CommandDataInterface
 {
     /**
+     * Set data to display in command output
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return array<int|string, array<string, string>>
      */
-    public function getData(InputInterface $input, OutputInterface $output): array;
+    public function setData(InputInterface $input, OutputInterface $output): void;
 }

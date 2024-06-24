@@ -1,15 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Url;
 
-use InvalidArgumentException;
 use Mage;
+use Mage_Core_Exception;
 use Mage_Core_Model_Store;
-use N98\Magento\Command\AbstractMagentoCommand;
+use Mage_Core_Model_Store_Exception;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Varien_Object;
 
 /**
  * Create url list
@@ -26,10 +30,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  * and is set by default
  *
  * @author Fabrizio Branca
+ * @package N98\Magento\Command\System\Url
  */
-class ListCommand extends AbstractMagentoCommand
+class ListCommand extends AbstractCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('sys:url:list')
@@ -40,8 +45,14 @@ class ListCommand extends AbstractMagentoCommand
             ->addArgument('stores', InputArgument::OPTIONAL, 'Stores (comma-separated list of store ids)')
             ->addArgument('linetemplate', InputArgument::OPTIONAL, 'Line template', '{url}')
             ->setDescription('Get all urls.');
+    }
 
-        $help = <<<HELP
+    /**
+     * @return string
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Examples:
 
 - Create a list of product urls only:
@@ -56,7 +67,6 @@ Examples:
 - The "linetemplate" can contain all parts "parse_url" return wrapped 
   in '{}'. '{url}' always maps the complete url and is set by default
 HELP;
-        $this->setHelp($help);
     }
 
     /**
@@ -64,16 +74,12 @@ HELP;
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
+     * @throws Mage_Core_Model_Store_Exception
+     * @throws Mage_Core_Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
-
         if ($input->getOption('add-all')) {
             $input->setOption('add-categories', true);
             $input->setOption('add-products', true);
@@ -85,12 +91,13 @@ HELP;
         $urls = [];
 
         foreach ($stores as $storeId) {
-            $currentStore = Mage::app()->getStore($storeId); /* @var \Mage_Core_Model_Store $currentStore */
+            /** @var Mage_Core_Model_Store $currentStore */
+            $currentStore = Mage::app()->getStore($storeId);
 
             // base url
             $urls[] = $currentStore->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
 
-            $linkBaseUrl = $currentStore->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
+            $linkBaseUrl = $currentStore->getBaseUrl();
 
             if ($input->getOption('add-categories')) {
                 $urls = $this->getUrls('sitemap/catalog_category', $linkBaseUrl, $storeId, $urls);
@@ -122,6 +129,7 @@ HELP;
             // ... and output
             $output->writeln($line);
         }
+
         return 0;
     }
 
@@ -130,10 +138,9 @@ HELP;
      * @param string $linkBaseUrl
      * @param string $storeId
      * @param array  $urls
-     *
      * @return array
      */
-    protected function getUrls($resourceModel, $linkBaseUrl, $storeId, array $urls)
+    protected function getUrls(string $resourceModel, string $linkBaseUrl, string $storeId, array $urls): array
     {
         $resourceModel = Mage::getResourceModel($resourceModel);
         if (!$resourceModel) {
@@ -146,7 +153,7 @@ HELP;
         }
 
         foreach ($collection as $item) {
-            /* @var \Varien_Object $item */
+            /** @var Varien_Object $item */
             $urls[] = $linkBaseUrl . $item->getUrl();
         }
         return $urls;

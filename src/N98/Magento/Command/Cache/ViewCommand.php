@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Cache;
 
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Validation;
 
 /**
  * View cache command
@@ -24,15 +26,11 @@ class ViewCommand extends AbstractCacheCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'cache:view';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Prints a cache entry.';
 
@@ -54,18 +52,15 @@ class ViewCommand extends AbstractCacheCommand
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * {@inheritDoc}
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
-        $cacheInstance = $this->getCacheInstance();
         /** @var string $cacheId */
         $cacheId = $input->getArgument(self::COMMAND_ARGUMENT_ID);
+
+        $cacheInstance = $this->getCacheInstance();
         /** @var string $cacheData */
         $cacheData = $cacheInstance->load($cacheId);
         if ($input->getOption(self::COMMAND_OPTION_UNSERIALZE)) {

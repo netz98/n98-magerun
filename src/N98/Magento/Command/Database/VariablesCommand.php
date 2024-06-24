@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Database;
 
-use Symfony\Component\Console\Attribute\AsCommand;
-
 /**
  * Database variables command
  *
@@ -15,15 +13,11 @@ class VariablesCommand extends AbstractShowCommand
 {
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'db:variables';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Shows important variables or custom selected.';
 

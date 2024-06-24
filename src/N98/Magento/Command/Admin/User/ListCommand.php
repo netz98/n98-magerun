@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Admin\User;
 
 use Mage_Admin_Model_User;
-use N98\Magento\Command\CommandFormatInterface;
-use Symfony\Component\Console\Attribute\AsCommand;
+use N98\Magento\Command\CommandDataInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -15,48 +14,38 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Admin\User
  */
-class ListCommand extends AbstractAdminUserCommand implements CommandFormatInterface
+class ListCommand extends AbstractAdminUserCommand implements CommandDataInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Admin users';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'admin:user:list';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'List admin users.';
 
     /**
-     * {@inheritdoc}
-     * @return array<int|string, array<string, string>>
+     * {@inheritDoc}
      *
      * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
-    public function getData(InputInterface $input, OutputInterface $output): array
+    public function setData(InputInterface $input,OutputInterface $output) : void
     {
-        if (is_null($this->data)) {
-            $this->data = [];
-
-            $userModel = $this->getUserModel();
-            $userList = $userModel->getCollection();
-            /** @var Mage_Admin_Model_User $user */
-            foreach ($userList as $user) {
-                $this->data[] = [
-                    'id'        => $user->getId(),
-                    'username'  => $user->getUsername(),
-                    'email'     => $user->getEmail(),
-                    'status'    => $user->getIsActive() ? 'active' : 'inactive'
-                ];
-            }
+        $this->data = [];
+        $userModel = $this->getUserModel();
+        $userList = $userModel->getCollection();
+        /** @var Mage_Admin_Model_User $user */
+        foreach ($userList as $user) {
+            $this->data[] = [
+                'Id'        => $user->getId(),
+                'Username'  => $user->getUsername(),
+                'Email'     => $user->getEmail(),
+                'Status'    => $user->getIsActive() ? 'active' : 'inactive'
+            ];
         }
-
-        return $this->data;
     }
 }

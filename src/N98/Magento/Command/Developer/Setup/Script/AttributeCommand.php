@@ -15,15 +15,15 @@
 namespace N98\Magento\Command\Developer\Setup\Script;
 
 use Exception;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType\Factory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class AttributeCommand extends AbstractMagentoCommand
+class AttributeCommand extends AbstractCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('dev:setup:script:attribute')
@@ -41,9 +41,7 @@ class AttributeCommand extends AbstractMagentoCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        $this->initMagento();
 
         try {
             $entityType = $input->getArgument('entityType');
@@ -53,7 +51,7 @@ class AttributeCommand extends AbstractMagentoCommand
 
             $generator = Factory::create($entityType, $attribute);
             $generator->setReadConnection(
-                $this->_getModel('core/resource', 'Mage_Core_Model_Resource')->getConnection('core_read')
+                $this->_getModel('core/resource')->getConnection('core_read')
             );
             $code = $generator->generateCode();
             $warnings = $generator->getWarnings();
@@ -68,14 +66,12 @@ class AttributeCommand extends AbstractMagentoCommand
     /**
      * @param string $entityType
      * @param string $attributeCode
-     *
      * @return mixed
      */
-    protected function getAttribute($entityType, $attributeCode)
+    protected function getAttribute(string $entityType, string $attributeCode)
     {
-        $attribute = $this->_getModel('catalog/resource_eav_attribute', 'Mage_Catalog_Model_Resource_Eav_Attribute')
+        return $this
+            ->_getModel('catalog/resource_eav_attribute')
             ->loadByCode($entityType, $attributeCode);
-
-        return $attribute;
     }
 }

@@ -7,7 +7,6 @@ namespace N98\Magento\Command\Config;
 use Mage_Core_Model_Config_Element;
 use RuntimeException;
 use stdClass;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,15 +27,11 @@ class SearchCommand extends AbstractConfigCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'config:search';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Search system configuration descriptions.';
 
@@ -68,9 +63,6 @@ EOT;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output, true);
-        $this->initMagento();
-
         $this->writeSection($output, 'Config Search');
 
         /** @var string $searchString */

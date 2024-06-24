@@ -8,7 +8,6 @@ use Exception;
 use InvalidArgumentException;
 use Mage_Index_Model_Process;
 use N98\Util\BinaryString;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,15 +25,11 @@ class ReindexCommand extends AbstractIndexerCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'index:reindex';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Reindex a index by code.';
 
@@ -79,9 +74,6 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $this->writeSection($output, 'Reindex');
         $this->disableObservers();
         $indexCode = $input->getArgument(self::COMMAND_ARGUMENT_INDEX_CODE);

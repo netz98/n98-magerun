@@ -110,7 +110,7 @@ HELP;
     /**
      * @return bool
      */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return Exec::allowed();
     }

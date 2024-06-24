@@ -10,7 +10,6 @@ use Mage_Core_Model_Website;
 use Mage_Customer_Model_Customer;
 use Mage_Customer_Model_Resource_Customer_Collection;
 use RuntimeException;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,15 +36,11 @@ class DeleteCommand extends AbstractCustomerCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'customer:delete';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Deletes customers.';
 
@@ -103,9 +98,6 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $dialog = $this->getQuestionHelper();
 
         /** @var string $id */

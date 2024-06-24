@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Developer\Log;
 
 use RuntimeException;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -24,15 +23,11 @@ class DbCommand extends AbstractLogCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'dev:log:db';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Turn on/off database query logging';
 
@@ -69,9 +64,6 @@ class DbCommand extends AbstractLogCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $output->writeln("<info>Looking in " . $this->_getVarienAdapterPhpFile() . "</info>");
 
         $this->_replaceVariable($input, $output, '$_debug');

@@ -18,12 +18,12 @@ use Symfony\Component\Console\Question\Question;
 class InstallMagento extends AbstractSubCommand
 {
     /**
-     * @deprecated since since 1.3.1; Use constant from Exec-Utility instead
+     * @deprecated since 1.3.1; Use constant from Exec-Utility instead
      * @see Exec::CODE_CLEAN_EXIT
      */
-    const EXEC_STATUS_OK = 0;
+    public const EXEC_STATUS_OK = 0;
 
-    const MAGENTO_INSTALL_SCRIPT_PATH = 'install.php';
+    public const MAGENTO_INSTALL_SCRIPT_PATH = 'install.php';
 
     /**
      * @var \Closure

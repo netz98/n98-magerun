@@ -70,7 +70,7 @@ class Application extends BaseApplication
     protected $config;
 
     /**
-     * @see \N98\Magento\Application::setConfigurationLoader()
+     * @see Application::setConfigurationLoader
      * @var ConfigurationLoader
      */
     private $configurationLoaderInjected;
@@ -423,7 +423,6 @@ class Application extends BaseApplication
      * Loads and initializes the Magento application
      *
      * @param bool $soft
-     *
      * @return bool false if magento root folder is not set, true otherwise
      */
     public function initMagento(bool $soft = false): bool
@@ -617,7 +616,7 @@ class Application extends BaseApplication
         $output = $output ?: new ConsoleOutput();
 
         if (null !== $this->config) {
-            throw new UnexpectedValueException(sprintf('Config already initialized'));
+            throw new UnexpectedValueException('Config already initialized');
         }
 
         $loadExternalConfig = !$input->hasParameterOption('--skip-config');
@@ -716,10 +715,9 @@ class Application extends BaseApplication
 
     /**
      * @param bool $soft
-     *
      * @return void
      */
-    protected function _initMagento1(bool $soft = false)
+    protected function _initMagento1(bool $soft = false): void
     {
         // Load Mage class definition
         Initialiser::bootstrap($this->_magentoRootFolder);
@@ -776,7 +774,7 @@ class Application extends BaseApplication
             $this->config->setLoader($configurationLoader);
         } else {
             /* inject loader to be used later when config is created in */
-            /* @see N98\Magento\Application::init */
+            /* @see Application::init */
             $this->configurationLoaderInjected = $configurationLoader;
         }
 

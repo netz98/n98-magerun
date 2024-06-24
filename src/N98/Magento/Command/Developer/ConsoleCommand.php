@@ -9,7 +9,6 @@ use N98\Magento\Command\Developer\Console\Psy\Shell;
 use N98\Util\Unicode\Charset;
 use Psy\Configuration;
 use Psy\Output\ShellOutput;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,15 +22,11 @@ class ConsoleCommand extends AbstractCommand
 {
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'dev:console';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Opens PHP interactive shell with initialized Mage::app() <comment>(Experimental)</comment>.';
 
@@ -42,9 +37,6 @@ class ConsoleCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $consoleOutput = new ShellOutput();
         $config = new Configuration();
         $shell = new Shell($config);

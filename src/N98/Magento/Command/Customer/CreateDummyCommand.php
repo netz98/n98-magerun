@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Customer;
 
 use Faker\Factory;
 use Locale;
-use N98\Util\Console\Helper\ParameterHelper;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
 use N98\Util\Faker\Provider\Internet;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CreateDummyCommand extends AbstractCustomerCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $help = <<<HELP
 Supported Locales:
@@ -68,19 +68,16 @@ HELP;
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
+     * @throws \Mage_Core_Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output, true);
-        $this->initMagento();
-
         $res = $this->getCustomerModel()->getResource();
 
         $faker = Factory::create($input->getArgument('locale'));
         $faker->addProvider(new Internet($faker));
 
-        /** @var ParameterHelper $parameterHelper */
-        $parameterHelper = $this->getHelper('parameter');
+        $parameterHelper = $this->getParameterHelper();
 
         $website = $parameterHelper->askWebsite($input, $output);
 
@@ -135,8 +132,7 @@ HELP;
         $res->commit();
 
         if (!$outputPlain) {
-            /* @var TableHelper $tableHelper */
-            $tableHelper = $this->getHelper('table');
+            $tableHelper = $this->getTableHelper();
             $tableHelper
                 ->setHeaders(['email', 'password', 'firstname', 'lastname'])
                 ->renderByFormat($output, $table, $input->getOption('format'));

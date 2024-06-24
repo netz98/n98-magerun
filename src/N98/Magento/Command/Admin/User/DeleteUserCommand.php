@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Admin\User;
 
 use Exception;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,17 +24,13 @@ class DeleteUserCommand extends AbstractAdminUserCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'admin:user:delete';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
-    protected static $defaultDescription = 'Delete the account of a adminhtml user.';
+    protected static $defaultDescription = 'Deletes the account of a adminhtml user.';
 
     protected function configure(): void
     {
@@ -64,9 +59,6 @@ class DeleteUserCommand extends AbstractAdminUserCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $dialog = $this->getQuestionHelper();
 
         $user = $this->getUserByIdOrEmail($input, $output);
@@ -76,21 +68,21 @@ class DeleteUserCommand extends AbstractAdminUserCommand
             return Command::INVALID;
         }
 
-        $shouldRemove = $input->getOption(self::COMMAND_OPTION_FORCE);
-        if (!$shouldRemove) {
-            $shouldRemove = $dialog->ask(
+        $force = $input->getOption(self::COMMAND_OPTION_FORCE);
+        if (!$force) {
+            $force = $dialog->ask(
                 $input,
                 $output,
                 new ConfirmationQuestion('<question>Are you sure?</question> <comment>[n]</comment>: ', false),
             );
         }
 
-        if ($shouldRemove) {
+        if ($force) {
             try {
                 $user->delete();
                 $output->writeln('<info>User was successfully deleted</info>');
             } catch (Exception $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
+                $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
             }
         } else {
             $output->writeln('<error>Aborting delete</error>');

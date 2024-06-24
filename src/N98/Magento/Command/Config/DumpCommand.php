@@ -6,7 +6,6 @@ namespace N98\Magento\Command\Config;
 
 use DOMDocument;
 use InvalidArgumentException;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,15 +22,11 @@ class DumpCommand extends AbstractConfigCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'config:dump';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Dump merged XML config.';
 
@@ -80,10 +75,7 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
-        /** @var string $xpath */
+        /** @var string|null $xpath */
         $xpath = $input->getArgument(self::COMMAND_ARGUMENT_XPATH);
         $config = $this->_getMageConfig()->getNode($xpath);
         if (!$config) {

@@ -5,7 +5,7 @@ namespace N98\Magento\Command\Developer\Ide\PhpStorm;
 use Directory;
 use Exception;
 use Mage;
-use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,7 +14,7 @@ use Symfony\Component\Finder\SplFileInfo;
 use UnexpectedValueException;
 use Varien_Simplexml_Element;
 
-class MetaCommand extends AbstractMagentoCommand
+class MetaCommand extends AbstractCommand
 {
     /**
      * @var array

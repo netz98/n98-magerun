@@ -12,7 +12,6 @@ use Mage_Eav_Model_Entity_Attribute;
 use Mage_Eav_Model_Resource_Entity_Attribute_Collection;
 use N98\Magento\Command\AbstractCommand;
 use RuntimeException;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -38,15 +37,11 @@ class DummyCommand extends AbstractCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'eav:attribute:create-dummy-values';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Create a dummy values for dropdown attributes.';
 

@@ -1,26 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Category\Create;
 
+use Exception;
 use Mage;
 use Mage_Catalog_Model_Category;
-use N98\Magento\Command\AbstractMagentoCommand;
+use Mage_Core_Exception;
+use N98\Magento\Command\AbstractCommand;
 use RuntimeException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
-class DummyCommand extends AbstractMagentoCommand
+class DummyCommand extends AbstractCommand
 {
     public const DEFAULT_CATEGORY_NAME = "My Awesome Category";
-    public const DEFAULT_CATEGORY_STATUS = 1; // enabled
-    public const DEFAULT_CATEGORY_ANCHOR = 1; // enabled
+
+    public const DEFAULT_CATEGORY_STATUS = true; // enabled
+
+    public const DEFAULT_CATEGORY_ANCHOR = true; // enabled
+
     public const DEFAULT_STORE_ID = 1; // Default Store ID
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('category:create:dummy')
@@ -42,14 +48,10 @@ class DummyCommand extends AbstractMagentoCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output, true);
-        $this->initMagento();
-
         $output->writeln("<warning>This only create sample categories, do not use on production environment</warning>");
 
         // Ask for Arguments
@@ -128,13 +130,13 @@ class DummyCommand extends AbstractMagentoCommand
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return array
+     * @throws Mage_Core_Exception
+     * @throws Exception
      */
     private function askForArguments($input, $output)
     {
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
         $_argument = [];
 
         // Store ID

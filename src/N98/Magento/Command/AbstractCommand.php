@@ -44,6 +44,8 @@ abstract class AbstractCommand extends AbstractCommandHelper
 
     protected const NO_DATA_MESSAGE = 'No data found';
 
+    protected const QUESTION_ATTEMPTS = 3;
+
     /**
      * @var string|null
      */
@@ -69,6 +71,27 @@ abstract class AbstractCommand extends AbstractCommandHelper
      */
     protected ?array $data = null;
 
+    protected static bool $detectMagentoFlag = true;
+
+    protected static bool $detectMagentoSilentFlag = true;
+
+    protected static bool $initMagentoFlag = true;
+
+    protected static bool $initMagentoSoftFlag = false;
+
+    protected function configure(): void
+    {
+        if ($this instanceof CommandDataInterface) {
+            $this->addOption(
+                self::COMMAND_OPTION_FORMAT,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']',
+                static::COMMAND_OPTION_FORMAT_DEFAULT
+            );
+        }
+    }
+
     /**
      * Initializes the command just after the input has been validated.
      *
@@ -81,12 +104,28 @@ abstract class AbstractCommand extends AbstractCommandHelper
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->checkDeprecatedAliases($input, $output);
+
+        if (static::$detectMagentoFlag) {
+            $this->detectMagento($output, static::$detectMagentoSilentFlag);
+        }
+
+        if (static::$initMagentoFlag) {
+            $this->initMagento(static::$initMagentoSoftFlag);
+        }
+
+        if ($this instanceof CommandDataInterface) {
+            $this->setData($input, $output);
+        }
+    }
+
+    protected function getData(): array
+    {
+        return $this->data;
     }
 
     private function _initWebsites()
     {
         $this->_websiteCodeMap = [];
-        /** @var \Mage_Core_Model_Website[] $websites */
         $websites = Mage::app()->getWebsites();
         foreach ($websites as $website) {
             $this->_websiteCodeMap[$website->getId()] = $website->getCode();
@@ -567,19 +606,6 @@ abstract class AbstractCommand extends AbstractCommandHelper
         );
     }
 
-    protected function configure(): void
-    {
-        if ($this instanceof CommandFormatInterface) {
-            $this->addOption(
-                self::COMMAND_OPTION_FORMAT,
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']',
-                static::COMMAND_OPTION_FORMAT_DEFAULT
-            );
-        }
-    }
-
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
@@ -591,11 +617,7 @@ abstract class AbstractCommand extends AbstractCommandHelper
             $this->writeSection($output, static::COMMAND_SECTION_TITLE_TEXT);
         }
 
-        $this->detectMagento($output);
-        $this->initMagento();
-
-        $data = $this->getData($input, $output);
-
+        $data = $this->getData();
         if (count($data) > 0) {
             $tableHelper = $this->getTableHelper();
             $tableHelper
@@ -613,7 +635,7 @@ abstract class AbstractCommand extends AbstractCommandHelper
      */
     protected function getTableHeaders(InputInterface $input, OutputInterface $output): array
     {
-        $data = $this->getData($input, $output);
+        $data = $this->getData();
         return array_keys(reset($data));
     }
 

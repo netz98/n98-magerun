@@ -8,7 +8,6 @@ use Exception;
 use Mage_Core_Exception;
 use Mage_Core_Model_Website;
 use RuntimeException;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,15 +30,11 @@ class ChangePasswordCommand extends AbstractCustomerCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'customer:change-password';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Changes the password of a customer.';
 
@@ -83,9 +78,6 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         if (($password = $input->getArgument(self::COMMAND_ARGUMENT_PASSWORD)) == null) {
             $dialog = $this->getQuestionHelper();
             $question = new Question('<question>Password:</question> ');

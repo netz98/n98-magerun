@@ -6,7 +6,6 @@ namespace N98\Magento\Command\Admin\User;
 
 use Exception;
 use RuntimeException;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,15 +27,11 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'admin:user:change-status';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Set active status of an adminhtml user.';
 
@@ -84,9 +79,6 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $user = $this->getUserByIdOrEmail($input, $output);
         if (!$user->getId()) {
             $output->writeln('<error>User was not found</error>');

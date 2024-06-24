@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Indexer;
 
 use Exception;
-use N98\Magento\Command\CommandFormatInterface;
-use Symfony\Component\Console\Attribute\AsCommand;
+use N98\Magento\Command\CommandDataInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -15,21 +14,17 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Indexer
  */
-class ListCommand extends AbstractIndexerCommand implements CommandFormatInterface
+class ListCommand extends AbstractIndexerCommand implements CommandDataInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Indexes';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'index:list';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Lists all magento indexes.';
 
@@ -47,20 +42,15 @@ HELP;
      *
      * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
-    public function getData(InputInterface $input, OutputInterface $output): array
+    public function setData(InputInterface $input,OutputInterface $output) : void
     {
-        if (is_null($this->data)) {
-            $this->data = [];
-
-            foreach ($this->getIndexerList() as $index) {
-                $this->data[] = [
-                    'code'      => $index['code'],
-                    'status'    => $index['status'],
-                    'time'      => $index['last_runtime']
-                ];
-            }
+        $this->data = [];
+        foreach ($this->getIndexerList() as $index) {
+            $this->data[] = [
+                'code'      => $index['code'],
+                'status'    => $index['status'],
+                'time'      => $index['last_runtime']
+            ];
         }
-
-        return $this->data;
     }
 }

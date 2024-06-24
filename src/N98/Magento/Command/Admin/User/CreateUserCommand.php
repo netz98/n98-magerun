@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Admin\User;
 
 use Mage_Core_Exception;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,17 +33,13 @@ class CreateUserCommand extends AbstractAdminUserCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'admin:user:create';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
-    protected static $defaultDescription = 'Create admin user.';
+    protected static $defaultDescription = 'Creates admin user.';
 
     protected function configure(): void
     {
@@ -91,9 +86,6 @@ class CreateUserCommand extends AbstractAdminUserCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $username = $this->getOrAskForArgument(self::COMMAND_ARGUMENT_USERNAME, $input, $output);
         $email = $this->getOrAskForArgument(self::COMMAND_ARGUMENT_EMAIL, $input, $output);
         if (($password = $input->getArgument(self::COMMAND_ARGUMENT_PASSWORD)) === null) {

@@ -6,7 +6,6 @@ namespace N98\Magento\Command\Developer\Translate;
 
 use Mage_Core_Model_Store;
 use N98\Magento\Command\AbstractStoreConfigCommand;
-use Symfony\Component\Console\Attribute\AsCommand;
 
 /**
  * Toggle inline admin translation command
@@ -17,15 +16,11 @@ class InlineAdminCommand extends AbstractStoreConfigCommand
 {
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'dev:translate:admin';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Toggle inline translation tool for admin';
 

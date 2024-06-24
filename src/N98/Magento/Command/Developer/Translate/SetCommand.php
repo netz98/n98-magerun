@@ -8,7 +8,6 @@ use Exception;
 use Mage;
 use Mage_Core_Model_Store;
 use N98\Magento\Command\AbstractCommand;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,15 +30,11 @@ class SetCommand extends AbstractCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'dev:translate:set';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Adds a translation to core_translate table. <comment>Globally for locale</comment>';
 
@@ -71,9 +66,6 @@ class SetCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $parameterHelper = $this->getParameterHelper();
 
         /** @var Mage_Core_Model_Store $store */

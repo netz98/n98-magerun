@@ -7,7 +7,6 @@ namespace N98\Magento\Command\Config;
 use Mage_Core_Exception;
 use Mage_Core_Model_Config_Data;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,15 +29,11 @@ class GetCommand extends AbstractConfigCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'config:get';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Get a core config item.';
 
@@ -112,9 +107,6 @@ EOT;
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $table = [];
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $collection = $this->_getConfigDataModel()->getCollection();
 
         /** @var string $searchPath */

@@ -9,7 +9,6 @@ use N98\Magento\Command\AbstractCommand;
 use N98\Util\Filesystem;
 use RuntimeException;
 use SplFileInfo;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,15 +22,11 @@ class FlushCommand extends AbstractCommand
 {
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'cache:dir:flush';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Flush (empty) cache directory.';
 
@@ -62,9 +57,6 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $workingDirectory = getcwd();
         $magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
         $cacheDir = $magentoRootFolder . '/var/cache';

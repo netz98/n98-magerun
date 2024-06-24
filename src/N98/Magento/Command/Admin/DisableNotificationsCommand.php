@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Admin;
 
 use N98\Magento\Command\AbstractStoreConfigCommand;
-use Symfony\Component\Console\Attribute\AsCommand;
 
 /**
  * Toggle admin notifications command
@@ -16,15 +15,11 @@ class DisableNotificationsCommand extends AbstractStoreConfigCommand
 {
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'admin:notifications';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Toggles admin notifications.';
 

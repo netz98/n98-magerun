@@ -1,9 +1,6 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
+
+declare(strict_types=1);
 
 namespace N98\Util;
 
@@ -13,6 +10,7 @@ use RuntimeException;
  * Class Filesystem
  *
  * @package N98\Util
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
 class Filesystem
 {
@@ -127,14 +125,13 @@ class Filesystem
     }
 
     /**
-     * @param int $bytes
+     * @param string $bytes
      * @param int $decimals
-     *
      * @return string
      * @see http://www.php.net/manual/en/function.filesize.php#106569
      *
      */
-    public static function humanFileSize(int $bytes, int $decimals = 2): string
+    public static function humanFileSize(string $bytes, int $decimals = 2): string
     {
         $units = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
         $factor = floor((strlen($bytes) - 1) / 3);

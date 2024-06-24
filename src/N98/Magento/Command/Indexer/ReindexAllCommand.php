@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Indexer;
 
 use Mage_Index_Model_Resource_Process_Collection;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,15 +18,11 @@ class ReindexAllCommand extends AbstractIndexerCommand
 {
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'index:reindex:all';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Reindex all indexes.';
 
@@ -48,9 +43,6 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $this->disableObservers();
 
         /* @var Mage_Index_Model_Resource_Process_Collection $processes */

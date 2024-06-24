@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Database;
 
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Database console command
+ *
+ * @package N98\Magento\Command\Database
+ */
 class ConsoleCommand extends AbstractDatabaseCommand
 {
     public const COMMAND_OPTION_USE_MYCLI_INSTEAD_OF_MYSQL = 'use-mycli-instead-of-mysql';
@@ -18,17 +22,15 @@ class ConsoleCommand extends AbstractDatabaseCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'db:console';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Opens mysql client by database config from local.xml.';
+
+    protected static bool $initMagentoFlag = false;
 
     protected function configure(): void
     {
@@ -51,15 +53,13 @@ class ConsoleCommand extends AbstractDatabaseCommand
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
+     * {@inheritDoc}
      * @return int
+     *
+     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectDbSettings($output);
-
         $args = [$input->getOption(self::COMMAND_OPTION_USE_MYCLI_INSTEAD_OF_MYSQL) ? 'mycli' : 'mysql'];
 
         if ($input->getOption(self::COMMAND_OPTION_NO_AUTO_REHASH)) {
@@ -74,7 +74,7 @@ class ConsoleCommand extends AbstractDatabaseCommand
     }
 
     /**
-     * execute a command
+     * Execute a command
      *
      * @param string $command
      */

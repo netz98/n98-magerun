@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Cms\Block;
 
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,15 +23,11 @@ class ToggleCommand extends AbstractCmsBlockCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'cms:block:toggle';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Toggle a CMS block.';
 
@@ -49,17 +44,13 @@ class ToggleCommand extends AbstractCmsBlockCommand
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * {@inheritDoc}
      * @return int
      * @throws Throwable
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->writeSection($output, static::COMMAND_SECTION_TITLE_TEXT);
-
-        $this->detectMagento($output);
-        $this->initMagento();
 
         /** @var string $blockId */
         $blockId = $input->getArgument(self::COMMAND_ARGUMENT_BLOCK_ID);

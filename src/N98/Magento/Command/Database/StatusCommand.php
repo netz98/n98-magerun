@@ -6,7 +6,6 @@ namespace N98\Magento\Command\Database;
 
 use DateTime;
 use Exception;
-use Symfony\Component\Console\Attribute\AsCommand;
 
 /**
  * Database status command
@@ -17,15 +16,11 @@ class StatusCommand extends AbstractShowCommand
 {
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'db:status';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Shows important server information or custom selected status values.';
 
@@ -184,11 +179,11 @@ HELP;
             'i' => 'minute',
             's' => 'second'
         ];
-        foreach ($string as $k => &$v) {
-            if ($diff->$k) {
-                $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+        foreach ($string as $key => &$value) {
+            if ($diff->$key) {
+                $value = $diff->$key . ' ' . $value . ($diff->$key > 1 ? 's' : '');
             } else {
-                unset($string[$k]);
+                unset($string[$key]);
             }
         }
 

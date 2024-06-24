@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Developer\Module;
 
 use N98\Magento\Command\AbstractCommand;
-use N98\Magento\Command\CommandFormatInterface;
+use N98\Magento\Command\CommandDataInterface;
 use N98\Magento\Modules;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Developer\Module
  */
-class ListCommand extends AbstractCommand implements CommandFormatInterface
+class ListCommand extends AbstractCommand implements CommandDataInterface
 {
     protected const COMMAND_SECTION_TITLE_TEXT = 'Installed Modules';
 
@@ -31,15 +30,11 @@ class ListCommand extends AbstractCommand implements CommandFormatInterface
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'dev:module:list';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'List all installed modules.';
 
@@ -70,14 +65,13 @@ class ListCommand extends AbstractCommand implements CommandFormatInterface
     }
 
     /**
-     * {@inheritdoc}
-     * @return array<int|string, array<string, string>>
+     * {@inheritDoc}
      *
      * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
-    public function getData(InputInterface $input, OutputInterface $output): array
+    public function setData(InputInterface $input,OutputInterface $output) : void
     {
-        return iterator_to_array($this->filterModules($input));
+        $this->data =iterator_to_array($this->filterModules($input));
     }
 
     /**

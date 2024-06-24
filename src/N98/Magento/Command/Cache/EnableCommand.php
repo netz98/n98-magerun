@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Cache;
 
-use Symfony\Component\Console\Attribute\AsCommand;
-
 /**
      * Enable cache command
  *
@@ -15,15 +13,11 @@ class EnableCommand extends AbstractCacheCommandToggle
 {
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'cache:enable';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Enables caches.';
 

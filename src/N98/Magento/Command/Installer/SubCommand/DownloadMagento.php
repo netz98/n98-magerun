@@ -42,7 +42,6 @@ class DownloadMagento extends AbstractSubCommand
         $this->config->setArray('magentoPackage', $package);
 
         if (file_exists($this->config->getString('installationFolder') . '/app/etc/local.xml')) {
-
             /* @var QuestionHelper $dialog */
             $dialog = $this->command->getHelper('question');
             $skipInstallation = $dialog->ask(
@@ -54,7 +53,6 @@ class DownloadMagento extends AbstractSubCommand
             if ($skipInstallation) {
                 return;
             }
-
         }
 
         $this->composerCreateProject($package);

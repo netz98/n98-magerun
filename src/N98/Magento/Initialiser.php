@@ -1,10 +1,6 @@
 <?php
 
-/*
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
+declare(strict_types=1);
 
 namespace N98\Magento;
 
@@ -12,9 +8,10 @@ use N98\Util\AutoloadRestorer;
 use RuntimeException;
 
 /**
- * Magento initialiser (Magento 1)
+ * Magento initializer (Magento 1)
  *
  * @package N98\Magento
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
 class Initialiser
 {
@@ -31,23 +28,23 @@ class Initialiser
     /**
      * @var string path to Magento root directory
      */
-    private $magentoPath;
+    private string $magentoPath;
 
     /**
      * Bootstrap Magento application
      */
     public static function bootstrap($magentoPath)
     {
-        $initialiser = new Initialiser($magentoPath);
-        $initialiser->requireMage();
+        $initializer = new Initialiser($magentoPath);
+        $initializer->requireMage();
     }
 
     /**
-     * Initialiser constructor.
+     * Initializer constructor.
      *
      * @param string $magentoPath
      */
-    public function __construct($magentoPath)
+    public function __construct(string  $magentoPath)
     {
         $this->magentoPath = $magentoPath;
     }
@@ -71,9 +68,9 @@ class Initialiser
     }
 
     /**
-     * Require app/Mage.php in it's own scope while preserving all autoloaders.
+     * Require app/Mage.php in its own scope while preserving all autoloader.
      */
-    private function requireOnce()
+    private function requireOnce(): void
     {
         // Create a new AutoloadRestorer to capture current auto-loaders
         $restorer = new AutoloadRestorer();
@@ -81,13 +78,13 @@ class Initialiser
         $path = $this->magentoPath . '/' . self::PATH_APP_MAGE_PHP;
         initialiser_require_once($path);
 
-        // Restore auto-loaders that might be removed by extensions that overwrite Varien/Autoload
+        // Restore autoloader that might be removed by extensions that overwrite Varien/Autoload
         $restorer->restore();
     }
 }
 
 /**
- * use require-once inside a function with it's own variable scope and no $this (?)
+ * use require-once inside a function with its own variable scope and no $this (?)
  */
 function initialiser_require_once()
 {

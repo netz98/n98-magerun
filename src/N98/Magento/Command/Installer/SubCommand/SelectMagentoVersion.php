@@ -22,8 +22,7 @@ class SelectMagentoVersion extends AbstractSubCommand
             return;
         }
 
-        if (
-            $this->input->getOption('magentoVersion') === null
+        if ($this->input->getOption('magentoVersion') === null
             && $this->input->getOption('magentoVersionByName') === null
         ) {
             $choices = [];
@@ -37,7 +36,8 @@ class SelectMagentoVersion extends AbstractSubCommand
                     $typeInput - 1,
                     range(0, count($this->commandConfig['magento-packages']) - 1),
                     true
-                )) {
+                    )
+                ) {
                     throw new \InvalidArgumentException('Invalid type');
                 }
 

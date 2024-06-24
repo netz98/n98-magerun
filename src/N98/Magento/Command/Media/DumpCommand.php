@@ -7,7 +7,6 @@ namespace N98\Magento\Command\Media;
 use N98\Magento\Application;
 use N98\Magento\Command\AbstractCommand;
 use RuntimeException;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,15 +29,13 @@ class DumpCommand extends AbstractCommand
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'media:dump';
 
+    protected static bool $initMagentoFlag = false;
+
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultDescription = 'Creates an archive with content of media folder';
 
@@ -70,8 +67,6 @@ class DumpCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-
         /** @var Application $app */
         $app = $this->getApplication();
         if (!$app) {

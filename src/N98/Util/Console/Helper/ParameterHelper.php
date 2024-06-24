@@ -8,6 +8,7 @@ use JsonSchema\Validator;
 use Mage;
 use Mage_Core_Model_App;
 use Mage_Core_Model_Website;
+use N98\Magento\Command\AbstractCommand;
 use N98\Util\Validator\FakeMetadataFactory;
 use RuntimeException;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
@@ -225,6 +226,7 @@ class ParameterHelper extends AbstractHelper
             $validators[] = new Regex($regex);
         }
 
+        $validators[] = new NotBlank();
         $validators[] = new Length(['min' => 6]);
 
         $constraints = new Collection(
@@ -252,6 +254,7 @@ class ParameterHelper extends AbstractHelper
     {
         $dialog = new QuestionHelper();
         $questionObj = new Question($question);
+        $questionObj->setMaxAttempts(AbstractCommand::QUESTION_ATTEMPTS);
         $questionObj->setValidator($callback);
 
         return $dialog->ask($input, $output, $questionObj);
@@ -281,7 +284,7 @@ class ParameterHelper extends AbstractHelper
 
         $question = '<question>' . ucfirst($name) . ':</question> ';
 
-        $value = $this->askAndValidate(
+        return $this->askAndValidate(
             $input,
             $output,
             $question,
@@ -294,8 +297,6 @@ class ParameterHelper extends AbstractHelper
                 return $inputValue;
             }
         );
-
-        return $value;
     }
 
     /**
