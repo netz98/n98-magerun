@@ -22,12 +22,6 @@ use Throwable;
  */
 class ChangePasswordCommand extends AbstractCustomerCommand
 {
-    public const COMMAND_ARGUMENT_EMAIL = 'email';
-
-    public const COMMAND_ARGUMENT_PASSWORD = 'password';
-
-    public const COMMAND_ARGUMENT_WEBSITE = 'website';
-
     /**
      * @var string
      */

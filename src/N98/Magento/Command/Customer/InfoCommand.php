@@ -20,10 +20,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InfoCommand extends AbstractCustomerCommand
 {
-    public const COMMAND_ARGUMENT_EMAIL = 'email';
-
-    public const COMMAND_ARGUMENT_WEBSITE = 'website';
-
     /**
      * @var string
      */

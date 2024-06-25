@@ -19,6 +19,12 @@ use N98\Magento\Command\AbstractCommand;
  */
 abstract class AbstractCustomerCommand extends AbstractCommand
 {
+    public const COMMAND_ARGUMENT_EMAIL = 'email';
+
+    public const COMMAND_ARGUMENT_PASSWORD = 'password';
+
+    public const COMMAND_ARGUMENT_WEBSITE = 'website';
+
     /**
      * @return Mage_Customer_Model_Customer
      */

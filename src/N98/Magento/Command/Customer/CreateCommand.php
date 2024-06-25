@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Customer;
 
-use N98\Util\Console\Helper\ParameterHelper;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
-use N98\Util\Console\Helper\TableHelper;
+use Mage_Core_Exception;
+use Mage_Core_Model_Website;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
+use Throwable;
 
 /**
  * Create customer command
@@ -18,99 +19,164 @@ use Symfony\Component\Console\Question\Question;
  */
 class CreateCommand extends AbstractCustomerCommand
 {
-    protected function configure()
+    public const COMMAND_ARGUMENT_FIRSTNAME = 'firstname';
+
+    public const COMMAND_ARGUMENT_LASTNAME = 'lastname';
+
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'customer:create';
+
+    /**
+     * @var string
+     */
+    protected static $defaultDescription = 'Creates a new customer/user for shop frontend.';
+
+    protected function configure(): void
     {
         $this
-            ->setName('customer:create')
-            ->addArgument('email', InputArgument::OPTIONAL, 'Email')
-            ->addArgument('password', InputArgument::OPTIONAL, 'Password')
-            ->addArgument('firstname', InputArgument::OPTIONAL, 'Firstname')
-            ->addArgument('lastname', InputArgument::OPTIONAL, 'Lastname')
-            ->addArgument('website', InputArgument::OPTIONAL, 'Website')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            ->addArgument(
+                self::COMMAND_ARGUMENT_EMAIL,
+                InputArgument::OPTIONAL,
+                'Email'
             )
-            ->setDescription('Creates a new customer/user for shop frontend.')
+            ->addArgument(
+                self::COMMAND_ARGUMENT_PASSWORD,
+                InputArgument::OPTIONAL,
+                'Password'
+            )
+            ->addArgument(
+                self::COMMAND_ARGUMENT_FIRSTNAME,
+                InputArgument::OPTIONAL,
+                'Firstname'
+            )
+            ->addArgument(
+                self::COMMAND_ARGUMENT_LASTNAME,
+                InputArgument::OPTIONAL,
+                'Lastname'
+            )
+            ->addArgument(
+                self::COMMAND_ARGUMENT_WEBSITE,
+                InputArgument::OPTIONAL,
+                'Website'
+            )
+            ->addFormatOption()
         ;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * {@inheritDoc}
+     * @return void
+     * @throws Mage_Core_Exception
+     */
+    public function interact(InputInterface $input,OutputInterface $output): void
+    {
+        $parameterHelper = $this->getParameterHelper();
+
+        // Email
+        $email = $parameterHelper->askEmail($input, $output, self::COMMAND_ARGUMENT_EMAIL);
+        $input->setArgument(self::COMMAND_ARGUMENT_EMAIL, $email);
+
+        // password
+        $password = $parameterHelper->askPassword($input, $output, self::COMMAND_ARGUMENT_PASSWORD);
+        $input->setArgument(self::COMMAND_ARGUMENT_PASSWORD, $password);
+
+        // Firstname
+        $firstname = $this->getOrAskForArgument(self::COMMAND_ARGUMENT_FIRSTNAME, $input, $output);
+        $input->setArgument(self::COMMAND_ARGUMENT_FIRSTNAME, $firstname);
+
+        // Lastname
+        $lastname = $this->getOrAskForArgument(self::COMMAND_ARGUMENT_LASTNAME, $input, $output);
+        $input->setArgument(self::COMMAND_ARGUMENT_LASTNAME, $lastname);
+
+        // Website
+        $website = $parameterHelper->askWebsite($input, $output, self::COMMAND_ARGUMENT_WEBSITE);
+        $input->setArgument(self::COMMAND_ARGUMENT_WEBSITE, $website);
+    }
+
+    /**
+     * {@inheritDoc}
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output, true);
-        $this->initMagento();
+        /** @var string $email */
+        $email = $input->getArgument(self::COMMAND_ARGUMENT_EMAIL);
+        /** @var string $password */
+        $password = $input->getArgument(self::COMMAND_ARGUMENT_PASSWORD);
+        /** @var string $firstname */
+        $firstname = $input->getArgument(self::COMMAND_ARGUMENT_FIRSTNAME);
+        /** @var string $lastname */
+        $lastname = $input->getArgument(self::COMMAND_ARGUMENT_LASTNAME);
+        /** @var Mage_Core_Model_Website $website */
+        $website = $input->getArgument(self::COMMAND_ARGUMENT_WEBSITE);
 
-        $dialog = $this->getQuestionHelper();
+        $this->saveCustomer($email, $password, $firstname, $lastname, $website);
 
-        // Password
-        if (($password = $input->getArgument('password')) == null) {
-            $question = new Question('<question>Password:</question> ');
-            $question->setHidden(true);
-            $password = $dialog->ask($input, $output, $question);
+        if (is_null($input->getOption(self::COMMAND_OPTION_FORMAT))) {
+            $output->writeln(sprintf(
+                '<info>Customer <comment>%s</comment> successfully created</info>',
+                $email
+            ));
+
+            return Command::SUCCESS;
         }
 
-        // Firstname
-        if (($firstname = $input->getArgument('firstname')) == null) {
-            $firstname = $dialog->ask($input, $output, new Question('<question>Firstname:</question> '));
-        }
+        $this->data[] = [
+            'email'     => $email,
+            'password'  => $password,
+            'firstname' => $firstname,
+            'lastname'  => $lastname
+        ];
 
-        // Lastname
-        if (($lastname = $input->getArgument('lastname')) == null) {
-            $lastname = $dialog->ask($input, $output, new Question('<question>Lastname:</question> '));
-        }
+        return parent::execute($input, $output);
+    }
 
-        /** @var ParameterHelper $parameterHelper */
-        $parameterHelper = $this->getHelper('parameter');
-
-        // Email
-        $email = $parameterHelper->askEmail($input, $output);
-
-        // Website
-        $website = $parameterHelper->askWebsite($input, $output);
-
-        // create new customer
+    /**
+     * Create new customer
+     *
+     * @param string $email
+     * @param string $password
+     * @param string $firstname
+     * @param string $lastname
+     * @param Mage_Core_Model_Website $website
+     * @return void
+     */
+    private function saveCustomer(
+        string $email,
+        string $password,
+        string $firstname,
+        string $lastname,
+        Mage_Core_Model_Website $website
+    ): void {
         $customer = $this->getCustomerModel();
         $customer->setWebsiteId($website->getId());
-        $customer->loadByEmail($email);
 
-        $outputPlain = $input->getOption('format') === null;
+        try {
+            $customer->loadByEmail($email);
+        } catch (Mage_Core_Exception $exception) {
+            throw new \RuntimeException($exception->getMessage());
+        }
 
-        $table = [];
-        if (!$customer->getId()) {
-            $customer->setWebsiteId($website->getId());
-            $customer->setEmail($email);
-            $customer->setFirstname($firstname);
-            $customer->setLastname($lastname);
-            $customer->setPassword($password);
+        if ($customer->getId()) {
+            throw new \RuntimeException(sprintf('Customer %s already exists', $email));
+        }
 
+        $customer->setWebsiteId($website->getId());
+        $customer->setEmail($email);
+        $customer->setFirstname($firstname);
+        $customer->setLastname($lastname);
+        $customer->setPassword($password);
+
+        try {
             $customer->save();
             $customer->setConfirmation(null);
             $customer->save();
-            if ($outputPlain) {
-                $output->writeln('<info>Customer <comment>' . $email . '</comment> successfully created</info>');
-            } else {
-                $table[] = [$email, $password, $firstname, $lastname];
-            }
-        } else {
-            if ($outputPlain) {
-                $output->writeln('<error>Customer ' . $email . ' already exists</error>');
-            }
+        }
+        catch (Throwable $exception) {
+            throw new \RuntimeException($exception->getMessage());
         }
 
-        if (!$outputPlain) {
-            /* @var TableHelper $tableHelper */
-            $tableHelper = $this->getHelper('table');
-            $tableHelper
-                ->setHeaders(['email', 'password', 'firstname', 'lastname'])
-                ->renderByFormat($output, $table, $input->getOption('format'));
-        }
-        return 0;
     }
 }
