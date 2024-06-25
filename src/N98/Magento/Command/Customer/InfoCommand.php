@@ -51,6 +51,20 @@ class InfoCommand extends AbstractCustomerCommand
         ;
     }
 
+    public function interact(InputInterface $input,OutputInterface $output)
+    {
+        $parameterHelper = $this->getParameterHelper();
+
+        // Email
+        $email = $parameterHelper->askEmail($input, $output, self::COMMAND_ARGUMENT_EMAIL);
+        $input->setArgument(self::COMMAND_ARGUMENT_EMAIL, $email);
+
+        // Website
+        $website = $parameterHelper->askWebsite($input, $output, self::COMMAND_ARGUMENT_WEBSITE);
+        $input->setArgument(self::COMMAND_ARGUMENT_WEBSITE, $website);
+
+    }
+
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
@@ -59,11 +73,10 @@ class InfoCommand extends AbstractCustomerCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $parameterHelper = $this->getParameterHelper();
-
-        $email = $parameterHelper->askEmail($input, $output);
+        /** @var string $email */
+        $email = $input->getArgument(self::COMMAND_ARGUMENT_EMAIL);
         /** @var Mage_Core_Model_Website $website */
-        $website = $parameterHelper->askWebsite($input, $output);
+        $website = $input->getArgument(self::COMMAND_ARGUMENT_WEBSITE);
 
         $customer = $this->getCustomerModel()
             ->setWebsiteId($website->getId())
