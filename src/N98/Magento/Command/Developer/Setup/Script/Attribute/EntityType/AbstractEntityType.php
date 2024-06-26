@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
 
 use Mage;
 use Mage_Eav_Model_Entity_Attribute;
+use Varien_Db_Adapter_Interface;
 
 /**
  * Class AbstractEntityType
@@ -13,27 +16,27 @@ use Mage_Eav_Model_Entity_Attribute;
 abstract class AbstractEntityType implements EntityType
 {
     /**
-     * @var \Varien_Db_Adapter_Interface
+     * @var Varien_Db_Adapter_Interface
      */
-    protected $readConnection;
+    protected Varien_Db_Adapter_Interface $readConnection;
 
     /**
-     * @var \Mage_Eav_Model_Entity_Attribute
+     * @var Mage_Eav_Model_Entity_Attribute
      */
-    protected $attribute;
+    protected Mage_Eav_Model_Entity_Attribute $attribute;
 
     /**
      * @var string
      */
-    protected $entityType;
+    protected string $entityType;
 
     /**
-     * @var array
+     * @var array<int, string>
      */
-    protected $warnings = [];
+    protected array $warnings = [];
 
     /**
-     * @param \Mage_Eav_Model_Entity_Attribute $attribute
+     * @param Mage_Eav_Model_Entity_Attribute $attribute
      */
     public function __construct(Mage_Eav_Model_Entity_Attribute $attribute)
     {
@@ -41,25 +44,25 @@ abstract class AbstractEntityType implements EntityType
     }
 
     /**
-     * @param $connection
+     * @param Varien_Db_Adapter_Interface $connection
      */
-    public function setReadConnection($connection)
+    public function setReadConnection($connection): void
     {
         $this->readConnection = $connection;
     }
 
     /**
-     * @param array $warnings
+     * @param array<int, string> $warnings
      */
-    public function setWarnings($warnings)
+    public function setWarnings(array $warnings): void
     {
         $this->warnings = $warnings;
     }
 
     /**
-     * @return array
+     * @return array<int, string>
      */
-    public function getWarnings()
+    public function getWarnings(): array
     {
         return $this->warnings;
     }
@@ -67,11 +70,10 @@ abstract class AbstractEntityType implements EntityType
     /**
      * Gets attribute labels from database
      *
-     * @param \Mage_Eav_Model_Entity_Attribute $attribute
-     *
-     * @return array
+     * @param Mage_Eav_Model_Entity_Attribute $attribute
+     * @return array<string, string>
      */
-    public function getAttributeLabels($attribute)
+    public function getAttributeLabels($attribute): array
     {
         // FIXME: after having this warning in for some time, promote to a parameter type-hint.
         if (!$attribute instanceof Mage_Eav_Model_Entity_Attribute) {
@@ -97,11 +99,10 @@ abstract class AbstractEntityType implements EntityType
     /**
      * Gets attribute options from database
      *
-     * @param \Mage_Eav_Model_Entity_Attribute $attribute
-     *
-     * @return array
+     * @param Mage_Eav_Model_Entity_Attribute $attribute
+     * @return array<string, array<int, string>>
      */
-    protected function getOptions(Mage_Eav_Model_Entity_Attribute $attribute)
+    protected function getOptions(Mage_Eav_Model_Entity_Attribute $attribute): array
     {
         $resourceModel = Mage::getSingleton('core/resource');
         $select = $this->readConnection->select()
