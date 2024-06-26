@@ -6,47 +6,59 @@ namespace N98\Magento\Command\LocalConfig;
 
 use DateTimeInterface;
 use InvalidArgumentException;
-use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Attribute\AsCommand;
+use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Generate local.xml command
  *
  * @package N98\Magento\Command\LocalConfig
  */
-class GenerateCommand extends AbstractMagentoCommand
+class GenerateCommand extends AbstractCommand
 {
-    private const COMMAND_ARGUMENT_DB_HOST          = 'db-host';
-    private const COMMAND_ARGUMENT_DB_NAME          = 'db-name';
-    private const COMMAND_ARGUMENT_DB_PASS          = 'db-pass';
-    private const COMMAND_ARGUMENT_DB_USER          = 'db-user';
-    private const COMMAND_ARGUMENT_SESSION_SAVE     = 'session-save';
-    private const COMMAND_ARGUMENT_ADMIN_FRONTNAME  = 'admin-frontname';
-    private const COMMAND_ARGUMENT_ENCRYPTION_KEY   = 'encryption-key';
+    public const COMMAND_ARGUMENT_DB_HOST          = 'db-host';
+    public const COMMAND_ARGUMENT_DB_NAME          = 'db-name';
+    public const COMMAND_ARGUMENT_DB_PASS          = 'db-pass';
+    public const COMMAND_ARGUMENT_DB_USER          = 'db-user';
+    public const COMMAND_ARGUMENT_SESSION_SAVE     = 'session-save';
+    public const COMMAND_ARGUMENT_ADMIN_FRONTNAME  = 'admin-frontname';
+    public const COMMAND_ARGUMENT_ENCRYPTION_KEY   = 'encryption-key';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
     protected static $defaultName = 'local-config:generate';
 
     /**
      * @var string
-     * @deprecated with symfony 6.1
-     * @see AsCommand
      */
-    protected static $defaultDescription = 'Generates local.xml config';
+    protected static $defaultDescription = 'Generates local.xml config.';
+
+    protected static bool $initMagentoFlag = false;
+
+    /**
+     * @var Filesystem
+     */
+    private Filesystem $filesystem;
+
+    public function __construct()
+    {
+        parent:: __construct();
+        $this->filesystem = new Filesystem();
+    }
 
     /**
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument(
@@ -108,58 +120,81 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
         $configFile = $this->_getLocalConfigFilename();
-        $configFileTemplate = dirname($configFile) . '/local.xml.template';
-
-        if (file_exists($configFile)) {
-            $output->writeln(
-                sprintf('<info>local.xml file already exists in folder "%s/app/etc"</info>', dirname($configFile))
-            );
-            return Command::INVALID;
+        if ($this->filesystem->exists($configFile)) {
+            $output->writeln(sprintf(
+                '<info>local.xml file already exists in folder "%s/app/etc"</info>',
+                Path::getDirectory($configFile)
+            ));
+            return Command::FAILURE;
         }
 
         $this->writeSection($output, 'Generate local.xml');
         $this->askForArguments($input, $output);
-        if (!file_exists($configFileTemplate)) {
+
+        $configFileTemplate = Path::getDirectory($configFile) . '/local.xml.template';
+        if (!$this->filesystem->exists($configFileTemplate)) {
             $output->writeln(sprintf('<error>File %s does not exist.</error>', $configFileTemplate));
             return Command::FAILURE;
         }
 
-        if (!is_writable(dirname($configFileTemplate))) {
-            $output->writeln(sprintf('<error>Folder %s is not writeable</error>', dirname($configFileTemplate)));
-            return Command::FAILURE;
+        try {
+            $this->filesystem->touch($configFile);
+        } catch (IOExceptionInterface $exception) {
+            throw new IOException($exception->getMessage());
         }
 
-        $content = file_get_contents($configFileTemplate);
-        if (!$content) {
-            $output->writeln(sprintf('<error>File %s has no content</error>', dirname($configFileTemplate)));
-            return Command::FAILURE;
+        try {
+            $content = $this->filesystem->readFile($configFileTemplate);
+            if (!$content) {
+                $output->writeln(sprintf(
+                    '<error>File %s has no content</error>',
+                    Path::getDirectory($configFileTemplate)
+                ));
+            }
+        } catch (IOExceptionInterface $exception) {
+            throw new IOException($exception->getMessage());
         }
 
-        $key = $this->getArgumentString($input, self::COMMAND_ARGUMENT_ENCRYPTION_KEY) ?: md5(uniqid());
+        /** @var string $key */
+        $key = $input->getArgument(self::COMMAND_ARGUMENT_ENCRYPTION_KEY) ?: md5(uniqid());
+        /** @var string $dbHost */
+        $dbHost = $input->getArgument(self::COMMAND_ARGUMENT_DB_HOST);
+        /** @var string $dbUser */
+        $dbUser = $input->getArgument(self::COMMAND_ARGUMENT_DB_USER);
+        /** @var string $dbPass */
+        $dbPass = $input->getArgument(self::COMMAND_ARGUMENT_DB_PASS);
+        /** @var string $dbName */
+        $dbName = $input->getArgument(self::COMMAND_ARGUMENT_DB_NAME);
+        /** @var string $session */
+        $session = $input->getArgument(self::COMMAND_ARGUMENT_SESSION_SAVE);
+        /** @var string $frontName */
+        $frontName = $input->getArgument(self::COMMAND_ARGUMENT_ADMIN_FRONTNAME);
 
         $replace = [
             '{{date}}'               => $this->_wrapCData(date(DateTimeInterface::RFC2822)),
             '{{key}}'                => $this->_wrapCData($key),
+            // Prefix does not work with sample data
             '{{db_prefix}}'          => $this->_wrapCData(''),
-            '{{db_host}}'            => $this->_wrapCData($this->getArgumentString($input, self::COMMAND_ARGUMENT_DB_HOST)),
-            '{{db_user}}'            => $this->_wrapCData($this->getArgumentString($input, self::COMMAND_ARGUMENT_DB_USER,)),
-            '{{db_pass}}'            => $this->_wrapCData($this->getArgumentString($input, self::COMMAND_ARGUMENT_DB_PASS)),
-            '{{db_name}}'            => $this->_wrapCData($this->getArgumentString($input, self::COMMAND_ARGUMENT_DB_NAME)),
+            '{{db_host}}'            => $this->_wrapCData($dbHost),
+            '{{db_user}}'            => $this->_wrapCData($dbUser),
+            '{{db_pass}}'            => $this->_wrapCData($dbPass),
+            '{{db_name}}'            => $this->_wrapCData($dbName),
             // typo intended -> magento has a little typo bug "statements".
             '{{db_init_statemants}}' => $this->_wrapCData('SET NAMES utf8'),
             '{{db_model}}'           => $this->_wrapCData('mysql4'),
             '{{db_type}}'            => $this->_wrapCData('pdo_mysql'),
             '{{db_pdo_type}}'        => $this->_wrapCData(''),
-            '{{session_save}}'       => $this->_wrapCData($this->getArgumentString($input, self::COMMAND_ARGUMENT_SESSION_SAVE)),
-            '{{admin_frontname}}'    => $this->_wrapCData($this->getArgumentString($input, self::COMMAND_ARGUMENT_ADMIN_FRONTNAME)),
+            '{{session_save}}'       => $this->_wrapCData($session),
+            '{{admin_frontname}}'    => $this->_wrapCData($frontName),
         ];
 
         $newFileContent = str_replace(array_keys($replace), array_values($replace), $content);
-        if (false === file_put_contents($configFile, $newFileContent)) {
-            $output->writeln('<error>could not save config</error>');
-            return Command::FAILURE;
+
+        try {
+            $this->filesystem->dumpFile($configFile, $newFileContent);
+        } catch (IOExceptionInterface $exception) {
+            throw new IOException($exception->getMessage());
         }
 
         $output->writeln('<info>Generated config</info>');
