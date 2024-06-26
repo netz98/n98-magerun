@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Customer;
 
 use Faker\Factory;
-use Locale;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use Faker\Generator;
+use Mage_Core_Model_Website;
+use Mage_Customer_Model_Address;
 use N98\Util\Faker\Provider\Internet;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,9 +22,56 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CreateDummyCommand extends AbstractCustomerCommand
 {
+    public const COMMAND_ARGUMENT_COUNT = 'count';
+
+    public const COMMAND_ARGUMENT_LOCALE = 'locale';
+
+    public const COMMAND_OPTION_WITH_ADDRESSES = 'with-addresses';
+
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'customer:create:dummy';
+
+    /**
+     * @var string
+     */
+    protected static $defaultDescription = 'Generate dummy customers. You can specify a count and a locale.';
+
     protected function configure(): void
     {
-        $help = <<<HELP
+        $this
+            ->addArgument(
+                self::COMMAND_ARGUMENT_COUNT,
+                InputArgument::REQUIRED,
+                'Count'
+            )
+            ->addArgument(
+                self::COMMAND_ARGUMENT_LOCALE,
+                InputArgument::REQUIRED,
+                'Locale'
+            )
+            ->addArgument(
+                self::COMMAND_ARGUMENT_WEBSITE,
+                InputArgument::OPTIONAL,
+                'Website'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_WITH_ADDRESSES,
+                null,
+                InputOption::VALUE_NONE,
+                'Create dummy billing/shipping addresses for each customers'
+            )
+            ->addFormatOption()
+        ;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Supported Locales:
 
 - cs_CZ
@@ -41,27 +90,6 @@ Supported Locales:
 - es_AR
 - de_AT
 HELP;
-
-        $this
-            ->setName('customer:create:dummy')
-            ->addArgument('count', InputArgument::REQUIRED, 'Count')
-            ->addArgument('locale', InputArgument::REQUIRED, Locale::class)
-            ->addArgument('website', InputArgument::OPTIONAL, 'Website')
-            ->addOption(
-                'with-addresses',
-                null,
-                InputOption::VALUE_NONE,
-                'Create dummy billing/shipping addresses for each customers'
-            )
-            ->setDescription('Generate dummy customers. You can specify a count and a locale.')
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
-            )
-            ->setHelp($help)
-        ;
     }
 
     /**
@@ -74,16 +102,19 @@ HELP;
     {
         $res = $this->getCustomerModel()->getResource();
 
-        $faker = Factory::create($input->getArgument('locale'));
+        /** @var string $locale */
+        $locale = $input->getArgument(self::COMMAND_ARGUMENT_LOCALE);
+        $faker = Factory::create($locale);
         $faker->addProvider(new Internet($faker));
 
         $parameterHelper = $this->getParameterHelper();
 
+        /** @var Mage_Core_Model_Website $website */
         $website = $parameterHelper->askWebsite($input, $output);
 
         $res->beginTransaction();
-        $count = $input->getArgument('count');
-        $outputPlain = $input->getOption('format') === null;
+        $count = $input->getArgument(self::COMMAND_ARGUMENT_COUNT);
+        $outputPlain = $input->getOption(self::COMMAND_OPTION_FORMAT) === null;
 
         $table = [];
         for ($i = 0; $i < $count; $i++) {
@@ -102,7 +133,7 @@ HELP;
                 $customer->setLastname($faker->lastName);
                 $customer->setPassword($password);
 
-                if ($input->hasOption('with-addresses')) {
+                if ($input->hasOption(self::COMMAND_OPTION_WITH_ADDRESSES)) {
                     $address = $this->createAddress($faker);
                     $customer->addAddress($address);
                 }
@@ -132,15 +163,22 @@ HELP;
         $res->commit();
 
         if (!$outputPlain) {
+            /** @var string $format */
+            $format = $input->getOption(self::COMMAND_OPTION_FORMAT);
             $tableHelper = $this->getTableHelper();
             $tableHelper
                 ->setHeaders(['email', 'password', 'firstname', 'lastname'])
-                ->renderByFormat($output, $table, $input->getOption('format'));
+                ->renderByFormat($output, $table, $format);
         }
-        return 0;
+
+        return Command::SUCCESS;
     }
 
-    private function createAddress($faker)
+    /**
+     * @param Generator $faker
+     * @return Mage_Customer_Model_Address
+     */
+    private function createAddress($faker): Mage_Customer_Model_Address
     {
         $country = $this->getCountryCollection()
             ->addCountryCodeFilter($faker->countryCode, 'iso2')
