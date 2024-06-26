@@ -44,7 +44,7 @@ abstract class AbstractCommand extends AbstractCommandHelper
 
     protected const NO_DATA_MESSAGE = 'No data found';
 
-    protected const QUESTION_ATTEMPTS = 3;
+    public const QUESTION_ATTEMPTS = 3;
 
     /**
      * @var string|null
@@ -82,13 +82,7 @@ abstract class AbstractCommand extends AbstractCommandHelper
     protected function configure(): void
     {
         if ($this instanceof CommandDataInterface) {
-            $this->addOption(
-                self::COMMAND_OPTION_FORMAT,
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']',
-                static::COMMAND_OPTION_FORMAT_DEFAULT
-            );
+            $this->addFormatOption();
         }
     }
 
@@ -116,6 +110,31 @@ abstract class AbstractCommand extends AbstractCommandHelper
         if ($this instanceof CommandDataInterface) {
             $this->setData($input, $output);
         }
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        if (static::COMMAND_SECTION_TITLE_TEXT && $input->getOption(self::COMMAND_OPTION_FORMAT) === null) {
+            $this->writeSection($output, static::COMMAND_SECTION_TITLE_TEXT);
+        }
+
+        $data = $this->getData();
+        if (!count($data)) {
+            $output->writeln(sprintf('<comment>%s</comment>', static::NO_DATA_MESSAGE));
+            return Command::SUCCESS;
+        }
+
+        $tableHelper = $this->getTableHelper();
+        $tableHelper
+            ->setHeaders($this->getTableHeaders($input, $output))
+            ->renderByFormat($output, $data, $input->getOption(self::COMMAND_OPTION_FORMAT));
+
+        return Command::SUCCESS;
     }
 
     protected function getData(): array
@@ -521,10 +540,29 @@ abstract class AbstractCommand extends AbstractCommandHelper
     ): string {
         $inputArgument = $input->getArgument($argument);
         if ($inputArgument === null) {
+            $dialog = $this->getQuestionHelper();
             $message = $this->getArgumentMessage($argument, $message);
 
-            $dialog = $this->getQuestionHelper();
-            return $dialog->ask($input, $output, new Question($message));
+            $validation = function (string $answer) use ($argument): string {
+                if (trim($answer) === '') {
+                    $definition = $this->getNativeDefinition()->getArgument($argument)->getDescription();
+                    throw new InvalidArgumentException(
+                        $definition . ' cannot be empty.'
+                    );
+                }
+
+                return $answer;
+            };
+
+            $question = new Question($message);
+            $question->setNormalizer(function (?string $value): string {
+                // $value can be null here
+                return $value ? trim($value) : '';
+            });
+            $question->setValidator($validation);
+            $question->setMaxAttempts(self::QUESTION_ATTEMPTS);
+
+            return $dialog->ask($input, $output, $question);
         }
 
         return $inputArgument;
@@ -607,27 +645,18 @@ abstract class AbstractCommand extends AbstractCommandHelper
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * @return $this
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function addFormatOption(): AbstractCommand
     {
-        if (static::COMMAND_SECTION_TITLE_TEXT && $input->getOption(self::COMMAND_OPTION_FORMAT) === null) {
-            $this->writeSection($output, static::COMMAND_SECTION_TITLE_TEXT);
-        }
-
-        $data = $this->getData();
-        if (count($data) > 0) {
-            $tableHelper = $this->getTableHelper();
-            $tableHelper
-                ->setHeaders($this->getTableHeaders($input, $output))
-                ->renderByFormat($output, $data, $input->getOption(self::COMMAND_OPTION_FORMAT));
-        } else {
-            $output->writeln(sprintf('<comment>%s</comment>', static::NO_DATA_MESSAGE));
-        }
-
-        return Command::SUCCESS;
+        $this->addOption(
+            self::COMMAND_OPTION_FORMAT,
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']',
+            static::COMMAND_OPTION_FORMAT_DEFAULT
+        );
+        return $this;
     }
 
     /**
