@@ -1,210 +1,356 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module;
 
 use InvalidArgumentException;
-use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\TwigHelper;
+use N98\Magento\Command\AbstractCommand;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 
 /**
- * Create a magento module skeleton
+ * Create module skeleton command
+ *
+ * @package N98\Magento\Command\Developer\Module
  */
-class CreateCommand extends AbstractMagentoCommand
+class CreateCommand extends AbstractCommand
 {
+    public const COMMAND_ARGUMENT_VENDOR = 'vendorNamespace';
+
+    public const COMMAND_ARGUMENT_MODULE = 'moduleName';
+
+    public const COMMAND_ARGUMENT_CODEPOOL = 'codePool';
+
+    public const COMMAND_OPTION_ADD_ALL = 'add-all';
+
+    public const COMMAND_OPTION_AUTHOR_EMAIL = 'author-email';
+
+    public const COMMAND_OPTION_AUTHOR_NAME = 'author-name';
+
+    public const COMMAND_OPTION_ADD_BLOCKS = 'add-blocks';
+
+    public const COMMAND_OPTION_ADD_COMPOSER = 'add-composer';
+
+    public const COMMAND_OPTION_ADD_CONTROLLER = 'add-controllers';
+
+    public const COMMAND_OPTION_ADD_HELPERS = 'add-helpers';
+
+    public const COMMAND_OPTION_ADD_MODELS = 'add-models';
+
+    public const COMMAND_OPTION_ADD_README = 'add-readme';
+
+    public const COMMAND_OPTION_ADD_SETUP = 'add-setup';
+
+    public const COMMAND_OPTION_DESCRIPTION = 'description';
+
+    public const COMMAND_OPTION_MODMAN = 'modman';
+
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'dev:module:create';
+
+    /**
+     * @var string
+     */
+    protected static $defaultDescription = 'Creates and registers a new module.';
+
+    protected static bool $initMagentoFlag = false;
+
+    protected static bool $detectMagentoFlag = false;
+
     /**
      * @var array
      */
-    protected $twigVars = [];
+    protected array $twigVars = [];
 
     /**
      * @var string
      */
-    protected $baseFolder;
+    protected string $baseFolder;
 
     /**
      * @var string
      */
-    protected $moduleDirectory;
+    protected string $moduleDirectory;
 
     /**
      * @var string
      */
-    protected $vendorNamespace;
+    protected string $vendorNamespace;
 
     /**
      * @var string
      */
-    protected $moduleName;
+    protected string $moduleName;
 
     /**
      * @var string
      */
-    protected $codePool;
+    protected string $codePool;
 
     /**
      * @var bool
      */
-    protected $modmanMode = false;
+    protected bool $modmanMode = false;
 
     /**
-     * @var OutputInterface
+     * @var Filesystem
+     *
+     * phpcs:disable Ecg.PHP.PrivateClassMember.PrivateClassMemberError
      */
-    private $output;
+    private Filesystem $filesystem;
 
-    protected function configure()
+    public function __construct()
+    {
+        parent:: __construct();
+        $this->filesystem = new Filesystem();
+    }
+
+    protected function configure(): void
     {
         $this
-            ->setName('dev:module:create')
-            ->addArgument('vendorNamespace', InputArgument::REQUIRED, 'Namespace (your company prefix)')
-            ->addArgument('moduleName', InputArgument::REQUIRED, 'Name of your module.')
-            ->addArgument('codePool', InputArgument::OPTIONAL, 'Codepool (local, community)', 'local')
-            ->addOption('add-controllers', null, InputOption::VALUE_NONE, 'Adds controllers')
-            ->addOption('add-blocks', null, InputOption::VALUE_NONE, 'Adds blocks')
-            ->addOption('add-helpers', null, InputOption::VALUE_NONE, 'Adds helpers')
-            ->addOption('add-models', null, InputOption::VALUE_NONE, 'Adds models')
-            ->addOption('add-setup', null, InputOption::VALUE_NONE, 'Adds SQL setup')
-            ->addOption('add-all', null, InputOption::VALUE_NONE, 'Adds blocks, helpers and models')
-            ->addOption('modman', null, InputOption::VALUE_NONE, 'Create all files in folder with a modman file.')
-            ->addOption('add-readme', null, InputOption::VALUE_NONE, 'Adds a readme.md file to generated module')
-            ->addOption('add-composer', null, InputOption::VALUE_NONE, 'Adds a composer.json file to generated module')
-            ->addOption('author-name', null, InputOption::VALUE_OPTIONAL, 'Author for readme.md or composer.json')
-            ->addOption('author-email', null, InputOption::VALUE_OPTIONAL, 'Author for readme.md or composer.json')
-            ->addOption('description', null, InputOption::VALUE_OPTIONAL, 'Description for readme.md or composer.json')
-            ->setDescription('Create and register a new magento module.');
+            ->addArgument(
+                self::COMMAND_ARGUMENT_VENDOR,
+                InputArgument::REQUIRED,
+                'Namespace (your company prefix)'
+            )
+            ->addArgument(
+                self::COMMAND_ARGUMENT_MODULE,
+                InputArgument::REQUIRED,
+                'Name of your module.'
+            )
+            ->addArgument(
+                self::COMMAND_ARGUMENT_CODEPOOL,
+                InputArgument::OPTIONAL,
+                'Codepool (local, community)',
+                'local',
+            )
+            ->addOption(
+                self::COMMAND_OPTION_ADD_CONTROLLER,
+                null,
+                InputOption::VALUE_NONE,
+                'Adds controllers'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_ADD_BLOCKS,
+                null,
+                InputOption::VALUE_NONE,
+                'Adds blocks'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_ADD_HELPERS,
+                null,
+                InputOption::VALUE_NONE,
+                'Adds helpers'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_ADD_MODELS,
+                null,
+                InputOption::VALUE_NONE,
+                'Adds models'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_ADD_SETUP,
+                null,
+                InputOption::VALUE_NONE,
+                'Adds SQL setup'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_ADD_ALL,
+                null,
+                InputOption::VALUE_NONE,
+                'Adds blocks, helpers and models'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_MODMAN,
+                null,
+                InputOption::VALUE_NONE,
+                'Create all files in folder with a modman file.'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_ADD_README,
+                null,
+                InputOption::VALUE_NONE,
+                'Adds a readme.md file to generated module'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_ADD_COMPOSER,
+                null,
+                InputOption::VALUE_NONE,
+                'Adds a composer.json file to generated module'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_AUTHOR_NAME,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Author for readme.md or composer.json'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_AUTHOR_EMAIL,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Author for readme.md or composer.json'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_DESCRIPTION,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Description for readme.md or composer.json'
+            )
+        ;
+    }
+
+    public function interact(InputInterface $input, OutputInterface $output)
+    {
+        $parameterHelper = $this->getParameterHelper();
+
+        // Vendor
+        $vendorNamespace = $this->getOrAskForArgument(self::COMMAND_ARGUMENT_VENDOR, $input, $output);
+        $input->setArgument(self::COMMAND_ARGUMENT_VENDOR, ucfirst($vendorNamespace));
+
+        // Module
+        $moduleName = $this->getOrAskForArgument(self::COMMAND_ARGUMENT_MODULE, $input, $output);
+        $input->setArgument(self::COMMAND_ARGUMENT_MODULE, ucfirst($moduleName));
+
+        // Codepool
+        $codePool = $parameterHelper->askCoodpool($input, $output, self::COMMAND_ARGUMENT_CODEPOOL);
+        $input->setArgument(self::COMMAND_ARGUMENT_CODEPOOL, $codePool);
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->output = $output;
-
-        $this->modmanMode = $input->getOption('modman');
-        if ($input->getOption('add-all')) {
-            $input->setOption('add-controllers', true);
-            $input->setOption('add-blocks', true);
-            $input->setOption('add-helpers', true);
-            $input->setOption('add-models', true);
-            $input->setOption('add-setup', true);
-            $input->setOption('add-readme', true);
-            $input->setOption('add-composer', true);
+        $this->modmanMode = $input->getOption(self::COMMAND_OPTION_MODMAN);
+        if ($input->getOption(self::COMMAND_OPTION_ADD_ALL)) {
+            $input->setOption(self::COMMAND_OPTION_ADD_CONTROLLER, true);
+            $input->setOption(self::COMMAND_OPTION_ADD_BLOCKS, true);
+            $input->setOption(self::COMMAND_OPTION_ADD_HELPERS, true);
+            $input->setOption(self::COMMAND_OPTION_ADD_MODELS, true);
+            $input->setOption(self::COMMAND_OPTION_ADD_SETUP, true);
+            $input->setOption(self::COMMAND_OPTION_ADD_README, true);
+            $input->setOption(self::COMMAND_OPTION_ADD_COMPOSER, true);
         }
         if (!$this->modmanMode) {
             $this->detectMagento($output);
         }
         $this->baseFolder = __DIR__ . '/../../../../../../res/module/create';
 
-        $this->vendorNamespace = ucfirst($input->getArgument('vendorNamespace'));
-        $this->moduleName = ucfirst($input->getArgument('moduleName'));
-        $this->codePool = $input->getArgument('codePool');
-        if (!in_array($this->codePool, ['local', 'community'])) {
-            throw new InvalidArgumentException('Code pool must "community" or "local"');
-        }
+        $this->vendorNamespace = $input->getArgument(self::COMMAND_ARGUMENT_VENDOR);
+        $this->moduleName = $input->getArgument(self::COMMAND_ARGUMENT_MODULE);
+        $this->codePool = $input->getArgument(self::COMMAND_ARGUMENT_CODEPOOL);
+
         $this->initView($input);
         $this->createModuleDirectories($input, $output);
         $this->writeEtcModules($output);
         $this->writeModuleConfig($output);
-        $this->writeReadme($input, $output);
+
+        if ($input->getOption(self::COMMAND_OPTION_ADD_README)) {
+            $this->writeReadme($output);
+        }
+
         if ($this->modmanMode) {
             $this->writeModmanFile($output);
         }
-        $this->writeComposerConfig($input, $output);
+
+        if ($input->getOption(self::COMMAND_OPTION_ADD_COMPOSER)) {
+            $this->writeComposerConfig($output);
+        }
+
         $this->addAdditionalFiles($output);
-        return 0;
+
+        return Command::SUCCESS;
     }
 
-    protected function initView(InputInterface $input)
+    /**
+     * @param InputInterface $input
+     * @return void
+     */
+    protected function initView(InputInterface $input): void
     {
-        $this->twigVars = ['vendorNamespace'   => $this->vendorNamespace, 'moduleName'        => $this->moduleName, 'codePool'          => $this->codePool, 'createControllers' => $input->getOption('add-controllers'), 'createBlocks'      => $input->getOption('add-blocks'), 'createModels'      => $input->getOption('add-models'), 'createHelpers'     => $input->getOption('add-helpers'), 'createSetup'       => $input->getOption('add-setup'), 'authorName'        => $input->getOption('author-name'), 'authorEmail'       => $input->getOption('author-email'), 'description'       => $input->getOption('description')];
+        $this->twigVars = [
+            'vendorNamespace'   => $this->vendorNamespace,
+            'moduleName'        => $this->moduleName,
+            'codePool'          => $this->codePool,
+            'createControllers' => $input->getOption(self::COMMAND_OPTION_ADD_CONTROLLER),
+            'createBlocks'      => $input->getOption(self::COMMAND_OPTION_ADD_BLOCKS),
+            'createHelpers'     => $input->getOption(self::COMMAND_OPTION_ADD_HELPERS),
+            'createModels'      => $input->getOption(self::COMMAND_OPTION_ADD_MODELS),
+            'createSetup'       => $input->getOption(self::COMMAND_OPTION_ADD_SETUP),
+            'authorName'        => $input->getOption(self::COMMAND_OPTION_AUTHOR_NAME),
+            'authorEmail'       => $input->getOption(self::COMMAND_OPTION_AUTHOR_EMAIL),
+            'description'       => $input->getOption(self::COMMAND_OPTION_DESCRIPTION)
+        ];
     }
 
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
+     * @return void
      */
-    protected function createModuleDirectories(InputInterface $input, OutputInterface $output)
+    protected function createModuleDirectories(InputInterface $input, OutputInterface $output): void
     {
-        if ($this->modmanMode) {
-            $modManDir = $this->vendorNamespace . '_' . $this->moduleName . '/src';
-            if (file_exists($modManDir)) {
-                throw new RuntimeException('Module already exists. Stop.');
-            }
-            mkdir($modManDir, 0777, true);
-            $this->_magentoRootFolder = './' . $modManDir;
-            mkdir($this->_magentoRootFolder . '/app/etc/modules', 0777, true);
-        }
-        $moduleDir = sprintf(
-            '%s/app/code/%s/%s/%s',
-            $this->_magentoRootFolder,
-            $this->codePool,
-            $this->vendorNamespace,
-            $this->moduleName
-        );
-
-        if (file_exists($moduleDir)) {
-            throw new RuntimeException('Module already exists. Stop.');
-        }
-        $this->moduleDirectory = $moduleDir;
-        mkdir($this->moduleDirectory, 0777, true);
-        $output->writeln('<info>Created directory: <comment>' . $this->moduleDirectory . '<comment></info>');
+        $this->createDirectories($output);
+        $this->createBaseModuleDirectory($output);
 
         // Add etc folder
-        $this->createModuleDirectory('etc');
+        $this->createModuleDirectory($output, 'etc');
 
         // Add controllers folder
-        if ($input->getOption('add-controllers')) {
-            $this->createModuleDirectory('controllers');
+        if ($input->getOption(self::COMMAND_OPTION_ADD_CONTROLLER)) {
+            $this->createModuleDirectory($output, 'controllers');
         }
 
         // Add blocks folder
-        if ($input->getOption('add-blocks')) {
-            $this->createModuleDirectory('Block');
+        if ($input->getOption(self::COMMAND_OPTION_ADD_BLOCKS)) {
+            $this->createModuleDirectory($output, 'Block');
         }
 
         // Add helpers folder
-        if ($input->getOption('add-helpers')) {
-            $this->createModuleDirectory('Helper');
+        if ($input->getOption(self::COMMAND_OPTION_ADD_HELPERS)) {
+            $this->createModuleDirectory($output, 'Helper');
         }
 
         // Add models folder
-        if ($input->getOption('add-models')) {
-            $this->createModuleDirectory('Model');
+        if ($input->getOption(self::COMMAND_OPTION_ADD_MODELS)) {
+            $this->createModuleDirectory($output, 'Model');
         }
 
         // Create SQL and Data folder
-        if ($input->getOption('add-setup')) {
-            $sqlSetupFolder = $this->moduleDirectory . '/sql/' . strtolower($this->vendorNamespace) . '_' .
-                strtolower($this->moduleName) . '_setup';
-            mkdir($sqlSetupFolder, 0777, true);
-            $output->writeln('<info>Created directory: <comment>' . $sqlSetupFolder . '<comment></info>');
-
-            $dataSetupFolder = $this->moduleDirectory . '/data/' . strtolower($this->vendorNamespace) . '_' .
-                strtolower($this->moduleName) . '_setup';
-            mkdir($dataSetupFolder, 0777, true);
-            $output->writeln('<info>Created directory: <comment>' . $dataSetupFolder . '<comment></info>');
+        if ($input->getOption(self::COMMAND_OPTION_ADD_SETUP)) {
+            $this->createModuleSetupDirectory($output);
         }
     }
 
     /**
+     * @param OutputInterface $output
      * @param string $directory
+     * @return void
      */
-    private function createModuleDirectory($directory)
+    private function createModuleDirectory(OutputInterface $output, string $directory): void
     {
         $path = $this->moduleDirectory . '/' . $directory;
-        mkdir($path);
-        $this->output->writeln('<info>Created directory: <comment>' . $path . '<comment></info>');
+        $this->createDirectory($output, $path);
     }
 
-    protected function writeEtcModules(OutputInterface $output)
+    /**
+     * @param OutputInterface $output
+     * @return void
+     */
+    protected function writeEtcModules(OutputInterface $output): void
     {
         $outFile = sprintf(
             '%s/app/etc/modules/%s_%s.xml',
@@ -212,34 +358,33 @@ class CreateCommand extends AbstractMagentoCommand
             $this->vendorNamespace,
             $this->moduleName
         );
+        $template = 'dev/module/create/app/etc/modules/definition.twig';
 
-        /** @var TwigHelper $helper */
-        $helper = $this->getHelper('twig');
-        $buffer = $helper->render('dev/module/create/app/etc/modules/definition.twig', $this->twigVars);
-        $size = file_put_contents($outFile, $buffer);
-
-        $output->writeln('<info>Created file: <comment>' . $outFile . '<comment> (' . $size . ' bytes)</info>');
+        $this->dumpFile($output, $outFile, $template);
     }
 
-    protected function writeModuleConfig(OutputInterface $output)
+    /**
+     * @param OutputInterface $output
+     * @return void
+     */
+    protected function writeModuleConfig(OutputInterface $output): void
     {
         $outFile = $this->moduleDirectory . '/etc/config.xml';
-        file_put_contents(
-            $outFile,
-            $this->getHelper('twig')->render('dev/module/create/app/etc/modules/config.twig', $this->twigVars)
-        );
+        $template = 'dev/module/create/app/etc/modules/config.twig';
 
-        $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
+        $this->dumpFile($output, $outFile, $template);
     }
 
-    protected function writeModmanFile(OutputInterface $output)
+    /**
+     * @param OutputInterface $output
+     * @return void
+     */
+    protected function writeModmanFile(OutputInterface $output): void
     {
         $outFile = $this->_magentoRootFolder . '/../modman';
-        file_put_contents(
-            $outFile,
-            $this->getHelper('twig')->render('dev/module/create/modman.twig', $this->twigVars)
-        );
-        $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
+        $template = 'dev/module/create/modman.twig';
+
+        $this->dumpFile($output, $outFile, $template);
     }
 
     /**
@@ -249,75 +394,161 @@ class CreateCommand extends AbstractMagentoCommand
      *
      * @see https://raw.github.com/sprankhub/Magento-Extension-Sample-Readme/master/readme.markdown
      *
-     * @param InputInterface $input
      * @param OutputInterface $output
+     * @return void
      */
-    protected function writeReadme($input, $output)
+    protected function writeReadme(OutputInterface $output): void
     {
-        if (!$input->getOption('add-readme')) {
-            return;
-        }
         if ($this->modmanMode) {
             $outFile = $this->_magentoRootFolder . '/../readme.md';
         } else {
             $outFile = $this->moduleDirectory . '/etc/readme.md';
         }
-        file_put_contents(
-            $outFile,
-            $this->getHelper('twig')->render('dev/module/create/app/etc/modules/readme.twig', $this->twigVars)
-        );
-        $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
+        $template = 'dev/module/create/app/etc/modules/readme.twig';
+
+        $this->dumpFile($output, $outFile, $template);
     }
 
     /**
      * Write composer.json
      *
-     * @param InputInterface $input
      * @param OutputInterface $output
      */
-    protected function writeComposerConfig(InputInterface $input, OutputInterface $output)
+    protected function writeComposerConfig(OutputInterface $output): void
     {
-        if (!$input->getOption('add-composer')) {
-            return;
-        }
         if ($this->modmanMode) {
             $outFile = $this->_magentoRootFolder . '/../composer.json';
         } else {
             $outFile = $this->moduleDirectory . '/etc/composer.json';
         }
-        file_put_contents(
-            $outFile,
-            $this->getHelper('twig')->render('dev/module/create/composer.twig', $this->twigVars)
-        );
-        $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
+        $template = 'dev/module/create/composer.twig';
+
+        $this->dumpFile($output, $outFile, $template);
     }
 
-    protected function addAdditionalFiles(OutputInterface $output)
+    /**
+     * @param OutputInterface $output
+     * @return void
+     */
+    protected function addAdditionalFiles(OutputInterface $output): void
     {
         $config = $this->getCommandConfig();
         if (isset($config['additionalFiles']) && is_array($config['additionalFiles'])) {
             foreach ($config['additionalFiles'] as $template => $outFileTemplate) {
                 $outFile = $this->getOutfile($outFileTemplate);
-                $outFileDir = dirname($outFile);
-                if (!is_dir($outFileDir)) {
-                    mkdir($outFileDir, 0777, true);
+                $outFileDir = Path::getRoot($outFile);
+                if (!$this->filesystem->exists($outFileDir)) {
+                    $this->filesystem->mkdir($outFileDir);
                 }
-                file_put_contents($outFile, $this->getHelper('twig')->render($template, $this->twigVars));
-                $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
+                $this->dumpFile($output, $outFile, $template);
             }
         }
+    }
+
+    private function createDirectories(OutputInterface $output): void
+    {
+        if ($this->modmanMode) {
+            $modManDir = $this->vendorNamespace . '_' . $this->moduleName . '/src';
+            if ($this->filesystem->exists($modManDir)) {
+                throw new RuntimeException('Module already exists. Stop.');
+            }
+
+            $this->createDirectory($output, $modManDir);
+
+            $this->_magentoRootFolder = './' . $modManDir;
+            $this->createDirectory($output, $this->_magentoRootFolder . '/app/etc/modules');
+        }
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @return void
+     */
+    private function createBaseModuleDirectory(OutputInterface $output): void
+    {
+        $moduleDir = sprintf(
+            '%s/app/code/%s/%s/%s',
+            $this->_magentoRootFolder,
+            $this->codePool,
+            $this->vendorNamespace,
+            $this->moduleName
+        );
+
+        if ($this->filesystem->exists($moduleDir)) {
+            throw new RuntimeException('Module already exists. Stop.');
+        }
+        $this->moduleDirectory = $moduleDir;
+        $this->createDirectory($output, $this->moduleDirectory);
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @return void
+     */
+    private function createModuleSetupDirectory(OutputInterface $output): void
+    {
+        $sqlSetupFolder = sprintf(
+            '%s/sql/%s_%s_setup',
+            $this->moduleDirectory,
+            strtolower($this->vendorNamespace),
+            strtolower($this->moduleName)
+        );
+        $this->createDirectory($output, $sqlSetupFolder);
+
+        $dataSetupFolder = sprintf(
+            '%s/data/%s_%s_setup',
+            $this->moduleDirectory,
+            strtolower($this->vendorNamespace),
+            strtolower($this->moduleName)
+        );
+        $this->createDirectory($output, $dataSetupFolder);
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param string $directory
+     * @return void
+     */
+    private function createDirectory(OutputInterface $output, string $directory): void
+    {
+        try {
+            $this->filesystem->mkdir($directory);
+        } catch (IOExceptionInterface $exception) {
+            throw new IOException($exception->getMessage());
+        }
+        $output->writeln(sprintf('<info>Created directory: <comment>%s<comment></info>', $directory));
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param string $outFile
+     * @param string $template
+     * @return void
+     */
+    private function dumpFile(OutputInterface $output, string $outFile, string $template): void
+    {
+        $helper = $this->getTwigHelper();
+        $buffer = $helper->render($template, $this->twigVars);
+
+        try {
+            $this->filesystem->dumpFile($outFile, $buffer);
+        } catch (IOExceptionInterface $exception) {
+            throw new IOException($exception->getMessage());
+        }
+        $output->writeln(sprintf('<info>Created file: <comment>%s<comment></info>', $outFile));
     }
 
     /**
      * @param string $filename
      * @return string
      */
-    private function getOutfile($filename)
+    private function getOutfile(string $filename): string
     {
-        $paths = ['rootDir'   => $this->_magentoRootFolder, 'moduleDir' => $this->moduleDirectory];
+        $paths = [
+            'rootDir'   => $this->_magentoRootFolder,
+            'moduleDir' => $this->moduleDirectory
+        ];
 
-        /** @var TwigHelper $twig */
-        $twig = $this->getHelper('twig');
-        return $twig->renderString($filename, array_merge($this->twigVars, $paths));
+        return $this->getTwigHelper()->renderString($filename, array_merge($this->twigVars, $paths));
     }
 }
