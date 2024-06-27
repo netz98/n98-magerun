@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Developer\Module;
 
-use InvalidArgumentException;
 use N98\Magento\Command\AbstractCommand;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
@@ -69,7 +68,7 @@ class CreateCommand extends AbstractCommand
     protected static bool $detectMagentoFlag = false;
 
     /**
-     * @var array
+     * @var array<string, string|bool|null>
      */
     protected array $twigVars = [];
 
@@ -210,8 +209,29 @@ class CreateCommand extends AbstractCommand
         ;
     }
 
-    public function interact(InputInterface $input, OutputInterface $output)
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return void
+     */
+    public function interact(InputInterface $input, OutputInterface $output): void
     {
+        /** @var bool $modman */
+        $modman = $input->getOption(self::COMMAND_OPTION_MODMAN);
+        $this->modmanMode = $modman;
+        if ($input->getOption(self::COMMAND_OPTION_ADD_ALL)) {
+            $input->setOption(self::COMMAND_OPTION_ADD_CONTROLLER, true);
+            $input->setOption(self::COMMAND_OPTION_ADD_BLOCKS, true);
+            $input->setOption(self::COMMAND_OPTION_ADD_HELPERS, true);
+            $input->setOption(self::COMMAND_OPTION_ADD_MODELS, true);
+            $input->setOption(self::COMMAND_OPTION_ADD_SETUP, true);
+            $input->setOption(self::COMMAND_OPTION_ADD_README, true);
+            $input->setOption(self::COMMAND_OPTION_ADD_COMPOSER, true);
+        }
+        if (!$this->modmanMode) {
+            $this->detectMagento($output);
+        }
+
         $parameterHelper = $this->getParameterHelper();
 
         // Vendor
@@ -234,24 +254,18 @@ class CreateCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->modmanMode = $input->getOption(self::COMMAND_OPTION_MODMAN);
-        if ($input->getOption(self::COMMAND_OPTION_ADD_ALL)) {
-            $input->setOption(self::COMMAND_OPTION_ADD_CONTROLLER, true);
-            $input->setOption(self::COMMAND_OPTION_ADD_BLOCKS, true);
-            $input->setOption(self::COMMAND_OPTION_ADD_HELPERS, true);
-            $input->setOption(self::COMMAND_OPTION_ADD_MODELS, true);
-            $input->setOption(self::COMMAND_OPTION_ADD_SETUP, true);
-            $input->setOption(self::COMMAND_OPTION_ADD_README, true);
-            $input->setOption(self::COMMAND_OPTION_ADD_COMPOSER, true);
-        }
-        if (!$this->modmanMode) {
-            $this->detectMagento($output);
-        }
         $this->baseFolder = __DIR__ . '/../../../../../../res/module/create';
 
-        $this->vendorNamespace = $input->getArgument(self::COMMAND_ARGUMENT_VENDOR);
-        $this->moduleName = $input->getArgument(self::COMMAND_ARGUMENT_MODULE);
-        $this->codePool = $input->getArgument(self::COMMAND_ARGUMENT_CODEPOOL);
+        /** @var string $vendorNamespace */
+        $vendorNamespace = $input->getArgument(self::COMMAND_ARGUMENT_VENDOR);
+        /** @var string $moduleName */
+        $moduleName = $input->getArgument(self::COMMAND_ARGUMENT_CODEPOOL);
+        /** @var string $codePool */
+        $codePool = $input->getArgument(self::COMMAND_ARGUMENT_CODEPOOL);
+
+        $this->vendorNamespace = $vendorNamespace;
+        $this->moduleName = $moduleName;
+        $this->codePool = $codePool;
 
         $this->initView($input);
         $this->createModuleDirectories($input, $output);
@@ -281,18 +295,35 @@ class CreateCommand extends AbstractCommand
      */
     protected function initView(InputInterface $input): void
     {
+        /** @var bool|null $createControllers */
+        $createControllers  = $input->getOption(self::COMMAND_OPTION_ADD_CONTROLLER);
+        /** @var bool|null $createBlocks */
+        $createBlocks       = $input->getOption(self::COMMAND_OPTION_ADD_BLOCKS);
+        /** @var bool|null $createHelpers */
+        $createHelpers      = $input->getOption(self::COMMAND_OPTION_ADD_HELPERS);
+        /** @var bool|null $createModels */
+        $createModels       = $input->getOption(self::COMMAND_OPTION_ADD_MODELS);
+        /** @var bool|null $createSetup */
+        $createSetup        = $input->getOption(self::COMMAND_OPTION_ADD_SETUP);
+        /** @var string|null $authorName */
+        $authorName         = $input->getOption(self::COMMAND_OPTION_AUTHOR_NAME);
+        /** @var string|null $authorEmail */
+        $authorEmail        = $input->getOption(self::COMMAND_OPTION_AUTHOR_EMAIL);
+        /** @var string|null $description */
+        $description        = $input->getOption(self::COMMAND_OPTION_DESCRIPTION);
+
         $this->twigVars = [
             'vendorNamespace'   => $this->vendorNamespace,
             'moduleName'        => $this->moduleName,
             'codePool'          => $this->codePool,
-            'createControllers' => $input->getOption(self::COMMAND_OPTION_ADD_CONTROLLER),
-            'createBlocks'      => $input->getOption(self::COMMAND_OPTION_ADD_BLOCKS),
-            'createHelpers'     => $input->getOption(self::COMMAND_OPTION_ADD_HELPERS),
-            'createModels'      => $input->getOption(self::COMMAND_OPTION_ADD_MODELS),
-            'createSetup'       => $input->getOption(self::COMMAND_OPTION_ADD_SETUP),
-            'authorName'        => $input->getOption(self::COMMAND_OPTION_AUTHOR_NAME),
-            'authorEmail'       => $input->getOption(self::COMMAND_OPTION_AUTHOR_EMAIL),
-            'description'       => $input->getOption(self::COMMAND_OPTION_DESCRIPTION)
+            'createControllers' => $createControllers,
+            'createBlocks'      => $createBlocks,
+            'createHelpers'     => $createHelpers,
+            'createModels'      => $createModels,
+            'createSetup'       => $createSetup,
+            'authorName'        => $authorName,
+            'authorEmail'       => $authorEmail,
+            'description'       => $description
         ];
     }
 
@@ -434,6 +465,10 @@ class CreateCommand extends AbstractCommand
     {
         $config = $this->getCommandConfig();
         if (isset($config['additionalFiles']) && is_array($config['additionalFiles'])) {
+            /**
+             * @var string $template
+             * @var string $outFileTemplate
+             */
             foreach ($config['additionalFiles'] as $template => $outFileTemplate) {
                 $outFile = $this->getOutfile($outFileTemplate);
                 $outFileDir = Path::getRoot($outFile);
