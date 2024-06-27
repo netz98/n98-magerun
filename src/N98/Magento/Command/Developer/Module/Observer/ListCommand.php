@@ -76,7 +76,7 @@ class ListCommand extends AbstractCommand implements CommandDataInterface
             $this->writeSection($output, 'Observers: ' . $type);
         }
 
-        $frontendEvents = $this->_getMageConfig()->getNode($type . '/events')->asArray();
+        $frontendEvents = $this->_getMageConfigNode($type . '/events')->asArray();
         if (true === $input->getOption(self::COMMAND_OPTION_SORT)) {
             // sorting for Observers is a bad idea because the order in which observers will be called is important.
             ksort($frontendEvents);

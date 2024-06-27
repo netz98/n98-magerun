@@ -7,6 +7,7 @@ namespace N98\Magento\Command\Developer\Theme;
 use Mage_Core_Model_Store;
 use Mage_Core_Model_Website;
 use N98\Magento\Command\AbstractCommand;
+use N98\Magento\Command\AbstractStoreConfigCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -104,7 +105,7 @@ class InfoCommand extends AbstractCommand
                 $nodeLabel,
                 (string) $this->_getMageConfig()->getNode(
                     $node,
-                    AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW,
+                    AbstractStoreConfigCommand::SCOPE_STORE_VIEW,
                     $store->getCode()
                 )
             ];
@@ -128,7 +129,7 @@ class InfoCommand extends AbstractCommand
     {
         $exception = (string) $this->_getMageConfig()->getNode(
             $node . self::THEMES_EXCEPTION,
-            AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW,
+            AbstractStoreConfigCommand::SCOPE_STORE_VIEW,
             $store->getCode()
         );
 

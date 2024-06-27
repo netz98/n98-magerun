@@ -1,9 +1,6 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
+
+declare(strict_types=1);
 
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
@@ -15,6 +12,7 @@ use RuntimeException;
  * The previous exception is the one that was thrown within the class exists check
  *
  * @package N98\Magento\Command\Developer\Module\Rewrite
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
 class ClassExistsThrownException extends RuntimeException
 {

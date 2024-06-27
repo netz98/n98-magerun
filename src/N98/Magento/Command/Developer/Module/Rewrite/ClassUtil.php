@@ -12,29 +12,32 @@ final class ClassUtil
     /**
      * @var string
      */
-    private $className;
+    private string $className;
 
     /**
-     * @var bool
+     * @var bool|null
      */
-    private $exists;
+    private ?bool $exists;
 
     /**
      * @param string $className
      *
      * @return ClassUtil
      */
-    public static function create($className)
+    public static function create(string $className): ClassUtil
     {
         return new self($className);
     }
 
-    public function __construct($className)
+    public function __construct(string $className)
     {
         $this->className = $className;
     }
 
-    public function exists()
+    /**
+     * @return bool
+     */
+    public function exists(): bool
     {
         if (null === $this->exists) {
             $this->exists = ClassExistsChecker::create($this->className)->existsExtendsSafe();
@@ -49,7 +52,7 @@ final class ClassUtil
      * @param ClassUtil $class
      * @return bool
      */
-    public function isA(ClassUtil $class)
+    public function isA(ClassUtil $class): bool
     {
         return is_a($this->className, $class->className, true);
     }

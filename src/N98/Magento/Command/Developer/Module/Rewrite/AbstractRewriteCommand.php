@@ -1,27 +1,58 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
+use DOMElement;
 use Mage;
+use Mage_Core_Model_Config_Element;
 use N98\Magento\Command\AbstractCommand;
 use Symfony\Component\Finder\Finder;
+use function array_combine;
+use function array_fill;
+use function array_merge;
+use function count;
+use function dom_import_simplexml;
+use function is_countable;
+use function is_dir;
+use function simplexml_load_file;
+use function str_replace;
+use function substr;
+use function trim;
 
+/**
+ * Class AbstractRewriteCommand
+ *
+ * @package N98\Magento\Command\Developer\Module\Rewrite
+ */
 abstract class AbstractRewriteCommand extends AbstractCommand
 {
-    protected $_rewriteTypes = ['blocks', 'helpers', 'models'];
+    /**
+        * @var string[]
+     */
+    protected array $_rewriteTypes = ['blocks', 'helpers', 'models'];
 
     /**
      * Return all rewrites
      *
-     * @return array
+     * @return array<string, array<string, array<int, string>>>
      */
-    protected function loadRewrites()
+    protected function loadRewrites(): array
     {
         $prototype = $this->_rewriteTypes;
-        $return = array_combine($prototype, array_fill(0, is_countable($prototype) ? count($prototype) : 0, []));
+        /** @var array<string, array<string, array<int, string>>> $return */
+        $return =  array_combine(
+            $prototype,
+            array_fill(0, count($prototype), [])
+        );
 
         // Load config of each module because modules can overwrite config each other. Global config is already merged
-        $modules = Mage::getConfig()->getNode('modules')->children();
+        $modules = $this->_getMageConfigNode('modules')->children();
+        /**
+         * @var string $moduleName
+         * @var Mage_Core_Model_Config_Element $moduleData
+         */
         foreach ($modules as $moduleName => $moduleData) {
             // Check only active modules
             if (!$moduleData->is('active')) {
@@ -29,25 +60,39 @@ abstract class AbstractRewriteCommand extends AbstractCommand
             }
 
             // Load config of module
-            $configXmlFile = Mage::getConfig()->getModuleDir('etc', $moduleName) . DIRECTORY_SEPARATOR . 'config.xml';
-            if (!is_readable($configXmlFile)) {
+            $configXmlFile = $this->_getMageConfig()->getModuleDir('etc', $moduleName) . DIRECTORY_SEPARATOR . 'config.xml';
+            if (!\is_readable($configXmlFile)) {
                 continue;
             }
 
-            $xml = \simplexml_load_file($configXmlFile);
+            $xml = simplexml_load_file($configXmlFile);
             if (!$xml) {
                 continue;
             }
 
             $rewriteElements = $xml->xpath('//*/*/rewrite');
             foreach ($rewriteElements as $element) {
-                $type = dom_import_simplexml($element)->parentNode->parentNode->nodeName;
+                /** @var DOMElement $domNode */
+                $domNode = dom_import_simplexml($element);
+                /** @var DOMElement $parent */
+                $parent = $domNode->parentNode;
+                /** @var DOMElement $parent */
+                $parent = $parent->parentNode;
+                /** @var string $type */
+                $type = $parent->nodeName;
+
                 if (!isset($return[$type])) {
                     continue;
                 }
 
                 foreach ($element->children() as $child) {
-                    $groupClassName = dom_import_simplexml($element)->parentNode->nodeName;
+                    /** @var DOMElement $domNode */
+                    $domNode = dom_import_simplexml($element);
+                    /** @var DOMElement $parent */
+                    $parent = $domNode->parentNode;
+                    /** @var string $groupClassName */
+                    $groupClassName = $parent->nodeName;
+
                     $modelName = $child->getName();
                     $return[$type][$groupClassName . '/' . $modelName][] = (string) $child;
                 }
@@ -60,14 +105,12 @@ abstract class AbstractRewriteCommand extends AbstractCommand
     /**
      * Check codepools for core overwrites.
      *
-     * @return array
+     * @return array<string, array<string, array<int, string>>>
      */
-    protected function loadAutoloaderRewrites()
+    protected function loadAutoloaderRewrites(): array
     {
         $return = $this->loadAutoloaderRewritesByCodepool('community');
-        $return = array_merge($return, $this->loadAutoloaderRewritesByCodepool('local'));
-
-        return $return;
+        return array_merge($return, $this->loadAutoloaderRewritesByCodepool('local'));
     }
 
     /**
@@ -75,9 +118,9 @@ abstract class AbstractRewriteCommand extends AbstractCommand
      * Mage, Zend, Varien namespaces.
      *
      * @param string $codePool
-     * @return array
+     * @return array<string, array<string, array<int, string>>>
      */
-    protected function loadAutoloaderRewritesByCodepool($codePool)
+    protected function loadAutoloaderRewritesByCodepool(string $codePool): array
     {
         $return = [];
         $localCodeFolder = Mage::getBaseDir('code') . '/' . $codePool;
@@ -93,7 +136,7 @@ abstract class AbstractRewriteCommand extends AbstractCommand
                 $finder = new Finder();
                 $finder
                     ->files()
-                    ->ignoreUnreadableDirs(true)
+                    ->ignoreUnreadableDirs()
                     ->followLinks()
                     ->in($folder);
                 foreach ($finder as $file) {

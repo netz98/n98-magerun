@@ -1,9 +1,6 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
+
+declare(strict_types=1);
 
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
@@ -16,25 +13,26 @@ use stdClass;
  * More robust (against fatal errors in the inheritance chain) class_exists checker
  *
  * @package N98\Magento\Command\Developer\Module\Rewrite
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
 final class ClassExistsChecker
 {
     /**
      * @var string
      */
-    private $className;
+    private string $className;
 
     /**
-     * @var stdClass
+     * @var stdClass|null
      */
-    private $context;
+    private ?stdClass $context;
 
     /**
      * @param string $className
      *
      * @return ClassExistsChecker
      */
-    public static function create($className)
+    public static function create(string $className): ClassExistsChecker
     {
         return new self($className);
     }
@@ -44,7 +42,7 @@ final class ClassExistsChecker
      *
      * @param string $className
      */
-    public function __construct($className)
+    public function __construct(string $className)
     {
         $this->className = $className;
     }
@@ -55,7 +53,7 @@ final class ClassExistsChecker
      *
      * @return bool
      */
-    public function existsExtendsSafe()
+    public function existsExtendsSafe(): bool
     {
         $context = $this->startContext();
         try {
@@ -71,7 +69,7 @@ final class ClassExistsChecker
     /**
      * @return stdClass
      */
-    private function startContext()
+    private function startContext(): stdClass
     {
         $context = new stdClass();
         $context->lastException = null;
@@ -83,11 +81,11 @@ final class ClassExistsChecker
     }
 
     /**
-     * @param $context
+     * @param stdClass $context
      * @param Exception $ex
      * @return bool
      */
-    private function exceptionContext($context, Exception $ex)
+    private function exceptionContext(stdClass $context, Exception $ex): bool
     {
         /** @var AutoloadHandler $terminator */
         $terminator = $context->terminator;
@@ -102,9 +100,9 @@ final class ClassExistsChecker
     }
 
     /**
-     * @param $context
+     * @param stdClass $context
      */
-    private function endContext($context)
+    private function endContext(stdClass $context): void
     {
         if (isset($context->terminator)) {
             /** @var AutoloadHandler $terminator */
@@ -115,13 +113,13 @@ final class ClassExistsChecker
     }
 
     /**
-     * Method is called as last auto-loader (if all others have failed), so the class does not exists (is not
+     * Method is called as last autoloader (if all others have failed), so the class does not exists (is not
      * resolve-able)
      *
-     * @param $notFoundClass
+     * @param string $notFoundClass
      * @throws CanNotAutoloadCollaboratorClassException
      */
-    public function autoloadTerminator($notFoundClass)
+    public function autoloadTerminator(string $notFoundClass): void
     {
         $className = $this->className;
         if (null === $context = $this->context) {

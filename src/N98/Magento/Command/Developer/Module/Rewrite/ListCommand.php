@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * List rewrites command
  *
- * @package N98\Magento\Command\Developer\Module
+ * @package N98\Magento\Command\Developer\Module\Rewrite
  */
 class ListCommand extends AbstractRewriteCommand implements CommandDataInterface
 {
