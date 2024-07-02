@@ -26,6 +26,7 @@
         "symfony/event-dispatcher": "~5.4",
         "symfony/filesystem": "^5.4",
         "symfony/finder": "~5.4",
+        "symfony/polyfill-php84": "^1.30",
         "symfony/process": "~5.4",
         "symfony/validator": "~5.4",
         "symfony/yaml": "~5.4",
@@ -34,6 +35,7 @@
     "require-dev": {
         "ext-simplexml": "*",
         "bamarni/symfony-console-autocomplete": "^1.2.0",
+        "composer/composer": "^2.7",
         "friendsofphp/php-cs-fixer": "^3.4",
         "mikey179/vfsstream": "^1.6",
         "phing/phing": "~2.17.0",
