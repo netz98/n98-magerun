@@ -59,6 +59,15 @@ HELP;
     }
 
     /**
+     * {@inheritdoc}
+     */
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getDataHeaders(InputInterface $input, OutputInterface $output): array
+    {
+        return ['Name', 'Value'];
+    }
+
+    /**
      * @param InputInterface  $input
      * @param OutputInterface $output
      * @throws InvalidArgumentException
@@ -67,11 +76,11 @@ HELP;
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (($settingArgument = $input->getArgument(self::COMMAND_ARGUMENT_SETTING)) !== null) {
-            $settings = $this->getData();
+            $settings = $this->getData($input, $output);
             if (!isset($settings[$settingArgument])) {
                 throw new InvalidArgumentException('Unknown setting: ' . $settingArgument);
             }
-            $output->writeln((string) $settings[$settingArgument]['Value']);
+            $output->writeln((string) $settings[$settingArgument][1]);
 
             return Command::SUCCESS;
         }
@@ -81,69 +90,72 @@ HELP;
 
     /**
      * {@inheritdoc}
-     *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
-    public function setData(InputInterface $input,OutputInterface $output) : void
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        $this->detectDbSettings($output);
+        if (is_null($this->data)) {
+            $this->detectDbSettings($output);
 
-        $settings = [];
-        foreach ($this->dbSettings as $key => $value) {
-            $settings[$key] = (string) $value;
+            $settings = [];
+            foreach ($this->dbSettings as $key => $value) {
+                $settings[$key] = (string) $value;
+            }
+
+            if ($this->dbSettings instanceof DbSettings) {
+                $isSocketConnect = $this->dbSettings->isSocketConnect();
+            } else {
+                $isSocketConnect = false;
+            }
+
+            // note: there is no need to specify the default port neither for PDO, nor JDBC nor CLI.
+            $portOrDefault = $this->dbSettings['port'] ?? 3306;
+
+            $pdoConnectionString = '';
+            if ($isSocketConnect) {
+                $pdoConnectionString = sprintf(
+                    'mysql:unix_socket=%s;dbname=%s',
+                    $this->dbSettings['unix_socket'],
+                    $this->dbSettings['dbname']
+                );
+            } else {
+                $pdoConnectionString = sprintf(
+                    'mysql:host=%s;port=%s;dbname=%s',
+                    $this->dbSettings['host'],
+                    $portOrDefault,
+                    $this->dbSettings['dbname']
+                );
+            }
+            $settings['PDO-Connection-String'] = $pdoConnectionString;
+
+            $jdbcConnectionString = '';
+            if ($isSocketConnect) {
+                // isn't supported according to this post: http://stackoverflow.com/a/18493673/145829
+                $jdbcConnectionString = 'Connecting using JDBC through a unix socket isn\'t supported!';
+            } else {
+                $jdbcConnectionString = sprintf(
+                    'jdbc:mysql://%s:%s/%s?username=%s&password=%s',
+                    $this->dbSettings['host'],
+                    $portOrDefault,
+                    $this->dbSettings['dbname'],
+                    $this->dbSettings['username'],
+                    $this->dbSettings['password']
+                );
+            }
+            $settings['JDBC-Connection-String'] = $jdbcConnectionString;
+
+            $database = $this->getDatabaseHelper();
+            $mysqlCliString = 'mysql ' . $database->getMysqlClientToolConnectionString();
+            $settings['MySQL-Cli-String'] = $mysqlCliString;
+
+            foreach ($settings as $settingName => $settingValue) {
+                $this->data[$settingName] = [
+                    $settingName,
+                    $settingValue
+                ];
+            }
         }
 
-        if ($this->dbSettings instanceof DbSettings) {
-            $isSocketConnect = $this->dbSettings->isSocketConnect();
-        } else {
-            $isSocketConnect = false;
-        }
-
-        // note: there is no need to specify the default port neither for PDO, nor JDBC nor CLI.
-        $portOrDefault = $this->dbSettings['port'] ?? 3306;
-
-        $pdoConnectionString = '';
-        if ($isSocketConnect) {
-            $pdoConnectionString = sprintf(
-                'mysql:unix_socket=%s;dbname=%s',
-                $this->dbSettings['unix_socket'],
-                $this->dbSettings['dbname']
-            );
-        } else {
-            $pdoConnectionString = sprintf(
-                'mysql:host=%s;port=%s;dbname=%s',
-                $this->dbSettings['host'],
-                $portOrDefault,
-                $this->dbSettings['dbname']
-            );
-        }
-        $settings['PDO-Connection-String'] = $pdoConnectionString;
-
-        $jdbcConnectionString = '';
-        if ($isSocketConnect) {
-            // isn't supported according to this post: http://stackoverflow.com/a/18493673/145829
-            $jdbcConnectionString = 'Connecting using JDBC through a unix socket isn\'t supported!';
-        } else {
-            $jdbcConnectionString = sprintf(
-                'jdbc:mysql://%s:%s/%s?username=%s&password=%s',
-                $this->dbSettings['host'],
-                $portOrDefault,
-                $this->dbSettings['dbname'],
-                $this->dbSettings['username'],
-                $this->dbSettings['password']
-            );
-        }
-        $settings['JDBC-Connection-String'] = $jdbcConnectionString;
-
-        $database = $this->getDatabaseHelper();
-        $mysqlCliString = 'mysql ' . $database->getMysqlClientToolConnectionString();
-        $settings['MySQL-Cli-String'] = $mysqlCliString;
-
-        foreach ($settings as $settingName => $settingValue) {
-            $this->data[$settingName] = [
-                'Name' => $settingName,
-                'Value' => $settingValue
-            ];
-        }
+        return $this->data;
     }
 }

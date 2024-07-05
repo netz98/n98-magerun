@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace N98\Magento\Command\Cache;
+namespace N98\Magento\Command\Cache\Toggle;
 
 /**
  * Disable cache command
  *
- * @package N98\Magento\Command\Cache
+ * @package N98\Magento\Command\Cache\Toggle
  */
 class DisableCommand extends AbstractCacheCommandToggle
 {

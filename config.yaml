@@ -54,8 +54,8 @@ commands:
     - N98\Magento\Command\Admin\User\ChangeStatusCommand
     - N98\Magento\Command\Cache\CleanCommand
     - N98\Magento\Command\Cache\Dir\FlushCommand
-    - N98\Magento\Command\Cache\DisableCommand
-    - N98\Magento\Command\Cache\EnableCommand
+    - N98\Magento\Command\Cache\Toggle\DisableCommand
+    - N98\Magento\Command\Cache\Toggle\EnableCommand
     - N98\Magento\Command\Cache\FlushCommand
     - N98\Magento\Command\Cache\ListCommand
     - N98\Magento\Command\Cache\ReportCommand

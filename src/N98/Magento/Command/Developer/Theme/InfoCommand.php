@@ -8,9 +8,14 @@ use Mage_Core_Model_Store;
 use Mage_Core_Model_Website;
 use N98\Magento\Command\AbstractCommand;
 use N98\Magento\Command\AbstractStoreConfigCommand;
+use N98\Magento\Methods\MageBase as Mage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use function array_merge;
+use function implode;
+use function unserialize;
 
 /**
  * Theme info command
@@ -34,11 +39,13 @@ class InfoCommand extends AbstractCommand
     /**
      * @var array<string, string>
      */
+    // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore
     protected array $_configNodes = ['Theme translations' => 'design/theme/locale'];
 
     /**
      * @var array<string, string>
      */
+    // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore
     protected array $_configNodesWithExceptions = [
         'Design Package Name' => 'design/package/name',
         'Theme template'      => 'design/theme/template',
@@ -48,15 +55,28 @@ class InfoCommand extends AbstractCommand
     ];
 
     /**
+     * {@inheritDoc}
+     */
+    public function initialize(InputInterface $input, OutputInterface $output): void
+    {
+        parent::initialize($input, $output);
+
+        $this->detectMagento($output);
+        $this->initMagento();
+    }
+
+    /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     *
      * @return int
      *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     * @uses Mage::app()
      */
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        foreach ($this->_getMage()->getWebsites() as $website) {
+        foreach (Mage::app()->getWebsites() as $website) {
             foreach ($website->getStores() as $store) {
                 $this->_displayTable($output, $store);
             }
@@ -68,8 +88,10 @@ class InfoCommand extends AbstractCommand
     /**
      * @param OutputInterface $output
      * @param Mage_Core_Model_Store $store
+     *
      * @return $this
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _displayTable(OutputInterface $output, Mage_Core_Model_Store $store): InfoCommand
     {
         /** @var Mage_Core_Model_Website $website */
@@ -77,7 +99,11 @@ class InfoCommand extends AbstractCommand
 
         $this->writeSection(
             $output,
-            'Current design setting on store: ' . $website->getCode() . '/' . $store->getCode()
+            sprintf(
+                'Current design setting on store: %s/%s',
+                $website->getCode(),
+                $store->getCode()
+            )
         );
         $storeInfoLines = $this->_parse($this->_configNodesWithExceptions, $store, true);
         $storeInfoLines = array_merge($storeInfoLines, $this->_parse($this->_configNodes, $store));
@@ -94,8 +120,12 @@ class InfoCommand extends AbstractCommand
      * @param array<string, string> $nodes
      * @param Mage_Core_Model_Store $store
      * @param bool $withExceptions
+     *
      * @return array<int, array<int, string>>
+     *
+     * @uses Mage::getConfig()
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _parse(array $nodes, Mage_Core_Model_Store $store, bool $withExceptions = false): array
     {
         $result = [];
@@ -103,7 +133,7 @@ class InfoCommand extends AbstractCommand
         foreach ($nodes as $nodeLabel => $node) {
             $result[] = [
                 $nodeLabel,
-                (string) $this->_getMageConfig()->getNode(
+                (string) Mage::getConfig()->getNode(
                     $node,
                     AbstractStoreConfigCommand::SCOPE_STORE_VIEW,
                     $store->getCode()
@@ -123,11 +153,15 @@ class InfoCommand extends AbstractCommand
     /**
      * @param string $node
      * @param Mage_Core_Model_Store $store
+     *
      * @return string
+     *
+     * @uses Mage::getConfig()
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _parseException(string $node, Mage_Core_Model_Store $store): string
     {
-        $exception = (string) $this->_getMageConfig()->getNode(
+        $exception = (string) Mage::getConfig()->getNode(
             $node . self::THEMES_EXCEPTION,
             AbstractStoreConfigCommand::SCOPE_STORE_VIEW,
             $store->getCode()

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Developer\Theme;
 
-use Mage;
 use N98\Magento\Command\AbstractCommand;
 use N98\Magento\Command\CommandDataInterface;
+use N98\Magento\Methods\Core\Design;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -30,28 +30,33 @@ class ListCommand extends AbstractCommand implements CommandDataInterface
     protected static $defaultDescription = 'Lists all available themes.';
 
     /**
-     * {@inheritdoc}
-     *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     * {@inheritDoc}
      */
-    public function setData(InputInterface $input,OutputInterface $output) : void
+    public function getDataHeaders(InputInterface $input, OutputInterface $output): array
     {
-        $this->data = [];
-
-        foreach ($this->getThemes() as $package => $themes) {
-            foreach ($themes as $theme) {
-                $this->data[] = [
-                    'Theme' => ($package ? $package . '/' : '') . $theme
-                ];
-            }
-        }
+        return ['Theme'];
     }
 
     /**
-     * @return array<string, array<string, string>>
+     * {@inheritdoc}
+     *
+     * @uses Design\Package::getModel()
      */
-    protected function getThemes(): array
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        return Mage::getModel('core/design_package')->getThemeList();
+        if (is_null($this->data)) {
+            $this->data = [];
+
+            foreach (Design\Package::getModel()->getThemeList() as $package => $themes) {
+                foreach ($themes as $theme) {
+                    $this->data[] = [
+                        ($package ? $package . '/' : '') . $theme
+                    ];
+                }
+            }
+        }
+
+        return $this->data;
     }
 }

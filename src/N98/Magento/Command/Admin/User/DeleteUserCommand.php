@@ -32,6 +32,9 @@ class DeleteUserCommand extends AbstractAdminUserCommand
      */
     protected static $defaultDescription = 'Deletes the account of a adminhtml user.';
 
+    /**
+     * {@inheritdoc}
+     */
     protected function configure(): void
     {
         parent::configure();
@@ -52,9 +55,8 @@ class DeleteUserCommand extends AbstractAdminUserCommand
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * {@inheritdoc}
+     *
      * @throws Throwable
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -68,16 +70,16 @@ class DeleteUserCommand extends AbstractAdminUserCommand
             return Command::INVALID;
         }
 
-        $force = $input->getOption(self::COMMAND_OPTION_FORCE);
-        if (!$force) {
-            $force = $dialog->ask(
+        $shouldRemove = $input->getOption(self::COMMAND_OPTION_FORCE);
+        if (!$shouldRemove) {
+            $shouldRemove = $dialog->ask(
                 $input,
                 $output,
                 new ConfirmationQuestion('<question>Are you sure?</question> <comment>[n]</comment>: ', false),
             );
         }
 
-        if ($force) {
+        if ($shouldRemove) {
             try {
                 $user->delete();
                 $output->writeln('<info>User was successfully deleted</info>');

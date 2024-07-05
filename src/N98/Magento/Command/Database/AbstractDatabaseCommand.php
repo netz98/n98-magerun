@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class AbstractDatabaseCommand extends AbstractCommand
 {
     /**
-     * @var array|DbSettings
+     * @var array<string, string>|DbSettings
      */
     protected $dbSettings;
 
@@ -30,9 +30,9 @@ abstract class AbstractDatabaseCommand extends AbstractCommand
 
     /**
      * @param OutputInterface $output
-     * @param null $connectionNode
+     * @param string|null $connectionNode
      */
-    protected function detectDbSettings(OutputInterface $output, $connectionNode = null)
+    protected function detectDbSettings(OutputInterface $output, ?string $connectionNode = null): void
     {
         $database = $this->getDatabaseHelper();
         $this->dbSettings = $database->getDbSettings($output);
@@ -43,7 +43,7 @@ abstract class AbstractDatabaseCommand extends AbstractCommand
      *
      * @return PDO|void
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         if ($name == '_connection') {
             // TODO(tk): deprecate

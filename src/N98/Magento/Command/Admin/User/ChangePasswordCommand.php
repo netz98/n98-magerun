@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Admin\User;
 
 use Exception;
+use N98\Magento\Methods\Admin;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -12,6 +13,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Throwable;
+
+use function implode;
+use function is_array;
+use function sprintf;
 
 /**
  * Change admin password command
@@ -34,6 +39,9 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
      */
     protected static $defaultDescription = 'Changes the password of a adminhtml user.';
 
+    /**
+     * {@inheritdoc}
+     */
     protected function configure(): void
     {
         $this
@@ -51,10 +59,11 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * {@inheritdoc}
+     *
      * @throws Throwable
+     *
+     * @uses Admin\User::getModel()
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -67,7 +76,7 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
             $username = $dialog->ask($input, $output, new Question('<question>Username:</question> '));
         }
 
-        $user = $this->getUserModel()->loadByUsername($username);
+        $user = Admin\User::getModel()->loadByUsername($username);
         if ($user->getId() <= 0) {
             $output->writeln('<error>User was not found</error>');
 

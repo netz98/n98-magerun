@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Developer;
 
 use N98\Magento\Command\AbstractCommand;
+use N98\Magento\Methods\MageBase as Mage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use function class_exists;
+use function ucfirst;
 
 /**
  * Class lookup command
@@ -50,7 +54,10 @@ class ClassLookupCommand extends AbstractCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     *
      * @return int
+     *
+     * @uses Mage::getConfig()
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -59,15 +66,17 @@ class ClassLookupCommand extends AbstractCommand
         /** @var string $name */
         $name = $input->getArgument(self::COMMAND_ARGUMENT_NAME);
 
-        $resolved = $this->_getMageConfig()->getGroupedClassName($type, $name);
+        $resolved = Mage::getConfig()->getGroupedClassName($type, $name);
 
-        $output->writeln(
-            ucfirst($type) . ' <comment>' . $name . "</comment> " .
-            "resolves to <comment>" . $resolved . '</comment>'
-        );
+        $output->writeln(sprintf(
+            '%s <comment>%s</comment> resolves to <comment>%s</comment>',
+            ucfirst($type),
+            $name,
+            $resolved
+        ));
 
         if (!class_exists('\\' . $resolved)) {
-            $output->writeln('<info>Note:</info> Class <comment>' . $resolved . '</comment> does not exist!');
+            $output->writeln(sprintf('<info>Note:</info> Class <comment>%s</comment> does not exist!', $resolved));
         }
 
         return Command::SUCCESS;

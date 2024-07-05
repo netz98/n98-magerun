@@ -9,6 +9,7 @@ use Mage_Core_Exception;
 use Mage_Core_Model_Website;
 use Mage_Customer_Model_Customer;
 use Mage_Customer_Model_Resource_Customer_Collection;
+use N98\Magento\Methods\Customer;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,6 +19,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Throwable;
+
+use function sort;
+use function sprintf;
+use function vsprintf;
 
 /**
  * Delete customer command
@@ -44,6 +49,9 @@ class DeleteCommand extends AbstractCustomerCommand
      */
     protected static $defaultDescription = 'Deletes customers.';
 
+    /**
+     * {@inheritDoc}
+     */
     protected function configure(): void
     {
         $this
@@ -55,24 +63,27 @@ class DeleteCommand extends AbstractCustomerCommand
             )
             ->addOption(
                 self::COMMAND_OPTION_ALL,
-                'a', InputOption::VALUE_NONE,
+                'a',
+                InputOption::VALUE_NONE,
                 'Delete all customers'
             )
             ->addOption(
                 self::COMMAND_OPTION_FORCE,
-                'f', InputOption::VALUE_NONE,
+                'f',
+                InputOption::VALUE_NONE,
                 'Force delete'
             )
             ->addOption(
                 self::COMMAND_OPTION_RANGE,
-                '-r', InputOption::VALUE_NONE,
+                '-r',
+                InputOption::VALUE_NONE,
                 'Delete a range of customers by Id'
             )
         ;
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
     public function getHelp(): string
     {
@@ -90,11 +101,12 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * {@inheritDoc}
+     *
      * @throws Mage_Core_Exception
      * @throws Throwable
+     *
+     * @uses Customer\Customer\Collection::getResourceModel()
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -158,7 +170,7 @@ HELP;
                 $output->writeln('<error>Aborting delete</error>');
             }
         } else {
-            $customers = $this->getCustomerCollection();
+            $customers = Customer\Customer\Collection::getResourceModel();
             $customers
                 ->addAttributeToSelect('firstname')
                 ->addAttributeToSelect('lastname')
@@ -182,12 +194,15 @@ HELP;
                 sort($ranges);
 
                 // Range delete, takes precedence over --all
-                $customers->addAttributeToFilter('entity_id', ['from'  => $ranges[0], 'to'    => $ranges[1]]);
+                $customers->addAttributeToFilter('entity_id', [
+                    'from'  => $ranges[0],
+                    'to'    => $ranges[1]
+                ]);
             }
 
             if ($this->shouldRemove($input, $output)) {
                 $count = $this->batchDelete($output, $customers);
-                $output->writeln('<info>Successfully deleted ' . $count . ' customer/s</info>');
+                $output->writeln(sprintf('<info>Successfully deleted %s customer/s</info>', $count));
             } else {
                 $output->writeln('<error>Aborting delete</error>');
             }
@@ -221,17 +236,21 @@ HELP;
      * @param InputInterface $input
      * @param OutputInterface $output
      * @param int|string $id
+     *
      * @return Mage_Customer_Model_Customer
+     *
      * @throws Mage_Core_Exception
+     *
+     * @uses Customer\Customer::getModel()
      */
     protected function getCustomer(InputInterface $input, OutputInterface $output, $id): Mage_Customer_Model_Customer
     {
-        $customer = $this->getCustomerModel()->load($id);
+        $customer = Customer\Customer::getModel()->load($id);
         if (!$customer->getId()) {
             $parameterHelper = $this->getParameterHelper();
             /** @var Mage_Core_Model_Website $website */
             $website = $parameterHelper->askWebsite($input, $output);
-            $customer = $this->getCustomerModel()
+            $customer = Customer\Customer::getModel()
                 ->setWebsiteId($website->getId())
                 ->loadByEmail($id);
         }
@@ -246,7 +265,9 @@ HELP;
     /**
      * @param OutputInterface $output
      * @param Mage_Customer_Model_Customer $customer
+     *
      * @return true|Exception
+     *
      * @throws Throwable
      */
     protected function deleteCustomer(OutputInterface $output, Mage_Customer_Model_Customer $customer)
@@ -260,7 +281,7 @@ HELP;
             ));
             return true;
         } catch (Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
             return $e;
         }
     }
@@ -305,6 +326,7 @@ HELP;
     /**
      * @param string $message
      * @param string|null $default [optional]
+     *
      * @return Question
      */
     private function getQuestion(string $message, ?string $default = null): Question

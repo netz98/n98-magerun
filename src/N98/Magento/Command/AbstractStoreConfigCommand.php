@@ -213,6 +213,7 @@ abstract class AbstractStoreConfigCommand extends AbstractCommand
 
         $dialog = $this->getQuestionHelper();
         $question = new Question('<question>Change developer IP? Enter a new IP to change or leave blank:</question> ');
+        /** @var string $newDeveloperIp */
         $newDeveloperIp = $dialog->ask($input, $output, $question);
 
         if (empty($newDeveloperIp)) {

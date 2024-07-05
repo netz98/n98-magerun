@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Admin\User;
 
-use Mage;
-use Mage_Admin_Model_Roles;
-use Mage_Admin_Model_Rules;
 use Mage_Admin_Model_User;
 use N98\Magento\Command\AbstractCommand;
+use N98\Magento\Methods\Admin;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -22,27 +20,14 @@ abstract class AbstractAdminUserCommand extends AbstractCommand
     public const COMMAND_ARGUMENT_ID = 'id';
 
     /**
-     * @return Mage_Admin_Model_User
+     * {@inheritDoc}
      */
-    protected function getUserModel(): Mage_Admin_Model_User
+    public function initialize(InputInterface $input, OutputInterface $output): void
     {
-        return Mage::getModel('admin/user');
-    }
+        parent::initialize($input, $output);
 
-    /**
-     * @return Mage_Admin_Model_Roles
-     */
-    protected function getRoleModel(): Mage_Admin_Model_Roles
-    {
-        return Mage::getModel('admin/roles');
-    }
-
-    /**
-     * @return Mage_Admin_Model_Rules
-     */
-    protected function getRulesModel(): Mage_Admin_Model_Rules
-    {
-        return Mage::getModel('admin/rules');
+        $this->detectMagento($output);
+        $this->initMagento();
     }
 
     /**
@@ -50,14 +35,17 @@ abstract class AbstractAdminUserCommand extends AbstractCommand
      *
      * @param InputInterface $input
      * @param OutputInterface $output
+     *
      * @return Mage_Admin_Model_User
+     *
+     * @uses Admin\User::getModel()
      */
     protected function getUserByIdOrEmail(InputInterface $input, OutputInterface $output): Mage_Admin_Model_User
     {
         $identifier = $this->getOrAskForArgument(self::COMMAND_ARGUMENT_ID, $input, $output, 'Username or Email');
-        $user = $this->getUserModel()->loadByUsername($identifier);
+        $user = Admin\User::getModel()->loadByUsername($identifier);
         if (!$user->getId()) {
-            $user = $this->getUserModel()->load($identifier, 'email');
+            $user = Admin\User::getModel()->load($identifier, 'email');
         }
 
         return $user;

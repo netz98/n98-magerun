@@ -1,7 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database\Compressor;
 
+/**
+ * Class Gzip
+ *
+ * @package N98\Magento\Command\Database\Compressor
+ */
 class Gzip extends AbstractCompressor
 {
     /**
@@ -11,7 +18,7 @@ class Gzip extends AbstractCompressor
      * @param bool $pipe
      * @return string
      */
-    public function getCompressingCommand($command, $pipe = true)
+    public function getCompressingCommand(string $command, bool $pipe = true): string
     {
         if ($pipe) {
             return $command . ' | gzip -c ';
@@ -28,7 +35,7 @@ class Gzip extends AbstractCompressor
      * @param bool $pipe
      * @return string
      */
-    public function getDecompressingCommand($command, $fileName, $pipe = true)
+    public function getDecompressingCommand(string $command, string $fileName, bool $pipe = true): string
     {
         if ($pipe) {
             if ($this->hasPipeViewer()) {
@@ -53,7 +60,7 @@ class Gzip extends AbstractCompressor
      * @param bool $pipe
      * @return string
      */
-    public function getFileName($fileName, $pipe = true)
+    public function getFileName(string $fileName, bool $pipe = true): string
     {
         if (!strlen($fileName)) {
             return $fileName;

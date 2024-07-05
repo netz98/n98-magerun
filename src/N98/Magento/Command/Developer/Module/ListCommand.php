@@ -65,13 +65,25 @@ class ListCommand extends AbstractCommand implements CommandDataInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     * {@inheritdoc}
      */
-    public function setData(InputInterface $input,OutputInterface $output) : void
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getDataHeaders(InputInterface $input, OutputInterface $output): array
     {
-        $this->data =iterator_to_array($this->filterModules($input));
+        return ['codePool', 'Name', 'Version', 'Status'];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getData(InputInterface $input, OutputInterface $output): array
+    {
+        if (is_null($this->data)) {
+            $this->data = iterator_to_array($this->filterModules($input));
+        }
+
+        return $this->data;
     }
 
     /**

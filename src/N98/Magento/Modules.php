@@ -7,12 +7,16 @@ namespace N98\Magento;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use Mage;
 use N98\Magento\Command\Developer\Module\ListCommand;
+use N98\Magento\Methods\MageBase as Mage;
 use N98\Util\ArrayFunctions;
 use N98\Util\StringTyped;
 use Symfony\Component\Console\Input\InputInterface;
 use Traversable;
+
+use function count;
+use function is_null;
+use function trim;
 
 /**
  * Magento Modules
@@ -28,7 +32,7 @@ class Modules implements IteratorAggregate, Countable
 
     public function __construct(array $list = null)
     {
-        if (null === $list) {
+        if (is_null($list)) {
             $list = [];
         }
 
@@ -37,6 +41,8 @@ class Modules implements IteratorAggregate, Countable
 
     /**
      * @return Modules
+     *
+     * @uses Mage::app()
      */
     public function findInstalledModules(): Modules
     {
@@ -79,6 +85,7 @@ class Modules implements IteratorAggregate, Countable
             $filtered = ArrayFunctions::matrixFilterByValue($filtered, 'Status', $status);
         }
 
+        /** @var string $vendor */
         $vendor = $input->getOption(ListCommand::COMMAND_OPTION_VENDOR);
         if ($vendor) {
             $filtered = ArrayFunctions::matrixFilterStartswith($filtered, 'Name', $vendor);

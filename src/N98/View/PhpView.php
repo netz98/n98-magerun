@@ -1,24 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\View;
 
+use RuntimeException;
+
+/**
+ * Class PhpView
+ *
+ * @package N98\View
+ */
 class PhpView implements View
 {
     /**
-     * @var array
+     * @var array<string, mixed>
      */
-    protected $vars = [];
+    protected array $vars = [];
 
     /**
      * @var string
      */
-    protected $template;
+    protected string $template;
 
     /**
      * @param string $template
      * @return PhpView
      */
-    public function setTemplate($template)
+    public function setTemplate(string $template): self
     {
         $this->template = $template;
 
@@ -31,7 +40,7 @@ class PhpView implements View
      *
      * @return PhpView
      */
-    public function assign($key, $value)
+    public function assign(string $key, $value): self
     {
         $this->vars[$key] = $value;
 
@@ -41,7 +50,7 @@ class PhpView implements View
     /**
      * @return string
      */
-    public function render()
+    public function render(): string
     {
         extract($this->vars);
         ob_start();
@@ -49,13 +58,17 @@ class PhpView implements View
         $content = ob_get_contents();
         ob_end_clean();
 
+        if (!$content) {
+            throw new RuntimeException('Template could not be parsed.');
+        }
+
         return $content;
     }
 
     /**
      * @return string
      */
-    protected function xmlProlog()
+    protected function xmlProlog(): string
     {
         return '<?xml version="1.0"?>' . "\n";
     }

@@ -37,20 +37,31 @@ HELP;
 
     /**
      * {@inheritdoc}
-     * @return array<int|string, array<string, string>>
-     * @throws Exception
-     *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
-    public function setData(InputInterface $input,OutputInterface $output) : void
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getDataHeaders(InputInterface $input, OutputInterface $output): array
     {
-        $this->data = [];
-        foreach ($this->getIndexerList() as $index) {
-            $this->data[] = [
-                'code'      => $index['code'],
-                'status'    => $index['status'],
-                'time'      => $index['last_runtime']
-            ];
+        return ['code', 'status', 'time'];
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws Exception
+     */
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getData(InputInterface $input, OutputInterface $output): array
+    {
+        if (is_null($this->data)) {
+            $this->data = [];
+            foreach ($this->getIndexerList() as $index) {
+                $this->data[] = [
+                    $index['code'],
+                    $index['status'],
+                    $index['last_runtime']
+                ];
+            }
         }
+
+        return $this->data;
     }
 }

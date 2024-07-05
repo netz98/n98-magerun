@@ -8,10 +8,15 @@ use Exception;
 use Mage_Core_Exception;
 use Mage_Core_Model_Website;
 use Mage_Customer_Model_Attribute;
+use N98\Magento\Methods\Customer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use function implode;
+use function in_array;
+use function is_array;
 
 /**
  * Info customer command
@@ -35,6 +40,9 @@ class InfoCommand extends AbstractCustomerCommand
      */
     protected array $blacklist = ['password_hash', 'increment_id'];
 
+    /**
+     * {@inheritDoc}
+     */
     protected function configure(): void
     {
         $this
@@ -51,7 +59,12 @@ class InfoCommand extends AbstractCustomerCommand
         ;
     }
 
-    public function interact(InputInterface $input,OutputInterface $output)
+    /**
+     * {@inheritDoc}
+     *
+     * @throws Mage_Core_Exception
+     */
+    public function interact(InputInterface $input, OutputInterface $output): void
     {
         $parameterHelper = $this->getParameterHelper();
 
@@ -62,14 +75,14 @@ class InfoCommand extends AbstractCustomerCommand
         // Website
         $website = $parameterHelper->askWebsite($input, $output, self::COMMAND_ARGUMENT_WEBSITE);
         $input->setArgument(self::COMMAND_ARGUMENT_WEBSITE, $website);
-
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * {@inheritDoc}
+     *
      * @throws Mage_Core_Exception
+     *
+     * @uses Customer\Customer::getModel()
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -78,7 +91,7 @@ class InfoCommand extends AbstractCustomerCommand
         /** @var Mage_Core_Model_Website $website */
         $website = $input->getArgument(self::COMMAND_ARGUMENT_WEBSITE);
 
-        $customer = $this->getCustomerModel()
+        $customer = Customer\Customer::getModel()
             ->setWebsiteId($website->getId())
             ->loadByEmail($email);
         if ($customer->getId() <= 0) {

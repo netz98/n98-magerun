@@ -7,6 +7,7 @@ namespace N98\Magento\Command\Customer;
 use Exception;
 use Mage_Core_Exception;
 use Mage_Core_Model_Website;
+use N98\Magento\Methods\Customer;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -14,6 +15,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Throwable;
+
+use function implode;
+use function is_array;
 
 /**
  * Change password command
@@ -32,6 +36,9 @@ class ChangePasswordCommand extends AbstractCustomerCommand
      */
     protected static $defaultDescription = 'Changes the password of a customer.';
 
+    /**
+     * {@inheritDoc}
+     */
     protected function configure(): void
     {
         $this
@@ -54,7 +61,7 @@ class ChangePasswordCommand extends AbstractCustomerCommand
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
     public function getHelp(): string
     {
@@ -64,11 +71,12 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * {@inheritDoc}
+     *
      * @throws Mage_Core_Exception
      * @throws Throwable
+     *
+     * @uses Customer\Customer::getModel()
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -85,7 +93,7 @@ HELP;
         /** @var Mage_Core_Model_Website $website */
         $website = $parameterHelper->askWebsite($input, $output);
 
-        $customer = $this->getCustomerModel()
+        $customer = Customer\Customer::getModel()
             ->setWebsiteId($website->getId())
             ->loadByEmail($email);
         if ($customer->getId() <= 0) {
@@ -103,7 +111,7 @@ HELP;
             $customer->save();
             $output->writeln('<info>Password successfully changed</info>');
         } catch (Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
         }
 
         return Command::SUCCESS;

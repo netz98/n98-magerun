@@ -1,9 +1,6 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
+
+declare(strict_types=1);
 
 namespace N98\Magento\Command\Database\Compressor;
 
@@ -11,6 +8,7 @@ namespace N98\Magento\Command\Database\Compressor;
  * Interface Compressor
  *
  * @package N98\Magento\Command\Database\Compressor
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
 interface Compressor
 {
@@ -21,7 +19,7 @@ interface Compressor
      * @param bool $pipe
      * @return string
      */
-    public function getCompressingCommand($command, $pipe = true);
+    public function getCompressingCommand(string $command, bool $pipe = true): string;
 
     /**
      * Returns the command line for decompressing the dump file.
@@ -31,7 +29,7 @@ interface Compressor
      * @param bool $pipe
      * @return string
      */
-    public function getDecompressingCommand($command, $fileName, $pipe = true);
+    public function getDecompressingCommand(string $command, string $fileName, bool $pipe = true): string;
 
     /**
      * Returns the file name for the compressed dump file.
@@ -40,5 +38,5 @@ interface Compressor
      * @param bool $pipe
      * @return string
      */
-    public function getFileName($fileName, $pipe = true);
+    public function getFileName(string $fileName, bool $pipe = true): string;
 }

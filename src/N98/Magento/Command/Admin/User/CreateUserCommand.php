@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Admin\User;
 
 use Mage_Core_Exception;
+use N98\Magento\Methods\Admin;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,6 +42,9 @@ class CreateUserCommand extends AbstractAdminUserCommand
      */
     protected static $defaultDescription = 'Creates admin user.';
 
+    /**
+     * {@inheritdoc}
+     */
     protected function configure(): void
     {
         $this
@@ -78,16 +82,20 @@ class CreateUserCommand extends AbstractAdminUserCommand
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * {@inheritdoc}
+     *
      * @throws Mage_Core_Exception
      * @throws Throwable
+     *
+     * @uses Admin\Roles::getModel()
+     * @uses Admin\Rules::getModel()
+     * @uses Admin\User::getModel()
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = $this->getOrAskForArgument(self::COMMAND_ARGUMENT_USERNAME, $input, $output);
         $email = $this->getOrAskForArgument(self::COMMAND_ARGUMENT_EMAIL, $input, $output);
+
         if (($password = $input->getArgument(self::COMMAND_ARGUMENT_PASSWORD)) === null) {
             $dialog = $this->getQuestionHelper();
             $question = new Question('<question>Password:</question> ');
@@ -100,7 +108,7 @@ class CreateUserCommand extends AbstractAdminUserCommand
         /** @var string|null $roleName */
         $roleName = $input->getArgument(self::COMMAND_ARGUMENT_ROLE);
         if ($roleName !== null) {
-            $role = $this->getRoleModel()->load($roleName, 'role_name');
+            $role = Admin\Roles::getModel()->load($roleName, 'role_name');
             if (!$role->getId()) {
                 $output->writeln('<error>Role was not found</error>');
 
@@ -108,7 +116,7 @@ class CreateUserCommand extends AbstractAdminUserCommand
             }
         } else {
             // create new role if not yet existing
-            $role = $this->getRoleModel()->load('Development', 'role_name');
+            $role = Admin\Roles::getModel()->load('Development', 'role_name');
             if (!$role->getId()) {
                 $role
                     ->setName('Development')
@@ -116,8 +124,7 @@ class CreateUserCommand extends AbstractAdminUserCommand
                     ->save();
 
                 // give "all" privileges to role
-                $this
-                    ->getRulesModel()
+                Admin\Rules::getModel()
                     ->setRoleId($role->getId())
                     ->setResources(['all'])
                     ->saveRel();
@@ -127,7 +134,7 @@ class CreateUserCommand extends AbstractAdminUserCommand
         }
 
         // create new user
-        $user = $this->getUserModel()
+        $user = Admin\User::getModel()
             ->setData([
                 'username'  => $username,
                 'firstname' => $firstname,
@@ -142,7 +149,7 @@ class CreateUserCommand extends AbstractAdminUserCommand
             ->setRoleUserId($user->getUserId())
             ->saveRelations();
 
-        $output->writeln('<info>User <comment>' . $username . '</comment> successfully created</info>');
+        $output->writeln(sprintf('<info>User <comment>%s</comment> successfully created</info>', $username));
 
         return Command::SUCCESS;
     }

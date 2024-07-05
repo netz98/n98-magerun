@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Media\Cache\JsCss;
 
-use Mage;
 use N98\Magento\Command\AbstractCommand;
+use N98\Magento\Methods\Core\Design;
+use N98\Magento\Methods\MageBase as Mage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,12 +29,14 @@ class ClearCommand extends AbstractCommand
     protected static $defaultDescription = 'Clears JS/CSS cache.';
 
     /**
-     * {@inheritDoc}
-     * @return int
+     * {@inheritdoc}
+     *
+     * @uses Design\Package::getModel()
+     * @uses Mage::dispatchEvent()
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        Mage::getModel('core/design_package')->cleanMergedJsCss();
+        Design\Package::getModel()->cleanMergedJsCss();
         Mage::dispatchEvent('clean_media_cache_after');
         $output->writeln('<info>Js/CSS cache cleared</info>');
 

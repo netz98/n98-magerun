@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Cms\Block;
 
+use N98\Magento\Methods\Cms\Block;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -45,8 +46,8 @@ class ToggleCommand extends AbstractCmsBlockCommand
 
     /**
      * {@inheritDoc}
-     * @return int
      * @throws Throwable
+     * @uses Block::getModel()
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -54,7 +55,7 @@ class ToggleCommand extends AbstractCmsBlockCommand
 
         /** @var string $blockId */
         $blockId = $input->getArgument(self::COMMAND_ARGUMENT_BLOCK_ID);
-        $block = $this->_getBlockModel()->load($blockId, is_numeric($blockId) ? null : 'identifier');
+        $block = Block::getModel()->load($blockId, is_numeric($blockId) ? null : 'identifier');
 
         if (!$block->getId()) {
             $output->writeln('<error>Block was not found</error>');

@@ -52,22 +52,34 @@ HELP;
 
     /**
      * {@inheritdoc}
-     *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
-    public function setData(InputInterface $input,OutputInterface $output) : void
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getDataHeaders(InputInterface $input, OutputInterface $output): array
     {
-        $this->data = [];
-        foreach ($this->getScripts() as $file) {
-            $this->data[] = [
-                'Script'            => substr(
-                    $file['fileinfo']->getFilename(),
-                    0,
-                    -strlen(self::MAGERUN_EXTENSION)
-                ),
-                'Location'          => $file['location'],
-                'Description'       => $file['description']
-            ];
+        return ['Script', 'Location', 'Description'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getData(InputInterface $input, OutputInterface $output): array
+    {
+        if (is_null($this->data)) {
+            $this->data = [];
+            foreach ($this->getScripts() as $file) {
+                $this->data[] = [
+                    substr(
+                        $file['fileinfo']->getFilename(),
+                        0,
+                        -strlen(self::MAGERUN_EXTENSION)
+                    ),
+                    $file['location'],
+                    $file['description']
+                ];
+            }
         }
+
+        return $this->data;
     }
 }

@@ -30,7 +30,7 @@ class MaintenanceCommand extends AbstractCommand
     /**
      * @var string
      */
-    protected static $defaultDescription = 'Toggles maintenance mode';
+    protected static $defaultDescription = 'Toggles maintenance mode.';
 
     /**
      * @var Filesystem

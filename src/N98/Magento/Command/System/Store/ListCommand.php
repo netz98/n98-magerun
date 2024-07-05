@@ -6,8 +6,12 @@ namespace N98\Magento\Command\System\Store;
 
 use N98\Magento\Command\AbstractCommand;
 use N98\Magento\Command\CommandDataInterface;
+use N98\Magento\Methods\MageBase as Mage;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use function is_null;
+use function ksort;
 
 /**
  * List stores command
@@ -30,20 +34,35 @@ class ListCommand extends AbstractCommand implements CommandDataInterface
 
     /**
      * {@inheritdoc}
-     *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
-    public function setData(InputInterface $input,OutputInterface $output) : void
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getDataHeaders(InputInterface $input, OutputInterface $output): array
     {
-        $this->data = [];
-        foreach ($this->_getMage()->getStores() as $store) {
-            $storeId = (string) $store->getId();
-            $this->data[$storeId] = [
-                'id'    => $storeId,
-                'code'  => $store->getCode()
-            ];
+        return ['ID', 'Code'];
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @uses Mage::app()
+     */
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getData(InputInterface $input, OutputInterface $output): array
+    {
+        if (is_null($this->data)) {
+            $this->data = [];
+
+            foreach (Mage::app()->getStores() as $store) {
+                $storeId = (string) $store->getId();
+                $this->data[$storeId] = [
+                    $storeId,
+                    $store->getCode()
+                ];
+            }
+
+            ksort($this->data);
         }
 
-        ksort($this->data);
+        return $this->data;
     }
 }

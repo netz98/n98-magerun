@@ -55,64 +55,79 @@ class ViewCommand extends AbstractCommand implements CommandDataInterface
 
     /**
      * {@inheritdoc}
-     * @throws Mage_Core_Exception
      */
-    public function setData(InputInterface $input,OutputInterface $output) : void
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getDataHeaders(InputInterface $input, OutputInterface $output): array
     {
-        /** @var string $entityType */
-        $entityType = $input->getArgument(self::COMMAND_ARGUMENT_ENTITY);
-        /** @var string $attributeCode */
-        $attributeCode = $input->getArgument(self::COMMAND_ARGUMENT_ATTRIBUTE);
-
-        $attribute = $this->getAttribute($entityType, $attributeCode);
-        if (!$attribute) {
-            throw new InvalidArgumentException('Attribute was not found.');
-        }
-
-        $cacheIdTags = $attribute->getCacheIdTags();
-        $cacheTags = $attribute->getCacheTags();
-        $flatColumns = $attribute->getFlatColumns();
-
-        $this->data = [
-            ['ID', $attribute->getId()],
-            ['Code', $attribute->getName()],
-            ['Attribute-Set-ID', $attribute->getAttributeSetId()],
-            ['Visible-On-Front', $attribute->getIsVisibleOnFront() ? 'yes' : 'no'],
-            ['Attribute-Model', $attribute->getAttributeModel() ?: ''],
-            ['Backend-Model', $attribute->getBackendModel() ?: ''],
-            ['Backend-Table', $attribute->getBackendTable() ?: ''],
-            ['Backend-Type', $attribute->getBackendType() ?: ''],
-            ['Source-Model', $attribute->getSourceModel() ?: ''],
-            ['Cache-ID-Tags', is_array($cacheIdTags) ? implode(',', $cacheIdTags) : ''],
-            ['Cache-Tags', is_array($cacheTags) ? implode(',', $cacheTags) : ''],
-            ['Default-Value', $attribute->getDefaultValue() ?: ''],
-            ['Flat-Columns', is_array($flatColumns) ? implode(',', array_keys($flatColumns)) : '']
-        ];
-
-        $key = '';
-        $flatIndexes = $attribute->getFlatIndexes() ? $attribute->getFlatIndexes() : '';
-        if ($flatIndexes) {
-            $key = array_key_first($flatIndexes);
-            $flatIndexes = implode(',', $flatIndexes[$key]['fields']);
-        }
-        $this->data[] = ['Flat-Indexes', $flatIndexes ? $key . ' - ' . $flatIndexes : ''];
-
-        if ($attribute->getFrontend()) {
-            $this->data[] = ['Frontend-Label', $attribute->getFrontend()->getLabel()];
-            $this->data[] = ['Frontend-Class', trim($attribute->getFrontend()->getClass())];
-            $this->data[] = ['Frontend-Input', trim($attribute->getFrontend()->getInputType())];
-            $this->data[] = ['Frontend-Input-Renderer-Class', trim((string)$attribute->getFrontend()->getInputRendererClass())];
-        }
+        return ['Type', 'Value'];
     }
 
     /**
-     * @return array<int, string>
-     *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     * {@inheritdoc}
+     * @throws Mage_Core_Exception
      */
-    protected function getTableHeaders(InputInterface $input, OutputInterface $output): array
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        return ['Type', 'Value'];
+        if (is_null($this->data)) {
+            /** @var string $entityType */
+            $entityType = $input->getArgument(self::COMMAND_ARGUMENT_ENTITY);
+            /** @var string $attributeCode */
+            $attributeCode = $input->getArgument(self::COMMAND_ARGUMENT_ATTRIBUTE);
+
+            $attribute = $this->getAttribute($entityType, $attributeCode);
+            if (!$attribute) {
+                throw new InvalidArgumentException('Attribute was not found.');
+            }
+
+            $cacheIdTags = $attribute->getCacheIdTags();
+            $cacheTags = $attribute->getCacheTags();
+            $flatColumns = $attribute->getFlatColumns();
+
+            $this->data = [
+                ['ID', $attribute->getId()],
+                ['Code', $attribute->getName()],
+                ['Attribute-Set-ID', $attribute->getAttributeSetId()],
+                ['Visible-On-Front', $attribute->getIsVisibleOnFront() ? 'yes' : 'no'],
+                ['Attribute-Model', $attribute->getAttributeModel() ?: ''],
+                ['Backend-Model', $attribute->getBackendModel() ?: ''],
+                ['Backend-Table', $attribute->getBackendTable() ?: ''],
+                ['Backend-Type', $attribute->getBackendType() ?: ''],
+                ['Source-Model', $attribute->getSourceModel() ?: ''],
+                ['Cache-ID-Tags', is_array($cacheIdTags) ? implode(',', $cacheIdTags) : ''],
+                ['Cache-Tags', is_array($cacheTags) ? implode(',', $cacheTags) : ''],
+                ['Default-Value', $attribute->getDefaultValue() ?: ''],
+                ['Flat-Columns', is_array($flatColumns) ? implode(',', array_keys($flatColumns)) : '']
+            ];
+
+            $key = '';
+            $flatIndexes = $attribute->getFlatIndexes() ? $attribute->getFlatIndexes() : '';
+            if ($flatIndexes) {
+                $key = array_key_first($flatIndexes);
+                $flatIndexes = implode(',', $flatIndexes[$key]['fields']);
+            }
+            $this->data[] = ['Flat-Indexes', $flatIndexes ? $key . ' - ' . $flatIndexes : ''];
+
+            if ($attribute->getFrontend()) {
+                $this->data[] = [
+                    'Frontend-Label',
+                    $attribute->getFrontend()->getLabel()
+                ];
+                $this->data[] = [
+                    'Frontend-Class',
+                    trim($attribute->getFrontend()->getClass())
+                ];
+                $this->data[] = [
+                    'Frontend-Input',
+                    trim($attribute->getFrontend()->getInputType())
+                ];
+                $this->data[] = [
+                    'Frontend-Input-Renderer-Class',
+                    trim((string)$attribute->getFrontend()->getInputRendererClass())
+                ];
+            }
+        }
+
+        return $this->data;
     }
 
     /**

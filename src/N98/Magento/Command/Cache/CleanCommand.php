@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Cache;
 
 use Exception;
-use Mage;
+use N98\Magento\MageMethods as Mage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -73,7 +73,11 @@ HELP;
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     *
      * @return int
+     *
+     * @uses Mage::app()
+     * @uses Mage::dispatchEvent()
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

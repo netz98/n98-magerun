@@ -15,10 +15,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 interface CommandDataInterface
 {
     /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     *
+     * @return string[]
+     */
+    public function getDataHeaders(InputInterface $input, OutputInterface $output): array;
+
+    /**
      * Set data to display in command output
      *
      * @param InputInterface $input
      * @param OutputInterface $output
+     *
+     * @return array<int|string, array<int|string, int|string>>
      */
-    public function setData(InputInterface $input, OutputInterface $output): void;
+    public function getData(InputInterface $input, OutputInterface $output): array;
 }

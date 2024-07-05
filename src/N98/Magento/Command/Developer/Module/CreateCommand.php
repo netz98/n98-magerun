@@ -104,9 +104,8 @@ class CreateCommand extends AbstractCommand
 
     /**
      * @var Filesystem
-     *
-     * phpcs:disable Ecg.PHP.PrivateClassMember.PrivateClassMemberError
      */
+    // phpcs:ignore Ecg.PHP.PrivateClassMember.PrivateClassMemberError
     private Filesystem $filesystem;
 
     public function __construct()

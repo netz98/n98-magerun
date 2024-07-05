@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Cache;
 
+use N98\Magento\MageMethods as Mage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Validation;
 
 /**
  * View cache command
@@ -53,22 +51,25 @@ class ViewCommand extends AbstractCacheCommand
 
     /**
      * {@inheritDoc}
-     * @return int
+     *
+     * @uses Mage::app()
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var string $cacheId */
         $cacheId = $input->getArgument(self::COMMAND_ARGUMENT_ID);
 
-        $cacheInstance = $this->getCacheInstance();
-        /** @var string $cacheData */
+        $cacheInstance = Mage::app()->getCacheInstance();
         $cacheData = $cacheInstance->load($cacheId);
-        if ($input->getOption(self::COMMAND_OPTION_UNSERIALZE)) {
-            $cacheData = unserialize($cacheData);
-            $cacheData = print_r($cacheData, true);
-        }
 
-        $output->writeln($cacheData);
+        if (is_string($cacheData)) {
+            if ($input->getOption(self::COMMAND_OPTION_UNSERIALZE)) {
+                $cacheData = unserialize($cacheData);
+                $cacheData = print_r($cacheData, true);
+            }
+
+            $output->writeln($cacheData);
+        }
 
         return Command::SUCCESS;
     }

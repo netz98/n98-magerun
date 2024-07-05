@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Check;
 
 use Mage_Core_Model_Website;
@@ -12,8 +14,10 @@ use Mage_Core_Model_Website;
 interface WebsiteCheck
 {
     /**
-     * @param ResultCollection        $results
+     * @param ResultCollection $results
      * @param Mage_Core_Model_Website $website
+     *
+     * @return void
      */
-    public function check(ResultCollection $results, Mage_Core_Model_Website $website);
+    public function check(ResultCollection $results, Mage_Core_Model_Website $website): void;
 }

@@ -31,6 +31,7 @@ class StatusCommand extends AbstractShowCommand
      *
      * @var array<string, array<string, string>>
      */
+    // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore
     protected array $_importantVars = [
         'Threads_connected'              => [
             'desc' => 'Total number of clients that have currently open connections to the server.'
@@ -80,6 +81,7 @@ class StatusCommand extends AbstractShowCommand
     /**
      * @var array<string, string>
      */
+    // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore
     protected array $_specialFormat = ['Uptime' => 'timeElapsedString'];
 
     /**

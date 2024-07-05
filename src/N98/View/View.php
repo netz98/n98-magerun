@@ -1,7 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\View;
 
+/**
+ * Interface View
+ *
+ * @package N98\View
+ */
 interface View
 {
     /**
@@ -10,10 +17,10 @@ interface View
      *
      * @return View
      */
-    public function assign($key, $value);
+    public function assign(string $key, $value): View;
 
     /**
      * @return string
      */
-    public function render();
+    public function render(): string;
 }

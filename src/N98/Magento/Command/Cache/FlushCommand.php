@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Cache;
 
 use Exception;
-use Mage;
+use N98\Magento\Methods\MageBase as Mage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -43,22 +43,30 @@ Options:
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
+        parent::initialize($input, $output);
+
         $this->detectMagento($output);
 
-        $noReinitOption = $input->getOption(self::COMMAND_OPTION_NO_REINIT);
-        if (!$noReinitOption) {
+        if (!$input->getOption(self::COMMAND_OPTION_NO_REINIT)) {
             $this->banUseCache();
         }
 
         $this->initMagento();
+    }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     *
+     * @return int
+     *
+     * @uses Mage::app()
+     * @uses Mage::dispatchEvent()
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
         try {
             Mage::app()->loadAreaPart('adminhtml', 'events');
         } catch (Exception $e) {
@@ -73,7 +81,7 @@ HELP;
             $output->writeln('<error>Failed to clear Cache</error>');
         }
 
-        if (!$noReinitOption) {
+        if (!$input->getOption(self::COMMAND_OPTION_NO_REINIT)) {
             $this->reinitCache();
         }
 

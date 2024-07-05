@@ -27,6 +27,7 @@ class VariablesCommand extends AbstractShowCommand
      *      http://www.slideshare.net/shinguz/mysql-configuration-the-most-important-variables GERMAN
      * @var array<string, string|array<string, string>>
      */
+    // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore
     protected array $_importantVars = [
         'have_query_cache'                => '',
         'innodb_additional_mem_pool_size' => '',

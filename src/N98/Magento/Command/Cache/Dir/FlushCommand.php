@@ -13,6 +13,11 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function getcwd;
+use function sprintf;
+use function unlink;
+use function var_export;
+
 /**
  * Flush cache directory command
  *
@@ -30,6 +35,9 @@ class FlushCommand extends AbstractCommand
      */
     protected static $defaultDescription = 'Flush (empty) cache directory.';
 
+    /**
+     * {@inheritdoc}
+     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -49,12 +57,9 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     * {@inheritdoc}
      */
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $workingDirectory = getcwd();
@@ -89,12 +94,10 @@ HELP;
             /** @var SplFileInfo $info */
             if ($info->isDir()) {
                 if ($output->isVerbose()) {
-                    $output->writeln(
-                        sprintf(
-                            '<debug>Filesystem::recursiveRemoveDirectory() <comment>%s</comment></debug>',
-                            $file
-                        )
-                    );
+                    $output->writeln(sprintf(
+                        '<debug>Filesystem::recursiveRemoveDirectory() <comment>%s</comment></debug>',
+                        $file
+                    ));
                 }
 
                 if (!isset($fs)) {

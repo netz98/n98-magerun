@@ -2,18 +2,26 @@
 
 declare(strict_types=1);
 
-namespace N98\Magento\Command\Cache;
+namespace N98\Magento\Command\Cache\Toggle;
 
+use N98\Magento\Command\Cache\AbstractCacheCommand;
+use N98\Magento\Methods\MageBase as Mage;
 use N98\Util\BinaryString;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function array_keys;
+use function count;
+use function in_array;
+use function is_array;
+use function sprintf;
+
 /**
  * Abstract cache toggle class
  *
- * @package N98\Magento\Command\Cache
+ * @package N98\Magento\Command\Cache\Toggle
  */
 abstract class AbstractCacheCommandToggle extends AbstractCacheCommand
 {
@@ -29,11 +37,14 @@ abstract class AbstractCacheCommandToggle extends AbstractCacheCommand
      */
     protected static string $toggleName;
 
+    /**
+     * {@inheritdoc}
+     */
     protected function configure(): void
     {
         $this
             ->addArgument(
-                self::COMMAND_ARGUMENT_CODE,
+                static::COMMAND_ARGUMENT_CODE,
                 InputArgument::OPTIONAL,
                 'Code of cache (Multiple codes operated by comma)'
             );
@@ -41,26 +52,22 @@ abstract class AbstractCacheCommandToggle extends AbstractCacheCommand
         parent::configure();
     }
 
-
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * {@inheritdoc}
+     *
+     * @uses Mage::app()
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output);
-        $this->initMagento();
-
         $codeArgument = BinaryString::trimExplodeEmpty(',', $input->getArgument(self::COMMAND_ARGUMENT_CODE));
         $this->saveCacheStatus($codeArgument, static::$cacheStatus);
 
         if (static::$cacheStatus === false) {
             if (empty($codeArgument)) {
-                $this->_getCacheModel()->flush();
+                Mage::app()->getCacheInstance()->flush();
             } else {
                 foreach ($codeArgument as $type) {
-                    $this->_getCacheModel()->cleanType($type);
+                    Mage::app()->getCacheInstance()->cleanType($type);
                 }
             }
         }
@@ -79,23 +86,26 @@ abstract class AbstractCacheCommandToggle extends AbstractCacheCommand
     /**
      * @param string[] $codeArgument
      * @param bool $status
+     *
      * @return void
+     *
+     * @uses Mage::app()
      */
-    protected function saveCacheStatus(array $codeArgument, bool $status): void
+    private function saveCacheStatus(array $codeArgument, bool $status): void
     {
         $this->validateCacheCodes($codeArgument);
 
-        $cacheTypes = $this->_getCacheModel()->getTypes();
-        $enable = $this->_getMage()->useCache();
+        $cacheTypes = $this->getAllCacheTypes();
+        $enable = Mage::app()->useCache();
 
         if (is_array($enable)) {
-            foreach ($cacheTypes as $cacheCode => $cacheModel) {
+            foreach (array_keys($cacheTypes) as $cacheCode) {
                 if (empty($codeArgument) || in_array($cacheCode, $codeArgument)) {
                     $enable[$cacheCode] = $status ? 1 : 0;
                 }
             }
 
-            $this->_getMage()->saveUseCache($enable);
+            Mage::app()->saveUseCache($enable);
         }
     }
 }

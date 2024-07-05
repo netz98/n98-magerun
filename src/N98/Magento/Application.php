@@ -674,6 +674,7 @@ class Application extends BaseApplication
      * @return bool
      * @deprecated 1.97.27
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _checkSkipConfigOption(InputInterface $input)
     {
         trigger_error(
@@ -687,6 +688,7 @@ class Application extends BaseApplication
     /**
      * @param InputInterface $input
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _checkRootDirOption(InputInterface $input)
     {
         $rootDir = $input->getParameterOption('--root-dir');
@@ -717,6 +719,7 @@ class Application extends BaseApplication
      * @param bool $soft
      * @return void
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _initMagento1(bool $soft = false): void
     {
         // Load Mage class definition
@@ -738,7 +741,7 @@ class Application extends BaseApplication
     /**
      * @return EventDispatcher
      */
-    public function getDispatcher()
+    public function getDispatcher(): EventDispatcher
     {
         return $this->dispatcher;
     }
@@ -784,6 +787,7 @@ class Application extends BaseApplication
     /**
      * @param OutputInterface $output
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _addOutputStyles(OutputInterface $output)
     {
         $output->getFormatter()->setStyle('debug', new OutputFormatterStyle('magenta', 'white'));

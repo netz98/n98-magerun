@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Config;
 
 use Mage_Core_Model_Config_Element;
+use N98\Magento\Methods\MageBase as Mage;
 use RuntimeException;
 use stdClass;
 use Symfony\Component\Console\Command\Command;
@@ -51,15 +52,18 @@ class SearchCommand extends AbstractConfigCommand
      */
     public function getHelp(): string
     {
-        return <<<EOT
-                Searches the merged system.xml configuration tree <labels/> and <comments/> for the indicated text.
-EOT;
+        return <<<HELP
+Searches the merged system.xml configuration tree <labels/> and <comments/> for the indicated text.
+HELP;
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     *
      * @return int
+     *
+     * @uses Mage::getConfig()
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -67,12 +71,12 @@ EOT;
 
         /** @var string $searchString */
         $searchString = $input->getArgument(self::COMMAND_ARGUMENT_TEXT);
-        $system = $this->_getMageConfig()->loadModulesConfiguration('system.xml');
+        $system = Mage::getConfig()->loadModulesConfiguration('system.xml');
         $matches = $this->_searchConfiguration($searchString, $system);
 
         if (count($matches) > 0) {
             foreach ($matches as $match) {
-                $output->writeln('Found a <comment>' . $match->type . '</comment> with a match');
+                $output->writeln(sprintf('Found a <comment>%s</comment> with a match', $match->type));
                 $output->writeln('  ' . $this->_getPhpMageStoreConfigPathFromMatch($match));
                 $output->writeln('  ' . $this->_getPathFromMatch($match));
 
@@ -81,7 +85,7 @@ EOT;
                         '  ' .
                         str_ireplace(
                             $searchString,
-                            '<info>' . $searchString . '</info>',
+                            sprintf('<info>%s</info>', $searchString),
                             (string) $match->node->comment
                         )
                     );
@@ -89,7 +93,7 @@ EOT;
                 $output->writeln('');
             }
         } else {
-            $output->writeln('<info>No matches for <comment>' . $searchString . '</comment></info>');
+            $output->writeln(sprintf('<info>No matches for <comment>%s</comment></info>', $searchString));
         }
 
         return Command::SUCCESS;

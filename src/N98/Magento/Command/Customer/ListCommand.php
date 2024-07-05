@@ -7,9 +7,12 @@ namespace N98\Magento\Command\Customer;
 use Mage_Core_Exception;
 use Mage_Customer_Model_Customer;
 use N98\Magento\Command\CommandDataInterface;
+use N98\Magento\Methods\Customer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use function is_null;
 
 /**
  * List customer command
@@ -34,6 +37,9 @@ class ListCommand extends AbstractCustomerCommand implements CommandDataInterfac
      */
     protected static $defaultDescription = 'Lists customers.';
 
+    /**
+     * {@inheritDoc}
+     */
     protected function configure(): void
     {
         $this->addArgument(
@@ -46,7 +52,7 @@ class ListCommand extends AbstractCustomerCommand implements CommandDataInterfac
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
     public function getHelp(): string
     {
@@ -57,42 +63,57 @@ HELP;
     }
 
     /**
+     * {@inheritdoc}
+     */
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getDataHeaders(InputInterface $input, OutputInterface $output): array
+    {
+        return ['id', 'email', 'firstname', 'lastname', 'website'];
+    }
+
+    /**
      * {@inheritDoc}
+     *
      * @throws Mage_Core_Exception
      *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     * @uses Customer\Customer\Collection::getResourceModel()
      */
-    public function setData(InputInterface $input,OutputInterface $output) : void
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        $this->data = [];
+        if (is_null($this->data)) {
+            $this->data = [];
 
-        $config = $this->getCommandConfig();
+            $config = $this->getCommandConfig();
 
-        $collection = $this->getCustomerCollection();
-        $collection->addAttributeToSelect(['entity_id', 'email', 'firstname', 'lastname', 'website_id']);
+            $collection = Customer\Customer\Collection::getResourceModel();
+            $collection->addAttributeToSelect(['entity_id', 'email', 'firstname', 'lastname', 'website_id']);
 
-        $search = $input->getArgument(self::COMMAND_ARGUMENT_SEARCH);
-        if ($search) {
-            $collection->addAttributeToFilter(
-                [
-                    ['attribute' => 'email', 'like' => '%' . $search . '%'],
-                    ['attribute' => 'firstname', 'like' => '%' . $search . '%'],
-                    ['attribute' => 'lastname', 'like' => '%' . $search . '%']
-                ]
-            );
+            $search = $input->getArgument(self::COMMAND_ARGUMENT_SEARCH);
+            if ($search) {
+                $collection->addAttributeToFilter(
+                    [
+                        ['attribute' => 'email', 'like' => '%' . $search . '%'],
+                        ['attribute' => 'firstname', 'like' => '%' . $search . '%'],
+                        ['attribute' => 'lastname', 'like' => '%' . $search . '%']
+                    ]
+                );
+            }
+
+            $collection->setPageSize($config['limit']);
+
+            /** @var Mage_Customer_Model_Customer $customer */
+            foreach ($collection as $customer) {
+                $this->data[] = [
+                    $customer->getId(),
+                    $customer->getEmail(),
+                    $customer->getFirstname(),
+                    $customer->getLastname(),
+                    $this->_getWebsiteCodeById((int)$customer->getwebsiteId())
+                ];
+            }
         }
 
-        $collection->setPageSize($config['limit']);
-
-        /** @var Mage_Customer_Model_Customer $customer */
-        foreach ($collection as $customer) {
-            $this->data[] = [
-                'id'        => $customer->getId(),
-                'email'     => $customer->getEmail(),
-                'firstname' => $customer->getFirstname(),
-                'lastname'  => $customer->getLastname(),
-                'website'   => $this->_getWebsiteCodeById((int)$customer->getwebsiteId())
-            ];
-        }
+        return $this->data;
     }
 }

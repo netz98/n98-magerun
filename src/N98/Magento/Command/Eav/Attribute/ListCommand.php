@@ -65,45 +65,64 @@ class ListCommand extends AbstractCommand implements CommandDataInterface
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     * {@inheritDoc}
      */
-    public function setData(InputInterface $input,OutputInterface $output) : void
+    public function getDataHeaders(InputInterface $input, OutputInterface $output): array
     {
-        $this->data = [];
+        $header = ['Code', 'ID', 'Entity type', 'Label'];
 
-        $attributesCollection = Mage::getResourceModel('eav/entity_attribute_collection');
-        $attributesCollection->setOrder('attribute_code', 'asc');
-        /** @var Mage_Eav_Model_Entity_Attribute $attribute */
-        foreach ($attributesCollection as $attribute) {
-            $entityType = $this->_getEntityType($attribute);
-
-            /**
-             * Filter by type
-             */
-            if ($input->getOption(self::COMMAND_OPTION_FILTER_TYPE) !== null
-                && $input->getOption(self::COMMAND_OPTION_FILTER_TYPE) !== $entityType
-            ) {
-                continue;
-            }
-
-            $row = [];
-            $row['Code']        = $attribute->getAttributeCode();
-            $row['ID']          = $attribute->getId();
-            $row['Entity type'] = $entityType;
-            $row['Label']       = $attribute->getFrontendLabel();
-
-            if ($input->getOption(self::COMMAND_OPTION_ADD_SOURCE)) {
-                $row['Source'] = $attribute->getSourceModel() ?: '';
-            }
-            if ($input->getOption(self::COMMAND_OPTION_ADD_BACKEND)) {
-                $row['Backend type'] = $attribute->getBackendType();
-            }
-
-            $this->data[] = $row;
+        if ($input->getOption(self::COMMAND_OPTION_ADD_SOURCE)) {
+            $header[] = 'Source';
+        }
+        if ($input->getOption(self::COMMAND_OPTION_ADD_BACKEND)) {
+            $header[] = 'Backend type';
         }
 
+        return $header;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getData(InputInterface $input, OutputInterface $output): array
+    {
+        if (is_null($this->data)) {
+            $this->data = [];
+
+            $attributesCollection = Mage::getResourceModel('eav/entity_attribute_collection');
+            $attributesCollection->setOrder('attribute_code', 'asc');
+            /** @var Mage_Eav_Model_Entity_Attribute $attribute */
+            foreach ($attributesCollection as $attribute) {
+                $entityType = $this->_getEntityType($attribute);
+
+                /**
+                 * Filter by type
+                 */
+                if ($input->getOption(self::COMMAND_OPTION_FILTER_TYPE) !== null
+                    && $input->getOption(self::COMMAND_OPTION_FILTER_TYPE) !== $entityType
+                ) {
+                    continue;
+                }
+
+                $row = [];
+                $row['Code']        = $attribute->getAttributeCode();
+                $row['ID']          = $attribute->getId();
+                $row['Entity type'] = $entityType;
+                $row['Label']       = $attribute->getFrontendLabel();
+
+                if ($input->getOption(self::COMMAND_OPTION_ADD_SOURCE)) {
+                    $row['Source'] = $attribute->getSourceModel() ?: '';
+                }
+                if ($input->getOption(self::COMMAND_OPTION_ADD_BACKEND)) {
+                    $row['Backend type'] = $attribute->getBackendType();
+                }
+
+                $this->data[] = $row;
+            }
+        }
+
+        return $this->data;
     }
 
     /**

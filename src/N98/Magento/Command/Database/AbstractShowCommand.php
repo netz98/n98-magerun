@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Database;
 
-use Description;
-use N98\Util\Console\Helper\DatabaseHelper;
-use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -29,16 +26,19 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
     /**
      * @var InputInterface|null
      */
+    // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore
     protected ?InputInterface $_input = null;
 
     /**
      * @var OutputInterface|null
      */
+    // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore
     protected ?OutputInterface $_output = null;
 
     /**
      * @var array
      */
+    // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore
     protected array $_importantVars = [];
 
     /**
@@ -46,6 +46,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
      *
      * @var array
      */
+    // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore
     protected array $_specialFormat = [];
 
     /**
@@ -53,6 +54,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
      *
      * @var array
      */
+    // phpcs:ignore PSR2.Classes.PropertyDeclaration.Underscore
     protected array $_allVariables = [];
 
     protected function configure(): void
@@ -62,12 +64,6 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
                 'search',
                 InputArgument::OPTIONAL,
                 'Only output variables of specified name. The wildcard % is supported!'
-            )
-            ->addOption(
-                'format',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
             )
             ->addOption(
                 'rounding',
@@ -81,7 +77,9 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
                 null,
                 InputOption::VALUE_NONE,
                 'Disable description'
-            );
+            )
+            ->addFormatOption()
+        ;
     }
 
     /**
@@ -104,7 +102,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
             false === $this->_input->getOption('no-description');
         $header = ['Variable Name', 'Value'];
         if (true === $hasDescription) {
-            $header[] = Description::class;
+            $header[] = 'Description';
         }
 
         $this->renderTable($header, $this->generateRows($outputVars, $hasDescription));
@@ -168,7 +166,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
      * @param array $header
      * @param array $rows
      */
-    protected function renderTable(array $header, array $rows)
+    protected function renderTable(array $header, array $rows): void
     {
         $tableHelper = $this->getTableHelper();
         $tableHelper->setHeaders($header)
@@ -178,11 +176,9 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
     /**
      * @param string|null $variable
      */
-    protected function initVariables(?string $variable = null)
+    protected function initVariables(?string $variable = null): void
     {
-        /** @var DatabaseHelper $database */
-        $database = $this->getHelper('database');
-        $this->_allVariables = $database->{$this->showMethod}($variable);
+        $this->_allVariables = $this->getDatabaseHelper()->{$this->showMethod}($variable);
     }
 
     /**

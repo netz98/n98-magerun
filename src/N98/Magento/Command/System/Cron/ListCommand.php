@@ -30,12 +30,24 @@ class ListCommand extends AbstractCronCommand implements CommandDataInterface
 
     /**
      * {@inheritdoc}
-     *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     */
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getDataHeaders(InputInterface $input, OutputInterface $output): array
+    {
+        return ['Job', 'Model'];
+    }
+
+    /**
+     * {@inheritdoc}
      * @throws Mage_Core_Exception
      */
-    public function setData(InputInterface $input,OutputInterface $output) : void
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        $this->data = $this->getJobs();
+        if (is_null($this->data)) {
+            $this->data = $this->getJobs();
+        }
+
+        return $this->data;
     }
 }

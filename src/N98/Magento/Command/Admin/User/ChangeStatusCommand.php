@@ -5,19 +5,18 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Admin\User;
 
 use Exception;
-use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
+use Zend_Validate_Exception;
 
 /**
  * Change admin status command
  *
  * @package N98\Magento\Command\Admin\User
- * @TODO(sr) toggle
  */
 class ChangeStatusCommand extends AbstractAdminUserCommand
 {
@@ -35,6 +34,9 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
      */
     protected static $defaultDescription = 'Set active status of an adminhtml user.';
 
+    /**
+     * {@inheritdoc}
+     */
     protected function configure(): void
     {
         parent::configure();
@@ -61,20 +63,18 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getHelp(): string
     {
         return <<<HELP
 If no option is set the status will be toggled.
 HELP;
-
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * {@inheritdoc}
+     *
      * @throws Throwable
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -90,7 +90,7 @@ HELP;
             $result = $user->validate();
 
             if (is_array($result)) {
-                throw new RuntimeException(implode(PHP_EOL, $result));
+                throw new Zend_Validate_Exception(implode(PHP_EOL, $result));
             }
 
             if ($input->getOption(self::COMMAND_OPTION_ACTIVATE)) {

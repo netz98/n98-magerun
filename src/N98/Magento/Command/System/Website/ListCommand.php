@@ -6,8 +6,12 @@ namespace N98\Magento\Command\System\Website;
 
 use N98\Magento\Command\AbstractCommand;
 use N98\Magento\Command\CommandDataInterface;
+use N98\Magento\Methods\MageBase as Mage;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use function is_null;
+use function ksort;
 
 /**
  * List websites command
@@ -29,21 +33,35 @@ class ListCommand extends AbstractCommand implements CommandDataInterface
     protected static $defaultDescription = 'Lists all websites.';
 
     /**
+     * {@inheritdoc}
+     */
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getDataHeaders(InputInterface $input, OutputInterface $output): array
+    {
+        return ['ID', 'Code'];
+    }
+
+    /**
      * {@inheritDoc}
      *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+     *  @uses Mage::app()
      */
-    public function setData(InputInterface $input,OutputInterface $output) : void
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getData(InputInterface $input, OutputInterface $output): array
     {
-        $this->data = [];
-        foreach ($this->_getMage()->getWebsites() as $store) {
-            $storeId = (string) $store->getId();
-            $this->data[$storeId] = [
-                'id'    => $storeId,
-                'code'  => $store->getCode()
-            ];
+        if (is_null($this->data)) {
+            $this->data = [];
+            foreach (Mage::app()->getWebsites() as $store) {
+                $storeId = (string) $store->getId();
+                $this->data[$storeId] = [
+                    $storeId,
+                    $store->getCode()
+                ];
+            }
+
+            ksort($this->data);
         }
 
-        ksort($this->data);
+        return $this->data;
     }
 }

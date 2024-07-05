@@ -6,14 +6,18 @@ namespace N98\Magento\Command\Customer;
 
 use Faker\Factory;
 use Faker\Generator;
+use Mage_Core_Exception;
 use Mage_Core_Model_Website;
 use Mage_Customer_Model_Address;
+use N98\Magento\Methods\Customer;
+use N98\Magento\Methods\Directory;
 use N98\Util\Faker\Provider\Internet;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 /**
  * Create dummy customer command
@@ -96,11 +100,15 @@ HELP;
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
-     * @throws \Mage_Core_Exception
+     * @throws Mage_Core_Exception
+     * @throws Throwable
+     *
+     * @uses Customer\Customer::getModel()
+     * @uses Internet
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $res = $this->getCustomerModel()->getResource();
+        $res = Customer\Customer::getModel()->getResource();
 
         /** @var string $locale */
         $locale = $input->getArgument(self::COMMAND_ARGUMENT_LOCALE);
@@ -118,7 +126,7 @@ HELP;
 
         $table = [];
         for ($i = 0; $i < $count; $i++) {
-            $customer = $this->getCustomerModel();
+            $customer = Customer\Customer::getModel();
 
             $email = $faker->safeEmail;
 
@@ -143,16 +151,17 @@ HELP;
                 $customer->save();
 
                 if ($outputPlain) {
-                    $output->writeln(
-                        '<info>Customer <comment>' . $email . '</comment> with password <comment>' . $password .
-                        '</comment> successfully created</info>'
-                    );
+                    $output->writeln(sprintf(
+                        '<info>Customer <comment>%s</comment> with password <comment>%s</comment> successfully created</info>',
+                        $email,
+                        $password
+                    ));
                 } else {
                     $table[] = [$email, $password, $customer->getFirstname(), $customer->getLastname()];
                 }
             } else {
                 if ($outputPlain) {
-                    $output->writeln('<error>Customer ' . $email . ' already exists</error>');
+                    $output->writeln(sprintf('<error>Customer %s already exists</error>', $email));
                 }
             }
             if ($i % 1000 == 0) {
@@ -176,18 +185,22 @@ HELP;
 
     /**
      * @param Generator $faker
+     *
      * @return Mage_Customer_Model_Address
+     *
+     * @uses Customer\Address::getModel()
+     * @uses Directory\Country\Collection::getResourceModel()
      */
-    private function createAddress($faker): Mage_Customer_Model_Address
+    private function createAddress(Generator $faker): Mage_Customer_Model_Address
     {
-        $country = $this->getCountryCollection()
+        $country = Directory\Country\Collection::getResourceModel()
             ->addCountryCodeFilter($faker->countryCode, 'iso2')
             ->getFirstItem();
 
         $regions = $country->getRegions()->getData();
         $region = $regions ? $regions[array_rand($regions)] : null;
 
-        $address = $this->getAddressModel();
+        $address = Customer\Address::getModel();
         $address->setFirstname($faker->firstName);
         $address->setLastname($faker->lastName);
         $address->setCity($faker->city);

@@ -6,11 +6,16 @@ namespace N98\Magento\Command\Customer;
 
 use Mage_Core_Exception;
 use Mage_Core_Model_Website;
+use N98\Magento\Methods\Customer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use RuntimeException;
 use Throwable;
+
+use function is_null;
+use function sprintf;
 
 /**
  * Create customer command
@@ -33,6 +38,9 @@ class CreateCommand extends AbstractCustomerCommand
      */
     protected static $defaultDescription = 'Creates a new customer/user for shop frontend.';
 
+    /**
+     * {@inheritDoc}
+     */
     protected function configure(): void
     {
         $this
@@ -67,10 +75,10 @@ class CreateCommand extends AbstractCustomerCommand
 
     /**
      * {@inheritDoc}
-     * @return void
+     *
      * @throws Mage_Core_Exception
      */
-    public function interact(InputInterface $input,OutputInterface $output): void
+    public function interact(InputInterface $input, OutputInterface $output): void
     {
         $parameterHelper = $this->getParameterHelper();
 
@@ -97,7 +105,6 @@ class CreateCommand extends AbstractCustomerCommand
 
     /**
      * {@inheritDoc}
-     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -141,7 +148,10 @@ class CreateCommand extends AbstractCustomerCommand
      * @param string $firstname
      * @param string $lastname
      * @param Mage_Core_Model_Website $website
+     *
      * @return void
+     *
+     * @uses Customer\Customer::getModel()
      */
     private function saveCustomer(
         string $email,
@@ -150,17 +160,17 @@ class CreateCommand extends AbstractCustomerCommand
         string $lastname,
         Mage_Core_Model_Website $website
     ): void {
-        $customer = $this->getCustomerModel();
+        $customer = Customer\Customer::getModel();
         $customer->setWebsiteId($website->getId());
 
         try {
             $customer->loadByEmail($email);
         } catch (Mage_Core_Exception $exception) {
-            throw new \RuntimeException($exception->getMessage());
+            throw new RuntimeException($exception->getMessage());
         }
 
         if ($customer->getId()) {
-            throw new \RuntimeException(sprintf('Customer %s already exists', $email));
+            throw new RuntimeException(sprintf('Customer %s already exists', $email));
         }
 
         $customer->setWebsiteId($website->getId());
@@ -173,10 +183,8 @@ class CreateCommand extends AbstractCustomerCommand
             $customer->save();
             $customer->setConfirmation(null);
             $customer->save();
+        } catch (Throwable $exception) {
+            throw new RuntimeException($exception->getMessage());
         }
-        catch (Throwable $exception) {
-            throw new \RuntimeException($exception->getMessage());
-        }
-
     }
 }

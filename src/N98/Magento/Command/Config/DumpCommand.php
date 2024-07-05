@@ -6,6 +6,7 @@ namespace N98\Magento\Command\Config;
 
 use DOMDocument;
 use InvalidArgumentException;
+use N98\Magento\MageMethods as Mage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -68,16 +69,16 @@ HELP;
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return int
+     * {@inheritDoc}
      * @throws InvalidArgumentException
+     *
+     * @uses Mage::getConfig()
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var string|null $xpath */
         $xpath = $input->getArgument(self::COMMAND_ARGUMENT_XPATH);
-        $config = $this->_getMageConfig()->getNode($xpath);
+        $config = Mage::getConfig()->getNode($xpath);
         if (!$config) {
             throw new InvalidArgumentException('xpath was not found');
         }

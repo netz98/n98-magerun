@@ -29,17 +29,29 @@ class ListCommand extends AbstractCacheCommand implements CommandDataInterface
 
     /**
      * {@inheritdoc}
-     *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
-    public function setData(InputInterface $input,OutputInterface $output) : void
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getDataHeaders(InputInterface $input, OutputInterface $output): array
     {
-        $this->data = [];
-        foreach ($this->_getCacheModel()->getTypes() as $cacheCode => $cacheInfo) {
-            $this->data[] = [
-                'code'      => $cacheCode,
-                'status'    => $cacheInfo['status'] ? 'enabled' : 'disabled'
-            ];
+        return ['Code', 'Status'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getData(InputInterface $input, OutputInterface $output): array
+    {
+        if (is_null($this->data)) {
+            $this->data = [];
+            foreach ($this->getAllCacheTypes() as $cacheCode => $cacheInfo) {
+                $this->data[] = [
+                    $cacheCode,
+                    $cacheInfo['status'] ? 'enabled' : 'disabled'
+                ];
+            }
         }
+
+        return $this->data;
     }
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Cms\Block;
 
-use Symfony\Component\Validator\Exception\UnexpectedValueException;
-use Mage_Cms_Model_Block;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use N98\Magento\Command\AbstractCommand;
 
 /**
@@ -14,16 +14,13 @@ use N98\Magento\Command\AbstractCommand;
 class AbstractCmsBlockCommand extends AbstractCommand
 {
     /**
-     * Get an instance of cms/block
-     *
-     * @return Mage_Cms_Model_Block
+     * {@inheritDoc}
      */
-    protected function _getBlockModel(): Mage_Cms_Model_Block
+    public function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $model = $this->_getModel('cms/block');
-        if (!$model instanceof Mage_Cms_Model_Block) {
-            throw new UnexpectedValueException($model, Mage_Cms_Model_Block::class);
-        }
-        return $model;
+        parent::initialize($input, $output);
+
+        $this->detectMagento($output);
+        $this->initMagento();
     }
 }

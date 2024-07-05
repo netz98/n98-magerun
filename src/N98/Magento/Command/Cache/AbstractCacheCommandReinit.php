@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Cache;
 
+use N98\Magento\Methods\MageBase as Mage;
 use Symfony\Component\Console\Input\InputOption;
 
+use function method_exists;
+
 /**
- * Abstract cache reinit class
+ * Abstract cache re-init class
  *
  * @package N98\Magento\Command\Cache
  */
@@ -54,19 +57,25 @@ abstract class AbstractCacheCommandReinit extends AbstractCacheCommand
         }
     }
 
+    /**
+     * @return void
+     *
+     * @uses Mage::app()
+     */
     protected function reinitCache(): void
     {
         if (!$this->_canUseBanCacheFunction()) {
             return;
         }
 
-        $this->_getMage()->getConfig()->getOptions()->setData('global_ban_use_cache', false);
-        $this->_getMage()->getConfig()->reinit();
+        Mage::app()->getConfig()->getOptions()->setData('global_ban_use_cache', false);
+        Mage::app()->getConfig()->reinit();
     }
 
     /**
      * @return bool
      */
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     protected function _canUseBanCacheFunction(): bool
     {
         // @phpstan-ignore function.alreadyNarrowedType (Phpstan Bleeding edge only)

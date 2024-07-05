@@ -1,18 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database\Compressor;
 
 use InvalidArgumentException;
 use N98\Util\OperatingSystem;
 
+/**
+ * Class AbstractCompressor
+ *
+ * @package N98\Magento\Command\Database\Compressor
+ */
 abstract class AbstractCompressor implements Compressor
 {
     /**
-     * @param string $type
+     * @param string|null $type
      * @return AbstractCompressor
-     * @throws InvalidArgumentException
      */
-    public static function create($type)
+    public static function create(?string $type)
     {
         switch ($type) {
             case null:
@@ -35,7 +41,7 @@ abstract class AbstractCompressor implements Compressor
      * @param bool $pipe
      * @return string
      */
-    abstract public function getCompressingCommand($command, $pipe = true);
+    abstract public function getCompressingCommand(string $command, bool $pipe = true): string;
 
     /**
      * Returns the command line for decompressing the dump file.
@@ -45,7 +51,7 @@ abstract class AbstractCompressor implements Compressor
      * @param bool $pipe
      * @return string
      */
-    abstract public function getDecompressingCommand($command, $fileName, $pipe = true);
+    abstract public function getDecompressingCommand(string $command, string $fileName, bool $pipe = true): string;
 
     /**
      * Returns the file name for the compressed dump file.
@@ -54,14 +60,14 @@ abstract class AbstractCompressor implements Compressor
      * @param bool $pipe
      * @return string
      */
-    abstract public function getFileName($fileName, $pipe = true);
+    abstract public function getFileName(string $fileName, bool $pipe = true): string;
 
     /**
      * Check whether pv is installed
      *
      * @return bool
      */
-    protected function hasPipeViewer()
+    protected function hasPipeViewer(): bool
     {
         return OperatingSystem::isProgramInstalled('pv');
     }

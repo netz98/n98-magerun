@@ -7,6 +7,7 @@ namespace N98\Magento\Command\Cms\Block;
 use Mage_Cms_Model_Block;
 use Mage_Core_Exception;
 use N98\Magento\Command\CommandDataInterface;
+use N98\Magento\Methods\Cms\Block;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -31,27 +32,40 @@ class ListCommand extends AbstractCmsBlockCommand implements CommandDataInterfac
 
     /**
      * {@inheritdoc}
-     * @throws Mage_Core_Exception
-     *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
-    public function setData(InputInterface $input,OutputInterface $output) : void
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getDataHeaders(InputInterface $input, OutputInterface $output): array
     {
-        $this->data = [];
+        return ['block_id', 'title', 'identifier', 'is_active', 'store_ids'];
+    }
 
-        /** @var Mage_Cms_Model_Block[] $cmsBlockCollection */
-        $cmsBlockCollection = $this->_getBlockModel()->getCollection()->addFieldToSelect('*');
-        $resourceModel = $this->_getBlockModel()->getResource();
-        foreach ($cmsBlockCollection as $cmsBlock) {
-            $storeIds = implode(',', $resourceModel->lookupStoreIds((int)$cmsBlock->getId()));
+    /**
+     * {@inheritdoc}
+     * @throws Mage_Core_Exception
+     * @uses Block::getModel()
+     */
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getData(InputInterface $input, OutputInterface $output): array
+    {
+        if (is_null($this->data)) {
+            $this->data = [];
 
-            $this->data[] = [
-                'block_id'      => $cmsBlock->getBlockId(),
-                'title'         => $cmsBlock->getTitle(),
-                'identifier'    => $cmsBlock->getIdentifier(),
-                'is_active'     => $cmsBlock->getIsActive() ? 'active' : 'inactive',
-                'store_ids'     => $storeIds
-            ];
+            /** @var Mage_Cms_Model_Block[] $cmsBlockCollection */
+            $cmsBlockCollection = Block::getModel()->getCollection()->addFieldToSelect('*');
+            $resourceModel = Block::getModel()->getResource();
+            foreach ($cmsBlockCollection as $cmsBlock) {
+                $storeIds = implode(',', $resourceModel->lookupStoreIds((int)$cmsBlock->getId()));
+
+                $this->data[] = [
+                    $cmsBlock->getBlockId(),
+                    $cmsBlock->getTitle(),
+                    $cmsBlock->getIdentifier(),
+                    $cmsBlock->getIsActive() ? 'active' : 'inactive',
+                    $storeIds
+                ];
+            }
         }
+
+        return $this->data;
     }
 }

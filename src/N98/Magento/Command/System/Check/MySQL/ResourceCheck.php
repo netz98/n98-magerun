@@ -1,28 +1,30 @@
 <?php
-/*
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
+
+declare(strict_types=1);
 
 namespace N98\Magento\Command\System\Check\MySQL;
 
-use Mage;
-use Mage_Core_Model_Resource;
 use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Magento\Command\System\Check\SimpleCheck;
+use N98\Magento\Methods\Core;
 use Varien_Db_Adapter_Interface;
 
+/**
+ * @package N98\Magento\Command\System\Check\MySQL
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
+ */
 abstract class ResourceCheck implements SimpleCheck
 {
     /**
      * @param ResultCollection $results
+     *
+     * @uses Core\Resource::getModel()
      */
-    public function check(ResultCollection $results)
+    public function check(ResultCollection $results): void
     {
-        /** @var Mage_Core_Model_Resource $resourceModel */
-        $resourceModel = Mage::getModel('core/resource');
+        $resourceModel = Core\Resource::getModel();
 
         /** @var Varien_Db_Adapter_Interface|false $dbAdapter */
         $dbAdapter = $resourceModel->getConnection('core_write');
@@ -44,5 +46,5 @@ abstract class ResourceCheck implements SimpleCheck
      * @param Varien_Db_Adapter_Interface $dbAdapter
      * @return void
      */
-    abstract protected function checkImplementation(Result $result, Varien_Db_Adapter_Interface $dbAdapter);
+    abstract protected function checkImplementation(Result $result, Varien_Db_Adapter_Interface $dbAdapter): void;
 }

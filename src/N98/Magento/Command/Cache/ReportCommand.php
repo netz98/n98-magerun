@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Cache;
 
 use N98\Magento\Command\CommandDataInterface;
+use N98\Magento\Methods\MageBase as Mage;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -70,49 +71,73 @@ class ReportCommand extends AbstractCacheCommand implements CommandDataInterface
 
     /**
      * {@inheritdoc}
-     *
-     * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
      */
-    public function setData(InputInterface $input,OutputInterface $output) : void
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getDataHeaders(InputInterface $input, OutputInterface $output): array
     {
-        $this->data = [];
+        $header = ['ID', 'Expires'];
 
-        $cacheInstance = $this->getCacheInstance();
-
-        $filterTag = $input->getOption(self::COMMAND_OPTION_FILTER_TAG);
-        if ($filterTag !== null) {
-            $cacheIds = $cacheInstance->getIdsMatchingAnyTags([$filterTag]);
-        } else {
-            $cacheIds = $cacheInstance->getIds();
+        if ($input->getOption(self::COMMAND_OPTION_MTIME)) {
+            $header[] = 'Time modified';
         }
 
-        /** @var string $filterId */
-        $filterId = $input->getOption(self::COMMAND_OPTION_FILTER_ID);
-        if ($filterId !== null) {
-            // @phpstan-ignore argument.type (@todo SR)
-            $cacheIds = array_filter($cacheIds, function ($cacheId) use ($filterId) {
-                return stristr($cacheId, $filterId);
-            });
+        if ($input->getOption(self::COMMAND_OPTION_TAGS)) {
+            $header[] = 'Tags';
         }
 
-        /** @var string[] $cacheIds */
-        foreach ($cacheIds as $cacheId) {
-            $metaData = $cacheInstance->getMetadatas($cacheId);
+        return $header;
+    }
 
-            $row = [
-                'ID' => $cacheId,
-                'EXPIRE' => date(self::DATE_FORMAT, $metaData['expire'])
-            ];
+    /**
+     * {@inheritdoc}
+     *
+     *  @uses Mage::app()
+     */
+    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function getData(InputInterface $input, OutputInterface $output): array
+    {
+        if (is_null($this->data)) {
+            $this->data = [];
 
-            if ($input->getOption(self::COMMAND_OPTION_MTIME)) {
-                $row['MTIME'] = date(self::DATE_FORMAT, $metaData['mtime']);
+            $cacheInstance = Mage::app()->getCache();
+
+            $filterTag = $input->getOption(self::COMMAND_OPTION_FILTER_TAG);
+            if ($filterTag !== null) {
+                $cacheIds = $cacheInstance->getIdsMatchingAnyTags([$filterTag]);
+            } else {
+                $cacheIds = $cacheInstance->getIds();
             }
 
-            if ($input->getOption(self::COMMAND_OPTION_TAGS)) {
-                $row['TAGS'] = implode(',', $metaData['tags']);
+            /** @var string $filterId */
+            $filterId = $input->getOption(self::COMMAND_OPTION_FILTER_ID);
+            if ($filterId !== null) {
+                // @phpstan-ignore argument.type (@todo SR)
+                $cacheIds = array_filter($cacheIds, function ($cacheId) use ($filterId) {
+                    return stristr($cacheId, $filterId);
+                });
             }
 
-            $this->data[] = $row;
+            /** @var string[] $cacheIds */
+            foreach ($cacheIds as $cacheId) {
+                $metaData = $cacheInstance->getMetadatas($cacheId);
+
+                $row = [
+                    'id' => $cacheId,
+                    'expire' => date(self::DATE_FORMAT, $metaData['expire'])
+                ];
+
+                if ($input->getOption(self::COMMAND_OPTION_MTIME)) {
+                    $row['mtime'] = date(self::DATE_FORMAT, $metaData['mtime']);
+                }
+
+                if ($input->getOption(self::COMMAND_OPTION_TAGS)) {
+                    $row['tags'] = implode(',', $metaData['tags']);
+                }
+
+                $this->data[] = $row;
+            }
         }
+
+        return $this->data;
     }
 }
