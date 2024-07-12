@@ -32,15 +32,4 @@ class BinaryString
     {
         return $needle === '' || strpos($haystack, $needle) === 0;
     }
-
-    /**
-     * @param string $haystack
-     * @param string $needle
-     *
-     * @return bool
-     */
-    public static function endsWith($haystack, $needle)
-    {
-        return $needle === '' || substr($haystack, -strlen($needle)) === $needle;
-    }
 }
