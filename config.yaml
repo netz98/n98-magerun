@@ -170,6 +170,11 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
+      - name: openmage-20.10.0
+        package: openmage/magento-lts
+        version: 20.10.0
+        extra:
+          sample-data: sample-data-1.9.2.4
       - name: openmage-20.9.0
         package: openmage/magento-lts
         version: 20.9.0
