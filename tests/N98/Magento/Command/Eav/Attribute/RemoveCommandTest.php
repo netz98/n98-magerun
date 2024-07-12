@@ -173,6 +173,9 @@ class RemoveCommandTest extends TestCase
     {
         $setup = Mage::getModel('eav/entity_setup', 'core_setup');
         $setup->addAttribute($entityType, $attributeCode, $data);
+
+        // required with EAV attribute caching added in OpenMage 20.1.0
+        Mage::app()->getCacheInstance()->cleanType('eav');
     }
 
     /**
