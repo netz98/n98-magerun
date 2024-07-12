@@ -42,7 +42,7 @@ class CreateDatabase extends AbstractSubCommand
         $dbOptionsFound = 0;
         foreach ($dbOptions as $dbOption) {
             foreach ($this->getCliArguments() as $definedCliOption) {
-                if (BinaryString::startsWith($definedCliOption, $dbOption)) {
+                if (str_starts_with($definedCliOption, $dbOption)) {
                     $dbOptionsFound++;
                 }
             }
