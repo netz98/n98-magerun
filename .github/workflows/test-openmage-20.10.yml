@@ -88,5 +88,6 @@ jobs:
       - name: Run functional tests
         run: bats tests/bats/functional.bats
         env:
+          COMPOSER_VENDOR_PATH : "${{ github.workspace }}/magento/vendor"
           N98_MAGERUN_BIN: "${{ github.workspace }}/bin/n98-magerun"
           N98_MAGERUN_TEST_MAGENTO_ROOT: "${{ github.workspace }}/magento"
