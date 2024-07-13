@@ -60,8 +60,8 @@ class CreateUserCommand extends AbstractAdminUserCommand
                         ->setRoleType('G')
                         ->save();
 
-                    // @todo check cmuench correct class name?
-                    $resourceAll = ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) ?
+                    $resourceAll = ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2
+                        && class_exists('Mage_Backend_Model_Acl_Config')) ?
                         Mage_Backend_Model_Acl_Config::ACL_RESOURCE_ALL : 'all';
 
                     // give "all" privileges to role

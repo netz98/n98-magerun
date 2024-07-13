@@ -1,0 +1,13 @@
+parameters:
+	ignoreErrors:
+		-
+			# Level 1
+			message: "#^Call to an undefined static method N98\\\\Util\\\\OperatingSystem\\:\\:getCurrentPhpBinary\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/Installer/SubCommand/InstallComposer.php
+
+		-
+			# Level 1
+			message: "#^Call to an undefined static method N98\\\\Util\\\\OperatingSystem\\:\\:locateProgram\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/Installer/SubCommand/InstallComposer.php

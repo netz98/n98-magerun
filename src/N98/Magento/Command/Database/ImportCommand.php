@@ -174,12 +174,6 @@ HELP;
         return 0;
     }
 
-    public function asText()
-    {
-        return parent::asText() . "\n" .
-            $this->getCompressionHelp();
-    }
-
     /**
      * @param InputInterface $input
      *

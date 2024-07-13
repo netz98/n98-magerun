@@ -18,7 +18,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @package N98\Magento\Application
  */
-class ConfigFile
+final class ConfigFile
 {
     /**
      * @var string
@@ -37,7 +37,7 @@ class ConfigFile
      */
     public static function createFromFile($path)
     {
-        $configFile = new static();
+        $configFile = new self();
         $configFile->loadFile($path);
 
         return $configFile;
