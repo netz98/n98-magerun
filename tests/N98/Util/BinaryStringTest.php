@@ -29,24 +29,4 @@ class BinaryStringTest extends TestCase
     {
         return [[',', 'Foo,Bar', ['Foo', 'Bar']], ['#', ' Foo# Bar', ['Foo', 'Bar']], [',', ',,Foo, Bar,,', ['Foo', 'Bar']]];
     }
-
-    /**
-     * @test
-     */
-    public function startsWith()
-    {
-        self::assertTrue(BinaryString::startsWith('Foo', 'Foo'));
-        self::assertTrue(BinaryString::startsWith('Foo123', 'Foo'));
-        self::assertFalse(BinaryString::startsWith(' Foo123', 'Foo'));
-    }
-
-    /**
-     * @test
-     */
-    public function endsWith()
-    {
-        self::assertTrue(BinaryString::endsWith('Foo', 'Foo'));
-        self::assertTrue(BinaryString::endsWith('Foo123', '123'));
-        self::assertFalse(BinaryString::endsWith(' Foo123 ', '123'));
-    }
 }

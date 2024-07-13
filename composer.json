@@ -25,6 +25,7 @@
         "symfony/console": "~5.4",
         "symfony/event-dispatcher": "~5.4",
         "symfony/finder": "~5.4",
+        "symfony/polyfill-php80": "^1.30",
         "symfony/process": "~5.4",
         "symfony/validator": "~5.4",
         "symfony/yaml": "~5.4",

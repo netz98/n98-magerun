@@ -60,6 +60,14 @@ class RemoveCommand extends AbstractMagentoCommand
             } else {
                 $setup->removeAttribute($entityType, $attributeCode);
 
+                // required with EAV attribute caching added in OpenMage 20.1.0
+                if (method_exists('Mage', 'getOpenMageVersion')
+                    && version_compare(Mage::getOpenMageVersion(), '20.1', '>=')
+                ) {
+                    Mage::app()->getCacheInstance()->cleanType('eav');
+                    Mage::dispatchEvent('adminhtml_cache_refresh_type', ['type' => 'eav']);
+                }
+
                 $output->writeln(
                     sprintf(
                         '<info>Successfully removed attribute: "%s" from entity type: "%s"</info>',

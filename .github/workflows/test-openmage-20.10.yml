@@ -1,5 +1,5 @@
 
-name: Test OpenMage 20.9.x
+name: Test OpenMage 20.10.x
 
 on: [push, pull_request]
 
@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        openmage_version: ["20.9.0"]
+        openmage_version: ["20.10.0"]
         php_version: ["8.3", "8.2", "8.1", "7.4"]
         mysql_version: ["8.0", "5.7"]
 
@@ -80,9 +80,6 @@ jobs:
         env:
           COMPOSER_VENDOR_PATH : "${{ github.workspace }}/magento/vendor"
 
-        # Temporary allow tests to fail until code in OpenMage is fixed
-        continue-on-error: true
-
       - name: Report coverage
         uses: codecov/codecov-action@v4
         with:
@@ -91,8 +88,6 @@ jobs:
       - name: Run functional tests
         run: bats tests/bats/functional.bats
         env:
+          COMPOSER_VENDOR_PATH : "${{ github.workspace }}/magento/vendor"
           N98_MAGERUN_BIN: "${{ github.workspace }}/bin/n98-magerun"
           N98_MAGERUN_TEST_MAGENTO_ROOT: "${{ github.workspace }}/magento"
-
-        # Temporary allow tests to fail until code in OpenMage is fixed
-        continue-on-error: true
