@@ -15,11 +15,16 @@ class ListMviewCommand extends AbstractMviewIndexerCommand
             ->setDescription('Lists all magento mview indexes')
             ->addFormatOption()
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Lists all Magento mview indexers of current installation.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

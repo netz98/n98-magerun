@@ -18,8 +18,14 @@ class DumpCommand extends AbstractConfigCommand
             ->addArgument('xpath', InputArgument::OPTIONAL, 'XPath to filter XML output', null)
             ->setDescription('Dump merged xml config')
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Dumps merged XML configuration to stdout. Useful to see all the XML.
 You can filter the XML with first argument.
 
@@ -38,7 +44,6 @@ Examples:
    $ n98-magerun.phar config:dump > extern_file.xml
 
 HELP;
-        $this->setHelp($help);
     }
 
     /**

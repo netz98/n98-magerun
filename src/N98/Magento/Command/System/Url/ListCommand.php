@@ -40,8 +40,14 @@ class ListCommand extends AbstractMagentoCommand
             ->addArgument('stores', InputArgument::OPTIONAL, 'Stores (comma-separated list of store ids)')
             ->addArgument('linetemplate', InputArgument::OPTIONAL, 'Line template', '{url}')
             ->setDescription('Get all urls.');
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Examples:
 
 - Create a list of product urls only:
@@ -56,7 +62,6 @@ Examples:
 - The "linetemplate" can contain all parts "parse_url" return wrapped 
   in '{}'. '{url}' always maps the complete url and is set by default
 HELP;
-        $this->setHelp($help);
     }
 
     /**

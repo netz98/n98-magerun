@@ -37,14 +37,19 @@ class CheckCommand extends AbstractMagentoCommand
             ->setName('sys:check')
             ->setDescription('Checks Magento System')
             ->addFormatOption();
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 - Checks missing files and folders
 - Security
 - PHP Extensions (Required and Bytecode Cache)
 - MySQL InnoDB Engine
 HELP;
-        $this->setHelp($help);
     }
 
     /**

@@ -17,12 +17,17 @@ class ListCommand extends AbstractCustomerCommand
             ->addFormatOption()
             ->setDescription('Lists customers')
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 List customers. The output is limited to 1000 (can be changed by overriding config).
 If search parameter is given the customers are filtered (searchs in firstname, lastname and email).
 HELP;
-        $this->setHelp($help);
     }
 
     /**

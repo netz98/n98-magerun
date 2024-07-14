@@ -16,7 +16,28 @@ class CreateDummyCommand extends AbstractCustomerCommand
 {
     protected function configure()
     {
-        $help = <<<HELP
+        $this
+            ->setName('customer:create:dummy')
+            ->addArgument('count', InputArgument::REQUIRED, 'Count')
+            ->addArgument('locale', InputArgument::REQUIRED, Locale::class)
+            ->addArgument('website', InputArgument::OPTIONAL, 'Website')
+            ->addOption(
+                'with-addresses',
+                null,
+                InputOption::VALUE_NONE,
+                'Create dummy billing/shipping addresses for each customers'
+            )
+            ->setDescription('Generate dummy customers. You can specify a count and a locale.')
+            ->addFormatOption()
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Supported Locales:
 
 - cs_CZ
@@ -35,22 +56,6 @@ Supported Locales:
 - es_AR
 - de_AT
 HELP;
-
-        $this
-            ->setName('customer:create:dummy')
-            ->addArgument('count', InputArgument::REQUIRED, 'Count')
-            ->addArgument('locale', InputArgument::REQUIRED, Locale::class)
-            ->addArgument('website', InputArgument::OPTIONAL, 'Website')
-            ->addOption(
-                'with-addresses',
-                null,
-                InputOption::VALUE_NONE,
-                'Create dummy billing/shipping addresses for each customers'
-            )
-            ->setDescription('Generate dummy customers. You can specify a count and a locale.')
-            ->addFormatOption()
-            ->setHelp($help)
-        ;
     }
 
     /**

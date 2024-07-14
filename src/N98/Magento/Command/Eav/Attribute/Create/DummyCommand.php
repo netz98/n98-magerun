@@ -21,19 +21,26 @@ class DummyCommand extends AbstractMagentoCommand
 
     protected function configure()
     {
-        $help = <<<HELP
-Supported Locales:
-
-- en_US
-- en_GB
-HELP;
         $this
             ->setName('eav:attribute:create-dummy-values')->addArgument('locale', InputArgument::OPTIONAL, Locale::class)
             ->addArgument('attribute-id', InputArgument::OPTIONAL, 'Attribute ID to add values')
             ->addArgument('values-type', InputArgument::OPTIONAL, 'Types of Values to create (default int)')
             ->addArgument('values-number', InputArgument::OPTIONAL, 'Number of Values to create (default 1)')
-            ->setDescription('Create a dummy values for dropdown attributes')->setHelp($help)
+            ->setDescription('Create a dummy values for dropdown attributes')
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
+Supported Locales:
+
+- en_US
+- en_GB
+HELP;
     }
 
     /**

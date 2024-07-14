@@ -15,8 +15,16 @@ class ReindexAllCommand extends AbstractIndexerCommand
             ->setName('index:reindex:all')
             ->setDescription('Reindex all magento indexes')
         ;
+    }
 
-        $this->setHelp('Loops all magento indexes and triggers reindex.');
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
+Loops all magento indexes and triggers reindex.
+HELP;
     }
 
     /**

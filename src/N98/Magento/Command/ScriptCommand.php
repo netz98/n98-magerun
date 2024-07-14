@@ -42,8 +42,14 @@ class ScriptCommand extends AbstractMagentoCommand
             ->addOption('stop-on-error', null, InputOption::VALUE_NONE, 'Stops execution of script on error')
             ->setDescription('Runs multiple n98-magerun commands')
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Example:
 
    # Set multiple config
@@ -105,7 +111,6 @@ Example:
 
 It's possible to define multiple values by passing more than one option.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

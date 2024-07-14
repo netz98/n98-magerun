@@ -15,11 +15,16 @@ class ListCommand extends AbstractIndexerCommand
             ->setDescription('Lists all magento indexes')
             ->addFormatOption()
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Lists all Magento indexers of current installation.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

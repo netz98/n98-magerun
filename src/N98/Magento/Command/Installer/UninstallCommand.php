@@ -35,11 +35,16 @@ class UninstallCommand extends AbstractMagentoCommand
                 'Uninstall magento (drops database and empties current folder or folder set via installationFolder)'
             )
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 **Please be careful: This removes all data from your installation.**
 HELP;
-        $this->setHelp($help);
     }
 
     /**

@@ -15,13 +15,18 @@ class ReindexMviewCommand extends AbstractMviewIndexerCommand
             ->setName('index:reindex:mview')
             ->addArgument('table_name', InputArgument::REQUIRED, 'View table name"')
             ->setDescription('Reindex a magento index by code using the materialised view functionality');
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Trigger a mview index by table_name.
 
    $ n98-magerun.phar index:reindex:mview [table_name]
 HELP;
-        $this->setHelp($help);
     }
 
     /**

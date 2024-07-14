@@ -30,11 +30,16 @@ class StatusCommand extends AbstractShowCommand
         $this
             ->setName('db:status')
             ->setDescription('Shows important server status information or custom selected status values');
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 This command is useful to print important server status information about the current database.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

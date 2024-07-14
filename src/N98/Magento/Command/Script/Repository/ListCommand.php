@@ -17,8 +17,14 @@ class ListCommand extends AbstractRepositoryCommand
             ->setDescription('Lists all scripts in repository')
             ->addFormatOption()
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 You can organize your scripts in a repository.
 Simply place a script in folder */usr/local/share/n98-magerun/scripts* or in your home dir
 in folder *<HOME>/.n98-magerun/scripts*.
@@ -30,7 +36,6 @@ The first line of the script can contain a comment (line prefixed with #) which 
 
    $ n98-magerun.phar script:repo:list
 HELP;
-        $this->setHelp($help);
     }
 
     /**

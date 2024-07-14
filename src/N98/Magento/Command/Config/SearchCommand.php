@@ -16,12 +16,17 @@ class SearchCommand extends AbstractConfigCommand
         $this
             ->setName('config:search')
             ->setDescription('Search system configuration descriptions.')
-            ->setHelp(
-                <<<EOT
-                Searches the merged system.xml configuration tree <labels/> and <comments/> for the indicated text.
-EOT
-            )
             ->addArgument('text', InputArgument::REQUIRED, 'The text to search for');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
+Searches the merged system.xml configuration tree <labels/> and <comments/> for the indicated text.
+HELP;
     }
 
     /**

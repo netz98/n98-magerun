@@ -15,7 +15,21 @@ class RunCommand extends AbstractRepositoryCommand
 {
     protected function configure()
     {
-        $help = <<<HELP
+        $this
+            ->setName('script:repo:run')
+            ->addArgument('script', InputArgument::OPTIONAL, 'Name of script in repository')
+            ->addOption('define', 'd', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Defines a variable')
+            ->addOption('stop-on-error', null, InputOption::VALUE_NONE, 'Stops execution of script on error')
+            ->setDescription('Run script from repository')
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Please note that the script repo command runs only scripts which are stored
 in a defined script folder.
 
@@ -38,15 +52,6 @@ If you like to run a standalone script you can also use the "script" command.
 See: n98-magerun.phar script <filename.magerun>
 
 HELP;
-
-        $this
-            ->setName('script:repo:run')
-            ->addArgument('script', InputArgument::OPTIONAL, 'Name of script in repository')
-            ->addOption('define', 'd', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Defines a variable')
-            ->addOption('stop-on-error', null, InputOption::VALUE_NONE, 'Stops execution of script on error')
-            ->setDescription('Run script from repository')
-            ->setHelp($help)
-        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

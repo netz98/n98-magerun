@@ -29,13 +29,18 @@ class ImportCommand extends AbstractDatabaseCommand
             ->addOption('stdin', null, InputOption::VALUE_NONE, 'Import data from STDIN rather than file')
             ->addOption('drop-tables', null, InputOption::VALUE_NONE, 'Drop tables before import')
             ->setDescription('Imports database with mysql cli client according to database defined in local.xml');
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Imports an SQL file with mysql cli client into current configured database.
 
 You need to have MySQL client tools installed on your system.
 HELP;
-        $this->setHelp($help);
     }
 
     /**
