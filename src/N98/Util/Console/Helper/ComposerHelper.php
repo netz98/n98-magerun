@@ -2,7 +2,6 @@
 
 namespace N98\Util\Console\Helper;
 
-use N98\Util\BinaryString;
 use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Helper\Helper as AbstractHelper;
 use Symfony\Component\Console\Input\InputAwareInterface;
@@ -73,7 +72,7 @@ class ComposerHelper extends AbstractHelper implements InputAwareInterface
             $lines = explode(PHP_EOL, $composerOutput);
 
             foreach ($lines as $line) {
-                if (BinaryString::startsWith($line, 'Changed current directory to')) {
+                if (str_starts_with($line, 'Changed current directory to')) {
                     continue;
                 }
 

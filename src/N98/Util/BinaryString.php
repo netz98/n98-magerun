@@ -32,10 +32,13 @@ class BinaryString
      * @param string $needle
      *
      * @return bool
+     *
+     * @deprecated use str_starts_with() instead
      */
     public static function startsWith($haystack, $needle)
     {
-        return $needle === '' || strpos($haystack, $needle) === 0;
+        trigger_error(__METHOD__ . ' is obsolete, use str_starts_with', E_USER_DEPRECATED);
+        return str_starts_with($haystack, $needle);
     }
 
     /**
@@ -43,9 +46,12 @@ class BinaryString
      * @param string $needle
      *
      * @return bool
+     *
+     * @deprecated use str_ends_with() instead
      */
     public static function endsWith($haystack, $needle)
     {
-        return $needle === '' || substr($haystack, -strlen($needle)) === $needle;
+        trigger_error(__METHOD__ . ' is obsolete, use str_ends_with()', E_USER_DEPRECATED);
+        return str_ends_with($haystack, $needle);
     }
 }
