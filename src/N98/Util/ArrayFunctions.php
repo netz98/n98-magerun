@@ -1,10 +1,14 @@
 <?php
-/*
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Util;
 
+/**
+ * Class Twig
+ *
+ * @package N98\Util
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
+ */
 class ArrayFunctions
 {
     /**

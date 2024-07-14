@@ -12,6 +12,7 @@ use Symfony\Component\Process\Process;
 
 /**
  * Class ComposerHelper
+ *
  * @package N98\Util\Console\Helper
  */
 class ComposerHelper extends AbstractHelper implements InputAwareInterface

@@ -4,6 +4,11 @@ namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
 
 use Mage_Eav_Model_Entity_Attribute;
 
+/**
+ * EntityType interface
+ *
+ * @package N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType
+ */
 interface EntityType
 {
     /**

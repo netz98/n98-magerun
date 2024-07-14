@@ -9,6 +9,11 @@ use N98\Magento\DbSettings;
 use N98\Util\Console\Helper\DatabaseHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class AbstractDatabaseCommand
+ *
+ * @package N98\Magento\Command\Database
+ */
 abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
 {
     /**

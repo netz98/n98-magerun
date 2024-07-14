@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class InstallCommand
+ * Install command
  *
  * @codeCoverageIgnore  - Travis server uses installer to create a new shop. If it not works complete build fails.
  * @package N98\Magento\Command\Installer
@@ -22,7 +22,7 @@ class InstallCommand extends AbstractMagentoCommand
     protected $commandConfig;
 
     /**
-     * @var SubCommandFactory;
+     * @var SubCommandFactory
      */
     protected $subCommandFactory;
 

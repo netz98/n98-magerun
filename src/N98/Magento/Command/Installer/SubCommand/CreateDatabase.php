@@ -11,6 +11,7 @@ use Symfony\Component\Console\Question\Question;
 
 /**
  * Class CreateDatabase
+ *
  * @package N98\Magento\Command\Installer\SubCommand
  */
 class CreateDatabase extends AbstractSubCommand

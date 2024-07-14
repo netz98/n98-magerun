@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Zend_Text_Table;
 
+/**
+ * List module conflicts command
+ *
+ * @package N98\Magento\Command\Developer\Module\Rewrite
+ */
 class ConflictsCommand extends AbstractRewriteCommand
 {
     protected function configure()

@@ -10,6 +10,7 @@ use Symfony\Component\Console\Question\Question;
 
 /**
  * Class AbstractSubCommand
+ *
  * @package N98\Magento\Command\SubCommand
  */
 abstract class AbstractSubCommand implements SubCommandInterface

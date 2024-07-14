@@ -4,6 +4,7 @@ namespace N98\Magento\Command\SubCommand;
 
 /**
  * Class ConfigBag
+ *
  * @package N98\Magento\Command\SubCommand
  */
 class ConfigBag extends \ArrayObject

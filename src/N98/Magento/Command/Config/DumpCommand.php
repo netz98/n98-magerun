@@ -9,6 +9,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Dump config command
+ *
+ * @package N98\Magento\Command\Config
+ */
 class DumpCommand extends AbstractConfigCommand
 {
     protected function configure()

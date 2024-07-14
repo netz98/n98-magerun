@@ -28,6 +28,8 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Helper to init some parameters
+ *
+ * @package N98\Util\Console\Helper
  */
 class ParameterHelper extends AbstractHelper
 {

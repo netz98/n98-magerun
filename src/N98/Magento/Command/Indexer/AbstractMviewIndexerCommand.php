@@ -4,6 +4,11 @@ namespace N98\Magento\Command\Indexer;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 
+/**
+ * Class AbstractMviewIndexerCommand
+ *
+ * @package N98\Magento\Command\Indexer
+ */
 class AbstractMviewIndexerCommand extends AbstractMagentoCommand
 {
     /**

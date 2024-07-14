@@ -18,7 +18,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class CheckCommand
+ * System check command
  *
  * @package N98\Magento\Command\System
  */

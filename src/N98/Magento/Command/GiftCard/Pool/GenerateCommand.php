@@ -7,6 +7,11 @@ use N98\Magento\Command\GiftCard\AbstractGiftCardCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Generate gift card pool command
+ *
+ * @package N98\Magento\Command\GiftCard\Pool
+ */
 class GenerateCommand extends AbstractGiftCardCommand
 {
     /**

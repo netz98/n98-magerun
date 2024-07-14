@@ -15,6 +15,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
+/**
+ * Create EAV attribute dummy command
+ *
+ * @package N98\Magento\Command\Eav\Attribute\Create
+ */
 class DummyCommand extends AbstractMagentoCommand
 {
     private $supportedLocales = ['en_US', 'en_GB'];

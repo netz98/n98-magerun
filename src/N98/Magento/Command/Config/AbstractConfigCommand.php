@@ -6,6 +6,11 @@ use InvalidArgumentException;
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 
+/**
+ * Class AbstractConfigCommand
+ *
+ * @package N98\Magento\Command\Config
+ */
 abstract class AbstractConfigCommand extends AbstractMagentoCommand
 {
     public const DISPLAY_NULL_UNKNOWN_VALUE = "NULL (NULL/\"unknown\" value)";

@@ -12,6 +12,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * List dependencies on command
+ *
+ * @package N98\Magento\Command\Developer\Module\Dependencies
+ */
 class OnCommand extends AbstractMagentoCommand
 {
     private $modules;

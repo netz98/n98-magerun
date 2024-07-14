@@ -8,7 +8,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class ChangeVersionCommand
+ * Change setup version command
+ *
  * @package N98\Magento\Command\System\Setup
  */
 class ChangeVersionCommand extends AbstractSetupCommand

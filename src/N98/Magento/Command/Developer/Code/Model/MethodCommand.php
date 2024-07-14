@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Create method annotation command
+ *
+ * @package N98\Magento\Command\Developer\Code\Model
+ */
 class MethodCommand extends AbstractMagentoCommand
 {
     /**

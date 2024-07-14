@@ -10,9 +10,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class RemoveCommand
+ * Remove setup ommand
  *
  * @package N98\Magento\Command\System\Setup
+ *
  * @author Aydin Hassan <aydin@hotmail.co.uk>
  */
 class RemoveCommand extends AbstractSetupCommand

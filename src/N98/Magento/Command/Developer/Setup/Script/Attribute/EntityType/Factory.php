@@ -4,6 +4,11 @@ namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
 
 use RuntimeException;
 
+/**
+ * Class Factory
+ *
+ * @package N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType
+ */
 class Factory
 {
     /**

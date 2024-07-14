@@ -13,7 +13,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Varien_Simplexml_Element;
 
 /**
- * Enable disable Magento module(s)
+ * Class AbstractCommand
+ *
+ * @package N98\Magento\Command\Developer\Module\Disableenable
  */
 class AbstractCommand extends AbstractMagentoCommand
 {

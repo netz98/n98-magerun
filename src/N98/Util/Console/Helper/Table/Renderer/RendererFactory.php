@@ -5,6 +5,11 @@ namespace N98\Util\Console\Helper\Table\Renderer;
 use InvalidArgumentException;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class RendererFactory
+ *
+ * @package N98\Util\Console\Helper\Table\Renderer
+ */
 class RendererFactory
 {
     protected static $formats = ['csv'  => CsvRenderer::class, 'json' => JsonRenderer::class, 'text' => TextRenderer::class, 'xml'  => XmlRenderer::class];

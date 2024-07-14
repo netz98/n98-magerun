@@ -2,6 +2,11 @@
 
 namespace N98\Magento\Command\Database\Compressor;
 
+/**
+ * Class Uncompressed
+ *
+ * @package N98\Magento\Command\Database\Compressor
+ */
 class Uncompressed extends AbstractCompressor
 {
     /**

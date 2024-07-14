@@ -4,6 +4,11 @@ namespace N98\Magento\Command\Developer;
 
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
 
+/**
+ * Toggle JS merge command
+ *
+ * @package N98\Magento\Command\Developer
+ */
 class MergeJsCommand extends AbstractMagentoStoreConfigCommand
 {
     /**

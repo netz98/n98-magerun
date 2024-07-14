@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * Find duplicate theme command
+ *
+ * @package N98\Magento\Command\Developer\Theme
+ */
 class DuplicatesCommand extends AbstractMagentoCommand
 {
     protected function configure()

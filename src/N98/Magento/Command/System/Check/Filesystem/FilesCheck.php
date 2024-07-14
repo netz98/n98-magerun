@@ -10,6 +10,11 @@ use N98\Magento\Command\System\Check\SimpleCheck;
 use N98\Magento\Command\System\CheckCommand;
 use Symfony\Component\Console\Command\Command;
 
+/**
+ * Class FilesCheck
+ *
+ * @package N98\Magento\Command\System\Check\Filesystem
+ */
 class FilesCheck implements SimpleCheck, CommandAware, CommandConfigAware
 {
     /**

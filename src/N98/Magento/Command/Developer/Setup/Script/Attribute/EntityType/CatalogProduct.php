@@ -2,6 +2,11 @@
 
 namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
 
+/**
+ * Class CatalogProduct
+ *
+ * @package N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType
+ */
 class CatalogProduct extends AbstractEntityType implements EntityType
 {
     /**

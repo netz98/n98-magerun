@@ -5,6 +5,11 @@ namespace N98\Magento\Command\Developer\Translate;
 use Mage_Core_Model_Store;
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
 
+/**
+ * Toggle admin inline translation command
+ *
+ * @package N98\Magento\Command\Developer\Translate
+ */
 class InlineAdminCommand extends AbstractMagentoStoreConfigCommand
 {
     /**

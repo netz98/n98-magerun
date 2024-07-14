@@ -2,6 +2,11 @@
 
 namespace N98\Util;
 
+/**
+ * Class BinaryString
+ *
+ * @package N98\Util
+ */
 class BinaryString
 {
     /**

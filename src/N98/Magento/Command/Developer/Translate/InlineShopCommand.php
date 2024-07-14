@@ -5,6 +5,11 @@ namespace N98\Magento\Command\Developer\Translate;
 use Mage_Core_Model_Store;
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
 
+/**
+ * Toggle shop inline translation command
+ *
+ * @package N98\Magento\Command\Developer\Translate
+ */
 class InlineShopCommand extends AbstractMagentoStoreConfigCommand
 {
     /**

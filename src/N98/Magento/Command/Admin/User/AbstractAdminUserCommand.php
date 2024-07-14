@@ -4,6 +4,11 @@ namespace N98\Magento\Command\Admin\User;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 
+/**
+ * Class AbstractAdminUserCommand
+ *
+ * @package N98\Magento\Command\Admin\User
+ */
 abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
 {
     /**

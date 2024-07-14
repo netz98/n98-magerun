@@ -15,6 +15,7 @@ use WpOrg\Requests\Requests;
 
 /**
  * Class InstallSampleData
+ *
  * @package N98\Magento\Command\Installer\SubCommand
  */
 class InstallSampleData extends AbstractSubCommand

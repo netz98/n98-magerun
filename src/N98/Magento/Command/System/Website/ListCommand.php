@@ -8,6 +8,11 @@ use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * List websites command
+ *
+ * @package N98\Magento\Command\System\Website
+ */
 class ListCommand extends AbstractMagentoCommand
 {
     /**

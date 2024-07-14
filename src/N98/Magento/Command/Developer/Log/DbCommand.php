@@ -7,6 +7,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Toggle database log command
+ *
+ * @package N98\Magento\Command\Developer\Log
+ */
 class DbCommand extends AbstractLogCommand
 {
     protected function configure()

@@ -5,6 +5,11 @@ namespace N98\Magento\Command\Developer\Module\Dependencies;
 use InvalidArgumentException;
 use Mage;
 
+/**
+ * List dependencies from command
+ *
+ * @package N98\Magento\Command\Developer\Module\Dependencies
+ */
 class FromCommand extends AbstractCommand
 {
     /**#@+

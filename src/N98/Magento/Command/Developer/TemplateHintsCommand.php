@@ -5,6 +5,11 @@ namespace N98\Magento\Command\Developer;
 use Mage_Core_Model_Store;
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
 
+/**
+ * Toggle template hints command
+ *
+ * @package N98\Magento\Command\Developer
+ */
 class TemplateHintsCommand extends AbstractMagentoStoreConfigCommand
 {
     /**

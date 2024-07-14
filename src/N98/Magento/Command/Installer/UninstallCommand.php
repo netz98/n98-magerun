@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
- * Class UninstallCommand
+ * Uninstall command
  *
  * @codeCoverageIgnore
  * @package N98\Magento\Command\Installer

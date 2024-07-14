@@ -1,9 +1,4 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Magento\Command\System\Check\Settings;
 
@@ -17,6 +12,8 @@ use ReflectionMethod;
  * Class CheckAbstract
  *
  * @package N98\Magento\Command\System\Check\Settings
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
  */
 abstract class CheckAbstract implements StoreCheck
 {

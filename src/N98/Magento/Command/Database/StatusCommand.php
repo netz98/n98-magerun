@@ -4,6 +4,11 @@ namespace N98\Magento\Command\Database;
 
 use DateTime;
 
+/**
+ * Show database status command
+ *
+ * @package N98\Magento\Command\Database
+ */
 class StatusCommand extends AbstractShowCommand
 {
     protected $showMethod = 'getGlobalStatus';

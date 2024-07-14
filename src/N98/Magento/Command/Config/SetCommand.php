@@ -8,6 +8,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Set config command
+ *
+ * @package N98\Magento\Command\Config
+ */
 class SetCommand extends AbstractConfigCommand
 {
     protected function configure()

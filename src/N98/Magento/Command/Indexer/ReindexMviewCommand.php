@@ -7,6 +7,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Reindex MView command
+ *
+ * @package N98\Magento\Command\Indexer
+ */
 class ReindexMviewCommand extends AbstractMviewIndexerCommand
 {
     protected function configure()

@@ -9,6 +9,7 @@ use Symfony\Component\Console\Exception\RuntimeException;
 
 /**
  * Class PreCheckPhp
+ *
  * @package N98\Magento\Command\Installer\SubCommand
  */
 class PreCheckPhp extends AbstractSubCommand

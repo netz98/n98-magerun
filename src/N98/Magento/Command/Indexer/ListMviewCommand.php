@@ -6,6 +6,11 @@ use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * List MView index command
+ *
+ * @package N98\Magento\Command\Indexer
+ */
 class ListMviewCommand extends AbstractMviewIndexerCommand
 {
     protected function configure()

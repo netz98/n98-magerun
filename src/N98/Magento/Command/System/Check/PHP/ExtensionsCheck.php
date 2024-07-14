@@ -7,6 +7,11 @@ use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Magento\Command\System\Check\SimpleCheck;
 
+/**
+ * Class ExtensionsCheck
+ *
+ * @package N98\Magento\Command\System\Check\PHP
+ */
 class ExtensionsCheck implements SimpleCheck, CommandConfigAware
 {
     /**

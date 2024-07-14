@@ -12,6 +12,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
+/**
+ * Reindex command
+ *
+ * @package N98\Magento\Command\Indexer
+ */
 class ReindexCommand extends AbstractIndexerCommand
 {
     protected function configure()

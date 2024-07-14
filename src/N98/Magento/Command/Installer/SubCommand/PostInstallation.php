@@ -5,6 +5,11 @@ namespace N98\Magento\Command\Installer\SubCommand;
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
 use Symfony\Component\Console\Input\ArrayInput;
 
+/**
+ * Class PostInstallation
+ *
+ * @package N98\Magento\Command\Installer\SubCommand
+ */
 class PostInstallation extends AbstractSubCommand
 {
     /**

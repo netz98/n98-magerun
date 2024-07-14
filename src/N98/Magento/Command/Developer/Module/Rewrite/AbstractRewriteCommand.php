@@ -6,6 +6,11 @@ use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * Class AbstractRewriteCommand
+ *
+ * @package N98\Magento\Command\Developer\Module\Rewrite
+ */
 abstract class AbstractRewriteCommand extends AbstractMagentoCommand
 {
     protected $_rewriteTypes = ['blocks', 'helpers', 'models'];
