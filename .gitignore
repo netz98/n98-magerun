@@ -25,3 +25,5 @@ act.secrets
 # Local Magento src
 /magento
 
+# phpDocumentor
+/docs/
