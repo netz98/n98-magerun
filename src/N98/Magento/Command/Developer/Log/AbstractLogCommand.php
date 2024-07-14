@@ -12,6 +12,11 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * Class AbstractLogCommand
+ *
+ * @package N98\Magento\Command\Developer\Log
+ */
 class AbstractLogCommand extends AbstractMagentoCommand
 {
     /**

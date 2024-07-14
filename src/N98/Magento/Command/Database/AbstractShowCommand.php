@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class AbstractShowCommand
+ *
+ * @package N98\Magento\Command\Database
+ */
 abstract class AbstractShowCommand extends AbstractDatabaseCommand
 {
     protected $showMethod = 'getGlobalVariables';

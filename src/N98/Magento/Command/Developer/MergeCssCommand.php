@@ -4,6 +4,11 @@ namespace N98\Magento\Command\Developer;
 
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
 
+/**
+ * Toggle CSS merge command
+ *
+ * @package N98\Magento\Command\Developer
+ */
 class MergeCssCommand extends AbstractMagentoStoreConfigCommand
 {
     /**

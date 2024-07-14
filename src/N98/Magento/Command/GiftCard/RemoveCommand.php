@@ -7,6 +7,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Remove gift card command
+ *
+ * @package N98\Magento\Command\GiftCard
+ */
 class RemoveCommand extends AbstractGiftCardCommand
 {
     /**

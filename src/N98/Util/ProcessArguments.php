@@ -1,7 +1,4 @@
 <?php
-/*
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Util;
 
@@ -12,6 +9,8 @@ use Symfony\Component\Process\Process;
  *
  * @see Process
  * @package N98\Util
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
  */
 class ProcessArguments
 {

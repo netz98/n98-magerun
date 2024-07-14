@@ -6,6 +6,11 @@ use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * List module rewrites command
+ *
+ * @package N98\Magento\Command\Developer\Module\Rewrite
+ */
 class ListCommand extends AbstractRewriteCommand
 {
     protected function configure()

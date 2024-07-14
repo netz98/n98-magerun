@@ -7,6 +7,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Enable cache command
+ *
+ * @package N98\Magento\Command\Cache
+ */
 class EnableCommand extends AbstractCacheCommand
 {
     protected function configure()

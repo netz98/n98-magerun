@@ -10,6 +10,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Report cache command
+ *
+ * @package N98\Magento\Command\Cache
+ */
 class ReportCommand extends AbstractCacheCommand
 {
     protected function configure()

@@ -17,7 +17,8 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
 /**
- * Class DeleteCommand
+ * Delete customer command
+ *
  * @package N98\Magento\Command\Customer
  */
 class DeleteCommand extends AbstractCustomerCommand

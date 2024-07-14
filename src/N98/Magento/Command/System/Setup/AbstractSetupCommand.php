@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * Class AbstractSetupCommand
+ *
  * @package N98\Magento\Command\System\Setup
  */
 class AbstractSetupCommand extends AbstractMagentoCommand

@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
 /**
- * Class IncrementalCommand
+ * Run incremental setup command
  *
  * @package N98\Magento\Command\System\Setup
  * @codeCoverageIgnore

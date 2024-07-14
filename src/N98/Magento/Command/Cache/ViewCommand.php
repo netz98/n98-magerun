@@ -10,6 +10,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Validator\Exception\RuntimeException;
 
+/**
+ * View cache command
+ *
+ * @package N98\Magento\Command\Cache
+ */
 class ViewCommand extends AbstractCacheCommand
 {
     protected function configure()

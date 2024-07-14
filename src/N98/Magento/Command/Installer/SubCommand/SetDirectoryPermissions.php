@@ -7,6 +7,7 @@ use Symfony\Component\Finder\Finder;
 
 /**
  * Class SetDirectoryPermissions
+ *
  * @package N98\Magento\Command\Installer\SubCommand
  */
 class SetDirectoryPermissions extends AbstractSubCommand

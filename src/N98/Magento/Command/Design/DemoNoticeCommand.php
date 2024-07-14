@@ -4,6 +4,11 @@ namespace N98\Magento\Command\Design;
 
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
 
+/**
+ * Toggle demo notice command
+ *
+ * @package N98\Magento\Command\Design
+ */
 class DemoNoticeCommand extends AbstractMagentoStoreConfigCommand
 {
     /**

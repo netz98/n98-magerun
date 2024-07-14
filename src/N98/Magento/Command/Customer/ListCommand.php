@@ -7,6 +7,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * List customer command
+ *
+ * @package N98\Magento\Command\Customer
+ */
 class ListCommand extends AbstractCustomerCommand
 {
     protected function configure()

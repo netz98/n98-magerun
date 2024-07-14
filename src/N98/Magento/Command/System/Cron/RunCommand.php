@@ -16,6 +16,11 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
 
+/**
+ * Run cronjob command
+ *
+ * @package N98\Magento\Command\System\Cron
+ */
 class RunCommand extends AbstractCronCommand
 {
     public const REGEX_RUN_MODEL = '#^([a-z0-9_]+/[a-z0-9_]+)::([a-z0-9_]+)$#i';

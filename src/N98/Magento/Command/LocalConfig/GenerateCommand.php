@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
+/**
+ * Generate local config command
+ *
+ * @package N98\Magento\Command\LocalConfig
+ */
 class GenerateCommand extends AbstractMagentoCommand
 {
     protected function configure()

@@ -8,6 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class SubCommandFactory
+ *
  * @package N98\Magento\Command\SubCommand
  */
 class SubCommandFactory

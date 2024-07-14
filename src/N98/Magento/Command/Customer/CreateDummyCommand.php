@@ -12,6 +12,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Create customer dummy command
+ *
+ * @package N98\Magento\Command\Customer
+ */
 class CreateDummyCommand extends AbstractCustomerCommand
 {
     protected function configure()

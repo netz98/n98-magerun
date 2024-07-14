@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Create url list
+ * List url command
  *
  * Examples:
  * - Create a list of product urls only
@@ -24,6 +24,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * The "linetemplate" can contain all parts "parse_url" return wrapped in '{}'. '{url}' always maps the complete url
  * and is set by default
+ *
+ * @package N98\Magento\Command\System\Url
  *
  * @author Fabrizio Branca
  */

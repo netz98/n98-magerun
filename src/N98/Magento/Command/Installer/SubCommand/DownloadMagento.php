@@ -15,6 +15,7 @@ use Symfony\Component\Process\Process;
 
 /**
  * Class DownloadMagento
+ *
  * @package N98\Magento\Command\Installer\SubCommand
  */
 class DownloadMagento extends AbstractSubCommand

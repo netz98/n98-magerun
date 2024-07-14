@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface;
 
 /**
  * Class FakeMetadataFactory
+ *
  * @package N98\Util\Validator
  */
 class FakeMetadataFactory implements MetadataFactoryInterface

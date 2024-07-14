@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Set translation command
+ *
+ * @package N98\Magento\Command\Developer\Translate
+ */
 class SetCommand extends AbstractMagentoCommand
 {
     protected function configure()

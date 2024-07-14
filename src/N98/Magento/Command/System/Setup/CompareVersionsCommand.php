@@ -12,6 +12,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Compare setup versions command
+ *
+ * @package N98\Magento\Command\System\Setup
+ */
 class CompareVersionsCommand extends AbstractMagentoCommand
 {
     protected function configure()

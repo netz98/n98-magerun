@@ -9,6 +9,11 @@ use N98\Magento\Application;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
 
+/**
+ * Class AbstractCacheCommand
+ *
+ * @package N98\Magento\Command\Cache
+ */
 class AbstractCacheCommand extends AbstractMagentoCommand
 {
     /**

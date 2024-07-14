@@ -1,12 +1,14 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
+/**
+ * Class ClassUtil
+ *
+ * @package N98\Magento\Command\Developer\Module\Rewrite
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
+ */
 final class ClassUtil
 {
     /**

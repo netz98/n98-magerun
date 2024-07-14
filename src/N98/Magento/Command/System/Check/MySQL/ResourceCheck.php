@@ -1,9 +1,4 @@
 <?php
-/*
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Magento\Command\System\Check\MySQL;
 
@@ -14,6 +9,13 @@ use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Magento\Command\System\Check\SimpleCheck;
 use Varien_Db_Adapter_Interface;
 
+/**
+ * Class ResourceCheck
+ *
+ * @package N98\Magento\Command\System\Check\MySQL
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
+ */
 abstract class ResourceCheck implements SimpleCheck
 {
     /**

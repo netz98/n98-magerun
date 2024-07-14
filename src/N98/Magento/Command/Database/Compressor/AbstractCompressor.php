@@ -5,6 +5,11 @@ namespace N98\Magento\Command\Database\Compressor;
 use InvalidArgumentException;
 use N98\Util\OperatingSystem;
 
+/**
+ * Class AbstractCompressor
+ *
+ * @package N98\Magento\Command\Database\Compressor
+ */
 abstract class AbstractCompressor implements Compressor
 {
     /**

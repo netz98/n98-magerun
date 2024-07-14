@@ -18,7 +18,9 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Validator\Constraints\Choice;
 
 /**
- *  Update a magento module
+ * Update module command
+ *
+ * @package N98\Magento\Command\Developer\Module
  */
 class UpdateCommand extends AbstractMagentoCommand
 {

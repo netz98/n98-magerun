@@ -1,9 +1,4 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
@@ -16,6 +11,8 @@ use stdClass;
  * More robust (against fatal errors in the inheritance chain) class_exists checker
  *
  * @package N98\Magento\Command\Developer\Module\Rewrite
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
  */
 final class ClassExistsChecker
 {

@@ -7,6 +7,11 @@ use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Clear JS/CSS cache command
+ *
+ * @package N98\Magento\Command\Media\Cache\JsCss
+ */
 class ClearCommand extends AbstractMagentoCommand
 {
     protected function configure()

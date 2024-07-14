@@ -7,6 +7,7 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 
 /**
  * Class SelectMagentoVersion
+ *
  * @package N98\Magento\Command\Installer\SubCommand
  */
 class SelectMagentoVersion extends AbstractSubCommand

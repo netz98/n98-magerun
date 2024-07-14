@@ -9,6 +9,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Flush cache command
+ *
+ * @package N98\Magento\Command\Cache
+ */
 class FlushCommand extends AbstractCacheCommand
 {
     protected function configure()

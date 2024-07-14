@@ -1,9 +1,4 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Util;
 
@@ -13,6 +8,8 @@ use BadMethodCallException;
  * Autloader with self-registration, de-registration, muting and implementation switching
  *
  * @package N98\Util
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
  */
 final class AutoloadHandler
 {

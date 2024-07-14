@@ -1,10 +1,4 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Mike Parkin <https://github.com/MikeParkin>
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Magento\Command\Developer\EmailTemplate;
 
@@ -17,6 +11,14 @@ use Path;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * List email template usage command
+ *
+ * @package N98\Magento\Command\Developer\EmailTemplate
+ *
+ * @author Mike Parkin (https://github.com/MikeParkin)
+ * @author Tom Klingenberg (https://github.com/ktomk)
+ */
 class UsageCommand extends AbstractMagentoCommand
 {
     protected function configure()

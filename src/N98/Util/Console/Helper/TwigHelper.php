@@ -10,6 +10,8 @@ use Symfony\Component\Console\Helper\Helper;
 
 /**
  * Helper to render twig templates
+ *
+ * @package N98\Util\Console\Helper
  */
 class TwigHelper extends Helper
 {

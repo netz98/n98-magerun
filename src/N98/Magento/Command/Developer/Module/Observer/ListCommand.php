@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * List observer command
+ *
+ * @package N98\Magento\Command\Developer\Module\Observer
+ */
 class ListCommand extends AbstractMagentoCommand
 {
     protected function configure()

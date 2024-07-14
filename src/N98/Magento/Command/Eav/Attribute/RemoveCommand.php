@@ -12,8 +12,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class RemoveCommand
+ * Remove EAV attribute command
+ *
  * @package N98\Magento\Command\Eav\Attribute
+ *
  * @author Aydin Hassan <aydin@hotmail.co.uk>
  */
 class RemoveCommand extends AbstractMagentoCommand

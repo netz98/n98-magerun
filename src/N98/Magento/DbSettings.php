@@ -1,9 +1,4 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Magento;
 
@@ -25,6 +20,8 @@ use SimpleXMLElement;
  * The Magento database settings are stored in a SimpleXMLElement structure
  *
  * @package N98\Magento
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
  */
 class DbSettings implements ArrayAccess, IteratorAggregate
 {

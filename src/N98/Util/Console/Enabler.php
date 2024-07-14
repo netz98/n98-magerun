@@ -1,9 +1,4 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Util\Console;
 
@@ -19,6 +14,8 @@ use Symfony\Component\Console\Command\Command;
  * @see \N98\Magento\Command\Database\DumpCommand::execute()
  *
  * @package N98\Util\Console
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
  */
 class Enabler
 {

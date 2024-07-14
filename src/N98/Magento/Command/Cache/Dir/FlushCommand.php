@@ -1,9 +1,4 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Magento\Command\Cache\Dir;
 
@@ -15,9 +10,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class FlushCommand
+ * Flush cache directory command
  *
- * @package N98\Magento\Command\Cache
+ * @package N98\Magento\Command\Cache\Dir
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
  */
 class FlushCommand extends AbstractMagentoCommand
 {

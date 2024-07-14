@@ -17,6 +17,10 @@ use WpOrg\Requests\Hooks;
 use WpOrg\Requests\Requests;
 
 /**
+ * Self-update command
+ *
+ * @package N98\Magento\Command
+ *
  * @codeCoverageIgnore
  * @author Igor Wiedler <igor@wiedler.ch>
  * @author Christian Münch <c.muench@netz98.de>

@@ -12,7 +12,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class InfoCommand
+ * Theme info command
+ *
  * @package N98\Magento\Command\Developer\Theme
  */
 class InfoCommand extends AbstractMagentoCommand

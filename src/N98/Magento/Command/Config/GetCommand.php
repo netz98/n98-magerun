@@ -10,6 +10,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use UnexpectedValueException;
 
+/**
+ * Get config command
+ *
+ * @package N98\Magento\Command\Config
+ */
 class GetCommand extends AbstractConfigCommand
 {
     protected function configure()

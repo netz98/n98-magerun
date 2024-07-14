@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
+/**
+ * Run script command
+ *
+ * @package N98\Magento\Command\Script\Repository
+ */
 class RunCommand extends AbstractRepositoryCommand
 {
     protected function configure()
