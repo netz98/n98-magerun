@@ -32,11 +32,16 @@ class DuplicatesCommand extends AbstractMagentoCommand
             )
             ->setDescription('Find duplicate files (templates, layout, locale, etc.) between two themes.')
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 * If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

@@ -138,7 +138,13 @@ class DumpCommand extends AbstractDatabaseCommand
                 'Specify local.xml connection node, default to default_setup'
             )
             ->setDescription('Dumps database with mysqldump cli client');
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
         $help = <<<HELP
 Dumps configured magento database with `mysqldump`. You must have installed
 the MySQL client tools.
@@ -147,7 +153,7 @@ On debian systems run `apt-get install mysql-client` to do that.
 
 The command reads app/etc/local.xml to find the correct settings.
 
-See it in action: http://youtu.be/ttjZHY6vThs
+See it in action: https://youtu.be/ttjZHY6vThs
 
 - If you like to prepend a timestamp to the dump name the --add-time option
   can be used.
@@ -156,7 +162,10 @@ See it in action: http://youtu.be/ttjZHY6vThs
   to dump directly in gzip compressed file.
 
 HELP;
-        $this->setHelp($help);
+        return
+            $help . PHP_EOL
+            . $this->getCompressionHelp() . PHP_EOL
+            . $this->getTableDefinitionHelp();
     }
 
     /**
@@ -236,14 +245,6 @@ Extended: https://github.com/netz98/n98-magerun/wiki/Stripped-Database-Dumps
 HELP;
 
         return $messages;
-    }
-
-    public function getHelp()
-    {
-        return
-            parent::getHelp() . PHP_EOL
-            . $this->getCompressionHelp() . PHP_EOL
-            . $this->getTableDefinitionHelp();
     }
 
     /**

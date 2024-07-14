@@ -24,8 +24,14 @@ class ConflictsCommand extends AbstractRewriteCommand
                 'Log conflicts in JUnit XML format to defined file.'
             )
             ->setDescription('Lists all magento rewrite conflicts');
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Lists all duplicated rewrites and tells you which class is loaded by Magento.
 The command checks class inheritance in order of your module dependencies.
 
@@ -34,7 +40,6 @@ The command checks class inheritance in order of your module dependencies.
 Exit status is 0 if no conflicts were found, 1 if conflicts were found and 2 if there was a problem to
 initialize Magento.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

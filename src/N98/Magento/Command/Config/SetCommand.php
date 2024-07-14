@@ -44,13 +44,17 @@ class SetCommand extends AbstractConfigCommand
                 "Do not treat value NULL as " . self::DISPLAY_NULL_UNKNOWN_VALUE . " value"
             )
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Set a store config value by path.
 To set a value of a specify store view you must set the "scope" and "scope-id" option.
-
 HELP;
-        $this->setHelp($help);
     }
 
     /**

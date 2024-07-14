@@ -29,8 +29,14 @@ class FlushCommand extends AbstractCacheCommand
             )
             ->setDescription('Flush magento cache storage')
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Flush the entire cache.
 
    $ n98-magerun.phar cache:flush [--reinit --no-reinit]
@@ -39,7 +45,6 @@ Options:
     --reinit Reinitialise the config cache after flushing (Default)
     --no-reinit Don't reinitialise the config cache after flushing
 HELP;
-        $this->setHelp($help);
     }
 
     /**

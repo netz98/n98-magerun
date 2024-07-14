@@ -59,11 +59,18 @@ class IncrementalCommand extends AbstractMagentoCommand
         $this
             ->setName('sys:setup:incremental')
             ->setDescription('List new setup scripts to run, then runs one script')
-            ->addOption('stop-on-error', null, InputOption::VALUE_NONE, 'Stops execution of script on error')
-            ->setHelp(
-                'Examines an un-cached configuration tree and determines which ' .
-                'structure and data setup resource scripts need to run, and then runs them.'
-            );
+            ->addOption('stop-on-error', null, InputOption::VALUE_NONE, 'Stops execution of script on error');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
+Examines an un-cached configuration tree and determines which
+structure and data setup resource scripts need to run, and then runs them.
+HELP;
     }
 
     /**
