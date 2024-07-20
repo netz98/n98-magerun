@@ -16,6 +16,11 @@ use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
+/**
+ * Class AbstractMagentoStoreConfigCommand
+ *
+ * @package N98\Magento\Command
+ */
 abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 {
     /**

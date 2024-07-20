@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Create url list
+ * List url command
  *
  * Examples:
  * - Create a list of product urls only
@@ -24,6 +24,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * The "linetemplate" can contain all parts "parse_url" return wrapped in '{}'. '{url}' always maps the complete url
  * and is set by default
+ *
+ * @package N98\Magento\Command\System\Url
  *
  * @author Fabrizio Branca
  */
@@ -40,8 +42,14 @@ class ListCommand extends AbstractMagentoCommand
             ->addArgument('stores', InputArgument::OPTIONAL, 'Stores (comma-separated list of store ids)')
             ->addArgument('linetemplate', InputArgument::OPTIONAL, 'Line template', '{url}')
             ->setDescription('Get all urls.');
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Examples:
 
 - Create a list of product urls only:
@@ -56,7 +64,6 @@ Examples:
 - The "linetemplate" can contain all parts "parse_url" return wrapped 
   in '{}'. '{url}' always maps the complete url and is set by default
 HELP;
-        $this->setHelp($help);
     }
 
     /**

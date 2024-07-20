@@ -4,6 +4,11 @@ namespace N98\Util;
 
 use DateTime as PhpDateTime;
 
+/**
+ * Class DateTime
+ *
+ * @package N98\Util
+ */
 class DateTime
 {
     /**

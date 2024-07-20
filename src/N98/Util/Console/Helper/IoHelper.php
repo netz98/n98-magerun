@@ -1,9 +1,4 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Util\Console\Helper;
 
@@ -23,6 +18,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * Register itself on @see ConsoleEvents::COMMAND event to populate helper fields
  *
  * @package N98\Util\Console\Helper
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
  */
 class IoHelper implements HelperInterface, EventSubscriberInterface
 {

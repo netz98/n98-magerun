@@ -1,9 +1,4 @@
 <?php
-/**
- * this file is part of magerun-shared
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98;
 
@@ -15,6 +10,8 @@ use N98\Magento\Application;
  * Bootstrap class for the Magerun applications (Symfony console based application)
  *
  * @package N98
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
  */
 class MagerunBootstrap
 {

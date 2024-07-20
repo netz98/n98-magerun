@@ -5,6 +5,11 @@ namespace N98\Util\Console\Helper\Table\Renderer;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 
+/**
+ * Class CsvRenderer
+ *
+ * @package N98\Util\Console\Helper\Table\Renderer
+ */
 class CsvRenderer implements RendererInterface
 {
     /**

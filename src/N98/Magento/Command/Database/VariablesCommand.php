@@ -2,6 +2,11 @@
 
 namespace N98\Magento\Command\Database;
 
+/**
+ * Show database variables command
+ *
+ * @package N98\Magento\Command\Database
+ */
 class VariablesCommand extends AbstractShowCommand
 {
     /**
@@ -22,11 +27,16 @@ class VariablesCommand extends AbstractShowCommand
         $this
             ->setName('db:variables')
             ->setDescription('Shows important variables or custom selected');
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 This command is useful to print all important variables about the current database.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

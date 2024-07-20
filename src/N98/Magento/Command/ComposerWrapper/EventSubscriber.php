@@ -7,6 +7,11 @@ use Composer\IO\ConsoleIO;
 use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * Class EventSubscriber
+ *
+ * @package N98\Magento\Command\ComposerWrapper
+ */
 class EventSubscriber implements EventSubscriberInterface
 {
     /**

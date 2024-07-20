@@ -1,16 +1,4 @@
 <?php
-/**
- * Ported attribute migration script from:
- *
- * https://github.com/astorm/Pulsestorm/blob/master/magento-create-setup.php
- * https://github.com/astorm/Pulsestorm/blob/2863201b19367d02483e01b1c03b54b979d87278/_trash/magento-create-setup.php
- *
- * It creates attribute script for existing attribute
- *
- * Originally created by Alan Storm
- *
- * @author Dusan Lukic <ldusan84@gmail.com>
- */
 
 namespace N98\Magento\Command\Developer\Setup\Script;
 
@@ -21,6 +9,20 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Creates attribute script for existing attribute command
+ *
+ * Ported attribute migration script from:
+ *
+ * https://github.com/astorm/Pulsestorm/blob/master/magento-create-setup.php
+ * https://github.com/astorm/Pulsestorm/blob/2863201b19367d02483e01b1c03b54b979d87278/_trash/magento-create-setup.php
+ *
+ * Originally created by Alan Storm
+ *
+ * @package N98\Magento\Command\Developer\Setup\Script
+ *
+ * @author Dusan Lukic <ldusan84@gmail.com>
+ */
 class AttributeCommand extends AbstractMagentoCommand
 {
     protected function configure()

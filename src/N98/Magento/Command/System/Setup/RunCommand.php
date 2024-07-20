@@ -14,6 +14,11 @@ use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Run setup command
+ *
+ * @package N98\Magento\Command\System\Setup
+ */
 class RunCommand extends AbstractMagentoCommand
 {
     protected function configure()
@@ -27,11 +32,17 @@ class RunCommand extends AbstractMagentoCommand
                 'Do not flush the cache'
             )
             ->setDescription('Runs all new setup scripts.');
-        $help = <<<HELP
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Runs all setup scripts (no need to call frontend).
 This command is useful if you update your system with enabled maintenance mode.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

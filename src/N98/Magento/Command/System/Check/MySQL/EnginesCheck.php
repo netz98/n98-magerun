@@ -1,15 +1,17 @@
 <?php
-/*
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Magento\Command\System\Check\MySQL;
 
 use N98\Magento\Command\System\Check\Result;
 use Varien_Db_Adapter_Interface;
 
+/**
+ * Class EnginesCheck
+ *
+ * @package N98\Magento\Command\System\Check\MySQL
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
+ */
 class EnginesCheck extends ResourceCheck
 {
     /**

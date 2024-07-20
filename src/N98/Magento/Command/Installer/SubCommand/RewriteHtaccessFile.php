@@ -6,6 +6,7 @@ use N98\Magento\Command\SubCommand\AbstractSubCommand;
 
 /**
  * Class RewriteHtaccessFile
+ *
  * @package N98\Magento\Command\Installer\SubCommand
  */
 class RewriteHtaccessFile extends AbstractSubCommand

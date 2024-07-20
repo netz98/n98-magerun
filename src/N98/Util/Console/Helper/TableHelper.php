@@ -10,11 +10,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Text Table Helper
- * @author Timothy Anido <xanido@gmail.com>
  *
  * Based on draw_text_table by Paul Maunders
  * Available at http://www.pyrosoft.co.uk/blog/2007/07/01/php-array-to-text-table-function/
- */
+ *
+ * @package N98\Util\Console\Helper
+ *
+ * @author Timothy Anido <xanido@gmail.com> */
 class TableHelper extends AbstractHelper
 {
     /**

@@ -1,9 +1,4 @@
 <?php
-/*
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Util;
 
@@ -11,6 +6,8 @@ namespace N98\Util;
  * Class OperatingSystem
  *
  * @package N98\Util
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
  */
 class OperatingSystem
 {

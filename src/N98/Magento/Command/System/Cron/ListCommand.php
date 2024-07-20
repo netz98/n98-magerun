@@ -6,6 +6,11 @@ use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * List cronjob command
+ *
+ * @package N98\Magento\Command\System\Cron
+ */
 class ListCommand extends AbstractCronCommand
 {
     /**

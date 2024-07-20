@@ -9,6 +9,7 @@ use WpOrg\Requests\Requests;
 
 /**
  * Class InstallComposer
+ *
  * @package N98\Magento\Command\Installer\SubCommand
  */
 class InstallComposer extends AbstractSubCommand

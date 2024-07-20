@@ -11,6 +11,11 @@ use Varien_Http_Adapter_Curl;
 use Zend_Http_Client;
 use Zend_Http_Response;
 
+/**
+ * Class LocalConfigAccessableCheck
+ *
+ * @package N98\Magento\Command\System\Check\Security
+ */
 class LocalConfigAccessableCheck implements SimpleCheck
 {
     /**

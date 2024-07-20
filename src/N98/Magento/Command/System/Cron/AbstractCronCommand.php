@@ -11,6 +11,11 @@ use Mage_Cron_Model_Schedule;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Traversable;
 
+/**
+ * Class AbstractCronCommand
+ *
+ * @package N98\Magento\Command\System\Cron
+ */
 abstract class AbstractCronCommand extends AbstractMagentoCommand
 {
     /**

@@ -3,7 +3,9 @@
 namespace N98\Magento\Command\Developer\Module\Disableenable;
 
 /**
- * Enable Magento module(s)
+ * Enable module(s) command
+ *
+ * @package N98\Magento\Command\Developer\Module\Disableenable
  */
 class EnableCommand extends AbstractCommand
 {

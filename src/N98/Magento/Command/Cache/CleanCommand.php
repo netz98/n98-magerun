@@ -9,6 +9,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Clean cache command
+ *
+ * @package N98\Magento\Command\Cache
+ */
 class CleanCommand extends AbstractCacheCommand
 {
     protected function configure()
@@ -30,8 +35,14 @@ class CleanCommand extends AbstractCacheCommand
             )
             ->setDescription('Clean magento cache')
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Cleans expired cache entries.
 
 If you would like to clean only one cache type use like:
@@ -48,7 +59,6 @@ Options:
     --reinit Reinitialise the config cache after cleaning (Default)
     --no-reinit Don't reinitialise the config cache after cleaning
 HELP;
-        $this->setHelp($help);
     }
 
     /**

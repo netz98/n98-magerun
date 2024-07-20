@@ -8,6 +8,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * Count report command
+ *
+ * @package N98\Magento\Command\Developer\Report
+ */
 class CountCommand extends AbstractMagentoCommand
 {
     protected function configure()

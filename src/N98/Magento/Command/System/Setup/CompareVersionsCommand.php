@@ -12,6 +12,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Compare setup versions command
+ *
+ * @package N98\Magento\Command\System\Setup
+ */
 class CompareVersionsCommand extends AbstractMagentoCommand
 {
     protected function configure()
@@ -28,10 +33,16 @@ class CompareVersionsCommand extends AbstractMagentoCommand
             )
             ->addFormatOption()
             ->setDescription('Compare module version with core_resource table.');
-        $help = <<<HELP
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Compares module version with saved setup version in `core_resource` table and displays version mismatch.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

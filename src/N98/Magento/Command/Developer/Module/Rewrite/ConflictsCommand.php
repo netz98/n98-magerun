@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Zend_Text_Table;
 
+/**
+ * List module conflicts command
+ *
+ * @package N98\Magento\Command\Developer\Module\Rewrite
+ */
 class ConflictsCommand extends AbstractRewriteCommand
 {
     protected function configure()
@@ -24,8 +29,14 @@ class ConflictsCommand extends AbstractRewriteCommand
                 'Log conflicts in JUnit XML format to defined file.'
             )
             ->setDescription('Lists all magento rewrite conflicts');
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Lists all duplicated rewrites and tells you which class is loaded by Magento.
 The command checks class inheritance in order of your module dependencies.
 
@@ -34,7 +45,6 @@ The command checks class inheritance in order of your module dependencies.
 Exit status is 0 if no conflicts were found, 1 if conflicts were found and 2 if there was a problem to
 initialize Magento.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

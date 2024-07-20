@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
 /**
- * Class IncrementalCommand
+ * Run incremental setup command
  *
  * @package N98\Magento\Command\System\Setup
  * @codeCoverageIgnore
@@ -59,11 +59,18 @@ class IncrementalCommand extends AbstractMagentoCommand
         $this
             ->setName('sys:setup:incremental')
             ->setDescription('List new setup scripts to run, then runs one script')
-            ->addOption('stop-on-error', null, InputOption::VALUE_NONE, 'Stops execution of script on error')
-            ->setHelp(
-                'Examines an un-cached configuration tree and determines which ' .
-                'structure and data setup resource scripts need to run, and then runs them.'
-            );
+            ->addOption('stop-on-error', null, InputOption::VALUE_NONE, 'Stops execution of script on error');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
+Examines an un-cached configuration tree and determines which
+structure and data setup resource scripts need to run, and then runs them.
+HELP;
     }
 
     /**

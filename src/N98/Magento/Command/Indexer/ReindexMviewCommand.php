@@ -7,6 +7,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Reindex MView command
+ *
+ * @package N98\Magento\Command\Indexer
+ */
 class ReindexMviewCommand extends AbstractMviewIndexerCommand
 {
     protected function configure()
@@ -15,13 +20,18 @@ class ReindexMviewCommand extends AbstractMviewIndexerCommand
             ->setName('index:reindex:mview')
             ->addArgument('table_name', InputArgument::REQUIRED, 'View table name"')
             ->setDescription('Reindex a magento index by code using the materialised view functionality');
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Trigger a mview index by table_name.
 
    $ n98-magerun.phar index:reindex:mview [table_name]
 HELP;
-        $this->setHelp($help);
     }
 
     /**

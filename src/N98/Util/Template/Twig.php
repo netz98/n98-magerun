@@ -8,6 +8,11 @@ use Twig\Loader\ArrayLoader;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFilter;
 
+/**
+ * Class Twig
+ *
+ * @package N98\Util\Template
+ */
 class Twig
 {
     /**

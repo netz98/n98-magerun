@@ -1,9 +1,4 @@
 <?php
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 
 namespace N98\Magento\Command\Database\Compressor;
 
@@ -11,6 +6,8 @@ namespace N98\Magento\Command\Database\Compressor;
  * Interface Compressor
  *
  * @package N98\Magento\Command\Database\Compressor
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
  */
 interface Compressor
 {

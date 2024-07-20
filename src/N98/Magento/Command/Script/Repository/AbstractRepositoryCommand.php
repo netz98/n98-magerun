@@ -4,6 +4,11 @@ namespace N98\Magento\Command\Script\Repository;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 
+/**
+ * Class AbstractRepositoryCommand
+ *
+ * @package N98\Magento\Command\Script\Repository
+ */
 class AbstractRepositoryCommand extends AbstractMagentoCommand
 {
     /**

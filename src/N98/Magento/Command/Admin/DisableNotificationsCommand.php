@@ -4,6 +4,11 @@ namespace N98\Magento\Command\Admin;
 
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
 
+/**
+ * Toggle admin notification command
+ *
+ * @package N98\Magento\Command\Admin
+ */
 class DisableNotificationsCommand extends AbstractMagentoStoreConfigCommand
 {
     /**

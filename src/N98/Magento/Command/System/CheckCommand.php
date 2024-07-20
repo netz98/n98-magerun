@@ -18,7 +18,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class CheckCommand
+ * System check command
  *
  * @package N98\Magento\Command\System
  */
@@ -37,14 +37,19 @@ class CheckCommand extends AbstractMagentoCommand
             ->setName('sys:check')
             ->setDescription('Checks Magento System')
             ->addFormatOption();
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 - Checks missing files and folders
 - Security
 - PHP Extensions (Required and Bytecode Cache)
 - MySQL InnoDB Engine
 HELP;
-        $this->setHelp($help);
     }
 
     /**

@@ -8,6 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Interface SubCommandInterface
+ *
  * @package N98\Magento\Command\SubCommand
  */
 interface SubCommandInterface

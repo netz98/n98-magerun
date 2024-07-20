@@ -9,6 +9,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Delete config command
+ *
+ * @package N98\Magento\Command\Config
+ */
 class DeleteCommand extends AbstractConfigCommand
 {
     protected function configure()
@@ -33,11 +38,16 @@ class DeleteCommand extends AbstractConfigCommand
             )
             ->addOption('all', null, InputOption::VALUE_NONE, 'Delete all entries by path')
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 To delete all entries of a path you can set the option --all.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

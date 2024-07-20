@@ -17,6 +17,10 @@ use WpOrg\Requests\Hooks;
 use WpOrg\Requests\Requests;
 
 /**
+ * Self-update command
+ *
+ * @package N98\Magento\Command
+ *
  * @codeCoverageIgnore
  * @author Igor Wiedler <igor@wiedler.ch>
  * @author Christian Münch <c.muench@netz98.de>
@@ -37,16 +41,21 @@ class SelfUpdateCommand extends AbstractMagentoCommand
             ->setAliases(['selfupdate'])
             ->addOption('unstable', null, InputOption::VALUE_NONE, 'Load unstable version from develop branch')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Tests if there is a new version without any update.')
-            ->setDescription('Updates n98-magerun2.phar to the latest version.')
-            ->setHelp(
-                <<<EOT
-The <info>self-update</info> command checks github for newer
-versions of n98-magerun2 and if found, installs the latest.
+            ->setDescription('Updates n98-magerun2.phar to the latest version.');
+    }
 
-<info>php n98-magerun2.phar self-update</info>
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
+The <info>self-update</info> command checks GitHub for newer
+versions of n98-magerun and if found, installs the latest.
 
-EOT
-            );
+<info>php n98-magerun.phar self-update</info>
+
+HELP;
     }
 
     /**

@@ -11,7 +11,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
- * Class DeleteUserCommand
+ * Delete admin user password command
+ *
+ * @package N98\Magento\Command\Admin\User
  */
 class DeleteUserCommand extends AbstractAdminUserCommand
 {

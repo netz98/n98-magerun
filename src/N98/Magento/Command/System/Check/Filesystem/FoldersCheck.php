@@ -10,6 +10,11 @@ use N98\Magento\Command\System\Check\SimpleCheck;
 use N98\Magento\Command\System\CheckCommand;
 use Symfony\Component\Console\Command\Command;
 
+/**
+ * Class FoldersCheck
+ *
+ * @package N98\Magento\Command\System\Check\Filesystem
+ */
 class FoldersCheck implements SimpleCheck, CommandAware, CommandConfigAware
 {
     /**

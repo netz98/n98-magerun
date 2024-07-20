@@ -13,6 +13,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
+/**
+ * Create category dummy command
+ *
+ * @package N98\Magento\Command\Category\Create
+ */
 class DummyCommand extends AbstractMagentoCommand
 {
     public const DEFAULT_CATEGORY_NAME = "My Awesome Category";

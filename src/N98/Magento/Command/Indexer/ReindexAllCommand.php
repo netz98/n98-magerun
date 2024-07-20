@@ -7,6 +7,11 @@ use Mage_Index_Model_Resource_Process_Collection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Reindex all command
+ *
+ * @package N98\Magento\Command\Indexer
+ */
 class ReindexAllCommand extends AbstractIndexerCommand
 {
     protected function configure()
@@ -15,8 +20,16 @@ class ReindexAllCommand extends AbstractIndexerCommand
             ->setName('index:reindex:all')
             ->setDescription('Reindex all magento indexes')
         ;
+    }
 
-        $this->setHelp('Loops all magento indexes and triggers reindex.');
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
+Loops all magento indexes and triggers reindex.
+HELP;
     }
 
     /**

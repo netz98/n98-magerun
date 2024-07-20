@@ -9,6 +9,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Flush cache command
+ *
+ * @package N98\Magento\Command\Cache
+ */
 class FlushCommand extends AbstractCacheCommand
 {
     protected function configure()
@@ -29,8 +34,14 @@ class FlushCommand extends AbstractCacheCommand
             )
             ->setDescription('Flush magento cache storage')
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Flush the entire cache.
 
    $ n98-magerun.phar cache:flush [--reinit --no-reinit]
@@ -39,7 +50,6 @@ Options:
     --reinit Reinitialise the config cache after flushing (Default)
     --no-reinit Don't reinitialise the config cache after flushing
 HELP;
-        $this->setHelp($help);
     }
 
     /**

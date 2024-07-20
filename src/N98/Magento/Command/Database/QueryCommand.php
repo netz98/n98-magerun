@@ -8,6 +8,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Query database command
+ *
+ * @package N98\Magento\Command\Database
+ */
 class QueryCommand extends AbstractDatabaseCommand
 {
     protected function configure()
@@ -18,8 +23,14 @@ class QueryCommand extends AbstractDatabaseCommand
             ->addOption('only-command', null, InputOption::VALUE_NONE, 'Print only mysql command. Do not execute')
             ->setDescription('Executes an SQL query on the database defined in local.xml')
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Executes an SQL query on the current configured database. Wrap your SQL in
 single or double quotes.
 
@@ -27,9 +38,7 @@ If your query produces a result (e.g. a SELECT statement), the output of the
 mysql cli tool will be returned.
 
 * Requires MySQL CLI tools installed on your system.
-
 HELP;
-        $this->setHelp($help);
     }
 
     /**

@@ -12,9 +12,11 @@ use N98\Util\AutoloadRestorer;
 use RuntimeException;
 
 /**
- * Magento initialiser (Magento 1)
+ * Magento initializer (Magento 1)
  *
  * @package N98\Magento
+ *
+ * @author Tom Klingenberg (https://github.com/ktomk)
  */
 class Initialiser
 {

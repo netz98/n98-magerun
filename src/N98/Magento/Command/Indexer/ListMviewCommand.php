@@ -6,6 +6,11 @@ use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * List MView index command
+ *
+ * @package N98\Magento\Command\Indexer
+ */
 class ListMviewCommand extends AbstractMviewIndexerCommand
 {
     protected function configure()
@@ -15,11 +20,16 @@ class ListMviewCommand extends AbstractMviewIndexerCommand
             ->setDescription('Lists all magento mview indexes')
             ->addFormatOption()
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Lists all Magento mview indexers of current installation.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

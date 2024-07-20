@@ -10,6 +10,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
+/**
+ * Change admin user password command
+ *
+ * @package N98\Magento\Command\Admin\User
+ */
 class ChangePasswordCommand extends AbstractAdminUserCommand
 {
     protected function configure()

@@ -9,6 +9,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Database info command
+ *
+ * @package N98\Magento\Command\Database
+ */
 class InfoCommand extends AbstractDatabaseCommand
 {
     protected function configure()
@@ -20,12 +25,17 @@ class InfoCommand extends AbstractDatabaseCommand
             ->addFormatOption()
         ;
         $this->addDeprecatedAlias('database:info', 'Please use db:info');
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 This command is useful to print all informations about the current configured database in app/etc/local.xml.
 It can print connection string for JDBC, PDO connections.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

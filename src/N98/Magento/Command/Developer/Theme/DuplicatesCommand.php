@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * Find duplicate theme command
+ *
+ * @package N98\Magento\Command\Developer\Theme
+ */
 class DuplicatesCommand extends AbstractMagentoCommand
 {
     protected function configure()
@@ -32,11 +37,16 @@ class DuplicatesCommand extends AbstractMagentoCommand
             )
             ->setDescription('Find duplicate files (templates, layout, locale, etc.) between two themes.')
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 * If a filename with `--log-junit` option is set the tool generates an XML file and no output to *stdout*.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

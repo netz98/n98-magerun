@@ -12,6 +12,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Check database command
+ *
+ * @package N98\Magento\Command\Database\Maintain
+ */
 class CheckTablesCommand extends AbstractMagentoCommand
 {
     public const MESSAGE_CHECK_NOT_SUPPORTED = 'The storage engine for the table doesn\'t support check';
@@ -44,7 +49,32 @@ class CheckTablesCommand extends AbstractMagentoCommand
 
     protected function configure()
     {
-        $help = <<<'HELP'
+        $this
+            ->setName('db:maintain:check-tables')
+            ->setDescription('Check database tables')
+            ->addOption(
+                'type',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Check type (one of QUICK, FAST, MEDIUM, EXTENDED, CHANGED)',
+                'MEDIUM'
+            )
+            ->addOption('repair', null, InputOption::VALUE_NONE, 'Repair tables (only MyISAM)')
+            ->addOption(
+                'table',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Process only given table (wildcards are supported)'
+            )
+            ->addFormatOption();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 <comment>TYPE OPTIONS</comment>
 
 <info>QUICK</info>
@@ -71,26 +101,6 @@ class CheckTablesCommand extends AbstractMagentoCommand
             InnoDB tables will be optimized with the ALTER TABLE ... ENGINE=InnoDB statement.
             The options above do not apply to them.
 HELP;
-
-        $this
-            ->setName('db:maintain:check-tables')
-            ->setDescription('Check database tables')
-            ->addOption(
-                'type',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Check type (one of QUICK, FAST, MEDIUM, EXTENDED, CHANGED)',
-                'MEDIUM'
-            )
-            ->addOption('repair', null, InputOption::VALUE_NONE, 'Repair tables (only MyISAM)')
-            ->addOption(
-                'table',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Process only given table (wildcards are supported)'
-            )
-            ->addFormatOption()
-            ->setHelp($help);
     }
 
     /**

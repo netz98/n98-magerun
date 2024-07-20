@@ -9,6 +9,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * View EAV attribute command
+ *
+ * @package N98\Magento\Command\Eav\Attribute
+ */
 class ViewCommand extends AbstractMagentoCommand
 {
     protected function configure()

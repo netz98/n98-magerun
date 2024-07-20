@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class AbstractCommand
+ *
+ * @package N98\Magento\Command\Developer\Module\Dependencies
+ */
 abstract class AbstractCommand extends AbstractMagentoCommand
 {
     /**#@+

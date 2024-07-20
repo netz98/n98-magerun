@@ -4,6 +4,11 @@ namespace N98\Magento\Command\Developer\Log;
 
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
 
+/**
+ * Toggle log command
+ *
+ * @package N98\Magento\Command\Developer\Log
+ */
 class LogCommand extends AbstractMagentoStoreConfigCommand
 {
     /**

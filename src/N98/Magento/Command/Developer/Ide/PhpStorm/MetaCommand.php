@@ -14,6 +14,11 @@ use Symfony\Component\Finder\SplFileInfo;
 use UnexpectedValueException;
 use Varien_Simplexml_Element;
 
+/**
+ * Create phpStorm meta-files command
+ *
+ * @package N98\Magento\Command\Developer\Ide\PhpStorm
+ */
 class MetaCommand extends AbstractMagentoCommand
 {
     /**

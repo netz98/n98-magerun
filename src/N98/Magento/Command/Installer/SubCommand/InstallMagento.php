@@ -13,6 +13,7 @@ use Symfony\Component\Console\Question\Question;
 
 /**
  * Class InstallMagento
+ *
  * @package N98\Magento\Command\Installer\SubCommand
  */
 class InstallMagento extends AbstractSubCommand

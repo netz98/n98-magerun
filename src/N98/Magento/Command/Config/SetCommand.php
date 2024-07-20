@@ -8,6 +8,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Set config command
+ *
+ * @package N98\Magento\Command\Config
+ */
 class SetCommand extends AbstractConfigCommand
 {
     protected function configure()
@@ -44,13 +49,17 @@ class SetCommand extends AbstractConfigCommand
                 "Do not treat value NULL as " . self::DISPLAY_NULL_UNKNOWN_VALUE . " value"
             )
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Set a store config value by path.
 To set a value of a specify store view you must set the "scope" and "scope-id" option.
-
 HELP;
-        $this->setHelp($help);
     }
 
     /**

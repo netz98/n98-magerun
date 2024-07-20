@@ -2,6 +2,11 @@
 
 namespace N98\Magento\Command\Database\Compressor;
 
+/**
+ * Class Gzip
+ *
+ * @package N98\Magento\Command\Database\Compressor
+ */
 class Gzip extends AbstractCompressor
 {
     /**

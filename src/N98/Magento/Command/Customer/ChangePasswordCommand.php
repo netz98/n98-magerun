@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
+/**
+ * Change customer password command
+ *
+ * @package N98\Magento\Command\Customer
+ */
 class ChangePasswordCommand extends AbstractCustomerCommand
 {
     protected function configure()
@@ -22,11 +27,16 @@ class ChangePasswordCommand extends AbstractCustomerCommand
             ->addArgument('website', InputArgument::OPTIONAL, 'Website of the customer')
             ->setDescription('Changes the password of a customer.')
         ;
+    }
 
-        $help = <<<HELP
-- Website parameter must only be given if more than one websites are available.
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
+Website parameter must only be given if more than one websites are available.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
+/**
+ * Generate local config command
+ *
+ * @package N98\Magento\Command\LocalConfig
+ */
 class GenerateCommand extends AbstractMagentoCommand
 {
     protected function configure()
@@ -26,15 +31,20 @@ class GenerateCommand extends AbstractMagentoCommand
             ->addArgument('admin-frontname', InputArgument::OPTIONAL, 'Admin front name')
             ->addArgument('encryption-key', InputArgument::OPTIONAL, 'Encryption Key')
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Generates the app/etc/local.xml.
 
 - The file "app/etc/local.xml.template" (bundles with Magento) must exist!
 - Currently the command does not validate anything you enter.
 - The command will not overwrite existing app/etc/local.xml files.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

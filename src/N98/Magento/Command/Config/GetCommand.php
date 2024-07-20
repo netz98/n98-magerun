@@ -10,6 +10,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use UnexpectedValueException;
 
+/**
+ * Get config command
+ *
+ * @package N98\Magento\Command\Config
+ */
 class GetCommand extends AbstractConfigCommand
 {
     protected function configure()
@@ -17,17 +22,6 @@ class GetCommand extends AbstractConfigCommand
         $this
             ->setName('config:get')
             ->setDescription('Get a core config item')
-            ->setHelp(
-                <<<EOT
-                If <info>path</info> is not set, all available config items will be listed.
-The <info>path</info> may contain wildcards (*).
-If <info>path</info> ends with a trailing slash, all child items will be listed. E.g.
-
-    config:get web/
-is the same as
-    config:get web/*
-EOT
-            )
             ->addArgument('path', InputArgument::OPTIONAL, 'The config path')
             ->addOption(
                 'scope',
@@ -45,11 +39,22 @@ EOT
             ->addOption('update-script', null, InputOption::VALUE_NONE, 'Output as update script lines')
             ->addOption('magerun-script', null, InputOption::VALUE_NONE, 'Output for usage with config:set')
             ->addFormatOption();
+    }
 
-        $help = <<<HELP
-If path is not set, all available config items will be listed. path may contain wildcards (*)
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
+If <info>path</info> is not set, all available config items will be listed.
+The <info>path</info> may contain wildcards (*).
+If <info>path</info> ends with a trailing slash, all child items will be listed. E.g.
+
+    config:get web/
+is the same as
+    config:get web/*
 HELP;
-        $this->setHelp($help);
     }
 
     /**

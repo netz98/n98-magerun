@@ -16,6 +16,11 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
 
+/**
+ * Run cronjob command
+ *
+ * @package N98\Magento\Command\System\Cron
+ */
 class RunCommand extends AbstractCronCommand
 {
     public const REGEX_RUN_MODEL = '#^([a-z0-9_]+/[a-z0-9_]+)::([a-z0-9_]+)$#i';
@@ -31,12 +36,18 @@ class RunCommand extends AbstractCronCommand
             ->addArgument('job', InputArgument::OPTIONAL, 'Job code')
             ->addOption('schedule', 's', InputOption::VALUE_NONE, 'Schedule cron instead of run with current user')
             ->setDescription('Runs a cronjob by job code');
-        $help = <<<HELP
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 If no `job` argument is passed you can select a job from a list.
-See it in action: http://www.youtube.com/watch?v=QkzkLgrfNaM
+See it in action: https://www.youtube.com/watch?v=QkzkLgrfNaM
 If option schedule is present, cron is not launched, but just scheduled immediately in magento crontab.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

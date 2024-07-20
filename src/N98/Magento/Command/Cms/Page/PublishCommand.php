@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class PublishCommand
+ * Publish CMS page command
  *
  * Only testable with closed source enterprise edition
  *

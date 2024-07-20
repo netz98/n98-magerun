@@ -12,7 +12,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Create a magento module skeleton
+ * Create module skeleton command
+ *
+ * @package N98\Magento\Command\Developer\Module
  */
 class CreateCommand extends AbstractMagentoCommand
 {

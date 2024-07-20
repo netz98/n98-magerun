@@ -12,6 +12,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
+/**
+ * Reindex command
+ *
+ * @package N98\Magento\Command\Indexer
+ */
 class ReindexCommand extends AbstractIndexerCommand
 {
     protected function configure()
@@ -20,8 +25,14 @@ class ReindexCommand extends AbstractIndexerCommand
             ->setName('index:reindex')
             ->addArgument('index_code', InputArgument::OPTIONAL, 'Code of indexer.')
             ->setDescription('Reindex a magento index by code');
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 Index by indexer code. Code is optional. If you don't specify a code you can pick a indexer from a list.
 
    $ n98-magerun.phar index:reindex [code]
@@ -36,7 +47,6 @@ i.e.
 If no index is provided as argument you can select indexers from menu by "number" like "1,3" for first and third
 indexer.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

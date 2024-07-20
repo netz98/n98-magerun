@@ -9,6 +9,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
+/**
+ * Drop database command
+ *
+ * @package N98\Magento\Command\Database
+ */
 class DropCommand extends AbstractDatabaseCommand
 {
     protected function configure()
@@ -19,13 +24,18 @@ class DropCommand extends AbstractDatabaseCommand
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force')
             ->setDescription('Drop current database')
         ;
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 The command prompts before dropping the database. If --force option is specified it
 directly drops the database.
 The configured user in app/etc/local.xml must have "DROP" privileges.
 HELP;
-        $this->setHelp($help);
     }
 
     /**

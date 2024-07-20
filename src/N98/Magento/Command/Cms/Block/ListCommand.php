@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * CMS Block ListCommand
+ * List CMS block command
  *
  * @package N98\Magento\Command\Cms\Block
  */

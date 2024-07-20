@@ -11,6 +11,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * List EAV attributes command
+ *
+ * @package N98\Magento\Command\Eav\Attribute
+ */
 class ListCommand extends AbstractMagentoCommand
 {
     protected function configure()

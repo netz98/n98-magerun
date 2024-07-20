@@ -7,6 +7,7 @@ use Symfony\Component\Console\Question\Question;
 
 /**
  * Class ChooseInstallationFolder
+ *
  * @package N98\Magento\Command\Installer\SubCommand
  */
 class ChooseInstallationFolder extends AbstractSubCommand

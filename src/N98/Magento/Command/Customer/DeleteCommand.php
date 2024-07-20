@@ -17,7 +17,8 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
 /**
- * Class DeleteCommand
+ * Delete customer command
+ *
  * @package N98\Magento\Command\Customer
  */
 class DeleteCommand extends AbstractCustomerCommand
@@ -49,8 +50,14 @@ class DeleteCommand extends AbstractCustomerCommand
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force delete')
             ->addOption('range', '-r', InputOption::VALUE_NONE, 'Delete a range of customers by Id')
             ->setDescription('Delete Customer/s');
+    }
 
-        $help = <<<HELP
+    /**
+     * {@inheritdoc}
+     */
+    public function getHelp(): string
+    {
+        return <<<HELP
 This will delete a customer by a given Id/Email, delete all customers or delete all customers in a range of Ids.
 
 <comment>Example Usage:</comment>
@@ -59,10 +66,7 @@ n98-magerun customer:delete 1                   <info># Will delete customer wit
 n98-magerun customer:delete mike@example.com    <info># Will delete customer with that email</info>
 n98-magerun customer:delete --all               <info># Will delete all customers</info>
 n98-magerun customer:delete --range             <info># Will prompt for start and end Ids for batch deletion</info>
-
 HELP;
-
-        $this->setHelp($help);
     }
 
     /**
