@@ -25,9 +25,13 @@ use Symfony\Component\Console\Question\Question;
  */
 abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 {
+    public const COMMAND_ARGUMENT_STORE = 'store';
+
     public const COMMAND_OPTION_OFF = 'off';
 
     public const COMMAND_OPTION_ON = 'on';
+
+    public const COMMAND_OPTION_GLOBAL = 'global';
 
     /**
      * @var string
@@ -110,7 +114,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 
         if ($this->scope == self::SCOPE_STORE_VIEW_GLOBAL) {
             $this->addOption(
-                'global',
+                self::COMMAND_OPTION_GLOBAL,
                 null,
                 InputOption::VALUE_NONE,
                 'Set value on default scope'
@@ -119,7 +123,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 
         if ($this->scope == self::SCOPE_STORE_VIEW || $this->scope == self::SCOPE_STORE_VIEW_GLOBAL) {
             $this->addArgument(
-                'store',
+                self::COMMAND_ARGUMENT_STORE,
                 InputArgument::OPTIONAL,
                 'Store code or ID'
             );
@@ -158,7 +162,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 
         $runOnStoreView = false;
         if ($this->scope == self::SCOPE_STORE_VIEW
-            || ($this->scope == self::SCOPE_STORE_VIEW_GLOBAL && !$input->getOption('global'))
+            || ($this->scope == self::SCOPE_STORE_VIEW_GLOBAL && !$input->getOption(self::COMMAND_OPTION_GLOBAL))
         ) {
             $runOnStoreView = true;
         }
@@ -283,7 +287,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
     protected function _initStore(InputInterface $input, OutputInterface $output)
     {
         $parameterHelper = $this->getParameterHelper();
-        return $parameterHelper->askStore($input, $output, 'store', $this->withAdminStore);
+        return $parameterHelper->askStore($input, $output, self::COMMAND_ARGUMENT_STORE, $this->withAdminStore);
     }
 
     /**
