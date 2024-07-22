@@ -148,7 +148,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
         parent::initialize($input, $output);
     }
 
-/**
+    /**
      * {@inheritdoc }
      * @throws Mage_Core_Model_Store_Exception
      * @throws Exception
