@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command;
 
+use Exception;
 use Mage;
 use Mage_Core_Model_App;
 use Mage_Core_Model_Store;
-use N98\Util\Console\Helper\IoHelper;
-use N98\Util\Console\Helper\ParameterHelper;
-use Symfony\Component\Console\Helper\QuestionHelper;
+use Mage_Core_Model_Store_Exception;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -23,6 +25,10 @@ use Symfony\Component\Console\Question\Question;
  */
 abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 {
+    public const COMMAND_OPTION_OFF = 'off';
+
+    public const COMMAND_OPTION_ON = 'on';
+
     /**
      * @var string
      */
@@ -42,16 +48,6 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      * Store view or global by additional option
      */
     public const SCOPE_STORE_VIEW_GLOBAL = 'store_view_global';
-
-    /**
-     * @var string
-     */
-    protected $commandName = '';
-
-    /**
-     * @var string
-     */
-    protected $commandDescription = '';
 
     /**
      * @var string
@@ -85,53 +81,97 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      */
     protected $scope = self::SCOPE_STORE_VIEW;
 
-    protected function configure()
+    protected function configure(): void
     {
+        // for backwards compatibility before v3.0
+        if (property_exists($this, 'commandName')) {
+            $this->setName($this->commandName);
+        }
+
+        // for backwards compatibility before v3.0
+        if (property_exists($this, 'commandDescription')) {
+            $this->setDescription($this->commandDescription);
+        }
+
         $this
-            ->setName($this->commandName)
-            ->addOption('on', null, InputOption::VALUE_NONE, 'Switch on')
-            ->addOption('off', null, InputOption::VALUE_NONE, 'Switch off')
-            ->setDescription($this->commandDescription)
+            ->addOption(
+                self::COMMAND_OPTION_ON,
+                null,
+                InputOption::VALUE_NONE,
+                'Switch on'
+            )
+            ->addOption(
+                self::COMMAND_OPTION_OFF,
+                null,
+                InputOption::VALUE_NONE,
+                'Switch off'
+            )
         ;
 
         if ($this->scope == self::SCOPE_STORE_VIEW_GLOBAL) {
-            $this->addOption('global', null, InputOption::VALUE_NONE, 'Set value on default scope');
+            $this->addOption(
+                'global',
+                null,
+                InputOption::VALUE_NONE,
+                'Set value on default scope'
+            );
         }
 
         if ($this->scope == self::SCOPE_STORE_VIEW || $this->scope == self::SCOPE_STORE_VIEW_GLOBAL) {
-            $this->addArgument('store', InputArgument::OPTIONAL, 'Store code or ID');
+            $this->addArgument(
+                'store',
+                InputArgument::OPTIONAL,
+                'Store code or ID'
+            );
         }
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
+     * {@inheritdoc }
+     */
+    public function initialize(InputInterface $input,OutputInterface $output)
+    {
+        // for backwards compatibility before v3.0
+        if (property_exists($this, 'commandName')) {
+            $output->writeln('<warning>Property "commandName" is deprecated, use "public static $defaultName"</warning>');
+        }
+
+        // for backwards compatibility before v3.0
+        if (property_exists($this, 'commandDescription')) {
+            $output->writeln('<warning>Property "commandDescription" is deprecated, use "public static $defaultDescription"</warning>');
+        }
+
+        parent::initialize($input, $output);
+    }
+
+/**
+     * {@inheritdoc }
+     * @throws Mage_Core_Model_Store_Exception
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $store = null;
-        $runOnStoreView = null;
         $this->detectMagento($output);
-        if ($this->initMagento()) {
-            $runOnStoreView = false;
-            if ($this->scope == self::SCOPE_STORE_VIEW
-                || ($this->scope == self::SCOPE_STORE_VIEW_GLOBAL && !$input->getOption('global'))
-            ) {
-                $runOnStoreView = true;
-            }
-
-            if ($runOnStoreView) {
-                $store = $this->_initStore($input, $output);
-            } else {
-                $store = Mage::app()->getStore(Mage_Core_Model_App::ADMIN_STORE_ID);
-            }
+        if (!$this->initMagento()) {
+            return Command::FAILURE;
         }
 
-        if ($input->getOption('on')) {
+        $runOnStoreView = false;
+        if ($this->scope == self::SCOPE_STORE_VIEW
+            || ($this->scope == self::SCOPE_STORE_VIEW_GLOBAL && !$input->getOption('global'))
+        ) {
+            $runOnStoreView = true;
+        }
+
+        if ($runOnStoreView) {
+            $store = $this->_initStore($input, $output);
+        } else {
+            $store = Mage::app()->getStore(Mage_Core_Model_App::ADMIN_STORE_ID);
+        }
+
+        if ($input->getOption(self::COMMAND_OPTION_ON)) {
             $isFalse = true;
-        } elseif ($input->getOption('off')) {
+        } elseif ($input->getOption(self::COMMAND_OPTION_OFF)) {
             $isFalse = false;
         } else {
             $isFalse = !Mage::getStoreConfigFlag($this->configPath, $store->getId());
@@ -157,18 +197,19 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 
         $input = new StringInput('cache:flush');
         $this->getApplication()->run($input, new NullOutput());
-        return 0;
+
+        return Command::SUCCESS;
     }
 
     /**
      * Determine if a developer restriction is in place, and if we're enabling something that will use it
      * then notify and ask if it needs to be changed from its current value.
      *
-     * @param  \Mage_Core_Model_Store $store
-     * @param  bool                   $enabled
+     * @param Mage_Core_Model_Store $store
+     * @param bool $enabled
      * @return void
      */
-    protected function detectAskAndSetDeveloperIp(Mage_Core_Model_Store $store, $enabled)
+    protected function detectAskAndSetDeveloperIp(Mage_Core_Model_Store $store, bool $enabled): void
     {
         if (!$enabled) {
             // No need to notify about developer IP restrictions if we're disabling template hints etc
@@ -179,22 +220,25 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             return;
         }
 
-        /** @var IoHelper $helper */
-        $helper = $this->getHelper('io');
+        $helper = $this->getIoHelper();
         $this->askAndSetDeveloperIp($helper->getInput(), $helper->getOutput(), $store, $devRestriction);
     }
 
     /**
      * Ask if the developer IP should be changed, and change it if required
      *
-     * @param  InputInterface        $input
+     * @param  InputInterface         $input
      * @param  OutputInterface        $output
-     * @param  \Mage_Core_Model_Store $store
+     * @param  Mage_Core_Model_Store  $store
      * @param  string|null            $devRestriction
      * @return void
      */
-    protected function askAndSetDeveloperIp(InputInterface $input, OutputInterface $output, Mage_Core_Model_Store $store, $devRestriction)
-    {
+    protected function askAndSetDeveloperIp(
+        InputInterface        $input,
+        OutputInterface       $output,
+        Mage_Core_Model_Store $store,
+        ?string               $devRestriction
+    ): void {
         $output->writeln(
             sprintf(
                 '<comment><info>Please note:</info> developer IP restriction is enabled for <info>%s</info>.',
@@ -202,9 +246,9 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             )
         );
 
-        /** @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
         $question = new Question('<question>Change developer IP? Enter a new IP to change or leave blank:</question> ');
+        /** @var string $newDeveloperIp */
         $newDeveloperIp = $dialog->ask($input, $output, $question);
 
         if (empty($newDeveloperIp)) {
@@ -212,16 +256,19 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
         }
 
         $this->setDeveloperIp($store, $newDeveloperIp);
-        $output->writeln(sprintf('<comment><info>New developer IP restriction set to %s', $newDeveloperIp));
+        $output->writeln(sprintf(
+            '<comment><info>New developer IP restriction set to %s</info></comment>',
+            $newDeveloperIp
+        ));
     }
 
     /**
      * Set the restricted IP for developer access
      *
-     * @param \Mage_Core_Model_Store $store
-     * @param string                 $newDeveloperIp
+     * @param Mage_Core_Model_Store $store
+     * @param string $newDeveloperIp
      */
-    protected function setDeveloperIp(Mage_Core_Model_Store $store, $newDeveloperIp)
+    protected function setDeveloperIp(Mage_Core_Model_Store $store, string $newDeveloperIp): void
     {
         Mage::getModel('core/config')
             ->saveConfig('dev/restrict/allow_ips', $newDeveloperIp, 'stores', $store->getId());
@@ -235,25 +282,23 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      */
     protected function _initStore(InputInterface $input, OutputInterface $output)
     {
-        /** @var ParameterHelper $parameterHelper */
-        $parameterHelper = $this->getHelper('parameter');
-
+        $parameterHelper = $this->getParameterHelper();
         return $parameterHelper->askStore($input, $output, 'store', $this->withAdminStore);
     }
 
     /**
-     * @param \Mage_Core_Model_Store $store
+     * @param Mage_Core_Model_Store $store
      * @param bool $disabled
      */
-    protected function _beforeSave(Mage_Core_Model_Store $store, $disabled)
+    protected function _beforeSave(Mage_Core_Model_Store $store, bool $disabled): void
     {
     }
 
     /**
-     * @param \Mage_Core_Model_Store $store
+     * @param Mage_Core_Model_Store $store
      * @param bool $disabled
      */
-    protected function _afterSave(Mage_Core_Model_Store $store, $disabled)
+    protected function _afterSave(Mage_Core_Model_Store $store, bool $disabled): void
     {
     }
 }
