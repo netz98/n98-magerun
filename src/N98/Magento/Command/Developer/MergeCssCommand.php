@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer;
 
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
@@ -14,12 +16,12 @@ class MergeCssCommand extends AbstractMagentoStoreConfigCommand
     /**
      * @var string
      */
-    protected $commandName = 'dev:merge-css';
+    protected static $defaultName = 'dev:merge-css';
 
     /**
      * @var string
      */
-    protected $commandDescription = 'Toggles CSS Merging';
+    protected static $defaultDescription = 'Toggles CSS Merging';
 
     /**
      * @var string

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Log;
 
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
@@ -14,12 +16,12 @@ class LogCommand extends AbstractMagentoStoreConfigCommand
     /**
      * @var string
      */
-    protected $commandName = 'dev:log';
+    protected static $defaultName = 'dev:log';
 
     /**
      * @var string
      */
-    protected $commandDescription = 'Toggle development log (system.log, exception.log)';
+    protected static $defaultDescription = 'Toggle development log (system.log, exception.log)';
 
     /**
      * @var string
