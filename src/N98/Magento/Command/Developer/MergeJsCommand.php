@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer;
 
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
@@ -14,12 +16,12 @@ class MergeJsCommand extends AbstractMagentoStoreConfigCommand
     /**
      * @var string
      */
-    protected $commandName = 'dev:merge-js';
+    protected static $defaultName = 'dev:merge-js';
 
     /**
      * @var string
      */
-    protected $commandDescription = 'Toggles JS Merging';
+    protected static $defaultDescription = 'Toggles JS Merging';
 
     /**
      * @var string
