@@ -14,7 +14,9 @@ use Mage;
 use N98\Magento\Application;
 use N98\Magento\Command\SubCommand\ConfigBag;
 use N98\Magento\Command\SubCommand\SubCommandFactory;
+use N98\Util\Console\Helper\IoHelper;
 use N98\Util\Console\Helper\MagentoHelper;
+use N98\Util\Console\Helper\ParameterHelper;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
 use N98\Util\OperatingSystem;
 use N98\Util\StringTyped;
@@ -690,5 +692,20 @@ abstract class AbstractMagentoCommand extends Command
             'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
         );
         return $this;
+    }
+
+    public function getIoHelper(): IoHelper
+    {
+        return $this->getHelper('io');
+    }
+
+    public function getParameterHelper(): ParameterHelper
+    {
+        return $this->getHelper('parameter');
+    }
+
+    public function getQuestionHelper(): QuestionHelper
+    {
+        return $this->getHelper('question');
     }
 }
