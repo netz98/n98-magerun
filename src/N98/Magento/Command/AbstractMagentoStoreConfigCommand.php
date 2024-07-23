@@ -85,6 +85,9 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      */
     protected $scope = self::SCOPE_STORE_VIEW;
 
+    /**
+     * {@inheritdoc}
+     */
     protected function configure(): void
     {
         // for backwards compatibility before v3.0
@@ -131,7 +134,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
     }
 
     /**
-     * {@inheritdoc }
+     * {@inheritdoc}
      */
     public function initialize(InputInterface $input,OutputInterface $output)
     {
@@ -149,7 +152,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
     }
 
     /**
-     * {@inheritdoc }
+     * {@inheritdoc}
      * @throws Mage_Core_Model_Store_Exception
      * @throws Exception
      */
