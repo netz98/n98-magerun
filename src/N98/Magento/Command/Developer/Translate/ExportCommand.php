@@ -5,7 +5,6 @@ namespace N98\Magento\Command\Developer\Translate;
 use Locale;
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\DatabaseHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -41,8 +40,7 @@ class ExportCommand extends AbstractMagentoCommand
             return 0;
         }
 
-        /** @var DatabaseHelper $helper */
-        $helper = $this->getHelper('database');
+        $helper = $this->getDatabaseHelper();
         $db = $helper->getConnection();
 
         $filename = $input->getArgument('filename');

@@ -14,6 +14,7 @@ use Mage;
 use N98\Magento\Application;
 use N98\Magento\Command\SubCommand\ConfigBag;
 use N98\Magento\Command\SubCommand\SubCommandFactory;
+use N98\Util\Console\Helper\DatabaseHelper;
 use N98\Util\Console\Helper\IoHelper;
 use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\Console\Helper\ParameterHelper;
@@ -690,6 +691,14 @@ abstract class AbstractMagentoCommand extends Command
             'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
         );
         return $this;
+    }
+
+    /**
+     * @return DatabaseHelper
+     */
+    public function getDatabaseHelper(): DatabaseHelper
+    {
+        return $this->getHelper('database');
     }
 
     /**

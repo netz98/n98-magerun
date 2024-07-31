@@ -137,7 +137,7 @@ HELP;
         $this->output = $output;
         $this->isTypeAllowed();
         $this->detectMagento($output);
-        $this->dbHelper = $this->getHelper('database');
+        $this->dbHelper = $this->getDatabaseHelper();
         $this->showProgress = $input->getOption('format') == null;
 
         if ($input->getOption('table')) {

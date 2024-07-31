@@ -5,10 +5,8 @@ namespace N98\Magento\Command\Database;
 use InvalidArgumentException;
 use N98\Magento\Command\Database\Compressor\Compressor;
 use N98\Util\Console\Enabler;
-use N98\Util\Console\Helper\DatabaseHelper;
 use N98\Util\Exec;
 use N98\Util\VerifyOrDie;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -183,9 +181,7 @@ HELP;
         $this->commandConfig = $this->getCommandConfig();
 
         if (is_null($this->tableDefinitions)) {
-            /* @var DatabaseHelper $dbHelper */
-            $dbHelper = $this->getHelper('database');
-
+            $dbHelper = $this->getDatabaseHelper();
             $this->tableDefinitions = $dbHelper->getTableDefinitions($this->commandConfig);
         }
 

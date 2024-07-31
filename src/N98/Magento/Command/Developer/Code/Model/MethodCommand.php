@@ -164,9 +164,7 @@ class MethodCommand extends AbstractMagentoCommand
      */
     protected function initTableColumns()
     {
-        $dbHelper = $this->getHelper('database');
-        /* @var \N98\Util\Console\Helper\DatabaseHelper $dbHelper */
-        /** @var PDO $connection */
+        $dbHelper = $this->getDatabaseHelper();
         $connection = $dbHelper->getConnection($this->_output);
         $stmt = $connection->query('SHOW COLUMNS FROM ' . $this->_mageModelTable, PDO::FETCH_ASSOC);
         foreach ($stmt as $row) {

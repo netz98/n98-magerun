@@ -3,7 +3,6 @@
 namespace N98\Magento\Command\Database;
 
 use Description;
-use N98\Util\Console\Helper\DatabaseHelper;
 use N98\Util\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -173,8 +172,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
      */
     protected function initVariables($variable = null)
     {
-        /** @var DatabaseHelper $database */
-        $database = $this->getHelper('database');
+        $database = $this->getDatabaseHelper();
         $this->_allVariables = $database->{$this->showMethod}($variable);
     }
 

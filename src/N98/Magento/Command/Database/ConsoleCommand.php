@@ -2,7 +2,6 @@
 
 namespace N98\Magento\Command\Database;
 
-use N98\Util\Console\Helper\DatabaseHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -79,9 +78,7 @@ class ConsoleCommand extends AbstractDatabaseCommand
      */
     private function getMysqlClientToolConnection()
     {
-        /* @var DatabaseHelper $database */
-        $database = $this->getHelper('database');
-
+        $database = $this->getDatabaseHelper();
         return $database->getMysqlClientToolConnectionString();
     }
 }
