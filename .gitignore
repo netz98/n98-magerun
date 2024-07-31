@@ -27,3 +27,6 @@ act.secrets
 
 # phpDocumentor
 /docs/
+
+# php-cs-fixer cache
+/.php-cs-fixer.cache
