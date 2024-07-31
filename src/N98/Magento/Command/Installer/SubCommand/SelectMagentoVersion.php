@@ -45,7 +45,7 @@ class SelectMagentoVersion extends AbstractSubCommand
                 return $typeInput;
             });
 
-            $type = $this->getCommand()->getHelper('question')->ask(
+            $type = $this->getCommand()->getQuestionHelper()->ask(
                 $this->input,
                 $this->output,
                 $question

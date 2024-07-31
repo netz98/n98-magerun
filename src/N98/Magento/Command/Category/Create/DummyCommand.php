@@ -6,7 +6,6 @@ use Mage;
 use Mage_Catalog_Model_Category;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -138,8 +137,7 @@ class DummyCommand extends AbstractMagentoCommand
      */
     private function askForArguments($input, $output)
     {
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
         $_argument = [];
 
         // Store ID

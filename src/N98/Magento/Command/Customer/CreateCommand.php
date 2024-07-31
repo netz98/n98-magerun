@@ -3,7 +3,6 @@
 namespace N98\Magento\Command\Customer;
 
 use N98\Util\Console\Helper\ParameterHelper;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -42,8 +41,7 @@ class CreateCommand extends AbstractCustomerCommand
             return 0;
         }
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
 
         // Password
         if (($password = $input->getArgument('password')) == null) {

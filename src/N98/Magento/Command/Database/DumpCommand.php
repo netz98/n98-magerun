@@ -536,8 +536,7 @@ HELP;
                 $defaultName = rtrim($fileName, '/') . '/' . $defaultName;
             }
             if (!$input->getOption('force')) {
-                /* @var QuestionHelper $dialog */
-                $dialog = $this->getHelper('question');
+                $dialog = $this->getQuestionHelper();
                 $fileName = $dialog->ask(
                     $input,
                     $output,

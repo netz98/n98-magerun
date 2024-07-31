@@ -555,8 +555,7 @@ abstract class AbstractMagentoCommand extends Command
         if (($installationFolder = $input->getOption('installationFolder')) == null) {
             $defaultFolder = './magento';
 
-            /* @var QuestionHelper $dialog */
-            $dialog = $this->getHelper('question');
+            $dialog = $this->getQuestionHelper();
             $questionObj = new Question(
                 '<question>Enter installation folder:</question> [<comment>' . $defaultFolder . '</comment>]',
                 $defaultFolder
@@ -596,8 +595,7 @@ abstract class AbstractMagentoCommand extends Command
         if ($inputArgument === null) {
             $message = $this->getArgumentMessage($argument, $message);
 
-            /* @var QuestionHelper $dialog */
-            $dialog = $this->getHelper('question');
+            $dialog = $this->getQuestionHelper();
             return $dialog->ask($input, $output, new Question($message));
         }
 
@@ -621,8 +619,7 @@ abstract class AbstractMagentoCommand extends Command
             return $typeInput;
         };
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
         $question = new ChoiceQuestion(
             "<question>{$question}</question>",
             $entries

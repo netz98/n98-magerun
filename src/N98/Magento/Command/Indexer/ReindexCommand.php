@@ -5,12 +5,10 @@ namespace N98\Magento\Command\Indexer;
 use InvalidArgumentException;
 use Mage_Index_Model_Process;
 use N98\Util\BinaryString;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\Question;
 
 /**
  * Reindex command
@@ -136,8 +134,7 @@ HELP;
             return $returnCodes;
         };
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
         $question = new ChoiceQuestion(
             '<question>Please select a indexer:</question> ',
             $choices

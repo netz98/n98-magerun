@@ -3,7 +3,6 @@
 namespace N98\Magento\Command\Script\Repository;
 
 use InvalidArgumentException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -77,8 +76,7 @@ HELP;
                 return $files[$typeInput]['fileinfo']->getPathname();
             };
 
-            /* @var QuestionHelper $dialog */
-            $dialog = $this->getHelper('question');
+            $dialog = $this->getQuestionHelper();
             $question = new ChoiceQuestion(
                 '<question>Please select a script file:</question> ',
                 $choices

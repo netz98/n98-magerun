@@ -4,11 +4,9 @@ namespace N98\Magento\Command\Installer\SubCommand;
 
 use Exception;
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
-use N98\Util\Console\Helper\ComposerHelper;
 use N98\Util\Exec;
 use N98\Util\ProcessArguments;
 use Symfony\Component\Console\Exception\RuntimeException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Process\Process;
@@ -43,9 +41,7 @@ class DownloadMagento extends AbstractSubCommand
         $this->config->setArray('magentoPackage', $package);
 
         if (file_exists($this->config->getString('installationFolder') . '/app/etc/local.xml')) {
-
-            /* @var QuestionHelper $dialog */
-            $dialog = $this->command->getHelper('question');
+            $dialog = $this->command->getQuestionHelper();
             $skipInstallation = $dialog->ask(
                 $this->input,
                 $this->output,

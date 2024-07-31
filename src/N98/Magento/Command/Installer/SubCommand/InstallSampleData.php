@@ -29,7 +29,7 @@ class InstallSampleData extends AbstractSubCommand
             return;
         }
 
-        $questionHelper = $this->command->getHelper('question');
+        $questionHelper = $this->command->getQuestionHelper();
 
         $installSampleData = ($this->input->getOption('installSampleData') !== null)
             ? StringTyped::parseBoolOption($this->input->getOption('installSampleData'))

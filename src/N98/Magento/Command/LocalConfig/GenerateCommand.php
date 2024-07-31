@@ -5,7 +5,6 @@ namespace N98\Magento\Command\LocalConfig;
 use DateTime;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -114,8 +113,7 @@ HELP;
      */
     protected function askForArguments(InputInterface $input, OutputInterface $output)
     {
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
 
         $messagePrefix = 'Please enter the ';
         $arguments = [
