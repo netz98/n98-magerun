@@ -25,11 +25,11 @@ class EnginesCheck extends ResourceCheck
 
         if ($innodbFound) {
             $result->setStatus(Result::STATUS_OK);
-            $result->setMessage("<info>Required MySQL Storage Engine <comment>InnoDB</comment> found.</info>");
+            $result->setMessage('<info>Required MySQL Storage Engine <comment>InnoDB</comment> found.</info>');
         } else {
             $result->setStatus(Result::STATUS_ERROR);
             $result->setMessage(
-                "<error>Required MySQL Storage Engine <comment>InnoDB</comment> not found!</error>"
+                '<error>Required MySQL Storage Engine <comment>InnoDB</comment> not found!</error>'
             );
         }
     }

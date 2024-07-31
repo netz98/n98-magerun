@@ -41,7 +41,7 @@ class XmlRendererTest extends TestCase
      */
     public function provideTables()
     {
-        return [[[["column" => "Doors wide > open"], ["column" => "null \0 bytes FTW"]], '<?xml version="1.0" encoding="UTF-8"?>
+        return [[[['column' => 'Doors wide > open'], ['column' => "null \0 bytes FTW"]], '<?xml version="1.0" encoding="UTF-8"?>
 <table>
   <headers>
     <header>column</header>
@@ -55,7 +55,7 @@ class XmlRendererTest extends TestCase
 </table>'], [[], '<?xml version="1.0" encoding="UTF-8"?>
 <table>
   <!--intentionally left blank, the table is empty-->
-</table>'], [[['Column1' => 'Value A1', 'Column2' => 'A2 is another value that there is'], [1, "multi\nline\nftw"], ["C1 cell here!", new SimpleXMLElement('<r>PHP Magic->toString() test</r>')]], '<?xml version="1.0" encoding="UTF-8"?>
+</table>'], [[['Column1' => 'Value A1', 'Column2' => 'A2 is another value that there is'], [1, "multi\nline\nftw"], ['C1 cell here!', new SimpleXMLElement('<r>PHP Magic->toString() test</r>')]], '<?xml version="1.0" encoding="UTF-8"?>
 <table>
   <headers>
     <header>Column1</header>
@@ -75,7 +75,7 @@ ftw</Column2>
     <Column1>C1 cell here!</Column1>
     <Column2>PHP Magic-&gt;toString() test</Column2>
   </row>
-</table>'], [[["\x00" => "foo"]], '<?xml version="1.0" encoding="UTF-8"?>
+</table>'], [[["\x00" => 'foo']], '<?xml version="1.0" encoding="UTF-8"?>
 <table>
   <headers>
     <header></header>
@@ -83,7 +83,7 @@ ftw</Column2>
   <row>
     <_>foo</_>
   </row>
-</table>'], [[["foo" => "bar"], ["baz", "buz" => "here"]], '<?xml version="1.0" encoding="UTF-8"?>
+</table>'], [[['foo' => 'bar'], ['baz', 'buz' => 'here']], '<?xml version="1.0" encoding="UTF-8"?>
 <table>
   <headers>
     <header>foo</header>
@@ -107,7 +107,7 @@ ftw</Column2>
         $this->expectExceptionMessage("Invalid name '0'");
         $xmlRenderer = new XmlRenderer();
         $nullOutput = new NullOutput();
-        $xmlRenderer->render($nullOutput, [["foo"]]);
+        $xmlRenderer->render($nullOutput, [['foo']]);
     }
 
     /**
@@ -119,7 +119,7 @@ ftw</Column2>
         $this->expectExceptionMessage("Encoding error, only US-ASCII and UTF-8 supported, can not process '");
         $xmlRenderer = new XmlRenderer();
         $nullOutput = new NullOutput();
-        $xmlRenderer->render($nullOutput, [["\xC1" => "foo"]]);
+        $xmlRenderer->render($nullOutput, [["\xC1" => 'foo']]);
     }
 
     /**

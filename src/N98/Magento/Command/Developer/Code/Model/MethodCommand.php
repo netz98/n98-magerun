@@ -79,7 +79,7 @@ class MethodCommand extends AbstractMagentoCommand
         $this->checkClassFileName();
         $this->initTableColumns();
         $this->writeToClassFile();
-        $this->_output->writeln("Wrote getter and setter @methods into file: " . $this->_fileName);
+        $this->_output->writeln('Wrote getter and setter @methods into file: ' . $this->_fileName);
         return 0;
     }
 
@@ -95,7 +95,7 @@ class MethodCommand extends AbstractMagentoCommand
         }
         $written = file_put_contents($this->_fileName, implode('', $fileParts));
         if (false === $written) {
-            throw new RuntimeException("Cannot write to file: " . $this->_fileName);
+            throw new RuntimeException('Cannot write to file: ' . $this->_fileName);
         }
     }
 

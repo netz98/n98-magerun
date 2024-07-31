@@ -55,7 +55,7 @@ class ConfigTest extends TestCase
         self::assertInstanceOf(__NAMESPACE__ . '\\ConfigurationLoader', $loader);
         self::assertSame($loader, $config->getLoader());
 
-        $loader->loadStageTwo("");
+        $loader->loadStageTwo('');
         $config->load();
 
         self::assertIsArray($config->getConfig());

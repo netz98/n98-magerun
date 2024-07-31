@@ -46,7 +46,7 @@ class ListCommand extends AbstractMagentoCommand
         $modules = $this->filterModules($input);
 
         if (!count($modules)) {
-            $output->writeln("No modules match the specified criteria.");
+            $output->writeln('No modules match the specified criteria.');
             return 0;
         }
 

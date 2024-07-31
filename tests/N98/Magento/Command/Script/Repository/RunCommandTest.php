@@ -39,6 +39,6 @@ class RunCommandTest extends TestCase
      */
     private function normalizePathSeparators($string)
     {
-        return strtr($string, "\\", "/");
+        return strtr($string, '\\', '/');
     }
 }

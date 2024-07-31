@@ -283,6 +283,6 @@ class ChangeStatusCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command'   => $command->getName()]);
 
-        self::assertStringContainsString("User aydin is now inactive", $commandTester->getDisplay());
+        self::assertStringContainsString('User aydin is now inactive', $commandTester->getDisplay());
     }
 }

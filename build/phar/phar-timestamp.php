@@ -55,7 +55,7 @@ $timestamps = new Timestamps($tmp);
 $timestamps->updateTimestamps($timestamp);
 $timestamps->save($pharFilepath, Phar::SHA512);
 
-echo "SHA1.....: ", sha1_file($pharFilepath), "\nMD5......: ", md5_file($pharFilepath), "\n";
+echo 'SHA1.....: ', sha1_file($pharFilepath), "\nMD5......: ", md5_file($pharFilepath), "\n";
 
 if (!unlink($tmp)) {
     throw new RuntimeException('Error deleting tempfile %s', var_export($tmp, true));

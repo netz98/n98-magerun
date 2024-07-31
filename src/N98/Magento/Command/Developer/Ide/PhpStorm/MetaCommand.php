@@ -212,13 +212,13 @@ class MetaCommand extends AbstractMagentoCommand
                 if (empty($modelDefinition->resourceModel)) {
                     continue;
                 }
-                $resourceModelNodePath = 'global/models/' . strval($modelDefinition->resourceModel);
+                $resourceModelNodePath = 'global/models/' . (string) ($modelDefinition->resourceModel);
                 $resourceModelConfig = Mage::getConfig()->getNode($resourceModelNodePath);
                 if ($resourceModelConfig) {
-                    $classPrefix = strval($resourceModelConfig->class);
+                    $classPrefix = (string) ($resourceModelConfig->class);
                 }
             } else {
-                $classPrefix = strval($modelDefinition->class);
+                $classPrefix = (string) ($modelDefinition->class);
             }
 
             if (empty($classPrefix)) {
@@ -313,7 +313,7 @@ PHP_WRAP;
         $map .= "\n";
         foreach ($this->groupFactories as $group => $methods) {
             foreach ($methods as $method) {
-                $map .= "        " . $method . "('') => [\n";
+                $map .= '        ' . $method . "('') => [\n";
                 foreach ($classMaps[$group] as $classPrefix => $class) {
                     if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $class)) {
                         $map .= "            '$classPrefix' instanceof \\$class,\n";
@@ -356,7 +356,7 @@ PHP_WRAP;
         foreach ($this->groupFactories as $group => $methods) {
             $map = $baseMap;
             foreach ($methods as $method) {
-                $map .= "        " . $method . "('') => [\n";
+                $map .= '        ' . $method . "('') => [\n";
                 asort($classMaps[$group]);
                 foreach ($classMaps[$group] as $classPrefix => $class) {
                     if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $class)) {
@@ -400,7 +400,7 @@ PHP_WRAP;
         foreach ($this->methodFactories as $group => $methods) {
             $map = $baseMap;
             foreach ($methods as $method) {
-                $map .= "    override( " . $method . "(0),\n";
+                $map .= '    override( ' . $method . "(0),\n";
                 $map .= "        map( [\n";
                 asort($classMaps[$group]);
                 foreach ($classMaps[$group] as $classPrefix => $class) {
@@ -437,7 +437,7 @@ PHP_WRAP;
         foreach ($this->groupFactories as $group => $methods) {
             $map = $baseMap;
             foreach ($methods as $method) {
-                $map .= "    override( " . $method . "(0),\n";
+                $map .= '    override( ' . $method . "(0),\n";
                 $map .= "        map( [\n";
                 asort($classMaps[$group]);
                 foreach ($classMaps[$group] as $classPrefix => $class) {
@@ -482,7 +482,7 @@ PHP_WRAP;
         foreach ($this->methodFactories as $group => $methods) {
             $map = $baseMap;
             foreach ($methods as $method) {
-                $map .= "    override( " . $method . "(0),\n";
+                $map .= '    override( ' . $method . "(0),\n";
                 $map .= "        map( [\n";
                 asort($classMaps[$group]);
                 foreach ($classMaps[$group] as $classPrefix => $class) {
@@ -539,7 +539,7 @@ PHP;
         }
 
         foreach ($this->missingHelperDefinitionModules as $moduleName) {
-            $children = new Varien_Simplexml_Element(sprintf("<%s/>", strtolower($moduleName)));
+            $children = new Varien_Simplexml_Element(sprintf('<%s/>', strtolower($moduleName)));
             $children->class = sprintf('Mage_%s_%s', $moduleName, $groupClassType);
             $definitions->appendChild($children);
         }

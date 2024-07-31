@@ -332,7 +332,7 @@ HELP;
             $output->writeln('Structure Files to Run: ');
             $filesStructure = $this->_getAvaiableDbFilesFromResource($setupResource, $args);
             $this->_outputFileArray($filesStructure);
-            $output->writeln("");
+            $output->writeln('');
 
             $args[0] = $dbVersion
                 ? Mage_Core_Model_Resource_Setup::TYPE_DATA_UPGRADE
@@ -461,7 +461,7 @@ HELP;
     ) {
         $input = $this->_input;
         $output = $this->_output;
-        $output->writeln(["<error>Magento encountered an error while running the following setup resource.</error>", "", "    $name ", "", "<error>The Good News:</error> You know the error happened, and the database", "information below will  help you fix this error!", "", "<error>The Bad News:</error> Because Magento/MySQL can't run setup resources", "transactionally your database is now in an half upgraded, invalid", "state. Even if you fix the error, new errors may occur due to", "this half upgraded, invalid state.", '', "What to Do: ", "1. Figure out why the error happened, and manually fix your", "   database and/or system so it won't happen again.", "2. Restore your database from backup.", "3. Re-run the scripts.", "", "Exception Message:", $e->getMessage(), ""]);
+        $output->writeln(['<error>Magento encountered an error while running the following setup resource.</error>', '', "    $name ", '', '<error>The Good News:</error> You know the error happened, and the database', 'information below will  help you fix this error!', '', "<error>The Bad News:</error> Because Magento/MySQL can't run setup resources", 'transactionally your database is now in an half upgraded, invalid', 'state. Even if you fix the error, new errors may occur due to', 'this half upgraded, invalid state.', '', 'What to Do: ', '1. Figure out why the error happened, and manually fix your', "   database and/or system so it won't happen again.", '2. Restore your database from backup.', '3. Re-run the scripts.', '', 'Exception Message:', $e->getMessage(), '']);
 
         if ($magentoExceptionOutput) {
             /* @var QuestionHelper $dialog */
@@ -469,7 +469,7 @@ HELP;
             $question = new Question('<question>Press Enter to view raw Magento error text:</question> ');
             $dialog->ask($input, $output, $question);
 
-            $output->writeln("Magento Exception Error Text:");
+            $output->writeln('Magento Exception Error Text:');
             echo $magentoExceptionOutput, "\n"; //echoing (vs. writeln) to avoid seg fault
         }
     }
@@ -605,7 +605,7 @@ HELP;
     protected function _runAllStructureUpdates(array $needsUpdate)
     {
         $output = $this->_output;
-        $this->writeSection($output, "Run Structure Updates");
+        $this->writeSection($output, 'Run Structure Updates');
         $output->writeln('All structure updates run before data updates.');
         $output->writeln('');
 
@@ -619,7 +619,7 @@ HELP;
             $c++;
         }
 
-        $this->writeSection($output, "Run Data Updates");
+        $this->writeSection($output, 'Run Data Updates');
         $c = 1;
         $total = count($needsUpdate);
         foreach ($needsUpdate as $key => $value) {

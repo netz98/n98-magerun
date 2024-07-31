@@ -43,7 +43,7 @@ class DateTime
         );
 
         if (!strlen($differenceString)) {
-            $milliseconds = max(0, $time2->format("u") / 1000 - $time1->format("u") / 1000);
+            $milliseconds = max(0, $time2->format('u') / 1000 - $time1->format('u') / 1000);
             $differenceString = $milliseconds ? sprintf('%0.2fms', $milliseconds) : '';
         }
 

@@ -84,10 +84,10 @@ class AutoloadHandlerTest extends TestCase
 
         $handler = $this->create($assertAble);
         self::assertTrue($handler->isEnabled());
-        self::assertTrue($handler->__invoke("Fake"));
+        self::assertTrue($handler->__invoke('Fake'));
 
         $handler->unregister();
-        self::assertFalse($handler->__invoke("Fake"));
+        self::assertFalse($handler->__invoke('Fake'));
         self::assertEquals(1, $calls->count['Fake']);
     }
 
@@ -105,16 +105,16 @@ class AutoloadHandlerTest extends TestCase
         };
 
         $handler = $this->create(null, AutoloadHandler::NO_EXCEPTION);
-        self::assertFalse($handler->__invoke("Test"));
+        self::assertFalse($handler->__invoke('Test'));
         self::assertObjectNotHasAttribute('count', $calls);
 
         $handler->setCallback($assertAble);
-        self::assertTrue($handler->__invoke("Test"));
-        self::assertEquals(1, $calls->count["Test"]);
+        self::assertTrue($handler->__invoke('Test'));
+        self::assertEquals(1, $calls->count['Test']);
 
         $handler->setCallback(null);
-        self::assertFalse($handler->__invoke("Test"));
-        self::assertEquals(1, $calls->count["Test"]);
+        self::assertFalse($handler->__invoke('Test'));
+        self::assertEquals(1, $calls->count['Test']);
     }
 
     /**
@@ -124,10 +124,10 @@ class AutoloadHandlerTest extends TestCase
     {
         $handler = $this->create(null);
         $handler->setEnabled(false);
-        self::assertFalse($handler->__invoke("Test"));
+        self::assertFalse($handler->__invoke('Test'));
         $handler->setEnabled(true);
         $this->expectException(BadMethodCallException::class);
-        self::assertFalse($handler->__invoke("Test"));
+        self::assertFalse($handler->__invoke('Test'));
         self::fail('An expected exception has not been thrown');
     }
 

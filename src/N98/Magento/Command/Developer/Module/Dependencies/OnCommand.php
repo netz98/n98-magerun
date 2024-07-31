@@ -110,7 +110,7 @@ class OnCommand extends AbstractMagentoCommand
 
             return $dependencies;
         } else {
-            throw new InvalidArgumentException(sprintf("Module %s was not found", $moduleName));
+            throw new InvalidArgumentException(sprintf('Module %s was not found', $moduleName));
         }
     }
 

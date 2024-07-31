@@ -49,7 +49,7 @@ class Exec
 
         if ($returnCode !== self::CODE_CLEAN_EXIT) {
             throw new RuntimeException(
-                sprintf("Exit status %d for command %s. Output was: %s", $returnCode, $command, $output)
+                sprintf('Exit status %d for command %s. Output was: %s', $returnCode, $command, $output)
             );
         }
     }

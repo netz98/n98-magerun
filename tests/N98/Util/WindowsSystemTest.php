@@ -21,11 +21,11 @@ class WindowsSystemTest extends TestCase
      */
     public function isProgramInstalled()
     {
-        self::assertTrue(WindowsSystem::isProgramInstalled("notepad"));
+        self::assertTrue(WindowsSystem::isProgramInstalled('notepad'));
 
-        self::assertFalse(WindowsSystem::isProgramInstalled("notepad-that-never-made-it-into-windows-kernel"));
+        self::assertFalse(WindowsSystem::isProgramInstalled('notepad-that-never-made-it-into-windows-kernel'));
 
-        self::assertFalse(WindowsSystem::isProgramInstalled("invalid\\command*name|thisis"));
+        self::assertFalse(WindowsSystem::isProgramInstalled('invalid\\command*name|thisis'));
     }
 
     /**
@@ -34,7 +34,7 @@ class WindowsSystemTest extends TestCase
      */
     public function provideExecutableNames()
     {
-        return [["notepad", false], ["notepad.com", true], ["notepad.exe", true], ["notepad.exe.exe", true], ["notepad.eXe", true], ["notepad.EXE", true], ["notepad.bat", true], ["notepad.txt", false]];
+        return [['notepad', false], ['notepad.com', true], ['notepad.exe', true], ['notepad.exe.exe', true], ['notepad.eXe', true], ['notepad.EXE', true], ['notepad.bat', true], ['notepad.txt', false]];
     }
 
     /**

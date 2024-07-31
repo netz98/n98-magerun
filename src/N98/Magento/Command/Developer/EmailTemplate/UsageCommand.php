@@ -48,7 +48,7 @@ class UsageCommand extends AbstractMagentoCommand
                 ->setHeaders(['id', 'Name', 'Scope', 'Scope Id', Path::class])
                 ->renderByFormat($output, $templates, $input->getOption('format'));
         } else {
-            $output->writeln("No transactional email templates stored in the database.");
+            $output->writeln('No transactional email templates stored in the database.');
         }
         return 0;
     }

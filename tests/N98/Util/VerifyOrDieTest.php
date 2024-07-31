@@ -23,9 +23,9 @@ class VerifyOrDieTest extends TestCase
      */
     public function portableFilename()
     {
-        self::assertSame("example.txt", VerifyOrDie::filename("example.txt"));
+        self::assertSame('example.txt', VerifyOrDie::filename('example.txt'));
 
-        self::assertSame(".hidden", VerifyOrDie::filename(".hidden"));
+        self::assertSame('.hidden', VerifyOrDie::filename('.hidden'));
     }
 
     /**

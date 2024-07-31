@@ -51,8 +51,8 @@ class ClassLookupCommand extends AbstractMagentoCommand
             $input->getArgument('name')
         );
         $output->writeln(
-            ucfirst($input->getArgument('type')) . ' <comment>' . $input->getArgument('name') . "</comment> " .
-            "resolves to <comment>" . $resolved . '</comment>'
+            ucfirst($input->getArgument('type')) . ' <comment>' . $input->getArgument('name') . '</comment> ' .
+            'resolves to <comment>' . $resolved . '</comment>'
         );
 
         if (!class_exists('\\' . $resolved)) {

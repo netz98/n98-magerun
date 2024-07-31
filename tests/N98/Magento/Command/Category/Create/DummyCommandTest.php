@@ -27,8 +27,8 @@ class DummyCommandTest extends TestCase
         self::assertMatchesRegularExpression('/CATEGORY CHILD: \'My Awesome Category (.+)\' WITH ID: \'(.+)\' CREATED!/', $commandTester->getDisplay());
 
         // Check if the category is created correctly
-        $match_parent = "";
-        $match_child = "";
+        $match_parent = '';
+        $match_child = '';
         preg_match('/CATEGORY: \'My Awesome Category (.+)\' WITH ID: \'(.+)\' CREATED!/', $commandTester->getDisplay(), $match_parent);
         self::assertTrue($this->checkifCategoryExist($match_parent[2]));
         preg_match('/CATEGORY CHILD: \'My Awesome Category (.+)\' WITH ID: \'(.+)\' CREATED!/', $commandTester->getDisplay(), $match_child);
