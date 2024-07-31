@@ -2,7 +2,6 @@
 
 namespace N98\Magento\Command\Admin\User;
 
-use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -43,8 +42,7 @@ class ListCommand extends AbstractAdminUserCommand
             $table[] = [$user->getId(), $user->getUsername(), $user->getEmail(), $user->getIsActive() ? 'active' : 'inactive'];
         }
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders(['id', 'username', 'email', 'status'])
             ->renderByFormat($output, $table, $input->getOption('format'));

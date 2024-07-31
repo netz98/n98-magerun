@@ -18,6 +18,7 @@ use N98\Util\Console\Helper\IoHelper;
 use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\Console\Helper\ParameterHelper;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Console\Helper\TableHelper;
 use N98\Util\OperatingSystem;
 use N98\Util\StringTyped;
 use RuntimeException;
@@ -683,7 +684,7 @@ abstract class AbstractMagentoCommand extends Command
      *
      * @return $this
      */
-    public function addFormatOption(): AbstractMagentoCommand
+    public function addFormatOption(): self
     {
         $this->addOption(
             'format',
@@ -694,18 +695,35 @@ abstract class AbstractMagentoCommand extends Command
         return $this;
     }
 
+    /**
+     * @return IoHelper
+     */
     public function getIoHelper(): IoHelper
     {
         return $this->getHelper('io');
     }
 
+    /**
+     * @return ParameterHelper
+     */
     public function getParameterHelper(): ParameterHelper
     {
         return $this->getHelper('parameter');
     }
 
+    /**
+     * @return QuestionHelper
+     */
     public function getQuestionHelper(): QuestionHelper
     {
         return $this->getHelper('question');
+    }
+
+    /**
+     * @return TableHelper
+     */
+    public function getTableHelper(): TableHelper
+    {
+        return $this->getHelper('table');
     }
 }

@@ -4,7 +4,6 @@ namespace N98\Magento\Command\Database;
 
 use InvalidArgumentException;
 use N98\Util\Console\Helper\DatabaseHelper;
-use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -108,8 +107,7 @@ HELP;
             }
             $output->writeln((string) $settings[$settingArgument]);
         } else {
-            /* @var TableHelper $tableHelper */
-            $tableHelper = $this->getHelper('table');
+            $tableHelper = $this->getTableHelper();
             $tableHelper
                 ->setHeaders(['Name', 'Value'])
                 ->renderByFormat($output, $rows, $input->getOption('format'));

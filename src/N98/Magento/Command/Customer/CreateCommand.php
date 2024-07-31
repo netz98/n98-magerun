@@ -3,7 +3,6 @@
 namespace N98\Magento\Command\Customer;
 
 use N98\Util\Console\Helper\ParameterHelper;
-use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -102,8 +101,7 @@ class CreateCommand extends AbstractCustomerCommand
         }
 
         if (!$outputPlain) {
-            /* @var TableHelper $tableHelper */
-            $tableHelper = $this->getHelper('table');
+            $tableHelper = $this->getTableHelper();
             $tableHelper
                 ->setHeaders(['email', 'password', 'firstname', 'lastname'])
                 ->renderByFormat($output, $table, $input->getOption('format'));

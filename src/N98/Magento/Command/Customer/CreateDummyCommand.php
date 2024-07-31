@@ -5,7 +5,6 @@ namespace N98\Magento\Command\Customer;
 use Faker\Factory;
 use Locale;
 use N98\Util\Console\Helper\ParameterHelper;
-use N98\Util\Console\Helper\TableHelper;
 use N98\Util\Faker\Provider\Internet;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -136,8 +135,7 @@ HELP;
         $res->commit();
 
         if (!$outputPlain) {
-            /* @var TableHelper $tableHelper */
-            $tableHelper = $this->getHelper('table');
+            $tableHelper = $this->getTableHelper();
             $tableHelper
                 ->setHeaders(['email', 'password', 'firstname', 'lastname'])
                 ->renderByFormat($output, $table, $input->getOption('format'));

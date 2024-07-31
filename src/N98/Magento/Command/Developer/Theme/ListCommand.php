@@ -4,7 +4,6 @@ namespace N98\Magento\Command\Developer\Theme;
 
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -44,8 +43,7 @@ class ListCommand extends AbstractMagentoCommand
             }
         }
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders(['Theme'])
             ->renderByFormat($output, $table, $input->getOption('format'));

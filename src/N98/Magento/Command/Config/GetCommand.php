@@ -2,7 +2,6 @@
 
 namespace N98\Magento\Command\Config;
 
-use N98\Util\Console\Helper\TableHelper;
 use Path;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -138,8 +137,7 @@ HELP;
             $formattedTable[] = [$row['path'], $row['scope'], $row['scope_id'], $this->renderTableValue($row['value'], $format)];
         }
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders([Path::class, 'Scope', 'Scope-ID', 'Value'])
             ->setRows($formattedTable)

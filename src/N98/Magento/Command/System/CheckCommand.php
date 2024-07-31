@@ -12,7 +12,6 @@ use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Magento\Command\System\Check\SimpleCheck;
 use N98\Magento\Command\System\Check\StoreCheck;
 use N98\Magento\Command\System\Check\WebsiteCheck;
-use N98\Util\Console\Helper\TableHelper;
 use N98\Util\Unicode\Charset;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -157,8 +156,7 @@ HELP;
             $table[] = [$result->getResultGroup(), strip_tags($result->getMessage()), $result->getStatus()];
         }
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders(['Group', 'Message', 'Result'])
             ->renderByFormat($output, $table, $input->getOption('format'));

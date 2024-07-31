@@ -78,8 +78,7 @@ class InfoCommand extends AbstractCustomerCommand
             }
         }
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders([Attribute::class, 'Value'])
             ->setRows($table)
