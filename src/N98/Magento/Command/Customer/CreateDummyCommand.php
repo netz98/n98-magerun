@@ -4,7 +4,6 @@ namespace N98\Magento\Command\Customer;
 
 use Faker\Factory;
 use Locale;
-use N98\Util\Console\Helper\ParameterHelper;
 use N98\Util\Faker\Provider\Internet;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -79,8 +78,7 @@ HELP;
         $faker = Factory::create($input->getArgument('locale'));
         $faker->addProvider(new Internet($faker));
 
-        /** @var ParameterHelper $parameterHelper */
-        $parameterHelper = $this->getHelper('parameter');
+        $parameterHelper = $this->getParameterHelper();
 
         $website = $parameterHelper->askWebsite($input, $output);
 

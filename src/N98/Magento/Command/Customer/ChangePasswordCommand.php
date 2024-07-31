@@ -3,7 +3,6 @@
 namespace N98\Magento\Command\Customer;
 
 use Exception;
-use N98\Util\Console\Helper\ParameterHelper;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -59,8 +58,7 @@ HELP;
             $password = $dialog->ask($input, $output, $question);
         }
 
-        /** @var ParameterHelper $parameterHelper */
-        $parameterHelper = $this->getHelper('parameter');
+        $parameterHelper = $this->getParameterHelper();
 
         $email = $parameterHelper->askEmail($input, $output);
         $website = $parameterHelper->askWebsite($input, $output);

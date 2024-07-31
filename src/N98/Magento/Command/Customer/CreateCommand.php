@@ -2,7 +2,6 @@
 
 namespace N98\Magento\Command\Customer;
 
-use N98\Util\Console\Helper\ParameterHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -60,8 +59,7 @@ class CreateCommand extends AbstractCustomerCommand
             $lastname = $dialog->ask($input, $output, new Question('<question>Lastname:</question> '));
         }
 
-        /** @var ParameterHelper $parameterHelper */
-        $parameterHelper = $this->getHelper('parameter');
+        $parameterHelper = $this->getParameterHelper();
 
         // Email
         $email = $parameterHelper->askEmail($input, $output);
