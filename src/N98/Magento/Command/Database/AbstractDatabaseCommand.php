@@ -6,7 +6,6 @@ use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\Database\Compressor\AbstractCompressor;
 use N98\Magento\Command\Database\Compressor\Compressor;
 use N98\Magento\DbSettings;
-use N98\Util\Console\Helper\DatabaseHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -100,14 +99,6 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return DatabaseHelper
-     */
-    protected function getDatabaseHelper()
-    {
-        return $this->getHelper('database');
-    }
-
-    /**
      * @param array $excludes
      * @param array $definitions
      * @param array $resolved Which definitions where already resolved -> prevent endless loops
@@ -118,6 +109,6 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      */
     protected function resolveTables(array $excludes, array $definitions, array $resolved = [])
     {
-        return $this->getHelper('database')->resolveTables($excludes, $definitions, $resolved);
+        return $this->getDatabaseHelper()->resolveTables($excludes, $definitions, $resolved);
     }
 }

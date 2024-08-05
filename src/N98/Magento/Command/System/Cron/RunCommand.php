@@ -7,13 +7,11 @@ use Mage;
 use Mage_Core_Model_Config_Element;
 use Mage_Cron_Model_Schedule;
 use RuntimeException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
 
 /**
@@ -104,8 +102,7 @@ HELP;
             $choices[] = '<comment>' . $job['Job'] . '</comment>';
         }
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
         $question = new ChoiceQuestion('<question>Please select job:</question> ', $choices);
         $question->setValidator(function ($typeInput) use ($keyMap, $jobs) {
             $key = $keyMap[$typeInput];

@@ -9,7 +9,6 @@ use Mage_Core_Model_Resource_Setup;
 use N98\Magento\Command\AbstractMagentoCommand;
 use ReflectionClass;
 use RuntimeException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -464,8 +463,7 @@ HELP;
         $output->writeln(["<error>Magento encountered an error while running the following setup resource.</error>", "", "    $name ", "", "<error>The Good News:</error> You know the error happened, and the database", "information below will  help you fix this error!", "", "<error>The Bad News:</error> Because Magento/MySQL can't run setup resources", "transactionally your database is now in an half upgraded, invalid", "state. Even if you fix the error, new errors may occur due to", "this half upgraded, invalid state.", '', "What to Do: ", "1. Figure out why the error happened, and manually fix your", "   database and/or system so it won't happen again.", "2. Restore your database from backup.", "3. Re-run the scripts.", "", "Exception Message:", $e->getMessage(), ""]);
 
         if ($magentoExceptionOutput) {
-            /* @var QuestionHelper $dialog */
-            $dialog = $this->getHelper('question');
+            $dialog = $this->getQuestionHelper();
             $question = new Question('<question>Press Enter to view raw Magento error text:</question> ');
             $dialog->ask($input, $output, $question);
 
@@ -504,8 +502,7 @@ HELP;
         $output = $this->_output;
         $output->writeln('The next ' . $type . ' update to run is <info>' . $toUpdate . '</info>');
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
         $question = new Question('<question>Press Enter to Run this update:</question> ');
         $dialog->ask($input, $output, $question);
 
@@ -590,8 +587,7 @@ HELP;
         $input = $this->_input;
         $output = $this->_output;
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
         $question = new Question('<question>Press Enter to View Update Information:</question> ');
         $dialog->ask($input, $output, $question);
 

@@ -5,7 +5,6 @@ namespace N98\Magento\Command\System\Cron;
 use Mage;
 use Mage_Cron_Model_Schedule;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -68,8 +67,8 @@ class HistoryCommand extends AbstractMagentoCommand
         foreach ($collection as $job) {
             $table[] = [$job->getJobCode(), $job->getStatus(), $job->getFinishedAt() ? $date->gmtDate(null, $date->timestamp($job->getFinishedAt()) + $offset) : ''];
         }
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+
+        $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders(['Job', 'Status', 'Finished'])
             ->renderByFormat($output, $table, $input->getOption('format'));

@@ -5,7 +5,6 @@ namespace N98\Magento\Command\Database\Maintain;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\DatabaseHelper;
-use N98\Util\Console\Helper\TableHelper;
 use PDO;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -138,7 +137,7 @@ HELP;
         $this->output = $output;
         $this->isTypeAllowed();
         $this->detectMagento($output);
-        $this->dbHelper = $this->getHelper('database');
+        $this->dbHelper = $this->getDatabaseHelper();
         $this->showProgress = $input->getOption('format') == null;
 
         if ($input->getOption('table')) {
@@ -177,8 +176,7 @@ HELP;
             $progress->finish();
         }
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders(['Table', 'Operation', 'Type', 'Status'])
             ->renderByFormat($this->output, $tableOutput, $this->input->getOption('format'));

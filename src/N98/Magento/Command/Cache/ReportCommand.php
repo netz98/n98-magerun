@@ -4,7 +4,6 @@ namespace N98\Magento\Command\Cache;
 
 use Enterprise_PageCache_Model_Cache;
 use Mage;
-use N98\Util\Console\Helper\TableHelper;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -98,8 +97,7 @@ class ReportCommand extends AbstractCacheCommand
             $headers[] = 'TAGS';
         }
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders($headers)
             ->renderByFormat($output, $table, $input->getOption('format'));

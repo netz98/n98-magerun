@@ -6,7 +6,6 @@ use Exception;
 use Mage_Customer_Model_Customer;
 use Mage_Customer_Model_Entity_Customer_Collection;
 use Mage_Customer_Model_Resource_Customer_Collection;
-use N98\Util\Console\Helper\ParameterHelper;
 use RuntimeException;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -209,8 +208,7 @@ HELP;
         /** @var \Mage_Customer_Model_Customer $customer */
         $customer = $this->getCustomerModel()->load($id);
         if (!$customer->getId()) {
-            /** @var ParameterHelper $parameterHelper */
-            $parameterHelper = $this->getHelper('parameter');
+            $parameterHelper = $this->getParameterHelper();
             $website = $parameterHelper->askWebsite($this->input, $this->output);
             $customer = $this->getCustomerModel()
                 ->setWebsiteId($website->getId())
@@ -279,7 +277,7 @@ HELP;
      * @param string $message
      * @param string $default [optional]
      *
-     * @return \Symfony\Component\Console\Question\Question
+     * @return Question
      */
     private function getQuestion($message, $default = null)
     {

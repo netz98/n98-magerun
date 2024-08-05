@@ -2,9 +2,6 @@
 
 namespace N98\Magento\Command\Customer;
 
-use N98\Util\Console\Helper\ParameterHelper;
-use N98\Util\Console\Helper\TableHelper;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -43,8 +40,7 @@ class CreateCommand extends AbstractCustomerCommand
             return 0;
         }
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
 
         // Password
         if (($password = $input->getArgument('password')) == null) {
@@ -63,8 +59,7 @@ class CreateCommand extends AbstractCustomerCommand
             $lastname = $dialog->ask($input, $output, new Question('<question>Lastname:</question> '));
         }
 
-        /** @var ParameterHelper $parameterHelper */
-        $parameterHelper = $this->getHelper('parameter');
+        $parameterHelper = $this->getParameterHelper();
 
         // Email
         $email = $parameterHelper->askEmail($input, $output);
@@ -102,8 +97,7 @@ class CreateCommand extends AbstractCustomerCommand
         }
 
         if (!$outputPlain) {
-            /* @var TableHelper $tableHelper */
-            $tableHelper = $this->getHelper('table');
+            $tableHelper = $this->getTableHelper();
             $tableHelper
                 ->setHeaders(['email', 'password', 'firstname', 'lastname'])
                 ->renderByFormat($output, $table, $input->getOption('format'));

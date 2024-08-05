@@ -3,7 +3,6 @@
 namespace N98\Magento\Command\Cms\Block;
 
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -63,8 +62,7 @@ class ListCommand extends AbstractMagentoCommand
             $table[] = [$cmsBlock->getData('block_id'), $cmsBlock->getData('identifier'), $cmsBlock->getData('title'), $cmsBlock->getData('is_active') ? 'active' : 'inactive', $storeIds];
         }
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders(['block_id', 'identifier', 'title', 'is_active', 'store_ids'])
             ->renderByFormat($output, $table, $input->getOption('format'));

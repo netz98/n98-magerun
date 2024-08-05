@@ -3,11 +3,9 @@
 namespace N98\Magento\Command\Installer\SubCommand;
 
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
-use N98\Util\Console\Helper\DatabaseHelper;
 use N98\Util\Database;
 use N98\Util\Exec;
 use N98\Util\Filesystem;
-use N98\Util\OperatingSystem;
 use N98\Util\StringTyped;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Process\Process;
@@ -29,7 +27,7 @@ class InstallSampleData extends AbstractSubCommand
             return;
         }
 
-        $questionHelper = $this->command->getHelper('question');
+        $questionHelper = $this->command->getQuestionHelper();
 
         $installSampleData = ($this->input->getOption('installSampleData') !== null)
             ? StringTyped::parseBoolOption($this->input->getOption('installSampleData'))
@@ -119,8 +117,7 @@ class InstallSampleData extends AbstractSubCommand
             $this->config['installationFolder'] . '/magento_*sample_data*sql'
         );
 
-        /** @var DatabaseHelper $dbHelper */
-        $dbHelper = $this->command->getHelper('database');
+        $dbHelper = $this->command->getDatabaseHelper();
 
         if (isset($sampleDataSqlFile[0])) {
             $this->output->writeln('<info>Import sample data db data</info>');

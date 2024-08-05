@@ -258,8 +258,7 @@ class UpdateCommand extends AbstractMagentoCommand
         if ($this->shouldSetVersion($input)) {
             $modulesNode = $configXml->modules->{$this->getModuleNamespace()};
 
-            /** @var QuestionHelper $dialog */
-            $dialog = $this->getHelper('question');
+            $dialog = $this->getQuestionHelper();
             $question = new Question('<question>Enter version number:</question> ');
             $version = trim($dialog->ask($input, $output, $question));
             $modulesNode->version = $version;
@@ -303,8 +302,7 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function addResourceModelNodeIfConfirmed(InputInterface $input, OutputInterface $output, \SimpleXMLElement $configXml)
     {
-        /** @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
 
         $question = new ConfirmationQuestion(
             '<question>Would you like to also add a Resource Model(y/n)?</question>',
@@ -501,8 +499,7 @@ class UpdateCommand extends AbstractMagentoCommand
     {
         $this->initResourceModelConfigNodes();
 
-        /** @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
 
         $question = new ConfirmationQuestion(
             '<question>Would you like to set mysql4 deprecated node(y/n)?</question>',
@@ -538,8 +535,7 @@ class UpdateCommand extends AbstractMagentoCommand
     {
         $this->initRoutersConfigNodes();
 
-        /** @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
 
         $question = new ChoiceQuestion(
             '<question>Area (frontend|admin):</question> ',
@@ -573,8 +569,7 @@ class UpdateCommand extends AbstractMagentoCommand
     {
         $this->initEventsConfigNodes();
 
-        /** @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
 
         $question = new ChoiceQuestion(
             '<question>Area (global|frontend|adminhtml):</question> ',
@@ -616,8 +611,7 @@ class UpdateCommand extends AbstractMagentoCommand
     {
         $this->initLayoutUpdatesConfigNodes();
 
-        /** @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
 
         $question = new ChoiceQuestion(
             '<question>Area (frontend|admin):</question> ',
@@ -651,8 +645,7 @@ class UpdateCommand extends AbstractMagentoCommand
     {
         $this->initTranslateConfigNodes();
 
-        /** @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
 
         $question = new ChoiceQuestion(
             '<question>Area (frontend|admin):</question> ',
@@ -681,8 +674,7 @@ class UpdateCommand extends AbstractMagentoCommand
     {
         $this->initDefaultConfigNodes();
 
-        /** @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
 
         $question = new Question('<question>Section Name (lowercase):</question> ');
         $sectionName = strtolower(trim($dialog->ask($input, $output, $question)));

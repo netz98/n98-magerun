@@ -4,7 +4,6 @@ namespace N98\Magento\Command\System\Store\Config;
 
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -45,8 +44,8 @@ class BaseUrlListCommand extends AbstractMagentoCommand
         }
 
         ksort($table);
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+
+        $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders(['id', 'code', 'unsecure_baseurl', 'secure_baseurl'])
             ->renderByFormat($output, $table, $input->getOption('format'));

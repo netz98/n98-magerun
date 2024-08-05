@@ -14,10 +14,12 @@ use Mage;
 use N98\Magento\Application;
 use N98\Magento\Command\SubCommand\ConfigBag;
 use N98\Magento\Command\SubCommand\SubCommandFactory;
+use N98\Util\Console\Helper\DatabaseHelper;
 use N98\Util\Console\Helper\IoHelper;
 use N98\Util\Console\Helper\MagentoHelper;
 use N98\Util\Console\Helper\ParameterHelper;
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
+use N98\Util\Console\Helper\TableHelper;
 use N98\Util\OperatingSystem;
 use N98\Util\StringTyped;
 use RuntimeException;
@@ -554,8 +556,7 @@ abstract class AbstractMagentoCommand extends Command
         if (($installationFolder = $input->getOption('installationFolder')) == null) {
             $defaultFolder = './magento';
 
-            /* @var QuestionHelper $dialog */
-            $dialog = $this->getHelper('question');
+            $dialog = $this->getQuestionHelper();
             $questionObj = new Question(
                 '<question>Enter installation folder:</question> [<comment>' . $defaultFolder . '</comment>]',
                 $defaultFolder
@@ -595,8 +596,7 @@ abstract class AbstractMagentoCommand extends Command
         if ($inputArgument === null) {
             $message = $this->getArgumentMessage($argument, $message);
 
-            /* @var QuestionHelper $dialog */
-            $dialog = $this->getHelper('question');
+            $dialog = $this->getQuestionHelper();
             return $dialog->ask($input, $output, new Question($message));
         }
 
@@ -620,8 +620,7 @@ abstract class AbstractMagentoCommand extends Command
             return $typeInput;
         };
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
         $question = new ChoiceQuestion(
             "<question>{$question}</question>",
             $entries
@@ -683,7 +682,7 @@ abstract class AbstractMagentoCommand extends Command
      *
      * @return $this
      */
-    public function addFormatOption(): AbstractMagentoCommand
+    public function addFormatOption(): self
     {
         $this->addOption(
             'format',
@@ -694,18 +693,43 @@ abstract class AbstractMagentoCommand extends Command
         return $this;
     }
 
+    /**
+     * @return DatabaseHelper
+     */
+    public function getDatabaseHelper(): DatabaseHelper
+    {
+        return $this->getHelper('database');
+    }
+
+    /**
+     * @return IoHelper
+     */
     public function getIoHelper(): IoHelper
     {
         return $this->getHelper('io');
     }
 
+    /**
+     * @return ParameterHelper
+     */
     public function getParameterHelper(): ParameterHelper
     {
         return $this->getHelper('parameter');
     }
 
+    /**
+     * @return QuestionHelper
+     */
     public function getQuestionHelper(): QuestionHelper
     {
         return $this->getHelper('question');
+    }
+
+    /**
+     * @return TableHelper
+     */
+    public function getTableHelper(): TableHelper
+    {
+        return $this->getHelper('table');
     }
 }

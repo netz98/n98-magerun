@@ -43,8 +43,7 @@ class DeleteUserCommand extends AbstractAdminUserCommand
             return 0;
         }
 
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
 
         // Username
         $id = $this->getOrAskForArgument('id', $input, $output, 'Username or Email');
