@@ -990,10 +990,10 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function asPrettyXml($string)
     {
-        $string = preg_replace("/>\\s*</", ">\n<", $string);
+        $string = preg_replace('/>\\s*</', ">\n<", $string);
         $xmlArray = explode("\n", $string);
         $currIndent = 0;
-        $indent = "    ";
+        $indent = '    ';
         $string = array_shift($xmlArray) . "\n";
         foreach ($xmlArray as $element) {
             if (preg_match('/^<([\w])+[^>\/]*>$/U', $element)) {

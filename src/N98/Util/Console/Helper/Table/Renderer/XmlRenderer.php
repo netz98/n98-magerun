@@ -128,7 +128,7 @@ class XmlRenderer implements RendererInterface
      */
     private function getName($string)
     {
-        $name = preg_replace("/[^a-z0-9]/ui", '_', $string);
+        $name = preg_replace('/[^a-z0-9]/ui', '_', $string);
         if (null === $name) {
             throw new RuntimeException(
                 sprintf(

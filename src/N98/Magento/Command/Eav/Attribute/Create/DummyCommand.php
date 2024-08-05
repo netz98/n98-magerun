@@ -61,7 +61,7 @@ HELP;
         }
 
         $output->writeln(
-            "<warning>This only create sample attribute values, do not use on production environment</warning>"
+            '<warning>This only create sample attribute values, do not use on production environment</warning>'
         );
 
         // Ask for Arguments
@@ -73,7 +73,7 @@ HELP;
                     $input->getArgument('locale')
                 )
             );
-            $argument['locale'] = "en_US";
+            $argument['locale'] = 'en_US';
         } else {
             $argument['locale'] = $input->getArgument('locale');
         }
@@ -88,7 +88,7 @@ HELP;
                     $attribute->setData('option', ['value' => ['option' => [$value, $value]]]);
                     $attribute->save();
                 } catch (Exception $e) {
-                    $output->writeln("<error>" . $e->getMessage() . "</error>");
+                    $output->writeln('<error>' . $e->getMessage() . '</error>');
                 }
                 $output->writeln("<comment>ATTRIBUTE VALUE: '" . $value . "' ADDED!</comment>\r");
             }
@@ -120,15 +120,15 @@ HELP;
             $attribute_codes = [];
 
             foreach ($attribute_code as $item) {
-                $attribute_codes[$item['attribute_id']] = $item['attribute_id'] . "|" . $item['attribute_code'];
+                $attribute_codes[$item['attribute_id']] = $item['attribute_id'] . '|' . $item['attribute_code'];
             }
 
             $question = new ChoiceQuestion('Please select Attribute ID', $attribute_codes);
             $question->setErrorMessage('Attribute ID "%s" is invalid.');
-            $response = explode("|", $dialog->ask($input, $output, $question));
+            $response = explode('|', $dialog->ask($input, $output, $question));
             $input->setArgument('attribute-id', $response[0]);
         }
-        $output->writeln('<info>Attribute code selected: ' . $input->getArgument('attribute-id') . "</info>");
+        $output->writeln('<info>Attribute code selected: ' . $input->getArgument('attribute-id') . '</info>');
         $argument['attribute-id'] = (int) $input->getArgument('attribute-id');
 
         // Type of Values
@@ -138,12 +138,12 @@ HELP;
             $question->setErrorMessage('Attribute Value Type "%s" is invalid.');
             $input->setArgument('values-type', $dialog->ask($input, $output, $question));
         }
-        $output->writeln('<info>Attribute Value Type selected: ' . $input->getArgument('values-type') . "</info>");
+        $output->writeln('<info>Attribute Value Type selected: ' . $input->getArgument('values-type') . '</info>');
         $argument['values-type'] = $input->getArgument('values-type');
 
         // Number of Values
         if (is_null($input->getArgument('values-number'))) {
-            $question = new Question("Please enter the number of values to create (default 1): ", 1);
+            $question = new Question('Please enter the number of values to create (default 1): ', 1);
             $question->setValidator(function ($answer) {
                 $answer = (int) ($answer);
                 if (!is_int($answer) || $answer <= 0) {
@@ -154,7 +154,7 @@ HELP;
             });
             $input->setArgument('values-number', $dialog->ask($input, $output, $question));
         }
-        $output->writeln('<info>Number of values to create: ' . $input->getArgument('values-number') . "</info>");
+        $output->writeln('<info>Number of values to create: ' . $input->getArgument('values-number') . '</info>');
         $argument['values-number'] = $input->getArgument('values-number');
 
         return $argument;

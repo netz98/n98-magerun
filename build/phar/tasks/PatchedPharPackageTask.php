@@ -73,7 +73,7 @@ class PatchedPharPackageTask
     /**
      * @var array
      */
-    private $filesets = array();
+    private $filesets = [];
 
     /**
      * @var PharMetadata
@@ -167,13 +167,13 @@ class PatchedPharPackageTask
 
         switch ($compression) {
             case Phar::GZ:
-                return "gzip";
+                return 'gzip';
 
             case Phar::BZ2:
-                return "bzip2";
+                return 'bzip2';
 
             default:
-                return sprintf("int(%d)", $compression);
+                return sprintf('int(%d)', $compression);
         }
     }
 
@@ -302,15 +302,15 @@ class PatchedPharPackageTask
         }
 
         if (is_null($this->destinationFile)) {
-            throw new BuildException("destfile attribute must be set!", $this->getLocation());
+            throw new BuildException('destfile attribute must be set!', $this->getLocation());
         }
 
         if ($this->destinationFile->exists() && $this->destinationFile->isDirectory()) {
-            throw new BuildException("destfile is a directory!", $this->getLocation());
+            throw new BuildException('destfile is a directory!', $this->getLocation());
         }
 
         if (!$this->destinationFile->canWrite()) {
-            throw new BuildException("Can not write to the specified destfile!", $this->getLocation());
+            throw new BuildException('Can not write to the specified destfile!', $this->getLocation());
         }
         if (!is_null($this->baseDirectory)) {
             if (!$this->baseDirectory->exists()) {
@@ -323,12 +323,12 @@ class PatchedPharPackageTask
 
             if (!extension_loaded('openssl')) {
                 throw new BuildException(
-                    "PHP OpenSSL extension is required for OpenSSL signing of Phars!", $this->getLocation()
+                    'PHP OpenSSL extension is required for OpenSSL signing of Phars!', $this->getLocation()
                 );
             }
 
             if (is_null($this->key)) {
-                throw new BuildException("key attribute must be set for OpenSSL signing!", $this->getLocation());
+                throw new BuildException('key attribute must be set for OpenSSL signing!', $this->getLocation());
             }
 
             if (!$this->key->exists()) {
@@ -436,7 +436,7 @@ class PatchedPharPackageTask
             if (Phar::NONE != $this->compression) {
                 foreach ($sortedFiles as $file) {
                     $localName = substr($file, strlen($baseDirectory) + 1);
-                    $this->log($localName . "... ", Project::MSG_VERBOSE);
+                    $this->log($localName . '... ', Project::MSG_VERBOSE);
                     $phar->addFile($file, $localName);
                     $phar[$localName]->compress($this->compression);
                 }
@@ -461,7 +461,7 @@ class PatchedPharPackageTask
         foreach ($this->filesets as $fileset) {
             /* @var $fileset IterableFileSet */
             $dir = $fileset->getDir($this->project);
-            $msg = sprintf("Fileset %s ...", $dir);
+            $msg = sprintf('Fileset %s ...', $dir);
             $this->log($msg, Project::MSG_VERBOSE);
             $added = $phar->buildFromIterator($this->getSortedFilesFromFileSet($fileset), $baseDirectory);
             $total += count($added);
@@ -473,14 +473,14 @@ class PatchedPharPackageTask
             return;
         }
 
-        $msg = sprintf("Compressing %d files (compression: %s) ... ", $total, $this->getCompressionLabel());
+        $msg = sprintf('Compressing %d files (compression: %s) ... ', $total, $this->getCompressionLabel());
         $this->log($msg, Project::MSG_VERBOSE);
 
         // safeguard open files soft limit
         if (function_exists('posix_getrlimit')) {
             $rlimit = posix_getrlimit();
             if ($rlimit['soft openfiles'] < ($total + 5)) {
-                $msg = sprintf("Limit of openfiles (%d) is too low.", $rlimit['soft openfiles']);
+                $msg = sprintf('Limit of openfiles (%d) is too low.', $rlimit['soft openfiles']);
                 $this->log($msg, Project::MSG_VERBOSE);
             }
         }
@@ -490,7 +490,7 @@ class PatchedPharPackageTask
             $phar->compressFiles($this->compression);
         } catch (BadMethodCallException $e) {
             if ($e->getMessage() === 'unable to create temporary file') {
-                $msg = sprintf("Info: Check openfiles limit it must be %d or higher", $total + 5);
+                $msg = sprintf('Info: Check openfiles limit it must be %d or higher', $total + 5);
                 throw new BadMethodCallException($msg, 0, $e);
             }
             throw $e;
@@ -507,7 +507,7 @@ class PatchedPharPackageTask
     {
         $files = iterator_to_array($fileset, true);
         $keys = array_keys($files);
-        usort($files, array($this, 'sortFilesCallback'));
+        usort($files, [$this, 'sortFilesCallback']);
         $array = array_combine($keys, $files);
 
         return new ArrayIterator($array);

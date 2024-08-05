@@ -53,7 +53,7 @@ class ExportCommand extends AbstractMagentoCommand
         $output->writeln('Exporting to <info>' . $filename . '</info>');
 
         $parameters = ['locale' => $locale];
-        $sql = "SELECT * FROM core_translate WHERE locale = :locale";
+        $sql = 'SELECT * FROM core_translate WHERE locale = :locale';
         if ($input->getOption('store')) {
             $sql .= ' AND store_id = :store_id';
             $parameters['store_id'] = Mage::app()->getStore($input->getOption('store'));

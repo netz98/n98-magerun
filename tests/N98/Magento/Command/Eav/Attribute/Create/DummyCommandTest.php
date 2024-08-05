@@ -19,7 +19,7 @@ class DummyCommandTest extends TestCase
         $commandTester = new CommandTester($command);
 
         $commandTester->execute(
-            ['command'       => $command->getName(), 'locale'        => "en_US", 'attribute-id'  => 92, 'values-type'   => 'int', 'values-number' => 1]
+            ['command'       => $command->getName(), 'locale'        => 'en_US', 'attribute-id'  => 92, 'values-type'   => 'int', 'values-number' => 1]
         );
 
         self::assertMatchesRegularExpression('/ATTRIBUTE VALUE: \'(.+)\' ADDED!/', $commandTester->getDisplay());

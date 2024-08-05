@@ -444,7 +444,7 @@ class Application extends BaseApplication
             'can cause serious problems.', 'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
             'for more information.', '']);
         } else {
-            $output->writeln([sprintf('<warning>Folder %s found, but not used in n98-magerun</warning>', $tempVarDir), '', "This might cause serious problems. n98-magerun is using the configured var-folder " .
+            $output->writeln([sprintf('<warning>Folder %s found, but not used in n98-magerun</warning>', $tempVarDir), '', 'This might cause serious problems. n98-magerun is using the configured var-folder ' .
             "<comment>$currentVarDir</comment>", 'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
             'for more information.', '']);
 

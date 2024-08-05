@@ -140,7 +140,7 @@ HELP;
             throw new RuntimeException(sprintf('Failed to create new "%s" model for job "%s"', $runModel, $jobCode));
         }
         $callback = [$model, $runMethod];
-        $callableName = sprintf("%s::%s", $runModel, $runMethod);
+        $callableName = sprintf('%s::%s', $runModel, $runMethod);
         if (!$model || !is_callable($callback, false, $callableName)) {
             throw new RuntimeException(sprintf('Invalid callback: %s for job "%s"', $callableName, $jobCode));
         }

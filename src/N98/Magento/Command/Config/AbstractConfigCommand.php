@@ -13,7 +13,7 @@ use N98\Magento\Command\AbstractMagentoCommand;
  */
 abstract class AbstractConfigCommand extends AbstractMagentoCommand
 {
-    public const DISPLAY_NULL_UNKNOWN_VALUE = "NULL (NULL/\"unknown\" value)";
+    public const DISPLAY_NULL_UNKNOWN_VALUE = 'NULL (NULL/"unknown" value)';
 
     /**
      * @var array strings of configuration scopes
@@ -87,7 +87,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     protected function _convertScopeIdParam($scope, $scopeId, $allowZeroScope = false)
     {
         if ($scope === 'default') {
-            if ("$scopeId" !== "0") {
+            if ("$scopeId" !== '0') {
                 throw new InvalidArgumentException(
                     sprintf("Invalid scope ID %d in scope '%s', must be 0", $scopeId, $scope)
                 );
@@ -120,13 +120,13 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
 
         $this->invalidScopeId(
             (string) $scopeId !== (string) (int) $scopeId,
-            "Invalid scope parameter, %s is not an integer value",
+            'Invalid scope parameter, %s is not an integer value',
             $scopeId
         );
 
         $this->invalidScopeId(
             0 - (bool) $allowZeroScope >= (int) $scopeId,
-            "Invalid scope parameter, %s is not a positive integer value",
+            'Invalid scope parameter, %s is not a positive integer value',
             $scopeId
         );
 

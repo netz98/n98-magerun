@@ -43,10 +43,10 @@ class SetCommand extends AbstractConfigCommand
                 'Allow creation of non-standard scope-id\'s for websites and stores'
             )
             ->addOption(
-                "no-null",
+                'no-null',
                 null,
                 InputOption::VALUE_NONE,
-                "Do not treat value NULL as " . self::DISPLAY_NULL_UNKNOWN_VALUE . " value"
+                'Do not treat value NULL as ' . self::DISPLAY_NULL_UNKNOWN_VALUE . ' value'
             )
         ;
     }
@@ -89,9 +89,9 @@ HELP;
 
         $valueDisplay = $value = $input->getArgument('value');
 
-        if ($value === "NULL" && !$input->getOption('no-null')) {
+        if ($value === 'NULL' && !$input->getOption('no-null')) {
             if ($input->getOption('encrypt')) {
-                throw new InvalidArgumentException("Encryption is not possbile for NULL values");
+                throw new InvalidArgumentException('Encryption is not possbile for NULL values');
             }
             $value = null;
             $valueDisplay = self::DISPLAY_NULL_UNKNOWN_VALUE;
@@ -108,7 +108,7 @@ HELP;
         );
 
         $output->writeln(
-            '<comment>' . $input->getArgument('path') . "</comment> => <comment>" . $valueDisplay .
+            '<comment>' . $input->getArgument('path') . '</comment> => <comment>' . $valueDisplay .
             '</comment>'
         );
         return 0;

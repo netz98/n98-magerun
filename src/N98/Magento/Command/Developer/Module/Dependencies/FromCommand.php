@@ -19,8 +19,8 @@ class FromCommand extends AbstractCommand
      */
     public const COMMAND_NAME = 'dev:module:dependencies:from';
     public const COMMAND_DESCRIPTION = 'Show list of modules which depend on %s module';
-    public const COMMAND_SECTION_TITLE_TEXT = "List of modules which depend on %s module";
-    public const COMMAND_NO_RESULTS_TEXT = "No modules depend on %s module";
+    public const COMMAND_SECTION_TITLE_TEXT = 'List of modules which depend on %s module';
+    public const COMMAND_NO_RESULTS_TEXT = 'No modules depend on %s module';
     /**#@-*/
 
     /**
@@ -33,7 +33,7 @@ class FromCommand extends AbstractCommand
         }
 
         if (!isset($this->modules[$moduleName])) {
-            throw new InvalidArgumentException(sprintf("Module %s was not found", $moduleName));
+            throw new InvalidArgumentException(sprintf('Module %s was not found', $moduleName));
         }
 
         $dependencies = [];

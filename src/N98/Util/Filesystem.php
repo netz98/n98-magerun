@@ -36,7 +36,7 @@ class Filesystem
             throw new RuntimeException(sprintf('Source directory <%s> error', $src));
         }
 
-        $skip = array_merge([".", ".."], $blacklist);
+        $skip = array_merge(['.', '..'], $blacklist);
         $stack = [];
 
         while (false !== ($file = readdir($handle))) {
@@ -85,7 +85,7 @@ class Filesystem
             throw new RuntimeException(sprintf('Directory <%s> error', $directory));
         }
 
-        $skip = [".", ".."];
+        $skip = ['.', '..'];
 
         // and scan through the items inside
         while (false !== ($file = readdir($handle))) {
