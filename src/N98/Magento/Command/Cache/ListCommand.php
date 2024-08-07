@@ -1,48 +1,58 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cache;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use N98\Magento\Command\CommandFormatable;
 
 /**
  * List cache command
  *
  * @package N98\Magento\Command\Cache
  */
-class ListCommand extends AbstractCacheCommand
+class ListCommand extends AbstractCacheCommand implements CommandFormatable
 {
-    protected function configure()
+    /**
+     * @var string
+     */
+    public static $defaultName = 'cache:list';
+
+    /**
+     * @var string
+     */
+    public static $defaultDescription = 'Lists all magento caches.';
+
+    /**
+     * @return string
+     */
+    public function getSectionTitle(): string
     {
-        $this
-            ->setName('cache:list')
-            ->setDescription('Lists all magento caches')
-            ->addFormatOption()
-        ;
+        return 'Caches';
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * @return string[]
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getListHeader(): array
     {
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        return ['code', 'status'];
+    }
 
-        $cacheTypes = $this->_getCacheModel()->getTypes();
+    /**
+     * @return array
+     */
+    public function getListData(): array
+    {
         $table = [];
+        $cacheTypes = $this->_getCacheModel()->getTypes();
         foreach ($cacheTypes as $cacheCode => $cacheInfo) {
-            $table[] = [$cacheCode, $cacheInfo['status'] ? 'enabled' : 'disabled'];
+            $table[] = [
+                $cacheCode,
+                $cacheInfo['status'] ? 'enabled' : 'disabled'
+            ];
         }
 
-        $tableHelper = $this->getTableHelper();
-        $tableHelper
-            ->setHeaders(['code', 'status'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $table;
     }
 }
