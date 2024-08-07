@@ -38,6 +38,8 @@ use Symfony\Component\Console\Question\Question;
  */
 abstract class AbstractMagentoCommand extends Command
 {
+    public const COMMAND_OPTION_FORMAT = 'format';
+
     /**
      * @var int
      */
@@ -79,6 +81,18 @@ abstract class AbstractMagentoCommand extends Command
     protected $config;
 
     /**
+     * @var bool
+     */
+    protected static bool $detectMagentoSilent = true;
+
+    protected function configure()
+    {
+        if ($this instanceof CommandWithFormatOption || $this instanceof CommandListable) {
+            $this->addFormatOption();
+        }
+    }
+
+    /**
      * Initializes the command just after the input has been validated.
      *
      * This is mainly useful when a lot of commands extends one main command
@@ -90,6 +104,27 @@ abstract class AbstractMagentoCommand extends Command
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->checkDeprecatedAliases($input, $output);
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        if ($this instanceof CommandListable) {
+            $this->detectMagento($output, static::$detectMagentoSilent);
+
+            if ($input->getOption(static::COMMAND_OPTION_FORMAT) === null) {
+                $this->writeSection($output, $this->getSectionTitle());
+            }
+
+            if (!$this->initMagento()) {
+                return Command::FAILURE;
+            }
+
+            $this->getTableHelper()
+                ->setHeaders($this->getListHeader())
+                ->renderByFormat($output, $this->getListData(), $input->getOption(self::COMMAND_OPTION_FORMAT));
+
+            return Command::SUCCESS;
+        }
     }
 
     private function _initWebsites()

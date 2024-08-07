@@ -13,7 +13,7 @@
         "magerun"
     ],
     "require": {
-        "php": "~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0",
+        "php": "~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
         "ext-json": "*",
         "ext-libxml": "*",
         "ext-pdo": "*",
@@ -25,7 +25,6 @@
         "symfony/console": "~5.4",
         "symfony/event-dispatcher": "~5.4",
         "symfony/finder": "~5.4",
-        "symfony/polyfill-php80": "^1.30",
         "symfony/process": "~5.4",
         "symfony/validator": "~5.4",
         "symfony/yaml": "~5.4",
@@ -71,7 +70,7 @@
     ],
     "config": {
         "platform": {
-            "php": "7.4.0"
+            "php": "8.0"
         },
         "sort-packages": true
     }

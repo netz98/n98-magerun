@@ -1,59 +1,47 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Website;
 
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use N98\Magento\Command\CommandListable;
+use Symfony\Component\Console\Attribute\AsCommand;
 
 /**
  * List websites command
  *
  * @package N98\Magento\Command\System\Website
  */
-class ListCommand extends AbstractMagentoCommand
+#[AsCommand(
+    name: 'sys:website:list',
+    description: 'Lists all websites.'
+)]
+class ListCommand extends AbstractMagentoCommand implements CommandListable
 {
-    /**
-     * @var array
-     */
-    protected $infos;
-
-    protected function configure()
+    public function getSectionTitle(): string
     {
-        $this
-            ->setName('sys:website:list')
-            ->setDescription('Lists all websites')
-            ->addFormatOption()
-        ;
+        return 'Websites';
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getListHeader(): array
+    {
+        return ['id', 'code'];
+    }
+
+    public function getListData(): array
     {
         $table = [];
-        $this->detectMagento($output, true);
-
-        if ($input->getOption('format') === null) {
-            $this->writeSection($output, 'Magento Websites');
-        }
-        $this->initMagento();
-
         foreach (Mage::app()->getWebsites() as $store) {
-            $table[$store->getId()] = [$store->getId(), $store->getCode()];
+            $table[$store->getId()] = [
+                $store->getId(),
+                $store->getCode()
+            ];
         }
 
         ksort($table);
 
-        $tableHelper = $this->getTableHelper();
-        $tableHelper
-            ->setHeaders(['id', 'code'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $table;
     }
 }
