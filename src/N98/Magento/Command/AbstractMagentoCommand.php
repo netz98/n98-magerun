@@ -87,7 +87,7 @@ abstract class AbstractMagentoCommand extends Command
 
     protected function configure()
     {
-        if ($this instanceof CommandWithFormatOption || $this instanceof CommandListable) {
+        if ($this instanceof CommandWithFormatOption || $this instanceof CommandFormatable) {
             $this->addFormatOption();
         }
     }
@@ -108,7 +108,7 @@ abstract class AbstractMagentoCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($this instanceof CommandListable) {
+        if ($this instanceof CommandFormatable) {
             $this->detectMagento($output, static::$detectMagentoSilent);
 
             if ($input->getOption(static::COMMAND_OPTION_FORMAT) === null) {

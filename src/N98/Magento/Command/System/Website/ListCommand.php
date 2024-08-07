@@ -6,14 +6,14 @@ namespace N98\Magento\Command\System\Website;
 
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Magento\Command\CommandListable;
+use N98\Magento\Command\CommandFormatable;
 
 /**
  * List websites command
  *
  * @package N98\Magento\Command\System\Website
  */
-class ListCommand extends AbstractMagentoCommand implements CommandListable
+class ListCommand extends AbstractMagentoCommand implements CommandFormatable
 {
     /**
      * @var string

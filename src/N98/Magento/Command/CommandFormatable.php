@@ -9,7 +9,7 @@ namespace N98\Magento\Command;
  *
  * @package N98\Magento\Command
  */
-interface CommandListable
+interface CommandFormatable
 {
     /**
      * @return string[]
