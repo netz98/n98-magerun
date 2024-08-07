@@ -22,7 +22,7 @@ class ListCommand extends AbstractMagentoCommand implements CommandListable
 {
     public function getSectionTitle(): string
     {
-        return 'Websites';
+        return 'Magento Websites';
     }
 
     public function getListHeader(): array
