@@ -1,51 +1,63 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Admin\User;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Mage_Admin_Model_User;
+use N98\Magento\Command\CommandFormatable;
 
 /**
  * List admin user password command
  *
  * @package N98\Magento\Command\Admin\User
  */
-class ListCommand extends AbstractAdminUserCommand
+class ListCommand extends AbstractAdminUserCommand implements CommandFormatable
 {
-    protected function configure()
+    /**
+     * @var string
+     */
+    public static $defaultName = 'admin:user:list';
+
+    /**
+     * @var string
+     */
+    public static $defaultDescription = 'List admin users.';
+
+    /**
+     * @return string
+     */
+    public function getSectionTitle(): string
     {
-        $this
-            ->setName('admin:user:list')
-            ->setDescription('List admin users.')
-            ->addFormatOption()
-        ;
+        return 'Admin users';
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
+     * @return string[]
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getListHeader(): array
     {
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        return ['id', 'username', 'email', 'status'];
+    }
 
-        /** @var \Mage_Admin_Model_User $userModel */
+    /**
+     * @return array
+     */
+    public function getListData(): array
+    {
+        /** @var Mage_Admin_Model_User $userModel */
         $userModel = $this->getUserModel();
         $userList = $userModel->getCollection();
         $table = [];
         foreach ($userList as $user) {
-            $table[] = [$user->getId(), $user->getUsername(), $user->getEmail(), $user->getIsActive() ? 'active' : 'inactive'];
+            $table[] = [
+                $user->getId(),
+                $user->getUsername(),
+                $user->getEmail(),
+                $user->getIsActive() ? 'active' : 'inactive'
+            ];
         }
 
-        $tableHelper = $this->getTableHelper();
-        $tableHelper
-            ->setHeaders(['id', 'username', 'email', 'status'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $table;
     }
 }
