@@ -7,29 +7,43 @@ namespace N98\Magento\Command\System\Website;
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\CommandListable;
-use Symfony\Component\Console\Attribute\AsCommand;
 
 /**
  * List websites command
  *
  * @package N98\Magento\Command\System\Website
  */
-#[AsCommand(
-    name: 'sys:website:list',
-    description: 'Lists all websites.'
-)]
 class ListCommand extends AbstractMagentoCommand implements CommandListable
 {
+    /**
+     * @var string
+     */
+    public static $defaultName = 'sys:website:list';
+
+    /**
+     * @var string
+     */
+    public static $defaultDescription = 'Lists all websites.';
+
+    /**
+     * @return string
+     */
     public function getSectionTitle(): string
     {
         return 'Magento Websites';
     }
 
+    /**
+     * @return string[]
+     */
     public function getListHeader(): array
     {
         return ['id', 'code'];
     }
 
+    /**
+     * @return array
+     */
     public function getListData(): array
     {
         $table = [];

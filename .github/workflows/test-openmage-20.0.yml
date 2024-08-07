@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         openmage_version: ["20.0.20"]
-        php_version: ["8.3", "8.0"]
+        php_version: ["8.1", "7.4"]
         mysql_version: ["8.0", "5.7"]
 
     services:

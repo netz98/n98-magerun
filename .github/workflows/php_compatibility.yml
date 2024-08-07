@@ -5,7 +5,7 @@ on:
   - pull_request
 
 env:
-  MIN_PHP_VERSION: 8.0
+  MIN_PHP_VERSION: 7.4
 
 jobs:
   php-compatibility:
