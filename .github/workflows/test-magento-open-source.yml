@@ -1,4 +1,4 @@
-name: Test Magento Open Source 1.9 with PHP 7.4
+name: Test Magento Open Source 1.9 with PHP 8.0
 
 on: [push, pull_request]
 
