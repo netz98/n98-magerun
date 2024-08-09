@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Cache;
 
 use N98\Magento\Command\CommandFormatable;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * List cache command
@@ -24,25 +26,25 @@ class ListCommand extends AbstractCacheCommand implements CommandFormatable
     public static $defaultDescription = 'Lists all magento caches.';
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
-    public function getSectionTitle(): string
+    public function getSectionTitle(InputInterface $input, OutputInterface $output): string
     {
         return 'Caches';
     }
 
     /**
-     * @return string[]
+     * {@inheritDoc}
      */
-    public function getListHeader(): array
+    public function getListHeader(InputInterface $input, OutputInterface $output): array
     {
         return ['code', 'status'];
     }
 
     /**
-     * @return array
+     * {@inheritDoc}
      */
-    public function getListData(): array
+    public function getListData(InputInterface $input, OutputInterface $output): array
     {
         $table = [];
         $cacheTypes = $this->_getCacheModel()->getTypes();

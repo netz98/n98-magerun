@@ -6,6 +6,8 @@ namespace N98\Magento\Command\Admin\User;
 
 use Mage_Admin_Model_User;
 use N98\Magento\Command\CommandFormatable;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * List admin user password command
@@ -25,25 +27,25 @@ class ListCommand extends AbstractAdminUserCommand implements CommandFormatable
     public static $defaultDescription = 'List admin users.';
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
-    public function getSectionTitle(): string
+    public function getSectionTitle(InputInterface $input, OutputInterface $output): string
     {
         return 'Admin users';
     }
 
     /**
-     * @return string[]
+     * {@inheritDoc}
      */
-    public function getListHeader(): array
+    public function getListHeader(InputInterface $input, OutputInterface $output): array
     {
         return ['id', 'username', 'email', 'status'];
     }
 
     /**
-     * @return array
+     * {@inheritDoc}
      */
-    public function getListData(): array
+    public function getListData(InputInterface $input, OutputInterface $output): array
     {
         /** @var Mage_Admin_Model_User $userModel */
         $userModel = $this->getUserModel();

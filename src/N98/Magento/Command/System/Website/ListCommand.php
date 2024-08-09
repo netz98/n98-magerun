@@ -7,6 +7,8 @@ namespace N98\Magento\Command\System\Website;
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\CommandFormatable;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * List websites command
@@ -26,25 +28,25 @@ class ListCommand extends AbstractMagentoCommand implements CommandFormatable
     public static $defaultDescription = 'Lists all websites.';
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
-    public function getSectionTitle(): string
+    public function getSectionTitle(InputInterface $input, OutputInterface $output): string
     {
         return 'Magento Websites';
     }
 
     /**
-     * @return string[]
+     * {@inheritDoc}
      */
-    public function getListHeader(): array
+    public function getListHeader(InputInterface $input, OutputInterface $output): array
     {
         return ['id', 'code'];
     }
 
     /**
-     * @return array
+     * {@inheritDoc}
      */
-    public function getListData(): array
+    public function getListData(InputInterface $input, OutputInterface $output): array
     {
         $table = [];
         foreach (Mage::app()->getWebsites() as $store) {
