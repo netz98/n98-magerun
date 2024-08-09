@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Store;
 
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\CommandFormatable;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -12,44 +15,46 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\System\Store
  */
-class ListCommand extends AbstractMagentoCommand
+class ListCommand extends AbstractMagentoCommand implements CommandFormatable
 {
     /**
-     * @var array
+     * @var string
      */
-    protected $infos;
+    public static $defaultName = 'sys:store:list';
 
-    protected function configure()
+    /**
+     * @var string
+     */
+    public static $defaultDescription = 'Lists all installed store-views.';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSectionTitle(InputInterface $input, OutputInterface $output): string
     {
-        $this
-            ->setName('sys:store:list')
-            ->setDescription('Lists all installed store-views')
-            ->addFormatOption()
-        ;
+        return 'Store views';
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
+     * {@inheritDoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getListHeader(InputInterface $input, OutputInterface $output): array
+    {
+        return ['id', 'code'];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getListData(InputInterface $input, OutputInterface $output): array
     {
         $table = [];
-        $this->detectMagento($output, true);
-        $this->initMagento();
-
         foreach (Mage::app()->getStores() as $store) {
             $table[$store->getId()] = [$store->getId(), $store->getCode()];
         }
 
         ksort($table);
 
-        $tableHelper = $this->getTableHelper();
-        $tableHelper
-            ->setHeaders(['id', 'code'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $table;
     }
 }
