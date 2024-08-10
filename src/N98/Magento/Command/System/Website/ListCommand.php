@@ -10,6 +10,8 @@ use N98\Magento\Command\CommandFormatable;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function ksort;
+
 /**
  * List websites command
  *
@@ -49,10 +51,11 @@ class ListCommand extends AbstractMagentoCommand implements CommandFormatable
     public function getListData(InputInterface $input, OutputInterface $output): array
     {
         $table = [];
-        foreach (Mage::app()->getWebsites() as $store) {
-            $table[$store->getId()] = [
-                $store->getId(),
-                $store->getCode()
+        foreach (Mage::app()->getWebsites() as $website) {
+            $websiteId = $website->getId();
+            $table[$websiteId] = [
+                $websiteId,
+                $website->getCode()
             ];
         }
 

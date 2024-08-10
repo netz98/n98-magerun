@@ -112,7 +112,9 @@ abstract class AbstractMagentoCommand extends Command
         if ($this instanceof CommandFormatable) {
             $this->detectMagento($output, static::$detectMagentoSilent);
 
-            if ($input->getOption(static::COMMAND_OPTION_FORMAT) === null) {
+            $formatOption = $input->getOption(static::COMMAND_OPTION_FORMAT);
+
+            if ($formatOption === null) {
                 $this->writeSection($output, $this->getSectionTitle($input, $output));
             }
 
@@ -120,9 +122,17 @@ abstract class AbstractMagentoCommand extends Command
                 return Command::FAILURE;
             }
 
+            $data = $this->getListData($input, $output);
+            if ($formatOption === null && $data === []) {
+                $output->writeln(sprintf(
+                    '<info>No entry found for "%s" </info>',
+                        $this->getSectionTitle($input, $output))
+                );
+            }
+
             $this->getTableHelper()
                 ->setHeaders($this->getListHeader($input, $output))
-                ->renderByFormat($output, $this->getListData($input, $output), $input->getOption(self::COMMAND_OPTION_FORMAT));
+                ->renderByFormat($output, $data, $input->getOption(self::COMMAND_OPTION_FORMAT));
 
             return Command::SUCCESS;
         }

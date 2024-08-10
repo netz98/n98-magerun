@@ -10,6 +10,8 @@ use N98\Magento\Command\CommandFormatable;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function ksort;
+
 /**
  * List stores command
  *
@@ -50,7 +52,11 @@ class ListCommand extends AbstractMagentoCommand implements CommandFormatable
     {
         $table = [];
         foreach (Mage::app()->getStores() as $store) {
-            $table[$store->getId()] = [$store->getId(), $store->getCode()];
+            $storeId = $store->getId();
+            $table[$storeId] = [
+                $storeId,
+                $store->getCode()
+            ];
         }
 
         ksort($table);

@@ -47,10 +47,10 @@ class ListCommand extends AbstractAdminUserCommand implements CommandFormatable
      */
     public function getListData(InputInterface $input, OutputInterface $output): array
     {
-        /** @var Mage_Admin_Model_User $userModel */
         $userModel = $this->getUserModel();
         $userList = $userModel->getCollection();
         $table = [];
+        /** @var Mage_Admin_Model_User $user */
         foreach ($userList as $user) {
             $table[] = [
                 $user->getId(),
