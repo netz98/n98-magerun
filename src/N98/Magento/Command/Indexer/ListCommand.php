@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Indexer;
 
+use N98\Magento\Command\CommandFormatable;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -10,15 +13,49 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Indexer
  */
-class ListCommand extends AbstractIndexerCommand
+class ListCommand extends AbstractIndexerCommand implements CommandFormatable
 {
-    protected function configure()
+    /**
+     * @var string
+     */
+    public static $defaultName = 'index:list';
+
+    /**
+     * @var string
+     */
+    public static $defaultDescription = 'Lists all magento indexes.';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSectionTitle(InputInterface $input, OutputInterface $output): string
     {
-        $this
-            ->setName('index:list')
-            ->setDescription('Lists all magento indexes')
-            ->addFormatOption()
-        ;
+        return 'Indexes';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getListHeader(InputInterface $input, OutputInterface $output): array
+    {
+        return ['code', 'status', 'time'];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getListData(InputInterface $input, OutputInterface $output): array
+    {
+        $table = [];
+        foreach ($this->getIndexerList() as $index) {
+            $table[] = [
+                $index['code'],
+                $index['status'],
+                $index['last_runtime']
+            ];
+        }
+
+        return $table;
     }
 
     /**
@@ -29,30 +66,5 @@ class ListCommand extends AbstractIndexerCommand
         return <<<HELP
 Lists all Magento indexers of current installation.
 HELP;
-    }
-
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
-
-        $table = [];
-        foreach ($this->getIndexerList() as $index) {
-            $table[] = [$index['code'], $index['status'], $index['last_runtime']];
-        }
-
-        $tableHelper = $this->getTableHelper();
-        $tableHelper
-            ->setHeaders(['code', 'status', 'time'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
     }
 }
