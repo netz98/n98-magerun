@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command;
 
 use Composer\Composer;
@@ -11,7 +13,6 @@ use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Package\PackageInterface;
 use InvalidArgumentException;
 use Mage;
-use N98\Magento\Application;
 use N98\Magento\Command\SubCommand\ConfigBag;
 use N98\Magento\Command\SubCommand\SubCommandFactory;
 use N98\Util\Console\Helper\DatabaseHelper;
@@ -112,7 +113,7 @@ abstract class AbstractMagentoCommand extends Command
             $this->detectMagento($output, static::$detectMagentoSilent);
 
             if ($input->getOption(static::COMMAND_OPTION_FORMAT) === null) {
-                $this->writeSection($output, $this->getSectionTitle());
+                $this->writeSection($output, $this->getSectionTitle($input, $output));
             }
 
             if (!$this->initMagento()) {
@@ -120,18 +121,19 @@ abstract class AbstractMagentoCommand extends Command
             }
 
             $this->getTableHelper()
-                ->setHeaders($this->getListHeader())
-                ->renderByFormat($output, $this->getListData(), $input->getOption(self::COMMAND_OPTION_FORMAT));
+                ->setHeaders($this->getListHeader($input, $output))
+                ->renderByFormat($output, $this->getListData($input, $output), $input->getOption(self::COMMAND_OPTION_FORMAT));
 
             return Command::SUCCESS;
         }
+
+        return Command::INVALID;
     }
 
     private function _initWebsites()
     {
         $this->_websiteCodeMap = [];
-        /** @var \Mage_Core_Model_Website[] $websites */
-        $websites = Mage::app()->getWebsites(false);
+        $websites = Mage::app()->getWebsites();
         foreach ($websites as $website) {
             $this->_websiteCodeMap[$website->getId()] = $website->getCode();
         }
