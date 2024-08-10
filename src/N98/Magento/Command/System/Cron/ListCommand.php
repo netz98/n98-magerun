@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Cron;
 
+use N98\Magento\Command\CommandFormatable;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -10,44 +13,47 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\System\Cron
  */
-class ListCommand extends AbstractCronCommand
+class ListCommand extends AbstractCronCommand implements CommandFormatable
 {
     /**
-     * @var array
+     * @var string
      */
-    protected $infos;
+    public static $defaultName = 'sys:cron:list';
 
-    protected function configure()
+    /**
+     * @var string
+     */
+    public static $defaultDescription = 'Lists all cronjobs.';
+
+    /**
+     * @var array|null
+     */
+    public ?array $data = null;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSectionTitle(InputInterface $input, OutputInterface $output): string
     {
-        $this
-            ->setName('sys:cron:list')
-            ->setDescription('Lists all cronjobs')
-            ->addFormatOption()
-        ;
+        return 'Cronjob List';
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
+     * {@inheritDoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getListHeader(InputInterface $input, OutputInterface $output): array
     {
-        $this->detectMagento($output, true);
+        return array_keys(current($this->getListData($input, $output)));
+    }
 
-        if ($input->getOption('format') === null) {
-            $this->writeSection($output, 'Cronjob List');
+    /**
+     * {@inheritDoc}
+     */
+    public function getListData(InputInterface $input, OutputInterface $output): array
+    {
+        if (is_null($this->data)) {
+            $this->data = $this->getJobs();
         }
-
-        $this->initMagento();
-
-        $table = $this->getJobs();
-
-        $tableHelper = $this->getTableHelper();
-        $tableHelper
-            ->setHeaders(array_keys(current($table)))
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $this->data;
     }
 }
