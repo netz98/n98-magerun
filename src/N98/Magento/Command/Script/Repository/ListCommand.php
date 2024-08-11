@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Script\Repository;
 
-use Description;
-use Location;
+use N98\Magento\Command\CommandFormatable;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -12,15 +13,52 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Script\Repository
  */
-class ListCommand extends AbstractRepositoryCommand
+class ListCommand extends AbstractRepositoryCommand implements CommandFormatable
 {
-    protected function configure()
+    /**
+     * @var string
+     */
+    public static $defaultName = 'script:repo:list';
+
+    /**
+     * @var string
+     */
+    public static $defaultDescription = 'Lists all scripts in repository.';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSectionTitle(InputInterface $input, OutputInterface $output): string
     {
-        $this
-            ->setName('script:repo:list')
-            ->setDescription('Lists all scripts in repository')
-            ->addFormatOption()
-        ;
+        return 'Script List';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getListHeader(InputInterface $input, OutputInterface $output): array
+    {
+        return ['Script', 'Location', 'Description'];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getListData(InputInterface $input, OutputInterface $output): array
+    {
+        $table = [];
+        $files = $this->getScripts();
+        if (count($files) > 0) {
+            foreach ($files as $file) {
+                $table[] = [
+                    substr($file['fileinfo']->getFilename(), 0, -strlen(self::MAGERUN_EXTENSION)),
+                    $file['location'],
+                    $file['description']
+                ];
+            }
+        }
+
+        return $table;
     }
 
     /**
@@ -40,34 +78,5 @@ The first line of the script can contain a comment (line prefixed with #) which 
 
    $ n98-magerun.phar script:repo:list
 HELP;
-    }
-
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $files = $this->getScripts();
-        if (count($files) > 0) {
-            $table = [];
-            foreach ($files as $file) {
-                $table[] = [substr($file['fileinfo']->getFilename(), 0, -strlen(self::MAGERUN_EXTENSION)), $file['location'], $file['description']];
-            }
-        } else {
-            $table = [];
-        }
-
-        if ($input->getOption('format') === null && count($table) === 0) {
-            $output->writeln('<info>no script file found</info>');
-        }
-
-        $tableHelper = $this->getTableHelper();
-        $tableHelper
-            ->setHeaders(['Script', Location::class, Description::class])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
     }
 }
