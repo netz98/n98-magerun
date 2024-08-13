@@ -82,6 +82,11 @@ abstract class AbstractMagentoCommand extends Command
     protected $config;
 
     /**
+     * @var array|null
+     */
+    protected ?array $data = null;
+
+    /**
      * @var bool
      */
     protected static bool $detectMagentoSilent = true;

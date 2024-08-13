@@ -8,6 +8,10 @@ use N98\Magento\Command\CommandFormatable;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function array_keys;
+use function current;
+use function is_array;
+
 /**
  * List cronjob command
  *
@@ -24,11 +28,6 @@ class ListCommand extends AbstractCronCommand implements CommandFormatable
      * @var string
      */
     protected static $defaultDescription = 'Lists all cronjobs.';
-
-    /**
-     * @var array|null
-     */
-    public ?array $data = null;
 
     /**
      * {@inheritDoc}
@@ -51,9 +50,11 @@ class ListCommand extends AbstractCronCommand implements CommandFormatable
      */
     public function getListData(InputInterface $input, OutputInterface $output): array
     {
-        if (is_null($this->data)) {
-            $this->data = $this->getJobs();
+        if (is_array($this->data)) {
+            return $this->data;
         }
+
+        $this->data = $this->getJobs();
         return $this->data;
     }
 }

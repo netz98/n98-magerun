@@ -14,6 +14,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function is_array;
+use function sprintf;
+
 /**
  * List cronjob history command
  *
@@ -70,6 +73,10 @@ class HistoryCommand extends AbstractMagentoCommand implements CommandFormatable
      */
     public function getListData(InputInterface $input, OutputInterface $output): array
     {
+        if (is_array($this->data)) {
+            return $this->data;
+        }
+
         $timezone = $input->getOption(self::COMMAND_OPTION_TIMEZONE)
             ?: Mage::app()->getStore()->getConfig('general/locale/timezone');
 
@@ -82,10 +89,10 @@ class HistoryCommand extends AbstractMagentoCommand implements CommandFormatable
             ->addFieldToFilter('status', ['neq' => Mage_Cron_Model_Schedule::STATUS_PENDING])
             ->addOrder('finished_at');
 
-        $table = [];
+        $this->data = [];
         /** @var Mage_Cron_Model_Schedule $job */
         foreach ($collection as $job) {
-            $table[] = [
+            $this->data[] = [
                 $job->getJobCode(),
                 $job->getStatus(),
                 $job->getFinishedAt() ? $date->gmtDate(
@@ -95,6 +102,6 @@ class HistoryCommand extends AbstractMagentoCommand implements CommandFormatable
             ];
         }
 
-        return $table;
+        return $this->data;
     }
 }

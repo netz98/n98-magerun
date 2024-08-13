@@ -19,12 +19,12 @@ class ListCommand extends AbstractAdminUserCommand implements CommandFormatable
     /**
      * @var string
      */
-    public static $defaultName = 'admin:user:list';
+    protected static $defaultName = 'admin:user:list';
 
     /**
      * @var string
      */
-    public static $defaultDescription = 'List admin users.';
+    protected static $defaultDescription = 'List admin users.';
 
     /**
      * {@inheritDoc}
@@ -47,12 +47,16 @@ class ListCommand extends AbstractAdminUserCommand implements CommandFormatable
      */
     public function getListData(InputInterface $input, OutputInterface $output): array
     {
+        if (is_array($this->data)) {
+            return $this->data;
+        }
+
         $userModel = $this->getUserModel();
         $userList = $userModel->getCollection();
-        $table = [];
+        $this->data = [];
         /** @var Mage_Admin_Model_User $user */
         foreach ($userList as $user) {
-            $table[] = [
+            $this->data[] = [
                 $user->getId(),
                 $user->getUsername(),
                 $user->getEmail(),
@@ -60,6 +64,6 @@ class ListCommand extends AbstractAdminUserCommand implements CommandFormatable
             ];
         }
 
-        return $table;
+        return $this->data;
     }
 }
