@@ -9,6 +9,8 @@ use N98\Magento\Command\CommandFormatable;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function is_array;
+
 /**
  * List admin user password command
  *

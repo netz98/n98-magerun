@@ -87,6 +87,11 @@ abstract class AbstractMagentoCommand extends Command
     protected ?array $data = null;
 
     /**
+     * @var string
+     */
+    protected static string $noResultMessage = '';
+
+    /**
      * @var bool
      */
     protected static bool $detectMagentoSilent = true;
@@ -129,10 +134,17 @@ abstract class AbstractMagentoCommand extends Command
 
             $data = $this->getListData($input, $output);
             if ($formatOption === null && $data === []) {
-                $output->writeln(sprintf(
-                    '<info>No entry found for "%s" </info>',
-                        $this->getSectionTitle($input, $output))
-                );
+                if (static::$noResultMessage) {
+                    $output->writeln(sprintf(
+                        '<info>%s</info>',
+                        static::$noResultMessage
+                    ));
+                } else {
+                    $output->writeln(sprintf(
+                        '<info>No entry found for "%s" </info>',
+                        $this->getSectionTitle($input, $output)
+                    ));
+                }
             }
 
             $this->getTableHelper()

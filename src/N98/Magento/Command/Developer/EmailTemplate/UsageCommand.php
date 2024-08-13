@@ -1,14 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\EmailTemplate;
 
 use Mage;
 use Mage_Adminhtml_Model_Email_Template;
+use Mage_Core_Exception;
 use Mage_Core_Model_Template;
 use N98\Magento\Command\AbstractMagentoCommand;
-use Path;
+use N98\Magento\Command\CommandFormatable;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use function is_array;
 
 /**
  * List email template usage command
@@ -18,40 +23,57 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @author Mike Parkin (https://github.com/MikeParkin)
  * @author Tom Klingenberg (https://github.com/ktomk)
  */
-class UsageCommand extends AbstractMagentoCommand
+class UsageCommand extends AbstractMagentoCommand implements CommandFormatable
 {
-    protected function configure()
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'dev:email-template:usage';
+
+    /**
+     * @var string
+     */
+    protected static $defaultDescription = 'Display database transactional email template usage.';
+
+    /**
+     * @var string
+     */
+    protected static string $noResultMessage = 'No transactional email templates stored in the database.';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSectionTitle(InputInterface $input, OutputInterface $output): string
     {
-        $this
-            ->setName('dev:email-template:usage')
-            ->setDescription('Display database transactional email template usage')
-            ->addFormatOption();
+        return 'Transactional email templates';
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
+     * {@inheritDoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getListHeader(InputInterface $input, OutputInterface $output): array
     {
-        $this->detectMagento($output, true);
-        $this->initMagento();
-        $templates = $this->findEmailTemplates();
-
-        if (!empty($templates)) {
-            $tableHelper = $this->getTableHelper();
-            $tableHelper
-                ->setHeaders(['id', 'Name', 'Scope', 'Scope Id', Path::class])
-                ->renderByFormat($output, $templates, $input->getOption('format'));
-        } else {
-            $output->writeln('No transactional email templates stored in the database.');
-        }
-        return 0;
+        return ['id', 'Name', 'Scope', 'Scope Id', 'Path'];
     }
 
-    protected function findEmailTemplates()
+    /**
+     * {@inheritDoc}
+     * @throws Mage_Core_Exception
+     */
+    public function getListData(InputInterface $input, OutputInterface $output): array
+    {
+        if (is_array($this->data)) {
+            return $this->data;
+        }
+
+        $this->data = $this->findEmailTemplates();
+        return $this->data;
+    }
+
+    /**
+     * @throws Mage_Core_Exception
+     */
+    protected function findEmailTemplates(): array
     {
         /** @var Mage_Core_Model_Template[] $templates */
         $templates = Mage::getModel('adminhtml/email_template')->getCollection();
@@ -59,8 +81,7 @@ class UsageCommand extends AbstractMagentoCommand
         $return = [];
 
         foreach ($templates as $template) {
-
-            /**
+            /*
              * Some modules overload the template class so that the method getSystemConfigPathsWhereUsedCurrently
              * is not available, this is a workaround for that
              */
@@ -72,11 +93,21 @@ class UsageCommand extends AbstractMagentoCommand
             $configPaths = $template->getSystemConfigPathsWhereUsedCurrently();
 
             if (!(is_countable($configPaths) ? count($configPaths) : 0)) {
-                $configPaths[] = ['scope'    => 'Unused', 'scope_id' => 'Unused', 'path'     => 'Unused'];
+                $configPaths[] = [
+                    'scope'    => 'Unused',
+                    'scope_id' => 'Unused',
+                    'path'     => 'Unused'
+                ];
             }
 
             foreach ($configPaths as $configPath) {
-                $return[] = ['id'            => $this->sanitizeEmailProperty($template->getId()), 'Template Code' => $this->sanitizeEmailProperty($template->getTemplateCode()), 'Scope'         => $this->sanitizeEmailProperty($configPath['scope']), 'Scope Id'      => $this->sanitizeEmailProperty($configPath['scope_id']), Path::class          => $this->sanitizeEmailProperty($configPath['path'])];
+                $return[] = [
+                    'id'            => $this->sanitizeEmailProperty($template->getId()),
+                    'Template Code' => $this->sanitizeEmailProperty($template->getTemplateCode()),
+                    'Scope'         => $this->sanitizeEmailProperty($configPath['scope']),
+                    'Scope Id'      => $this->sanitizeEmailProperty($configPath['scope_id']),
+                    'Path'          => $this->sanitizeEmailProperty($configPath['path'])
+                ];
             }
         }
 
@@ -88,7 +119,7 @@ class UsageCommand extends AbstractMagentoCommand
      *
      * @return string
      */
-    private function sanitizeEmailProperty($input)
+    private function sanitizeEmailProperty(string $input): string
     {
         return trim($input);
     }
