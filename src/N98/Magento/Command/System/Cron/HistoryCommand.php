@@ -1,77 +1,100 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Cron;
 
 use Mage;
+use Mage_Core_Exception;
+use Mage_Core_Model_Store_Exception;
 use Mage_Cron_Model_Schedule;
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\CommandFormatable;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Varien_Data_Collection_Db;
 
 /**
  * List cronjob history command
  *
  * @package N98\Magento\Command\System\Cron
  */
-class HistoryCommand extends AbstractMagentoCommand
+class HistoryCommand extends AbstractMagentoCommand implements CommandFormatable
 {
-    /**
-     * @var array
-     */
-    protected $infos;
+    public const COMMAND_OPTION_TIMEZONE = 'timezone';
 
-    protected function configure()
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'sys:cron:history';
+
+    /**
+     * @var string
+     */
+    protected static $defaultDescription = 'Last executed cronjobs with status.';
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function configure(): void
     {
-        $this
-            ->setName('sys:cron:history')
-            ->setDescription('Last executed cronjobs with status.')
-            ->addOption(
-                'timezone',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Timezone to show finished at in'
-            )
-            ->addFormatOption()
-        ;
+        $this->addOption(
+            self::COMMAND_OPTION_TIMEZONE,
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'Timezone to show finished at in'
+        );
+
+        parent::configure();
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
+     * {@inheritDoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getSectionTitle(InputInterface $input, OutputInterface $output): string
     {
-        $this->detectMagento($output, true);
+        return 'Last executed jobs';
+    }
 
-        if ($input->getOption('format') === null) {
-            $this->writeSection($output, 'Last executed jobs');
-        }
-        $this->initMagento();
+    /**
+     * {@inheritDoc}
+     */
+    public function getListHeader(InputInterface $input, OutputInterface $output): array
+    {
+        return ['Job', 'Status', 'Finished'];
+    }
 
-        $timezone = $input->getOption('timezone') ?: Mage::app()->getStore()->getConfig('general/locale/timezone');
+    /**
+     * {@inheritDoc}
+     * @throws Mage_Core_Model_Store_Exception|Mage_Core_Exception
+     */
+    public function getListData(InputInterface $input, OutputInterface $output): array
+    {
+        $timezone = $input->getOption(self::COMMAND_OPTION_TIMEZONE)
+            ?: Mage::app()->getStore()->getConfig('general/locale/timezone');
 
-        $output->writeln('<info>Times shown in <comment>' . $timezone . '</comment></info>');
+        $output->writeln(sprintf('<info>Times shown in <comment>%s</comment></info>', $timezone));
 
         $date = Mage::getSingleton('core/date');
         $offset = $date->calculateOffset($timezone);
         $collection = Mage::getModel('cron/schedule')->getCollection();
         $collection
             ->addFieldToFilter('status', ['neq' => Mage_Cron_Model_Schedule::STATUS_PENDING])
-            ->addOrder('finished_at', Varien_Data_Collection_Db::SORT_ORDER_DESC);
+            ->addOrder('finished_at');
 
         $table = [];
+        /** @var Mage_Cron_Model_Schedule $job */
         foreach ($collection as $job) {
-            $table[] = [$job->getJobCode(), $job->getStatus(), $job->getFinishedAt() ? $date->gmtDate(null, $date->timestamp($job->getFinishedAt()) + $offset) : ''];
+            $table[] = [
+                $job->getJobCode(),
+                $job->getStatus(),
+                $job->getFinishedAt() ? $date->gmtDate(
+                    null,
+                    $date->timestamp($job->getFinishedAt()) + $offset
+                ) : ''
+            ];
         }
 
-        $tableHelper = $this->getTableHelper();
-        $tableHelper
-            ->setHeaders(['Job', 'Status', 'Finished'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $table;
     }
 }

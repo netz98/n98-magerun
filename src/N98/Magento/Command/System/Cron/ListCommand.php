@@ -18,12 +18,12 @@ class ListCommand extends AbstractCronCommand implements CommandFormatable
     /**
      * @var string
      */
-    public static $defaultName = 'sys:cron:list';
+    protected static $defaultName = 'sys:cron:list';
 
     /**
      * @var string
      */
-    public static $defaultDescription = 'Lists all cronjobs.';
+    protected static $defaultDescription = 'Lists all cronjobs.';
 
     /**
      * @var array|null
