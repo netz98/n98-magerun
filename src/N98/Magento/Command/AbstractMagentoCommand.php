@@ -737,7 +737,7 @@ abstract class AbstractMagentoCommand extends Command
     public function addFormatOption(): self
     {
         $this->addOption(
-            'format',
+            self::COMMAND_OPTION_FORMAT,
             null,
             InputOption::VALUE_OPTIONAL,
             'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
