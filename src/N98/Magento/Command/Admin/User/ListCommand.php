@@ -29,6 +29,11 @@ class ListCommand extends AbstractAdminUserCommand implements CommandFormatable
     protected static $defaultDescription = 'List admin users.';
 
     /**
+     * @var string
+     */
+    protected static string $noResultMessage = 'No admin users found.';
+
+    /**
      * {@inheritDoc}
      */
     public function getSectionTitle(InputInterface $input, OutputInterface $output): string
