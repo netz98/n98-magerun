@@ -42,7 +42,10 @@ class ListCommand extends AbstractMagentoCommand implements CommandFormatable
      */
     protected static string $noResultMessage = 'No modules match the specified criteria.';
 
-    protected function configure()
+    /**
+     * {@inheritDoc}
+     */
+    protected function configure(): void
     {
         $this
             ->addOption(
