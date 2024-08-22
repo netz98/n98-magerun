@@ -23,7 +23,7 @@ if (is_readable('build.xml') && $build = simplexml_load_file('build.xml')) {
 }
 $basename = $basename ?: 'n98-magerun';
 
-$urls = strtr($urls, array('%basename%' => $basename));
+$urls = strtr($urls, ['%basename%' => $basename]);
 
 $urlHeaders = function ($url) {
     return function ($name = null) use ($url) {
@@ -45,9 +45,9 @@ $urlHeaders = function ($url) {
 
 $box = function ($title) {
     $len = strlen($title);
-    $buffer = str_repeat("=", $len + 4);
+    $buffer = str_repeat('=', $len + 4);
     $buffer .= "\n= $title =\n";
-    $buffer .= str_repeat("=", $len + 4);
+    $buffer .= str_repeat('=', $len + 4);
 
     return $buffer . "\n";
 };
@@ -60,7 +60,7 @@ $urls = json_decode($urls, false, 16, null);
 
 $main = function ($urls) use ($urlHeaders, $box, $bytes) {
     foreach ($urls as $url) {
-        $title = sprintf("%s: %s", $url->channel, $url->url);
+        $title = sprintf('%s: %s', $url->channel, $url->url);
         echo $box($title);
 
         $headers = $urlHeaders($url->url);
@@ -71,7 +71,7 @@ $main = function ($urls) use ($urlHeaders, $box, $bytes) {
         echo "\n";
     }
 
-    echo $box("Verify Phar-Files Versions");
+    echo $box('Verify Phar-Files Versions');
 
     foreach ($urls as $url) {
         $tempFile = '.magerun-phar.~dl-temp-' . md5($url->url);

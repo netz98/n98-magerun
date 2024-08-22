@@ -79,8 +79,8 @@ class ViewCommand extends AbstractMagentoCommand
             $table[] = ['Frontend-Input-Renderer-Class', trim($attribute->getFrontend()->getInputRendererClass())];
         }
 
-        $this
-            ->getHelper('table')
+        $tableHelper = $this->getTableHelper();
+        $tableHelper
             ->setHeaders(['Type', 'Value'])
             ->renderByFormat($output, $table, $input->getOption('format'));
         return 0;

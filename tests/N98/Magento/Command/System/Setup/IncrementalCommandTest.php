@@ -20,7 +20,7 @@ class IncrementalCommandTest extends TestCase
     {
         $stub = new IncrementalCommandStub();
 
-        $actual = $stub->callProtectedMethodFromObject('protectedMethod', $this, ["fooBar"]);
+        $actual = $stub->callProtectedMethodFromObject('protectedMethod', $this, ['fooBar']);
         self::assertSame('barBaz', $actual);
     }
 
@@ -29,6 +29,6 @@ class IncrementalCommandTest extends TestCase
         self::assertSame('fooBar', $arg);
         $this->addToAssertionCount(1);
 
-        return "barBaz";
+        return 'barBaz';
     }
 }

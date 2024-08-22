@@ -19,7 +19,7 @@ class InstallCommandTest extends TestCase
      */
     public function setup(): void
     {
-        $installDir = sys_get_temp_dir() . "/mageinstall";
+        $installDir = sys_get_temp_dir() . '/mageinstall';
         if (is_readable($installDir)) {
             $result = rmdir($installDir);
             if (!$result) {
@@ -59,7 +59,7 @@ class InstallCommandTest extends TestCase
                 ]
             );
         } catch (InvalidArgumentException $e) {
-            self::assertEquals("Database configuration is invalid", $e->getMessage());
+            self::assertEquals('Database configuration is invalid', $e->getMessage());
             $display = $commandTester->getDisplay(true);
             self::assertStringContainsString('SQLSTATE', $display);
 

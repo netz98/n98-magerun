@@ -6,7 +6,6 @@ use Mage;
 use Mage_Catalog_Model_Category;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,7 +19,7 @@ use Symfony\Component\Console\Question\Question;
  */
 class DummyCommand extends AbstractMagentoCommand
 {
-    public const DEFAULT_CATEGORY_NAME = "My Awesome Category";
+    public const DEFAULT_CATEGORY_NAME = 'My Awesome Category';
     public const DEFAULT_CATEGORY_STATUS = 1; // enabled
     public const DEFAULT_CATEGORY_ANCHOR = 1; // enabled
     public const DEFAULT_STORE_ID = 1; // Default Store ID
@@ -55,7 +54,7 @@ class DummyCommand extends AbstractMagentoCommand
         $this->detectMagento($output, true);
         $this->initMagento();
 
-        $output->writeln("<warning>This only create sample categories, do not use on production environment</warning>");
+        $output->writeln('<warning>This only create sample categories, do not use on production environment</warning>');
 
         // Ask for Arguments
         $_argument = $this->askForArguments($input, $output);
@@ -65,9 +64,9 @@ class DummyCommand extends AbstractMagentoCommand
          */
         for ($i = 0; $i < $_argument['category-number']; $i++) {
             if (!is_null($_argument['category-name-prefix'])) {
-                $name = $_argument['category-name-prefix'] . " " . $i;
+                $name = $_argument['category-name-prefix'] . ' ' . $i;
             } else {
-                $name = self::DEFAULT_CATEGORY_NAME . " " . $i;
+                $name = self::DEFAULT_CATEGORY_NAME . ' ' . $i;
             }
 
             // Check if product exists
@@ -105,7 +104,7 @@ class DummyCommand extends AbstractMagentoCommand
 
             // Create children Categories
             for ($j = 0; $j < $_argument['children-categories-number']; $j++) {
-                $name_child = $name . " child " . $j;
+                $name_child = $name . ' child ' . $j;
 
                 /* @var Mage_Catalog_Model_Category $category */
                 $category = Mage::getModel('catalog/category');
@@ -138,8 +137,7 @@ class DummyCommand extends AbstractMagentoCommand
      */
     private function askForArguments($input, $output)
     {
-        /* @var QuestionHelper $dialog */
-        $dialog = $this->getHelper('question');
+        $dialog = $this->getQuestionHelper();
         $_argument = [];
 
         // Store ID
@@ -151,20 +149,20 @@ class DummyCommand extends AbstractMagentoCommand
             $_store_ids = [];
 
             foreach ($store_id as $item) {
-                $_store_ids[$item['store_id']] = $item['store_id'] . "|" . $item['code'];
+                $_store_ids[$item['store_id']] = $item['store_id'] . '|' . $item['code'];
             }
 
             $question = new ChoiceQuestion('Please select Store ID (default: 1)', $_store_ids, self::DEFAULT_STORE_ID);
             $question->setErrorMessage('Store ID "%s" is invalid.');
-            $response = explode("|", $dialog->ask($input, $output, $question));
+            $response = explode('|', $dialog->ask($input, $output, $question));
             $input->setArgument('store-id', $response[0]);
         }
-        $output->writeln('<info>Store ID selected: ' . $input->getArgument('store-id') . "</info>");
+        $output->writeln('<info>Store ID selected: ' . $input->getArgument('store-id') . '</info>');
         $_argument['store-id'] = $input->getArgument('store-id');
 
         // Number of Categories
         if (is_null($input->getArgument('category-number'))) {
-            $question = new Question("Please enter the number of categories to create (default 1): ", 1);
+            $question = new Question('Please enter the number of categories to create (default 1): ', 1);
             $question->setValidator(function ($answer) {
                 $answer = (int) $answer;
                 if (!is_int($answer) || $answer <= 0) {
@@ -176,7 +174,7 @@ class DummyCommand extends AbstractMagentoCommand
             $input->setArgument('category-number', $dialog->ask($input, $output, $question));
         }
         $output->writeln(
-            '<info>Number of categories to create: ' . $input->getArgument('category-number') . "</info>"
+            '<info>Number of categories to create: ' . $input->getArgument('category-number') . '</info>'
         );
         $_argument['category-number'] = $input->getArgument('category-number');
 
@@ -189,7 +187,7 @@ class DummyCommand extends AbstractMagentoCommand
             $question->setValidator(function ($answer) {
                 $answer = (int) $answer;
                 if (!is_int($answer) || $answer < -1) {
-                    throw new RuntimeException("Please enter an integer value or >= -1");
+                    throw new RuntimeException('Please enter an integer value or >= -1');
                 }
 
                 return $answer;
@@ -202,7 +200,7 @@ class DummyCommand extends AbstractMagentoCommand
 
         $output->writeln(
             '<info>Number of categories children to create: ' . $input->getArgument('children-categories-number') .
-            "</info>"
+            '</info>'
         );
         $_argument['children-categories-number'] = $input->getArgument('children-categories-number');
 
@@ -214,7 +212,7 @@ class DummyCommand extends AbstractMagentoCommand
             );
             $input->setArgument('category-name-prefix', $dialog->ask($input, $output, $question));
         }
-        $output->writeln('<info>CATEGORY NAME PREFIX: ' . $input->getArgument('category-name-prefix') . "</info>");
+        $output->writeln('<info>CATEGORY NAME PREFIX: ' . $input->getArgument('category-name-prefix') . '</info>');
         $_argument['category-name-prefix'] = $input->getArgument('category-name-prefix');
 
         return $_argument;
@@ -228,7 +226,7 @@ class DummyCommand extends AbstractMagentoCommand
      */
     private function setCategoryStoreId(Mage_Catalog_Model_Category $category, $storeId)
     {
-        if (Mage::getVersion() === "1.5.1.0") {
+        if (Mage::getVersion() === '1.5.1.0') {
             $category->setStoreId([0, $storeId]);
         } else {
             $category->setStoreId($storeId);

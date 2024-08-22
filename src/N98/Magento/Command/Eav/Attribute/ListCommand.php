@@ -6,7 +6,6 @@ use Exception;
 use Mage;
 use Mage_Eav_Model_Entity_Type;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -84,8 +83,7 @@ class ListCommand extends AbstractMagentoCommand
             $headers[] = 'backend_type';
         }
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders($headers)
             ->renderByFormat($output, $table, $input->getOption('format'));

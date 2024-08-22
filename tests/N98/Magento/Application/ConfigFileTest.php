@@ -38,7 +38,7 @@ class ConfigFileTest extends TestCase
     {
         $configFile = new ConfigFile();
         $configFile->loadFile('data://,- %root%');
-        $configFile->applyVariables("root-folder");
+        $configFile->applyVariables('root-folder');
 
         self::assertSame(['root-folder'], $configFile->toArray());
     }
@@ -75,6 +75,6 @@ class ConfigFileTest extends TestCase
     public function invalidFileThrowsException()
     {
         $this->expectException(InvalidArgumentException::class);
-        @ConfigFile::createFromFile(":");
+        @ConfigFile::createFromFile(':');
     }
 }

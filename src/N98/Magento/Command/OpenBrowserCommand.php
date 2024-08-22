@@ -5,7 +5,6 @@ namespace N98\Magento\Command;
 use Mage;
 use Mage_Core_Model_App;
 use Mage_Core_Model_Store;
-use N98\Util\Console\Helper\ParameterHelper;
 use N98\Util\Exec;
 use N98\Util\OperatingSystem;
 use RuntimeException;
@@ -49,8 +48,7 @@ class OpenBrowserCommand extends AbstractMagentoCommand
             return 0;
         }
 
-        /** @var ParameterHelper $parameterHelper */
-        $parameterHelper = $this->getHelper('parameter');
+        $parameterHelper = $this->getParameterHelper();
 
         $store = $parameterHelper->askStore($input, $output, 'store', true);
         if ($store->getId() == Mage_Core_Model_App::ADMIN_STORE_ID) {

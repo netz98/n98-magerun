@@ -198,7 +198,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             throw new RuntimeException($message, 0, $e);
         }
 
-        $connection->query("SET NAMES utf8");
+        $connection->query('SET NAMES utf8');
 
         $connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
         $connection->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);

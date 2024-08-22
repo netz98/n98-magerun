@@ -1,0 +1,39 @@
+name: PHP-CS-Fixer
+
+on:
+  push:
+  pull_request:
+  workflow_call:
+  # Allow manually triggering the workflow.
+  workflow_dispatch:
+
+jobs:
+  php-cs-fixer:
+    name: Validation
+    runs-on: [ubuntu-latest]
+
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --ignore-platform-req=ext-*
+
+      - name: PHP-CS-Fixer
+        run: php vendor/bin/php-cs-fixer fix --diff --dry-run

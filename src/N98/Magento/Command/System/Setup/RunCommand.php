@@ -6,7 +6,6 @@ use Exception;
 use Mage;
 use Mage_Core_Model_Resource_Setup;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\TableHelper;
 use ReflectionObject;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -103,8 +102,7 @@ HELP;
             return $row;
         });
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $rows = [];
         $i = 1;
         foreach ($trace as $row) {
@@ -122,8 +120,7 @@ HELP;
     protected function printFile(OutputInterface $output, Exception $e)
     {
         if (preg_match('/Error\sin\sfile\:\s"(.+)\"\s-/', $e->getMessage(), $matches)) {
-            /* @var TableHelper $tableHelper */
-            $tableHelper = $this->getHelper('table');
+            $tableHelper = $this->getTableHelper();
             $lines = \file($matches[1]);
             $rows = [];
             $i = 0;

@@ -5,7 +5,6 @@ namespace N98\Magento\Command\Developer\Translate;
 use Locale;
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\DatabaseHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -41,8 +40,7 @@ class ExportCommand extends AbstractMagentoCommand
             return 0;
         }
 
-        /** @var DatabaseHelper $helper */
-        $helper = $this->getHelper('database');
+        $helper = $this->getDatabaseHelper();
         $db = $helper->getConnection();
 
         $filename = $input->getArgument('filename');
@@ -55,7 +53,7 @@ class ExportCommand extends AbstractMagentoCommand
         $output->writeln('Exporting to <info>' . $filename . '</info>');
 
         $parameters = ['locale' => $locale];
-        $sql = "SELECT * FROM core_translate WHERE locale = :locale";
+        $sql = 'SELECT * FROM core_translate WHERE locale = :locale';
         if ($input->getOption('store')) {
             $sql .= ' AND store_id = :store_id';
             $parameters['store_id'] = Mage::app()->getStore($input->getOption('store'));

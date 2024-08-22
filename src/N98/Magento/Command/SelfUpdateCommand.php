@@ -115,7 +115,7 @@ HELP;
         $latestVersion = trim($response->body);
 
         if ($this->isOutdatedVersion($latestVersion, $loadUnstable)) {
-            $output->writeln(sprintf("Updating to version <info>%s</info>.", $latestVersion));
+            $output->writeln(sprintf('Updating to version <info>%s</info>.', $latestVersion));
 
             try {
                 $this->downloadNewPhar($output, $remotePharDownloadUrl, $tempFilename);
@@ -144,7 +144,7 @@ HELP;
                 $output->writeln('<error>Please re-run the self-update command to try again.</error>');
             }
         } else {
-            $output->writeln("<info>You are using the latest n98-magerun2 version.</info>");
+            $output->writeln('<info>You are using the latest n98-magerun2 version.</info>');
         }
 
         return Command::SUCCESS;

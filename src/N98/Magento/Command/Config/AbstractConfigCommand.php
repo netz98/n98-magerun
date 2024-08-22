@@ -13,7 +13,7 @@ use N98\Magento\Command\AbstractMagentoCommand;
  */
 abstract class AbstractConfigCommand extends AbstractMagentoCommand
 {
-    public const DISPLAY_NULL_UNKNOWN_VALUE = "NULL (NULL/\"unknown\" value)";
+    public const DISPLAY_NULL_UNKNOWN_VALUE = 'NULL (NULL/"unknown" value)';
 
     /**
      * @var array strings of configuration scopes
@@ -21,16 +21,11 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     protected $_scopes = ['default', 'websites', 'stores'];
 
     /**
-     * @return \Mage_Core_Model_Encryption|null returns null for Magento2
+     * @return \Mage_Core_Model_Encryption
      */
     protected function getEncryptionModel()
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            // @TODO Magento 2 support
-            return null;
-        } else {
-            return Mage::helper('core')->getEncryptor();
-        }
+        return Mage::helper('core')->getEncryptor();
     }
 
     /**
@@ -38,7 +33,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
      */
     protected function _getConfigDataModel()
     {
-        return $this->_getModel('core/config_data', 'Mage_Core_Model_Config_Data');
+        return $this->_getModel('core/config_data');
     }
 
     /**
@@ -87,7 +82,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     protected function _convertScopeIdParam($scope, $scopeId, $allowZeroScope = false)
     {
         if ($scope === 'default') {
-            if ("$scopeId" !== "0") {
+            if ("$scopeId" !== '0') {
                 throw new InvalidArgumentException(
                     sprintf("Invalid scope ID %d in scope '%s', must be 0", $scopeId, $scope)
                 );
@@ -120,13 +115,13 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
 
         $this->invalidScopeId(
             (string) $scopeId !== (string) (int) $scopeId,
-            "Invalid scope parameter, %s is not an integer value",
+            'Invalid scope parameter, %s is not an integer value',
             $scopeId
         );
 
         $this->invalidScopeId(
             0 - (bool) $allowZeroScope >= (int) $scopeId,
-            "Invalid scope parameter, %s is not a positive integer value",
+            'Invalid scope parameter, %s is not a positive integer value',
             $scopeId
         );
 
@@ -154,6 +149,6 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
      */
     protected function _getConfigModel()
     {
-        return $this->_getModel('core/config', 'Mage_Core_Model_Config');
+        return $this->_getModel('core/config');
     }
 }

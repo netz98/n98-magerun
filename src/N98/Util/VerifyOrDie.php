@@ -34,11 +34,11 @@ class VerifyOrDie
         # no control characters, no posix forbidden ones, no windows forbidden ones and no spaces - and not empty
         $pattern = '~^[^\x00-\x1F\x7F/<>:"\\|?* ]+$~';
         if (!preg_match($pattern, $basename)) {
-            self::violation($message ?: sprintf("Filename %s is not portable", var_export($basename, true)));
+            self::violation($message ?: sprintf('Filename %s is not portable', var_export($basename, true)));
         }
 
         if ('-' === $basename[0]) {
-            self::violation($message ?: sprintf("Filename %s starts with a dash", var_export($basename, true)));
+            self::violation($message ?: sprintf('Filename %s starts with a dash', var_export($basename, true)));
         }
 
         return $basename;

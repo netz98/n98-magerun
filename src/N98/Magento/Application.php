@@ -47,16 +47,6 @@ class Application extends BaseApplication
     public const APP_VERSION = '3.0.0-dev';
 
     /**
-     * @var int
-     */
-    public const MAGENTO_MAJOR_VERSION_1 = 1;
-
-    /**
-     * @var int
-     */
-    public const MAGENTO_MAJOR_VERSION_2 = 2;
-
-    /**
      * @var string
      */
     private static $logo = "
@@ -104,12 +94,7 @@ class Application extends BaseApplication
     /**
      * @var int
      */
-    protected $_magentoMajorVersion = self::MAGENTO_MAJOR_VERSION_1;
-
-    /**
-     * @var EntryPoint
-     */
-    protected $_magento2EntryPoint = null;
+    protected $_magentoMajorVersion = 1;
 
     /**
      * @var bool
@@ -444,7 +429,7 @@ class Application extends BaseApplication
             'can cause serious problems.', 'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
             'for more information.', '']);
         } else {
-            $output->writeln([sprintf('<warning>Folder %s found, but not used in n98-magerun</warning>', $tempVarDir), '', "This might cause serious problems. n98-magerun is using the configured var-folder " .
+            $output->writeln([sprintf('<warning>Folder %s found, but not used in n98-magerun</warning>', $tempVarDir), '', 'This might cause serious problems. n98-magerun is using the configured var-folder ' .
             "<comment>$currentVarDir</comment>", 'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
             'for more information.', '']);
 
@@ -465,12 +450,7 @@ class Application extends BaseApplication
             return false;
         }
 
-        $isMagento2 = $this->_magentoMajorVersion === self::MAGENTO_MAJOR_VERSION_2;
-        if ($isMagento2) {
-            $this->_initMagento2();
-        } else {
-            $this->_initMagento1($soft);
-        }
+        $this->_initMagento1($soft);
 
         return true;
     }
@@ -789,50 +769,6 @@ class Application extends BaseApplication
         if ($this->_magerunUseDeveloperMode) {
             Mage::setIsDeveloperMode(true);
         }
-    }
-
-    /**
-     * @return void
-     */
-    protected function _initMagento2()
-    {
-        $this->outputMagerunCompatibilityNotice('2');
-    }
-
-    /**
-     * Show a hint that this is Magento incompatible with Magerun and how to obtain the correct Magerun for it
-     *
-     * @param string $version of Magento, "1" or "2", that is incompatible
-     */
-    private function outputMagerunCompatibilityNotice($version)
-    {
-        $file = $version === '2' ? $version : '';
-        $magentoHint = <<<MAGENTOHINT
-You are running a Magento $version.x instance. This version of n98-magerun is not compatible
-with Magento $version.x. Please use n98-magerun$version (version $version) for this shop.
-
-A current version of the software can be downloaded on github.
-
-<info>Download with curl
-------------------</info>
-
-    <comment>curl -O https://files.magerun.net/n98-magerun$file.phar</comment>
-
-<info>Download with wget
-------------------</info>
-
-    <comment>wget https://files.magerun.net/n98-magerun$file.phar</comment>
-
-MAGENTOHINT;
-
-        $output = new ConsoleOutput();
-
-        /** @var FormatterHelper $formatter */
-        $formatter = $this->getHelperSet()->get('formatter');
-
-        $output->writeln(['', $formatter->formatBlock('Compatibility Notice', 'bg=blue;fg=white', true), '', $magentoHint]);
-
-        throw new RuntimeException('This version of n98-magerun is not compatible with Magento ' . $version);
     }
 
     /**

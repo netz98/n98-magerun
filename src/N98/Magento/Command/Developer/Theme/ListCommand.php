@@ -4,7 +4,6 @@ namespace N98\Magento\Command\Developer\Theme;
 
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -44,8 +43,7 @@ class ListCommand extends AbstractMagentoCommand
             }
         }
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders(['Theme'])
             ->renderByFormat($output, $table, $input->getOption('format'));
@@ -57,16 +55,6 @@ class ListCommand extends AbstractMagentoCommand
      */
     protected function getThemes()
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            $collection = Mage::getModel('Mage_Core_Model_Theme')->getLabelsCollection();
-            $themes = [];
-            foreach ($collection as $theme) {
-                $themes[] = $theme['label'];
-            }
-
-            return [$themes];
-        }
-
         return Mage::getModel('core/design_package')->getThemeList();
     }
 }

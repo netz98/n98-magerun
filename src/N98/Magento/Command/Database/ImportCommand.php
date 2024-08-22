@@ -129,7 +129,7 @@ HELP;
         $this->detectDbSettings($output);
 
         $this->writeSection($output, 'Import MySQL Database');
-        $dbHelper = $this->getHelper('database');
+        $dbHelper = $this->getDatabaseHelper();
 
         $fileName = $this->checkFilename($input);
 

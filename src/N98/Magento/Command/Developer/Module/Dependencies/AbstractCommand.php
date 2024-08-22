@@ -5,7 +5,6 @@ namespace N98\Magento\Command\Developer\Module\Dependencies;
 use Exception;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -69,8 +68,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
             $dependencies = $this->findModuleDependencies($moduleName, $recursive);
             if (!empty($dependencies)) {
                 usort($dependencies, [$this, 'sortDependencies']);
-                /* @var TableHelper $tableHelper */
-                $tableHelper = $this->getHelper('table');
+                $tableHelper = $this->getTableHelper();
                 $tableHelper
                     ->setHeaders(['Name', 'Status', 'Current installed version', 'Code pool'])
                     ->renderByFormat($output, $dependencies, $input->getOption('format'));

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Admin;
 
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
@@ -14,12 +16,12 @@ class DisableNotificationsCommand extends AbstractMagentoStoreConfigCommand
     /**
      * @var string
      */
-    protected $commandName = 'admin:notifications';
+    protected static $defaultName = 'admin:notifications';
 
     /**
      * @var string
      */
-    protected $commandDescription = 'Toggles admin notifications';
+    protected static $defaultDescription = 'Toggles admin notifications';
 
     /**
      * @var string

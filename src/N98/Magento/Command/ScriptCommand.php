@@ -7,7 +7,6 @@ use Mage;
 use N98\Util\BinaryString;
 use N98\Util\Exec;
 use RuntimeException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -228,8 +227,7 @@ HELP;
                     return $this->scriptVars[$matches[1]];
                 }
 
-                /* @var QuestionHelper $dialog */
-                $dialog = $this->getHelper('question');
+                $dialog = $this->getQuestionHelper();
 
                 /**
                  * Check for select "?["

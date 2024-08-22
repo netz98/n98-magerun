@@ -4,7 +4,6 @@ namespace N98\Magento\Command\Developer\Module;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Modules;
-use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -46,12 +45,11 @@ class ListCommand extends AbstractMagentoCommand
         $modules = $this->filterModules($input);
 
         if (!count($modules)) {
-            $output->writeln("No modules match the specified criteria.");
+            $output->writeln('No modules match the specified criteria.');
             return 0;
         }
 
-        /* @var TableHelper $table */
-        $table = $this->getHelper('table');
+        $table = $this->getTableHelper();
         $table
             ->setHeaders(['codePool', 'Name', 'Version', 'Status'])
             ->renderByFormat($output, iterator_to_array($modules), $input->getOption('format'));

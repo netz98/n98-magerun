@@ -3,7 +3,6 @@
 namespace N98\Magento\Command\SubCommand;
 
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
@@ -106,8 +105,7 @@ abstract class AbstractSubCommand implements SubCommandInterface
 
             return $flag;
         } else {
-            /** @var $questionHelper QuestionHelper */
-            $questionHelper = $this->getCommand()->getHelper('question');
+            $questionHelper = $this->getCommand()->getQuestionHelper();
 
             $question = new Question(
                 sprintf(

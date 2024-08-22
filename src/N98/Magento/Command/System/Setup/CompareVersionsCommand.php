@@ -7,7 +7,6 @@ use Error;
 use Mage;
 use N98\JUnitXml\Document as JUnitXmlDocument;
 use N98\Magento\Command\AbstractMagentoCommand;
-use N98\Util\Console\Helper\TableHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -60,7 +59,7 @@ HELP;
 
         $time = microtime(true);
         $modules = Mage::getConfig()->getNode('modules');
-        $resourceModel = $this->_getResourceSingleton('core/resource', 'Mage_Core_Model_Resource_Resource');
+        $resourceModel = $this->_getResourceSingleton('core/resource');
         $setups = Mage::getConfig()->getNode('global/resources')->children();
         $ignoreDataUpdate = $input->getOption('ignore-data');
 
@@ -139,8 +138,7 @@ HELP;
         if ($input->getOption('log-junit')) {
             $this->logJUnit($table, $input->getOption('log-junit'), microtime($time) - $time);
         } else {
-            /* @var TableHelper $tableHelper */
-            $tableHelper = $this->getHelper('table');
+            $tableHelper = $this->getTableHelper();
             $tableHelper
                 ->setHeaders($headers)
                 ->renderByFormat($output, $table, $input->getOption('format'));

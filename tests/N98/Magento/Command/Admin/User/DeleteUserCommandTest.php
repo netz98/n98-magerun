@@ -167,7 +167,7 @@ class DeleteUserCommandTest extends TestCase
             ->method('getId')
             ->willReturn(2);
 
-        $exception = new Exception("Error!");
+        $exception = new Exception('Error!');
         $this->userModel
             ->expects(self::once())
             ->method('delete')

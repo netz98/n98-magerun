@@ -2,7 +2,6 @@
 
 namespace N98\Magento\Command\Config;
 
-use N98\Util\Console\Helper\TableHelper;
 use Path;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -138,8 +137,7 @@ HELP;
             $formattedTable[] = [$row['path'], $row['scope'], $row['scope_id'], $this->renderTableValue($row['value'], $format)];
         }
 
-        /* @var TableHelper $tableHelper */
-        $tableHelper = $this->getHelper('table');
+        $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders([Path::class, 'Scope', 'Scope-ID', 'Value'])
             ->setRows($formattedTable)
@@ -161,7 +159,7 @@ HELP;
                     break;
                 default:
                     throw new UnexpectedValueException(
-                        sprintf("Unhandled format %s", var_export($value, true))
+                        sprintf('Unhandled format %s', var_export($value, true))
                     );
             }
         }
@@ -214,8 +212,8 @@ HELP;
                 $value = str_replace(["\n", "\r"], ['\n', '\r'], $value);
             }
 
-            $disaplayValue = $value === null ? "NULL" : escapeshellarg($value);
-            $protectNullString = $value === "NULL" ? '--no-null ' : '';
+            $disaplayValue = $value === null ? 'NULL' : escapeshellarg($value);
+            $protectNullString = $value === 'NULL' ? '--no-null ' : '';
 
             $line = sprintf(
                 'config:set %s--scope-id=%s --scope=%s -- %s %s',

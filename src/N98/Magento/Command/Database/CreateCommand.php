@@ -39,7 +39,7 @@ HELP;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->getHelper('database')->createDatabase($output);
+        $this->getDatabaseHelper()->createDatabase($output);
         return 0;
     }
 }

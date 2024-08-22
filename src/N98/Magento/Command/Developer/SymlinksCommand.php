@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer;
 
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
@@ -14,12 +16,12 @@ class SymlinksCommand extends AbstractMagentoStoreConfigCommand
     /**
      * @var string
      */
-    protected $commandName = 'dev:symlinks';
+    protected static $defaultName = 'dev:symlinks';
 
     /**
      * @var string
      */
-    protected $commandDescription = 'Toggle allow symlinks setting';
+    protected static $defaultDescription = 'Toggle allow symlinks setting';
 
     /**
      * @var string

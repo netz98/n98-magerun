@@ -79,7 +79,7 @@ class MethodCommand extends AbstractMagentoCommand
         $this->checkClassFileName();
         $this->initTableColumns();
         $this->writeToClassFile();
-        $this->_output->writeln("Wrote getter and setter @methods into file: " . $this->_fileName);
+        $this->_output->writeln('Wrote getter and setter @methods into file: ' . $this->_fileName);
         return 0;
     }
 
@@ -95,7 +95,7 @@ class MethodCommand extends AbstractMagentoCommand
         }
         $written = file_put_contents($this->_fileName, implode('', $fileParts));
         if (false === $written) {
-            throw new RuntimeException("Cannot write to file: " . $this->_fileName);
+            throw new RuntimeException('Cannot write to file: ' . $this->_fileName);
         }
     }
 
@@ -164,9 +164,7 @@ class MethodCommand extends AbstractMagentoCommand
      */
     protected function initTableColumns()
     {
-        $dbHelper = $this->getHelper('database');
-        /* @var \N98\Util\Console\Helper\DatabaseHelper $dbHelper */
-        /** @var PDO $connection */
+        $dbHelper = $this->getDatabaseHelper();
         $connection = $dbHelper->getConnection($this->_output);
         $stmt = $connection->query('SHOW COLUMNS FROM ' . $this->_mageModelTable, PDO::FETCH_ASSOC);
         foreach ($stmt as $row) {

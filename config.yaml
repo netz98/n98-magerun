@@ -52,9 +52,6 @@ commands:
     - N98\Magento\Command\Admin\User\ListCommand
     - N98\Magento\Command\Admin\User\DeleteUserCommand
     - N98\Magento\Command\Admin\User\ChangeStatusCommand
-    - N98\Magento\Command\Admin\User\LockCommand
-    - N98\Magento\Command\Admin\User\LockdownCommand
-    - N98\Magento\Command\Admin\User\UnlockCommand
     - N98\Magento\Command\Cache\CleanCommand
     - N98\Magento\Command\Cache\Dir\FlushCommand
     - N98\Magento\Command\Cache\DisableCommand
@@ -64,10 +61,8 @@ commands:
     - N98\Magento\Command\Cache\ReportCommand
     - N98\Magento\Command\Cache\ViewCommand
     - N98\Magento\Command\Category\Create\DummyCommand
-    - N98\Magento\Command\Cms\Banner\ToggleCommand
     - N98\Magento\Command\Cms\Block\ListCommand
     - N98\Magento\Command\Cms\Block\ToggleCommand
-    - N98\Magento\Command\Cms\Page\PublishCommand
     - N98\Magento\Command\Config\DeleteCommand
     - N98\Magento\Command\Config\DumpCommand
     - N98\Magento\Command\Config\GetCommand
@@ -127,14 +122,8 @@ commands:
     - N98\Magento\Command\Eav\Attribute\ListCommand
     - N98\Magento\Command\Eav\Attribute\RemoveCommand
     - N98\Magento\Command\Eav\Attribute\ViewCommand
-    - N98\Magento\Command\GiftCard\CreateCommand
-    - N98\Magento\Command\GiftCard\InfoCommand
-    - N98\Magento\Command\GiftCard\RemoveCommand
-    - N98\Magento\Command\GiftCard\Pool\GenerateCommand
     - N98\Magento\Command\Indexer\ListCommand
-    - N98\Magento\Command\Indexer\ListMviewCommand
     - N98\Magento\Command\Indexer\ReindexAllCommand
-    - N98\Magento\Command\Indexer\ReindexMviewCommand
     - N98\Magento\Command\Indexer\ReindexCommand
     - N98\Magento\Command\Installer\InstallCommand
     - N98\Magento\Command\Installer\UninstallCommand
@@ -170,6 +159,11 @@ commands:
 
   N98\Magento\Command\Installer\InstallCommand:
     magento-packages:
+      - name: openmage-20.10.2
+        package: openmage/magento-lts
+        version: 20.10.2
+        extra:
+          sample-data: sample-data-1.9.2.4
       - name: openmage-20.10.0
         package: openmage/magento-lts
         version: 20.10.0

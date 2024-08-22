@@ -7,7 +7,6 @@ use N98\Magento\Command\SubCommand\AbstractSubCommand;
 use N98\Util\Exec;
 use N98\Util\OperatingSystem;
 use Symfony\Component\Console\Exception\RuntimeException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
@@ -46,8 +45,7 @@ class InstallMagento extends AbstractSubCommand
 
         $this->getCommand()->getApplication()->setAutoExit(false);
 
-        /** @var $questionHelper QuestionHelper */
-        $questionHelper = $this->getCommand()->getHelper('question');
+        $questionHelper = $this->getCommand()->getQuestionHelper();
 
         $defaults = $this->commandConfig['installation']['defaults'];
 

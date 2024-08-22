@@ -55,7 +55,7 @@ class ChooseInstallationFolder extends AbstractSubCommand
             );
             $question->setValidator($validateInstallationFolder);
 
-            $installationFolder = $this->getCommand()->getHelper('question')->ask(
+            $installationFolder = $this->getCommand()->getQuestionHelper()->ask(
                 $this->input,
                 $this->output,
                 $question

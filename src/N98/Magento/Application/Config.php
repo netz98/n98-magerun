@@ -214,13 +214,13 @@ class Config
 
         foreach ($this->getArray('autoloaders') as $prefix => $paths) {
             $paths = (array) $paths;
-            $this->debugWriteln(sprintf($mask, self::PSR_0, OutputFormatter::escape($prefix), implode(",", $paths)));
+            $this->debugWriteln(sprintf($mask, self::PSR_0, OutputFormatter::escape($prefix), implode(',', $paths)));
             $autoloader->add($prefix, $paths);
         }
 
         foreach ($this->getArray('autoloaders_psr4') as $prefix => $paths) {
             $paths = (array) $paths;
-            $this->debugWriteln(sprintf($mask, self::PSR_4, OutputFormatter::escape($prefix), implode(",", $paths)));
+            $this->debugWriteln(sprintf($mask, self::PSR_4, OutputFormatter::escape($prefix), implode(',', $paths)));
             $autoloader->addPsr4($prefix, $paths);
         }
     }

@@ -172,12 +172,12 @@ class DatabaseHelper extends AbstractHelper
     public function getMysqlVariable($name, $type = null)
     {
         if (null === $type) {
-            $type = "@@";
+            $type = '@@';
         } else {
             $type = (string) $type;
         }
 
-        if (!in_array($type, ["@@", "@"], true)) {
+        if (!in_array($type, ['@@', '@'], true)) {
             throw new InvalidArgumentException(
                 sprintf('Invalid mysql variable type "%s", must be "@@" (system) or "@" (session)', $type)
             );
@@ -414,7 +414,7 @@ class DatabaseHelper extends AbstractHelper
      *
      * @throws RuntimeException
      */
-    private function throwRuntimeException(PDOStatement $statement, $message = "")
+    private function throwRuntimeException(PDOStatement $statement, $message = '')
     {
         $reason = $statement->errorInfo()
             ? vsprintf('SQLSTATE[%s]: %s: %s', $statement->errorInfo())

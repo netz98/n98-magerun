@@ -77,8 +77,7 @@ HELP;
 
         $query = $this->getOrAskForArgument('query', $input, $output, 'SQL Query');
 
-        /** @var \N98\Util\Console\Helper\DatabaseHelper $helper */
-        $helper = $this->getHelper('database');
+        $helper = $this->getDatabaseHelper();
         $exec = sprintf('mysql %s -e %s', $helper->getMysqlClientToolConnectionString(), escapeshellarg($query));
 
         if ($input->getOption('only-command')) {

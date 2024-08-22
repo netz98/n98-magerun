@@ -42,12 +42,12 @@ class DbCommand extends AbstractLogCommand
         $this->detectMagento($output);
         $this->initMagento();
 
-        $output->writeln("<info>Looking in " . $this->_getVarienAdapterPhpFile() . "</info>");
+        $output->writeln('<info>Looking in ' . $this->_getVarienAdapterPhpFile() . '</info>');
 
         $this->_replaceVariable($input, $output, '$_debug');
         $this->_replaceVariable($input, $output, '$_logAllQueries');
 
-        $output->writeln("<info>Done. You can tail <comment>" . $this->_getDebugLogFilename() . "</comment></info>");
+        $output->writeln('<info>Done. You can tail <comment>' . $this->_getDebugLogFilename() . '</comment></info>');
         return 0;
     }
 
@@ -72,10 +72,10 @@ class DbCommand extends AbstractLogCommand
         $varienAdapterPhpFile = $this->_getVarienAdapterPhpFile();
         $contents = file_get_contents($varienAdapterPhpFile);
 
-        $debugLinePattern = "/protected\\s" . '\\' . $variable . "\\s*?=\\s(false|true)/m";
+        $debugLinePattern = '/protected\\s' . '\\' . $variable . '\\s*?=\\s(false|true)/m';
         preg_match($debugLinePattern, $contents, $matches);
         if (!isset($matches[1])) {
-            throw new RuntimeException("Problem finding the \$_debug parameter");
+            throw new RuntimeException('Problem finding the $_debug parameter');
         }
 
         $currentValue = $matches[1];
@@ -88,10 +88,10 @@ class DbCommand extends AbstractLogCommand
         }
 
         $output->writeln(
-            "<info>Changed <comment>" . $variable . "</comment> to <comment>" . $newValue . "</comment></info>"
+            '<info>Changed <comment>' . $variable . '</comment> to <comment>' . $newValue . '</comment></info>'
         );
 
-        $contents = preg_replace($debugLinePattern, "protected " . $variable . " = " . $newValue, $contents);
+        $contents = preg_replace($debugLinePattern, 'protected ' . $variable . ' = ' . $newValue, $contents);
         file_put_contents($varienAdapterPhpFile, $contents);
     }
 }

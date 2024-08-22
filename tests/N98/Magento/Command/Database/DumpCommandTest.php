@@ -41,7 +41,7 @@ class DumpCommandTest extends TestCase
 
         self::assertMatchesRegularExpression('/mysqldump/', $commandTester->getDisplay());
         self::assertMatchesRegularExpression('/\.sql/', $commandTester->getDisplay());
-        self::assertStringContainsString(".sql.gz", $commandTester->getDisplay());
+        self::assertStringContainsString('.sql.gz', $commandTester->getDisplay());
     }
 
     /**
@@ -105,8 +105,8 @@ class DumpCommandTest extends TestCase
         self::assertMatchesRegularExpression("/--ignore-table=$db.sales_flat_order/", $commandTester->getDisplay());
         self::assertMatchesRegularExpression("/--ignore-table=$db.sales_flat_order_item/", $commandTester->getDisplay());
         self::assertMatchesRegularExpression("/--ignore-table=$db.sales_flat_order_item/", $commandTester->getDisplay());
-        self::assertStringNotContainsString("not_existing_table_1", $commandTester->getDisplay());
-        self::assertStringContainsString(".sql.gz", $commandTester->getDisplay());
+        self::assertStringNotContainsString('not_existing_table_1', $commandTester->getDisplay());
+        self::assertStringContainsString('.sql.gz', $commandTester->getDisplay());
 
         /**
          * Uncompressed
@@ -115,7 +115,7 @@ class DumpCommandTest extends TestCase
         $commandTester->execute(
             ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--strip'        => '@development']
         );
-        self::assertStringNotContainsString(".sql.gz", $commandTester->getDisplay());
+        self::assertStringNotContainsString('.sql.gz', $commandTester->getDisplay());
     }
 
     public function testWithIncludeExcludeOptions()

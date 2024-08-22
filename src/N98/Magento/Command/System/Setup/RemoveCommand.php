@@ -73,7 +73,7 @@ class RemoveCommand extends AbstractSetupCommand
     public function removeSetupResource($moduleName, $setupResource, OutputInterface $output)
     {
         /** @var Mage_Core_Model_Resource $model */
-        $model = $this->_getModel('core/resource', 'Mage_Core_Model_Resource');
+        $model = $this->_getModel('core/resource');
         $writeAdapter = $model->getConnection('core_write');
         if (!$writeAdapter) {
             throw new RuntimeException('Database not configured');

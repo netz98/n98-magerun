@@ -3,9 +3,7 @@
 namespace N98\Magento\Command\Customer;
 
 use Exception;
-use N98\Util\Console\Helper\ParameterHelper;
 use RuntimeException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -54,15 +52,13 @@ HELP;
 
         // Password
         if (($password = $input->getArgument('password')) == null) {
-            /* @var QuestionHelper $dialog */
-            $dialog = $this->getHelper('question');
+            $dialog = $this->getQuestionHelper();
             $question = new Question('<question>Password:</question> ');
             $question->setHidden(true);
             $password = $dialog->ask($input, $output, $question);
         }
 
-        /** @var ParameterHelper $parameterHelper */
-        $parameterHelper = $this->getHelper('parameter');
+        $parameterHelper = $this->getParameterHelper();
 
         $email = $parameterHelper->askEmail($input, $output);
         $website = $parameterHelper->askWebsite($input, $output);
