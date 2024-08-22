@@ -21,16 +21,11 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     protected $_scopes = ['default', 'websites', 'stores'];
 
     /**
-     * @return \Mage_Core_Model_Encryption|null returns null for Magento2
+     * @return \Mage_Core_Model_Encryption
      */
     protected function getEncryptionModel()
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            // @TODO Magento 2 support
-            return null;
-        } else {
-            return Mage::helper('core')->getEncryptor();
-        }
+        return Mage::helper('core')->getEncryptor();
     }
 
     /**
@@ -38,7 +33,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
      */
     protected function _getConfigDataModel()
     {
-        return $this->_getModel('core/config_data', 'Mage_Core_Model_Config_Data');
+        return $this->_getModel('core/config_data');
     }
 
     /**
@@ -154,6 +149,6 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
      */
     protected function _getConfigModel()
     {
-        return $this->_getModel('core/config', 'Mage_Core_Model_Config');
+        return $this->_getModel('core/config');
     }
 }

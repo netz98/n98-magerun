@@ -64,16 +64,6 @@ class ListCommand extends AbstractMagentoCommand implements CommandFormatable
      */
     protected function getThemes(): array
     {
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            $collection = Mage::getModel('Mage_Core_Model_Theme')->getLabelsCollection();
-            $themes = [];
-            foreach ($collection as $theme) {
-                $themes[] = $theme['label'];
-            }
-
-            return [$themes];
-        }
-
         return Mage::getModel('core/design_package')->getThemeList();
     }
 }
