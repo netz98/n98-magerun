@@ -55,7 +55,7 @@ class AttributeCommand extends AbstractMagentoCommand
 
             $generator = Factory::create($entityType, $attribute);
             $generator->setReadConnection(
-                $this->_getModel('core/resource', 'Mage_Core_Model_Resource')->getConnection('core_read')
+                $this->_getModel('core/resource')->getConnection('core_read')
             );
             $code = $generator->generateCode();
             $warnings = $generator->getWarnings();
@@ -75,9 +75,6 @@ class AttributeCommand extends AbstractMagentoCommand
      */
     protected function getAttribute($entityType, $attributeCode)
     {
-        $attribute = $this->_getModel('catalog/resource_eav_attribute', 'Mage_Catalog_Model_Resource_Eav_Attribute')
-            ->loadByCode($entityType, $attributeCode);
-
-        return $attribute;
+        return $this->_getModel('catalog/resource_eav_attribute')->loadByCode($entityType, $attributeCode);
     }
 }

@@ -59,35 +59,33 @@ HELP;
     {
         $time = microtime(true);
         $this->detectMagento($output);
-        if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-            $output->writeln('<error>Magento 2 is currently not supported.</error>');
-        } else {
-            $referenceFiles = $this->getChecksums(
-                $this->_magentoRootFolder . '/app/design/frontend/' . $input->getArgument('originalTheme')
-            );
 
-            $themeFolder = $this->_magentoRootFolder . '/app/design/frontend/' . $input->getArgument('theme');
-            $themeFiles = $this->getChecksums($themeFolder);
+        $referenceFiles = $this->getChecksums(
+            $this->_magentoRootFolder . '/app/design/frontend/' . $input->getArgument('originalTheme')
+        );
 
-            $duplicates = [];
-            foreach ($themeFiles as $themeFilename => $themeFileChecksum) {
-                if (isset($referenceFiles[$themeFilename])
-                    && $themeFileChecksum == $referenceFiles[$themeFilename]
-                ) {
-                    $duplicates[] = $themeFolder . '/' . $themeFilename;
-                }
-            }
+        $themeFolder = $this->_magentoRootFolder . '/app/design/frontend/' . $input->getArgument('theme');
+        $themeFiles = $this->getChecksums($themeFolder);
 
-            if ($input->getOption('log-junit')) {
-                $this->logJUnit($input, $duplicates, $input->getOption('log-junit'), microtime($time) - $time);
-            } else {
-                if (count($duplicates) === 0) {
-                    $output->writeln('<info>No duplicates were found</info>');
-                } else {
-                    $output->writeln($duplicates);
-                }
+        $duplicates = [];
+        foreach ($themeFiles as $themeFilename => $themeFileChecksum) {
+            if (isset($referenceFiles[$themeFilename])
+                && $themeFileChecksum == $referenceFiles[$themeFilename]
+            ) {
+                $duplicates[] = $themeFolder . '/' . $themeFilename;
             }
         }
+
+        if ($input->getOption('log-junit')) {
+            $this->logJUnit($input, $duplicates, $input->getOption('log-junit'), microtime($time) - $time);
+        } else {
+            if (count($duplicates) === 0) {
+                $output->writeln('<info>No duplicates were found</info>');
+            } else {
+                $output->writeln($duplicates);
+            }
+        }
+
         return 0;
     }
 

@@ -40,7 +40,6 @@ class MagentoHelper extends TestCase
         $helper->detect(vfsStream::url('root'), []);
 
         self::assertEquals(vfsStream::url('root'), $helper->getRootFolder());
-        self::assertEquals(Application::MAGENTO_MAJOR_VERSION_1, $helper->getMajorVersion());
     }
 
     /**
@@ -62,7 +61,6 @@ class MagentoHelper extends TestCase
         );
 
         self::assertEquals(vfsStream::url('root/htdocs'), $helper->getRootFolder());
-        self::assertEquals(Application::MAGENTO_MAJOR_VERSION_1, $helper->getMajorVersion());
     }
 
     /**
@@ -104,29 +102,5 @@ class MagentoHelper extends TestCase
 
         // Verify if this could be checked with more elegance
         self::assertEquals(vfsStream::url('root/../root/htdocs/magento_root'), $helper->getRootFolder());
-
-        self::assertEquals(Application::MAGENTO_MAJOR_VERSION_1, $helper->getMajorVersion());
-    }
-
-    /**
-     * @test
-     */
-    public function detectMagento2InHtdocsSubfolder()
-    {
-        vfsStream::setup('root');
-        vfsStream::create(
-            ['htdocs' => ['app' => ['autoload.php'  => '', 'bootstrap.php' => '']]]
-        );
-
-        $helper = $this->getHelper();
-
-        // vfs cannot resolve relative path so we do 'root/htdocs' etc.
-        $helper->detect(
-            vfsStream::url('root'),
-            [vfsStream::url('root/www'), vfsStream::url('root/public'), vfsStream::url('root/htdocs')]
-        );
-
-        self::assertEquals(vfsStream::url('root/htdocs'), $helper->getRootFolder());
-        self::assertEquals(Application::MAGENTO_MAJOR_VERSION_2, $helper->getMajorVersion());
     }
 }

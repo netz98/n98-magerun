@@ -64,14 +64,10 @@ class CreateUserCommand extends AbstractAdminUserCommand
                         ->setRoleType('G')
                         ->save();
 
-                    // @todo check cmuench correct class name?
-                    $resourceAll = ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) ?
-                        Mage_Backend_Model_Acl_Config::ACL_RESOURCE_ALL : 'all';
-
                     // give "all" privileges to role
                     $this->getRulesModel()
                         ->setRoleId($role->getId())
-                        ->setResources([$resourceAll])
+                        ->setResources(['all'])
                         ->saveRel();
 
                     $output->writeln('<info>The role <comment>Development</comment> was automatically created.</info>');
@@ -82,14 +78,9 @@ class CreateUserCommand extends AbstractAdminUserCommand
             $user = $this->getUserModel()
                 ->setData(['username'  => $username, 'firstname' => $firstname, 'lastname'  => $lastname, 'email'     => $email, 'password'  => $password, 'is_active' => 1])->save();
 
-            if ($this->_magentoMajorVersion == self::MAGENTO_MAJOR_VERSION_2) {
-                $user->setRoleId($role->getId())
-                    ->save();
-            } else {
-                $user->setRoleIds([$role->getId()])
-                    ->setRoleUserId($user->getUserId())
-                    ->saveRelations();
-            }
+            $user->setRoleIds([$role->getId()])
+                ->setRoleUserId($user->getUserId())
+                ->saveRelations();
 
             $output->writeln('<info>User <comment>' . $username . '</comment> successfully created</info>');
         }
