@@ -71,7 +71,7 @@ class ChangeVersionCommand extends AbstractSetupCommand
      */
     public function updateSetupResource($moduleName, $setupResource, $version, OutputInterface $output)
     {
-        $resourceModel = $this->_getResourceSingleton('core/resource', 'Mage_Core_Model_Resource_Resource');
+        $resourceModel = $this->_getResourceSingleton('core/resource');
 
         $resourceModel->setDbVersion($setupResource, $version);
         $resourceModel->setDataVersion($setupResource, $version);

@@ -32,7 +32,7 @@ class ListCommand extends AbstractMagentoCommand
      */
     protected function _getBlockModel()
     {
-        return $this->_getModel('cms/block', '\Mage_Cms_Model_Block');
+        return $this->_getModel('cms/block');
     }
 
     /**

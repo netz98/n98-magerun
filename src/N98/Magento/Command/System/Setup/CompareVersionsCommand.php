@@ -59,7 +59,7 @@ HELP;
 
         $time = microtime(true);
         $modules = Mage::getConfig()->getNode('modules');
-        $resourceModel = $this->_getResourceSingleton('core/resource', 'Mage_Core_Model_Resource_Resource');
+        $resourceModel = $this->_getResourceSingleton('core/resource');
         $setups = Mage::getConfig()->getNode('global/resources')->children();
         $ignoreDataUpdate = $input->getOption('ignore-data');
 

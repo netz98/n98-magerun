@@ -24,8 +24,7 @@ class AbstractMviewIndexerCommand extends AbstractMagentoCommand
      */
     public function getMetaDataCollection()
     {
-        $collection = $this->_getModel('enterprise_mview/metadata', '\Enterprise_Mview_Model_Resource_Metadata_Collection')->getCollection();
-        return $collection;
+        return $this->_getModel('enterprise_mview/metadata')->getCollection();
     }
 
     /**
@@ -34,7 +33,7 @@ class AbstractMviewIndexerCommand extends AbstractMagentoCommand
     protected function getIndexers()
     {
         /** @var \Enterprise_Index_Helper_Data $helper */
-        $helper = $this->_getHelper('enterprise_index', '\Enterprise_Index_Helper_Data');
+        $helper = $this->_getHelper('enterprise_index');
 
         $indexers = [];
         foreach ($helper->getIndexers(true) as $indexer) {
@@ -55,6 +54,6 @@ class AbstractMviewIndexerCommand extends AbstractMagentoCommand
      */
     protected function getMviewClient()
     {
-        return $this->_getModel('enterprise_mview/client', '\Enterprise_Mview_Model_Client');
+        return $this->_getModel('enterprise_mview/client');
     }
 }

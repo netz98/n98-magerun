@@ -171,9 +171,7 @@ class TestApplication
             $application->init();
             $application->initMagento();
 
-            if ($application->getMagentoMajorVersion() == Application::MAGENTO_MAJOR_VERSION_1) {
-                spl_autoload_unregister([Varien_Autoload::instance(), 'autoload']);
-            }
+            spl_autoload_unregister([Varien_Autoload::instance(), 'autoload']);
 
             $this->application = $application;
         }

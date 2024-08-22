@@ -35,7 +35,7 @@ class RemoveCommandTest extends TestCase
 
         $command->expects(self::once())
             ->method('_getModel')
-            ->with('core/resource', 'Mage_Core_Model_Resource')
+            ->with('core/resource')
             ->willReturn($coreResource);
 
         $application = $this->getApplication();
@@ -73,7 +73,7 @@ class RemoveCommandTest extends TestCase
 
         $command->expects(self::once())
             ->method('_getModel')
-            ->with('core/resource', 'Mage_Core_Model_Resource')
+            ->with('core/resource')
             ->willReturn($coreResource);
 
         $application = $this->getApplication();
@@ -120,7 +120,7 @@ class RemoveCommandTest extends TestCase
 
         $command->expects(self::once())
             ->method('_getModel')
-            ->with('core/resource', 'Mage_Core_Model_Resource')
+            ->with('core/resource')
             ->willReturn($coreResource);
 
         $application = $this->getApplication();
