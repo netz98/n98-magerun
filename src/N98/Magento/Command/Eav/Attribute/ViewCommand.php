@@ -67,8 +67,10 @@ class ViewCommand extends AbstractMagentoCommand
         if ($flatIndexes) {
             $key = array_key_first($flatIndexes);
             $flatIndexes = implode(',', $flatIndexes[$key]['fields']);
+            $table[] = ['Flat-Indexes', $key . ' - ' . $flatIndexes];
+        } else {
+            $table[] = ['Flat-Indexes', ''];
         }
-        $table[] = ['Flat-Indexes', $flatIndexes ? $key . ' - ' . $flatIndexes : ''];
 
         if ($attribute->getFrontend()) {
             $table[] = ['Frontend-Label', $attribute->getFrontend()->getLabel()];

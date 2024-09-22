@@ -1,0 +1,16 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Unsafe usage of new static\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Application/ConfigFile.php
+
+		-
+			message: "#^Call to an undefined static method N98\\\\Util\\\\OperatingSystem\\:\\:getCurrentPhpBinary\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/Installer/SubCommand/InstallComposer.php
+
+		-
+			message: "#^Call to an undefined static method N98\\\\Util\\\\OperatingSystem\\:\\:locateProgram\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/Installer/SubCommand/InstallComposer.php

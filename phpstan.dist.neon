@@ -1,0 +1,10 @@
+includes:
+    - phpstan.dist.baseline.neon
+    - phar://phpstan.phar/conf/bleedingEdge.neon
+parameters:
+    paths:
+      - src
+    scanDirectories:
+      - magento
+    level: 1
+    treatPhpDocTypesAsCertain: false
