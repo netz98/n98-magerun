@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cache;
 
+use N98\Magento\Command\CommandFormatable;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -10,39 +13,48 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Cache
  */
-class ListCommand extends AbstractCacheCommand
+class ListCommand extends AbstractCacheCommand implements CommandFormatable
 {
-    protected function configure()
+    /**
+     * @var string
+     */
+    public static $defaultName = 'cache:list';
+
+    /**
+     * @var string
+     */
+    public static $defaultDescription = 'Lists all magento caches.';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSectionTitle(InputInterface $input, OutputInterface $output): string
     {
-        $this
-            ->setName('cache:list')
-            ->setDescription('Lists all magento caches')
-            ->addFormatOption()
-        ;
+        return 'Caches';
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * {@inheritDoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getListHeader(InputInterface $input, OutputInterface $output): array
     {
-        $this->detectMagento($output, true);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        return ['code', 'status'];
+    }
 
-        $cacheTypes = $this->_getCacheModel()->getTypes();
+    /**
+     * {@inheritDoc}
+     */
+    public function getListData(InputInterface $input, OutputInterface $output): array
+    {
         $table = [];
+        $cacheTypes = $this->_getCacheModel()->getTypes();
         foreach ($cacheTypes as $cacheCode => $cacheInfo) {
-            $table[] = [$cacheCode, $cacheInfo['status'] ? 'enabled' : 'disabled'];
+            $table[] = [
+                $cacheCode,
+                $cacheInfo['status'] ? 'enabled' : 'disabled'
+            ];
         }
 
-        $tableHelper = $this->getTableHelper();
-        $tableHelper
-            ->setHeaders(['code', 'status'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $table;
     }
 }

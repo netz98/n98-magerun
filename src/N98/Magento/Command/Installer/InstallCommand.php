@@ -127,7 +127,7 @@ HELP;
      * @throws \RuntimeException
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->commandConfig = $this->getCommandConfig();
         $this->writeSection($output, 'Magento Installation');

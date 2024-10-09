@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Theme;
 
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
+use N98\Magento\Command\CommandFormatable;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -12,29 +15,39 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package N98\Magento\Command\Developer\Theme
  */
-class ListCommand extends AbstractMagentoCommand
+class ListCommand extends AbstractMagentoCommand implements CommandFormatable
 {
-    protected function configure()
+    /**
+     * @var string
+     */
+    public static $defaultName = 'dev:theme:list';
+
+    /**
+     * @var string
+     */
+    public static $defaultDescription = 'Lists all available themes.';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSectionTitle(InputInterface $input, OutputInterface $output): string
     {
-        $this
-            ->setName('dev:theme:list')
-            ->setDescription('Lists all available themes')
-            ->addFormatOption()
-        ;
+        return 'Themes';
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * {@inheritDoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getListHeader(InputInterface $input, OutputInterface $output): array
     {
-        $this->detectMagento($output);
-        if (!$this->initMagento()) {
-            return 0;
-        }
+        return ['label'];
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getListData(InputInterface $input, OutputInterface $output): array
+    {
         $packages = $this->getThemes();
         $table = [];
         foreach ($packages as $package => $themes) {
@@ -43,17 +56,13 @@ class ListCommand extends AbstractMagentoCommand
             }
         }
 
-        $tableHelper = $this->getTableHelper();
-        $tableHelper
-            ->setHeaders(['Theme'])
-            ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+        return $table;
     }
 
     /**
      * @return array
      */
-    protected function getThemes()
+    protected function getThemes(): array
     {
         return Mage::getModel('core/design_package')->getThemeList();
     }
