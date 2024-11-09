@@ -650,6 +650,7 @@ commands:
             - libxml
             - mbstring
             - pdo
+            - pdo_mysql
             - simplexml
             - soap
             - zlib
