@@ -150,8 +150,7 @@ class Config
                 $this->output->writeln(
                     sprintf(
                         '<error>Can not add nonexistent command class "%s" as command to the application</error>',
-                        $commandClass,
-                        $commandName
+                        $commandClass
                     )
                 );
                 $this->debugWriteln(

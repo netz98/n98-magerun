@@ -1,0 +1,7 @@
+#!/bin/bash
+
+## Description: run PHPStan
+## Usage: phpstan
+## Example: ddev phpstan <path-to-files>
+
+XDEBUG_MODE=off php vendor/bin/phpstan analyze "$@"

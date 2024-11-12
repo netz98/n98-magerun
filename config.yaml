@@ -638,15 +638,22 @@ commands:
       pre-check:
         php:
           extensions:
-            - pdo_mysql
-            - spl
-            - dom
-            - simplexml
-            - hash
-            - curl
-            - iconv
             - ctype
+            - curl
+            - dom
+            - ftp
             - gd
+            - hash
+            - iconv
+            - intl
+            - json
+            - libxml
+            - mbstring
+            - pdo
+            - pdo_mysql
+            - simplexml
+            - soap
+            - zlib
 
       db:
         host: localhost

@@ -1,0 +1,76 @@
+name: PHPStan
+
+on:
+  push:
+  pull_request:
+  workflow_call:
+  # Allow manually triggering the workflow.
+  workflow_dispatch:
+
+jobs:
+  phpstan:
+    name: Analyze
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        openmage_version: ["20.10.2"]
+        operating-system: [ubuntu-latest]
+        php-versions: ['7.4']
+        mysql_version: ['8.0']
+
+    services:
+      mysql:
+        image: mysql:${{ matrix.mysql_version }}
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: magento_test_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+    
+      - uses: actions/checkout@v4
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Validate mysql service
+        run: |
+          echo "Checking mysql service"
+          sudo apt-get install -y mysql-client
+          mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -proot -e "SHOW DATABASES"
+
+      - name: Install OpenMage
+        run: |
+          php bin/n98-magerun --no-interaction install \
+            --magentoVersionByName="openmage-${{ matrix.openmage_version }}" \
+            --installationFolder="./magento" \
+            --dbHost="127.0.0.1" \
+            --dbPort="${{ job.services.mysql.ports['3306'] }}" \
+            --dbUser="root" \
+            --dbPass="root" \
+            --dbName="magento_test_db" \
+            --installSampleData=no \
+            --useDefaultConfigParams=yes \
+            --baseUrl="http://magento.local/"
+        env:
+          COMPOSER_VENDOR_PATH : ${{ github.workspace }}/magento/vendor
+
+      - name: PHPStan Static Analysis
+        run: XDEBUG_MODE=off php vendor/bin/phpstan.phar analyze

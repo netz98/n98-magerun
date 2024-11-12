@@ -41,11 +41,14 @@ class ImportCommand extends AbstractDatabaseCommand
      */
     public function getHelp(): string
     {
-        return <<<HELP
+        $help = <<<HELP
 Imports an SQL file with mysql cli client into current configured database.
 
 You need to have MySQL client tools installed on your system.
 HELP;
+        return
+            $help . PHP_EOL
+            . $this->getCompressionHelp() . PHP_EOL;
     }
 
     /**
@@ -182,12 +185,6 @@ HELP;
             unlink($fileName);
         }
         return 0;
-    }
-
-    public function asText()
-    {
-        return parent::asText() . "\n" .
-            $this->getCompressionHelp();
     }
 
     /**
