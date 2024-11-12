@@ -93,17 +93,12 @@ class ModulesTest extends TestCase
 
         $i = 0;
         foreach ($options as $opt => $val) {
-            $input
-                ->expects(self::at($i++))
-                ->method('getOption')
-                ->with($opt)
-                ->willReturn($val);
-
             if (!$val) {
                 continue;
             }
 
-            $input->expects(self::at($i++))
+            $input
+                ->expects(self::at($i++))
                 ->method('getOption')
                 ->with($opt)
                 ->willReturn($val);
