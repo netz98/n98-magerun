@@ -106,7 +106,7 @@ class AutoloadHandlerTest extends TestCase
 
         $handler = $this->create(null, AutoloadHandler::NO_EXCEPTION);
         self::assertFalse($handler->__invoke('Test'));
-        self::assertObjectNotHasAttribute('count', $calls);
+        self::assertObjectNotHasProperty('count', $calls);
 
         $handler->setCallback($assertAble);
         self::assertTrue($handler->__invoke('Test'));
