@@ -98,7 +98,7 @@ class ModulesTest extends TestCase
             }
 
             $input
-                ->expects(self::at($i++))
+                ->expects(self::any())
                 ->method('getOption')
                 ->with($opt)
                 ->willReturn($val);
