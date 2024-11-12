@@ -13,6 +13,7 @@ jobs:
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
+        openmage_version: ["20.10.2"]
         operating-system: [ubuntu-latest]
         php-versions: ['7.4']
         mysql_version: ['8.0']
