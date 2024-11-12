@@ -85,7 +85,7 @@ class ModulesTest extends TestCase
             $options[$option] = $value;
         }
 
-        /** @var $input PHPUnit_Framework_MockObject_MockObject|ArrayInput */
+        /** @var PHPUnit_Framework_MockObject_MockObject|ArrayInput $input */
         $input = $this->getMockBuilder(ArrayInput::class)
             ->disableOriginalConstructor()
             ->setMethods(['getOption'])
@@ -98,7 +98,7 @@ class ModulesTest extends TestCase
             }
 
             $input
-                ->expects(self::any())
+                ->expects(self::at($i++))
                 ->method('getOption')
                 ->with($opt)
                 ->willReturn($val);
