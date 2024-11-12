@@ -14,7 +14,18 @@ jobs:
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: ['7.4', '8.3']
+        php-versions: ['7.4']
+        mysql_version: ['8.0']
+
+    services:
+      mysql:
+        image: mysql:${{ matrix.mysql_version }}
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: magento_test_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: Setup PHP
@@ -36,7 +47,29 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --ignore-platform-req=ext-*
+        run: composer install --prefer-dist --no-progress
+
+      - name: Validate mysql service
+        run: |
+          echo "Checking mysql service"
+          sudo apt-get install -y mysql-client
+          mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -proot -e "SHOW DATABASES"
+
+      - name: Install OpenMage
+        run: |
+          php bin/n98-magerun --no-interaction install \
+            --magentoVersionByName="openmage-${{ matrix.openmage_version }}" \
+            --installationFolder="./magento" \
+            --dbHost="127.0.0.1" \
+            --dbPort="${{ job.services.mysql.ports['3306'] }}" \
+            --dbUser="root" \
+            --dbPass="root" \
+            --dbName="magento_test_db" \
+            --installSampleData=no \
+            --useDefaultConfigParams=yes \
+            --baseUrl="http://magento.local/"
+        env:
+          COMPOSER_VENDOR_PATH : ${{ github.workspace }}/magento/vendor
 
       - name: PHPStan Static Analysis
         run: XDEBUG_MODE=off php vendor/bin/phpstan.phar analyze

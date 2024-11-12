@@ -1,5 +1,5 @@
 includes:
-    - phpstan.dist.baseline.neon
+    - .phpstan.dist.baseline.neon
     - phar://phpstan.phar/conf/bleedingEdge.neon
 parameters:
     paths:
