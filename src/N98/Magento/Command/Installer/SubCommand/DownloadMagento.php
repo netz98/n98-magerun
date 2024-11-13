@@ -66,6 +66,7 @@ class DownloadMagento extends AbstractSubCommand
      * here because Magento has not been downloaded yet; so we have to emulate the original behavior.
      *
      * @return string
+     * @phpstan-ignore method.unused
      */
     private function getConfigDir()
     {

@@ -30,7 +30,7 @@ class UpdateCommand extends AbstractMagentoCommand
     protected $baseFolder;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $moduleDirectory;
 

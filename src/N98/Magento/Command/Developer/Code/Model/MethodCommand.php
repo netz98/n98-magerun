@@ -209,16 +209,18 @@ class MethodCommand extends AbstractMagentoCommand
 
     protected function checkModel()
     {
-        $this->_mageModel = Mage::getModel($this->_input->getArgument('modelName'));
-        if (true === empty($this->_mageModel)) {
-            throw new InvalidArgumentException('Model ' . $this->_input->getArgument('modelName') . ' not found!');
+        $modelName = $this->_input->getArgument('modelName');
+
+        $this->_mageModel = Mage::getModel($modelName);
+        if (!$this->_mageModel) {
+            throw new InvalidArgumentException('Model ' . $modelName . ' not found!');
         }
 
         $this->_mageModelTable = $this->_mageModel->getResource()
             ? $this->_mageModel->getResource()->getMainTable() : null;
         if (true === empty($this->_mageModelTable)) {
             throw new InvalidArgumentException(
-                'Cannot find main table of model ' . $this->_input->getArgument('modelName')
+                'Cannot find main table of model ' . $modelName
             );
         }
     }

@@ -147,7 +147,7 @@ HELP;
             $question = new Question('Please enter the number of values to create (default 1): ', 1);
             $question->setValidator(function ($answer) {
                 $answer = (int) ($answer);
-                if (!is_int($answer) || $answer <= 0) {
+                if ($answer <= 0) {
                     throw new RuntimeException('Please enter an integer value or > 0');
                 }
 

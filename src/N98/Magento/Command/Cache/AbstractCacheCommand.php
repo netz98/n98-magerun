@@ -92,6 +92,7 @@ class AbstractCacheCommand extends AbstractMagentoCommand
      */
     protected function _canUseBanCacheFunction()
     {
+        // @phpstan-ignore function.alreadyNarrowedType
         return method_exists('\Mage_Core_Model_App', 'baseInit');
     }
 }

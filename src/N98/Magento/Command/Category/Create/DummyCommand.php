@@ -170,7 +170,7 @@ class DummyCommand extends AbstractMagentoCommand
             $question = new Question('Please enter the number of categories to create (default 1): ', 1);
             $question->setValidator(function ($answer) {
                 $answer = (int) $answer;
-                if (!is_int($answer) || $answer <= 0) {
+                if ($answer <= 0) {
                     throw new RuntimeException('Please enter an integer value or > 0');
                 }
 
@@ -191,7 +191,7 @@ class DummyCommand extends AbstractMagentoCommand
             );
             $question->setValidator(function ($answer) {
                 $answer = (int) $answer;
-                if (!is_int($answer) || $answer < -1) {
+                if ($answer < -1) {
                     throw new RuntimeException('Please enter an integer value or >= -1');
                 }
 

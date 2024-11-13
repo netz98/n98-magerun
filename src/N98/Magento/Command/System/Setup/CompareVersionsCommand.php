@@ -167,8 +167,6 @@ HELP;
         if ($hasStatusErrors) {
             //Return a non-zero status to indicate there is an error in the setup scripts.
             return 1;
-        } else {
-            return 0;
         }
         return 0;
     }

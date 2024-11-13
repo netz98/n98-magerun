@@ -101,6 +101,7 @@ class InfoCommand extends AbstractMagentoCommand
 
     protected function magentoVersion()
     {
+        // @phpstan-ignore function.alreadyNarrowedType
         if (method_exists('Mage', 'getOpenMageVersion')) {
             return 'OpenMage LTS ' . Mage::getOpenMageVersion();
         }

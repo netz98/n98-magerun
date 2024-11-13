@@ -18,6 +18,8 @@ class ComposerHelper extends AbstractHelper implements InputAwareInterface
 {
     /**
      * @var InputInterface
+     *
+     * @phpstan-ignore property.onlyWritten
      */
     private $input;
 

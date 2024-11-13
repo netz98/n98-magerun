@@ -30,6 +30,8 @@ class Exec
      * @param string $command
      * @param string|null $output
      * @param int $returnCode
+     *
+     * @phpstan-ignore parameterByRef.unusedType,parameterByRef.unusedType
      */
     public static function run($command, &$output = null, &$returnCode = null)
     {

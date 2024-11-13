@@ -73,7 +73,7 @@ class ConfigLocator
      */
     public function getProjectConfigFile()
     {
-        if (!strlen($this->magentoRootFolder ?? '')) {
+        if (!strlen((string)$this->magentoRootFolder)) {
             return;
         }
         $projectConfigFilePath = $this->magentoRootFolder . '/app/etc/' . $this->customConfigFilename;

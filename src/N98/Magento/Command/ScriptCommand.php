@@ -220,8 +220,8 @@ HELP;
      */
     protected function registerVariable(InputInterface $input, OutputInterface $output, $commandString)
     {
-        if (preg_match('/^(\$\{[a-zA-Z0-9-_.]+\})=(.+)/', $commandString, $matches)) {
-            if (isset($matches[2]) && $matches[2][0] == '?') {
+        if (preg_match('/^(\$\{[a-zA-Z0-9-_.]+})=(.+)/', $commandString, $matches)) {
+            if ($matches[2][0] == '?') {
                 // Variable is already defined
                 if (isset($this->scriptVars[$matches[1]])) {
                     return $this->scriptVars[$matches[1]];
@@ -233,7 +233,7 @@ HELP;
                  * Check for select "?["
                  */
                 if (isset($matches[2][1]) && $matches[2][1] == '[') {
-                    if (preg_match('/\[(.+)\]/', $matches[2], $choiceMatches)) {
+                    if (preg_match('/\[(.+)]/', $matches[2], $choiceMatches)) {
                         $choices = BinaryString::trimExplodeEmpty(',', $choiceMatches[1]);
                         $question = new ChoiceQuestion(
                             '<info>Please enter a value for <comment>' . $matches[1] . '</comment>:</info> ',

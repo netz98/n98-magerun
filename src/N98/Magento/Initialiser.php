@@ -61,19 +61,15 @@ class Initialiser
      */
     public function requireMage()
     {
-        if (class_exists(self::CLASS_MAGE, false)) {
-            return;
-        }
-
-        $this->requireOnce();
-
         if (!class_exists(self::CLASS_MAGE, false)) {
             throw new RuntimeException(sprintf('Failed to load definition of "%s" class', self::CLASS_MAGE));
         }
+
+        $this->requireOnce();
     }
 
     /**
-     * Require app/Mage.php in it's own scope while preserving all autoloaders.
+     * Require app/Mage.php in its own scope while preserving all autoloader.
      */
     private function requireOnce()
     {

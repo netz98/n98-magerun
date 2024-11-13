@@ -433,11 +433,12 @@ HELP;
                 $this->_stashEventContext();
                 Mage_Core_Model_Resource_Setup::applyAllUpdates();
                 $this->_restoreEventContext();
-            } else {
-                if ($type == self::TYPE_MIGRATION_DATA) {
-                    Mage_Core_Model_Resource_Setup::applyAllDataUpdates();
-                }
             }
+
+            if ($type == self::TYPE_MIGRATION_DATA) {
+                Mage_Core_Model_Resource_Setup::applyAllDataUpdates();
+            }
+
             $exceptionOutput = ob_get_clean();
             $this->_output->writeln($exceptionOutput);
         } catch (Exception $e) {
