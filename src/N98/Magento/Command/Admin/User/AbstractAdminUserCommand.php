@@ -19,7 +19,9 @@ abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
      */
     protected function getUserModel()
     {
-        return $this->_getModel('admin/user');
+        /** @var Mage_Admin_Model_User $model */
+        $model = $this->_getModel('admin/user');
+        return $model;
     }
 
     /**
@@ -27,7 +29,9 @@ abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
      */
     protected function getRoleModel()
     {
-        return $this->_getModel('admin/roles');
+        /** @var Mage_Admin_Model_Roles $model */
+        $model = $this->_getModel('admin/roles');
+        return $model;
     }
 
     /**
@@ -35,6 +39,8 @@ abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
      */
     protected function getRulesModel()
     {
-        return $this->_getModel('admin/rules');
+        /** @var Mage_Admin_Model_Rules $model */
+        $model = $this->_getModel('admin/rules');
+        return $model;
     }
 }

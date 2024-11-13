@@ -23,7 +23,7 @@ use UnexpectedValueException;
 class ServerEnvironment
 {
     /**
-     * @var array
+     * @var array|null
      */
     private $backup;
 

@@ -25,6 +25,8 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\ConstraintValidatorFactory;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Helper to init some parameters
@@ -34,7 +36,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 class ParameterHelper extends AbstractHelper
 {
     /**
-     * @var Validator
+     * @var ValidatorInterface
      */
     private $validator;
 
@@ -307,7 +309,7 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @return Validator
+     * @return ValidatorInterface
      */
     private function getValidator()
     {
@@ -315,12 +317,12 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @return \Symfony\Component\Validator\Validator\ValidatorInterface
+     * @return ValidatorInterface
      */
     protected function initValidator()
     {
         if (null === $this->validator) {
-            $this->validator = \Symfony\Component\Validator\Validation::createValidatorBuilder()
+            $this->validator = Validation::createValidatorBuilder()
                 ->setConstraintValidatorFactory(new ConstraintValidatorFactory())
                 ->setMetadataFactory(new FakeMetadataFactory())
                 ->getValidator();

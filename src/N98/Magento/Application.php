@@ -71,7 +71,7 @@ class Application extends BaseApplication
     protected $autoloader;
 
     /**
-     * @var Config
+     * @var Config|null
      */
     protected $config;
 
@@ -82,7 +82,7 @@ class Application extends BaseApplication
     private $configurationLoaderInjected;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $_magentoRootFolder = null;
 

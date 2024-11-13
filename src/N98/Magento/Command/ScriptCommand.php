@@ -216,7 +216,7 @@ HELP;
      * @param OutputInterface $output
      * @param string $commandString
      * @throws RuntimeException
-     * @return void
+     * @return void|mixed
      */
     protected function registerVariable(InputInterface $input, OutputInterface $output, $commandString)
     {

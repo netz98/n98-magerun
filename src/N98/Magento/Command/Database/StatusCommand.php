@@ -131,7 +131,7 @@ HELP;
         $diff = $now->diff($ago);
 
         $diff->w = floor($diff->d / 7);
-        $diff->d -= $diff->w * 7;
+        $diff->d -= (int)$diff->w * 7;
 
         $string = ['y' => 'year', 'm' => 'month', 'h' => 'hour', 'i' => 'minute', 's' => 'second'];
         foreach ($string as $k => &$v) {

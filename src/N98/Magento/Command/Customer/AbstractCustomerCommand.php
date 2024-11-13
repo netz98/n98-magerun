@@ -21,7 +21,9 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
      */
     protected function getCustomerModel()
     {
-        return $this->_getModel('customer/customer');
+        /** @var Mage_Customer_Model_Customer $model */
+        $model = $this->_getModel('customer/customer');
+        return $model;
     }
 
     /**
@@ -29,7 +31,9 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
      */
     protected function getCustomerCollection()
     {
-        return $this->_getResourceModel('customer/customer_collection');
+        /** @var Mage_Customer_Model_Resource_Customer_Collection $model */
+        $model = $this->_getResourceModel('customer/customer_collection');
+        return $model;
     }
 
     /**
@@ -37,7 +41,9 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
      */
     protected function getAddressModel()
     {
-        return $this->_getModel('customer/address');
+        /** @var Mage_Customer_Model_Address $model */
+        $model = $this->_getModel('customer/address');
+        return $model;
     }
 
     /**
@@ -45,7 +51,9 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
      */
     protected function getRegionCollection()
     {
-        return $this->_getResourceModel('directory/region_collection');
+        /** @var Mage_Directory_Model_Resource_Region_Collection $model */
+        $model = $this->_getModel('directory/region_collection');
+        return $model;
     }
 
     /**
@@ -53,6 +61,8 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
      */
     protected function getCountryCollection()
     {
-        return $this->_getResourceModel('directory/country_collection');
+        /** @var Mage_Directory_Model_Resource_Country_Collection $model */
+        $model = $this->_getModel('directory/country_collection');
+        return $model;
     }
 }

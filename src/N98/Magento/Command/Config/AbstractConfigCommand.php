@@ -5,6 +5,7 @@ namespace N98\Magento\Command\Config;
 use InvalidArgumentException;
 use Mage;
 use Mage_Core_Helper_Data;
+use Mage_Core_Model_Config;
 use Mage_Core_Model_Encryption;
 use N98\Magento\Command\AbstractMagentoCommand;
 
@@ -79,9 +80,9 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     /**
      * @param string $scope
      * @param string $scopeId
-     * @param boolean $allowZeroScope
+     * @param bool $allowZeroScope
      *
-     * @return string non-negative integer number
+     * @return string|int|null non-negative integer number
      */
     protected function _convertScopeIdParam($scope, $scopeId, $allowZeroScope = false)
     {
@@ -149,10 +150,12 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return \Mage_Core_Model_Config
+     * @return Mage_Core_Model_Config
      */
     protected function _getConfigModel()
     {
-        return $this->_getModel('core/config');
+        /** @var Mage_Core_Model_Config $model */
+        $model = $this->_getModel('core/config');
+        return $model;
     }
 }

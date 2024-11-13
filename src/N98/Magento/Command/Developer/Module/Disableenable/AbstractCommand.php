@@ -23,7 +23,7 @@ class AbstractCommand extends AbstractMagentoCommand
     /**
      * @var Mage_Core_Model_Config
      */
-    protected $config;
+    protected $modulesConfig;
 
     /**
      * @var string
@@ -65,8 +65,8 @@ class AbstractCommand extends AbstractMagentoCommand
         if (false === $this->initMagento()) {
             throw new RuntimeException('Magento could not be loaded');
         }
-        $this->config = Mage::getConfig();
-        $this->modulesDir = $this->config->getOptions()->getEtcDir() . DS . 'modules' . DS;
+        $this->modulesConfig = Mage::getConfig();
+        $this->modulesDir = $this->modulesConfig->getOptions()->getEtcDir() . DS . 'modules' . DS;
         if ($codePool = $input->getOption('codepool')) {
             $output->writeln('<info>' . ($this->commandName == 'enable' ? 'Enabling' : 'Disabling') .
                 ' modules in <comment>' . $codePool . '</comment> codePool...</info>');
@@ -87,7 +87,7 @@ class AbstractCommand extends AbstractMagentoCommand
      */
     protected function enableCodePool($codePool, OutputInterface $output)
     {
-        $modules = $this->config->getNode('modules')->asArray();
+        $modules = $this->modulesConfig->getNode('modules')->asArray();
         foreach ($modules as $module => $data) {
             if (isset($data['codePool']) && $data['codePool'] == $codePool) {
                 $this->enableModule($module, $output);

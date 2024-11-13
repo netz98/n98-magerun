@@ -87,7 +87,7 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
      *
      * uses magento 1 internal parser of cron expressions
      *
-     * @return array with five values (zero-indexed) or FALSE in case it does not exists.
+     * @return array|false with five values (zero-indexed) or FALSE in case it does not exist.
      */
     private function parseCronExpression($expr)
     {

@@ -71,6 +71,16 @@ parameters:
 			path: src/N98/Magento/Command/Installer/SubCommand/InstallComposer.php
 
 		-
+			message: "#^Property N98\\\\Magento\\\\Command\\\\System\\\\Check\\\\Filesystem\\\\FilesCheck\\:\\:\\$_checkCommand \\(N98\\\\Magento\\\\Command\\\\System\\\\CheckCommand\\) does not accept Symfony\\\\Component\\\\Console\\\\Command\\\\Command\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/System/Check/Filesystem/FilesCheck.php
+
+		-
+			message: "#^Property N98\\\\Magento\\\\Command\\\\System\\\\Check\\\\Filesystem\\\\FoldersCheck\\:\\:\\$_checkCommand \\(N98\\\\Magento\\\\Command\\\\System\\\\CheckCommand\\) does not accept Symfony\\\\Component\\\\Console\\\\Command\\\\Command\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/System/Check/Filesystem/FoldersCheck.php
+
+		-
 			message: "#^Call to an undefined method hasProperty\\(class\\)\\:\\:getClassName\\(\\)\\.$#"
 			count: 1
 			path: src/N98/Magento/Command/System/Setup/IncrementalCommand.php

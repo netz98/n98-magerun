@@ -2,6 +2,7 @@
 
 namespace N98\Magento\Command\Cms\Block;
 
+use Mage_Cms_Model_Block;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,11 +29,13 @@ class ListCommand extends AbstractMagentoCommand
     /**
      * Get an instance of cms/block
      *
-     * @return \Mage_Cms_Model_Block
+     * @return Mage_Cms_Model_Block
      */
     protected function _getBlockModel()
     {
-        return $this->_getModel('cms/block');
+        /** @var Mage_Cms_Model_Block $model */
+        $model = $this->_getModel('cms/block');
+        return $model;
     }
 
     /**

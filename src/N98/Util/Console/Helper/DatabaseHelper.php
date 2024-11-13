@@ -584,7 +584,7 @@ class DatabaseHelper extends AbstractHelper
         }
 
         if ($statement) {
-            /** @var array|string[] $result */
+            /** @var array[] $result */
             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
             $return = [];
             foreach ($result as $row) {

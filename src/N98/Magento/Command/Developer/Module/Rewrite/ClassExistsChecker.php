@@ -22,7 +22,7 @@ final class ClassExistsChecker
     private $className;
 
     /**
-     * @var stdClass
+     * @var stdClass|null
      */
     private $context;
 

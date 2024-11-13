@@ -173,7 +173,7 @@ class Config
     /**
      * @param string $className
      * @param string|null $commandName
-     * @return Command
+     * @return Command|null
      * @throws InvalidArgumentException
      */
     private function newCommand($className, $commandName)

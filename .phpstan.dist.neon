@@ -6,5 +6,5 @@ parameters:
       - src
     scanDirectories:
       - magento
-    level: 2
+    level: 3
     treatPhpDocTypesAsCertain: false

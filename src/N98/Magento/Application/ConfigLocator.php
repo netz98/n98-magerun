@@ -69,7 +69,7 @@ class ConfigLocator
     /**
      * Obtain the project-config-file, it is placed in the magento app/etc dir, e.g. app/etc/n98-magerun2.yaml
      *
-     * @return ConfigFile|null
+     * @return ConfigFile|void
      */
     public function getProjectConfigFile()
     {
@@ -96,7 +96,7 @@ class ConfigLocator
      * prefixed with a dot: stop-file-folder/.n98-magerun2.yaml
      *
      * @param string $magerunStopFileFolder
-     * @return ConfigFile|null
+     * @return ConfigFile|void
      */
     public function getStopFileConfigFile($magerunStopFileFolder)
     {

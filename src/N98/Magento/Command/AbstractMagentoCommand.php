@@ -11,7 +11,9 @@ use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Package\PackageInterface;
 use InvalidArgumentException;
 use Mage;
+use Mage_Core_Helper_Data;
 use Mage_Core_Model_Abstract;
+use Mage_Core_Model_Resource_Db_Collection_Abstract;
 use N98\Magento\Application;
 use N98\Magento\Command\SubCommand\ConfigBag;
 use N98\Magento\Command\SubCommand\SubCommandFactory;
@@ -88,8 +90,7 @@ abstract class AbstractMagentoCommand extends Command
     private function _initWebsites()
     {
         $this->_websiteCodeMap = [];
-        /** @var \Mage_Core_Model_Website[] $websites */
-        $websites = Mage::app()->getWebsites(false);
+        $websites = Mage::app()->getWebsites();
         foreach ($websites as $website) {
             $this->_websiteCodeMap[$website->getId()] = $website->getCode();
         }
@@ -208,11 +209,13 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @return \Mage_Core_Helper_Data
+     * @return Mage_Core_Helper_Data
      */
     protected function getCoreHelper()
     {
-        return Mage::helper('core');
+        /** @var Mage_Core_Helper_Data $helper */
+        $helper = Mage::helper('core');
+        return $helper;
     }
 
     /**
@@ -241,7 +244,7 @@ abstract class AbstractMagentoCommand extends Command
      * @param array|PackageInterface $config
      * @param string $targetFolder
      * @param bool $preferSource
-     * @return CompletePackage
+     * @return CompletePackage|PackageInterface
      */
     protected function downloadByComposerConfig(
         InputInterface $input,
@@ -393,7 +396,7 @@ abstract class AbstractMagentoCommand extends Command
 
     /**
      * @param string $mage1code Magento 1 class code
-     * @return Mage_Core_Model_Abstract
+     * @return Mage_Core_Model_Resource_Db_Collection_Abstract
      */
     protected function _getResourceModel($mage1code)
     {
