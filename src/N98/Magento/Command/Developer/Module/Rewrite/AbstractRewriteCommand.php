@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
 use Mage;
+use Mage_Core_Model_Config_Element;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Finder\Finder;
 
@@ -27,6 +28,10 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
 
         // Load config of each module because modules can overwrite config each other. Global config is already merged
         $modules = Mage::getConfig()->getNode('modules')->children();
+        /**
+         * @var  string $moduleName
+         * @var  Mage_Core_Model_Config_Element $moduleData
+         */
         foreach ($modules as $moduleName => $moduleData) {
             // Check only active modules
             if (!$moduleData->is('active')) {

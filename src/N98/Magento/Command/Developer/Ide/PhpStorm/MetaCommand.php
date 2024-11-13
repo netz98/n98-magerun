@@ -508,7 +508,7 @@ PHP;
 
     /**
      * @param string $group
-     * @return \Mage_Core_Model_Config_Element
+     * @return Varien_Simplexml_Element|null
      */
     protected function getGroupXmlDefinition($group)
     {
