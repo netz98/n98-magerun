@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Media\Cache\Image;
 
 use Mage;
+use Mage_Catalog_Model_Product_Image;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,7 +31,9 @@ class ClearCommand extends AbstractMagentoCommand
         $this->detectMagento($output);
 
         if ($this->initMagento()) {
-            Mage::getModel('catalog/product_image')->clearCache();
+            /** @var Mage_Catalog_Model_Product_Image $model */
+            $model = Mage::getModel('catalog/product_image');
+            $model->clearCache();
             Mage::dispatchEvent('clean_catalog_images_cache_after');
             $output->writeln('<info>Image cache cleared</info>');
         }

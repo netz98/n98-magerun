@@ -7,6 +7,7 @@ namespace N98\Magento\Command;
 use Exception;
 use Mage;
 use Mage_Core_Model_App;
+use Mage_Core_Model_Config;
 use Mage_Core_Model_Store;
 use Mage_Core_Model_Store_Exception;
 use Symfony\Component\Console\Command\Command;
@@ -277,8 +278,9 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      */
     protected function setDeveloperIp(Mage_Core_Model_Store $store, string $newDeveloperIp): void
     {
-        Mage::getModel('core/config')
-            ->saveConfig('dev/restrict/allow_ips', $newDeveloperIp, 'stores', $store->getId());
+        /** @var Mage_Core_Model_Config $model */
+        $model = Mage::getModel('core/config');
+        $model->saveConfig('dev/restrict/allow_ips', $newDeveloperIp, 'stores', $store->getId());
     }
 
     /**

@@ -4,6 +4,7 @@ namespace N98\Magento\Command\Category\Create;
 
 use Mage;
 use Mage_Catalog_Model_Category;
+use Mage_Catalog_Model_Resource_Category_Collection;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
@@ -70,7 +71,9 @@ class DummyCommand extends AbstractMagentoCommand
             }
 
             // Check if product exists
-            $collection = Mage::getModel('catalog/category')->getCollection()
+            /** @var Mage_Catalog_Model_Resource_Category_Collection $collection */
+            $collection = Mage::getModel('catalog/category')->getCollection();
+            $collection
                 ->addAttributeToSelect('name')
                 ->addAttributeToFilter('name', ['eq' => $name]);
             $_size = $collection->getSize();
@@ -84,13 +87,14 @@ class DummyCommand extends AbstractMagentoCommand
             $storeId = $_argument['store-id'];
             $rootCategoryId = Mage::app()->getStore($storeId)->getRootCategoryId();
 
-            /* @var Mage_Catalog_Model_Category $category */
+            /** @var Mage_Catalog_Model_Category $category */
             $category = Mage::getModel('catalog/category');
             $category->setName($name);
             $category->setIsActive(self::DEFAULT_CATEGORY_STATUS);
             $category->setDisplayMode('PRODUCTS');
             $category->setIsAnchor(self::DEFAULT_CATEGORY_ANCHOR);
             $this->setCategoryStoreId($category, $storeId);
+            /** @var Mage_Catalog_Model_Category $parentCategory */
             $parentCategory = Mage::getModel('catalog/category')->load($rootCategoryId);
             $category->setPath($parentCategory->getPath());
 
@@ -106,13 +110,14 @@ class DummyCommand extends AbstractMagentoCommand
             for ($j = 0; $j < $_argument['children-categories-number']; $j++) {
                 $name_child = $name . ' child ' . $j;
 
-                /* @var Mage_Catalog_Model_Category $category */
+                /** @var Mage_Catalog_Model_Category $category */
                 $category = Mage::getModel('catalog/category');
                 $category->setName($name_child);
                 $category->setIsActive(self::DEFAULT_CATEGORY_STATUS);
                 $category->setDisplayMode('PRODUCTS');
                 $category->setIsAnchor(self::DEFAULT_CATEGORY_ANCHOR);
                 $this->setCategoryStoreId($category, $storeId);
+                /** @var Mage_Catalog_Model_Category $parentCategory */
                 $parentCategory = Mage::getModel('catalog/category')->load($parentCategoryId);
                 $category->setPath($parentCategory->getPath());
 

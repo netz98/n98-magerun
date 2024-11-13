@@ -6,6 +6,61 @@ parameters:
 			path: src/N98/Magento/Application/ConfigFile.php
 
 		-
+			message: "#^Call to an undefined method Mage_Admin_Model_Roles\\:\\:setName\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/Admin/User/CreateUserCommand.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Application\\:\\:getMagentoRootFolder\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/ComposerWrapper/EventSubscriber.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Command\\\\Command\\:\\:setComposer\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/ComposerWrapper/EventSubscriber.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Command\\\\Command\\:\\:setIO\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/ComposerWrapper/EventSubscriber.php
+
+		-
+			message: "#^Call to an undefined method Mage_Customer_Model_Customer\\:\\:setFirstname\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/Customer/CreateCommand.php
+
+		-
+			message: "#^Call to an undefined method Mage_Customer_Model_Customer\\:\\:setLastname\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/Customer/CreateCommand.php
+
+		-
+			message: "#^Call to an undefined method Mage_Customer_Model_Address\\:\\:setIsSubscribed\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/Customer/CreateDummyCommand.php
+
+		-
+			message: "#^Call to an undefined method Mage_Customer_Model_Customer\\:\\:setFirstname\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/Customer/CreateDummyCommand.php
+
+		-
+			message: "#^Call to an undefined method Mage_Customer_Model_Customer\\:\\:setLastname\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/Customer/CreateDummyCommand.php
+
+		-
+			message: "#^Call to an undefined method Varien_Object\\:\\:getRegions\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/Customer/CreateDummyCommand.php
+
+		-
+			message: "#^Access to an undefined property DateInterval\\:\\:\\$w\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/Database/StatusCommand.php
+
+		-
 			message: "#^Call to an undefined static method N98\\\\Util\\\\OperatingSystem\\:\\:getCurrentPhpBinary\\(\\)\\.$#"
 			count: 1
 			path: src/N98/Magento/Command/Installer/SubCommand/InstallComposer.php
@@ -14,3 +69,18 @@ parameters:
 			message: "#^Call to an undefined static method N98\\\\Util\\\\OperatingSystem\\:\\:locateProgram\\(\\)\\.$#"
 			count: 1
 			path: src/N98/Magento/Command/Installer/SubCommand/InstallComposer.php
+
+		-
+			message: "#^Call to an undefined method hasProperty\\(class\\)\\:\\:getClassName\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Magento/Command/System/Setup/IncrementalCommand.php
+
+		-
+			message: "#^Call to an undefined method object\\{ref\\: \\$this\\(N98\\\\Util\\\\AutoloadHandler\\)\\}&stdClass\\:\\:reset\\(\\)\\.$#"
+			count: 1
+			path: src/N98/Util/AutoloadHandler.php
+
+		-
+			message: "#^Binary operation \"/\" between non\\-falsy\\-string and 1000 results in an error\\.$#"
+			count: 2
+			path: src/N98/Util/DateTime.php

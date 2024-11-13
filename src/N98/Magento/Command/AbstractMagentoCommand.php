@@ -36,6 +36,8 @@ use Symfony\Component\Console\Question\Question;
  * Class AbstractMagentoCommand
  *
  * @package N98\Magento\Command
+ *
+ * @method Application getApplication()
  */
 abstract class AbstractMagentoCommand extends Command
 {

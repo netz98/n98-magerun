@@ -5,6 +5,7 @@ namespace N98\Magento\Command\System\Setup;
 use DateTime;
 use Error;
 use Mage;
+use Mage_Core_Model_Resource_Resource;
 use N98\JUnitXml\Document as JUnitXmlDocument;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -59,6 +60,7 @@ HELP;
 
         $time = microtime(true);
         $modules = Mage::getConfig()->getNode('modules');
+        /** @var Mage_Core_Model_Resource_Resource $resourceModel */
         $resourceModel = $this->_getResourceSingleton('core/resource');
         $setups = Mage::getConfig()->getNode('global/resources')->children();
         $ignoreDataUpdate = $input->getOption('ignore-data');

@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\System\Setup;
 
 use InvalidArgumentException;
+use Mage_Core_Model_Resource_Resource;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -71,6 +72,7 @@ class ChangeVersionCommand extends AbstractSetupCommand
      */
     public function updateSetupResource($moduleName, $setupResource, $version, OutputInterface $output)
     {
+        /** @var Mage_Core_Model_Resource_Resource $resourceModel */
         $resourceModel = $this->_getResourceSingleton('core/resource');
 
         $resourceModel->setDbVersion($setupResource, $version);

@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Config;
 
 use Mage;
+use Mage_Core_Model_Config_Base;
 use RuntimeException;
 use stdClass;
 use Symfony\Component\Console\Input\InputArgument;
@@ -79,7 +80,7 @@ HELP;
 
     /**
      * @param string $searchString
-     * @param string $system
+     * @param Mage_Core_Model_Config_Base $system
      *
      * @return array
      */

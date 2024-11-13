@@ -4,6 +4,8 @@ namespace N98\Magento\Command\Eav\Attribute;
 
 use InvalidArgumentException;
 use Mage;
+use Mage_Eav_Model_Config;
+use Mage_Eav_Model_Entity_Attribute_Abstract;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -90,10 +92,12 @@ class ViewCommand extends AbstractMagentoCommand
      * @param string $entityType
      * @param string $attributeCode
      *
-     * @return \Mage_Eav_Model_Entity_Attribute_Abstract|false
+     * @return Mage_Eav_Model_Entity_Attribute_Abstract|false
      */
     protected function getAttribute($entityType, $attributeCode)
     {
-        return Mage::getModel('eav/config')->getAttribute($entityType, $attributeCode);
+        /** @var Mage_Eav_Model_Config $model */
+        $model = Mage::getModel('eav/config');
+        return $model->getAttribute($entityType, $attributeCode);
     }
 }

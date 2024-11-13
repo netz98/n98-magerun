@@ -5,6 +5,7 @@ namespace N98\Magento\Command\System\Setup;
 use Exception;
 use Mage;
 use Mage_Core_Model_Config;
+use Mage_Core_Model_Resource_Resource;
 use Mage_Core_Model_Resource_Setup;
 use N98\Magento\Command\AbstractMagentoCommand;
 use ReflectionClass;
@@ -131,7 +132,7 @@ HELP;
     }
 
     /**
-     * @return \Mage_Core_Model_Resource
+     * @return Mage_Core_Model_Resource_Resource
      */
     protected function _getResource()
     {

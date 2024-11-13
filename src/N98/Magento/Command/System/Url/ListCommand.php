@@ -5,11 +5,15 @@ namespace N98\Magento\Command\System\Url;
 use InvalidArgumentException;
 use Mage;
 use Mage_Core_Model_Store;
+use Mage_Sitemap_Model_Resource_Catalog_Category;
+use Mage_Sitemap_Model_Resource_Catalog_Product;
+use Mage_Sitemap_Model_Resource_Cms_Page;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Varien_Object;
 
 /**
  * List url command
@@ -133,17 +137,20 @@ HELP;
     }
 
     /**
-     * @param string $resourceModel
+     * @param 'sitemap/catalog_category'|'sitemap/catalog_product'|'sitemap/cms_page' $resourceModelAlias
      * @param string $linkBaseUrl
      * @param string $storeId
      * @param array  $urls
      *
      * @return array
      */
-    protected function getUrls($resourceModel, $linkBaseUrl, $storeId, array $urls)
+    protected function getUrls($resourceModelAlias, $linkBaseUrl, $storeId, array $urls)
     {
-        $resourceModel = Mage::getResourceModel($resourceModel);
-        if (!$resourceModel) {
+        $resourceModel = Mage::getResourceModel($resourceModelAlias);
+        if (!$resourceModel instanceof Mage_Sitemap_Model_Resource_Catalog_Category &&
+            !$resourceModel instanceof Mage_Sitemap_Model_Resource_Catalog_Product &&
+            !$resourceModel instanceof Mage_Sitemap_Model_Resource_Cms_Page
+        ) {
             return $urls;
         }
 
@@ -153,7 +160,6 @@ HELP;
         }
 
         foreach ($collection as $item) {
-            /* @var \Varien_Object $item */
             $urls[] = $linkBaseUrl . $item->getUrl();
         }
         return $urls;

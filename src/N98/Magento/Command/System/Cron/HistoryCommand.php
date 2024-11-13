@@ -3,6 +3,8 @@
 namespace N98\Magento\Command\System\Cron;
 
 use Mage;
+use Mage_Core_Model_Date;
+use Mage_Cron_Model_Resource_Schedule_Collection;
 use Mage_Cron_Model_Schedule;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -56,6 +58,7 @@ class HistoryCommand extends AbstractMagentoCommand
 
         $output->writeln('<info>Times shown in <comment>' . $timezone . '</comment></info>');
 
+        /** @var Mage_Core_Model_Date $date */
         $date = Mage::getSingleton('core/date');
         $offset = $date->calculateOffset($timezone);
         $collection = Mage::getModel('cron/schedule')->getCollection();
@@ -64,6 +67,7 @@ class HistoryCommand extends AbstractMagentoCommand
             ->addOrder('finished_at', Varien_Data_Collection_Db::SORT_ORDER_DESC);
 
         $table = [];
+        /** @var Mage_Cron_Model_Schedule $job */
         foreach ($collection as $job) {
             $table[] = [$job->getJobCode(), $job->getStatus(), $job->getFinishedAt() ? $date->gmtDate(null, $date->timestamp($job->getFinishedAt()) + $offset) : ''];
         }

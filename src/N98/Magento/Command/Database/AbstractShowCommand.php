@@ -77,7 +77,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
      *
      * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->_input = $input;
         $this->_output = $output;

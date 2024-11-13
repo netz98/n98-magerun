@@ -3,6 +3,8 @@
 namespace N98\Magento\Command\Developer\Translate;
 
 use Mage;
+use Mage_Core_Model_Resource_Translate_String;
+use Mage_Core_Model_Store;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,11 +46,12 @@ class SetCommand extends AbstractMagentoCommand
 
         $parameterHelper = $this->getParameterHelper();
 
+        /** @var Mage_Core_Model_Store $store */
         $store = $parameterHelper->askStore($input, $output);
 
         $locale = Mage::getStoreConfig('general/locale/code', $store->getId());
 
-        /* @var \Mage_Core_Model_Store $store */
+        /** @var Mage_Core_Model_Resource_Translate_String $resource */
         $resource = Mage::getResourceModel('core/translate_string');
         $resource->saveTranslate(
             $input->getArgument('string'),

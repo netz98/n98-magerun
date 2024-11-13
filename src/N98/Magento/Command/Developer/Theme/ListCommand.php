@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Developer\Theme;
 
 use Mage;
+use Mage_Core_Model_Design_Package;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -55,6 +56,8 @@ class ListCommand extends AbstractMagentoCommand
      */
     protected function getThemes()
     {
-        return Mage::getModel('core/design_package')->getThemeList();
+        /** @var Mage_Core_Model_Design_Package $model */
+        $model = Mage::getModel('core/design_package');
+        return $model->getThemeList();
     }
 }

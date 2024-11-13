@@ -63,7 +63,7 @@ class CreateDatabase extends AbstractSubCommand
                 throw new \InvalidArgumentException('Database configuration is invalid');
             }
         } else {
-            /** @var $questionHelper QuestionHelper */
+            /** @var QuestionHelper $questionHelper */
             $questionHelper = $this->getCommand()->getHelperSet()->get('question');
             do {
                 // Host

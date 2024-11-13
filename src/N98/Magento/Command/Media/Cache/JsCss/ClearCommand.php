@@ -3,6 +3,8 @@
 namespace N98\Magento\Command\Media\Cache\JsCss;
 
 use Mage;
+use Mage_Core_Model_Design_Package;
+use MagentoHackathon\Composer\Magento\Deploystrategy\Move;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,7 +32,9 @@ class ClearCommand extends AbstractMagentoCommand
         $this->detectMagento($output);
 
         if ($this->initMagento()) {
-            Mage::getModel('core/design_package')->cleanMergedJsCss();
+            /** @var Mage_Core_Model_Design_Package $model */
+            $model = Mage::getModel('core/design_package');
+            $model->cleanMergedJsCss();
             Mage::dispatchEvent('clean_media_cache_after');
             $output->writeln('<info>Js/CSS cache cleared</info>');
         }

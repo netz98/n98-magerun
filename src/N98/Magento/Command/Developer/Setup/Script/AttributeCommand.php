@@ -3,6 +3,8 @@
 namespace N98\Magento\Command\Developer\Setup\Script;
 
 use Exception;
+use Mage_Catalog_Model_Resource_Eav_Attribute;
+use Mage_Core_Model_Resource;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType\Factory;
 use Symfony\Component\Console\Input\InputArgument;
@@ -53,9 +55,12 @@ class AttributeCommand extends AbstractMagentoCommand
 
             $attribute = $this->getAttribute($entityType, $attributeCode);
 
+            /** @var Mage_Core_Model_Resource $coreResource */
+            $coreResource = $this->_getModel('core/resource');
+
             $generator = Factory::create($entityType, $attribute);
             $generator->setReadConnection(
-                $this->_getModel('core/resource')->getConnection('core_read')
+                $coreResource->getConnection('core_read')
             );
             $code = $generator->generateCode();
             $warnings = $generator->getWarnings();
@@ -75,6 +80,8 @@ class AttributeCommand extends AbstractMagentoCommand
      */
     protected function getAttribute($entityType, $attributeCode)
     {
-        return $this->_getModel('catalog/resource_eav_attribute')->loadByCode($entityType, $attributeCode);
+        /** @var Mage_Catalog_Model_Resource_Eav_Attribute $model */
+        $model = $this->_getModel('catalog/resource_eav_attribute');
+        return $model->loadByCode($entityType, $attributeCode);
     }
 }

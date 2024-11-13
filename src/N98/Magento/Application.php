@@ -244,8 +244,8 @@ class Application extends BaseApplication
         }
 
         $this->getHelperSet()->set(new MagentoHelper($input, $output), 'magento');
+        /** @var MagentoHelper $magentoHelper */
         $magentoHelper = $this->getHelperSet()->get('magento');
-        /* @var MagentoHelper $magentoHelper */
         if (!$this->_directRootDir) {
             $subFolders = $this->config->getDetectSubFolders();
         } else {
@@ -389,7 +389,7 @@ class Application extends BaseApplication
      * @TODO Move logic into "EventSubscriber"
      *
      * @param OutputInterface $output
-     * @return null|false
+     * @return void|false
      */
     public function checkVarDir(OutputInterface $output)
     {

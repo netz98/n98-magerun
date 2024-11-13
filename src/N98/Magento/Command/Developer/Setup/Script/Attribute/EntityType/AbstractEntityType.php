@@ -3,6 +3,7 @@
 namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
 
 use Mage;
+use Mage_Core_Model_Resource;
 use Mage_Eav_Model_Entity_Attribute;
 
 /**
@@ -18,7 +19,7 @@ abstract class AbstractEntityType implements EntityType
     protected $readConnection;
 
     /**
-     * @var \Mage_Eav_Model_Entity_Attribute
+     * @var Mage_Eav_Model_Entity_Attribute
      */
     protected $attribute;
 
@@ -33,7 +34,7 @@ abstract class AbstractEntityType implements EntityType
     protected $warnings = [];
 
     /**
-     * @param \Mage_Eav_Model_Entity_Attribute $attribute
+     * @param Mage_Eav_Model_Entity_Attribute $attribute
      */
     public function __construct(Mage_Eav_Model_Entity_Attribute $attribute)
     {
@@ -67,7 +68,7 @@ abstract class AbstractEntityType implements EntityType
     /**
      * Gets attribute labels from database
      *
-     * @param \Mage_Eav_Model_Entity_Attribute $attribute
+     * @param Mage_Eav_Model_Entity_Attribute $attribute
      *
      * @return array
      */
@@ -80,8 +81,10 @@ abstract class AbstractEntityType implements EntityType
             );
         }
 
+        /** @var Mage_Core_Model_Resource $resourceModel */
+        $resourceModel = Mage::getSingleton('core/resource');
         $select = $this->readConnection->select()
-            ->from(Mage::getSingleton('core/resource')->getTableName('eav_attribute_label'))
+            ->from($resourceModel->getTableName('eav_attribute_label'))
             ->where('attribute_id = ?', $attribute->getId());
 
         $query = $select->query();
@@ -97,12 +100,13 @@ abstract class AbstractEntityType implements EntityType
     /**
      * Gets attribute options from database
      *
-     * @param \Mage_Eav_Model_Entity_Attribute $attribute
+     * @param Mage_Eav_Model_Entity_Attribute $attribute
      *
      * @return array
      */
     protected function getOptions(Mage_Eav_Model_Entity_Attribute $attribute)
     {
+        /** @var Mage_Core_Model_Resource $resourceModel */
         $resourceModel = Mage::getSingleton('core/resource');
         $select = $this->readConnection->select()
             ->from(['o' => $resourceModel->getTableName('eav_attribute_option')])

@@ -4,6 +4,7 @@ namespace N98\Magento\Command\Developer\Module\Disableenable;
 
 use InvalidArgumentException;
 use Mage;
+use Mage_Core_Model_Config;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;

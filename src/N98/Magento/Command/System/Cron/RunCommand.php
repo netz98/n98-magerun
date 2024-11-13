@@ -158,7 +158,7 @@ HELP;
         Mage::getConfig()->init()->loadEventObservers('crontab');
         Mage::app()->addEventArea('crontab');
 
-        /* @var Mage_Cron_Model_Schedule $schedule */
+        /** @var Mage_Cron_Model_Schedule|false $schedule */
         $schedule = Mage::getModel('cron/schedule');
         if (false === $schedule) {
             throw new RuntimeException('Failed to create new Mage_Cron_Model_Schedule model');
@@ -205,7 +205,7 @@ HELP;
      */
     private function scheduleConfigModel($callback, $jobCode)
     {
-        /* @var Mage_Cron_Model_Schedule $schedule */
+        /** @var Mage_Cron_Model_Schedule|false $schedule */
         $schedule = Mage::getModel('cron/schedule');
         if (false === $schedule) {
             throw new RuntimeException('Failed to create new Mage_Cron_Model_Schedule model');

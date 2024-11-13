@@ -4,6 +4,8 @@ namespace N98\Magento\Command\Config;
 
 use InvalidArgumentException;
 use Mage;
+use Mage_Core_Helper_Data;
+use Mage_Core_Model_Encryption;
 use N98\Magento\Command\AbstractMagentoCommand;
 
 /**
@@ -21,11 +23,13 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     protected $_scopes = ['default', 'websites', 'stores'];
 
     /**
-     * @return \Mage_Core_Model_Encryption
+     * @return Mage_Core_Model_Encryption
      */
     protected function getEncryptionModel()
     {
-        return Mage::helper('core')->getEncryptor();
+        /** @var Mage_Core_Helper_Data $helper */
+        $helper = Mage::helper('core');
+        return $helper->getEncryptor();
     }
 
     /**

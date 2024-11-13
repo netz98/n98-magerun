@@ -6,6 +6,7 @@ use Exception;
 use Locale;
 use Mage;
 use Mage_Eav_Model_Entity_Attribute;
+use Mage_Eav_Model_Entity_Attribute_Source_Table;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
@@ -170,6 +171,7 @@ HELP;
      */
     private function attributeValueExists(Mage_Eav_Model_Entity_Attribute $attribute, $arg_value)
     {
+        /** @var Mage_Eav_Model_Entity_Attribute_Source_Table $options */
         $options = Mage::getModel('eav/entity_attribute_source_table');
         $options->setAttribute($attribute);
         $options = $options->getAllOptions(false);

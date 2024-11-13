@@ -4,7 +4,7 @@ namespace N98\Magento\Command\Developer\EmailTemplate;
 
 use Mage;
 use Mage_Adminhtml_Model_Email_Template;
-use Mage_Core_Model_Template;
+use Mage_Core_Model_Email_Template;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Path;
 use Symfony\Component\Console\Input\InputInterface;
@@ -53,13 +53,12 @@ class UsageCommand extends AbstractMagentoCommand
 
     protected function findEmailTemplates()
     {
-        /** @var Mage_Core_Model_Template[] $templates */
         $templates = Mage::getModel('adminhtml/email_template')->getCollection();
 
         $return = [];
 
+        /** @var Mage_Core_Model_Email_Template[] $templates */
         foreach ($templates as $template) {
-
             /**
              * Some modules overload the template class so that the method getSystemConfigPathsWhereUsedCurrently
              * is not available, this is a workaround for that

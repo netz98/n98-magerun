@@ -2,6 +2,9 @@
 
 namespace N98\Magento\Command\Admin\User;
 
+use Mage_Admin_Model_Roles;
+use Mage_Admin_Model_Rules;
+use Mage_Admin_Model_User;
 use N98\Magento\Command\AbstractMagentoCommand;
 
 /**
@@ -12,7 +15,7 @@ use N98\Magento\Command\AbstractMagentoCommand;
 abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
 {
     /**
-     * @return \Mage_Core_Model_Abstract|\Mage_Admin_Model_User
+     * @return Mage_Admin_Model_User
      */
     protected function getUserModel()
     {
@@ -20,7 +23,7 @@ abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return \Mage_Core_Model_Abstract
+     * @return Mage_Admin_Model_Roles
      */
     protected function getRoleModel()
     {
@@ -28,7 +31,7 @@ abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return \Mage_Core_Model_Abstract
+     * @return Mage_Admin_Model_Rules
      */
     protected function getRulesModel()
     {

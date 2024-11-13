@@ -83,7 +83,7 @@ HELP;
 
         $this->input = $input;
         $this->output = $output;
-        $this->questionHelper = $this->getHelperSet()->get('question');
+        $this->questionHelper = $this->getQuestionHelper();
 
         // Defaults
         $range = $all = false;
@@ -127,7 +127,7 @@ HELP;
         if (!$range && !$all) {
             // Single customer deletion
             if (!$id) {
-                $id = $this->questionHelper->ask($this->input, $this->output, $this->getQuestion('Customer Id'), null);
+                $id = $this->questionHelper->ask($this->input, $this->output, $this->getQuestion('Customer Id'));
             }
 
             try {

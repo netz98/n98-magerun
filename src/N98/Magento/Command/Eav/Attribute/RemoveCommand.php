@@ -5,6 +5,7 @@ namespace N98\Magento\Command\Eav\Attribute;
 use InvalidArgumentException;
 use Mage;
 use Mage_Core_Exception;
+use Mage_Eav_Model_Config;
 use Mage_Eav_Model_Entity_Setup;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -45,7 +46,9 @@ class RemoveCommand extends AbstractMagentoCommand
         $entityType = $input->getArgument('entityType');
 
         try {
-            $attributes = Mage::getModel('eav/config')->getEntityAttributeCodes($entityType);
+            /** @var Mage_Eav_Model_Config $model */
+            $model = Mage::getModel('eav/config');
+            $attributes = $model->getEntityAttributeCodes($entityType);
         } catch (Mage_Core_Exception $e) {
             throw new InvalidArgumentException($e->getMessage());
         }
