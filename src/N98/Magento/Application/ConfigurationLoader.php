@@ -243,7 +243,10 @@ class ConfigurationLoader
     private function traversePluginFoldersForConfigFile($magentoRootFolder, $in, $depth)
     {
         $basename = $this->_customConfigFilename;
-        if (1 > count($in = array_filter(array_filter((array) $in, 'strlen'), 'is_dir'))) {
+        $in = array_filter((array) $in, function ($value): bool {
+            return strlen($value) > 0;
+        });
+        if (1 > count($in = array_filter($in, 'is_dir'))) {
             return;
         }
 

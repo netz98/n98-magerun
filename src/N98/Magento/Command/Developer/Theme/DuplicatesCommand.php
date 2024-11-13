@@ -77,7 +77,7 @@ HELP;
         }
 
         if ($input->getOption('log-junit')) {
-            $this->logJUnit($input, $duplicates, $input->getOption('log-junit'), microtime($time) - $time);
+            $this->logJUnit($input, $duplicates, $input->getOption('log-junit'), microtime(true) - $time);
         } else {
             if (count($duplicates) === 0) {
                 $output->writeln('<info>No duplicates were found</info>');

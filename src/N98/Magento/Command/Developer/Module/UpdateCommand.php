@@ -421,7 +421,7 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function getModuleDir()
     {
-        return $this->moduleDirectory ?? Mage::getModuleDir(false, $this->getModuleNamespace());
+        return $this->moduleDirectory ?? Mage::getModuleDir('', $this->getModuleNamespace());
     }
 
     /**

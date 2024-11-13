@@ -189,7 +189,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 
         Mage::app()->getConfig()->saveConfig(
             $this->configPath,
-            $isFalse ? 1 : 0,
+            $isFalse ? '1' : '0',
             $store->getId() == Mage_Core_Model_App::ADMIN_STORE_ID ? 'default' : 'stores',
             $store->getId()
         );

@@ -78,7 +78,7 @@ HELP;
         }
 
         if ($input->getOption('log-junit')) {
-            $duration = microtime($time) - $time;
+            $duration = microtime(true) - $time;
             $this->logJUnit($conflicts, $input->getOption('log-junit'), $duration);
         } else {
             $this->writeOutput($output, $conflicts);

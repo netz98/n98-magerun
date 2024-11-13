@@ -27,7 +27,7 @@ class ConfigBag extends \ArrayObject
 
     /**
      * @param string $key
-     * @param bool $value
+     * @param int $value
      *
      * @return $this
      */

@@ -64,7 +64,7 @@ class ToggleCommand extends AbstractMagentoCommand
         }
         $newStatus = !$block->getIsActive();
         $block
-            ->setIsActive($newStatus)
+            ->setIsActive((int)$newStatus)
             ->save();
         $output->writeln(sprintf(
             '<comment>Block</comment> <info>%s</info>',

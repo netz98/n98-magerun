@@ -144,7 +144,7 @@ class DatabaseHelper extends AbstractHelper
     {
         $statement = $this->getConnection()->query("SELECT @@{$variable};");
         if (false === $statement) {
-            throw new RuntimeException(sprintf('Failed to query mysql variable %s', var_export($variable, 1)));
+            throw new RuntimeException(sprintf('Failed to query mysql variable %s', var_export($variable, true)));
         }
 
         $result = $statement->fetch(PDO::FETCH_ASSOC);

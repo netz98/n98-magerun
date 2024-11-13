@@ -138,7 +138,7 @@ HELP;
         }
 
         if ($input->getOption('log-junit')) {
-            $this->logJUnit($table, $input->getOption('log-junit'), microtime($time) - $time);
+            $this->logJUnit($table, $input->getOption('log-junit'), microtime(true) - $time);
         } else {
             $tableHelper = $this->getTableHelper();
             $tableHelper

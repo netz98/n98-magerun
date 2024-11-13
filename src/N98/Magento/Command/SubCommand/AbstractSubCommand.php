@@ -95,7 +95,7 @@ abstract class AbstractSubCommand implements SubCommandInterface
     /**
      * @param string $name of the optional option
      * @param string $question to ask in case the option is not available
-     * @param bool $default value (true means yes, false no), optional, defaults to true
+     * @param string|bool $default value (true means yes, false no), optional, defaults to true
      * @return bool
      */
     final protected function getOptionalBooleanOption($name, $question, $default = true)
@@ -116,13 +116,11 @@ abstract class AbstractSubCommand implements SubCommandInterface
                 $default
             );
 
-            $flag = $questionHelper->ask(
+            return $questionHelper->ask(
                 $this->input,
                 $this->output,
                 $question
             );
-
-            return $flag;
         }
     }
 

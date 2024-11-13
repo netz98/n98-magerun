@@ -71,7 +71,10 @@ class ScriptLoader
             $scriptFolders = $this->_scriptFolders;
         }
 
-        $scriptFolders = array_filter(array_filter($scriptFolders, 'strlen'), 'is_dir');
+        $scriptFolders = array_filter($scriptFolders, function ($value): bool {
+            return strlen($value) > 0;
+        });
+        $scriptFolders = array_filter($scriptFolders, 'is_dir');
 
         $this->_scriptFolders = $scriptFolders;
         $this->_scriptFiles = [];

@@ -3,12 +3,12 @@
 namespace N98\Magento\Command\Config;
 
 use Mage;
-use Mage_Core_Model_Config_Base;
 use RuntimeException;
 use stdClass;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Varien_Simplexml_Config;
 
 /**
  * Search config command
@@ -80,7 +80,7 @@ HELP;
 
     /**
      * @param string $searchString
-     * @param Mage_Core_Model_Config_Base $system
+     * @param Varien_Simplexml_Config $system
      *
      * @return array
      */

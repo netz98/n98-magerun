@@ -167,6 +167,7 @@ class InfoCommand extends AbstractMagentoCommand
                 $vendors
             );
 
+            // @phpstan-ignore argument.type
             $this->infos['Vendors (' . $codePool . ')'] = implode(', ', $vendors);
         }
     }

@@ -105,14 +105,14 @@ HELP;
                 $all = $this->questionHelper->ask(
                     $this->input,
                     $this->output,
-                    new ConfirmationQuestion('Delete all customers?', 'n'),
+                    new ConfirmationQuestion('Delete all customers?', false),
                 );
 
                 if (!$all) {
                     $range = $this->questionHelper->ask(
                         $this->input,
                         $this->output,
-                        new ConfirmationQuestion('Delete a range of customers?', 'n'),
+                        new ConfirmationQuestion('Delete a range of customers?', false),
                     );
 
                     if (!$range) {

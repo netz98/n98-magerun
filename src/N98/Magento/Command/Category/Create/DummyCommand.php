@@ -5,6 +5,7 @@ namespace N98\Magento\Command\Category\Create;
 use Mage;
 use Mage_Catalog_Model_Category;
 use Mage_Catalog_Model_Resource_Category_Collection;
+use Mage_Core_Model_Store;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
@@ -227,11 +228,12 @@ class DummyCommand extends AbstractMagentoCommand
      * Setting the store-ID of a category requires a compatibility layer for Magento 1.5.1.0
      *
      * @param Mage_Catalog_Model_Category $category
-     * @param string|int $storeId
+     * @param int|Mage_Core_Model_Store|string $storeId
      */
     private function setCategoryStoreId(Mage_Catalog_Model_Category $category, $storeId)
     {
         if (Mage::getVersion() === '1.5.1.0') {
+            // @phpstan-ignore argument.type
             $category->setStoreId([0, $storeId]);
         } else {
             $category->setStoreId($storeId);

@@ -199,6 +199,7 @@ HELP;
     protected function _getContent($filename)
     {
         if ($filename == '-' || empty($filename)) {
+            // @phpstan-ignore argument.type
             $script = @\file_get_contents('php://stdin', 'r');
         } else {
             $script = @\file_get_contents($filename);

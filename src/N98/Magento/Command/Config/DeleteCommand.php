@@ -95,7 +95,7 @@ HELP;
     /**
      * @param InputInterface $input
      * @param string $path
-     * @param string $scopeId
+     * @param int $scopeId
      *
      * @return array
      */
