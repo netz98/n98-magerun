@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database\Maintain;
 
 use InvalidArgumentException;
@@ -18,23 +20,24 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CheckTablesCommand extends AbstractMagentoCommand
 {
-    public const MESSAGE_CHECK_NOT_SUPPORTED = 'The storage engine for the table doesn\'t support check';
-    public const MESSAGE_REPAIR_NOT_SUPPORTED = 'The storage engine for the table doesn\'t support repair';
+    public const MESSAGE_CHECK_NOT_SUPPORTED = "The storage engine for the table doesn't support check";
+
+    public const MESSAGE_REPAIR_NOT_SUPPORTED = "The storage engine for the table doesn't support repair";
 
     /**
      * @var InputInterface
      */
-    protected $input = null;
+    protected $input;
 
     /**
      * @var OutputInterface
      */
-    protected $output = null;
+    protected $output;
 
     /**
      * @var DatabaseHelper
      */
-    protected $dbHelper = null;
+    protected $dbHelper;
 
     /**
      * @var bool
@@ -115,22 +118,14 @@ HELP;
         }
     }
 
-    /**
-     * @param ProgressBar $progress
-     */
-    protected function progressAdvance(ProgressBar $progress)
+    protected function progressAdvance(ProgressBar $progressBar)
     {
         if ($this->showProgress) {
-            $progress->advance();
+            $progressBar->advance();
         }
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->input = $input;
@@ -154,26 +149,27 @@ HELP;
 
         $tableOutput = [];
 
-        $progress = new ProgressBar($output, 50);
+        $progressBar = new ProgressBar($output, 50);
 
         if ($this->showProgress) {
-            $progress->start(count($tables));
+            $progressBar->start(count($tables));
         }
 
         $methods = ['InnoDB' => 1, 'MEMORY' => 1, 'MyISAM' => 1];
 
-        foreach ($tables as $tableName) {
-            if (isset($allTableStatus[$tableName]) && isset($methods[$allTableStatus[$tableName]['Engine']])) {
-                $m = '_check' . $allTableStatus[$tableName]['Engine'];
-                $tableOutput = array_merge($tableOutput, $this->$m($tableName));
+        foreach ($tables as $table) {
+            if (isset($allTableStatus[$table]) && isset($methods[$allTableStatus[$table]['Engine']])) {
+                $m = '_check' . $allTableStatus[$table]['Engine'];
+                $tableOutput = array_merge($tableOutput, $this->$m($table));
             } else {
-                $tableOutput[] = ['table'     => $tableName, 'operation' => 'not supported', 'type'      => '', 'status'    => ''];
+                $tableOutput[] = ['table'     => $table, 'operation' => 'not supported', 'type'      => '', 'status'    => ''];
             }
-            $this->progressAdvance($progress);
+
+            $this->progressAdvance($progressBar);
         }
 
         if ($this->showProgress) {
-            $progress->finish();
+            $progressBar->finish();
         }
 
         $tableHelper = $this->getTableHelper();
@@ -191,9 +187,9 @@ HELP;
      */
     protected function _queryAlterTable($tableName, $engine)
     {
-        $connection = $this->dbHelper->getConnection($this->output);
+        $pdo = $this->dbHelper->getConnection($this->output);
         $start = microtime(true);
-        $affectedRows = $connection->exec(sprintf('ALTER TABLE %s ENGINE=%s', $tableName, $engine));
+        $affectedRows = $pdo->exec(sprintf('ALTER TABLE %s ENGINE=%s', $tableName, $engine));
 
         return [['table'     => $tableName, 'operation' => 'ENGINE ' . $engine, 'type'      => sprintf('%15s rows', (string) $affectedRows), 'status'    => sprintf('%.3f secs', microtime(true) - $start)]];
     }
@@ -253,11 +249,10 @@ HELP;
      */
     protected function _query($sql)
     {
-        $connection = $this->dbHelper->getConnection($this->output);
-        $query = $connection->prepare($sql);
+        $pdo = $this->dbHelper->getConnection($this->output);
+        $query = $pdo->prepare($sql);
         $query->execute();
-        $result = $query->fetch(PDO::FETCH_ASSOC);
 
-        return $result;
+        return $query->fetch(PDO::FETCH_ASSOC);
     }
 }

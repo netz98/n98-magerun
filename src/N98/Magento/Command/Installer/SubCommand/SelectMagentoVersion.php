@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Installer\SubCommand;
 
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
@@ -32,8 +34,8 @@ class SelectMagentoVersion extends AbstractSubCommand
                 $choices[$key + 1] = '<comment>' . $package['name'] . '</comment> ';
             }
 
-            $question = new ChoiceQuestion('<question>Choose a magento version:</question>', $choices);
-            $question->setValidator(function ($typeInput) {
+            $choiceQuestion = new ChoiceQuestion('<question>Choose a magento version:</question>', $choices);
+            $choiceQuestion->setValidator(function ($typeInput) {
                 if (!in_array(
                     $typeInput - 1,
                     range(0, count($this->commandConfig['magento-packages']) - 1),
@@ -48,7 +50,7 @@ class SelectMagentoVersion extends AbstractSubCommand
             $type = $this->getCommand()->getQuestionHelper()->ask(
                 $this->input,
                 $this->output,
-                $question
+                $choiceQuestion
             );
         } else {
             $type = null;

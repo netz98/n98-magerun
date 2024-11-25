@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Check\PHP;
 
 use N98\Magento\Command\CommandConfigAware;
@@ -19,27 +21,21 @@ class ExtensionsCheck implements SimpleCheck, CommandConfigAware
      */
     protected $_commandConfig;
 
-    /**
-     * @param ResultCollection $results
-     */
-    public function check(ResultCollection $results)
+    public function check(ResultCollection $resultCollection)
     {
         $requiredExtensions = $this->_commandConfig['php']['required-extensions'];
 
-        foreach ($requiredExtensions as $ext) {
-            $result = $results->createResult();
-            $result->setStatus(extension_loaded($ext) ? Result::STATUS_OK : Result::STATUS_ERROR);
+        foreach ($requiredExtensions as $requiredExtension) {
+            $result = $resultCollection->createResult();
+            $result->setStatus(extension_loaded($requiredExtension) ? Result::STATUS_OK : Result::STATUS_ERROR);
             if ($result->isValid()) {
-                $result->setMessage("<info>Required PHP Module <comment>$ext</comment> found.</info>");
+                $result->setMessage(sprintf('<info>Required PHP Module <comment>%s</comment> found.</info>', $requiredExtension));
             } else {
-                $result->setMessage("<error>Required PHP Module $ext not found!</error>");
+                $result->setMessage(sprintf('<error>Required PHP Module %s not found!</error>', $requiredExtension));
             }
         }
     }
 
-    /**
-     * @param array $commandConfig
-     */
     public function setCommandConfig(array $commandConfig)
     {
         $this->_commandConfig = $commandConfig;

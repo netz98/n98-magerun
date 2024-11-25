@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database;
 
 use Description;
@@ -21,12 +23,12 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
     /**
      * @var InputInterface
      */
-    protected $_input = null;
+    protected $_input;
 
     /**
      * @var OutputInterface
      */
-    protected $_output = null;
+    protected $_output;
 
     /**
      * @var array
@@ -72,8 +74,6 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
      * @return int
      */
@@ -91,7 +91,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
         $hasDescription = isset($this->_importantVars[array_key_first($this->_importantVars)]['desc']) &&
             false === $this->_input->getOption('no-description');
         $header = ['Variable Name', 'Value'];
-        if (true === $hasDescription) {
+        if ($hasDescription) {
             $header[] = Description::class;
         }
 
@@ -100,9 +100,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
     }
 
     /**
-     * @param array $outputVars
      * @param bool  $hasDescription
-     *
      * @return array
      */
     protected function generateRows(array $outputVars, $hasDescription)
@@ -116,24 +114,27 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
             ) {
                 $rows[$i][] = $this->formatDesc($this->_importantVars[$variableName]['desc']);
             }
-            $i++;
+
+            ++$i;
         }
+
         // when searching no every variable has a description so fill the missing ones with blanks
         if (false === $hasDescription) {
             return $rows;
         }
+
         foreach ($rows as $k => $r) {
             if (2 === count($r)) {
                 $rows[$k] = $this->getVariableDescription($r);
             }
         }
+
         return $rows;
     }
 
     /**
      * Extend or modify this method to add descriptions to other variables
      *
-     * @param array $row
      *
      * @return array
      */
@@ -156,10 +157,6 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
         return wordwrap($desc);
     }
 
-    /**
-     * @param array $header
-     * @param array $rows
-     */
     protected function renderTable(array $header, array $rows)
     {
         $tableHelper = $this->getTableHelper();
@@ -172,13 +169,11 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
      */
     protected function initVariables($variable = null)
     {
-        $database = $this->getDatabaseHelper();
-        $this->_allVariables = $database->{$this->showMethod}($variable);
+        $databaseHelper = $this->getDatabaseHelper();
+        $this->_allVariables = $databaseHelper->{$this->showMethod}($variable);
     }
 
     /**
-     * @param array $vars
-     *
      * @return array
      */
     protected function formatVariables(array $vars)
@@ -191,22 +186,25 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
                 if (true === $this->allowRounding($k)) {
                     $v = Filesystem::humanFileSize($v, $rounding);
                 }
+
                 if (isset($this->_specialFormat[$k])) {
                     $formatter = $this->_specialFormat[$k];
                     if (is_string($formatter) && method_exists($this, $formatter)) {
                         $formatter = [$this, $formatter];
                     }
+
                     $v = call_user_func($formatter, $v);
                 }
             }
+
             unset($v);
         }
 
         if ($isStandardFormat) {
             // align=right
             $maxWidth = $this->getMaxValueWidth($vars);
-            foreach ($vars as &$v) {
-                $v = str_pad($v, $maxWidth, ' ', STR_PAD_LEFT);
+            foreach ($vars as &$var) {
+                $var = str_pad($var, $maxWidth, ' ', STR_PAD_LEFT);
             }
         }
 
@@ -214,19 +212,18 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
     }
 
     /**
-     * @param array $vars
-     *
      * @return int
      */
     protected function getMaxValueWidth(array $vars)
     {
         $maxWidth = 0;
-        foreach ($vars as $v) {
-            $l = strlen($v);
+        foreach ($vars as $var) {
+            $l = strlen($var);
             if ($l > $maxWidth) {
                 $maxWidth = $l;
             }
         }
+
         return $maxWidth;
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Installer;
 
 use N98\Magento\Command\AbstractMagentoCommand;
@@ -122,8 +124,6 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @throws \RuntimeException
      * @return int
      */

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Indexer;
 
 use DateInterval;
@@ -64,19 +66,17 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
     /**
      * Returns a readable runtime
      *
-     * @param Mage_Index_Model_Process $indexer
      * @return string
      */
-    protected function getRuntime(Mage_Index_Model_Process $indexer)
+    protected function getRuntime(Mage_Index_Model_Process $mageIndexModelProcess)
     {
-        $dateTimeUtils = new DateTimeUtils();
-        $startTime = new \DateTime($indexer->getStartedAt());
-        $endTime = new \DateTime($indexer->getEndedAt());
+        $dateTime = new DateTimeUtils();
+        $startTime = new \DateTime($mageIndexModelProcess->getStartedAt());
+        $endTime = new \DateTime($mageIndexModelProcess->getEndedAt());
         if ($startTime > $endTime) {
             return 'index not finished';
         }
-        $lastRuntime = $dateTimeUtils->getDifferenceAsString($startTime, $endTime);
-        return $lastRuntime;
+        return $dateTime->getDifferenceAsString($startTime, $endTime);
     }
 
     /**
@@ -93,24 +93,19 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
     /**
      * Returns the runtime in total seconds
      *
-     * @param Mage_Index_Model_Process $indexer
      * @return int
      */
-    protected function getRuntimeInSeconds(Mage_Index_Model_Process $indexer)
+    protected function getRuntimeInSeconds(Mage_Index_Model_Process $mageIndexModelProcess)
     {
-        $startTimestamp = strtotime($indexer->getStartedAt());
-        $endTimestamp = strtotime($indexer->getEndedAt());
+        $startTimestamp = strtotime($mageIndexModelProcess->getStartedAt());
+        $endTimestamp = strtotime($mageIndexModelProcess->getEndedAt());
 
         return $endTimestamp - $startTimestamp;
     }
 
-    /**
-     * @param OutputInterface $output
-     * @param Mage_Index_Model_Process $process
-     */
-    protected function writeEstimatedEnd(OutputInterface $output, Mage_Index_Model_Process $process)
+    protected function writeEstimatedEnd(OutputInterface $output, Mage_Index_Model_Process $mageIndexModelProcess)
     {
-        $runtimeInSeconds = $this->getRuntimeInSeconds($process);
+        $runtimeInSeconds = $this->getRuntimeInSeconds($mageIndexModelProcess);
 
         /**
          * Try to estimate runtime. If index was aborted or never created we have a timestamp < 0
@@ -121,42 +116,33 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
 
         $estimatedEnd = new \DateTime('now', new DateTimeZone('UTC'));
         $estimatedEnd->add(new DateInterval('PT' . $runtimeInSeconds . 'S'));
+
         $output->writeln(
             sprintf('<info>Estimated end: <comment>%s</comment></info>', $estimatedEnd->format('Y-m-d H:i:s T'))
         );
     }
 
-    /**
-     * @param OutputInterface $output
-     * @param Mage_Index_Model_Process $process
-     * @param \DateTime $startTime
-     * @param \DateTime $endTime
-     */
     protected function writeSuccessResult(
         OutputInterface $output,
-        Mage_Index_Model_Process $process,
+        Mage_Index_Model_Process $mageIndexModelProcess,
         \DateTime $startTime,
         \DateTime $endTime
     ) {
         $output->writeln(
             sprintf(
                 '<info>Successfully reindexed <comment>%s</comment> (Runtime: <comment>%s</comment>)</info>',
-                $process->getIndexerCode(),
+                $mageIndexModelProcess->getIndexerCode(),
                 DateTimeUtils::difference($startTime, $endTime)
             )
         );
     }
 
     /**
-     * @param OutputInterface $output
-     * @param Mage_Index_Model_Process $process
-     * @param \DateTime $startTime
-     * @param \DateTime $endTime
      * @param string $errorMessage
      */
     protected function writeFailedResult(
         OutputInterface $output,
-        Mage_Index_Model_Process $process,
+        Mage_Index_Model_Process $mageIndexModelProcess,
         \DateTime $startTime,
         \DateTime $endTime,
         $errorMessage
@@ -165,15 +151,13 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
             sprintf(
                 '<error>Reindex finished with error message "%s". %s</error> (Runtime: <comment>%s</comment>)</error>',
                 $errorMessage,
-                $process->getIndexerCode(),
+                $mageIndexModelProcess->getIndexerCode(),
                 DateTimeUtils::difference($startTime, $endTime)
             )
         );
     }
 
     /**
-     * @param OutputInterface $output
-     * @param array $processes
      * @return bool
      */
     protected function executeProcesses(OutputInterface $output, array $processes)
@@ -187,8 +171,9 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
                     $isSuccessful = false;
                 }
             }
+
             \Mage::dispatchEvent('shell_reindex_finalize_process');
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             $isSuccessful = false;
             \Mage::dispatchEvent('shell_reindex_finalize_process');
         }
@@ -197,36 +182,34 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param OutputInterface $output
-     * @param Mage_Index_Model_Process $process
      * @return bool
      */
-    private function executeProcess(OutputInterface $output, Mage_Index_Model_Process $process)
+    private function executeProcess(OutputInterface $output, Mage_Index_Model_Process $mageIndexModelProcess)
     {
         $output->writeln(
-            sprintf('<info>Started reindex of: <comment>%s</comment></info>', $process->getIndexerCode())
+            sprintf('<info>Started reindex of: <comment>%s</comment></info>', $mageIndexModelProcess->getIndexerCode())
         );
-        $this->writeEstimatedEnd($output, $process);
+        $this->writeEstimatedEnd($output, $mageIndexModelProcess);
 
-        $startTime = new \DateTime('now');
+        $startTime = \Carbon\Carbon::now();
 
         $isSuccessful = true;
         $errorMessage = '';
 
         try {
-            $process->reindexEverything();
-            \Mage::dispatchEvent($process->getIndexerCode() . '_shell_reindex_after');
-        } catch (Exception $e) {
-            $errorMessage = $e->getMessage();
+            $mageIndexModelProcess->reindexEverything();
+            \Mage::dispatchEvent($mageIndexModelProcess->getIndexerCode() . '_shell_reindex_after');
+        } catch (Exception $exception) {
+            $errorMessage = $exception->getMessage();
             $isSuccessful = false;
         }
 
-        $endTime = new \DateTime('now');
+        $endTime = \Carbon\Carbon::now();
 
         if ($isSuccessful) {
-            $this->writeSuccessResult($output, $process, $startTime, $endTime);
+            $this->writeSuccessResult($output, $mageIndexModelProcess, $startTime, $endTime);
         } else {
-            $this->writeFailedResult($output, $process, $startTime, $endTime, $errorMessage);
+            $this->writeFailedResult($output, $mageIndexModelProcess, $startTime, $endTime, $errorMessage);
         }
 
         return $isSuccessful;

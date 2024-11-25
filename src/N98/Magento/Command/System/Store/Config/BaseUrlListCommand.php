@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Store\Config;
 
 use Mage;
@@ -23,12 +25,7 @@ class BaseUrlListCommand extends AbstractMagentoCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $table = [];
@@ -37,6 +34,7 @@ class BaseUrlListCommand extends AbstractMagentoCommand
         if (!$input->getOption('format')) {
             $this->writeSection($output, 'Magento Stores - Base URLs');
         }
+
         $this->initMagento();
 
         foreach (Mage::app()->getStores() as $store) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Check;
 
 use ArrayObject;
@@ -24,7 +26,6 @@ class ResultCollection implements IteratorAggregate
     protected $_resultGroup;
 
     /**
-     * @param Result $result
      * @return $this
      */
     public function addResult(Result $result)

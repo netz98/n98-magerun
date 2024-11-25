@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Code\Model;
 
 use InvalidArgumentException;
@@ -21,22 +23,22 @@ class MethodCommand extends AbstractMagentoCommand
     /**
      * @var InputInterface
      */
-    protected $_input = null;
+    protected $_input;
 
     /**
      * @var OutputInterface
      */
-    protected $_output = null;
+    protected $_output;
 
     /**
      * @var \Mage_Core_Model_Abstract
      */
-    protected $_mageModel = null;
+    protected $_mageModel;
 
     /**
      * @var string
      */
-    protected $_mageModelTable = null;
+    protected $_mageModelTable;
 
     /**
      * @var string
@@ -61,10 +63,7 @@ class MethodCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      *
-     * @return int
      * @throws RuntimeException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -75,6 +74,7 @@ class MethodCommand extends AbstractMagentoCommand
         if (false === $this->initMagento()) {
             throw new RuntimeException('Magento could not be loaded');
         }
+
         $this->checkModel();
         $this->checkClassFileName();
         $this->initTableColumns();
@@ -93,6 +93,7 @@ class MethodCommand extends AbstractMagentoCommand
                 break;
             }
         }
+
         $written = file_put_contents($this->_fileName, implode('', $fileParts));
         if (false === $written) {
             throw new RuntimeException('Cannot write to file: ' . $this->_fileName);
@@ -164,12 +165,13 @@ class MethodCommand extends AbstractMagentoCommand
      */
     protected function initTableColumns()
     {
-        $dbHelper = $this->getDatabaseHelper();
-        $connection = $dbHelper->getConnection($this->_output);
-        $stmt = $connection->query('SHOW COLUMNS FROM ' . $this->_mageModelTable, PDO::FETCH_ASSOC);
+        $databaseHelper = $this->getDatabaseHelper();
+        $pdo = $databaseHelper->getConnection($this->_output);
+        $stmt = $pdo->query('SHOW COLUMNS FROM ' . $this->_mageModelTable, PDO::FETCH_ASSOC);
         foreach ($stmt as $row) {
             $this->_tableColumns[$row['Field']] = $row;
         }
+
         if (0 === count($this->_tableColumns)) {
             throw new InvalidArgumentException('No columns found in table: ' . $this->_mageModelTable);
         }
@@ -185,7 +187,7 @@ class MethodCommand extends AbstractMagentoCommand
         $paths = explode(PATH_SEPARATOR, get_include_path());
         foreach ($paths as $path) {
             $fullPath = $path . DIRECTORY_SEPARATOR . $filename;
-            if (true === @file_exists($fullPath)) {
+            if (@file_exists($fullPath)) {
                 return $fullPath;
             }
         }
@@ -218,7 +220,7 @@ class MethodCommand extends AbstractMagentoCommand
 
         $this->_mageModelTable = $this->_mageModel->getResource()
             ? $this->_mageModel->getResource()->getMainTable() : null;
-        if (true === empty($this->_mageModelTable)) {
+        if (empty($this->_mageModelTable)) {
             throw new InvalidArgumentException(
                 'Cannot find main table of model ' . $modelName
             );

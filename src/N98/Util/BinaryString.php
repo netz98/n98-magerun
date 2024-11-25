@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util;
 
 /**
@@ -19,7 +21,7 @@ class BinaryString
         $array = explode($delimiter, $string);
         foreach ($array as $key => &$data) {
             $data = trim($data);
-            if (empty($data)) {
+            if ($data === '' || $data === '0') {
                 unset($array[$key]);
             }
         }

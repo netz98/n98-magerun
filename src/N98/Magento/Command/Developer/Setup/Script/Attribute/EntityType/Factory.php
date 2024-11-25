@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
 
 use RuntimeException;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Check\Settings;
 
 use Mage_Core_Model_Store;
@@ -16,23 +18,21 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
 {
     protected $class = 'abstract';
 
-    public function initConfigPaths()
+    protected function initConfigPaths()
     {
         $this->registerStoreConfigPath('baseUrl', 'web/' . $this->class . '/base_url');
         $this->registerStoreConfigPath('cookieDomain', 'web/cookie/cookie_domain');
     }
 
     /**
-     * @param Result                 $result
-     * @param \Mage_Core_Model_Store $store
      * @param string                 $baseUrl      setting
      * @param string                 $cookieDomain setting
      */
-    protected function checkSettings(Result $result, Mage_Core_Model_Store $store, $baseUrl, $cookieDomain)
+    protected function checkSettings(Result $result, Mage_Core_Model_Store $mageCoreModelStore, $baseUrl, $cookieDomain)
     {
         $errorMessage = 'cookie-domain and ' . $this->class . ' base-URL do not match';
 
-        if (strlen($cookieDomain)) {
+        if (strlen($cookieDomain) !== 0) {
             $isValid = $this->validateCookieDomainAgainstUrl($cookieDomain, $baseUrl);
 
             $result->setStatus($isValid);
@@ -40,18 +40,18 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
             if ($isValid) {
                 $result->setMessage(
                     '<info>Cookie Domain (' . $this->class . '): <comment>' . $cookieDomain .
-                    '</comment> of Store: <comment>' . $store->getCode() . '</comment> - OK</info>'
+                    '</comment> of Store: <comment>' . $mageCoreModelStore->getCode() . '</comment> - OK</info>'
                 );
             } else {
                 $result->setMessage(
                     '<error>Cookie Domain (' . $this->class . '): <comment>' . $cookieDomain .
-                    '</comment> of Store: <comment>' . $store->getCode() . '</comment> - ERROR: ' . $errorMessage .
+                    '</comment> of Store: <comment>' . $mageCoreModelStore->getCode() . '</comment> - ERROR: ' . $errorMessage .
                     '</error>'
                 );
             }
         } else {
             $result->setMessage(
-                '<info>Empty cookie Domain (' . $this->class . ') of Store: <comment>' . $store->getCode() .
+                '<info>Empty cookie Domain (' . $this->class . ') of Store: <comment>' . $mageCoreModelStore->getCode() .
                 '</comment> - OK</info>'
             );
         }
@@ -101,7 +101,7 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
         }
 
         // cookie domain must at least contain a SLD.TLD, no match or match at offset 0 for '.' invalidates
-        if (!strpos($cookieDomain, '.')) {
+        if (in_array(strpos($cookieDomain, '.'), [0, false], true)) {
             return false;
         }
 
@@ -112,14 +112,9 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
         }
 
         $prefix = substr($siteDomain, 0, -$cookieLen);
-        if (0 === strlen($prefix)) {
+        if ($prefix === '') {
             return false;
         }
-
-        if (substr($prefix, -1) !== '.') {
-            return false;
-        }
-
-        return true;
+        return substr($prefix, -1) === '.';
     }
 }

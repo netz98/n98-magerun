@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Media\Cache\JsCss;
 
 use Mage;
@@ -22,11 +24,6 @@ class ClearCommand extends AbstractMagentoCommand
              ->setDescription('Clears JS/CSS cache');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -38,6 +35,7 @@ class ClearCommand extends AbstractMagentoCommand
             Mage::dispatchEvent('clean_media_cache_after');
             $output->writeln('<info>Js/CSS cache cleared</info>');
         }
+
         return 0;
     }
 }

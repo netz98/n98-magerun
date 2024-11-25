@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database\Compressor;
 
 /**
@@ -20,9 +22,8 @@ class Gzip extends AbstractCompressor
     {
         if ($pipe) {
             return $command . ' | gzip -c ';
-        } else {
-            return  'tar -czf ' . $command;
         }
+        return  'tar -czf ' . $command;
     }
 
     /**
@@ -41,14 +42,12 @@ class Gzip extends AbstractCompressor
             }
 
             return 'gzip -dc < ' . escapeshellarg($fileName) . ' | ' . $command;
-        } else {
-            if ($this->hasPipeViewer()) {
-                return 'pv -cN tar -zxf ' . escapeshellarg($fileName) . ' && pv -cN mysql | ' . $command;
-            }
-
-            return 'tar -zxf ' . escapeshellarg($fileName) . ' -C ' . dirname($fileName) . ' && ' . $command . ' < '
-                . escapeshellarg(substr($fileName, 0, -4));
         }
+        if ($this->hasPipeViewer()) {
+            return 'pv -cN tar -zxf ' . escapeshellarg($fileName) . ' && pv -cN mysql | ' . $command;
+        }
+        return 'tar -zxf ' . escapeshellarg($fileName) . ' -C ' . dirname($fileName) . ' && ' . $command . ' < '
+            . escapeshellarg(substr($fileName, 0, -4));
     }
 
     /**
@@ -60,24 +59,24 @@ class Gzip extends AbstractCompressor
      */
     public function getFileName($fileName, $pipe = true)
     {
-        if (!strlen($fileName)) {
+        if ((string) $fileName === '') {
             return $fileName;
         }
 
         if ($pipe) {
             if (substr($fileName, -3, 3) === '.gz') {
                 return $fileName;
-            } elseif (substr($fileName, -4, 4) === '.sql') {
+            }
+            if (substr($fileName, -4, 4) === '.sql') {
                 $fileName .= '.gz';
-            } else {
+            }
+            else {
                 $fileName .= '.sql.gz';
             }
+        } elseif (substr($fileName, -4, 4) === '.tgz') {
+            return $fileName;
         } else {
-            if (substr($fileName, -4, 4) === '.tgz') {
-                return $fileName;
-            } else {
-                $fileName .= '.tgz';
-            }
+            $fileName .= '.tgz';
         }
 
         return $fileName;

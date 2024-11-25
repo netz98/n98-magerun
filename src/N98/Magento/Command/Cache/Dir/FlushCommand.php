@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cache\Dir;
 
 use FilesystemIterator;
@@ -50,12 +52,7 @@ cache initialization, old config data within the files cache and similar.
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->output = $output;
@@ -96,9 +93,10 @@ HELP;
                     '<debug>Filesystem::recursiveRemoveDirectory() <comment>' . $file . '</comment></debug>'
                 );
                 if (!isset($fs)) {
-                    $fs = new Filesystem();
+                    $filesystem = new Filesystem();
                 }
-                if (!$fs->recursiveRemoveDirectory($file)) {
+
+                if (!$filesystem->recursiveRemoveDirectory($file)) {
                     $errors[] = $file;
                 };
             } else {
@@ -109,7 +107,7 @@ HELP;
             }
         }
 
-        if (!$errors) {
+        if ($errors === []) {
             return true;
         }
 

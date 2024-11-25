@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Indexer;
 
 use InvalidArgumentException;
@@ -47,12 +49,7 @@ indexer.
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -92,14 +89,14 @@ HELP;
             if (!$process) {
                 throw new InvalidArgumentException(sprintf('Indexer "%s" was not found!', $indexCode));
             }
+
             $processes[] = $process;
         }
+
         return $processes;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      *
      * @return array
      */
@@ -107,7 +104,7 @@ HELP;
     {
         $indexerList = $this->getIndexerList();
         $choices = [];
-        foreach ($indexerList as $key => $indexer) {
+        foreach ($indexerList as $indexer) {
             $choices[] = sprintf(
                 '%-40s <info>(last runtime: %s)</info>',
                 $indexer['code'],
@@ -116,11 +113,7 @@ HELP;
         }
 
         $validator = function ($typeInput) use ($indexerList) {
-            if (strstr($typeInput, ',')) {
-                $typeInputs = BinaryString::trimExplodeEmpty(',', $typeInput);
-            } else {
-                $typeInputs = [$typeInput];
-            }
+            $typeInputs = strstr($typeInput, ',') ? BinaryString::trimExplodeEmpty(',', $typeInput) : [$typeInput];
 
             $returnCodes = [];
             foreach ($typeInputs as $typeInput) {
@@ -134,13 +127,13 @@ HELP;
             return $returnCodes;
         };
 
-        $dialog = $this->getQuestionHelper();
-        $question = new ChoiceQuestion(
+        $questionHelper = $this->getQuestionHelper();
+        $choiceQuestion = new ChoiceQuestion(
             '<question>Please select a indexer:</question> ',
             $choices
         );
-        $question->setValidator($validator);
+        $choiceQuestion->setValidator($validator);
 
-        return $dialog->ask($input, $output, $question);
+        return $questionHelper->ask($input, $output, $choiceQuestion);
     }
 }

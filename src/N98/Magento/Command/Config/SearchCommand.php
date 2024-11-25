@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Config;
 
 use Mage;
@@ -35,12 +37,7 @@ Searches the merged system.xml configuration tree <labels/> and <comments/> for 
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -70,11 +67,13 @@ HELP;
                         )
                     );
                 }
+
                 $output->writeln('');
             }
         } else {
             $output->writeln('<info>No matches for <comment>' . $searchString . '</comment></info>');
         }
+
         return 0;
     }
 
@@ -89,10 +88,10 @@ HELP;
         $xpathSections = ['sections/*', 'sections/*/groups/*', 'sections/*/groups/*/fields/*'];
 
         $matches = [];
-        foreach ($xpathSections as $xpath) {
+        foreach ($xpathSections as $xpathSection) {
             $tmp = $this->_searchConfigurationNodes(
                 $searchString,
-                $system->getNode()->xpath($xpath)
+                $system->getNode()->xpath($xpathSection)
             );
             $matches = array_merge($matches, $tmp);
         }
@@ -218,7 +217,7 @@ HELP;
     {
         switch ($match->type) {
             case 'section':
-                return (string) $match->node->label . ' -> ... -> ...';
+                return $match->node->label . ' -> ... -> ...';
 
             case 'field':
                 $parent = current($match->node->xpath('parent::*'));

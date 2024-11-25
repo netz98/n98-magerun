@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util;
 
 /**
@@ -11,20 +13,12 @@ namespace N98\Util;
  */
 abstract class StringTyped
 {
-    /**
-     * @param string $value
-     * @return bool
-     */
-    public static function parseBoolOption($value)
+    public static function parseBoolOption(string $value): bool
     {
         return in_array(strtolower($value), ['y', 'yes', 1, 'true']);
     }
 
-    /**
-     * @param string $value
-     * @return string
-     */
-    public static function formatActive($value)
+    public static function formatActive(string $value): string
     {
         if (in_array($value, [1, 'true'])) {
             return 'active';

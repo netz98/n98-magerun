@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Application;
 
 use ErrorException;
@@ -35,7 +37,7 @@ class ConfigurationLoader
     /**
      * @var array
      */
-    protected $_configArray = null;
+    protected $_configArray;
 
     /**
      * Cache
@@ -91,9 +93,7 @@ class ConfigurationLoader
      * Load config
      * If $magentoRootFolder is null, only non-project config is loaded
      *
-     * @param array $config
      * @param bool $isPharMode
-     * @param OutputInterface $output
      */
     public function __construct(array $config, $isPharMode, OutputInterface $output)
     {
@@ -133,6 +133,7 @@ class ConfigurationLoader
             $config = $this->loadUserConfig($config, $magentoRootFolder);
             $config = $this->loadProjectConfig($magentoRootFolder, $magerunStopFileFolder, $config);
         }
+
         $this->_configArray = $config;
     }
 
@@ -151,8 +152,6 @@ class ConfigurationLoader
     }
 
     /**
-     * @param array $initConfig
-     *
      * @return array
      */
     protected function loadDistConfig(array $initConfig)
@@ -165,15 +164,12 @@ class ConfigurationLoader
             $this->logDebug('Load dist config <comment>cached</comment>');
         }
 
-        $config = ArrayFunctions::mergeArrays($this->_distConfig, $initConfig);
-
-        return $config;
+        return ArrayFunctions::mergeArrays($this->_distConfig, $initConfig);
     }
 
     /**
      * Check if there is a global config file in /etc folder
      *
-     * @param array $config
      *
      * @return array
      */
@@ -194,17 +190,13 @@ class ConfigurationLoader
             }
         }
 
-        $config = ArrayFunctions::mergeArrays($config, $this->_systemConfig);
-
-        return $config;
+        return ArrayFunctions::mergeArrays($config, $this->_systemConfig);
     }
 
     /**
      * Load config from all installed bundles
      *
-     * @param array $config
      * @param string $magentoRootFolder
-     *
      * @return array
      */
     public function loadPluginConfig(array $config, $magentoRootFolder)
@@ -216,12 +208,13 @@ class ConfigurationLoader
                 $config['plugin']['folders'][] = getenv('WINDIR') . '/' . $customName . '/modules';
                 $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/' . $customName . '/modules';
             }
+
             $config['plugin']['folders'][] = OperatingSystem::getHomeDir() . '/.' . $customName . '/modules';
             $config['plugin']['folders'][] = $magentoRootFolder . '/lib/' . $customName . '/modules';
 
             # Modules placed in vendor folder
             $vendorDir = $this->getVendorDir();
-            if (strlen($vendorDir ?? '')) {
+            if (strlen($vendorDir ?? '') !== 0) {
                 $this->logDebug('Vendor directory <comment>' . $vendorDir . '</comment>');
                 $this->traversePluginFoldersForConfigFile($magentoRootFolder, $vendorDir, 2);
             }
@@ -230,9 +223,7 @@ class ConfigurationLoader
             $this->traversePluginFoldersForConfigFile($magentoRootFolder, $config['plugin']['folders'], 1);
         }
 
-        $config = ArrayFunctions::mergeArrays($config, $this->_pluginConfig);
-
-        return $config;
+        return ArrayFunctions::mergeArrays($config, $this->_pluginConfig);
     }
 
     /**
@@ -266,25 +257,21 @@ class ConfigurationLoader
     /**
      * Check if there is a user config file. ~/.n98-magerun.yaml
      *
-     * @param array $config
      * @param string $magentoRootFolder [optional]
-     *
      * @return array
      */
     public function loadUserConfig(array $config, $magentoRootFolder = null)
     {
         if (null === $this->_userConfig) {
             $this->_userConfig = [];
-            $locator = new ConfigLocator($this->_customConfigFilename, $magentoRootFolder);
-            if ($userConfigFile = $locator->getUserConfigFile()) {
+            $configLocator = new ConfigLocator($this->_customConfigFilename, $magentoRootFolder);
+            if ($userConfigFile = $configLocator->getUserConfigFile()) {
                 $this->logDebug('Load user config <comment>' . $userConfigFile->getPath() . '</comment>');
                 $this->_userConfig = $userConfigFile->toArray();
             }
         }
 
-        $config = ArrayFunctions::mergeArrays($config, $this->_userConfig);
-
-        return $config;
+        return ArrayFunctions::mergeArrays($config, $this->_userConfig);
     }
 
     /**
@@ -292,7 +279,6 @@ class ConfigurationLoader
      *
      * @param string $magentoRootFolder
      * @param string $magerunStopFileFolder
-     * @param array $config
      *
      * @return array
      */
@@ -304,13 +290,13 @@ class ConfigurationLoader
 
         $this->_projectConfig = [];
 
-        $locator = new ConfigLocator($this->_customConfigFilename, $magentoRootFolder);
+        $configLocator = new ConfigLocator($this->_customConfigFilename, $magentoRootFolder);
 
-        if ($projectConfigFile = $locator->getProjectConfigFile()) {
+        if ($projectConfigFile = $configLocator->getProjectConfigFile()) {
             $this->_projectConfig = $projectConfigFile->toArray();
         }
 
-        if ($stopFileConfigFile = $locator->getStopFileConfigFile($magerunStopFileFolder)) {
+        if ($stopFileConfigFile = $configLocator->getStopFileConfigFile($magerunStopFileFolder)) {
             $this->_projectConfig = $stopFileConfigFile->mergeArray($this->_projectConfig);
         }
 
@@ -330,6 +316,7 @@ class ConfigurationLoader
         $this->logDebug('Load plugin config <comment>' . $path . '</comment>');
         $localPluginConfigFile = ConfigFile::createFromFile($path);
         $localPluginConfigFile->applyVariables($magentoRootFolder, $file);
+
         $this->_pluginConfig = $localPluginConfigFile->mergeArray($this->_pluginConfig);
     }
 

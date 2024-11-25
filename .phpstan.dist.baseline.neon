@@ -1,116 +1,133 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Unsafe usage of new static\\(\\)\\.$#"
+			message: '#^Unsafe usage of new static\(\)\.$#'
+			identifier: new.static
 			count: 1
 			path: src/N98/Magento/Application/ConfigFile.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of method Mage_Admin_Model_User\\:\\:setIsActive\\(\\) expects int, bool given\\.$#"
+			message: '#^Parameter \#1 \$value of method Mage_Admin_Model_User\:\:setIsActive\(\) expects int, bool given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/N98/Magento/Command/Admin/User/ChangeStatusCommand.php
 
 		-
-			message: "#^Call to an undefined method Mage_Admin_Model_Roles\\:\\:setName\\(\\)\\.$#"
+			message: '#^Call to an undefined method Mage_Admin_Model_Roles\:\:setName\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/N98/Magento/Command/Admin/User/CreateUserCommand.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of method Mage_Catalog_Model_Category\\:\\:setIsActive\\(\\) expects bool, int given\\.$#"
+			message: '#^Parameter \#1 \$value of method Mage_Catalog_Model_Category\:\:setIsActive\(\) expects bool, int given\.$#'
+			identifier: argument.type
 			count: 2
 			path: src/N98/Magento/Command/Category/Create/DummyCommand.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of method Mage_Catalog_Model_Category\\:\\:setIsAnchor\\(\\) expects bool, int given\\.$#"
+			message: '#^Parameter \#1 \$value of method Mage_Catalog_Model_Category\:\:setIsAnchor\(\) expects bool, int given\.$#'
+			identifier: argument.type
 			count: 2
 			path: src/N98/Magento/Command/Category/Create/DummyCommand.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Application\\:\\:getMagentoRootFolder\\(\\)\\.$#"
+			message: '#^Call to an undefined method Symfony\\Component\\Console\\Application\:\:getMagentoRootFolder\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/N98/Magento/Command/ComposerWrapper/EventSubscriber.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Command\\\\Command\\:\\:setComposer\\(\\)\\.$#"
+			message: '#^Call to an undefined method Symfony\\Component\\Console\\Command\\Command\:\:setComposer\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/N98/Magento/Command/ComposerWrapper/EventSubscriber.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Command\\\\Command\\:\\:setIO\\(\\)\\.$#"
+			message: '#^Call to an undefined method Symfony\\Component\\Console\\Command\\Command\:\:setIO\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/N98/Magento/Command/ComposerWrapper/EventSubscriber.php
 
 		-
-			message: "#^Call to an undefined method Mage_Customer_Model_Customer\\:\\:setFirstname\\(\\)\\.$#"
+			message: '#^Call to an undefined method Mage_Customer_Model_Customer\:\:setFirstname\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/N98/Magento/Command/Customer/CreateCommand.php
 
 		-
-			message: "#^Call to an undefined method Mage_Customer_Model_Customer\\:\\:setLastname\\(\\)\\.$#"
+			message: '#^Call to an undefined method Mage_Customer_Model_Customer\:\:setLastname\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/N98/Magento/Command/Customer/CreateCommand.php
 
 		-
-			message: "#^Call to an undefined method Mage_Customer_Model_Address\\:\\:setIsSubscribed\\(\\)\\.$#"
+			message: '#^Call to an undefined method Mage_Customer_Model_Address\:\:setIsSubscribed\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/N98/Magento/Command/Customer/CreateDummyCommand.php
 
 		-
-			message: "#^Call to an undefined method Mage_Customer_Model_Customer\\:\\:setFirstname\\(\\)\\.$#"
+			message: '#^Call to an undefined method Mage_Customer_Model_Customer\:\:setFirstname\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/N98/Magento/Command/Customer/CreateDummyCommand.php
 
 		-
-			message: "#^Call to an undefined method Mage_Customer_Model_Customer\\:\\:setLastname\\(\\)\\.$#"
+			message: '#^Call to an undefined method Mage_Customer_Model_Customer\:\:setLastname\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/N98/Magento/Command/Customer/CreateDummyCommand.php
 
 		-
-			message: "#^Call to an undefined method Varien_Object\\:\\:getRegions\\(\\)\\.$#"
+			message: '#^Call to an undefined method Varien_Object\:\:getRegions\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/N98/Magento/Command/Customer/CreateDummyCommand.php
 
 		-
-			message: "#^Access to an undefined property DateInterval\\:\\:\\$w\\.$#"
+			message: '#^Access to an undefined property DateInterval\:\:\$w\.$#'
+			identifier: property.notFound
 			count: 1
 			path: src/N98/Magento/Command/Database/StatusCommand.php
 
 		-
-			message: "#^Call to an undefined static method N98\\\\Util\\\\OperatingSystem\\:\\:getCurrentPhpBinary\\(\\)\\.$#"
+			message: '#^Call to an undefined static method N98\\Util\\OperatingSystem\:\:getCurrentPhpBinary\(\)\.$#'
+			identifier: staticMethod.notFound
 			count: 1
 			path: src/N98/Magento/Command/Installer/SubCommand/InstallComposer.php
 
 		-
-			message: "#^Call to an undefined static method N98\\\\Util\\\\OperatingSystem\\:\\:locateProgram\\(\\)\\.$#"
+			message: '#^Call to an undefined static method N98\\Util\\OperatingSystem\:\:locateProgram\(\)\.$#'
+			identifier: staticMethod.notFound
 			count: 1
 			path: src/N98/Magento/Command/Installer/SubCommand/InstallComposer.php
 
 		-
-			message: "#^Property N98\\\\Magento\\\\Command\\\\System\\\\Check\\\\Filesystem\\\\FilesCheck\\:\\:\\$_checkCommand \\(N98\\\\Magento\\\\Command\\\\System\\\\CheckCommand\\) does not accept Symfony\\\\Component\\\\Console\\\\Command\\\\Command\\.$#"
+			message: '#^Property N98\\Magento\\Command\\System\\Check\\Filesystem\\FilesCheck\:\:\$_checkCommand \(N98\\Magento\\Command\\System\\CheckCommand\) does not accept Symfony\\Component\\Console\\Command\\Command\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: src/N98/Magento/Command/System/Check/Filesystem/FilesCheck.php
 
 		-
-			message: "#^Property N98\\\\Magento\\\\Command\\\\System\\\\Check\\\\Filesystem\\\\FoldersCheck\\:\\:\\$_checkCommand \\(N98\\\\Magento\\\\Command\\\\System\\\\CheckCommand\\) does not accept Symfony\\\\Component\\\\Console\\\\Command\\\\Command\\.$#"
+			message: '#^Property N98\\Magento\\Command\\System\\Check\\Filesystem\\FoldersCheck\:\:\$_checkCommand \(N98\\Magento\\Command\\System\\CheckCommand\) does not accept Symfony\\Component\\Console\\Command\\Command\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: src/N98/Magento/Command/System/Check/Filesystem/FoldersCheck.php
 
 		-
-			message: "#^Call to an undefined method hasProperty\\(class\\)\\:\\:getClassName\\(\\)\\.$#"
-			count: 1
-			path: src/N98/Magento/Command/System/Setup/IncrementalCommand.php
-
-		-
-			message: "#^Negated boolean expression is always true\\.$#"
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
 			count: 1
 			path: src/N98/Magento/Initialiser.php
 
 		-
-			message: "#^Call to an undefined method object\\{ref\\: \\$this\\(N98\\\\Util\\\\AutoloadHandler\\)\\}&stdClass\\:\\:reset\\(\\)\\.$#"
+			message: '#^Call to an undefined method object\{ref\: \$this\(N98\\Util\\AutoloadHandler\)\}&stdClass\:\:reset\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/N98/Util/AutoloadHandler.php
 
 		-
-			message: "#^Binary operation \"/\" between non\\-falsy\\-string and 1000 results in an error\\.$#"
+			message: '#^Binary operation "/" between non\-falsy\-string and 1000 results in an error\.$#'
+			identifier: binaryOp.invalid
 			count: 2
 			path: src/N98/Util/DateTime.php

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Eav\Attribute;
 
 use InvalidArgumentException;
@@ -28,12 +30,7 @@ class ViewCommand extends AbstractMagentoCommand
             ->addFormatOption();
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);

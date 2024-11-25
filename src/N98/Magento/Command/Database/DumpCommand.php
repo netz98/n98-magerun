@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database;
 
 use InvalidArgumentException;
@@ -23,12 +25,12 @@ class DumpCommand extends AbstractDatabaseCommand
     /**
      * @var array
      */
-    protected $tableDefinitions = null;
+    protected $tableDefinitions;
 
     /**
      * @var array
      */
-    protected $commandConfig = null;
+    protected $commandConfig;
 
     protected function configure()
     {
@@ -226,6 +228,7 @@ HELP;
             if ($nameLen > $maxNameLen) {
                 $maxNameLen = $nameLen;
             }
+
             $list[] = [$name, $description];
         }
 
@@ -240,20 +243,13 @@ HELP;
             $messages .= sprintf(" <info>%s</info>%s  %s\n", $name, $spacer, $buffer);
         }
 
-        $messages .= <<<HELP
+        return $messages . <<<HELP
 
 Extended: https://github.com/netz98/n98-magerun/wiki/Stripped-Database-Dumps
 HELP;
-
-        return $messages;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // communicate early what is required for this command to run (is enabled)
@@ -277,8 +273,6 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @return array
      */
     private function createExecsArray(InputInterface $input, OutputInterface $output)
@@ -318,9 +312,9 @@ HELP;
         $compressor = $this->getCompressor($input->getOption('compression'));
         $fileName = $this->getFileName($input, $output, $compressor);
 
-        $database = $this->getDatabaseHelper();
+        $databaseHelper = $this->getDatabaseHelper();
 
-        $mysqlClientToolConnectionString = $database->getMysqlClientToolConnectionString();
+        $mysqlClientToolConnectionString = $databaseHelper->getMysqlClientToolConnectionString();
 
         $stripTables = $this->stripTables($input, $output);
         if ($stripTables) {
@@ -332,6 +326,7 @@ HELP;
             if (!$input->getOption('stdout')) {
                 $exec .= ' > ' . escapeshellarg($fileName);
             }
+
             $execs[] = $exec;
         }
 
@@ -342,28 +337,27 @@ HELP;
         foreach (array_merge($excludeTables, $stripTables) as $ignoreTable) {
             $ignore .= '--ignore-table=' . $this->dbSettings['dbname'] . '.' . $ignoreTable . ' ';
         }
+
         $exec = 'mysqldump ' . $dumpOptions . $mysqlClientToolConnectionString . ' ' . $ignore;
         $exec .= $this->postDumpPipeCommands();
         $exec = $compressor->getCompressingCommand($exec);
         if (!$input->getOption('stdout')) {
             $exec .= (count($stripTables) > 0 ? ' >> ' : ' > ') . escapeshellarg($fileName);
         }
+
         $execs[] = $exec;
         return [$fileName, $execs];
     }
 
     /**
-     * @param array $execs
      * @param string $fileName
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @return bool
      */
     private function runExecs(array $execs, $fileName, InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption('only-command') && !$input->getOption('print-only-filename')) {
-            foreach ($execs as $command) {
-                $output->writeln($command);
+            foreach ($execs as $exec) {
+                $output->writeln($exec);
             }
         } else {
             if ($this->nonCommandOutput($input)) {
@@ -395,8 +389,6 @@ HELP;
 
     /**
      * @param string $command
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @return bool
      */
     private function runExec($command, InputInterface $input, OutputInterface $output)
@@ -420,8 +412,6 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @return array
      */
     private function stripTables(InputInterface $input, OutputInterface $output)
@@ -442,8 +432,6 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @return array
      */
     private function excludeTables(InputInterface $input, OutputInterface $output)
@@ -483,11 +471,11 @@ HELP;
      */
     private function resolveDatabaseTables($list)
     {
-        $database = $this->getDatabaseHelper();
+        $databaseHelper = $this->getDatabaseHelper();
 
-        return $database->resolveTables(
+        return $databaseHelper->resolveTables(
             explode(' ', $list),
-            $database->getTableDefinitions($this->getCommandConfig())
+            $databaseHelper->getTableDefinitions($this->getCommandConfig())
         );
     }
 
@@ -502,19 +490,12 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @param Compressor $compressor
      *
      * @return string
      */
     protected function getFileName(InputInterface $input, OutputInterface $output, Compressor $compressor)
     {
-        if ($input->getOption('xml')) {
-            $nameExtension = '.xml';
-        } else {
-            $nameExtension = '.sql';
-        }
+        $nameExtension = $input->getOption('xml') ? '.xml' : '.sql';
 
         $optionAddTime = $input->getOption('add-time');
         [$namePrefix, $nameSuffix] = $this->getFileNamePrefixSuffix($optionAddTime);
@@ -523,14 +504,14 @@ HELP;
             ($fileName = $input->getArgument('filename')) === null
                 || ($isDir = is_dir($fileName))
         )
-            && !$input->getOption('stdout')
-        ) {
+            && !$input->getOption('stdout')) {
             $defaultName = VerifyOrDie::filename(
                 $namePrefix . $this->dbSettings['dbname'] . $nameSuffix . $nameExtension
             );
             if (isset($isDir) && $isDir) {
                 $defaultName = rtrim($fileName, '/') . '/' . $defaultName;
             }
+            
             if (!$input->getOption('force')) {
                 $dialog = $this->getQuestionHelper();
                 $fileName = $dialog->ask(
@@ -541,17 +522,13 @@ HELP;
             } else {
                 $fileName = $defaultName;
             }
-        } else {
-            if ($optionAddTime) {
-                $pathParts = pathinfo($fileName);
-                $fileName = ($pathParts['dirname'] == '.' ? '' : $pathParts['dirname'] . '/') .
-                    $namePrefix . $pathParts['filename'] . $nameSuffix . '.' . $pathParts['extension'];
-            }
+        } elseif ($optionAddTime) {
+            $pathParts = pathinfo($fileName);
+            $fileName = ($pathParts['dirname'] == '.' ? '' : $pathParts['dirname'] . '/') .
+                $namePrefix . $pathParts['filename'] . $nameSuffix . '.' . $pathParts['extension'];
         }
 
-        $fileName = $compressor->getFileName($fileName);
-
-        return $fileName;
+        return $compressor->getFileName($fileName);
     }
 
     /**
@@ -566,7 +543,7 @@ HELP;
             return [$namePrefix, $nameSuffix];
         }
 
-        $timeStamp = date('Y-m-d_His');
+        $timeStamp = \Carbon\Carbon::now()->format('Y-m-d_His');
 
         if (in_array($optionAddTime, ['suffix', true], true)) {
             $nameSuffix = '_' . $timeStamp;
@@ -585,7 +562,6 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
      * @return bool
      */
     private function nonCommandOutput(InputInterface $input)

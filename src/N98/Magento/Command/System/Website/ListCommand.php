@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Website;
 
 use Mage;
@@ -28,12 +30,7 @@ class ListCommand extends AbstractMagentoCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $table = [];
@@ -42,10 +39,11 @@ class ListCommand extends AbstractMagentoCommand
         if ($input->getOption('format') === null) {
             $this->writeSection($output, 'Magento Websites');
         }
+
         $this->initMagento();
 
-        foreach (Mage::app()->getWebsites() as $store) {
-            $table[$store->getId()] = [$store->getId(), $store->getCode()];
+        foreach (Mage::app()->getWebsites() as $website) {
+            $table[$website->getId()] = [$website->getId(), $website->getCode()];
         }
 
         ksort($table);

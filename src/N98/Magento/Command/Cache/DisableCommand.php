@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cache;
 
 use N98\Util\BinaryString;
@@ -23,12 +25,7 @@ class DisableCommand extends AbstractCacheCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -54,6 +51,7 @@ class DisableCommand extends AbstractCacheCommand
         } else {
             $output->writeln('<info>Caches disabled</info>');
         }
+
         return 0;
     }
 }

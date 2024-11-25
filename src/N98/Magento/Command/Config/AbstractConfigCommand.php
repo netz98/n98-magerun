@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Config;
 
 use InvalidArgumentException;
@@ -87,7 +89,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     protected function _convertScopeIdParam($scope, $scopeId, $allowZeroScope = false)
     {
         if ($scope === 'default') {
-            if ("$scopeId" !== '0') {
+            if ($scopeId !== '0') {
                 throw new InvalidArgumentException(
                     sprintf("Invalid scope ID %d in scope '%s', must be 0", $scopeId, $scope)
                 );
@@ -154,8 +156,8 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
      */
     protected function _getConfigModel()
     {
-        /** @var Mage_Core_Model_Config $model */
-        $model = $this->_getModel('core/config');
-        return $model;
+        /** @var Mage_Core_Model_Config $mageCoreModelAbstract */
+        $mageCoreModelAbstract = $this->_getModel('core/config');
+        return $mageCoreModelAbstract;
     }
 }

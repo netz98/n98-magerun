@@ -101,7 +101,7 @@ class ArrayFunctionsTest extends TestCase
     public function matrixFilterStartsWith(array $matrix)
     {
         self::assertCount(3, $matrix);
-        $filtered = ArrayFunctions::matrixFilterStartswith($matrix, 'foo', 'ba');
+        $filtered = ArrayFunctions::matrixFilterStartsWith($matrix, 'foo', 'ba');
         self::assertCount(2, $filtered);
     }
 }

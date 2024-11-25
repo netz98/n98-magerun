@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util;
 
 /**
@@ -30,8 +32,8 @@ class AutoloadRestorer
     {
         $unregisteredLoaders = $this->getUnregisteredLoaders();
 
-        foreach ($unregisteredLoaders as $callback) {
-            spl_autoload_register($callback);
+        foreach ($unregisteredLoaders as $unregisteredLoader) {
+            spl_autoload_register($unregisteredLoader);
         }
     }
 
@@ -43,6 +45,7 @@ class AutoloadRestorer
             if (in_array($callback, $current, true)) {
                 continue;
             }
+
             $unregistered[] = $callback;
         }
 

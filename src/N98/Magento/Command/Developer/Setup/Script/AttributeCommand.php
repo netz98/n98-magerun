@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Setup\Script;
 
 use Exception;
@@ -36,12 +38,7 @@ class AttributeCommand extends AbstractMagentoCommand
             ->setDescription('Creates attribute script for a given attribute code');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -66,9 +63,10 @@ class AttributeCommand extends AbstractMagentoCommand
             $warnings = $generator->getWarnings();
 
             $output->writeln(implode(PHP_EOL, $warnings) . PHP_EOL . $code);
-        } catch (Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
+        } catch (Exception $exception) {
+            $output->writeln('<error>' . $exception->getMessage() . '</error>');
         }
+
         return 0;
     }
 
@@ -80,8 +78,8 @@ class AttributeCommand extends AbstractMagentoCommand
      */
     protected function getAttribute($entityType, $attributeCode)
     {
-        /** @var Mage_Catalog_Model_Resource_Eav_Attribute $model */
-        $model = $this->_getModel('catalog/resource_eav_attribute');
-        return $model->loadByCode($entityType, $attributeCode);
+        /** @var Mage_Catalog_Model_Resource_Eav_Attribute $mageCoreModelAbstract */
+        $mageCoreModelAbstract = $this->_getModel('catalog/resource_eav_attribute');
+        return $mageCoreModelAbstract->loadByCode($entityType, $attributeCode);
     }
 }

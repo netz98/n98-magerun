@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
 /**
@@ -48,11 +50,10 @@ final class ClassUtil
     /**
      * This class is a $class (is or inherits from it)
      *
-     * @param ClassUtil $class
      * @return bool
      */
-    public function isA(ClassUtil $class)
+    public function isA(ClassUtil $classUtil)
     {
-        return is_a($this->className, $class->className, true);
+        return is_a($this->className, $classUtil->className, true);
     }
 }

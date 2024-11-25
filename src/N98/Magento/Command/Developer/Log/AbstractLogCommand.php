@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Log;
 
 use InvalidArgumentException;
@@ -57,24 +59,22 @@ class AbstractLogCommand extends AbstractMagentoCommand
      */
     protected function logfileExists($filename)
     {
-        $iterator = $this->getLogFileIterator();
-        return $iterator->name(basename($filename))->count() == 1;
+        $finder = $this->getLogFileIterator();
+        return $finder->name(basename($filename))->count() == 1;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      *
      * @return string
      */
     protected function askLogFile(InputInterface $input, OutputInterface $output)
     {
-        $logFiles = $this->getLogFileIterator();
+        $finder = $this->getLogFileIterator();
         $files = [];
         $choices = [];
 
         $i = 0;
-        foreach ($logFiles as $logFile) {
+        foreach ($finder as $logFile) {
             $files[$i++] = $logFile->getPathname();
             $choices[] = '<comment>[' . ($i) . ']</comment> ' . $logFile->getFilename() . PHP_EOL;
         }
@@ -83,9 +83,9 @@ class AbstractLogCommand extends AbstractMagentoCommand
             return '';
         }
 
-        $dialog = $this->getQuestionHelper();
-        $questionObj = new ChoiceQuestion('<question>Please select a log file:</question> ', $choices);
-        $questionObj->setValidator(function ($typeInput) use ($files) {
+        $questionHelper = $this->getQuestionHelper();
+        $choiceQuestion = new ChoiceQuestion('<question>Please select a log file:</question> ', $choices);
+        $choiceQuestion->setValidator(function ($typeInput) use ($files) {
             if (!isset($files[$typeInput - 1])) {
                 throw new InvalidArgumentException('Invalid file');
             }
@@ -93,6 +93,6 @@ class AbstractLogCommand extends AbstractMagentoCommand
             return $files[$typeInput - 1];
         });
 
-        return $dialog->ask($input, $output, $questionObj);
+        return $questionHelper->ask($input, $output, $choiceQuestion);
     }
 }

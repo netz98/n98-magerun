@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Admin\User;
 
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,12 +23,7 @@ class ListCommand extends AbstractAdminUserCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -34,9 +31,9 @@ class ListCommand extends AbstractAdminUserCommand
             return 0;
         }
 
-        /** @var \Mage_Admin_Model_User $userModel */
-        $userModel = $this->getUserModel();
-        $userList = $userModel->getCollection();
+        /** @var \Mage_Admin_Model_User $mageAdminModelUser */
+        $mageAdminModelUser = $this->getUserModel();
+        $userList = $mageAdminModelUser->getCollection();
         $table = [];
         foreach ($userList as $user) {
             $table[] = [$user->getId(), $user->getUsername(), $user->getEmail(), $user->getIsActive() ? 'active' : 'inactive'];

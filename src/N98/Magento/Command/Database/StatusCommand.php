@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database;
 
 use DateTime;
@@ -24,6 +26,7 @@ class StatusCommand extends AbstractShowCommand
                 that your queries are not written to take advantage of the indexes you have.'], 'Innodb_buffer_pool_wait_free'   => ['desc' => 'Number of times MySQL has to wait for memory pages to be flushed.'], 'Innodb_buffer_pool_pages_dirty' => ['desc' => 'Indicates the number of InnoDB buffer pool data pages that have been changed in memory,
                  but the changes are not yet written (flushed) to the InnoDB data files'], 'Key_reads'                      => ['desc' => 'Number of filesystem accesses MySQL performed to fetch database indexes.'], 'Max_used_connections'           => ['desc' => 'Max number of connections MySQL has had open at the same time since the server was
                  last restarted.'], 'Open_tables'                    => ['desc' => 'Number of tables that are currently open.'], 'Select_full_join'               => ['desc' => 'Number of full joins MySQL has performed to satisfy client queries.'], 'Slow_queries'                   => ['desc' => 'Number of queries that have taken longer than usual to execute.'], 'Uptime'                         => ['desc' => 'Time since the server was last restarted.'], 'Aborted_connects'               => ['desc' => 'Total number of failed attempts to connect to MySQL.']];
+
     /**
      * @var array
      */
@@ -48,9 +51,7 @@ HELP;
     }
 
     /**
-     * @param array $outputVars
      * @param bool $hasDescription
-     *
      * @return array
      */
     protected function generateRows(array $outputVars, $hasDescription)
@@ -81,6 +82,7 @@ HELP;
                 'HINT: "Handler_read_rnd_next" is reset to zero when reached the value of 2^32 (4G).'
             )];
         }
+
         if (isset($this->_allVariables['Innodb_buffer_pool_read_requests'])) {
             $bufferHitRate = $this->_allVariables['Innodb_buffer_pool_read_requests'] /
                 ($this->_allVariables['Innodb_buffer_pool_read_requests'] +
@@ -102,9 +104,7 @@ HELP;
      */
     protected function allowRounding($name)
     {
-        $isSize = false !== strpos($name, '_size');
-
-        return $isSize;
+        return false !== strpos($name, '_size');
     }
 
     /**
@@ -122,11 +122,11 @@ HELP;
     protected function timeElapsedString($datetime, $full = false)
     {
         if (is_numeric($datetime)) {
-            $datetime = time() - $datetime;
+            $datetime = \Carbon\Carbon::now()->timestamp - $datetime;
             $datetime = '@' . $datetime;
         }
 
-        $now = new DateTime();
+        $now = \Carbon\Carbon::now();
         $ago = new DateTime($datetime);
         $diff = $now->diff($ago);
 
@@ -146,6 +146,6 @@ HELP;
             $string = array_slice($string, 0, 1);
         }
 
-        return $string ? implode(', ', $string) . ' ago' : 'just now';
+        return $string !== [] ? implode(', ', $string) . ' ago' : 'just now';
     }
 }

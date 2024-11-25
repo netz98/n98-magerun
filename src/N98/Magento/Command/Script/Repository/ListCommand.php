@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Script\Repository;
 
 use Description;
@@ -42,12 +44,7 @@ The first line of the script can contain a comment (line prefixed with #) which 
 HELP;
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $files = $this->getScripts();
@@ -60,7 +57,7 @@ HELP;
             $table = [];
         }
 
-        if ($input->getOption('format') === null && count($table) === 0) {
+        if ($input->getOption('format') === null && $table === []) {
             $output->writeln('<info>no script file found</info>');
         }
 

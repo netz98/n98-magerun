@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Setup;
 
 use InvalidArgumentException;
@@ -35,7 +37,6 @@ class AbstractSetupCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface $input
      * @return string
      * @throws InvalidArgumentException
      */

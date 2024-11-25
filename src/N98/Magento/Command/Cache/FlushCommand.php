@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cache;
 
 use Enterprise_PageCache_Model_Cache;
@@ -52,12 +54,7 @@ Options:
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -73,8 +70,8 @@ HELP;
 
         try {
             Mage::app()->loadAreaPart('adminhtml', 'events');
-        } catch (Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
+        } catch (Exception $exception) {
+            $output->writeln('<error>' . $exception->getMessage() . '</error>');
         }
 
         Mage::dispatchEvent('adminhtml_cache_flush_all', ['output' => $output]);
@@ -98,6 +95,7 @@ HELP;
                 $output->writeln('<error>Failed to clear FPC</error>');
             }
         }
+
         return 0;
     }
 

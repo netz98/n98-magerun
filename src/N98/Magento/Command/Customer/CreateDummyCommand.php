@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Customer;
 
 use Faker\Factory;
@@ -61,11 +63,6 @@ Supported Locales:
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -75,8 +72,8 @@ HELP;
 
         $res = $this->getCustomerModel()->getResource();
 
-        $faker = Factory::create($input->getArgument('locale'));
-        $faker->addProvider(new Internet($faker));
+        $generator = Factory::create($input->getArgument('locale'));
+        $generator->addProvider(new Internet($generator));
 
         $parameterHelper = $this->getParameterHelper();
 
@@ -87,10 +84,10 @@ HELP;
         $outputPlain = $input->getOption('format') === null;
 
         $table = [];
-        for ($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; ++$i) {
             $customer = $this->getCustomerModel();
 
-            $email = $faker->safeEmail;
+            $email = $generator->safeEmail;
 
             $customer->setWebsiteId($website->getId());
             $customer->loadByEmail($email);
@@ -99,19 +96,16 @@ HELP;
             if (!$customer->getId()) {
                 $customer->setWebsiteId($website->getId());
                 $customer->setEmail($email);
-                $customer->setFirstname($faker->firstName);
-                $customer->setLastname($faker->lastName);
+                $customer->setFirstname($generator->firstName);
+                $customer->setLastname($generator->lastName);
                 $customer->setPassword($password);
-
                 if ($input->hasOption('with-addresses')) {
-                    $address = $this->createAddress($faker);
+                    $address = $this->createAddress($generator);
                     $customer->addAddress($address);
                 }
-
                 $customer->save();
                 $customer->setConfirmation(null);
                 $customer->save();
-
                 if ($outputPlain) {
                     $output->writeln(
                         '<info>Customer <comment>' . $email . '</comment> with password <comment>' . $password .
@@ -120,16 +114,16 @@ HELP;
                 } else {
                     $table[] = [$email, $password, $customer->getFirstname(), $customer->getLastname()];
                 }
-            } else {
-                if ($outputPlain) {
-                    $output->writeln('<error>Customer ' . $email . ' already exists</error>');
-                }
+            } elseif ($outputPlain) {
+                $output->writeln('<error>Customer ' . $email . ' already exists</error>');
             }
+
             if ($i % 1000 == 0) {
                 $res->commit();
                 $res->beginTransaction();
             }
         }
+
         $res->commit();
 
         if (!$outputPlain) {
@@ -138,6 +132,7 @@ HELP;
                 ->setHeaders(['email', 'password', 'firstname', 'lastname'])
                 ->renderByFormat($output, $table, $input->getOption('format'));
         }
+
         return 0;
     }
 
@@ -150,23 +145,23 @@ HELP;
         $regions = $country->getRegions()->getData();
         $region = $regions ? $regions[array_rand($regions)] : null;
 
-        $address = $this->getAddressModel();
-        $address->setFirstname($faker->firstName);
-        $address->setLastname($faker->lastName);
-        $address->setCity($faker->city);
-        $address->setCountryId($country->getId());
+        $mageCustomerModelAddress = $this->getAddressModel();
+        $mageCustomerModelAddress->setFirstname($faker->firstName);
+        $mageCustomerModelAddress->setLastname($faker->lastName);
+        $mageCustomerModelAddress->setCity($faker->city);
+        $mageCustomerModelAddress->setCountryId($country->getId());
         if ($region) {
-            $address->setRegionId($region['region_id']);
+            $mageCustomerModelAddress->setRegionId($region['region_id']);
         }
 
-        $address->setStreet($faker->streetAddress);
-        $address->setPostcode($faker->postcode);
-        $address->setTelephone($faker->phoneNumber);
-        $address->setIsSubscribed($faker->boolean());
+        $mageCustomerModelAddress->setStreet($faker->streetAddress);
+        $mageCustomerModelAddress->setPostcode($faker->postcode);
+        $mageCustomerModelAddress->setTelephone($faker->phoneNumber);
+        $mageCustomerModelAddress->setIsSubscribed($faker->boolean());
 
-        $address->setIsDefaultShipping(true);
-        $address->setIsDefaultBilling(true);
+        $mageCustomerModelAddress->setIsDefaultShipping(true);
+        $mageCustomerModelAddress->setIsDefaultBilling(true);
 
-        return $address;
+        return $mageCustomerModelAddress;
     }
 }

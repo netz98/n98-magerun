@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\ComposerWrapper;
 
 use Composer\Factory;
@@ -26,23 +28,20 @@ class EventSubscriber implements EventSubscriberInterface
         return ['console.command' => 'registerComposer'];
     }
 
-    /**
-     * @param ConsoleEvent $event
-     */
-    public function registerComposer(ConsoleEvent $event)
+    public function registerComposer(ConsoleEvent $consoleEvent)
     {
         /*
          * Inject composer object in composer commands
          */
-        $command = $event->getCommand();
+        $command = $consoleEvent->getCommand();
         if (strstr($command !== null ? get_class($command) : self::class, 'Composer\\Command\\')) {
-            $io = new ConsoleIO($event->getInput(), $event->getOutput(), $command->getHelperSet());
+            $consoleIO = new ConsoleIO($consoleEvent->getInput(), $consoleEvent->getOutput(), $command->getHelperSet());
             $magentoRootFolder = $command->getApplication()->getMagentoRootFolder();
             $configFile = $magentoRootFolder . '/composer.json';
-            $composer = Factory::create($io, $configFile);
+            $composer = Factory::create($consoleIO, $configFile);
             \chdir($magentoRootFolder);
             $command->setComposer($composer);
-            $command->setIO($io);
+            $command->setIO($consoleIO);
         }
     }
 }

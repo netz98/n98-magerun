@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module\Dependencies;
 
 use InvalidArgumentException;
@@ -18,9 +20,13 @@ class FromCommand extends AbstractCommand
      * @var string
      */
     public const COMMAND_NAME = 'dev:module:dependencies:from';
+
     public const COMMAND_DESCRIPTION = 'Show list of modules which depend on %s module';
+
     public const COMMAND_SECTION_TITLE_TEXT = 'List of modules which depend on %s module';
+
     public const COMMAND_NO_RESULTS_TEXT = 'No modules depend on %s module';
+
     /**#@-*/
 
     /**

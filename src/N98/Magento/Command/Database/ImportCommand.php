@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database;
 
 use InvalidArgumentException;
@@ -75,13 +77,14 @@ HELP;
         $maxlen = 8 * 1024 * 1024; // 8 MB
         $len = 0;
         while ($line = fgets($in)) {
-            if (strtolower(substr($line, 0, 11)) == 'insert into') {
+            if (strtolower(substr($line, 0, 11)) === 'insert into') {
                 preg_match('/^insert into `(.*)` \([^)]*\) values (.*);/i', $line, $m);
 
                 if (count($m) < 3) { // fallback for very long lines or other cases where the preg_match fails
-                    if ($currentTable != '') {
+                    if ($currentTable !== '') {
                         fwrite($out, ";\n");
                     }
+
                     fwrite($out, $line);
                     $currentTable = '';
                     continue;
@@ -90,10 +93,11 @@ HELP;
                 $table = $m[1];
                 $values = $m[2];
 
-                if ($table != $currentTable || ($len > $maxlen - 1000)) {
-                    if ($currentTable != '') {
+                if ($table !== $currentTable || ($len > $maxlen - 1000)) {
+                    if ($currentTable !== '') {
                         fwrite($out, ";\n");
                     }
+
                     $currentTable = $table;
                     $insert = 'INSERT INTO `' . $table . '` VALUES ' . $values;
                     fwrite($out, $insert);
@@ -103,10 +107,11 @@ HELP;
                     $len += strlen($values) + 1;
                 }
             } else {
-                if ($currentTable != '') {
+                if ($currentTable !== '') {
                     fwrite($out, ";\n");
                     $currentTable = '';
                 }
+
                 fwrite($out, $line);
             }
         }
@@ -121,18 +126,13 @@ HELP;
         return $result;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectDbSettings($output);
 
         $this->writeSection($output, 'Import MySQL Database');
-        $dbHelper = $this->getDatabaseHelper();
+        $databaseHelper = $this->getDatabaseHelper();
 
         $fileName = $this->checkFilename($input);
 
@@ -142,41 +142,42 @@ HELP;
             if ($fileName === '-') {
                 throw new InvalidArgumentException('Option --optimize not compatible with STDIN import');
             }
+
             if ($input->getOption('only-command')) {
                 throw new InvalidArgumentException('Options --only-command and --optimize are not compatible');
             }
+
             if ($input->getOption('compression')) {
                 throw new InvalidArgumentException('Options --compression and --optimize are not compatible');
             }
+
             $output->writeln('<comment>Optimizing <info>' . $fileName . '</info> to temporary file');
             $fileName = $this->optimize($fileName);
         }
 
         // create import command
-        $exec = 'mysql ' . $dbHelper->getMysqlClientToolConnectionString();
+        $exec = 'mysql ' . $databaseHelper->getMysqlClientToolConnectionString();
         if ($fileName !== '-') {
             $exec = $compressor->getDecompressingCommand($exec, $fileName);
         }
-
         if ($input->getOption('only-command')) {
             $output->writeln($exec);
             return 0;
-        } else {
-            if ($input->getOption('only-if-empty')
-                && (is_countable($dbHelper->getTables()) ? count($dbHelper->getTables()) : 0) > 0
-            ) {
-                $output->writeln('<comment>Skip import. Database is not empty</comment>');
+        }
 
-                return 0;
-            }
+        if ($input->getOption('only-if-empty')
+            && (is_countable($databaseHelper->getTables()) ? count($databaseHelper->getTables()) : 0) > 0) {
+            $output->writeln('<comment>Skip import. Database is not empty</comment>');
+            return 0;
         }
 
         if ($input->getOption('drop')) {
-            $dbHelper->dropDatabase($output);
-            $dbHelper->createDatabase($output);
+            $databaseHelper->dropDatabase($output);
+            $databaseHelper->createDatabase($output);
         }
+
         if ($input->getOption('drop-tables')) {
-            $dbHelper->dropTables($output);
+            $databaseHelper->dropTables($output);
         }
 
         $this->doImport($output, $fileName, $exec);
@@ -184,11 +185,11 @@ HELP;
         if ($input->getOption('optimize')) {
             unlink($fileName);
         }
+
         return 0;
     }
 
     /**
-     * @param InputInterface $input
      *
      * @return mixed
      * @throws InvalidArgumentException
@@ -198,18 +199,18 @@ HELP;
         if ($input->getOption('stdin')) {
             return '-';
         }
+
         $fileName = $input->getArgument('filename');
         if (!file_exists($fileName)) {
             throw new InvalidArgumentException('File does not exist');
         }
+
         return $fileName;
     }
 
     /**
-     * @param OutputInterface $output
      * @param string          $fileName
      * @param string          $exec
-     *
      * @return void
      */
     protected function doImport(OutputInterface $output, $fileName, $exec)
@@ -226,6 +227,7 @@ HELP;
         if ($returnValue != 0) {
             $output->writeln('<error>' . $commandOutput . '</error>');
         }
+
         $output->writeln('<info>Finished</info>');
     }
 }

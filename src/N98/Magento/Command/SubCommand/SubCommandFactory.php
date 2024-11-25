@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\SubCommand;
 
 use N98\Magento\Command\AbstractMagentoCommand;
@@ -44,27 +46,22 @@ class SubCommandFactory
     protected $command;
 
     /**
-     * @param AbstractMagentoCommand $command
      * @param string $baseNamespace
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @param array $commandConfig
-     * @param ConfigBag $config
      */
     public function __construct(
-        AbstractMagentoCommand $command,
+        AbstractMagentoCommand $magentoCommand,
         $baseNamespace,
         InputInterface $input,
         OutputInterface $output,
         array $commandConfig,
-        ConfigBag $config
+        ConfigBag $configBag
     ) {
         $this->baseNamespace = $baseNamespace;
-        $this->command = $command;
+        $this->command = $magentoCommand;
         $this->input = $input;
         $this->output = $output;
         $this->commandConfig = $commandConfig;
-        $this->config = $config;
+        $this->config = $configBag;
     }
 
     /**

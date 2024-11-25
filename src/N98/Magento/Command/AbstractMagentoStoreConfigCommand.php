@@ -26,6 +26,8 @@ use Symfony\Component\Console\Question\Question;
  */
 abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 {
+    public $commandName;
+    public $commandDescription;
     public const COMMAND_ARGUMENT_STORE = 'store';
 
     public const COMMAND_OPTION_OFF = 'off';
@@ -137,7 +139,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
     /**
      * {@inheritdoc}
      */
-    public function initialize(InputInterface $input,OutputInterface $output)
+    protected function initialize(InputInterface $input,OutputInterface $output)
     {
         // for backwards compatibility before v3.0
         if (property_exists($this, 'commandName')) {
@@ -196,7 +198,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 
         $comment =
             '<comment>' . $this->toggleComment . '</comment> '
-            . '<info>' . (!$isFalse ? $this->falseName : $this->trueName) . '</info>'
+            . '<info>' . ($isFalse ? $this->trueName : $this->falseName) . '</info>'
             . ($runOnStoreView ? ' <comment>for store</comment> <info>' . $store->getCode() . '</info>' : '');
 
         $output->writeln($comment);
@@ -212,39 +214,29 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
     /**
      * Determine if a developer restriction is in place, and if we're enabling something that will use it
      * then notify and ask if it needs to be changed from its current value.
-     *
-     * @param Mage_Core_Model_Store $store
-     * @param bool $enabled
-     * @return void
      */
-    protected function detectAskAndSetDeveloperIp(Mage_Core_Model_Store $store, bool $enabled): void
+    protected function detectAskAndSetDeveloperIp(Mage_Core_Model_Store $mageCoreModelStore, bool $enabled): void
     {
         if (!$enabled) {
             // No need to notify about developer IP restrictions if we're disabling template hints etc
             return;
         }
 
-        if (!$devRestriction = $store->getConfig('dev/restrict/allow_ips')) {
+        if (!$devRestriction = $mageCoreModelStore->getConfig('dev/restrict/allow_ips')) {
             return;
         }
 
-        $helper = $this->getIoHelper();
-        $this->askAndSetDeveloperIp($helper->getInput(), $helper->getOutput(), $store, $devRestriction);
+        $ioHelper = $this->getIoHelper();
+        $this->askAndSetDeveloperIp($ioHelper->getInput(), $ioHelper->getOutput(), $mageCoreModelStore, $devRestriction);
     }
 
     /**
      * Ask if the developer IP should be changed, and change it if required
-     *
-     * @param  InputInterface         $input
-     * @param  OutputInterface        $output
-     * @param  Mage_Core_Model_Store  $store
-     * @param  string|null            $devRestriction
-     * @return void
      */
     protected function askAndSetDeveloperIp(
         InputInterface        $input,
         OutputInterface       $output,
-        Mage_Core_Model_Store $store,
+        Mage_Core_Model_Store $mageCoreModelStore,
         ?string               $devRestriction
     ): void {
         $output->writeln(
@@ -254,16 +246,16 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             )
         );
 
-        $dialog = $this->getQuestionHelper();
+        $questionHelper = $this->getQuestionHelper();
         $question = new Question('<question>Change developer IP? Enter a new IP to change or leave blank:</question> ');
         /** @var string $newDeveloperIp */
-        $newDeveloperIp = $dialog->ask($input, $output, $question);
+        $newDeveloperIp = $questionHelper->ask($input, $output, $question);
 
         if (empty($newDeveloperIp)) {
             return;
         }
 
-        $this->setDeveloperIp($store, $newDeveloperIp);
+        $this->setDeveloperIp($mageCoreModelStore, $newDeveloperIp);
         $output->writeln(sprintf(
             '<comment><info>New developer IP restriction set to %s</info></comment>',
             $newDeveloperIp
@@ -272,20 +264,15 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 
     /**
      * Set the restricted IP for developer access
-     *
-     * @param Mage_Core_Model_Store $store
-     * @param string $newDeveloperIp
      */
-    protected function setDeveloperIp(Mage_Core_Model_Store $store, string $newDeveloperIp): void
+    protected function setDeveloperIp(Mage_Core_Model_Store $mageCoreModelStore, string $newDeveloperIp): void
     {
         /** @var Mage_Core_Model_Config $model */
         $model = Mage::getModel('core/config');
-        $model->saveConfig('dev/restrict/allow_ips', $newDeveloperIp, 'stores', $store->getId());
+        $model->saveConfig('dev/restrict/allow_ips', $newDeveloperIp, 'stores', $mageCoreModelStore->getId());
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
      * @return mixed
      */
@@ -295,19 +282,11 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
         return $parameterHelper->askStore($input, $output, self::COMMAND_ARGUMENT_STORE, $this->withAdminStore);
     }
 
-    /**
-     * @param Mage_Core_Model_Store $store
-     * @param bool $disabled
-     */
-    protected function _beforeSave(Mage_Core_Model_Store $store, bool $disabled): void
+    protected function _beforeSave(Mage_Core_Model_Store $mageCoreModelStore, bool $disabled): void
     {
     }
 
-    /**
-     * @param Mage_Core_Model_Store $store
-     * @param bool $disabled
-     */
-    protected function _afterSave(Mage_Core_Model_Store $store, bool $disabled): void
+    protected function _afterSave(Mage_Core_Model_Store $mageCoreModelStore, bool $disabled): void
     {
     }
 }

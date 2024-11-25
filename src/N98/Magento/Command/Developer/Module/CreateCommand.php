@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module;
 
 use InvalidArgumentException;
@@ -80,12 +82,7 @@ class CreateCommand extends AbstractMagentoCommand
             ->setDescription('Create and register a new magento module.');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->output = $output;
@@ -100,9 +97,11 @@ class CreateCommand extends AbstractMagentoCommand
             $input->setOption('add-readme', true);
             $input->setOption('add-composer', true);
         }
+
         if (!$this->modmanMode) {
             $this->detectMagento($output);
         }
+
         $this->baseFolder = __DIR__ . '/../../../../../../res/module/create';
 
         $this->vendorNamespace = ucfirst($input->getArgument('vendorNamespace'));
@@ -111,6 +110,7 @@ class CreateCommand extends AbstractMagentoCommand
         if (!in_array($this->codePool, ['local', 'community'])) {
             throw new InvalidArgumentException('Code pool must "community" or "local"');
         }
+
         $this->initView($input);
         $this->createModuleDirectories($input, $output);
         $this->writeEtcModules($output);
@@ -119,6 +119,7 @@ class CreateCommand extends AbstractMagentoCommand
         if ($this->modmanMode) {
             $this->writeModmanFile($output);
         }
+
         $this->writeComposerConfig($input, $output);
         $this->addAdditionalFiles($output);
         return 0;
@@ -129,10 +130,6 @@ class CreateCommand extends AbstractMagentoCommand
         $this->twigVars = ['vendorNamespace'   => $this->vendorNamespace, 'moduleName'        => $this->moduleName, 'codePool'          => $this->codePool, 'createControllers' => $input->getOption('add-controllers'), 'createBlocks'      => $input->getOption('add-blocks'), 'createModels'      => $input->getOption('add-models'), 'createHelpers'     => $input->getOption('add-helpers'), 'createSetup'       => $input->getOption('add-setup'), 'authorName'        => $input->getOption('author-name'), 'authorEmail'       => $input->getOption('author-email'), 'description'       => $input->getOption('description')];
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     */
     protected function createModuleDirectories(InputInterface $input, OutputInterface $output)
     {
         if ($this->modmanMode) {
@@ -140,10 +137,12 @@ class CreateCommand extends AbstractMagentoCommand
             if (file_exists($modManDir)) {
                 throw new RuntimeException('Module already exists. Stop.');
             }
+
             mkdir($modManDir, 0777, true);
             $this->_magentoRootFolder = './' . $modManDir;
             mkdir($this->_magentoRootFolder . '/app/etc/modules', 0777, true);
         }
+
         $moduleDir = sprintf(
             '%s/app/code/%s/%s/%s',
             $this->_magentoRootFolder,
@@ -155,6 +154,7 @@ class CreateCommand extends AbstractMagentoCommand
         if (file_exists($moduleDir)) {
             throw new RuntimeException('Module already exists. Stop.');
         }
+
         $this->moduleDirectory = $moduleDir;
         mkdir($this->moduleDirectory, 0777, true);
         $output->writeln('<info>Created directory: <comment>' . $this->moduleDirectory . '<comment></info>');
@@ -259,11 +259,9 @@ class CreateCommand extends AbstractMagentoCommand
         if (!$input->getOption('add-readme')) {
             return;
         }
-        if ($this->modmanMode) {
-            $outFile = $this->_magentoRootFolder . '/../readme.md';
-        } else {
-            $outFile = $this->moduleDirectory . '/etc/readme.md';
-        }
+
+        $outFile = $this->modmanMode ? $this->_magentoRootFolder . '/../readme.md' : $this->moduleDirectory . '/etc/readme.md';
+
         file_put_contents(
             $outFile,
             $this->getHelper('twig')->render('dev/module/create/app/etc/modules/readme.twig', $this->twigVars)
@@ -273,20 +271,19 @@ class CreateCommand extends AbstractMagentoCommand
 
     /**
      * Write composer.json
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
      */
     protected function writeComposerConfig(InputInterface $input, OutputInterface $output)
     {
         if (!$input->getOption('add-composer')) {
             return;
         }
+
         if ($this->modmanMode) {
             $outFile = $this->_magentoRootFolder . '/../composer.json';
         } else {
             $outFile = $this->moduleDirectory . '/etc/composer.json';
         }
+
         file_put_contents(
             $outFile,
             $this->getHelper('twig')->render('dev/module/create/composer.twig', $this->twigVars)
@@ -304,6 +301,7 @@ class CreateCommand extends AbstractMagentoCommand
                 if (!is_dir($outFileDir)) {
                     mkdir($outFileDir, 0777, true);
                 }
+
                 file_put_contents($outFile, $this->getHelper('twig')->render($template, $this->twigVars));
                 $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
             }

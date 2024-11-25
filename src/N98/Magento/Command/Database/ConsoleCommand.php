@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database;
 
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,12 +36,7 @@ class ConsoleCommand extends AbstractDatabaseCommand
             ->setDescription('Opens mysql client by database config from local.xml');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectDbSettings($output);
@@ -78,7 +75,7 @@ class ConsoleCommand extends AbstractDatabaseCommand
      */
     private function getMysqlClientToolConnection()
     {
-        $database = $this->getDatabaseHelper();
-        return $database->getMysqlClientToolConnectionString();
+        $databaseHelper = $this->getDatabaseHelper();
+        return $databaseHelper->getMysqlClientToolConnectionString();
     }
 }

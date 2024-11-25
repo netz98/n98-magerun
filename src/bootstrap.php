@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use N98\MagerunBootstrap;
 
 // hide PHP Deprecated warnings if enabled
@@ -13,7 +15,7 @@ try {
     return MagerunBootstrap::createApplication();
 } catch (Exception $exception) {
     printf("%s: %s\n", get_class($exception), $exception->getMessage());
-    if (array_intersect(['-vvv', '-vv', '-v', '--verbose'], $argv)) {
+    if (array_intersect(['-vvv', '-vv', '-v', '--verbose'], $argv) !== []) {
         printf("%s\n", $exception->getTraceAsString());
     }
 

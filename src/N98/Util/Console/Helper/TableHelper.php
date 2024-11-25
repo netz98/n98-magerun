@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util\Console\Helper;
 
 use N98\Util\Console\Helper\Table\Renderer\RendererFactory;
@@ -54,26 +56,24 @@ class TableHelper extends AbstractHelper
     }
 
     /**
-     * @param OutputInterface $outputInterface
-     * @param array $rows
      * @param string $format [optional]
      */
-    public function renderByFormat(OutputInterface $outputInterface, array $rows, $format = null)
+    public function renderByFormat(OutputInterface $output, array $rows, $format = null)
     {
         $rendererFactory = new RendererFactory();
         $renderer = $rendererFactory->create($format);
 
         if ($renderer && $renderer instanceof RendererInterface) {
             foreach ($rows as &$row) {
-                if (!empty($this->headers)) {
+                if ($this->headers !== []) {
                     $row = array_combine($this->headers, $row);
                 }
             }
 
-            $renderer->render($outputInterface, $rows);
+            $renderer->render($output, $rows);
         } else {
             $this->setRows($rows);
-            $this->render($outputInterface);
+            $this->render($output);
         }
     }
 
@@ -81,9 +81,6 @@ class TableHelper extends AbstractHelper
      * Takes a two dimensional tabular array with headers as keys in the first row and outputs an ascii table
      *
      * @deprecated since 1.98.0 use original Symfony table instead.
-     *
-     * @param  OutputInterface $output
-     * @param  array           $rows
      */
     public function write(OutputInterface $output, array $rows)
     {
@@ -93,7 +90,6 @@ class TableHelper extends AbstractHelper
     }
 
     /**
-     * @param OutputInterface $output
      * @param array $rows
      */
     public function render(OutputInterface $output, $rows = [])
@@ -117,7 +113,6 @@ class TableHelper extends AbstractHelper
     }
 
     /**
-     * @param array $rows
      * @return $this
      */
     public function setRows(array $rows)

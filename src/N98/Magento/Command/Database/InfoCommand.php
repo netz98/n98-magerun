@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database;
 
 use InvalidArgumentException;
@@ -37,11 +39,8 @@ HELP;
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
      * @throws InvalidArgumentException
-     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -72,12 +71,13 @@ HELP;
                 $this->dbSettings['dbname']
             );
         }
+
         $settings['PDO-Connection-String'] = $pdoConnectionString;
 
         $jdbcConnectionString = '';
         if ($isSocketConnect) {
             // isn't supported according to this post: http://stackoverflow.com/a/18493673/145829
-            $jdbcConnectionString = 'Connecting using JDBC through a unix socket isn\'t supported!';
+            $jdbcConnectionString = "Connecting using JDBC through a unix socket isn't supported!";
         } else {
             $jdbcConnectionString = sprintf(
                 'jdbc:mysql://%s:%s/%s?username=%s&password=%s',
@@ -88,10 +88,11 @@ HELP;
                 $this->dbSettings['password']
             );
         }
+
         $settings['JDBC-Connection-String'] = $jdbcConnectionString;
 
-        $database = $this->getDatabaseHelper();
-        $mysqlCliString = 'mysql ' . $database->getMysqlClientToolConnectionString();
+        $databaseHelper = $this->getDatabaseHelper();
+        $mysqlCliString = 'mysql ' . $databaseHelper->getMysqlClientToolConnectionString();
         $settings['MySQL-Cli-String'] = $mysqlCliString;
 
         $rows = [];
@@ -103,13 +104,15 @@ HELP;
             if (!isset($settings[$settingArgument])) {
                 throw new InvalidArgumentException('Unknown setting: ' . $settingArgument);
             }
-            $output->writeln((string) $settings[$settingArgument]);
+
+            $output->writeln($settings[$settingArgument]);
         } else {
             $tableHelper = $this->getTableHelper();
             $tableHelper
                 ->setHeaders(['Name', 'Value'])
                 ->renderByFormat($output, $rows, $input->getOption('format'));
         }
+
         return 0;
     }
 }

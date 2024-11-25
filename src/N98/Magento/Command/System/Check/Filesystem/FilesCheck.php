@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Check\Filesystem;
 
 use N98\Magento\Command\CommandAware;
@@ -27,16 +29,13 @@ class FilesCheck implements SimpleCheck, CommandAware, CommandConfigAware
      */
     protected $_checkCommand;
 
-    /**
-     * @param ResultCollection $results
-     */
-    public function check(ResultCollection $results)
+    public function check(ResultCollection $resultCollection)
     {
         $files = $this->_commandConfig['filesystem']['files'];
         $magentoRoot = $this->_checkCommand->getApplication()->getMagentoRootFolder();
 
         foreach ($files as $file => $comment) {
-            $result = $results->createResult();
+            $result = $resultCollection->createResult();
 
             if (file_exists($magentoRoot . DIRECTORY_SEPARATOR . $file)) {
                 $result->setStatus(Result::STATUS_OK);
@@ -50,17 +49,11 @@ class FilesCheck implements SimpleCheck, CommandAware, CommandConfigAware
         }
     }
 
-    /**
-     * @param array $commandConfig
-     */
     public function setCommandConfig(array $commandConfig)
     {
         $this->_commandConfig = $commandConfig;
     }
 
-    /**
-     * @param Command $command
-     */
     public function setCommand(Command $command)
     {
         $this->_checkCommand = $command;

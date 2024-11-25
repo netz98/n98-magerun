@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Installer\SubCommand;
 
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
@@ -26,7 +28,7 @@ class InstallComposerPackages extends AbstractSubCommand
         $process->setTimeout(86400);
 
         $process->start();
-        $process->wait(function ($type, $buffer) {
+        $process->wait(function ($type, $buffer): void {
             $this->output->write('composer > ' . $buffer, false);
         });
     }

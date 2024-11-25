@@ -1,10 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * this file is part of magerun
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
-
 namespace N98\Magento\Application;
 
 use InvalidArgumentException;
@@ -37,10 +39,10 @@ class ConfigFile
      */
     public static function createFromFile($path)
     {
-        $configFile = new static();
-        $configFile->loadFile($path);
+        $static = new static();
+        $static->loadFile($path);
 
-        return $configFile;
+        return $static;
     }
 
     /**
@@ -80,7 +82,7 @@ class ConfigFile
      */
     public function applyVariables($magentoRootFolder, SplFileInfo $file = null)
     {
-        $replace = ['%module%' => $file ? $file->getPath() : '', '%root%'   => $magentoRootFolder];
+        $replace = ['%module%' => $file instanceof \SplFileInfo ? $file->getPath() : '', '%root%'   => $magentoRootFolder];
 
         $this->buffer = strtr($this->buffer, $replace);
     }

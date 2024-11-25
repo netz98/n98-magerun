@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Eav\Attribute;
 
 use InvalidArgumentException;
@@ -30,12 +32,7 @@ class RemoveCommand extends AbstractMagentoCommand
             ->setDescription('Removes attribute for a given attribute code');
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -49,11 +46,11 @@ class RemoveCommand extends AbstractMagentoCommand
             /** @var Mage_Eav_Model_Config $model */
             $model = Mage::getModel('eav/config');
             $attributes = $model->getEntityAttributeCodes($entityType);
-        } catch (Mage_Core_Exception $e) {
-            throw new InvalidArgumentException($e->getMessage());
+        } catch (Mage_Core_Exception $mageCoreException) {
+            throw new InvalidArgumentException($mageCoreException->getMessage(), $mageCoreException->getCode(), $mageCoreException);
         }
 
-        $setup = new Mage_Eav_Model_Entity_Setup('core_setup');
+        $mageEavModelEntitySetup = new Mage_Eav_Model_Entity_Setup('core_setup');
         foreach ($input->getArgument('attributeCode') as $attributeCode) {
             if (!in_array($attributeCode, $attributes)) {
                 $message = sprintf(
@@ -63,7 +60,7 @@ class RemoveCommand extends AbstractMagentoCommand
                 );
                 $output->writeln(sprintf('<comment>%s</comment>', $message));
             } else {
-                $setup->removeAttribute($entityType, $attributeCode);
+                $mageEavModelEntitySetup->removeAttribute($entityType, $attributeCode);
 
                 // required with EAV attribute caching added in OpenMage 20.1.0
                 // @phpstan-ignore function.alreadyNarrowedType
@@ -83,6 +80,7 @@ class RemoveCommand extends AbstractMagentoCommand
                 );
             }
         }
+
         return 0;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Customer;
 
 use Exception;
@@ -68,12 +70,7 @@ n98-magerun customer:delete --range             <info># Will prompt for start an
 HELP;
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -84,9 +81,9 @@ HELP;
         $this->input = $input;
         $this->output = $output;
         $this->questionHelper = $this->getQuestionHelper();
-
         // Defaults
-        $range = $all = false;
+        $range = false;
+        $all = false;
 
         $id = $this->input->getArgument('id');
         $range = $this->input->getOption('range');
@@ -177,6 +174,7 @@ HELP;
                 $this->output->writeln('<error>Aborting delete</error>');
             }
         }
+
         return 0;
     }
 
@@ -187,7 +185,7 @@ HELP;
     {
         $shouldRemove = $this->input->getOption('force');
         if (!$shouldRemove) {
-            $shouldRemove = $this->questionHelper->ask(
+            return $this->questionHelper->ask(
                 $this->input,
                 $this->output,
                 $this->getQuestion('Are you sure?', 'n'),
@@ -223,21 +221,19 @@ HELP;
     }
 
     /**
-     * @param \Mage_Customer_Model_Customer $customer
-     *
      * @return true|Exception
      */
-    protected function deleteCustomer(Mage_Customer_Model_Customer $customer)
+    protected function deleteCustomer(Mage_Customer_Model_Customer $mageCustomerModelCustomer)
     {
         try {
-            $customer->delete();
+            $mageCustomerModelCustomer->delete();
             $this->output->writeln(
-                sprintf('<info>%s (%s) was successfully deleted</info>', $customer->getName(), $customer->getEmail())
+                sprintf('<info>%s (%s) was successfully deleted</info>', $mageCustomerModelCustomer->getName(), $mageCustomerModelCustomer->getEmail())
             );
             return true;
-        } catch (Exception $e) {
-            $this->output->writeln('<error>' . $e->getMessage() . '</error>');
-            return $e;
+        } catch (Exception $exception) {
+            $this->output->writeln('<error>' . $exception->getMessage() . '</error>');
+            return $exception;
         }
     }
 
@@ -251,7 +247,7 @@ HELP;
         $count = 0;
         foreach ($customers as $customer) {
             if ($this->deleteCustomer($customer) === true) {
-                $count++;
+                ++$count;
             }
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Url;
 
 use InvalidArgumentException;
@@ -73,10 +75,7 @@ HELP;
     /**
      * Execute command
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
      *
-     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -95,8 +94,8 @@ HELP;
 
         $urls = [];
 
-        foreach ($stores as $storeId) {
-            $currentStore = Mage::app()->getStore($storeId); /* @var \Mage_Core_Model_Store $currentStore */
+        foreach ($stores as $store) {
+            $currentStore = Mage::app()->getStore($store); /* @var \Mage_Core_Model_Store $currentStore */
 
             // base url
             $urls[] = $currentStore->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
@@ -104,15 +103,15 @@ HELP;
             $linkBaseUrl = $currentStore->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
 
             if ($input->getOption('add-categories')) {
-                $urls = $this->getUrls('sitemap/catalog_category', $linkBaseUrl, $storeId, $urls);
+                $urls = $this->getUrls('sitemap/catalog_category', $linkBaseUrl, $store, $urls);
             }
 
             if ($input->getOption('add-products')) {
-                $urls = $this->getUrls('sitemap/catalog_product', $linkBaseUrl, $storeId, $urls);
+                $urls = $this->getUrls('sitemap/catalog_product', $linkBaseUrl, $store, $urls);
             }
 
             if ($input->getOption('add-cmspages')) {
-                $urls = $this->getUrls('sitemap/cms_page', $linkBaseUrl, $storeId, $urls);
+                $urls = $this->getUrls('sitemap/cms_page', $linkBaseUrl, $store, $urls);
             }
         }
 
@@ -133,6 +132,7 @@ HELP;
             // ... and output
             $output->writeln($line);
         }
+
         return 0;
     }
 
@@ -140,7 +140,6 @@ HELP;
      * @param 'sitemap/catalog_category'|'sitemap/catalog_product'|'sitemap/cms_page' $resourceModelAlias
      * @param string $linkBaseUrl
      * @param string $storeId
-     * @param array  $urls
      *
      * @return array
      */
@@ -162,6 +161,7 @@ HELP;
         foreach ($collection as $item) {
             $urls[] = $linkBaseUrl . $item->getUrl();
         }
+
         return $urls;
     }
 }

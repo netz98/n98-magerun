@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Cron;
 
 use AppendIterator;
@@ -25,13 +27,14 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
     {
         $table = [];
 
-        $jobs = $this->getJobConfigElements();
+        $jobConfigElements = $this->getJobConfigElements();
 
-        foreach ($jobs as $name => $job) {
+        foreach ($jobConfigElements as $name => $job) {
             $model = null;
             if (isset($job->run->model)) {
                 $model = $job->run->model;
             }
+
             $table[$name] = ['Job' => $name, 'Model' => $model] + $this->getSchedule($job);
         }
 
@@ -41,18 +44,17 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param  Mage_Core_Model_Config_Element $job
      * @return array of five cron values,keyed by 'm', 'h', 'D', 'M' and 'WD'
      */
-    protected function getSchedule(Mage_Core_Model_Config_Element $job)
+    protected function getSchedule(Mage_Core_Model_Config_Element $mageCoreModelConfigElement)
     {
         $keys = ['m', 'h', 'D', 'M', 'WD'];
         $expr = null;
 
-        if (isset($job->schedule->config_path)) {
-            $expr = Mage::getStoreConfig((string) $job->schedule->config_path);
-        } elseif (isset($job->schedule->cron_expr)) {
-            $expr = $job->schedule->cron_expr;
+        if (isset($mageCoreModelConfigElement->schedule->config_path)) {
+            $expr = Mage::getStoreConfig((string) $mageCoreModelConfigElement->schedule->config_path);
+        } elseif (isset($mageCoreModelConfigElement->schedule->cron_expr)) {
+            $expr = $mageCoreModelConfigElement->schedule->cron_expr;
         }
 
         if ($cronExpressions = $this->parseCronExpression($expr)) {
@@ -100,7 +102,7 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
 
         try {
             $schedule->setCronExpr($expr);
-        } catch (Mage_Cron_Exception $e) {
+        } catch (Mage_Cron_Exception $mageCronException) {
             return false;
         }
 

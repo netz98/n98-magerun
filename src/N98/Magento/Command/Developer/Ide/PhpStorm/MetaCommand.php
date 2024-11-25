@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Ide\PhpStorm;
 
 use Directory;
@@ -46,7 +48,9 @@ class MetaCommand extends AbstractMagentoCommand
     protected $missingHelperDefinitionModules = ['Backup', 'Bundle', 'Captcha', 'Catalog', 'Centinel', 'Checkout', 'Cms', 'Core', 'Customer', 'Dataflow', Directory::class, 'Downloadable', 'Eav', 'Index', 'Install', 'Log', 'Media', 'Newsletter', 'Page', 'Payment', 'Paypal', 'Persistent', 'Poll', 'Rating', 'Reports', 'Review', 'Rss', 'Rule', 'Sales', 'Shipping', 'Sitemap', 'Tag', 'Tax', 'Usa', 'Weee', 'Widget', 'Wishlist'];
 
     public const VERSION_OLD = 'old';
+
     public const VERSION_2017 = '2016.2+';
+
     public const VERSION_2019 = '2019.1+';
 
     protected function configure()
@@ -65,11 +69,8 @@ class MetaCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
      * @internal param string $package
-     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -83,7 +84,7 @@ class MetaCommand extends AbstractMagentoCommand
         foreach ($this->groups as $group) {
             $classMaps[$group] = $this->getClassMapForGroup($group, $output);
 
-            if (!$input->getOption('stdout') && count($classMaps[$group]) > 0) {
+            if (!$input->getOption('stdout') && $classMaps[$group] !== []) {
                 $output->writeln(
                     '<info>Generated definitions for <comment>' . $group . '</comment> group</info>'
                 );
@@ -103,7 +104,6 @@ class MetaCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param SplFileInfo $file
      * @param string $classPrefix
      * @return string
      */
@@ -115,6 +115,7 @@ class MetaCommand extends AbstractMagentoCommand
                 sprintf('Expected that relative file %s ends with ".php"', var_export($path, true))
             );
         }
+
         $path = substr($path, 0, -4);
         $path = strtr($path, '\\', '/');
 
@@ -122,7 +123,6 @@ class MetaCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param SplFileInfo   $file
      * @param string        $classPrefix
      * @param string        $group
      * @return string
@@ -131,6 +131,7 @@ class MetaCommand extends AbstractMagentoCommand
     {
         $path = str_replace('.php', '', $file->getRelativePathname());
         $path = str_replace('\\', '/', $path);
+
         $parts = explode('/', $path);
         $parts = array_map('lcfirst', $parts);
         if ($path == 'Data' && ($group == 'helpers')) {
@@ -147,17 +148,15 @@ class MetaCommand extends AbstractMagentoCommand
      * app/code/core/Mage/Payment/Model/Paygate/Request.php             -> Mage_Paygate_Model_Authorizenet_Request
      * app/code/core/Mage/Dataflow/Model/Convert/Iterator.php           -> Mage_Dataflow_Model_Session_Adapter_Iterator
      *
-     * @param SplFileInfo     $file
      * @param string          $className
-     * @param OutputInterface $output
      * @return bool
      */
     protected function isClassDefinedInFile(SplFileInfo $file, $className, OutputInterface $output)
     {
         try {
-            return preg_match("/class\s+{$className}/m", $file->getContents());
-        } catch (Exception $e) {
-            $output->writeln('<error>File: ' . $file->__toString() . ' | ' . $e->getMessage() . '</error>');
+            return preg_match(sprintf('/class\s+%s/m', $className), $file->getContents());
+        } catch (Exception $exception) {
+            $output->writeln('<error>File: ' . $file->__toString() . ' | ' . $exception->getMessage() . '</error>');
             return false;
         }
     }
@@ -190,7 +189,6 @@ class MetaCommand extends AbstractMagentoCommand
 
     /**
      * @param string $group
-     * @param OutputInterface $output
      *
      *@return array
      */
@@ -204,21 +202,24 @@ class MetaCommand extends AbstractMagentoCommand
         }
 
         $classes = [];
-        foreach ($this->getGroupXmlDefinition($group) as $prefix => $modelDefinition) {
+        foreach ($this->getGroupXmlDefinition($group) as $prefix => $varienSimplexmlElement) {
             if ($group == 'resource models') {
-                if (empty($modelDefinition->resourceModel)) {
+                if (empty($varienSimplexmlElement->resourceModel)) {
                     continue;
                 }
-                $resourceModelNodePath = 'global/models/' . (string) ($modelDefinition->resourceModel);
+
+                $resourceModelNodePath = 'global/models/' . $varienSimplexmlElement->resourceModel;
                 $resourceModelConfig = Mage::getConfig()->getNode($resourceModelNodePath);
                 if ($resourceModelConfig) {
                     $classPrefix = (string) ($resourceModelConfig->class);
                 }
             } else {
-                $classPrefix = (string) ($modelDefinition->class);
+                $classPrefix = (string) ($varienSimplexmlElement->class);
             }
-
-            if (empty($classPrefix)) {
+            if ($classPrefix === '') {
+                continue;
+            }
+            if ($classPrefix === '0') {
                 continue;
             }
 
@@ -230,7 +231,7 @@ class MetaCommand extends AbstractMagentoCommand
                 }
             }
 
-            if (empty($searchFolders)) {
+            if ($searchFolders === []) {
                 continue;
             }
 
@@ -293,8 +294,6 @@ class MetaCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @param $classMaps
      */
     protected function writeToOutputOld(InputInterface $input, OutputInterface $output, $classMaps)
@@ -313,30 +312,28 @@ PHP_WRAP;
                 $map .= '        ' . $method . "('') => [\n";
                 foreach ($classMaps[$group] as $classPrefix => $class) {
                     if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $class)) {
-                        $map .= "            '$classPrefix' instanceof \\$class,\n";
+                        $map .= "            '{$classPrefix}' instanceof \\{$class},\n";
                     } else {
                         $output->writeln('<warning>Invalid class name <comment>' . $class . '</comment> ignored</warning>');
                     }
                 }
+
                 $map .= "        ], \n";
             }
         }
+
         $map .= <<<PHP
     ];
 }
 PHP;
         if ($input->getOption('stdout')) {
             $output->writeln($map);
-        } else {
-            if (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php', $map)) {
-                $output->writeln('<info>File <comment>.phpstorm.meta.php</comment> generated</info>');
-            }
+        } elseif (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php', $map)) {
+            $output->writeln('<info>File <comment>.phpstorm.meta.php</comment> generated</info>');
         }
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @param $classMaps
      */
     protected function writeToOutputV2017(InputInterface $input, OutputInterface $output, $classMaps)
@@ -357,13 +354,15 @@ PHP_WRAP;
                 asort($classMaps[$group]);
                 foreach ($classMaps[$group] as $classPrefix => $class) {
                     if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $class)) {
-                        $map .= "            '$classPrefix' instanceof \\$class,\n";
+                        $map .= "            '{$classPrefix}' instanceof \\{$class},\n";
                     } else {
                         $output->writeln('<warning>Invalid class name <comment>' . $class . '</comment> ignored</warning>');
                     }
                 }
+
                 $map .= "        ], \n";
             }
+
             $map .= <<<PHP
     ];
 }
@@ -372,16 +371,14 @@ PHP;
                 $output->writeln($map);
             } else {
                 $metaPath = $this->_magentoRootFolder . '/.phpstorm.meta.php';
-                if (is_file($metaPath)) {
-                    if (\unlink($metaPath)) {
-                        $output->writeln('<info>Deprecated file <comment>.phpstorm.meta.php</comment> removed</info>');
-                    }
+                if (is_file($metaPath) && \unlink($metaPath)) {
+                    $output->writeln('<info>Deprecated file <comment>.phpstorm.meta.php</comment> removed</info>');
                 }
-                if (!is_dir($metaPath)) {
-                    if (\mkdir($metaPath)) {
-                        $output->writeln('<info>Directory <comment>.phpstorm.meta.php</comment> created</info>');
-                    }
+
+                if (!is_dir($metaPath) && \mkdir($metaPath)) {
+                    $output->writeln('<info>Directory <comment>.phpstorm.meta.php</comment> created</info>');
                 }
+
                 $group = str_replace([' ', '/'], '_', $group);
                 if (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php/magento_' . $group . '.meta.php', $map)) {
                     $output->writeln('<info>File <comment>.phpstorm.meta.php/magento_' . $group . '.meta.php</comment> generated</info>');
@@ -402,14 +399,16 @@ PHP_WRAP;
                 asort($classMaps[$group]);
                 foreach ($classMaps[$group] as $classPrefix => $class) {
                     if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $class)) {
-                        $map .= "            '$classPrefix' => \\$class::class,\n";
+                        $map .= "            '{$classPrefix}' => \\{$class}::class,\n";
                     } else {
                         $output->writeln('<warning>Invalid class name <comment>' . $class . '</comment> ignored</warning>');
                     }
                 }
+
                 $map .= "        ])\n";
                 $map .= "    );\n";
             }
+
             $map .= <<<PHP
 }
 PHP;
@@ -439,14 +438,16 @@ PHP_WRAP;
                 asort($classMaps[$group]);
                 foreach ($classMaps[$group] as $classPrefix => $class) {
                     if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $class)) {
-                        $map .= "            '$classPrefix' => \\$class::class,\n";
+                        $map .= "            '{$classPrefix}' => \\{$class}::class,\n";
                     } else {
                         $output->writeln('<warning>Invalid class name <comment>' . $class . '</comment> ignored</warning>');
                     }
                 }
+
                 $map .= "        ])\n";
                 $map .= "    );\n";
             }
+
             $map .= <<<PHP
 }
 PHP;
@@ -454,16 +455,14 @@ PHP;
                 $output->writeln($map);
             } else {
                 $metaPath = $this->_magentoRootFolder . '/.phpstorm.meta.php';
-                if (is_file($metaPath)) {
-                    if (\unlink($metaPath)) {
-                        $output->writeln('<info>Deprecated file <comment>.phpstorm.meta.php</comment> removed</info>');
-                    }
+                if (is_file($metaPath) && \unlink($metaPath)) {
+                    $output->writeln('<info>Deprecated file <comment>.phpstorm.meta.php</comment> removed</info>');
                 }
-                if (!is_dir($metaPath)) {
-                    if (\mkdir($metaPath)) {
-                        $output->writeln('<info>Directory <comment>.phpstorm.meta.php</comment> created</info>');
-                    }
+
+                if (!is_dir($metaPath) && \mkdir($metaPath)) {
+                    $output->writeln('<info>Directory <comment>.phpstorm.meta.php</comment> created</info>');
                 }
+
                 $group = str_replace([' ', '/'], '_', $group);
                 if (\file_put_contents($this->_magentoRootFolder . '/.phpstorm.meta.php/magento_' . $group . '.meta.php', $map)) {
                     $output->writeln('<info>File <comment>.phpstorm.meta.php/magento_' . $group . '.meta.php</comment> generated</info>');
@@ -484,14 +483,16 @@ PHP_WRAP;
                 asort($classMaps[$group]);
                 foreach ($classMaps[$group] as $classPrefix => $class) {
                     if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $class)) {
-                        $map .= "            '$classPrefix' => \\$class::class,\n";
+                        $map .= "            '{$classPrefix}' => \\{$class}::class,\n";
                     } else {
                         $output->writeln('<warning>Invalid class name <comment>' . $class . '</comment> ignored</warning>');
                     }
                 }
+
                 $map .= "        ])\n";
                 $map .= "    );\n";
             }
+
             $map .= <<<PHP
 }
 PHP;
@@ -535,9 +536,9 @@ PHP;
                 return $definitions->children();
         }
 
-        foreach ($this->missingHelperDefinitionModules as $moduleName) {
-            $children = new Varien_Simplexml_Element(sprintf('<%s/>', strtolower($moduleName)));
-            $children->class = sprintf('Mage_%s_%s', $moduleName, $groupClassType);
+        foreach ($this->missingHelperDefinitionModules as $missingHelperDefinitionModule) {
+            $children = new Varien_Simplexml_Element(sprintf('<%s/>', strtolower($missingHelperDefinitionModule)));
+            $children->class = sprintf('Mage_%s_%s', $missingHelperDefinitionModule, $groupClassType);
             $definitions->appendChild($children);
         }
 

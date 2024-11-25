@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database\Compressor;
 
 /**
@@ -47,7 +49,7 @@ class Uncompressed extends AbstractCompressor
      */
     public function getFileName($fileName, $pipe = true)
     {
-        if (!strlen($fileName)) {
+        if ((string) $fileName === '') {
             return $fileName;
         }
 

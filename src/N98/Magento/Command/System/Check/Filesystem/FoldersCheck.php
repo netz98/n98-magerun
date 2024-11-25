@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Check\Filesystem;
 
 use N98\Magento\Command\CommandAware;
@@ -27,20 +29,17 @@ class FoldersCheck implements SimpleCheck, CommandAware, CommandConfigAware
      */
     protected $_checkCommand;
 
-    /**
-     * @param ResultCollection $results
-     */
-    public function check(ResultCollection $results)
+    public function check(ResultCollection $resultCollection)
     {
         $folders = $this->_commandConfig['filesystem']['folders'];
         $magentoRoot = $this->_checkCommand->getApplication()->getMagentoRootFolder();
 
         foreach ($folders as $folder => $comment) {
-            $result = $results->createResult();
+            $result = $resultCollection->createResult();
             if (file_exists($magentoRoot . DIRECTORY_SEPARATOR . $folder)) {
                 $result->setStatus(Result::STATUS_OK);
                 $result->setMessage('<info>Folder <comment>' . $folder . '</comment> found.</info>');
-                if (!is_writeable($magentoRoot . DIRECTORY_SEPARATOR . $folder)) {
+                if (!is_writable($magentoRoot . DIRECTORY_SEPARATOR . $folder)) {
                     $result->setStatus(Result::STATUS_ERROR);
                     $result->setMessage(
                         '<error>Folder ' . $folder . ' is not writeable!</error><comment> Usage: ' . $comment .
@@ -56,17 +55,11 @@ class FoldersCheck implements SimpleCheck, CommandAware, CommandConfigAware
         }
     }
 
-    /**
-     * @param array $commandConfig
-     */
     public function setCommandConfig(array $commandConfig)
     {
         $this->_commandConfig = $commandConfig;
     }
 
-    /**
-     * @param Command $command
-     */
     public function setCommand(Command $command)
     {
         $this->_checkCommand = $command;

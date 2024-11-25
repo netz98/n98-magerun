@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Theme;
 
 use DateTime;
@@ -49,12 +51,7 @@ class DuplicatesCommand extends AbstractMagentoCommand
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $time = microtime(true);
@@ -78,12 +75,10 @@ HELP;
 
         if ($input->getOption('log-junit')) {
             $this->logJUnit($input, $duplicates, $input->getOption('log-junit'), microtime(true) - $time);
+        } elseif ($duplicates === []) {
+            $output->writeln('<info>No duplicates were found</info>');
         } else {
-            if (count($duplicates) === 0) {
-                $output->writeln('<info>No duplicates were found</info>');
-            } else {
-                $output->writeln($duplicates);
-            }
+            $output->writeln($duplicates);
         }
 
         return 0;
@@ -116,26 +111,25 @@ HELP;
 
     /**
      * @param InputInterface $input
-     * @param array          $duplicates
      * @param string         $filename
      * @param float          $duration
      */
     protected function logJUnit($input, array $duplicates, $filename, $duration)
     {
         $document = new JUnitXmlDocument();
-        $suite = $document->addTestSuite();
-        $suite->setName('n98-magerun: ' . $this->getName());
-        $suite->setTimestamp(new DateTime());
-        $suite->setTime($duration);
+        $testSuiteElement = $document->addTestSuite();
+        $testSuiteElement->setName('n98-magerun: ' . $this->getName());
+        $testSuiteElement->setTimestamp(\Carbon\Carbon::now());
+        $testSuiteElement->setTime($duration);
 
-        $testCase = $suite->addTestCase();
-        $testCase->setName(
+        $testCaseElement = $testSuiteElement->addTestCase();
+        $testCaseElement->setName(
             'Magento Duplicate Theme Files: ' . $input->getArgument('theme') . ' | ' .
             $input->getArgument('originalTheme')
         );
-        $testCase->setClassname('ConflictsCommand');
+        $testCaseElement->setClassname('ConflictsCommand');
         foreach ($duplicates as $duplicate) {
-            $testCase->addFailure(
+            $testCaseElement->addFailure(
                 sprintf('Duplicate File: %s', $duplicate),
                 'MagentoThemeDuplicateFileException'
             );

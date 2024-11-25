@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Customer;
 
 use Mage_Customer_Model_Address;
@@ -21,9 +23,9 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
      */
     protected function getCustomerModel()
     {
-        /** @var Mage_Customer_Model_Customer $model */
-        $model = $this->_getModel('customer/customer');
-        return $model;
+        /** @var Mage_Customer_Model_Customer $mageCoreModelAbstract */
+        $mageCoreModelAbstract = $this->_getModel('customer/customer');
+        return $mageCoreModelAbstract;
     }
 
     /**
@@ -31,9 +33,9 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
      */
     protected function getCustomerCollection()
     {
-        /** @var Mage_Customer_Model_Resource_Customer_Collection $model */
-        $model = $this->_getResourceModel('customer/customer_collection');
-        return $model;
+        /** @var Mage_Customer_Model_Resource_Customer_Collection $mageCoreModelResourceDbCollectionAbstract */
+        $mageCoreModelResourceDbCollectionAbstract = $this->_getResourceModel('customer/customer_collection');
+        return $mageCoreModelResourceDbCollectionAbstract;
     }
 
     /**
@@ -41,9 +43,9 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
      */
     protected function getAddressModel()
     {
-        /** @var Mage_Customer_Model_Address $model */
-        $model = $this->_getModel('customer/address');
-        return $model;
+        /** @var Mage_Customer_Model_Address $mageCoreModelAbstract */
+        $mageCoreModelAbstract = $this->_getModel('customer/address');
+        return $mageCoreModelAbstract;
     }
 
     /**
@@ -51,9 +53,9 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
      */
     protected function getRegionCollection()
     {
-        /** @var Mage_Directory_Model_Resource_Region_Collection $model */
-        $model = $this->_getModel('directory/region_collection');
-        return $model;
+        /** @var Mage_Directory_Model_Resource_Region_Collection $mageCoreModelAbstract */
+        $mageCoreModelAbstract = $this->_getModel('directory/region_collection');
+        return $mageCoreModelAbstract;
     }
 
     /**
@@ -61,8 +63,8 @@ abstract class AbstractCustomerCommand extends AbstractMagentoCommand
      */
     protected function getCountryCollection()
     {
-        /** @var Mage_Directory_Model_Resource_Country_Collection $model */
-        $model = $this->_getModel('directory/country_collection');
-        return $model;
+        /** @var Mage_Directory_Model_Resource_Country_Collection $mageCoreModelAbstract */
+        $mageCoreModelAbstract = $this->_getModel('directory/country_collection');
+        return $mageCoreModelAbstract;
     }
 }

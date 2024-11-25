@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Customer;
 
 use Attribute;
@@ -30,12 +32,7 @@ class InfoCommand extends AbstractCustomerCommand
             ->setDescription('Loads basic customer info by email address.');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -61,6 +58,7 @@ class InfoCommand extends AbstractCustomerCommand
             if (in_array($key, $this->blacklist)) {
                 continue;
             }
+
             try {
                 $attribute = $customer->getResource()->getAttribute($key);
                 $key = $attribute instanceof Mage_Customer_Model_Attribute ? $attribute->getFrontend()->getLabel() : $key;

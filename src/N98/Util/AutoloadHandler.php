@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util;
 
 use BadMethodCallException;
 
 /**
- * Autloader with self-registration, de-registration, muting and implementation switching
+ * Autoloader with self-registration, de-registration, muting and implementation switching
  *
  * @package N98\Util
  *
@@ -89,9 +91,10 @@ final class AutoloadHandler
         }
 
         if (!is_callable($this->callback)) {
-            if ($this->flags & self::NO_EXCEPTION) {
+            if (($this->flags & self::NO_EXCEPTION) !== 0) {
                 return false;
             }
+
             throw new BadMethodCallException('Autoload callback is not callable');
         }
 
@@ -102,7 +105,7 @@ final class AutoloadHandler
     {
         $self = (object) ['ref' => $this];
 
-        return function () use ($self) {
+        return function () use ($self): void {
             if (isset($self->ref)) {
                 $self->ref->reset();
                 unset($self->ref);

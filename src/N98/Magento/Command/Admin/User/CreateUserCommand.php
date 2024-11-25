@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Admin\User;
 
 use Mage_Backend_Model_Acl_Config;
@@ -30,11 +32,6 @@ class CreateUserCommand extends AbstractAdminUserCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -84,6 +81,7 @@ class CreateUserCommand extends AbstractAdminUserCommand
 
             $output->writeln('<info>User <comment>' . $username . '</comment> successfully created</info>');
         }
+
         return 0;
     }
 }

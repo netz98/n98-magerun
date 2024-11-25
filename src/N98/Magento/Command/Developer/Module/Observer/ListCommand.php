@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module\Observer;
 
 use InvalidArgumentException;
@@ -32,12 +34,7 @@ class ListCommand extends AbstractMagentoCommand
             );
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -60,17 +57,20 @@ class ListCommand extends AbstractMagentoCommand
         if ($input->getOption('format') === null) {
             $this->writeSection($output, 'Observers: ' . $type);
         }
+
         $frontendEvents = Mage::getConfig()->getNode($type . '/events')->asArray();
         if (true === $input->getOption('sort')) {
             // sorting for Observers is a bad idea because the order in which observers will be called is important.
             ksort($frontendEvents);
         }
+
         $table = [];
         foreach ($frontendEvents as $eventName => $eventData) {
             $observerList = [];
             foreach ($eventData['observers'] as $observer) {
                 $observerList[] = $this->getObserver($observer, $type);
             }
+
             $table[] = [$eventName, implode("\n", $observerList)];
         }
 
@@ -85,9 +85,7 @@ class ListCommand extends AbstractMagentoCommand
     /**
      * get observer string (list entry)
      *
-     * @param array  $observer
      * @param string $area
-     *
      * @return string
      */
     protected function getObserver(array $observer, $area)
@@ -103,15 +101,11 @@ class ListCommand extends AbstractMagentoCommand
 
         $method = isset($observer['method']) ? '::' . $observer['method'] : '';
 
-        $observer = $type . $class . $method;
-
-        return $observer;
+        return $type . $class . $method;
     }
 
     /**
-     * @param array  $observer
      * @param string $area
-     *
      * @return string
      */
     private function getObserverType(array $observer, $area)
@@ -123,11 +117,11 @@ class ListCommand extends AbstractMagentoCommand
             // '' means that no Mage::get___() will be used
             $type = '';
         }
+
         if (isset($observer['type'])) {
             $type = $observer['type'];
         }
-        $type = str_pad($type, 11, ' ', STR_PAD_RIGHT);
 
-        return $type;
+        return str_pad($type, 11, ' ', STR_PAD_RIGHT);
     }
 }

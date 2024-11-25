@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
 use Mage;
@@ -50,14 +52,14 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
             }
 
             $rewriteElements = $xml->xpath('//*/*/rewrite');
-            foreach ($rewriteElements as $element) {
-                $type = dom_import_simplexml($element)->parentNode->parentNode->nodeName;
+            foreach ($rewriteElements as $rewriteElement) {
+                $type = dom_import_simplexml($rewriteElement)->parentNode->parentNode->nodeName;
                 if (!isset($return[$type])) {
                     continue;
                 }
 
-                foreach ($element->children() as $child) {
-                    $groupClassName = dom_import_simplexml($element)->parentNode->nodeName;
+                foreach ($rewriteElement->children() as $child) {
+                    $groupClassName = dom_import_simplexml($rewriteElement)->parentNode->nodeName;
                     $modelName = $child->getName();
                     $return[$type][$groupClassName . '/' . $modelName][] = (string) $child;
                 }
@@ -75,9 +77,8 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
     protected function loadAutoloaderRewrites()
     {
         $return = $this->loadAutoloaderRewritesByCodepool('community');
-        $return = array_merge($return, $this->loadAutoloaderRewritesByCodepool('local'));
 
-        return $return;
+        return array_merge($return, $this->loadAutoloaderRewritesByCodepool('local'));
     }
 
     /**

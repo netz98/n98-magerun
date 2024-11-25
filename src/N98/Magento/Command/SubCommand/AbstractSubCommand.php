@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\SubCommand;
 
 use N98\Magento\Command\AbstractMagentoCommand;
@@ -39,33 +41,21 @@ abstract class AbstractSubCommand implements SubCommandInterface
      */
     protected $command;
 
-    /**
-     * @param ConfigBag $config
-     */
-    public function setConfig(ConfigBag $config)
+    public function setConfig(ConfigBag $configBag)
     {
-        $this->config = $config;
+        $this->config = $configBag;
     }
 
-    /**
-     * @param array $commandConfig
-     */
     public function setCommandConfig(array $commandConfig)
     {
         $this->commandConfig = $commandConfig;
     }
 
-    /**
-     * @param InputInterface $input
-     */
     public function setInput(InputInterface $input)
     {
         $this->input = $input;
     }
 
-    /**
-     * @param OutputInterface $output
-     */
     public function setOutput(OutputInterface $output)
     {
         $this->output = $output;
@@ -79,12 +69,9 @@ abstract class AbstractSubCommand implements SubCommandInterface
         return $this->command;
     }
 
-    /**
-     * @param AbstractMagentoCommand $command
-     */
-    public function setCommand(AbstractMagentoCommand $command)
+    public function setCommand(AbstractMagentoCommand $magentoCommand)
     {
-        $this->command = $command;
+        $this->command = $magentoCommand;
     }
 
     /**
@@ -101,27 +88,22 @@ abstract class AbstractSubCommand implements SubCommandInterface
     final protected function getOptionalBooleanOption($name, $question, $default = true)
     {
         if ($this->input->getOption($name) !== null) {
-            $flag = $this->getCommand()->parseBoolOption($this->input->getOption($name));
-
-            return $flag;
-        } else {
-            $questionHelper = $this->getCommand()->getQuestionHelper();
-
-            $question = new Question(
-                sprintf(
-                    '<question>%s</question> <comment>[%s]',
-                    $question,
-                    $default
-                ),
-                $default
-            );
-
-            return $questionHelper->ask(
-                $this->input,
-                $this->output,
-                $question
-            );
+            return $this->getCommand()->parseBoolOption($this->input->getOption($name));
         }
+        $questionHelper = $this->getCommand()->getQuestionHelper();
+        $question = new Question(
+            sprintf(
+                '<question>%s</question> <comment>[%s]',
+                $question,
+                $default
+            ),
+            $default
+        );
+        return $questionHelper->ask(
+            $this->input,
+            $this->output,
+            $question
+        );
     }
 
     /**

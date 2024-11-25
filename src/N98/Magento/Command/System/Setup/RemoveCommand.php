@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Setup;
 
 use InvalidArgumentException;
@@ -30,12 +32,7 @@ class RemoveCommand extends AbstractSetupCommand
             ->setDescription('Remove module setup resource entry');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -62,23 +59,24 @@ class RemoveCommand extends AbstractSetupCommand
         } else {
             throw new InvalidArgumentException(sprintf('Error no setup found with the name: "%s"', $setupName));
         }
+
         return 0;
     }
 
     /**
      * @param string $moduleName
      * @param string $setupResource
-     * @param OutputInterface $output
      */
     public function removeSetupResource($moduleName, $setupResource, OutputInterface $output)
     {
-        /** @var Mage_Core_Model_Resource $model */
-        $model = $this->_getModel('core/resource');
-        $writeAdapter = $model->getConnection('core_write');
+        /** @var Mage_Core_Model_Resource $mageCoreModelAbstract */
+        $mageCoreModelAbstract = $this->_getModel('core/resource');
+        $writeAdapter = $mageCoreModelAbstract->getConnection('core_write');
         if (!$writeAdapter) {
             throw new RuntimeException('Database not configured');
         }
-        $table = $model->getTableName('core_resource');
+
+        $table = $mageCoreModelAbstract->getTableName('core_resource');
 
         if ($writeAdapter->delete($table, ['code = ?' => $setupResource]) > 0) {
             $output->writeln(

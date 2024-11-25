@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Application\Console\EventSubscriber;
 
 use N98\Magento\Application\Console\Event;
@@ -13,7 +15,7 @@ class CheckRootUser implements EventSubscriberInterface
     /**
      * @var string
      */
-    public const WARNING_ROOT_USER = '<error>It\'s not recommended to run n98-magerun as root user</error>';
+    public const WARNING_ROOT_USER = "<error>It's not recommended to run n98-magerun as root user</error>";
 
     /**
      * Returns an array of event names this subscriber wants to listen to.
@@ -30,7 +32,6 @@ class CheckRootUser implements EventSubscriberInterface
     /**
      * Display a warning if a running n98-magerun as root user
      *
-     * @param Event $event
      * @return void
      */
     public function checkRunningAsRootUser(Event $event)

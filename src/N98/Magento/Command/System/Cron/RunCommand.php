@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Cron;
 
 use Exception;
@@ -22,6 +24,7 @@ use Symfony\Component\Validator\Exception\InvalidArgumentException;
 class RunCommand extends AbstractCronCommand
 {
     public const REGEX_RUN_MODEL = '#^([a-z0-9_]+/[a-z0-9_]+)::([a-z0-9_]+)$#i';
+
     /**
      * @var array
      */
@@ -49,10 +52,7 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      *
-     * @return int
      * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -85,16 +85,12 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @param array $jobs array of array containing "job" keyed string entries of job-codes
-     *
      * @return string         job-code
      * @throws InvalidArgumentException|Exception when user selects invalid job interactively
      */
     protected function askJobCode(InputInterface $input, OutputInterface $output, array $jobs)
     {
-        $index = 0;
         $keyMap = array_keys($jobs);
 
         $choices = [];
@@ -102,9 +98,9 @@ HELP;
             $choices[] = '<comment>' . $job['Job'] . '</comment>';
         }
 
-        $dialog = $this->getQuestionHelper();
-        $question = new ChoiceQuestion('<question>Please select job:</question> ', $choices);
-        $question->setValidator(function ($typeInput) use ($keyMap, $jobs) {
+        $questionHelper = $this->getQuestionHelper();
+        $choiceQuestion = new ChoiceQuestion('<question>Please select job:</question> ', $choices);
+        $choiceQuestion->setValidator(function ($typeInput) use ($keyMap, $jobs) {
             $key = $keyMap[$typeInput];
             if (!isset($jobs[$key])) {
                 throw new InvalidArgumentException('Invalid job');
@@ -113,7 +109,7 @@ HELP;
             return $jobs[$key]['Job'];
         });
 
-        return $dialog->ask($input, $output, $question);
+        return $questionHelper->ask($input, $output, $choiceQuestion);
     }
 
     /**
@@ -123,7 +119,7 @@ HELP;
      */
     private function getCallbackFromRunConfigModel($runConfigModel, $jobCode)
     {
-        if (!preg_match(self::REGEX_RUN_MODEL, $runConfigModel, $runMatches)) {
+        if (in_array(preg_match(self::REGEX_RUN_MODEL, $runConfigModel, $runMatches), [0, false], true)) {
             throw new RuntimeException(
                 sprintf(
                     'Invalid model/method definition "%s" for job "%s", expecting "model/class::method".',
@@ -132,6 +128,7 @@ HELP;
                 )
             );
         }
+
         [, $runModel, $runMethod] = $runMatches;
         unset($runMatches);
 
@@ -139,6 +136,7 @@ HELP;
         if (false === $model) {
             throw new RuntimeException(sprintf('Failed to create new "%s" model for job "%s"', $runModel, $jobCode));
         }
+
         $callback = [$model, $runMethod];
         $callableName = sprintf('%s::%s', $runModel, $runMethod);
         if (!$model || !is_callable($callback, false, $callableName)) {
@@ -164,11 +162,11 @@ HELP;
             throw new RuntimeException('Failed to create new Mage_Cron_Model_Schedule model');
         }
 
-        $environment = new ServerEnvironment();
-        $environment->initalize();
+        $serverEnvironment = new ServerEnvironment();
+        $serverEnvironment->initalize();
 
         try {
-            $timestamp = strftime('%Y-%m-%d %H:%M:%S', time());
+            $timestamp = strftime('%Y-%m-%d %H:%M:%S', \Carbon\Carbon::now()->timestamp);
             $schedule
                 ->setJobCode($jobCode)
                 ->setStatus(Mage_Cron_Model_Schedule::STATUS_RUNNING)
@@ -180,17 +178,17 @@ HELP;
             $callback($schedule);
 
             $schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS);
-        } catch (Exception $cronException) {
+        } catch (Exception $exception) {
             $schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
         }
 
-        $schedule->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))->save();
+        $schedule->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', \Carbon\Carbon::now()->timestamp))->save();
 
-        if (isset($cronException)) {
+        if (isset($exception)) {
             throw new RuntimeException(
-                sprintf('Cron-job "%s" threw exception %s', $jobCode, get_class($cronException)),
+                sprintf('Cron-job "%s" threw exception %s', $jobCode, get_class($exception)),
                 0,
-                $cronException
+                $exception
             );
         }
 
@@ -216,18 +214,18 @@ HELP;
         }
 
         try {
-            $timestamp = strftime('%Y-%m-%d %H:%M:%S', time());
+            $timestamp = strftime('%Y-%m-%d %H:%M:%S', \Carbon\Carbon::now()->timestamp);
             $schedule
                 ->setJobCode($jobCode)
                 ->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING)
                 ->setCreatedAt($timestamp)
                 ->setScheduledAt($timestamp)
                 ->save();
-        } catch (Exception $cronException) {
+        } catch (Exception $exception) {
             throw new RuntimeException(
-                sprintf('Cron-job "%s" threw exception %s', $jobCode, get_class($cronException)),
+                sprintf('Cron-job "%s" threw exception %s', $jobCode, get_class($exception)),
                 0,
-                $cronException
+                $exception
             );
         }
     }
@@ -246,6 +244,7 @@ HELP;
         if (!$jobConfig || !$jobConfig->run) {
             $jobConfig = $defaultJobsRoot->{$jobCode};
         }
+
         if (!$jobConfig || !$jobConfig->run) {
             throw new RuntimeException(sprintf('No job-config found for job "%s"!', $jobCode));
         }

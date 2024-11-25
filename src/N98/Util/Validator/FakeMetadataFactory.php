@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util\Validator;
 
 use Symfony\Component\Validator\Exception\NoSuchMetadataException;
@@ -63,11 +65,8 @@ class FakeMetadataFactory implements MetadataFactoryInterface
         return isset($this->metadatas[$value]);
     }
 
-    /**
-     * @param \Symfony\Component\Validator\Mapping\ClassMetadata $metadata
-     */
-    public function addMetadata(ClassMetadata $metadata)
+    public function addMetadata(ClassMetadata $classMetadata)
     {
-        $this->metadatas[$metadata->getClassName()] = $metadata;
+        $this->metadatas[$classMetadata->getClassName()] = $classMetadata;
     }
 }

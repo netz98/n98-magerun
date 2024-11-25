@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cms\Block;
 
 use Mage_Cms_Model_Block;
@@ -34,18 +36,15 @@ class ToggleCommand extends AbstractMagentoCommand
      */
     protected function _getBlockModel()
     {
-        /** @var Mage_Cms_Model_Block $model */
-        $model = $this->_getModel('cms/block');
-        return $model;
+        /** @var Mage_Cms_Model_Block $mageCoreModelAbstract */
+        $mageCoreModelAbstract = $this->_getModel('cms/block');
+        return $mageCoreModelAbstract;
     }
 
     /**
      * Execute the command
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
-     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -53,15 +52,18 @@ class ToggleCommand extends AbstractMagentoCommand
         if (!$this->initMagento()) {
             return 0;
         }
+
         $blockId = $input->getArgument('block_id');
         if (is_numeric($blockId)) {
             $block = $this->_getBlockModel()->load($blockId);
         } else {
             $block = $this->_getBlockModel()->load($blockId, 'identifier');
         }
+
         if (!$block->getId()) {
             return (int) $output->writeln('<error>Block was not found</error>');
         }
+
         $newStatus = !$block->getIsActive();
         $block
             ->setIsActive((int)$newStatus)

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Cron;
 
 use Mage;
@@ -39,12 +41,7 @@ class HistoryCommand extends AbstractMagentoCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -52,6 +49,7 @@ class HistoryCommand extends AbstractMagentoCommand
         if ($input->getOption('format') === null) {
             $this->writeSection($output, 'Last executed jobs');
         }
+
         $this->initMagento();
 
         $timezone = $input->getOption('timezone') ?: Mage::app()->getStore()->getConfig('general/locale/timezone');

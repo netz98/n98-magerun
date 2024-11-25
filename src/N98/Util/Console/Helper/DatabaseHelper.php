@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util\Console\Helper;
 
 use InvalidArgumentException;
@@ -23,7 +25,7 @@ class DatabaseHelper extends AbstractHelper
     /**
      * @var array|DbSettings
      */
-    protected $dbSettings = null;
+    protected $dbSettings;
 
     /**
      * @var bool
@@ -34,7 +36,7 @@ class DatabaseHelper extends AbstractHelper
     /**
      * @var PDO
      */
-    protected $_connection = null;
+    protected $_connection;
 
     /**
      * @var array
@@ -42,9 +44,6 @@ class DatabaseHelper extends AbstractHelper
     protected $_tables;
 
     /**
-     * @param OutputInterface $output
-     *
-     * @param null $connectionNode
      * @return void
      */
     public function detectDbSettings(OutputInterface $output, $connectionNode = null)
@@ -53,13 +52,14 @@ class DatabaseHelper extends AbstractHelper
             return;
         }
 
-        $application = $this->getApplication();
-        if (!$application instanceof Application) {
+        $baseApplication = $this->getApplication();
+        if (!$baseApplication instanceof Application) {
             return;
         }
-        $application->detectMagento();
 
-        $configFile = $application->getMagentoRootFolder() . '/app/etc/local.xml';
+        $baseApplication->detectMagento();
+
+        $configFile = $baseApplication->getMagentoRootFolder() . '/app/etc/local.xml';
 
         if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $output->writeln(
@@ -69,9 +69,9 @@ class DatabaseHelper extends AbstractHelper
 
         try {
             $this->dbSettings = new DbSettings($configFile, $connectionNode);
-        } catch (InvalidArgumentException $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
-            throw new RuntimeException('Failed to load database settings from config file', 0, $e);
+        } catch (InvalidArgumentException $invalidArgumentException) {
+            $output->writeln('<error>' . $invalidArgumentException->getMessage() . '</error>');
+            throw new RuntimeException('Failed to load database settings from config file', 0, $invalidArgumentException);
         }
     }
 
@@ -142,7 +142,7 @@ class DatabaseHelper extends AbstractHelper
      */
     public function getMysqlVariableValue($variable)
     {
-        $statement = $this->getConnection()->query("SELECT @@{$variable};");
+        $statement = $this->getConnection()->query(sprintf('SELECT @@%s;', $variable));
         if (false === $statement) {
             throw new RuntimeException(sprintf('Failed to query mysql variable %s', var_export($variable, true)));
         }
@@ -171,11 +171,7 @@ class DatabaseHelper extends AbstractHelper
      */
     public function getMysqlVariable($name, $type = null)
     {
-        if (null === $type) {
-            $type = '@@';
-        } else {
-            $type = (string) $type;
-        }
+        $type = null === $type ? '@@' : (string) $type;
 
         if (!in_array($type, ['@@', '@'], true)) {
             throw new InvalidArgumentException(
@@ -184,15 +180,15 @@ class DatabaseHelper extends AbstractHelper
         }
 
         $quoted = '`' . strtr($name, ['`' => '``']) . '`';
-        $query = "SELECT {$type}{$quoted};";
+        $query = sprintf('SELECT %s%s;', $type, $quoted);
 
-        $connection = $this->getConnection();
-        $statement = $connection->query($query, PDO::FETCH_COLUMN, 0);
+        $pdo = $this->getConnection();
+        $statement = $pdo->query($query, PDO::FETCH_COLUMN, 0);
         if ($statement instanceof PDOStatement) {
             $result = $statement->fetchColumn(0);
         } else {
-            $reason = $connection->errorInfo()
-                ? vsprintf('SQLSTATE[%s]: %s: %s', $connection->errorInfo())
+            $reason = $pdo->errorInfo()
+                ? vsprintf('SQLSTATE[%s]: %s: %s', $pdo->errorInfo())
                 : 'no error info';
 
             throw new RuntimeException(
@@ -204,7 +200,6 @@ class DatabaseHelper extends AbstractHelper
     }
 
     /**
-     * @param array $commandConfig
      *
      * @throws RuntimeException
      * @return array
@@ -219,24 +214,28 @@ class DatabaseHelper extends AbstractHelper
         $tableGroups = $commandConfig['table-groups'];
         foreach ($tableGroups as $index => $definition) {
             if (!isset($definition['id'])) {
-                throw new RuntimeException("Invalid definition of table-groups (id missing) at index: $index");
+                throw new RuntimeException('Invalid definition of table-groups (id missing) at index: ' . $index);
             }
+
             $id = $definition['id'];
             if (isset($tableDefinitions[$id])) {
-                throw new RuntimeException("Invalid definition of table-groups (duplicate id) id: $id");
+                throw new RuntimeException('Invalid definition of table-groups (duplicate id) id: ' . $id);
             }
 
             if (!isset($definition['tables'])) {
-                throw new RuntimeException("Invalid definition of table-groups (tables missing) id: $id");
+                throw new RuntimeException('Invalid definition of table-groups (tables missing) id: ' . $id);
             }
+
             $tables = $definition['tables'];
 
             if (is_string($tables)) {
                 $tables = preg_split('~\s+~', $tables, -1, PREG_SPLIT_NO_EMPTY);
             }
+
             if (!is_array($tables)) {
-                throw new RuntimeException("Invalid tables definition of table-groups id: $id");
+                throw new RuntimeException('Invalid tables definition of table-groups id: ' . $id);
             }
+
             $tables = array_map('trim', $tables);
 
             $description = $definition['description'] ?? '';
@@ -263,11 +262,12 @@ class DatabaseHelper extends AbstractHelper
 
         $resolvedList = [];
         foreach ($list as $entry) {
-            if (substr($entry, 0, 1) == '@') {
+            if (substr($entry, 0, 1) === '@') {
                 $code = substr($entry, 1);
                 if (!isset($definitions[$code])) {
                     throw new RuntimeException('Table-groups could not be resolved: ' . $entry);
                 }
+
                 if (!isset($resolved[$code])) {
                     $resolved[$code] = true;
                     $tables = $this->resolveTables(
@@ -277,6 +277,7 @@ class DatabaseHelper extends AbstractHelper
                     );
                     $resolvedList = array_merge($resolvedList, $tables);
                 }
+
                 continue;
             }
 
@@ -297,6 +298,7 @@ class DatabaseHelper extends AbstractHelper
                 foreach ($rows as $row) {
                     $resolvedList[] = $row[0];
                 }
+
                 continue;
             }
 
@@ -306,13 +308,11 @@ class DatabaseHelper extends AbstractHelper
         }
 
         asort($resolvedList);
-        $resolvedList = array_unique($resolvedList);
 
-        return $resolvedList;
+        return array_unique($resolvedList);
     }
 
     /**
-     * @param array $definitions
      * @param string $code
      * @return array tables
      */
@@ -323,13 +323,12 @@ class DatabaseHelper extends AbstractHelper
         if (is_string($tables)) {
             $tables = preg_split('~\s+~', $tables, -1, PREG_SPLIT_NO_EMPTY);
         }
+
         if (!is_array($tables)) {
-            throw new RuntimeException("Invalid tables definition of table-groups code: @$code");
+            throw new RuntimeException('Invalid tables definition of table-groups code: @' . $code);
         }
 
-        $tables = array_reduce((array) $tables, [$this, 'resolveTablesArray'], null);
-
-        return $tables;
+        return array_reduce($tables, [$this, 'resolveTablesArray'], null);
     }
 
     /**
@@ -368,11 +367,11 @@ class DatabaseHelper extends AbstractHelper
     {
         $withoutPrefix = (bool) $withoutPrefix;
 
-        $db = $this->getConnection();
+        $pdo = $this->getConnection();
         $prefix = $this->dbSettings['prefix'];
         $prefixLength = strlen($prefix);
-
-        $column = $columnName = 'table_name';
+        $column = 'table_name';
+        $columnName = 'table_name';
 
         $input = [];
 
@@ -383,14 +382,14 @@ class DatabaseHelper extends AbstractHelper
 
         $condition = 'table_schema = database()';
 
-        if ($prefixLength) {
+        if ($prefixLength !== 0) {
             $escape = '=';
             $condition .= sprintf(" AND %s LIKE :like ESCAPE '%s'", $columnName, $escape);
             $input[':like'] = $this->quoteLike($prefix, $escape) . '%';
         }
 
         $query = sprintf('SELECT %s FROM information_schema.tables WHERE %s;', $column, $condition);
-        $statement = $db->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+        $statement = $pdo->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
         $result = $statement->execute($input);
 
         if (!$result) {
@@ -409,18 +408,16 @@ class DatabaseHelper extends AbstractHelper
     /**
      * throw a runtime exception and provide error info for the statement if available
      *
-     * @param PDOStatement $statement
      * @param string $message
-     *
      * @throws RuntimeException
      */
-    private function throwRuntimeException(PDOStatement $statement, $message = '')
+    private function throwRuntimeException(PDOStatement $pdoStatement, $message = '')
     {
-        $reason = $statement->errorInfo()
-            ? vsprintf('SQLSTATE[%s]: %s: %s', $statement->errorInfo())
+        $reason = $pdoStatement->errorInfo()
+            ? vsprintf('SQLSTATE[%s]: %s: %s', $pdoStatement->errorInfo())
             : 'no error info for statement';
 
-        if (strlen($message)) {
+        if (strlen($message) !== 0) {
             $message .= ': ';
         } else {
             $message = '';
@@ -453,15 +450,15 @@ class DatabaseHelper extends AbstractHelper
      */
     public function getTablesStatus($withoutPrefix = false)
     {
-        $db = $this->getConnection();
+        $pdo = $this->getConnection();
         $prefix = $this->dbSettings['prefix'];
         if (strlen($prefix) > 0) {
-            $statement = $db->prepare('SHOW TABLE STATUS LIKE :like', [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+            $statement = $pdo->prepare('SHOW TABLE STATUS LIKE :like', [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
             $statement->execute(
                 [':like' => $prefix . '%']
             );
         } else {
-            $statement = $db->query('SHOW TABLE STATUS');
+            $statement = $pdo->query('SHOW TABLE STATUS');
         }
 
         if ($statement) {
@@ -471,6 +468,7 @@ class DatabaseHelper extends AbstractHelper
                 if (true === $withoutPrefix) {
                     $table['Name'] = str_replace($prefix, '', $table['Name']);
                 }
+
                 $return[$table['Name']] = $table;
             }
 
@@ -528,8 +526,9 @@ class DatabaseHelper extends AbstractHelper
     public function dropDatabase($output)
     {
         $this->detectDbSettings($output);
-        $db = $this->getConnection();
-        $db->query('DROP DATABASE `' . $this->dbSettings['dbname'] . '`');
+        $pdo = $this->getConnection();
+        $pdo->query('DROP DATABASE `' . $this->dbSettings['dbname'] . '`');
+
         $output->writeln('<info>Dropped database</info> <comment>' . $this->dbSettings['dbname'] . '</comment>');
     }
 
@@ -543,8 +542,9 @@ class DatabaseHelper extends AbstractHelper
         $count = 0;
         foreach ($result as $tableName) {
             $query .= 'DROP TABLE IF EXISTS `' . $tableName . '`; ';
-            $count++;
+            ++$count;
         }
+
         $query .= 'SET FOREIGN_KEY_CHECKS = 1;';
         $this->getConnection()->query($query);
         $output->writeln('<info>Dropped database tables</info> <comment>' . $count . ' tables dropped</comment>');
@@ -556,8 +556,9 @@ class DatabaseHelper extends AbstractHelper
     public function createDatabase($output)
     {
         $this->detectDbSettings($output);
-        $db = $this->getConnection();
-        $db->query('CREATE DATABASE IF NOT EXISTS `' . $this->dbSettings['dbname'] . '`');
+        $pdo = $this->getConnection();
+        $pdo->query('CREATE DATABASE IF NOT EXISTS `' . $this->dbSettings['dbname'] . '`');
+
         $output->writeln('<info>Created database</info> <comment>' . $this->dbSettings['dbname'] . '</comment>');
     }
 
@@ -569,10 +570,10 @@ class DatabaseHelper extends AbstractHelper
      */
     private function runShowCommand($command, $variable = null)
     {
-        $db = $this->getConnection();
+        $pdo = $this->getConnection();
 
         if (null !== $variable) {
-            $statement = $db->prepare(
+            $statement = $pdo->prepare(
                 'SHOW /*!50000 GLOBAL */ ' . $command . ' LIKE :like',
                 [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]
             );
@@ -580,7 +581,7 @@ class DatabaseHelper extends AbstractHelper
                 [':like' => $variable]
             );
         } else {
-            $statement = $db->query('SHOW /*!50000 GLOBAL */ ' . $command);
+            $statement = $pdo->query('SHOW /*!50000 GLOBAL */ ' . $command);
         }
 
         if ($statement) {
@@ -625,12 +626,10 @@ class DatabaseHelper extends AbstractHelper
         $command = $this->getHelperSet()->getCommand();
 
         if ($command) {
-            $application = $command->getApplication();
-        } else {
-            $application = new Application();
+            return $command->getApplication();
         }
 
-        return $application;
+        return new Application();
     }
 
     /**
@@ -642,7 +641,7 @@ class DatabaseHelper extends AbstractHelper
      */
     private function fallbackOutput(OutputInterface $output = null)
     {
-        if (null !== $output) {
+        if ($output instanceof \Symfony\Component\Console\Output\OutputInterface) {
             return $output;
         }
 
@@ -653,7 +652,7 @@ class DatabaseHelper extends AbstractHelper
         }
 
         if (null === $output) {
-            $output = new NullOutput();
+            return new NullOutput();
         }
 
         return $output;

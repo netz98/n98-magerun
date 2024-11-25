@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * this file is part of magerun
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
-
 namespace N98\Magento;
 
 use N98\Util\AutoloadRestorer;
@@ -67,9 +68,7 @@ class Initialiser
 
         $this->requireOnce();
 
-        if (!class_exists(self::CLASS_MAGE, false)) {
-            throw new RuntimeException(sprintf('Failed to load definition of "%s" class', self::CLASS_MAGE));
-        }
+        throw new RuntimeException(sprintf('Failed to load definition of "%s" class', self::CLASS_MAGE));
     }
 
     /**
@@ -78,13 +77,13 @@ class Initialiser
     private function requireOnce()
     {
         // Create a new AutoloadRestorer to capture current auto-loaders
-        $restorer = new AutoloadRestorer();
+        $autoloadRestorer = new AutoloadRestorer();
 
         $path = $this->magentoPath . '/' . self::PATH_APP_MAGE_PHP;
         initialiser_require_once($path);
 
         // Restore auto-loaders that might be removed by extensions that overwrite Varien/Autoload
-        $restorer->restore();
+        $autoloadRestorer->restore();
     }
 }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database\Compressor;
 
 use InvalidArgumentException;
@@ -29,7 +31,7 @@ abstract class AbstractCompressor implements Compressor
                 return new Gzip();
 
             default:
-                throw new InvalidArgumentException("Compression type '{$type}' is not supported.");
+                throw new InvalidArgumentException(sprintf("Compression type '%s' is not supported.", $type));
         }
     }
 

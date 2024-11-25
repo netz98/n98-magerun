@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Installer\SubCommand;
 
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
@@ -25,10 +27,10 @@ class PostInstallation extends AbstractSubCommand
 
         $this->output->writeln('<info>Reindex all after installation</info>');
 
-        $indexerReindexInput = new ArrayInput(['command' => 'index:reindex:all']);
-        $indexerReindexInput->setInteractive(false);
+        $arrayInput = new ArrayInput(['command' => 'index:reindex:all']);
+        $arrayInput->setInteractive(false);
         $this->getCommand()->getApplication()->run(
-            $indexerReindexInput,
+            $arrayInput,
             $this->output
         );
 

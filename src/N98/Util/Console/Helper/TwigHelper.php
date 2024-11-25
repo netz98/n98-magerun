@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util\Console\Helper;
 
 use Exception;
@@ -21,7 +23,6 @@ class TwigHelper extends Helper
     protected $twig;
 
     /**
-     * @param Config $config
      * @throws RuntimeException
      */
     public function __construct(Config $config)
@@ -30,8 +31,8 @@ class TwigHelper extends Helper
 
         try {
             $this->twig = new Twig($baseDirs);
-        } catch (Exception $e) {
-            throw new RuntimeException($e->getMessage(), 0, $e);
+        } catch (Exception $exception) {
+            throw new RuntimeException($exception->getMessage(), 0, $exception);
         }
     }
 
@@ -69,7 +70,6 @@ class TwigHelper extends Helper
     }
 
     /**
-     * @param Config $config
      * @return array
      */
     private function getBaseDirsFromConfig(Config $config)
@@ -84,12 +84,15 @@ class TwigHelper extends Helper
             if (!is_string($dir)) {
                 continue;
             }
+
             if (2 > strlen($dir)) {
                 continue;
             }
+
             if ('./' === substr($dir, 0, 2)) {
                 $dir = $baseDir . substr($dir, 1);
             }
+
             $baseDirs[] = $dir;
         }
 

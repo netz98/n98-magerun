@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database;
 
 use N98\Magento\Command\AbstractMagentoCommand;
@@ -25,20 +27,16 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      */
     protected $isSocketConnect = false;
 
-    /**
-     * @param OutputInterface $output
-     * @param null $connectionNode
-     */
     protected function detectDbSettings(OutputInterface $output, $connectionNode = null)
     {
-        $database = $database = $this->getDatabaseHelper();
+        $database = $this->getDatabaseHelper();
         $this->dbSettings = $database->getDbSettings($output);
     }
 
     /**
      * @param $name
      *
-     * @return \PDO|void
+     * @return \PDO|null
      */
     public function __get($name)
     {
@@ -46,6 +44,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
             // TODO(tk): deprecate
             return $this->getDatabaseHelper()->getConnection();
         }
+        return null;
     }
 
     /**
@@ -99,8 +98,6 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param array $excludes
-     * @param array $definitions
      * @param array $resolved Which definitions where already resolved -> prevent endless loops
      *
      * @return array

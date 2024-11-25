@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Translate;
 
 use Locale;
@@ -27,12 +29,7 @@ class ExportCommand extends AbstractMagentoCommand
             ->addOption('store', null, InputOption::VALUE_OPTIONAL, 'Limit to a special store');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -40,8 +37,8 @@ class ExportCommand extends AbstractMagentoCommand
             return 0;
         }
 
-        $helper = $this->getDatabaseHelper();
-        $db = $helper->getConnection();
+        $databaseHelper = $this->getDatabaseHelper();
+        $pdo = $databaseHelper->getConnection();
 
         $filename = $input->getArgument('filename');
 
@@ -58,8 +55,10 @@ class ExportCommand extends AbstractMagentoCommand
             $sql .= ' AND store_id = :store_id';
             $parameters['store_id'] = Mage::app()->getStore($input->getOption('store'));
         }
-        $statement = $db->prepare($sql);
+
+        $statement = $pdo->prepare($sql);
         $statement->execute($parameters);
+
         $result = $statement->fetchAll();
         $f = fopen($filename, 'w');
 

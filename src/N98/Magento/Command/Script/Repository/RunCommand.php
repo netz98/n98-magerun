@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Script\Repository;
 
 use InvalidArgumentException;
@@ -77,13 +79,13 @@ HELP;
             };
 
             $dialog = $this->getQuestionHelper();
-            $question = new ChoiceQuestion(
+            $choiceQuestion = new ChoiceQuestion(
                 '<question>Please select a script file:</question> ',
                 $choices
             );
-            $question->setValidator($validator);
+            $choiceQuestion->setValidator($validator);
 
-            $selectedFile = $dialog->ask($input, $output, $question);
+            $selectedFile = $dialog->ask($input, $output, $choiceQuestion);
         } else {
             $script = $input->getArgument('script');
             if (substr($script, -strlen(self::MAGERUN_EXTENSION)) !== self::MAGERUN_EXTENSION) {
@@ -93,6 +95,7 @@ HELP;
             if (!isset($files[$script])) {
                 throw new InvalidArgumentException('Invalid script');
             }
+
             $selectedFile = $files[$script]['fileinfo']->getPathname();
         }
 
@@ -100,9 +103,11 @@ HELP;
         foreach ($input->getOption('define') as $define) {
             $scriptArray['--define'][] = $define;
         }
+
         if ($input->getOption('stop-on-error')) {
             $scriptArray['--stop-on-error'] = true;
         }
+
         $input = new ArrayInput($scriptArray);
         $this->getApplication()->run($input, $output);
         return 0;

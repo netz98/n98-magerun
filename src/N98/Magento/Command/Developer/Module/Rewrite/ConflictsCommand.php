@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
 use DateTime;
@@ -48,8 +50,6 @@ HELP;
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
      * @return int exit code: 0 no conflicts found, 1 conflicts found, 2 magento could not be initialized
      */
@@ -68,6 +68,7 @@ HELP;
             if (!is_array($data)) {
                 continue;
             }
+
             foreach ($data as $class => $rewriteClasses) {
                 if (!$this->_isInheritanceConflict($rewriteClasses)) {
                     continue;
@@ -111,21 +112,20 @@ HELP;
     }
 
     /**
-     * @param array  $conflicts
      * @param string $filename
      * @param float  $duration
      */
     protected function logJUnit(array $conflicts, $filename, $duration)
     {
         $document = new JUnitXmlDocument();
-        $suite = $document->addTestSuite();
-        $suite->setName('n98-magerun: ' . $this->getName());
-        $suite->setTimestamp(new DateTime());
-        $suite->setTime($duration);
+        $testSuiteElement = $document->addTestSuite();
+        $testSuiteElement->setName('n98-magerun: ' . $this->getName());
+        $testSuiteElement->setTimestamp(\Carbon\Carbon::now());
+        $testSuiteElement->setTime($duration);
 
-        $testCase = $suite->addTestCase();
-        $testCase->setName('Magento Rewrite Conflict Test');
-        $testCase->setClassname('ConflictsCommand');
+        $testCaseElement = $testSuiteElement->addTestCase();
+        $testCaseElement->setName('Magento Rewrite Conflict Test');
+        $testCaseElement->setClassname('ConflictsCommand');
         foreach ($conflicts as $conflict) {
             $message = sprintf(
                 'Rewrite conflict: Type %s | Class: %s, Rewrites: %s | Loaded class: %s',
@@ -134,7 +134,7 @@ HELP;
                 $conflict['Rewrites'],
                 $conflict['Loaded Class']
             );
-            $testCase->addFailure($message, 'MagentoRewriteConflictException');
+            $testCaseElement->addFailure($message, 'MagentoRewriteConflictException');
         }
 
         $document->save($filename);
@@ -145,7 +145,6 @@ HELP;
      * If yes we have no conflict. The top class can extend every core class.
      * So we cannot check this.
      *
-     * @param array $classes
      * @return bool
      */
     protected function _isInheritanceConflict(array $classes)
@@ -164,28 +163,25 @@ HELP;
             } catch (Exception $e) {
                 return true;
             }
+
             $later = $earlier;
         }
 
         return false;
     }
 
-    /**
-     * @param OutputInterface $output
-     * @param array           $conflicts
-     */
     private function writeOutput(OutputInterface $output, array $conflicts)
     {
-        if (!$conflicts) {
+        if ($conflicts === []) {
             $output->writeln('<info>No rewrite conflicts were found.</info>');
             return;
         }
 
         $number = count($conflicts);
-        $table = new Zend_Text_Table(['columnWidths' => [8, 30, 60, 60]]);
+        $zendTextTable = new Zend_Text_Table(['columnWidths' => [8, 30, 60, 60]]);
 
-        array_map([$table, 'appendRow'], $conflicts);
-        $output->write($table->render());
+        array_map([$zendTextTable, 'appendRow'], $conflicts);
+        $output->write($zendTextTable->render());
         $message = sprintf(
             '%d %s found!',
             $number,

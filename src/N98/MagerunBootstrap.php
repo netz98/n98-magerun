@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98;
 
 use Composer\Autoload\ClassLoader;
@@ -16,19 +18,17 @@ use N98\Magento\Application;
 class MagerunBootstrap
 {
     /**
-     * @param ClassLoader|null $loader [optional]
+     * @param ClassLoader|null $classLoader [optional]
      * @return Magento\Application
      * @throws ErrorException
      */
-    public static function createApplication(ClassLoader $loader = null)
+    public static function createApplication(ClassLoader $classLoader = null)
     {
-        if (null === $loader) {
-            $loader = self::getLoader();
+        if (!$classLoader instanceof \Composer\Autoload\ClassLoader) {
+            $classLoader = self::getLoader();
         }
 
-        $application = new Application($loader);
-
-        return $application;
+        return new Application($classLoader);
     }
 
     /**
@@ -60,5 +60,6 @@ class MagerunBootstrap
         if (file_exists($file)) {
             return include $file;
         }
+        return null;
     }
 }

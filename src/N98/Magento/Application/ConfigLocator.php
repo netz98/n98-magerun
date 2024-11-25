@@ -1,10 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * this file is part of magerun
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
-
 namespace N98\Magento\Application;
 
 use InvalidArgumentException;
@@ -69,22 +71,23 @@ class ConfigLocator
     /**
      * Obtain the project-config-file, it is placed in the magento app/etc dir, e.g. app/etc/n98-magerun2.yaml
      *
-     * @return ConfigFile|void
+     * @return \N98\Magento\Application\ConfigFile|null
      */
     public function getProjectConfigFile()
     {
-        if (!strlen((string)$this->magentoRootFolder)) {
-            return;
+        if ((string)$this->magentoRootFolder === '') {
+            return null;
         }
+
         $projectConfigFilePath = $this->magentoRootFolder . '/app/etc/' . $this->customConfigFilename;
         if (!is_readable($projectConfigFilePath)) {
-            return;
+            return null;
         }
 
         try {
             $projectConfigFile = ConfigFile::createFromFile($projectConfigFilePath);
             $projectConfigFile->applyVariables($this->magentoRootFolder);
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $invalidArgumentException) {
             $projectConfigFile = null;
         }
 
@@ -96,24 +99,24 @@ class ConfigLocator
      * prefixed with a dot: stop-file-folder/.n98-magerun2.yaml
      *
      * @param string $magerunStopFileFolder
-     * @return ConfigFile|void
+     * @return \N98\Magento\Application\ConfigFile|null
      */
     public function getStopFileConfigFile($magerunStopFileFolder)
     {
         if (empty($magerunStopFileFolder)) {
-            return;
+            return null;
         }
 
         $stopFileConfigFilePath = $magerunStopFileFolder . '/.' . $this->customConfigFilename;
 
         if (!file_exists($stopFileConfigFilePath)) {
-            return;
+            return null;
         }
 
         try {
             $stopFileConfigFile = ConfigFile::createFromFile($stopFileConfigFilePath);
             $stopFileConfigFile->applyVariables($this->magentoRootFolder);
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $invalidArgumentException) {
             $stopFileConfigFile = null;
         }
 
@@ -129,7 +132,7 @@ class ConfigLocator
 
         $homeDirectory = OperatingSystem::getHomeDir();
 
-        if (!strlen($homeDirectory ?? '')) {
+        if ((string) ($homeDirectory ?? '') === '') {
             return $paths;
         }
 
@@ -142,6 +145,7 @@ class ConfigLocator
         if (OperatingSystem::isWindows()) {
             $paths[] = $homeDirectory . '/' . $basename;
         }
+
         $paths[] = $homeDirectory . '/.' . $basename;
 
         return $paths;

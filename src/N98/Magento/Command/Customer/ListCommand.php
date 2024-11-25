@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Customer;
 
 use Symfony\Component\Console\Input\InputArgument;
@@ -34,12 +36,7 @@ If search parameter is given the customers are filtered (searchs in firstname, l
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -49,23 +46,23 @@ HELP;
 
         $config = $this->getCommandConfig();
 
-        $collection = $this->getCustomerCollection();
-        $collection->addAttributeToSelect(['entity_id', 'email', 'firstname', 'lastname', 'website_id']);
+        $mageCustomerModelResourceCustomerCollection = $this->getCustomerCollection();
+        $mageCustomerModelResourceCustomerCollection->addAttributeToSelect(['entity_id', 'email', 'firstname', 'lastname', 'website_id']);
 
         if ($input->getArgument('search')) {
-            $collection->addAttributeToFilter(
+            $mageCustomerModelResourceCustomerCollection->addAttributeToFilter(
                 [['attribute' => 'email', 'like' => '%' . $input->getArgument('search') . '%'], ['attribute' => 'firstname', 'like' => '%' . $input->getArgument('search') . '%'], ['attribute' => 'lastname', 'like' => '%' . $input->getArgument('search') . '%']]
             );
         }
 
-        $collection->setPageSize($config['limit']);
+        $mageCustomerModelResourceCustomerCollection->setPageSize($config['limit']);
 
         $table = [];
-        foreach ($collection as $customer) {
+        foreach ($mageCustomerModelResourceCustomerCollection as $customer) {
             $table[] = [$customer->getId(), $customer->getEmail(), $customer->getFirstname(), $customer->getLastname(), $this->_getWebsiteCodeById($customer->getwebsiteId())];
         }
 
-        if (count($table) > 0) {
+        if ($table !== []) {
             $tableHelper = $this->getTableHelper();
             $tableHelper
                 ->setHeaders(['id', 'email', 'firstname', 'lastname', 'website'])
@@ -73,6 +70,7 @@ HELP;
         } else {
             $output->writeln('<comment>No customers found</comment>');
         }
+
         return 0;
     }
 }

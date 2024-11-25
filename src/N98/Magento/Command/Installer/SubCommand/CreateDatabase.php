@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Installer\SubCommand;
 
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
@@ -35,6 +37,7 @@ class CreateDatabase extends AbstractSubCommand
             if (empty($input)) {
                 throw new \InvalidArgumentException('Please enter a value');
             }
+
             return $input;
         };
 
@@ -43,7 +46,7 @@ class CreateDatabase extends AbstractSubCommand
         foreach ($dbOptions as $dbOption) {
             foreach ($this->getCliArguments() as $definedCliOption) {
                 if (str_starts_with($definedCliOption, $dbOption)) {
-                    $dbOptionsFound++;
+                    ++$dbOptionsFound;
                 }
             }
         }
@@ -180,8 +183,6 @@ class CreateDatabase extends AbstractSubCommand
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @return bool|\PDO
      */
     protected function validateDatabaseSettings(InputInterface $input, OutputInterface $output)
@@ -193,34 +194,34 @@ class CreateDatabase extends AbstractSubCommand
                 $this->config->getString('db_port')
             );
 
-            $db = new \PDO($dsn, $this->config->getString('db_user'), $this->config->getString('db_pass'));
-            $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $pdo = new \PDO($dsn, $this->config->getString('db_user'), $this->config->getString('db_pass'));
+            $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
             $dbName = $this->config->getString('db_name');
 
             // Query to check if the database "foo" exists
             $query = sprintf("SHOW DATABASES LIKE '%s'", $dbName);
-            $stmt = $db->prepare($query);
+            $stmt = $pdo->prepare($query);
             $stmt->execute();
             $result = $stmt->fetchAll();
 
             // Check if database exists
             if (count($result) === 0) {
-                $db->query('CREATE DATABASE `' . $dbName . '`');
+                $pdo->query('CREATE DATABASE `' . $dbName . '`');
                 $output->writeln('<info>Created database ' . $dbName . '</info>');
-                $db->query('USE `' . $dbName . '`');
-                return $db;
+                $pdo->query('USE `' . $dbName . '`');
+                return $pdo;
             }
 
             if ($input->getOption('noDownload') && !$input->getOption('forceUseDb')) {
-                $output->writeln("<error>Database {$this->config->getString('db_name')} already exists.</error>");
+                $output->writeln(sprintf('<error>Database %s already exists.</error>', $this->config->getString('db_name')));
 
                 return false;
             }
 
-            return $db;
-        } catch (\Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            return $pdo;
+        } catch (\Exception $exception) {
+            $output->writeln('<error>' . $exception->getMessage() . '</error>');
         }
 
         return false;

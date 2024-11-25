@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer;
 
 use Mage;
@@ -33,12 +35,7 @@ class ClassLookupCommand extends AbstractMagentoCommand
         return Mage::getConfig();
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -58,6 +55,7 @@ class ClassLookupCommand extends AbstractMagentoCommand
         if (!class_exists('\\' . $resolved)) {
             $output->writeln('<info>Note:</info> Class <comment>' . $resolved . '</comment> does not exist!');
         }
+
         return 0;
     }
 }

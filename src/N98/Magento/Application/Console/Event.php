@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Application\Console;
 
 use N98\Magento\Application;
@@ -28,7 +30,7 @@ class Event extends BaseEvent
     /**
      * @var EventDispatcherInterface Dispatcher that dispatched this event
      */
-    private $dispatcher;
+    private $eventDispatcher;
 
     public function __construct(Application $application, InputInterface $input, OutputInterface $output)
     {
@@ -68,13 +70,12 @@ class Event extends BaseEvent
     /**
      * Stores the EventDispatcher that dispatches this Event.
      *
-     * @param EventDispatcherInterface $dispatcher
      *
      * @deprecated since version 2.4, to be removed in 3.0. The event dispatcher is passed to the listener call.
      */
-    public function setDispatcher(EventDispatcherInterface $dispatcher)
+    public function setDispatcher(EventDispatcherInterface $eventDispatcher)
     {
-        $this->dispatcher = $dispatcher;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -86,6 +87,6 @@ class Event extends BaseEvent
      */
     public function getDispatcher()
     {
-        return $this->dispatcher;
+        return $this->eventDispatcher;
     }
 }

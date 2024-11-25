@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Config;
 
 use DOMDocument;
@@ -52,10 +54,7 @@ HELP;
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
-     * @return int
      * @throws InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -69,11 +68,12 @@ HELP;
         if (!$config) {
             throw new InvalidArgumentException('xpath was not found');
         }
-        $dom = new DOMDocument();
-        $dom->preserveWhiteSpace = false;
-        $dom->formatOutput = true;
-        $dom->loadXML($config->asXml());
-        $output->writeln($dom->saveXML(), OutputInterface::OUTPUT_RAW);
+
+        $domDocument = new DOMDocument();
+        $domDocument->preserveWhiteSpace = false;
+        $domDocument->formatOutput = true;
+        $domDocument->loadXML($config->asXml());
+        $output->writeln($domDocument->saveXML(), OutputInterface::OUTPUT_RAW);
         return 0;
     }
 }

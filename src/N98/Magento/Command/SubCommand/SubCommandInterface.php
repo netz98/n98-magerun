@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\SubCommand;
 
 use N98\Magento\Command\AbstractMagentoCommand;
@@ -14,25 +16,21 @@ use Symfony\Component\Console\Output\OutputInterface;
 interface SubCommandInterface
 {
     /**
-     * @param ConfigBag $config
      * @return void
      */
-    public function setConfig(ConfigBag $config);
+    public function setConfig(ConfigBag $configBag);
 
     /**
-     * @param array $commandConfig
      * @return void
      */
     public function setCommandConfig(array $commandConfig);
 
     /**
-     * @param InputInterface $input
      * @return void
      */
     public function setInput(InputInterface $input);
 
     /**
-     * @param OutputInterface $output
      * @return void
      */
     public function setOutput(OutputInterface $output);
@@ -43,10 +41,9 @@ interface SubCommandInterface
     public function getCommand();
 
     /**
-     * @param AbstractMagentoCommand $command
      * @return void
      */
-    public function setCommand(AbstractMagentoCommand $command);
+    public function setCommand(AbstractMagentoCommand $magentoCommand);
 
     /**
      * @return void

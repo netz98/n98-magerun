@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento;
 
 use ArrayAccess;
@@ -29,11 +31,17 @@ class DbSettings implements ArrayAccess, IteratorAggregate
      * @var string|null known field members
      */
     private $tablePrefix;
+
     private $host;
+
     private $port;
+
     private $unixSocket;
+
     private $dbName;
+
     private $username;
+
     private $password;
 
     /**
@@ -46,7 +54,6 @@ class DbSettings implements ArrayAccess, IteratorAggregate
 
     /**
      * @param string $file path to app/etc/local.xml
-     * @param null $connectionNode
      */
     public function __construct($file, $connectionNode = null)
     {
@@ -99,8 +106,6 @@ class DbSettings implements ArrayAccess, IteratorAggregate
 
     /**
      * helper method to parse config file segment related to the database settings
-     *
-     * @param SimpleXMLElement $resources
      */
     private function parseResources(SimpleXMLElement $resources)
     {
@@ -151,18 +156,18 @@ class DbSettings implements ArrayAccess, IteratorAggregate
 
         // blacklisted in prev. DSN creation: username, password, options, charset, persistent, driver_options, dbname
 
-        if (isset($this->unixSocket)) {
+        if ($this->unixSocket !== null) {
             $named['unix_socket'] = $this->unixSocket;
         } else {
             $named['host'] = $this->host;
-            if (isset($this->port)) {
+            if ($this->port !== null) {
                 $named['port'] = $this->port;
             }
         }
 
         $options = [];
         foreach ($named as $name => $value) {
-            $options[$name] = "{$name}={$value}";
+            $options[$name] = sprintf('%s=%s', $name, $value);
         }
 
         return $dsn . implode(';', $options);
@@ -182,28 +187,28 @@ class DbSettings implements ArrayAccess, IteratorAggregate
 
         $database = $this->getDatabaseName();
 
-        $connection = new PDO(
+        $pdo = new PDO(
             $this->getDsn(),
             $this->getUsername(),
             $this->getPassword()
         );
 
         /** @link http://bugs.mysql.com/bug.php?id=18551 */
-        $connection->query("SET SQL_MODE=''");
+        $pdo->query("SET SQL_MODE=''");
 
         try {
-            $connection->query('USE ' . $this->quoteIdentifier($database));
-        } catch (PDOException $e) {
-            $message = sprintf("Unable to use database '%s': %s %s", $database, get_class($e), $e->getMessage());
-            throw new RuntimeException($message, 0, $e);
+            $pdo->query('USE ' . $this->quoteIdentifier($database));
+        } catch (PDOException $pdoException) {
+            $message = sprintf("Unable to use database '%s': %s %s", $database, get_class($pdoException), $pdoException->getMessage());
+            throw new RuntimeException($message, 0, $pdoException);
         }
 
-        $connection->query('SET NAMES utf8');
+        $pdo->query('SET NAMES utf8');
 
-        $connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
-        $connection->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+        $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 
-        return $connection;
+        return $pdo;
     }
 
     public function getMysqlClientToolConnectionString()
@@ -220,9 +225,11 @@ class DbSettings implements ArrayAccess, IteratorAggregate
         if (null !== $this->config['port']) {
             $segments[] = '-P' . escapeshellarg($this->config['port']);
         }
-        if (strlen($this->config['password'])) {
+
+        if (strlen($this->config['password']) !== 0) {
             $segments[] = '-p' . escapeshellarg($this->config['password']);
         }
+
         $segments[] = escapeshellarg($this->config['dbname']);
 
         return implode(' ', $segments);
@@ -241,7 +248,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
 
         $pattern = '~^(?:[\x1-\x7F]|[\xC2-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF]{2})+$~';
 
-        if (!preg_match($pattern, $identifier)) {
+        if (in_array(preg_match($pattern, $identifier), [0, false], true)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Invalid identifier, must not contain NUL and must be UTF-8 encoded in the BMP: %s (hex: %s)',
@@ -348,12 +355,12 @@ class DbSettings implements ArrayAccess, IteratorAggregate
         if (isset($this->config[$offset])) {
             return $this->config[$offset];
         }
+        return null;
     }
 
     /**
      * @param mixed $offset
      * @param mixed $value
-     * @return void
      *
      * @throws BadMethodCallException
      */
@@ -364,7 +371,6 @@ class DbSettings implements ArrayAccess, IteratorAggregate
 
     /**
      * @param mixed $offset
-     * @return void
      *
      * @throws BadMethodCallException
      */
@@ -375,10 +381,6 @@ class DbSettings implements ArrayAccess, IteratorAggregate
 
     /*
      * IteratorAggregate
-     */
-
-    /**
-     * @return \Traversable
      */
     public function getIterator(): \Traversable
     {

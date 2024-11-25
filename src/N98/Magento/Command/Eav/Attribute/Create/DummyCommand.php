@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Eav\Attribute\Create;
 
 use Exception;
@@ -48,12 +50,7 @@ Supported Locales:
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -82,7 +79,7 @@ HELP;
         /** @var Mage_Eav_Model_Entity_Attribute $attribute */
         $attribute = Mage::getModel('eav/entity_attribute')->load($argument['attribute-id']);
         $dummyValues = new DummyValues();
-        for ($i = 0; $i < $argument['values-number']; $i++) {
+        for ($i = 0; $i < $argument['values-number']; ++$i) {
             $value = $dummyValues->createValue($argument['values-type'], $argument['locale']);
             if (!$this->attributeValueExists($attribute, $value)) {
                 try {
@@ -91,23 +88,23 @@ HELP;
                 } catch (Exception $e) {
                     $output->writeln('<error>' . $e->getMessage() . '</error>');
                 }
+
                 $output->writeln("<comment>ATTRIBUTE VALUE: '" . $value . "' ADDED!</comment>\r");
             }
         }
+
         return 0;
     }
 
     /**
      * Ask for command arguments
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
      * @return array
      */
     private function askForArguments(InputInterface $input, OutputInterface $output)
     {
-        $dialog = $this->getQuestionHelper();
+        $questionHelper = $this->getQuestionHelper();
         $argument = [];
 
         // Attribute ID
@@ -126,9 +123,10 @@ HELP;
 
             $question = new ChoiceQuestion('Please select Attribute ID', $attribute_codes);
             $question->setErrorMessage('Attribute ID "%s" is invalid.');
-            $response = explode('|', $dialog->ask($input, $output, $question));
+            $response = explode('|', $questionHelper->ask($input, $output, $question));
             $input->setArgument('attribute-id', $response[0]);
         }
+
         $output->writeln('<info>Attribute code selected: ' . $input->getArgument('attribute-id') . '</info>');
         $argument['attribute-id'] = (int) $input->getArgument('attribute-id');
 
@@ -137,8 +135,9 @@ HELP;
             $valueTypes = DummyValues::getValueTypeList();
             $question = new ChoiceQuestion('Please select Attribute Value Type', $valueTypes, 'int');
             $question->setErrorMessage('Attribute Value Type "%s" is invalid.');
-            $input->setArgument('values-type', $dialog->ask($input, $output, $question));
+            $input->setArgument('values-type', $questionHelper->ask($input, $output, $question));
         }
+
         $output->writeln('<info>Attribute Value Type selected: ' . $input->getArgument('values-type') . '</info>');
         $argument['values-type'] = $input->getArgument('values-type');
 
@@ -153,8 +152,9 @@ HELP;
 
                 return $answer;
             });
-            $input->setArgument('values-number', $dialog->ask($input, $output, $question));
+            $input->setArgument('values-number', $questionHelper->ask($input, $output, $question));
         }
+
         $output->writeln('<info>Number of values to create: ' . $input->getArgument('values-number') . '</info>');
         $argument['values-number'] = $input->getArgument('values-number');
 
@@ -164,16 +164,14 @@ HELP;
     /**
      * Check if an option exist
      *
-     * @param Mage_Eav_Model_Entity_Attribute $attribute
      * @param string                          $arg_value
-     *
      * @return bool
      */
-    private function attributeValueExists(Mage_Eav_Model_Entity_Attribute $attribute, $arg_value)
+    private function attributeValueExists(Mage_Eav_Model_Entity_Attribute $mageEavModelEntityAttribute, $arg_value)
     {
         /** @var Mage_Eav_Model_Entity_Attribute_Source_Table $options */
         $options = Mage::getModel('eav/entity_attribute_source_table');
-        $options->setAttribute($attribute);
+        $options->setAttribute($mageEavModelEntityAttribute);
         $options = $options->getAllOptions(false);
 
         foreach ($options as $option) {

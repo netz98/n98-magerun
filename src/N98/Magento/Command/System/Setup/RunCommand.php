@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Setup;
 
 use Exception;
@@ -44,11 +46,6 @@ This command is useful if you update your system with enabled maintenance mode.
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -70,30 +67,30 @@ HELP;
             if (is_callable(['\Mage_Core_Model_Resource_Setup', 'applyAllDataUpdates'])) {
                 Mage_Core_Model_Resource_Setup::applyAllDataUpdates();
             }
+
             \ob_end_clean();
             $output->writeln('<info>done</info>');
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             \ob_end_clean();
-            $this->getApplication()->renderThrowable($e, $output);
-            $this->printStackTrace($output, $e);
-            $this->printFile($output, $e);
+            $this->getApplication()->renderThrowable($exception, $output);
+            $this->printStackTrace($output, $exception);
+            $this->printFile($output, $exception);
 
             return 1; // exit with error status
         }
+
         return 0;
     }
 
     /**
-     * @param OutputInterface $output
-     * @param Exception $e
      *
      * @return void
      */
-    protected function printStackTrace(OutputInterface $output, Exception $e)
+    protected function printStackTrace(OutputInterface $output, Exception $exception)
     {
         $rootFolder = $this->getApplication()->getMagentoRootFolder();
-        $trace = array_filter($e->getTrace(), function (&$row) use ($rootFolder) {
-            if (!strstr($row['file'], $rootFolder)) {
+        $trace = array_filter($exception->getTrace(), function (&$row) use ($rootFolder) {
+            if (in_array(strstr($row['file'], $rootFolder), ['', '0'], true) || strstr($row['file'], $rootFolder) === false) {
                 return false;
             }
 
@@ -108,18 +105,15 @@ HELP;
         foreach ($trace as $row) {
             $rows[] = [$i++, $row['file'] . ':' . $row['line'], $row['class'] . '::' . $row['function']];
         }
+
         $tableHelper->setHeaders(['#', 'File/Line', 'Method']);
         $tableHelper->setRows($rows);
         $tableHelper->render($output);
     }
 
-    /**
-     * @param OutputInterface $output
-     * @param Exception $e
-     */
-    protected function printFile(OutputInterface $output, Exception $e)
+    protected function printFile(OutputInterface $output, Exception $exception)
     {
-        if (preg_match('/Error\sin\sfile\:\s"(.+)\"\s-/', $e->getMessage(), $matches)) {
+        if (preg_match('/Error\sin\sfile\:\s"(.+)\"\s-/', $exception->getMessage(), $matches)) {
             $tableHelper = $this->getTableHelper();
             $lines = \file($matches[1]);
             $rows = [];
@@ -127,6 +121,7 @@ HELP;
             foreach ($lines as $line) {
                 $rows[] = [++$i, rtrim($line)];
             }
+
             $tableHelper->setHeaders(['Line', 'Code']);
             $tableHelper->setRows($rows);
             $tableHelper->render($output);
@@ -138,9 +133,10 @@ HELP;
         /**
          * Get events before cache flush command is called.
          */
-        $reflectionApp = new ReflectionObject(Mage::app());
-        $appEventReflectionProperty = $reflectionApp->getProperty('_events');
+        $reflectionObject = new ReflectionObject(Mage::app());
+        $appEventReflectionProperty = $reflectionObject->getProperty('_events');
         $appEventReflectionProperty->setAccessible(true);
+
         $eventsBeforeCacheFlush = $appEventReflectionProperty->getValue(Mage::app());
 
         $application = $this->getApplication();

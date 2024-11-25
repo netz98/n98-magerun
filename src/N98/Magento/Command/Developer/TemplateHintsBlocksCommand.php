@@ -48,12 +48,9 @@ class TemplateHintsBlocksCommand extends AbstractMagentoStoreConfigCommand
 
     /**
      * If required, handle the output and possible change of the developer IP restrictions
-     *
-     * @param Mage_Core_Model_Store $store
-     * @param bool $disabled
      */
-    protected function _afterSave(Mage_Core_Model_Store $store, bool $disabled): void
+    protected function _afterSave(Mage_Core_Model_Store $mageCoreModelStore, bool $disabled): void
     {
-        $this->detectAskAndSetDeveloperIp($store, $disabled);
+        $this->detectAskAndSetDeveloperIp($mageCoreModelStore, $disabled);
     }
 }

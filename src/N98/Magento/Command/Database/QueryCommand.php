@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database;
 
 use N98\Util\Exec;
@@ -65,20 +67,15 @@ HELP;
         return str_replace("'", "'\''", $query);
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectDbSettings($output);
 
         $query = $this->getOrAskForArgument('query', $input, $output, 'SQL Query');
 
-        $helper = $this->getDatabaseHelper();
-        $exec = sprintf('mysql %s -e %s', $helper->getMysqlClientToolConnectionString(), escapeshellarg($query));
+        $databaseHelper = $this->getDatabaseHelper();
+        $exec = sprintf('mysql %s -e %s', $databaseHelper->getMysqlClientToolConnectionString(), escapeshellarg($query));
 
         if ($input->getOption('only-command')) {
             $output->writeln($exec);
@@ -89,6 +86,7 @@ HELP;
                 $output->writeln('<error>' . $commandOutput . '</error>');
             }
         }
+
         return 0;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util;
 
 use Symfony\Component\Process\Process;
@@ -14,23 +16,15 @@ use Symfony\Component\Process\Process;
  */
 class ProcessArguments
 {
-    /**
-     * @var array
-     */
-    private $arguments;
+    private array $arguments;
 
-    /**
-     * @param array $arguments
-     * @return \N98\Util\ProcessArguments
-     */
-    public static function create(array $arguments = [])
+    public static function create(array $arguments = []): ProcessArguments
     {
         return new self($arguments);
     }
 
     /**
      * ProcessArguments constructor.
-     * @param array $arguments
      */
     public function __construct(array $arguments = [])
     {
@@ -44,17 +38,15 @@ class ProcessArguments
     public function addArg($argument)
     {
         $this->arguments[] = $argument;
-
         return $this;
     }
 
     /**
-     * @param array $arguments
      * @param string $separator [optional]
      * @param string $prefix [optional]
      * @return $this
      */
-    public function addArgs(array $arguments, $separator = '=', $prefix = '--')
+    public function addArgs(array $arguments, string $separator = '=', string $prefix = '--')
     {
         foreach ($arguments as $key => $value) {
             $this->addArg(
@@ -66,43 +58,32 @@ class ProcessArguments
     }
 
     /**
-     * @param string $key
      * @param string|true $value
-     * @param string $separator
-     * @param string $prefix
-     * @return string
      */
-    private function conditional($key, $value, $separator = '=', $prefix = '--')
+    private function conditional(string $key, $value, string $separator = '=', string $prefix = '--'): string
     {
         $buffer = (string) $value;
 
-        if (is_string($key) && !empty($key)) {
+        if ($key !== '' && $key !== '0') {
             $buffer = $this->conditionalPrefix($key, $prefix) . $this->conditionalValue($value, $separator);
         }
 
         return $buffer;
     }
 
-    /**
-     * @param string $arg
-     * @param string $prefix
-     * @return string
-     */
-    private function conditionalPrefix($arg, $prefix = '--')
+    private function conditionalPrefix(string $arg, string $prefix = '--'): string
     {
         if ('-' === $arg[0]) {
             return $arg;
         }
 
-        return "$prefix$arg";
+        return $prefix . $arg;
     }
 
     /**
      * @param string|true $value
-     * @param string $separator
-     * @return string
      */
-    private function conditionalValue($value, $separator = '=')
+    private function conditionalValue($value, string $separator = '='): string
     {
         if ($value === true) {
             return '';
@@ -111,10 +92,7 @@ class ProcessArguments
         return $separator . $value;
     }
 
-    /**
-     * @return Process
-     */
-    public function createProcess()
+    public function createProcess(): Process
     {
         return new Process($this->arguments);
     }

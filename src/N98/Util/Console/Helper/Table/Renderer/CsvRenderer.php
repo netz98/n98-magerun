@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util\Console\Helper\Table\Renderer;
 
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,15 +20,11 @@ class CsvRenderer implements RendererInterface
     public function render(OutputInterface $output, array $rows)
     {
         // no rows - there is nothing to do
-        if (!$rows) {
+        if ($rows === []) {
             return;
         }
 
-        if ($output instanceof StreamOutput) {
-            $stream = $output->getStream();
-        } else {
-            $stream = \STDOUT;
-        }
+        $stream = $output instanceof StreamOutput ? $output->getStream() : \STDOUT;
 
         fputcsv($stream, array_keys(reset($rows)));
         foreach ($rows as $row) {

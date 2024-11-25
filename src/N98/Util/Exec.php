@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util;
 
 use RuntimeException;
@@ -47,7 +49,7 @@ class Exec
         $command .= self::REDIRECT_STDERR_TO_STDOUT;
 
         exec($command, $outputArray, $returnCode);
-        $output = self::parseCommandOutput((array) $outputArray);
+        $output = self::parseCommandOutput($outputArray);
 
         if ($returnCode !== self::CODE_CLEAN_EXIT) {
             throw new RuntimeException(
@@ -69,7 +71,6 @@ class Exec
     /**
      * string from array of strings representing one line per entry
      *
-     * @param array $commandOutput
      * @return string
      */
     private static function parseCommandOutput(array $commandOutput)
@@ -80,10 +81,9 @@ class Exec
     /**
      * @return bool
      */
-    private static function isPipefailOptionAvailable()
+    private static function isPipefailOptionAvailable(): bool
     {
         exec('set -o | grep pipefail 2>&1', $output, $returnCode);
-
         return $returnCode == self::CODE_CLEAN_EXIT;
     }
 }

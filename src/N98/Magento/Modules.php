@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento;
 
 use ArrayIterator;
@@ -56,7 +58,6 @@ class Modules implements IteratorAggregate, Countable
     /**
      * Filter modules by codepool, status and vendor if such options were inputted by user
      *
-     * @param InputInterface $input
      * @return Modules
      */
     public function filterModules(InputInterface $input)
@@ -72,7 +73,7 @@ class Modules implements IteratorAggregate, Countable
         }
 
         if ($input->getOption('vendor')) {
-            $filtered = ArrayFunctions::matrixFilterStartswith($filtered, 'Name', $input->getOption('vendor'));
+            $filtered = ArrayFunctions::matrixFilterStartsWith($filtered, 'Name', $input->getOption('vendor'));
         }
 
         return new self($filtered);

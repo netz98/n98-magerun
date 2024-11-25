@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util;
 
 use DateTime as PhpDateTime;
@@ -14,8 +16,6 @@ class DateTime
     /**
      * Human-readable string with time difference
      *
-     * @param PhpDateTime $time1
-     * @param PhpDateTime $time2
      *
      * @return string
      */
@@ -25,13 +25,13 @@ class DateTime
             return '0';
         }
 
-        $interval = $time1->diff($time2);
-        $years = $interval->format('%y');
-        $months = $interval->format('%m');
-        $days = $interval->format('%d');
-        $hours = $interval->format('%h');
-        $minutes = $interval->format('%i');
-        $seconds = $interval->format('%s');
+        $dateInterval = $time1->diff($time2);
+        $years = $dateInterval->format('%y');
+        $months = $dateInterval->format('%m');
+        $days = $dateInterval->format('%d');
+        $hours = $dateInterval->format('%h');
+        $minutes = $dateInterval->format('%i');
+        $seconds = $dateInterval->format('%s');
 
         $differenceString = trim(
             ($years ? $years . 'Y ' : '')
@@ -42,7 +42,7 @@ class DateTime
             . ($seconds ? $seconds . 's ' : '')
         );
 
-        if (!strlen($differenceString)) {
+        if ($differenceString === '') {
             $milliseconds = max(0, $time2->format('u') / 1000 - $time1->format('u') / 1000);
             $differenceString = $milliseconds ? sprintf('%0.2fms', $milliseconds) : '';
         }
@@ -53,8 +53,6 @@ class DateTime
     /**
      * Returns a readable string with time difference
      *
-     * @param PhpDateTime $time1
-     * @param PhpDateTime $time2
      *
      * @return string
      */

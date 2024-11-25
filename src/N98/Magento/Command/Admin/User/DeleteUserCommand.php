@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Admin\User;
 
 use Exception;
@@ -30,12 +32,7 @@ class DeleteUserCommand extends AbstractAdminUserCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -43,7 +40,7 @@ class DeleteUserCommand extends AbstractAdminUserCommand
             return 0;
         }
 
-        $dialog = $this->getQuestionHelper();
+        $questionHelper = $this->getQuestionHelper();
 
         // Username
         $id = $this->getOrAskForArgument('id', $input, $output, 'Username or Email');
@@ -60,7 +57,7 @@ class DeleteUserCommand extends AbstractAdminUserCommand
 
         $shouldRemove = $input->getOption('force');
         if (!$shouldRemove) {
-            $shouldRemove = $dialog->ask(
+            $shouldRemove = $questionHelper->ask(
                 $input,
                 $output,
                 new ConfirmationQuestion('<question>Are you sure?</question> <comment>[n]</comment>: ', false),
@@ -77,6 +74,7 @@ class DeleteUserCommand extends AbstractAdminUserCommand
         } else {
             $output->writeln('<error>Aborting delete</error>');
         }
+
         return 0;
     }
 }

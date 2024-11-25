@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\LocalConfig;
 
 use DateTime;
@@ -46,12 +48,7 @@ Generates the app/etc/local.xml.
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -107,13 +104,9 @@ HELP;
         return 0;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
     protected function askForArguments(InputInterface $input, OutputInterface $output)
     {
-        $dialog = $this->getQuestionHelper();
+        $questionHelper = $this->getQuestionHelper();
 
         $messagePrefix = 'Please enter the ';
         $arguments = [
@@ -149,7 +142,7 @@ HELP;
             if (isset($options['default']) && $input->getArgument($argument) === null) {
                 $input->setArgument(
                     $argument,
-                    $dialog->ask(
+                    $questionHelper->ask(
                         $input,
                         $output,
                         new Question(
@@ -176,8 +169,7 @@ HELP;
      */
     protected function _getLocalConfigFilename()
     {
-        $configFile = $this->_magentoRootFolder . '/app/etc/local.xml';
-        return $configFile;
+        return $this->_magentoRootFolder . '/app/etc/local.xml';
     }
 
     /**
@@ -194,8 +186,7 @@ HELP;
     {
         $buffer = strtr($string, [']]>' => ']]>]]&gt;<![CDATA[']);
         $buffer = '<![CDATA[' . $buffer . ']]>';
-        $buffer = strtr($buffer, ['<![CDATA[]]>' => '']);
 
-        return $buffer;
+        return strtr($buffer, ['<![CDATA[]]>' => '']);
     }
 }

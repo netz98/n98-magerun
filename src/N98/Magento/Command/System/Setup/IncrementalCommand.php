@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Setup;
 
 use Exception;
@@ -24,6 +26,7 @@ use Symfony\Component\Console\Question\Question;
 class IncrementalCommand extends AbstractMagentoCommand
 {
     public const TYPE_MIGRATION_STRUCTURE = 'structure';
+
     public const TYPE_MIGRATION_DATA = 'data';
 
     /**
@@ -73,12 +76,7 @@ structure and data setup resource scripts need to run, and then runs them.
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->_config = $this->getCommandConfig();
@@ -89,6 +87,7 @@ HELP;
         if (false === $this->_init()) {
             return 0;
         }
+
         $needsUpdate = $this->_analyzeSetupResourceClasses();
 
         if (count($needsUpdate) === 0) {
@@ -103,9 +102,10 @@ HELP;
 
     protected function _loadSecondConfig()
     {
-        $config = new Mage_Core_Model_Config();
-        $config->loadBase(); //get app/etc
-        $this->_secondConfig = Mage::getConfig()->loadModulesConfiguration('config.xml', $config);
+        $mageCoreModelConfig = new Mage_Core_Model_Config();
+        $mageCoreModelConfig->loadBase();
+         //get app/etc
+        $this->_secondConfig = Mage::getConfig()->loadModulesConfiguration('config.xml', $mageCoreModelConfig);
     }
 
     /**
@@ -120,6 +120,7 @@ HELP;
             if (!$resource->setup) {
                 continue;
             }
+
             $className = 'Mage_Core_Model_Resource_Setup';
             if (isset($resource->setup->class)) {
                 $className = $resource->setup->getClassName();
@@ -192,11 +193,11 @@ HELP;
      */
     protected function _callProtectedMethodFromObject($method, $object, $args = [])
     {
-        $r = new ReflectionClass($object);
-        $m = $r->getMethod($method);
-        $m->setAccessible(true);
+        $reflectionClass = new ReflectionClass($object);
+        $reflectionMethod = $reflectionClass->getMethod($method);
+        $reflectionMethod->setAccessible(true);
 
-        return $m->invokeArgs($object, $args);
+        return $reflectionMethod->invokeArgs($object, $args);
     }
 
     /**
@@ -206,10 +207,10 @@ HELP;
      */
     protected function _setProtectedPropertyFromObjectToValue($property, $object, $value)
     {
-        $r = new ReflectionClass($object);
-        $p = $r->getProperty($property);
-        $p->setAccessible(true);
-        $p->setValue($object, $value);
+        $reflectionClass = new ReflectionClass($object);
+        $reflectionProperty = $reflectionClass->getProperty($property);
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($object, $value);
     }
 
     /**
@@ -220,11 +221,11 @@ HELP;
      */
     protected function _getProtectedPropertyFromObject($property, $object)
     {
-        $r = new ReflectionClass($object);
-        $p = $r->getProperty($property);
-        $p->setAccessible(true);
+        $reflectionClass = new ReflectionClass($object);
+        $reflectionProperty = $reflectionClass->getProperty($property);
+        $reflectionProperty->setAccessible(true);
 
-        return $p->getValue($object);
+        return $reflectionProperty->getValue($object);
     }
 
     /**
@@ -273,11 +274,12 @@ HELP;
             $db_data_ver = $this->_getDbDataVersionFromName($name);
             $config_ver = $this->_getConfiguredVersionFromResourceObject($setupResource);
 
-            if ((string) $config_ver == (string) $db_ver && //structure
-                (string) $config_ver == (string) $db_data_ver //data
+            if ((string) $config_ver === (string) $db_ver && //structure
+                (string) $config_ver === (string) $db_data_ver //data
             ) {
                 continue;
             }
+
             $needsUpdate[$name] = $setupResource;
         }
 
@@ -292,25 +294,16 @@ HELP;
         $this->_output->writeln($message);
     }
 
-    /**
-     * @param OutputInterface $output
-     */
     protected function _setOutput(OutputInterface $output)
     {
         $this->_output = $output;
     }
 
-    /**
-     * @param InputInterface $input
-     */
     protected function _setInput(InputInterface $input)
     {
         $this->_input = $input;
     }
 
-    /**
-     * @param array $needsUpdate
-     */
     protected function _outputUpdateInformation(array $needsUpdate)
     {
         $output = $this->_output;
@@ -356,6 +349,7 @@ HELP;
 
             return;
         }
+
         foreach ($files as $file) {
             $output->writeln(str_replace(Mage::getBaseDir() . '/', '', $file['fileName']));
         }
@@ -377,7 +371,6 @@ HELP;
      * @todo     Repopulate global config after running?  Non trivial since setNode escapes strings
      *
      * @param string $name
-     * @param array $needsUpdate
      * @param string $type
      *
      * @throws RuntimeException
@@ -404,8 +397,10 @@ HELP;
             if (!$resource->setup) {
                 continue;
             }
+
             unset($resource->setup);
         }
+
         //recreate our specific node in <global><resources></resource></global>
         //allows for theoretical multiple runs
         $setupResourceConfig = $this->_secondConfig->getNode('global/resources/' . $name);
@@ -429,40 +424,39 @@ HELP;
         //and finally, RUN THE UPDATES
         try {
             ob_start();
-            if ($type == self::TYPE_MIGRATION_STRUCTURE) {
+            if ($type === self::TYPE_MIGRATION_STRUCTURE) {
                 $this->_stashEventContext();
                 Mage_Core_Model_Resource_Setup::applyAllUpdates();
                 $this->_restoreEventContext();
             }
 
-            if ($type == self::TYPE_MIGRATION_DATA) {
+            if ($type === self::TYPE_MIGRATION_DATA) {
                 Mage_Core_Model_Resource_Setup::applyAllDataUpdates();
             }
 
             $exceptionOutput = ob_get_clean();
             $this->_output->writeln($exceptionOutput);
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             $exceptionOutput = ob_get_clean();
-            $this->_processExceptionDuringUpdate($e, $name, $exceptionOutput);
+            $this->_processExceptionDuringUpdate($exception, $name, $exceptionOutput);
             if ($this->_input->getOption('stop-on-error')) {
-                throw new RuntimeException('Setup stopped with errors');
+                throw new RuntimeException('Setup stopped with errors', $exception->getCode(), $exception);
             }
         }
     }
 
     /**
-     * @param Exception $e
      * @param string $name
      * @param string $magentoExceptionOutput
      */
     protected function _processExceptionDuringUpdate(
-        Exception $e,
+        Exception $exception,
         $name,
         $magentoExceptionOutput
     ) {
         $input = $this->_input;
         $output = $this->_output;
-        $output->writeln(['<error>Magento encountered an error while running the following setup resource.</error>', '', "    $name ", '', '<error>The Good News:</error> You know the error happened, and the database', 'information below will  help you fix this error!', '', "<error>The Bad News:</error> Because Magento/MySQL can't run setup resources", 'transactionally your database is now in an half upgraded, invalid', 'state. Even if you fix the error, new errors may occur due to', 'this half upgraded, invalid state.', '', 'What to Do: ', '1. Figure out why the error happened, and manually fix your', "   database and/or system so it won't happen again.", '2. Restore your database from backup.', '3. Re-run the scripts.', '', 'Exception Message:', $e->getMessage(), '']);
+        $output->writeln(['<error>Magento encountered an error while running the following setup resource.</error>', '', sprintf('    %s ', $name), '', '<error>The Good News:</error> You know the error happened, and the database', 'information below will  help you fix this error!', '', "<error>The Bad News:</error> Because Magento/MySQL can't run setup resources", 'transactionally your database is now in an half upgraded, invalid', 'state. Even if you fix the error, new errors may occur due to', 'this half upgraded, invalid state.', '', 'What to Do: ', '1. Figure out why the error happened, and manually fix your', "   database and/or system so it won't happen again.", '2. Restore your database from backup.', '3. Re-run the scripts.', '', 'Exception Message:', $exception->getMessage(), '']);
 
         if ($magentoExceptionOutput) {
             $dialog = $this->getQuestionHelper();
@@ -495,7 +489,6 @@ HELP;
 
     /**
      * @param string $toUpdate
-     * @param array $needsUpdate
      * @param string $type
      */
     protected function _runStructureOrDataScripts($toUpdate, array $needsUpdate, $type)
@@ -504,9 +497,9 @@ HELP;
         $output = $this->_output;
         $output->writeln('The next ' . $type . ' update to run is <info>' . $toUpdate . '</info>');
 
-        $dialog = $this->getQuestionHelper();
+        $questionHelper = $this->getQuestionHelper();
         $question = new Question('<question>Press Enter to Run this update:</question> ');
-        $dialog->ask($input, $output, $question);
+        $questionHelper->ask($input, $output, $question);
 
         $start = microtime(true);
         $this->_runNamedSetupResource($toUpdate, $needsUpdate, $type);
@@ -581,25 +574,19 @@ HELP;
         return $needsUpdate;
     }
 
-    /**
-     * @param array $needsUpdate
-     */
     protected function _listDetailedUpdateInformation(array $needsUpdate)
     {
         $input = $this->_input;
         $output = $this->_output;
 
-        $dialog = $this->getQuestionHelper();
+        $questionHelper = $this->getQuestionHelper();
         $question = new Question('<question>Press Enter to View Update Information:</question> ');
-        $dialog->ask($input, $output, $question);
+        $questionHelper->ask($input, $output, $question);
 
         $this->writeSection($output, 'Detailed Update Information');
         $this->_outputUpdateInformation($needsUpdate);
     }
 
-    /**
-     * @param array $needsUpdate
-     */
     protected function _runAllStructureUpdates(array $needsUpdate)
     {
         $output = $this->_output;
@@ -612,20 +599,20 @@ HELP;
         foreach ($needsUpdate as $key => $value) {
             $toUpdate = $key;
             $this->_runStructureOrDataScripts($toUpdate, $needsUpdate, self::TYPE_MIGRATION_STRUCTURE);
-            $output->writeln("($c of $total)");
+            $output->writeln(sprintf('(%d of %d)', $c, $total));
             $output->writeln('');
-            $c++;
+            ++$c;
         }
 
         $this->writeSection($output, 'Run Data Updates');
         $c = 1;
         $total = count($needsUpdate);
-        foreach ($needsUpdate as $key => $value) {
+        foreach (array_keys($needsUpdate) as $key) {
             $toUpdate = $key;
             $this->_runStructureOrDataScripts($toUpdate, $needsUpdate, self::TYPE_MIGRATION_DATA);
-            $output->writeln("($c of $total)");
+            $output->writeln(sprintf('(%d of %d)', $c, $total));
             $output->writeln('');
-            $c++;
+            ++$c;
         }
     }
 }

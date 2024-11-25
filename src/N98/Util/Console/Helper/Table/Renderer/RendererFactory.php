@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util\Console\Helper\Table\Renderer;
 
 use InvalidArgumentException;
@@ -33,8 +35,6 @@ class RendererFactory
 
     /**
      * @param string $format
-     * @param OutputInterface $output
-     * @param array $rows
      */
     public static function render($format, OutputInterface $output, array $rows)
     {

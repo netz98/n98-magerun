@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Installer\SubCommand;
 
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
@@ -22,13 +24,14 @@ class ChooseInstallationFolder extends AbstractSubCommand
             $folderName = rtrim(trim($folderName, ' '), '/');
             if ($folderName[0] === '.') {
                 $cwd = \getcwd();
-                if (empty($cwd) && isset($_SERVER['PWD'])) {
+                if (($cwd === '' || $cwd === '0' || $cwd === false) && isset($_SERVER['PWD'])) {
                     $cwd = $_SERVER['PWD'];
                 }
+
                 $folderName = $cwd . substr($folderName, 1);
             }
 
-            if (empty($folderName)) {
+            if ($folderName === '' || $folderName === '0') {
                 throw new \InvalidArgumentException('Installation folder cannot be empty');
             }
 

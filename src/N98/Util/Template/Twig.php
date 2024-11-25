@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util\Template;
 
 use Twig\Environment;
@@ -20,13 +22,10 @@ class Twig
      */
     protected $twigEnv;
 
-    /**
-     * @param array $baseDirs
-     */
     public function __construct(array $baseDirs)
     {
-        $loader = new FilesystemLoader($baseDirs);
-        $this->twigEnv = new Environment($loader, ['debug' => true]);
+        $filesystemLoader = new FilesystemLoader($baseDirs);
+        $this->twigEnv = new Environment($filesystemLoader, ['debug' => true]);
         $this->addExtensions($this->twigEnv);
         $this->addFilters($this->twigEnv);
     }
@@ -50,32 +49,26 @@ class Twig
      */
     public function renderString($string, $variables)
     {
-        $twig = new Environment(new ArrayLoader(['debug' => true]));
-        $this->addExtensions($twig);
-        $this->addFilters($twig);
+        $twigEnvironment = new Environment(new ArrayLoader(['debug' => true]));
+        $this->addExtensions($twigEnvironment);
+        $this->addFilters($twigEnvironment);
 
-        return $twig->render($string, $variables);
+        return $twigEnvironment->render($string, $variables);
     }
 
-    /**
-     * @param Environment $twig
-     */
-    protected function addFilters(Environment $twig)
+    protected function addFilters(Environment $twigEnvironment)
     {
         /**
          * cast_to_array
          */
-        $twig->addFilter(
+        $twigEnvironment->addFilter(
             new TwigFilter('cast_to_array', [$this, 'filterCastToArray'])
         );
     }
 
-    /**
-     * @param Environment $twig
-     */
-    protected function addExtensions(Environment $twig)
+    protected function addExtensions(Environment $twigEnvironment)
     {
-        $twig->addExtension(new DebugExtension());
+        $twigEnvironment->addExtension(new DebugExtension());
     }
 
     /**
@@ -88,10 +81,7 @@ class Twig
         if (is_object($stdClassObject)) {
             $stdClassObject = get_object_vars($stdClassObject);
         }
-        if (is_array($stdClassObject)) {
-            return array_map(__METHOD__, $stdClassObject);
-        } else {
-            return $stdClassObject;
-        }
+
+        return array_map(__METHOD__, $stdClassObject);
     }
 }

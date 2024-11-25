@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util\Console\Helper;
 
 use Mage;
@@ -21,7 +23,7 @@ class MagentoHelper extends AbstractHelper
     /**
      * @var string
      */
-    protected $_magentoRootFolder = null;
+    protected $_magentoRootFolder;
 
     /**
      * @var int
@@ -41,7 +43,7 @@ class MagentoHelper extends AbstractHelper
     /**
      * @var string
      */
-    protected $_magerunStopFileFolder = null;
+    protected $_magerunStopFileFolder;
 
     /**
      * @var InputInterface
@@ -70,17 +72,13 @@ class MagentoHelper extends AbstractHelper
         return 'magento';
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
     public function __construct(InputInterface $input = null, OutputInterface $output = null)
     {
-        if (null === $input) {
+        if (!$input instanceof \Symfony\Component\Console\Input\InputInterface) {
             $input = new ArgvInput();
         }
 
-        if (null === $output) {
+        if (!$output instanceof \Symfony\Component\Console\Output\OutputInterface) {
             $output = new ConsoleOutput();
         }
 
@@ -103,10 +101,12 @@ class MagentoHelper extends AbstractHelper
         $folders = array_merge($folders, $subFolders);
 
         foreach (array_reverse($folders) as $searchFolder) {
-            if (!is_dir($searchFolder) || !is_readable($searchFolder)) {
+            if (!is_dir($searchFolder)) {
                 continue;
             }
-
+            if (!is_readable($searchFolder)) {
+                continue;
+            }
             $found = $this->_search($searchFolder);
             if ($found) {
                 return true;
@@ -171,7 +171,7 @@ class MagentoHelper extends AbstractHelper
         $folders = [];
 
         $folderParts = explode(DIRECTORY_SEPARATOR, $folder);
-        foreach ($folderParts as $key => $part) {
+        foreach (array_keys($folderParts) as $key) {
             $explodedFolder = implode(DIRECTORY_SEPARATOR, array_slice($folderParts, 0, $key + 1));
             if ($explodedFolder !== '') {
                 $folders[] = $explodedFolder;
@@ -184,7 +184,6 @@ class MagentoHelper extends AbstractHelper
     /**
      * Check for modman file and .basedir
      *
-     * @param array $folders
      *
      * @return array
      */
@@ -197,6 +196,7 @@ class MagentoHelper extends AbstractHelper
                         '<debug>Folder <info>' . $searchFolder . '</info> is not readable. Skip.</debug>'
                     );
                 }
+
                 continue;
             }
 
@@ -219,11 +219,8 @@ class MagentoHelper extends AbstractHelper
                     );
                 }
 
-                if (!empty($baseFolderContent)) {
-                    array_push(
-                        $folders,
-                        $searchFolder . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . $baseFolderContent
-                    );
+                if ($baseFolderContent !== '' && $baseFolderContent !== '0') {
+                    $folders[] = $searchFolder . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . $baseFolderContent;
                 }
             }
         }
@@ -234,7 +231,6 @@ class MagentoHelper extends AbstractHelper
     /**
      * Check for magerun stop-file
      *
-     * @param array $folders
      *
      * @return array
      */
@@ -247,8 +243,10 @@ class MagentoHelper extends AbstractHelper
                         sprintf('<debug>Folder <info>%s</info> is not readable. Skip.</debug>', $searchFolder)
                     );
                 }
+
                 continue;
             }
+
             $stopFile = '.' . pathinfo($this->_customConfigFilename, PATHINFO_FILENAME);
             $finder = Finder::create();
             $finder
@@ -268,14 +266,14 @@ class MagentoHelper extends AbstractHelper
                 $magerunFileContent = trim(file_get_contents($magerunFilePath));
                 if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
                     $message = sprintf(
-                        '<debug>Found stopfile \'%s\' file with content <info>%s</info></debug>',
+                        "<debug>Found stopfile '%s' file with content <info>%s</info></debug>",
                         $stopFile,
                         $magerunFileContent
                     );
                     $this->output->writeln($message);
                 }
 
-                array_push($folders, $searchFolder . DIRECTORY_SEPARATOR . $magerunFileContent);
+                $folders[] = $searchFolder . DIRECTORY_SEPARATOR . $magerunFileContent;
             }
         }
 

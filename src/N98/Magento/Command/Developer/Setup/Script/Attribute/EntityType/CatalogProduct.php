@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
 
 /**
@@ -60,6 +62,7 @@ class CatalogProduct extends AbstractEntityType implements EntityType
             if (in_array($key, $keysLegend)) {
                 $key = $realToSetupKeyLegend[$key];
             }
+
             $newData[$key] = $value;
         }
 
@@ -71,8 +74,8 @@ class CatalogProduct extends AbstractEntityType implements EntityType
 
         // chuck a few warnings out there for things that were a little murky
         if ($newData['attribute_model']) {
-            $this->warnings[] = '<warning>WARNING, value detected in attribute_model. We\'ve never seen a value ' .
-                'there before and this script doesn\'t handle it.  Caution, etc. </warning>';
+            $this->warnings[] = "<warning>WARNING, value detected in attribute_model. We've never seen a value " .
+                "there before and this script doesn't handle it.  Caution, etc. </warning>";
         }
 
         if ($newData['is_used_for_price_rules']) {
@@ -91,7 +94,7 @@ class CatalogProduct extends AbstractEntityType implements EntityType
         $script = "<?php
 \$setup = new Mage_Catalog_Model_Resource_Setup('core_setup');
 
-\$attr = $arrayCode;
+\$attr = {$arrayCode};
 \$setup->addAttribute('catalog_product', '" . $this->attribute->getAttributeCode() . "', \$attr);
             ";
 
@@ -101,11 +104,10 @@ class CatalogProduct extends AbstractEntityType implements EntityType
         $labelsScript = "
 \$attribute = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', '"
             . $this->attribute->getAttributeCode() . "');
-\$attribute->setStoreLabels($attributeLabelsCode);
+\$attribute->setStoreLabels({$attributeLabelsCode});
 \$attribute->save();
 ";
-        $script .= $labelsScript;
 
-        return $script;
+        return $script . $labelsScript;
     }
 }

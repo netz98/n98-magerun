@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command;
 
 use InvalidArgumentException;
@@ -134,13 +136,16 @@ HELP;
         $commands = explode("\n", $script);
         $this->initScriptVars();
 
-        foreach ($commands as $commandString) {
-            $commandString = trim($commandString);
-            if (empty($commandString)) {
+        foreach ($commands as $command) {
+            $command = trim($command);
+            if ($command === '') {
+                continue;
+            }
+            if ($command === '0') {
                 continue;
             }
 
-            $firstChar = substr($commandString, 0, 1);
+            $firstChar = substr($command, 0, 1);
 
             switch ($firstChar) {
                 // comment
@@ -149,23 +154,23 @@ HELP;
 
                 // set var
                 case '$':
-                    $this->registerVariable($input, $output, $commandString);
+                    $this->registerVariable($input, $output, $command);
                     break;
 
                 // run shell script
                 case '!':
-                    $this->runShellCommand($output, $commandString);
+                    $this->runShellCommand($output, $command);
                     break;
 
                 default:
-                    $this->runMagerunCommand($input, $output, $commandString);
+                    $this->runMagerunCommand($input, $output, $command);
             }
         }
+
         return 0;
     }
 
     /**
-     * @param InputInterface $input
      * @throws InvalidArgumentException
      */
     protected function _initDefines(InputInterface $input)
@@ -174,17 +179,20 @@ HELP;
         if (is_string($defines)) {
             $defines = [$defines];
         }
+
         if ((is_countable($defines) ? count($defines) : 0) > 0) {
             foreach ($defines as $define) {
-                if (!strstr($define, '=')) {
+                if (in_array(strstr($define, '='), ['', '0'], true) || strstr($define, '=') === false) {
                     throw new InvalidArgumentException('Invalid define');
                 }
+
                 $parts = BinaryString::trimExplodeEmpty('=', $define);
                 $variable = $parts[0];
                 $value = null;
                 if (isset($parts[1])) {
                     $value = $parts[1];
                 }
+
                 $this->scriptVars['${' . $variable . '}'] = $value;
             }
         }
@@ -205,7 +213,7 @@ HELP;
             $script = @\file_get_contents($filename);
         }
 
-        if (!$script) {
+        if ($script === '' || $script === '0' || $script === false) {
             throw new RuntimeException('Script file was not found');
         }
 
@@ -213,8 +221,6 @@ HELP;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @param string $commandString
      * @throws RuntimeException
      * @return void|mixed
@@ -222,7 +228,7 @@ HELP;
     protected function registerVariable(InputInterface $input, OutputInterface $output, $commandString)
     {
         if (preg_match('/^(\$\{[a-zA-Z0-9-_.]+})=(.+)/', $commandString, $matches)) {
-            if ($matches[2][0] == '?') {
+            if ($matches[2][0] === '?') {
                 // Variable is already defined
                 if (isset($this->scriptVars[$matches[1]])) {
                     return $this->scriptVars[$matches[1]];
@@ -233,7 +239,7 @@ HELP;
                 /**
                  * Check for select "?["
                  */
-                if (isset($matches[2][1]) && $matches[2][1] == '[') {
+                if (isset($matches[2][1]) && $matches[2][1] === '[') {
                     if (preg_match('/\[(.+)]/', $matches[2], $choiceMatches)) {
                         $choices = BinaryString::trimExplodeEmpty(',', $choiceMatches[1]);
                         $question = new ChoiceQuestion(
@@ -242,7 +248,7 @@ HELP;
                         );
                         $selectedIndex = $dialog->ask($input, $output, $question);
 
-                        $this->scriptVars[$matches[1]] = array_search($selectedIndex, $choices); # @todo check cmuench $choices[$selectedIndex]
+                        $this->scriptVars[$matches[1]] = array_search($selectedIndex, $choices, true); # @todo check cmuench $choices[$selectedIndex]
                     } else {
                         throw new RuntimeException('Invalid choices');
                     }
@@ -263,11 +269,10 @@ HELP;
                 $this->scriptVars[$matches[1]] = $this->_replaceScriptVars($matches[2]);
             }
         }
+        return null;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @param string $commandString
      * @throws RuntimeException
      */
@@ -298,10 +303,10 @@ HELP;
         ) {
             $this->initMagento();
         }
-        $this->initScriptVars();
-        $commandString = $this->_replaceScriptVars($commandString);
 
-        return $commandString;
+        $this->initScriptVars();
+
+        return $this->_replaceScriptVars($commandString);
     }
 
     protected function initScriptVars()
@@ -320,7 +325,6 @@ HELP;
     }
 
     /**
-     * @param OutputInterface $output
      * @param string          $commandString
      * @internal param $returnValue
      */
@@ -328,7 +332,7 @@ HELP;
     {
         $commandString = $this->_prepareShellCommand($commandString);
         $returnValue = shell_exec($commandString);
-        if (!empty($returnValue)) {
+        if (!($returnValue === '' || $returnValue === '0' || $returnValue === false || $returnValue === null)) {
             $output->writeln($returnValue);
         }
     }
@@ -340,8 +344,6 @@ HELP;
      */
     protected function _replaceScriptVars($commandString)
     {
-        $commandString = str_replace(array_keys($this->scriptVars), $this->scriptVars, $commandString);
-
-        return $commandString;
+        return str_replace(array_keys($this->scriptVars), $this->scriptVars, $commandString);
     }
 }

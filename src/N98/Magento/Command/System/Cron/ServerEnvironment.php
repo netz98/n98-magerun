@@ -1,11 +1,13 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Created by PhpStorm.
  * User: mot
  * Date: 13.12.16
  * Time: 00:08
  */
-
 namespace N98\Magento\Command\System\Cron;
 
 use BadMethodCallException;
@@ -30,20 +32,15 @@ class ServerEnvironment
     /**
      * @var array
      */
-    private $keys;
-
-    public function __construct()
-    {
-        $this->keys = ['SCRIPT_NAME', 'SCRIPT_FILENAME'];
-    }
+    private $keys = ['SCRIPT_NAME', 'SCRIPT_FILENAME'];
 
     /**
      *
      */
     public function initalize()
     {
-        if (isset($this->backup)) {
-            throw new BadMethodCallException('Environment already backed up, can\'t initialize any longer');
+        if ($this->backup !== null) {
+            throw new BadMethodCallException("Environment already backed up, can't initialize any longer");
         }
 
         if (!is_array($GLOBALS['argv'])) {
@@ -61,8 +58,8 @@ class ServerEnvironment
 
     public function reset()
     {
-        if (false === isset($this->backup)) {
-            throw new BadMethodCallException('Environment not yet backed up, initalize first, can\'t reset');
+        if ($this->backup === null) {
+            throw new BadMethodCallException("Environment not yet backed up, initalize first, can't reset");
         }
 
         foreach ($this->backup as $key => $value) {

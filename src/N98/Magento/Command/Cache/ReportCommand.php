@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cache;
 
 use Enterprise_PageCache_Model_Cache;
@@ -45,11 +47,6 @@ class ReportCommand extends AbstractCacheCommand
         return (bool) count(array_intersect($metaData['tags'], explode(',', $input->getOption('filter-tag'))));
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -61,15 +58,17 @@ class ReportCommand extends AbstractCacheCommand
             if (!class_exists('\Enterprise_PageCache_Model_Cache')) {
                 throw new RuntimeException('Enterprise page cache not found');
             }
+
             $cacheInstance = Enterprise_PageCache_Model_Cache::getCacheInstance()->getFrontend();
         } else {
             $cacheInstance = Mage::app()->getCache();
         }
+
         /* @var \Varien_Cache_Core $cacheInstance */
         $cacheIds = $cacheInstance->getIds();
         $table = [];
         foreach ($cacheIds as $cacheId) {
-            if ($input->getOption('filter-id') !== null && !stristr($cacheId, (string) $input->getOption('filter-id'))) {
+            if ($input->getOption('filter-id') !== null && (in_array(stristr($cacheId, (string) $input->getOption('filter-id')), ['', '0'], true) || stristr($cacheId, (string) $input->getOption('filter-id')) === false)) {
                 continue;
             }
 
@@ -82,6 +81,7 @@ class ReportCommand extends AbstractCacheCommand
             if ($input->getOption('mtime')) {
                 $row[] = date('Y-m-d H:i:s', $metaData['mtime']);
             }
+
             if ($input->getOption('tags')) {
                 $row[] = implode(',', $metaData['tags']);
             }
@@ -93,6 +93,7 @@ class ReportCommand extends AbstractCacheCommand
         if ($input->getOption('mtime')) {
             $headers[] = 'MTIME';
         }
+
         if ($input->getOption('tags')) {
             $headers[] = 'TAGS';
         }

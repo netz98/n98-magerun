@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Installer\SubCommand;
 
 use Exception;
@@ -40,6 +42,7 @@ class InstallMagento extends AbstractSubCommand
             if (empty($input)) {
                 throw new \InvalidArgumentException('Please enter a value');
             }
+
             return $input;
         };
 
@@ -73,6 +76,7 @@ class InstallMagento extends AbstractSubCommand
             $defaults['admin_frontname']
         );
         $question->setValidator($this->notEmptyCallback);
+
         $adminFrontname = $useDefaultConfigParams ? $defaults['admin_frontname'] : $questionHelper->ask(
             $this->input,
             $this->output,
@@ -87,6 +91,7 @@ class InstallMagento extends AbstractSubCommand
             $defaults['currency']
         );
         $question->setValidator($this->notEmptyCallback);
+
         $currency = $useDefaultConfigParams ? $defaults['currency'] : $questionHelper->ask(
             $this->input,
             $this->output,
@@ -101,6 +106,7 @@ class InstallMagento extends AbstractSubCommand
             $defaults['locale']
         );
         $question->setValidator($this->notEmptyCallback);
+
         $locale = $useDefaultConfigParams ? $defaults['locale'] : $questionHelper->ask(
             $this->input,
             $this->output,
@@ -115,6 +121,7 @@ class InstallMagento extends AbstractSubCommand
             $defaults['timezone']
         );
         $question->setValidator($this->notEmptyCallback);
+
         $timezone = $useDefaultConfigParams ? $defaults['timezone'] : $questionHelper->ask(
             $this->input,
             $this->output,
@@ -129,6 +136,7 @@ class InstallMagento extends AbstractSubCommand
             $defaults['admin_username']
         );
         $question->setValidator($this->notEmptyCallback);
+
         $adminUsername = $useDefaultConfigParams ? $defaults['admin_username'] : $questionHelper->ask(
             $this->input,
             $this->output,
@@ -143,6 +151,7 @@ class InstallMagento extends AbstractSubCommand
             $defaults['admin_password']
         );
         $question->setValidator($this->notEmptyCallback);
+
         $adminPassword = $useDefaultConfigParams ? $defaults['admin_password'] : $questionHelper->ask(
             $this->input,
             $this->output,
@@ -157,6 +166,7 @@ class InstallMagento extends AbstractSubCommand
             $defaults['admin_firstname']
         );
         $question->setValidator($this->notEmptyCallback);
+
         $adminFirstname = $useDefaultConfigParams ? $defaults['admin_firstname'] : $questionHelper->ask(
             $this->input,
             $this->output,
@@ -171,6 +181,7 @@ class InstallMagento extends AbstractSubCommand
             $defaults['admin_lastname']
         );
         $question->setValidator($this->notEmptyCallback);
+
         $adminLastname = $useDefaultConfigParams ? $defaults['admin_lastname'] : $questionHelper->ask(
             $this->input,
             $this->output,
@@ -185,6 +196,7 @@ class InstallMagento extends AbstractSubCommand
             $defaults['admin_email']
         );
         $question->setValidator($this->notEmptyCallback);
+
         $adminEmail = $useDefaultConfigParams ? $defaults['admin_email'] : $questionHelper->ask(
             $this->input,
             $this->output,
@@ -192,7 +204,7 @@ class InstallMagento extends AbstractSubCommand
         );
 
         $validateBaseUrl = function ($url) {
-            if (!preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $url)) {
+            if (in_array(preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $url), [0, false], true)) {
                 throw new \InvalidArgumentException('Please enter a valid URL');
             }
 
@@ -207,6 +219,7 @@ class InstallMagento extends AbstractSubCommand
 
         $question = new Question('<question>Please enter the base url:</question> ');
         $question->setValidator($validateBaseUrl);
+
         $baseUrl = $this->input->getOption('baseUrl') ?? $questionHelper->ask(
             $this->input,
             $this->output,
@@ -220,6 +233,7 @@ class InstallMagento extends AbstractSubCommand
         if ($sessionSave === 'file') {
             $sessionSave = 'files';
         }
+
         $this->_getDefaultSessionFolder($sessionSave);
 
         $argv = [
@@ -253,10 +267,12 @@ class InstallMagento extends AbstractSubCommand
             if (isset($defaults['encryption_key']) && $defaults['encryption_key'] != '') {
                 $argv['encryption_key'] = $defaults['encryption_key'];
             }
+
             if ($defaults['use_secure'] != '') {
                 $argv['use_secure'] = $defaults['use_secure'];
                 $argv['secure_base_url'] = str_replace('http://', 'https://', $baseUrl);
             }
+
             if ($defaults['use_rewrites'] != '') {
                 $argv['use_rewrites'] = $defaults['use_rewrites'];
             }
@@ -276,10 +292,8 @@ class InstallMagento extends AbstractSubCommand
          * Try to create session folder
          */
         $defaultSessionFolder = $this->config->getString('installationFolder') . '/var/session';
-        if ($sessionSave == 'files' && !is_dir($defaultSessionFolder)) {
-            if (!mkdir($defaultSessionFolder) && !is_dir($defaultSessionFolder)) {
-                throw new RuntimeException(sprintf('Directory "%s" was not created', $defaultSessionFolder));
-            }
+        if ($sessionSave == 'files' && !is_dir($defaultSessionFolder) && (!mkdir($defaultSessionFolder) && !is_dir($defaultSessionFolder))) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $defaultSessionFolder));
         }
     }
 
@@ -291,9 +305,7 @@ class InstallMagento extends AbstractSubCommand
         $dbHost = $this->config->getString('db_host');
 
         if ($this->config->getInt('db_port') !== 3306) {
-            $dbHost .= ':' . (string)$this->config->getInt('db_port');
-
-            return $dbHost;
+            return $dbHost . (':' . $this->config->getInt('db_port'));
         }
 
         return $dbHost;
@@ -302,9 +314,7 @@ class InstallMagento extends AbstractSubCommand
     /**
      * Invoke Magento PHP install script
      *
-     * @param OutputInterface $output
      * @param string $installationFolder folder where magento is installed in, must exists setup script in
-     * @param array $argv
      * @return void
      */
     private function runInstallScriptCommand(OutputInterface $output, $installationFolder, array $argv)
@@ -330,23 +340,23 @@ class InstallMagento extends AbstractSubCommand
         );
 
         $output->writeln('<comment>' . $installCommand . '</comment>');
-        $installException = null;
         $installationOutput = null;
         $returnStatus = null;
         try {
             Exec::run($installCommand, $installationOutput, $returnStatus);
-        } catch (Exception $installException) {
+        } catch (Exception $exception) {
             /* fall-through intended */
         }
 
-        if (isset($installException) || $returnStatus !== Exec::CODE_CLEAN_EXIT) {
+        if (isset($exception) || $returnStatus !== Exec::CODE_CLEAN_EXIT) {
             $this->getCommand()->getApplication()->setAutoExit(true);
             throw new RuntimeException(
                 sprintf('Installation failed (Exit code %s). %s', $returnStatus, $installationOutput),
                 1,
-                $installException
+                $exception
             );
         }
+
         $output->writeln('<info>Successfully installed Magento</info>');
         $encryptionKey = trim(substr(strstr($installationOutput, ':'), 1));
         $output->writeln('<comment>Encryption Key:</comment> <info>' . $encryptionKey . '</info>');

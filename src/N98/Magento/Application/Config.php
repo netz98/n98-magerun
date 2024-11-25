@@ -1,8 +1,10 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
-
 namespace N98\Magento\Application;
 
 use Composer\Autoload\ClassLoader;
@@ -28,6 +30,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Config
 {
     public const PSR_0 = 'PSR-0';
+
     public const PSR_4 = 'PSR-4';
 
     public const COMMAND_CLASS = 'Symfony\Component\Console\Command\Command';
@@ -45,7 +48,7 @@ class Config
     /**
      * @var ConfigurationLoader
      */
-    private $loader;
+    private $configurationLoader;
 
     /**
      * @var array
@@ -65,7 +68,6 @@ class Config
     /**
      * Config constructor.
      *
-     * @param array $initConfig
      * @param bool $isPharMode
      * @param OutputInterface $output [optional]
      */
@@ -73,13 +75,12 @@ class Config
     {
         $this->initConfig = $initConfig;
         $this->isPharMode = (bool) $isPharMode;
-        $this->output = $output ?: new NullOutput();
+        $this->output = $output instanceof \Symfony\Component\Console\Output\OutputInterface ? $output : new NullOutput();
     }
 
     /**
      * alias magerun command in input from config
      *
-     * @param InputInterface $input
      * @return ArgvInput|InputInterface
      */
     public function checkConfigCommandAlias(InputInterface $input)
@@ -88,15 +89,17 @@ class Config
             if (!is_array($alias)) {
                 continue;
             }
+
             $aliasCommandName = key($alias);
             if ($input->getFirstArgument() !== $aliasCommandName) {
                 continue;
             }
+
             $aliasCommandParams = array_slice(
                 BinaryString::trimExplodeEmpty(' ', $alias[$aliasCommandName]),
                 1
             );
-            if (0 === count($aliasCommandParams)) {
+            if ([] === $aliasCommandParams) {
                 continue;
             }
 
@@ -113,9 +116,6 @@ class Config
         return $input;
     }
 
-    /**
-     * @param Command $command
-     */
     public function registerConfigCommandAlias(Command $command)
     {
         foreach ($this->getArray(['commands', 'aliases']) as $alias) {
@@ -134,9 +134,6 @@ class Config
         }
     }
 
-    /**
-     * @param Application $application
-     */
     public function registerCustomCommands(Application $application)
     {
         foreach ($this->getArray(['commands', 'customCommands']) as $commandClass) {
@@ -146,6 +143,7 @@ class Config
                 $commandName = key($commandClass);
                 $commandClass = current($commandClass);
             }
+
             if (null === $command = $this->newCommand($commandClass, $commandName)) {
                 $this->output->writeln(
                     sprintf(
@@ -178,7 +176,7 @@ class Config
      */
     private function newCommand($className, $commandName)
     {
-        if (!(is_string($className) || is_object($className))) {
+        if (!is_string($className) && !is_object($className)) {
             throw new InvalidArgumentException(
                 sprintf('Command classname must be string, %s given', gettype($className))
             );
@@ -205,29 +203,24 @@ class Config
 
     /**
      * Adds autoloader prefixes from user's config
-     *
-     * @param ClassLoader $autoloader
      */
-    public function registerCustomAutoloaders(ClassLoader $autoloader)
+    public function registerCustomAutoloaders(ClassLoader $classLoader)
     {
         $mask = '<debug>Registered %s autoloader </debug> <info>%s</info> -> <comment>%s</comment>';
 
         foreach ($this->getArray('autoloaders') as $prefix => $paths) {
             $paths = (array) $paths;
             $this->debugWriteln(sprintf($mask, self::PSR_0, OutputFormatter::escape($prefix), implode(',', $paths)));
-            $autoloader->add($prefix, $paths);
+            $classLoader->add($prefix, $paths);
         }
 
         foreach ($this->getArray('autoloaders_psr4') as $prefix => $paths) {
             $paths = (array) $paths;
             $this->debugWriteln(sprintf($mask, self::PSR_4, OutputFormatter::escape($prefix), implode(',', $paths)));
-            $autoloader->addPsr4($prefix, $paths);
+            $classLoader->addPsr4($prefix, $paths);
         }
     }
 
-    /**
-     * @param array $config
-     */
     public function setConfig(array $config)
     {
         $this->config = $config;
@@ -248,12 +241,9 @@ class Config
         return $this->getArray($key);
     }
 
-    /**
-     * @param ConfigurationLoader $configurationLoader
-     */
     public function setLoader(ConfigurationLoader $configurationLoader)
     {
-        $this->loader = $configurationLoader;
+        $this->configurationLoader = $configurationLoader;
     }
 
     /**
@@ -261,12 +251,12 @@ class Config
      */
     public function getLoader()
     {
-        if (!$this->loader) {
-            $this->loader = $this->createLoader($this->initConfig, $this->isPharMode, $this->output);
+        if (!$this->configurationLoader) {
+            $this->configurationLoader = $this->createLoader($this->initConfig, $this->isPharMode, $this->output);
             $this->initConfig = [];
         }
 
-        return $this->loader;
+        return $this->configurationLoader;
     }
 
     public function load()
@@ -279,8 +269,8 @@ class Config
      */
     public function loadPartialConfig($loadExternalConfig)
     {
-        $loader = $this->getLoader();
-        $this->partialConfig = $loader->getPartialConfig($loadExternalConfig);
+        $configurationLoader = $this->getLoader();
+        $this->partialConfig = $configurationLoader->getPartialConfig($loadExternalConfig);
     }
 
     /**
@@ -298,9 +288,7 @@ class Config
     }
 
     /**
-     * @param array $initConfig
      * @param bool $isPharMode
-     * @param OutputInterface $output
      *
      * @return ConfigurationLoader
      */
@@ -308,9 +296,7 @@ class Config
     {
         $config = ArrayFunctions::mergeArrays($this->config, $initConfig);
 
-        $loader = new ConfigurationLoader($config, $isPharMode, $output);
-
-        return $loader;
+        return new ConfigurationLoader($config, $isPharMode, $output);
     }
 
     /**
@@ -352,6 +338,7 @@ class Config
             if (!isset($anchor[$key])) {
                 return null;
             }
+
             $anchor = &$anchor[$key];
         }
 

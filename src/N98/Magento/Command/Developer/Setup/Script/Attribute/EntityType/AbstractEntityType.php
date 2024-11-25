@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
 
 use Mage;
@@ -33,12 +35,9 @@ abstract class AbstractEntityType implements EntityType
      */
     protected $warnings = [];
 
-    /**
-     * @param Mage_Eav_Model_Entity_Attribute $attribute
-     */
-    public function __construct(Mage_Eav_Model_Entity_Attribute $attribute)
+    public function __construct(Mage_Eav_Model_Entity_Attribute $mageEavModelEntityAttribute)
     {
-        $this->attribute = $attribute;
+        $this->attribute = $mageEavModelEntityAttribute;
     }
 
     /**
@@ -100,11 +99,10 @@ abstract class AbstractEntityType implements EntityType
     /**
      * Gets attribute options from database
      *
-     * @param Mage_Eav_Model_Entity_Attribute $attribute
      *
      * @return array
      */
-    protected function getOptions(Mage_Eav_Model_Entity_Attribute $attribute)
+    protected function getOptions(Mage_Eav_Model_Entity_Attribute $mageEavModelEntityAttribute)
     {
         /** @var Mage_Core_Model_Resource $resourceModel */
         $resourceModel = Mage::getSingleton('core/resource');
@@ -114,7 +112,7 @@ abstract class AbstractEntityType implements EntityType
                 ['ov' => $resourceModel->getTableName('eav_attribute_option_value')],
                 'o.option_id = ov.option_id'
             )
-            ->where('o.attribute_id = ?', $attribute->getId())
+            ->where('o.attribute_id = ?', $mageEavModelEntityAttribute->getId())
             ->where('ov.store_id = 0')
             ->order('ov.option_id');
 

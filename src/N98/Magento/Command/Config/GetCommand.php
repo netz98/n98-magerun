@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Config;
 
 use Path;
@@ -26,14 +28,14 @@ class GetCommand extends AbstractConfigCommand
                 'scope',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'The config value\'s scope (default, websites, stores)'
+                "The config value's scope (default, websites, stores)"
             )
-            ->addOption('scope-id', null, InputOption::VALUE_REQUIRED, 'The config value\'s scope ID')
+            ->addOption('scope-id', null, InputOption::VALUE_REQUIRED, "The config value's scope ID")
             ->addOption(
                 'decrypt',
                 null,
                 InputOption::VALUE_NONE,
-                'Decrypt the config value using local.xml\'s crypt key'
+                "Decrypt the config value using local.xml's crypt key"
             )
             ->addOption('update-script', null, InputOption::VALUE_NONE, 'Output as update script lines')
             ->addOption('magerun-script', null, InputOption::VALUE_NONE, 'Output for usage with config:set')
@@ -56,12 +58,7 @@ is the same as
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $table = [];
@@ -122,11 +119,11 @@ HELP;
         } else {
             $this->renderAsTable($output, $table, $input->getOption('format'));
         }
+
         return 0;
     }
 
     /**
-     * @param OutputInterface $output
      * @param array $table
      * @param string $format
      */
@@ -168,7 +165,6 @@ HELP;
     }
 
     /**
-     * @param OutputInterface $output
      * @param array $table
      */
     protected function renderAsUpdateScript(OutputInterface $output, $table)
@@ -201,7 +197,6 @@ HELP;
     }
 
     /**
-     * @param OutputInterface $output
      * @param array $table
      */
     protected function renderAsMagerunScript(OutputInterface $output, $table)

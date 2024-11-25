@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System;
 
 use Exception;
@@ -36,12 +38,7 @@ class InfoCommand extends AbstractMagentoCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -89,6 +86,7 @@ class InfoCommand extends AbstractMagentoCommand
             if (!isset($this->infos[$settingArgument])) {
                 throw new InvalidArgumentException('Unknown key: ' . $settingArgument);
             }
+
             $output->writeln((string) $this->infos[$settingArgument]);
         } else {
             $tableHelper = $this->getTableHelper();
@@ -96,6 +94,7 @@ class InfoCommand extends AbstractMagentoCommand
                 ->setHeaders(['name', 'value'])
                 ->renderByFormat($output, $table, $input->getOption('format'));
         }
+
         return 0;
     }
 
@@ -132,7 +131,7 @@ class InfoCommand extends AbstractMagentoCommand
             }
         }
 
-        if (count($folders) > 0) {
+        if ($folders !== []) {
             $finder = Finder::create();
             $finder
                 ->files()

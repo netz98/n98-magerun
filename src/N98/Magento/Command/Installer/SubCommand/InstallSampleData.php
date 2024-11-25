@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Installer\SubCommand;
 
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
@@ -70,10 +72,6 @@ class InstallSampleData extends AbstractSubCommand
         }
     }
 
-    /**
-     * @param array $demoPackageData
-     * @return void
-     */
     private function installSampleData(array $demoPackageData): void
     {
         $filesystem = new Filesystem();
@@ -117,11 +115,11 @@ class InstallSampleData extends AbstractSubCommand
             $this->config['installationFolder'] . '/magento_*sample_data*sql'
         );
 
-        $dbHelper = $this->command->getDatabaseHelper();
+        $databaseHelper = $this->command->getDatabaseHelper();
 
         if (isset($sampleDataSqlFile[0])) {
             $this->output->writeln('<info>Import sample data db data</info>');
-            $exec = 'mysql ' . $dbHelper->getMysqlClientToolConnectionString() . ' < ' . $sampleDataSqlFile[0];
+            $exec = 'mysql ' . $databaseHelper->getMysqlClientToolConnectionString() . ' < ' . $sampleDataSqlFile[0];
 
             Exec::run($exec, $commandOutput, $returnValue);
 
@@ -143,8 +141,6 @@ class InstallSampleData extends AbstractSubCommand
      * Extract file and return path to directory
      *
      * @param $type
-     * @param string $sampleDataFileContent
-     * @return string
      */
     private function extractFile($type, string $sampleDataFileContent): string
     {
@@ -178,10 +174,6 @@ class InstallSampleData extends AbstractSubCommand
         throw new \RuntimeException('Cannot extract sample data file: unknown file structure');
     }
 
-    /**
-     * @param string $sampleDataFile
-     * @return void
-     */
     private function extractTar(string $sampleDataFile): void
     {
         $process = new Process(
@@ -195,10 +187,6 @@ class InstallSampleData extends AbstractSubCommand
         }
     }
 
-    /**
-     * @param string $sampleDataFile
-     * @return void
-     */
     private function extractZip(string $sampleDataFile): void
     {
         $process = new Process(

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Category\Create;
 
 use Mage;
@@ -22,8 +24,11 @@ use Symfony\Component\Console\Question\Question;
 class DummyCommand extends AbstractMagentoCommand
 {
     public const DEFAULT_CATEGORY_NAME = 'My Awesome Category';
-    public const DEFAULT_CATEGORY_STATUS = 1; // enabled
-    public const DEFAULT_CATEGORY_ANCHOR = 1; // enabled
+
+    public const DEFAULT_CATEGORY_STATUS = 1;
+     // enabled
+    public const DEFAULT_CATEGORY_ANCHOR = 1;
+     // enabled
     public const DEFAULT_STORE_ID = 1; // Default Store ID
 
     protected function configure()
@@ -45,12 +50,7 @@ class DummyCommand extends AbstractMagentoCommand
             ->setDescription('Create a dummy category');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -64,7 +64,7 @@ class DummyCommand extends AbstractMagentoCommand
         /**
          * Loop to create categories
          */
-        for ($i = 0; $i < $_argument['category-number']; $i++) {
+        for ($i = 0; $i < $_argument['category-number']; ++$i) {
             if (!is_null($_argument['category-name-prefix'])) {
                 $name = $_argument['category-name-prefix'] . ' ' . $i;
             } else {
@@ -80,9 +80,10 @@ class DummyCommand extends AbstractMagentoCommand
             $_size = $collection->getSize();
             if ($_size > 0) {
                 $output->writeln("<comment>CATEGORY: WITH NAME: '" . $name . "' EXISTS! Skip</comment>\r");
-                $_argument['category-number']++;
+                ++$_argument['category-number'];
                 continue;
             }
+
             unset($collection);
 
             $storeId = $_argument['store-id'];
@@ -108,7 +109,7 @@ class DummyCommand extends AbstractMagentoCommand
             unset($category);
 
             // Create children Categories
-            for ($j = 0; $j < $_argument['children-categories-number']; $j++) {
+            for ($j = 0; $j < $_argument['children-categories-number']; ++$j) {
                 $name_child = $name . ' child ' . $j;
 
                 /** @var Mage_Catalog_Model_Category $category */
@@ -130,6 +131,7 @@ class DummyCommand extends AbstractMagentoCommand
                 unset($category);
             }
         }
+
         return 0;
     }
 
@@ -143,7 +145,7 @@ class DummyCommand extends AbstractMagentoCommand
      */
     private function askForArguments($input, $output)
     {
-        $dialog = $this->getQuestionHelper();
+        $questionHelper = $this->getQuestionHelper();
         $_argument = [];
 
         // Store ID
@@ -160,9 +162,10 @@ class DummyCommand extends AbstractMagentoCommand
 
             $question = new ChoiceQuestion('Please select Store ID (default: 1)', $_store_ids, self::DEFAULT_STORE_ID);
             $question->setErrorMessage('Store ID "%s" is invalid.');
-            $response = explode('|', $dialog->ask($input, $output, $question));
+            $response = explode('|', $questionHelper->ask($input, $output, $question));
             $input->setArgument('store-id', $response[0]);
         }
+
         $output->writeln('<info>Store ID selected: ' . $input->getArgument('store-id') . '</info>');
         $_argument['store-id'] = $input->getArgument('store-id');
 
@@ -177,8 +180,9 @@ class DummyCommand extends AbstractMagentoCommand
 
                 return $answer;
             });
-            $input->setArgument('category-number', $dialog->ask($input, $output, $question));
+            $input->setArgument('category-number', $questionHelper->ask($input, $output, $question));
         }
+
         $output->writeln(
             '<info>Number of categories to create: ' . $input->getArgument('category-number') . '</info>'
         );
@@ -198,8 +202,9 @@ class DummyCommand extends AbstractMagentoCommand
 
                 return $answer;
             });
-            $input->setArgument('children-categories-number', $dialog->ask($input, $output, $question));
+            $input->setArgument('children-categories-number', $questionHelper->ask($input, $output, $question));
         }
+
         if ($input->getArgument('children-categories-number') == -1) {
             $input->setArgument('children-categories-number', random_int(0, 5));
         }
@@ -216,8 +221,9 @@ class DummyCommand extends AbstractMagentoCommand
                 "Please enter the category name prefix (default '" . self::DEFAULT_CATEGORY_NAME . "'): ",
                 self::DEFAULT_CATEGORY_NAME
             );
-            $input->setArgument('category-name-prefix', $dialog->ask($input, $output, $question));
+            $input->setArgument('category-name-prefix', $questionHelper->ask($input, $output, $question));
         }
+
         $output->writeln('<info>CATEGORY NAME PREFIX: ' . $input->getArgument('category-name-prefix') . '</info>');
         $_argument['category-name-prefix'] = $input->getArgument('category-name-prefix');
 
@@ -227,16 +233,15 @@ class DummyCommand extends AbstractMagentoCommand
     /**
      * Setting the store-ID of a category requires a compatibility layer for Magento 1.5.1.0
      *
-     * @param Mage_Catalog_Model_Category $category
      * @param int|Mage_Core_Model_Store|string $storeId
      */
-    private function setCategoryStoreId(Mage_Catalog_Model_Category $category, $storeId)
+    private function setCategoryStoreId(Mage_Catalog_Model_Category $mageCatalogModelCategory, $storeId)
     {
         if (Mage::getVersion() === '1.5.1.0') {
             // @phpstan-ignore argument.type
-            $category->setStoreId([0, $storeId]);
+            $mageCatalogModelCategory->setStoreId([0, $storeId]);
         } else {
-            $category->setStoreId($storeId);
+            $mageCatalogModelCategory->setStoreId($storeId);
         }
     }
 }

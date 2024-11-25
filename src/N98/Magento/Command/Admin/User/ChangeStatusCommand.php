@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Admin\User;
 
 use Exception;
@@ -27,12 +29,7 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -87,6 +84,7 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
             }
         }
+
         return 0;
     }
 }

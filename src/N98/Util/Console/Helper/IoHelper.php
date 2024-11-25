@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util\Console\Helper;
 
 use Symfony\Component\Console\ConsoleEvents;
@@ -42,25 +44,19 @@ class IoHelper implements HelperInterface, EventSubscriberInterface
 
     /**
      * @see getSubscribedEvents
-     *
-     * @param ConsoleCommandEvent $event
      */
-    public function initializeEventIo(ConsoleCommandEvent $event)
+    public function initializeEventIo(ConsoleCommandEvent $consoleCommandEvent)
     {
-        $set = $event->getCommand()->getHelperSet();
+        $set = $consoleCommandEvent->getCommand()->getHelperSet();
         if (!$set->has(self::HELPER_NAME)) {
             return;
         }
 
         /** @var  IoHelper $helper */
         $helper = $set->get(self::HELPER_NAME);
-        $helper->initializeIo($event->getInput(), $event->getOutput());
+        $helper->initializeIo($consoleCommandEvent->getInput(), $consoleCommandEvent->getOutput());
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     */
     public function initializeIo(InputInterface $input, OutputInterface $output)
     {
         $this->input = $input;

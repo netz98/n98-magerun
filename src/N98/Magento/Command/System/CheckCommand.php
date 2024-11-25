@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System;
 
 use LogicException;
@@ -51,12 +53,7 @@ class CheckCommand extends AbstractMagentoCommand
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -66,42 +63,42 @@ HELP;
 
         $this->config = $this->getCommandConfig();
 
-        $results = new ResultCollection();
+        $resultCollection = new ResultCollection();
 
         foreach ($this->config['checks'] as $checkGroup => $checkGroupClasses) {
-            $results->setResultGroup($checkGroup);
+            $resultCollection->setResultGroup($checkGroup);
             foreach ($checkGroupClasses as $checkGroupClass) {
-                $this->_invokeCheckClass($results, $checkGroupClass);
+                $this->_invokeCheckClass($resultCollection, $checkGroupClass);
             }
         }
 
         if ($input->getOption('format')) {
-            $this->_printTable($input, $output, $results);
+            $this->_printTable($input, $output, $resultCollection);
         } else {
-            $this->_printResults($output, $results);
+            $this->_printResults($output, $resultCollection);
         }
+
         return 0;
     }
 
     /**
-     * @param ResultCollection $results
      * @param string $checkGroupClass name
      */
-    protected function _invokeCheckClass(ResultCollection $results, $checkGroupClass)
+    protected function _invokeCheckClass(ResultCollection $resultCollection, $checkGroupClass)
     {
         $check = $this->_createCheck($checkGroupClass);
 
         switch (true) {
             case $check instanceof SimpleCheck:
-                $check->check($results);
+                $check->check($resultCollection);
                 break;
 
             case $check instanceof StoreCheck:
-                $this->checkStores($results, $checkGroupClass, $check);
+                $this->checkStores($resultCollection, $checkGroupClass, $check);
                 break;
 
             case $check instanceof WebsiteCheck:
-                $this->checkWebsites($results, $checkGroupClass, $check);
+                $this->checkWebsites($resultCollection, $checkGroupClass, $check);
                 break;
 
             default:
@@ -111,17 +108,14 @@ HELP;
         }
     }
 
-    /**
-     * @param OutputInterface $output
-     * @param ResultCollection $results
-     */
-    protected function _printResults(OutputInterface $output, ResultCollection $results)
+    protected function _printResults(OutputInterface $output, ResultCollection $resultCollection)
     {
         $lastResultGroup = null;
-        foreach ($results as $result) {
+        foreach ($resultCollection as $result) {
             if ($result->getResultGroup() != $lastResultGroup) {
                 $this->writeSection($output, str_pad(strtoupper($result->getResultGroup()), 60, ' ', STR_PAD_BOTH));
             }
+
             if ($result->getMessage()) {
                 switch ($result->getStatus()) {
                     case Result::STATUS_WARNING:
@@ -136,6 +130,7 @@ HELP;
                         );
                         break;
                 }
+
                 $output->writeln($result->getMessage());
             }
 
@@ -143,15 +138,10 @@ HELP;
         }
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @param ResultCollection $results
-     */
-    protected function _printTable(InputInterface $input, OutputInterface $output, ResultCollection $results)
+    protected function _printTable(InputInterface $input, OutputInterface $output, ResultCollection $resultCollection)
     {
         $table = [];
-        foreach ($results as $result) {
+        foreach ($resultCollection as $result) {
             /* @var Result $result */
             $table[] = [$result->getResultGroup(), strip_tags($result->getMessage()), $result->getStatus()];
         }
@@ -174,6 +164,7 @@ HELP;
         if ($check instanceof CommandAware) {
             $check->setCommand($this);
         }
+
         if ($check instanceof CommandConfigAware) {
             $check->setCommandConfig($this->config);
 
@@ -184,48 +175,46 @@ HELP;
     }
 
     /**
-     * @param ResultCollection $results
      * @param string $context
      * @param string $checkGroupClass
      */
-    private function _markCheckWarning(ResultCollection $results, $context, $checkGroupClass)
+    private function _markCheckWarning(ResultCollection $resultCollection, $context, $checkGroupClass)
     {
-        $result = $results->createResult();
+        $result = $resultCollection->createResult();
         $result->setMessage(
             '<error>No ' . $context . ' configured to run store check:</error> <comment>' . basename($checkGroupClass) .
             '</comment>'
         );
         $result->setStatus($result::STATUS_WARNING);
-        $results->addResult($result);
+
+        $resultCollection->addResult($result);
     }
 
     /**
-     * @param ResultCollection $results
      * @param string $checkGroupClass name
-     * @param Check\StoreCheck $check
      */
-    private function checkStores(ResultCollection $results, $checkGroupClass, StoreCheck $check)
+    private function checkStores(ResultCollection $resultCollection, $checkGroupClass, StoreCheck $storeCheck)
     {
         if (!$stores = Mage::app()->getStores()) {
-            $this->_markCheckWarning($results, 'stores', $checkGroupClass);
+            $this->_markCheckWarning($resultCollection, 'stores', $checkGroupClass);
         }
+
         foreach ($stores as $store) {
-            $check->check($results, $store);
+            $storeCheck->check($resultCollection, $store);
         }
     }
 
     /**
-     * @param ResultCollection $results
      * @param string $checkGroupClass name
-     * @param Check\WebsiteCheck $check
      */
-    private function checkWebsites(ResultCollection $results, $checkGroupClass, WebsiteCheck $check)
+    private function checkWebsites(ResultCollection $resultCollection, $checkGroupClass, WebsiteCheck $websiteCheck)
     {
         if (!$websites = Mage::app()->getWebsites()) {
-            $this->_markCheckWarning($results, 'websites', $checkGroupClass);
+            $this->_markCheckWarning($resultCollection, 'websites', $checkGroupClass);
         }
+
         foreach ($websites as $website) {
-            $check->check($results, $website);
+            $websiteCheck->check($resultCollection, $website);
         }
     }
 }

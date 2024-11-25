@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Log;
 
 use N98\Util\Filesystem;
@@ -26,11 +28,8 @@ class SizeCommand extends AbstractLogCommand
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
      * @throws RuntimeException
-     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -40,11 +39,7 @@ class SizeCommand extends AbstractLogCommand
         }
 
         $fileName = $input->getArgument('log_filename');
-        if ($fileName === null) {
-            $path = $this->askLogFile($input, $output);
-        } else {
-            $path = $this->getLogDir() . DIRECTORY_SEPARATOR . $fileName;
-        }
+        $path = $fileName === null ? $this->askLogFile($input, $output) : $this->getLogDir() . DIRECTORY_SEPARATOR . $fileName;
 
         if ($this->logfileExists(basename($path))) {
             $size = @filesize($path);
@@ -59,8 +54,9 @@ class SizeCommand extends AbstractLogCommand
         if ($input->getOption('human')) {
             $output->writeln(Filesystem::humanFileSize($size));
         } else {
-            $output->writeln("$size");
+            $output->writeln('' . $size);
         }
+
         return 0;
     }
 }

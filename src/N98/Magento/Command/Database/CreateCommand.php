@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database;
 
 use Symfony\Component\Console\Input\InputInterface;
@@ -32,11 +34,6 @@ The configured user must have "CREATE DATABASE" privileges on MySQL Server.
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->getDatabaseHelper()->createDatabase($output);

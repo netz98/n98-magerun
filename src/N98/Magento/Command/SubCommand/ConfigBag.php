@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\SubCommand;
 
 /**
@@ -20,6 +22,7 @@ class ConfigBag extends \ArrayObject
         if ($value !== null && !is_bool($value)) {
             throw new \InvalidArgumentException('Type must be of type bool');
         }
+
         $this->offsetSet($key, (bool) $value);
 
         return $this;
@@ -36,6 +39,7 @@ class ConfigBag extends \ArrayObject
         if ($value !== null && !is_int($value)) {
             throw new \InvalidArgumentException('Type must be of type int');
         }
+
         $this->offsetSet($key, (int) $value);
 
         return $this;
@@ -52,6 +56,7 @@ class ConfigBag extends \ArrayObject
         if ($value !== null && !is_string($value)) {
             throw new \InvalidArgumentException('Type must be of type string');
         }
+
         $this->offsetSet($key, (string) $value);
 
         return $this;
@@ -68,6 +73,7 @@ class ConfigBag extends \ArrayObject
         if ($value !== null && !is_float($value)) {
             throw new \InvalidArgumentException('Type must be of type float');
         }
+
         $this->offsetSet($key, (float) $value);
 
         return $this;
@@ -75,7 +81,6 @@ class ConfigBag extends \ArrayObject
 
     /**
      * @param string $key
-     * @param array $value
      *
      * @return $this
      */

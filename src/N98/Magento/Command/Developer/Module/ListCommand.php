@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module;
 
 use N98\Magento\Command\AbstractMagentoCommand;
@@ -27,12 +29,7 @@ class ListCommand extends AbstractMagentoCommand
             ->addFormatOption();
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -40,25 +37,24 @@ class ListCommand extends AbstractMagentoCommand
         if ($input->getOption('format') === null) {
             $this->writeSection($output, 'Magento Modules');
         }
+
         $this->initMagento();
 
         $modules = $this->filterModules($input);
 
-        if (!count($modules)) {
+        if (count($modules) === 0) {
             $output->writeln('No modules match the specified criteria.');
             return 0;
         }
 
-        $table = $this->getTableHelper();
-        $table
+        $tableHelper = $this->getTableHelper();
+        $tableHelper
             ->setHeaders(['codePool', 'Name', 'Version', 'Status'])
             ->renderByFormat($output, iterator_to_array($modules), $input->getOption('format'));
         return 0;
     }
 
     /**
-     * @param InputInterface $input
-     *
      * @return Modules
      */
     private function filterModules(InputInterface $input)

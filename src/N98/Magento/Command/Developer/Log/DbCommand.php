@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Log;
 
 use RuntimeException;
@@ -31,12 +33,7 @@ class DbCommand extends AbstractLogCommand
         return $this->_magentoRootFolder . '/lib/Varien/Db/Adapter/Pdo/Mysql.php';
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -72,7 +69,7 @@ class DbCommand extends AbstractLogCommand
         $varienAdapterPhpFile = $this->_getVarienAdapterPhpFile();
         $contents = file_get_contents($varienAdapterPhpFile);
 
-        $debugLinePattern = '/protected\\s' . '\\' . $variable . '\\s*?=\\s(false|true)/m';
+        $debugLinePattern = '/protected\s\\' . $variable . '\\s*?=\\s(false|true)/m';
         preg_match($debugLinePattern, $contents, $matches);
         if (!isset($matches[1])) {
             throw new RuntimeException('Problem finding the $_debug parameter');
@@ -84,7 +81,7 @@ class DbCommand extends AbstractLogCommand
         } elseif ($input->getOption('on')) {
             $newValue = 'true';
         } else {
-            $newValue = ($currentValue == 'false') ? 'true' : 'false';
+            $newValue = ($currentValue === 'false') ? 'true' : 'false';
         }
 
         $output->writeln(

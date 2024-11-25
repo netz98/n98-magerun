@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Check\Settings;
 
 use Mage_Core_Model_Store;
@@ -16,17 +18,15 @@ abstract class BaseUrlCheckAbstract extends CheckAbstract
 {
     protected $class = 'abstract';
 
-    public function initConfigPaths()
+    protected function initConfigPaths()
     {
         $this->registerStoreConfigPath('baseUrl', 'web/' . $this->class . '/base_url');
     }
 
     /**
-     * @param Result $result
-     * @param Mage_Core_Model_Store $store
      * @param string $baseUrl setting
      */
-    protected function checkSettings(Result $result, Mage_Core_Model_Store $store, $baseUrl)
+    protected function checkSettings(Result $result, Mage_Core_Model_Store $mageCoreModelStore, $baseUrl)
     {
         $errorMessage = 'Wrong hostname configured. <info>Hostname must contain a dot</info>';
 
@@ -36,12 +36,12 @@ abstract class BaseUrlCheckAbstract extends CheckAbstract
         if ($isValid) {
             $result->setMessage(
                 '<info>' . ucfirst($this->class) . ' BaseURL: <comment>' . $baseUrl . '</comment> of Store: <comment>' .
-                $store->getCode() . '</comment> - OK'
+                $mageCoreModelStore->getCode() . '</comment> - OK'
             );
         } else {
             $result->setMessage(
                 '<error>Invalid ' . ucfirst($this->class) . ' BaseURL: <comment>' . $baseUrl .
-                '</comment> of Store: <comment>' . $store->getCode() . '</comment> ' . $errorMessage . '</error>'
+                '</comment> of Store: <comment>' . $mageCoreModelStore->getCode() . '</comment> ' . $errorMessage . '</error>'
             );
         }
     }

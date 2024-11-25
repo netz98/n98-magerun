@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module\Disableenable;
 
 use InvalidArgumentException;
@@ -52,10 +54,7 @@ class AbstractCommand extends AbstractMagentoCommand
     /**
      * Execute command
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
-     * @return int
      *
      * @throws InvalidArgumentException
      */
@@ -65,6 +64,7 @@ class AbstractCommand extends AbstractMagentoCommand
         if (false === $this->initMagento()) {
             throw new RuntimeException('Magento could not be loaded');
         }
+
         $this->modulesConfig = Mage::getConfig();
         $this->modulesDir = $this->modulesConfig->getOptions()->getEtcDir() . DS . 'modules' . DS;
         if ($codePool = $input->getOption('codepool')) {
@@ -76,6 +76,7 @@ class AbstractCommand extends AbstractMagentoCommand
         } else {
             throw new InvalidArgumentException('No code-pool option nor module-name argument');
         }
+
         return 0;
     }
 
@@ -83,7 +84,6 @@ class AbstractCommand extends AbstractMagentoCommand
      * Search a code pool for modules and enable them
      *
      * @param string $codePool
-     * @param OutputInterface $output
      */
     protected function enableCodePool($codePool, OutputInterface $output)
     {
@@ -99,7 +99,6 @@ class AbstractCommand extends AbstractMagentoCommand
      * Enable a single module
      *
      * @param string $module
-     * @param OutputInterface $output
      */
     protected function enableModule($module, OutputInterface $output)
     {
@@ -114,12 +113,12 @@ class AbstractCommand extends AbstractMagentoCommand
         }
 
         if (!$validDecFile) {
-            $msg = sprintf('<error><comment>%s: </comment>Couldn\'t find declaration file</error>', $module);
+            $msg = sprintf("<error><comment>%s: </comment>Couldn't find declaration file</error>", $module);
         } elseif (!is_writable($validDecFile)) {
-            $msg = sprintf('<error><comment>%s: </comment>Can\'t write to declaration file</error>', $module);
+            $msg = sprintf("<error><comment>%s: </comment>Can't write to declaration file</error>", $module);
         } else {
             $setTo = $this->commandName == 'enable' ? 'true' : 'false';
-            if ((string) $xml->modules->{$module}->active != $setTo) {
+            if ((string) $xml->modules->{$module}->active !== $setTo) {
                 $xml->modules->{$module}->active = $setTo;
                 if (file_put_contents($validDecFile, $xml->asXML()) !== false) {
                     $msg = sprintf('<info><comment>%s: </comment>%sd</info>', $module, $this->commandName);
@@ -152,9 +151,9 @@ class AbstractCommand extends AbstractMagentoCommand
             $name = explode(DIRECTORY_SEPARATOR, $v);
             $name = substr($name[count($name) - 1], 0, -4);
 
-            if ($name == 'Mage_All') {
+            if ($name === 'Mage_All') {
                 $collectModuleFiles['base'][] = $v;
-            } elseif (substr($name, 0, 5) == 'Mage_') {
+            } elseif (substr($name, 0, 5) === 'Mage_') {
                 $collectModuleFiles['mage'][] = $v;
             } else {
                 $collectModuleFiles['custom'][] = $v;

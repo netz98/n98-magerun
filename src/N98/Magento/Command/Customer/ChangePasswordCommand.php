@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Customer;
 
 use Exception;
@@ -37,12 +39,7 @@ Website parameter must only be given if more than one websites are available.
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -76,12 +73,14 @@ HELP;
             if (is_array($result)) {
                 throw new RuntimeException(implode(PHP_EOL, $result));
             }
+
             $customer->setPassword($password);
             $customer->save();
             $output->writeln('<info>Password successfully changed</info>');
-        } catch (Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
+        } catch (Exception $exception) {
+            $output->writeln('<error>' . $exception->getMessage() . '</error>');
         }
+
         return 0;
     }
 }

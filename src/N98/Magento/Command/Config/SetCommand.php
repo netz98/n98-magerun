@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Config;
 
 use InvalidArgumentException;
@@ -26,21 +28,21 @@ class SetCommand extends AbstractConfigCommand
                 'scope',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'The config value\'s scope (default, websites, stores)',
+                "The config value's scope (default, websites, stores)",
                 'default'
             )
-            ->addOption('scope-id', null, InputOption::VALUE_OPTIONAL, 'The config value\'s scope ID', '0')
+            ->addOption('scope-id', null, InputOption::VALUE_OPTIONAL, "The config value's scope ID", '0')
             ->addOption(
                 'encrypt',
                 null,
                 InputOption::VALUE_NONE,
-                'The config value should be encrypted using local.xml\'s crypt key'
+                "The config value should be encrypted using local.xml's crypt key"
             )
             ->addOption(
                 'force',
                 null,
                 InputOption::VALUE_NONE,
-                'Allow creation of non-standard scope-id\'s for websites and stores'
+                "Allow creation of non-standard scope-id's for websites and stores"
             )
             ->addOption(
                 'no-null',
@@ -62,12 +64,7 @@ To set a value of a specify store view you must set the "scope" and "scope-id" o
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -75,8 +72,8 @@ HELP;
             return 0;
         }
 
-        $config = $this->_getConfigModel();
-        if (!$config->getResourceModel()) {
+        $mageCoreModelConfig = $this->_getConfigModel();
+        if (!$mageCoreModelConfig->getResourceModel()) {
             // without a resource model, a config option can't be saved.
             return 0;
         }
@@ -86,13 +83,14 @@ HELP;
         $scope = $input->getOption('scope');
         $this->_validateScopeParam($scope);
         $scopeId = $this->_convertScopeIdParam($scope, $input->getOption('scope-id'), $allowZeroScope);
-
-        $valueDisplay = $value = $input->getArgument('value');
+        $valueDisplay = $input->getArgument('value');
+        $value = $valueDisplay;
 
         if ($value === 'NULL' && !$input->getOption('no-null')) {
             if ($input->getOption('encrypt')) {
                 throw new InvalidArgumentException('Encryption is not possbile for NULL values');
             }
+
             $value = null;
             $valueDisplay = self::DISPLAY_NULL_UNKNOWN_VALUE;
         } else {
@@ -100,7 +98,7 @@ HELP;
             $value = $this->_formatValue($value, ($input->getOption('encrypt') ? 'encrypt' : false));
         }
 
-        $config->saveConfig(
+        $mageCoreModelConfig->saveConfig(
             $input->getArgument('path'),
             $value,
             $scope,

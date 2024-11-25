@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Installer\SubCommand;
 
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
@@ -32,7 +34,7 @@ class InstallComposer extends AbstractSubCommand
             $composerBin = 'composer';
         }
 
-        if (empty($composerBin)) {
+        if ($composerBin === '0') {
             $composerBin = $this->downloadComposer();
         }
 
@@ -99,13 +101,12 @@ class InstallComposer extends AbstractSubCommand
      *
      * @param $output
      * @param $matches
-     * @return int
      * @throws \Exception
      */
     protected function getMajorComposerVersion(): int
     {
         Exec::run(implode(' ', array_merge($this->config['composer_bin'], [' --version'])), $output);
-        if (!preg_match('#(\d+)\.(\d+)\.(\d+)#', $output, $matches)) {
+        if (in_array(preg_match('#(\d+)\.(\d+)\.(\d+)#', $output, $matches), [0, false], true)) {
             throw new \Exception('Could not detect a valid Composer version');
         }
 

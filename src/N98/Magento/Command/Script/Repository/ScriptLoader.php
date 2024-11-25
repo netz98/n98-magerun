@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Script\Repository;
 
 use N98\Util\OperatingSystem;
@@ -40,7 +42,6 @@ class ScriptLoader
     protected $_scriptFolders = [];
 
     /**
-     * @param array  $scriptFolders
      * @param string $magentoRootFolder
      */
     public function __construct(array $scriptFolders, $magentoRootFolder = null)
@@ -52,6 +53,7 @@ class ScriptLoader
         if (OperatingSystem::isWindows()) {
             $scriptFolders[] = $this->homeDir . '/n98-magerun/scripts';
         }
+
         $scriptFolders[] = $this->homeDir . '/.n98-magerun/scripts';
 
         $this->findScripts($scriptFolders);
@@ -110,10 +112,11 @@ class ScriptLoader
         if (!$f) {
             return '';
         }
+
         $line = trim(fgets($f));
         fclose($f);
 
-        if (isset($line[0]) && $line[0] != '#') {
+        if (isset($line[0]) && $line[0] !== '#') {
             return '';
         }
 

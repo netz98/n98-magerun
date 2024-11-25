@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command;
 
 use Exception;
@@ -28,10 +30,15 @@ use WpOrg\Requests\Requests;
 class SelfUpdateCommand extends AbstractMagentoCommand
 {
     public const VERSION_TXT_URL_UNSTABLE = 'https://raw.githubusercontent.com/netz98/n98-magerun/develop/version.txt';
+
     public const MAGERUN_DOWNLOAD_URL_UNSTABLE = 'https://files.magerun.net/n98-magerun-dev.phar';
+
     public const VERSION_TXT_URL_STABLE = 'https://raw.githubusercontent.com/netz98/n98-magerun/master/version.txt';
+
     public const MAGERUN_DOWNLOAD_URL_STABLE = 'https://files.magerun.net/n98-magerun.phar';
+
     public const CHANGELOG_DOWNLOAD_URL_UNSTABLE = 'https://raw.github.com/netz98/n98-magerun/develop/CHANGELOG.md';
+
     public const CHANGELOG_DOWNLOAD_URL_STABLE = 'https://raw.github.com/netz98/n98-magerun/master/CHANGELOG.md';
 
     protected function configure()
@@ -59,8 +66,6 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return int
      * @throws \Exception
      */
@@ -119,9 +124,9 @@ HELP;
 
             try {
                 $this->downloadNewPhar($output, $remotePharDownloadUrl, $tempFilename);
-                $this->checkNewPharFile($tempFilename, $localFilename);
+                $this->checkNewPharFile($tempFilename);
 
-                $changelog = $this->getChangelog($output, $loadUnstable);
+                $changelog = $this->getChangelog($loadUnstable);
 
                 if (!$isDryRun) {
                     $this->replaceExistingPharFile($tempFilename, $localFilename);
@@ -140,6 +145,7 @@ HELP;
                 if (!$e instanceof UnexpectedValueException && !$e instanceof PharException) {
                     throw $e;
                 }
+
                 $output->writeln('<error>The download is corrupted (' . $e->getMessage() . ').</error>');
                 $output->writeln('<error>Please re-run the self-update command to try again.</error>');
             }
@@ -164,11 +170,6 @@ HELP;
         exit($statusCode);
     }
 
-    /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param string $remoteUrl
-     * @param string $tempFilename
-     */
     private function downloadNewPhar(OutputInterface $output, string $remoteUrl, string $tempFilename)
     {
         $progressBar = new ProgressBar($output);
@@ -193,7 +194,7 @@ HELP;
 
         $filesize = $response->headers['content-length'];
 
-        $hooks->register('curl.after_request', function (&$headers, &$info) use (&$filesize) {
+        $hooks->register('curl.after_request', function (&$headers, &$info) use (&$filesize): void {
             $filesize = $info['size_download'];
         });
 
@@ -201,7 +202,7 @@ HELP;
 
         $hooks->register(
             'request.progress',
-            function ($data, $responseBytes, $responseByteLimit) use ($progressBar) {
+            function ($data, $responseBytes, $responseByteLimit) use ($progressBar): void {
                 $progressBar->setProgress($responseBytes);
             }
         );
@@ -232,9 +233,8 @@ HELP;
 
     /**
      * @param string $tempFilename
-     * @param string $localFilename
      */
-    private function checkNewPharFile($tempFilename, $localFilename)
+    private function checkNewPharFile($tempFilename)
     {
         error_reporting(E_ALL); // supress notices
 
@@ -261,19 +261,14 @@ HELP;
     /**
      * Download changelog
      *
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param bool $loadUnstable
      * @return string
      */
-    private function getChangelog(OutputInterface $output, $loadUnstable)
+    private function getChangelog($loadUnstable)
     {
         $changelog = '';
 
-        if ($loadUnstable) {
-            $changeLogUrl = self::CHANGELOG_DOWNLOAD_URL_UNSTABLE;
-        } else {
-            $changeLogUrl = self::CHANGELOG_DOWNLOAD_URL_STABLE;
-        }
+        $changeLogUrl = $loadUnstable ? self::CHANGELOG_DOWNLOAD_URL_UNSTABLE : self::CHANGELOG_DOWNLOAD_URL_STABLE;
 
         $response = Requests::get(
             $changeLogUrl,
@@ -296,6 +291,7 @@ HELP;
             $previousVersion = $this->getApplication()->getVersion();
             $changelog .= $versionFilePrinter->printFromVersion($previousVersion) . "\n";
         }
+
         if ($loadUnstable) {
             $unstableFooterMessage = <<<UNSTABLE_FOOTER
 <comment>
@@ -318,6 +314,9 @@ UNSTABLE_FOOTER;
      */
     private function isOutdatedVersion($latest, $loadUnstable)
     {
-        return $this->getApplication()->getVersion() !== $latest || $loadUnstable;
+        if ($this->getApplication()->getVersion() !== $latest) {
+            return true;
+        }
+        return (bool) $loadUnstable;
     }
 }

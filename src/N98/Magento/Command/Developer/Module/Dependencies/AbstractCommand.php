@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module\Dependencies;
 
 use Exception;
@@ -23,9 +25,13 @@ abstract class AbstractCommand extends AbstractMagentoCommand
      * @var string
      */
     public const COMMAND_NAME = '';
+
     public const COMMAND_DESCRIPTION = '';
+
     public const COMMAND_SECTION_TITLE_TEXT = '';
+
     public const COMMAND_NO_RESULTS_TEXT = '';
+
     /**#@-*/
 
     /**
@@ -48,12 +54,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $moduleName = $input->getArgument('moduleName');
@@ -61,6 +62,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
         if ($input->getOption('format') === null) {
             $this->writeSection($output, sprintf(static::COMMAND_SECTION_TITLE_TEXT, $moduleName));
         }
+
         $this->detectMagento($output, true);
         $this->initMagento();
 
@@ -75,9 +77,10 @@ abstract class AbstractCommand extends AbstractMagentoCommand
             } else {
                 $output->writeln(sprintf(static::COMMAND_NO_RESULTS_TEXT, $moduleName));
             }
-        } catch (Exception $e) {
-            $output->writeln($e->getMessage());
+        } catch (Exception $exception) {
+            $output->writeln($exception->getMessage());
         }
+
         return 0;
     }
 
@@ -97,8 +100,6 @@ abstract class AbstractCommand extends AbstractMagentoCommand
     /**
      * Sort dependencies list by module name ascending
      *
-     * @param array $a
-     * @param array $b
      * @return int
      */
     private function sortDependencies(array $a, array $b)

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
 use BadMethodCallException;
@@ -57,9 +59,10 @@ final class ClassExistsChecker
         $context = $this->startContext();
         try {
             $exists = class_exists($this->className);
-        } catch (Exception $ex) {
-            return $this->exceptionContext($context, $ex);
+        } catch (Exception $exception) {
+            return $this->exceptionContext($context, $exception);
         }
+
         $this->endContext($context);
 
         return $exists;
@@ -81,18 +84,17 @@ final class ClassExistsChecker
 
     /**
      * @param $context
-     * @param Exception $ex
      * @return bool
      */
-    private function exceptionContext($context, Exception $ex)
+    private function exceptionContext($context, Exception $exception)
     {
         /** @var AutoloadHandler $terminator */
         $terminator = $context->terminator;
         $terminator->reset();
 
-        if ($ex !== $context->lastException) {
+        if ($exception !== $context->lastException) {
             $message = sprintf('Exception when checking for class %s existence', $context->className);
-            throw new ClassExistsThrownException($message, 0, $ex);
+            throw new ClassExistsThrownException($message, 0, $exception);
         }
 
         return false;
@@ -108,6 +110,7 @@ final class ClassExistsChecker
             $terminator = $context->terminator;
             $terminator->reset();
         }
+
         $this->context = null;
     }
 

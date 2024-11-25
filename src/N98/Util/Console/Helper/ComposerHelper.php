@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util\Console\Helper;
 
 use N98\Util\OperatingSystem;
@@ -17,14 +19,6 @@ use Symfony\Component\Process\Process;
 class ComposerHelper extends AbstractHelper implements InputAwareInterface
 {
     /**
-     * @var InputInterface
-     *
-     * @phpstan-ignore property.onlyWritten
-     */
-    private $input;
-
-    /**
-     * @param array $composerArgs
      * @param bool $silent
      * @return string
      */
@@ -34,7 +28,7 @@ class ComposerHelper extends AbstractHelper implements InputAwareInterface
 
         $process = new Process($commandArgs);
         $process->setTimeout(3600);
-        $process->run(function ($type, $buffer) use ($silent) {
+        $process->run(function ($type, $buffer) use ($silent): void {
             if ($silent) {
                 return;
             }
@@ -80,7 +74,7 @@ class ComposerHelper extends AbstractHelper implements InputAwareInterface
 
                 $jsonCode .= $line;
             }
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $jsonCode = 'false';
         }
 
@@ -147,11 +141,8 @@ class ComposerHelper extends AbstractHelper implements InputAwareInterface
 
     /**
      * Sets the Console Input.
-     *
-     * @param InputInterface $input
      */
     public function setInput(InputInterface $input)
     {
-        $this->input = $input;
     }
 }

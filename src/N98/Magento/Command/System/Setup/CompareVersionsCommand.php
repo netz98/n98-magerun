@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Setup;
 
 use DateTime;
@@ -45,12 +47,7 @@ Compares module version with saved setup version in `core_resource` table and di
 HELP;
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -60,14 +57,14 @@ HELP;
 
         $time = microtime(true);
         $modules = Mage::getConfig()->getNode('modules');
-        /** @var Mage_Core_Model_Resource_Resource $resourceModel */
-        $resourceModel = $this->_getResourceSingleton('core/resource');
+        /** @var Mage_Core_Model_Resource_Resource $mageCoreModelAbstract */
+        $mageCoreModelAbstract = $this->_getResourceSingleton('core/resource');
         $setups = Mage::getConfig()->getNode('global/resources')->children();
         $ignoreDataUpdate = $input->getOption('ignore-data');
 
         $headers = ['Setup', 'Module', 'DB', 'Data', 'Status'];
         if ($ignoreDataUpdate) {
-            unset($headers[array_search('Data', $headers)]);
+            unset($headers[array_search('Data', $headers, true)]);
         }
 
         $hasStatusErrors = false;
@@ -78,16 +75,18 @@ HELP;
         foreach ($setups as $setupName => $setup) {
             $moduleName = (string) $setup->setup->module;
             $moduleVersion = (string) $modules->{$moduleName}->version;
-            $dbVersion = (string) $resourceModel->getDbVersion($setupName);
+            $dbVersion = (string) $mageCoreModelAbstract->getDbVersion($setupName);
             if (!$ignoreDataUpdate) {
-                $dataVersion = (string) $resourceModel->getDataVersion($setupName);
+                $dataVersion = (string) $mageCoreModelAbstract->getDataVersion($setupName);
             }
-            $ok = $dbVersion == $moduleVersion;
+
+            $ok = $dbVersion === $moduleVersion;
             if ($ok && !$ignoreDataUpdate) {
                 $ok = $dataVersion == $moduleVersion;
             }
+
             if (!$ok) {
-                $errorCounter++;
+                ++$errorCounter;
             }
 
             $row = ['Setup'     => $setupName, 'Module'    => $moduleVersion, 'DB'        => $dbVersion];
@@ -95,6 +94,7 @@ HELP;
             if (!$ignoreDataUpdate) {
                 $row['Data-Version'] = $dataVersion;
             }
+
             $row['Status'] = $ok ? 'OK' : Error::class;
 
             if (!$ok) {
@@ -118,13 +118,15 @@ HELP;
                 if ($a['Status'] !== 'OK' && $b['Status'] === 'OK') {
                     return 1;
                 }
+
                 if ($a['Status'] === 'OK' && $b['Status'] !== 'OK') {
                     return -1;
                 }
+
                 return strcmp($a['Setup'], $b['Setup']);
             });
 
-            array_walk($table, function (&$row) {
+            array_walk($table, function (&$row): void {
                 $status = $row['Status'];
                 $availableStatus = ['OK' => 'info', Error::class => 'error'];
                 $statusString = sprintf(
@@ -168,36 +170,34 @@ HELP;
             //Return a non-zero status to indicate there is an error in the setup scripts.
             return 1;
         }
+
         return 0;
     }
 
     /**
-     * @param array $data
      * @param string $filename
      * @param float $duration
      */
     protected function logJUnit(array $data, $filename, $duration)
     {
         $document = new JUnitXmlDocument();
-        $suite = $document->addTestSuite();
-        $suite->setName('n98-magerun: ' . $this->getName());
-        $suite->setTimestamp(new DateTime());
-        $suite->setTime($duration);
+        $testSuiteElement = $document->addTestSuite();
+        $testSuiteElement->setName('n98-magerun: ' . $this->getName());
+        $testSuiteElement->setTimestamp(\Carbon\Carbon::now());
+        $testSuiteElement->setTime($duration);
 
-        $testCase = $suite->addTestCase();
-        $testCase->setName('Magento Setup Version Test');
-        $testCase->setClassname('CompareVersionsCommand');
-        if (count($data) > 0) {
-            foreach ($data as $moduleSetup) {
-                if (stristr($moduleSetup['Status'], 'error')) {
-                    $testCase->addFailure(
-                        sprintf(
-                            'Setup Script Error: [Setup %s]',
-                            $moduleSetup['Setup']
-                        ),
-                        'MagentoSetupScriptVersionException'
-                    );
-                }
+        $testCaseElement = $testSuiteElement->addTestCase();
+        $testCaseElement->setName('Magento Setup Version Test');
+        $testCaseElement->setClassname('CompareVersionsCommand');
+        foreach ($data as $moduleSetup) {
+            if (stristr($moduleSetup['Status'], 'error')) {
+                $testCaseElement->addFailure(
+                    sprintf(
+                        'Setup Script Error: [Setup %s]',
+                        $moduleSetup['Setup']
+                    ),
+                    'MagentoSetupScriptVersionException'
+                );
             }
         }
 

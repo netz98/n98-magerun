@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\EmailTemplate;
 
 use Mage;
@@ -28,12 +30,7 @@ class UsageCommand extends AbstractMagentoCommand
             ->addFormatOption();
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -48,6 +45,7 @@ class UsageCommand extends AbstractMagentoCommand
         } else {
             $output->writeln('No transactional email templates stored in the database.');
         }
+
         return 0;
     }
 
@@ -70,7 +68,7 @@ class UsageCommand extends AbstractMagentoCommand
 
             $configPaths = $template->getSystemConfigPathsWhereUsedCurrently();
 
-            if (!(is_countable($configPaths) ? count($configPaths) : 0)) {
+            if ((is_countable($configPaths) ? count($configPaths) : 0) === 0) {
                 $configPaths[] = ['scope'    => 'Unused', 'scope_id' => 'Unused', 'path'     => 'Unused'];
             }
 

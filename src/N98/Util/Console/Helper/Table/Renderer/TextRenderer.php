@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util\Console\Helper\Table\Renderer;
 
 use Symfony\Component\Console\Helper\Table;
@@ -16,7 +18,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class TextRenderer implements RendererInterface
 {
     /**
-     * @param OutputInterface $output
      * @param array $rows headers are expected to be the keys of the first row.
      * @return void
      */

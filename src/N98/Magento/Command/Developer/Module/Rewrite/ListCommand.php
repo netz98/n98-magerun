@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,12 +23,7 @@ class ListCommand extends AbstractRewriteCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -45,7 +42,7 @@ class ListCommand extends AbstractRewriteCommand
             }
         }
 
-        if (count($table) === 0 && $input->getOption('format') === null) {
+        if ($table === [] && $input->getOption('format') === null) {
             $output->writeln('<info>No rewrites were found.</info>');
         } else {
             if (count($table) == 0) {
@@ -58,6 +55,7 @@ class ListCommand extends AbstractRewriteCommand
                 ->setRows($table)
                 ->renderByFormat($output, $table, $input->getOption('format'));
         }
+
         return 0;
     }
 }

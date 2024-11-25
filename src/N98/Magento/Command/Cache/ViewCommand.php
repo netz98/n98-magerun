@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cache;
 
 use Enterprise_PageCache_Model_Cache;
@@ -32,12 +34,7 @@ class ViewCommand extends AbstractCacheCommand
             );
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -49,10 +46,12 @@ class ViewCommand extends AbstractCacheCommand
             if (!class_exists('\Enterprise_PageCache_Model_Cache')) {
                 throw new RuntimeException('Enterprise page cache not found');
             }
+
             $cacheInstance = Enterprise_PageCache_Model_Cache::getCacheInstance()->getFrontend();
         } else {
             $cacheInstance = Mage::app()->getCache();
         }
+
         /* @var \Varien_Cache_Core $cacheInstance */
         $cacheData = $cacheInstance->load($input->getArgument('id'));
         if ($input->getOption('unserialize')) {

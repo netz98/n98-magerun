@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Check\MySQL;
 
 use N98\Magento\Command\System\Check\Result;
@@ -15,13 +17,11 @@ use Varien_Db_Adapter_Interface;
 class EnginesCheck extends ResourceCheck
 {
     /**
-     * @param Result $result
-     * @param Varien_Db_Adapter_Interface $dbAdapter
      * @return void
      */
-    protected function checkImplementation(Result $result, Varien_Db_Adapter_Interface $dbAdapter)
+    protected function checkImplementation(Result $result, Varien_Db_Adapter_Interface $varienDbAdapter)
     {
-        $innodbFound = $this->checkInnodbEngine($dbAdapter);
+        $innodbFound = $this->checkInnodbEngine($varienDbAdapter);
 
         if ($innodbFound) {
             $result->setStatus(Result::STATUS_OK);
@@ -35,14 +35,13 @@ class EnginesCheck extends ResourceCheck
     }
 
     /**
-     * @param Varien_Db_Adapter_Interface $dbAdapter
      * @return bool
      */
-    private function checkInnodbEngine(Varien_Db_Adapter_Interface $dbAdapter)
+    private function checkInnodbEngine(Varien_Db_Adapter_Interface $varienDbAdapter)
     {
         $innodbFound = false;
 
-        $engines = $dbAdapter->fetchAll('SHOW ENGINES');
+        $engines = $varienDbAdapter->fetchAll('SHOW ENGINES');
 
         foreach ($engines as $engine) {
             if (strtolower($engine['Engine']) === 'innodb') {

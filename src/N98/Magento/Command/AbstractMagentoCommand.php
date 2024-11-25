@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command;
 
 use Composer\Composer;
@@ -46,7 +48,7 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * @var string
      */
-    protected $_magentoRootFolder = null;
+    protected $_magentoRootFolder;
 
     /**
      * @var int
@@ -122,6 +124,7 @@ abstract class AbstractMagentoCommand extends Command
         if (empty($this->_websiteCodeMap)) {
             $this->_initWebsites();
         }
+
         $websiteMap = array_flip($this->_websiteCodeMap);
 
         return $websiteMap[$websiteCode];
@@ -142,7 +145,6 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @param OutputInterface $output
      * @param string $text
      * @param string $style
      */
@@ -171,7 +173,6 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * Search for magento root folder
      *
-     * @param OutputInterface $output
      * @param bool $silent print debug messages
      * @throws RuntimeException
      */
@@ -234,13 +235,11 @@ abstract class AbstractMagentoCommand extends Command
      */
     protected function createComposerPackageByConfig($config)
     {
-        $packageLoader = new PackageLoader();
-        return $packageLoader->load($config);
+        $arrayLoader = new PackageLoader();
+        return $arrayLoader->load($config);
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @param array|PackageInterface $config
      * @param string $targetFolder
      * @param bool $preferSource
@@ -253,23 +252,23 @@ abstract class AbstractMagentoCommand extends Command
         $targetFolder,
         $preferSource = true
     ) {
-        $dm = $this->getComposerDownloadManager($input, $output);
+        $downloadManager = $this->getComposerDownloadManager($input, $output);
         if (!$config instanceof PackageInterface) {
             $package = $this->createComposerPackageByConfig($config);
         } else {
             $package = $config;
         }
 
-        $helper = new MagentoHelper();
-        $helper->detect($targetFolder);
-        if ($this->isSourceTypeRepository($package->getSourceType()) && $helper->getRootFolder() == $targetFolder) {
+        $magentoHelper = new MagentoHelper();
+        $magentoHelper->detect($targetFolder);
+        if ($this->isSourceTypeRepository($package->getSourceType()) && $magentoHelper->getRootFolder() == $targetFolder) {
             $package->setInstallationSource('source');
             $this->checkRepository($package, $targetFolder);
-            $dm->update($package, $package, $targetFolder);
+            $downloadManager->update($package, $package, $targetFolder);
         } else {
             // @todo check cmuench
-            $dm->setPreferSource($preferSource);
-            $dm->download($package, $targetFolder);
+            $downloadManager->setPreferSource($preferSource);
+            $downloadManager->download($package, $targetFolder);
         }
 
         return $package;
@@ -290,7 +289,7 @@ abstract class AbstractMagentoCommand extends Command
                 escapeshellarg($package->getSourceReference())
             );
             $existingTags = shell_exec($command);
-            if (!$existingTags) {
+            if ($existingTags === '' || $existingTags === '0' || $existingTags === false || $existingTags === null) {
                 $command = sprintf('cd %s && git fetch', escapeshellarg($this->normalizePath($targetFolder)));
                 shell_exec($command);
             }
@@ -322,23 +321,22 @@ abstract class AbstractMagentoCommand extends Command
         if (defined('PHP_WINDOWS_VERSION_BUILD')) {
             $path = strtr($path, '/', '\\');
         }
+
         return $path;
     }
 
     /**
      * obtain composer
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
      * @return Composer
      */
     protected function getComposer(InputInterface $input, OutputInterface $output)
     {
-        $io = new ConsoleIO($input, $output, $this->getHelperSet());
+        $consoleIO = new ConsoleIO($input, $output, $this->getHelperSet());
         $config = ['config' => ['secure-http' => false]];
 
-        return ComposerFactory::create($io, $config);
+        return ComposerFactory::create($consoleIO, $config);
     }
 
     /**
@@ -353,10 +351,6 @@ abstract class AbstractMagentoCommand extends Command
         return $this;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
     protected function checkDeprecatedAliases(InputInterface $input, OutputInterface $output)
     {
         if (isset($this->_deprecatedAlias[$input->getArgument('command')])) {
@@ -440,8 +434,6 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
      * @return int
      */
@@ -452,10 +444,6 @@ abstract class AbstractMagentoCommand extends Command
         return parent::run($input, $output);
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
     protected function chooseInstallationFolder(InputInterface $input, OutputInterface $output)
     {
         /**
@@ -466,12 +454,12 @@ abstract class AbstractMagentoCommand extends Command
         $validateInstallationFolder = function ($folderName) use ($input) {
             $folderName = rtrim(trim($folderName, ' '), '/');
             // resolve folder-name to current working directory if relative
-            if (substr($folderName, 0, 1) == '.') {
+            if (substr($folderName, 0, 1) === '.') {
                 $cwd = OperatingSystem::getCwd();
                 $folderName = $cwd . substr($folderName, 1);
             }
 
-            if (empty($folderName)) {
+            if ($folderName === '' || $folderName === '0') {
                 throw new InvalidArgumentException('Installation folder cannot be empty');
             }
 
@@ -515,13 +503,13 @@ abstract class AbstractMagentoCommand extends Command
             $defaultFolder = './magento';
 
             $dialog = $this->getQuestionHelper();
-            $questionObj = new Question(
+            $question = new Question(
                 '<question>Enter installation folder:</question> [<comment>' . $defaultFolder . '</comment>]',
                 $defaultFolder
             );
-            $questionObj->setValidator($validateInstallationFolder);
+            $question->setValidator($validateInstallationFolder);
 
-            $installationFolder = $dialog->ask($input, $output, $questionObj);
+            $installationFolder = $dialog->ask($input, $output, $question);
         } else {
             // @Todo improve validation and bring it to 1 single function
             $installationFolder = $validateInstallationFolder($installationFolder);
@@ -543,8 +531,6 @@ abstract class AbstractMagentoCommand extends Command
 
     /**
      * @param string $argument
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @param string $message
      * @return string
      */
@@ -563,8 +549,6 @@ abstract class AbstractMagentoCommand extends Command
 
     /**
      * @param array $entries zero-indexed array of entries (represented by strings) to select from
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @param string $question
      * @return mixed
      */
@@ -578,14 +562,14 @@ abstract class AbstractMagentoCommand extends Command
             return $typeInput;
         };
 
-        $dialog = $this->getQuestionHelper();
+        $questionHelper = $this->getQuestionHelper();
         $question = new ChoiceQuestion(
-            "<question>{$question}</question>",
+            sprintf('<question>%s</question>', $question),
             $entries
         );
         $question->setValidator($validator);
 
-        $selected = $dialog->ask($input, $output, $question);
+        $selected = $questionHelper->ask($input, $output, $question);
 
         return $entries[$selected];
     }
@@ -605,8 +589,6 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @param string $baseNamespace If this is set we can use relative class names.
      *
      * @return SubCommandFactory
@@ -651,41 +633,26 @@ abstract class AbstractMagentoCommand extends Command
         return $this;
     }
 
-    /**
-     * @return DatabaseHelper
-     */
     public function getDatabaseHelper(): DatabaseHelper
     {
         return $this->getHelper('database');
     }
 
-    /**
-     * @return IoHelper
-     */
     public function getIoHelper(): IoHelper
     {
         return $this->getHelper('io');
     }
 
-    /**
-     * @return ParameterHelper
-     */
     public function getParameterHelper(): ParameterHelper
     {
         return $this->getHelper('parameter');
     }
 
-    /**
-     * @return QuestionHelper
-     */
     public function getQuestionHelper(): QuestionHelper
     {
         return $this->getHelper('question');
     }
 
-    /**
-     * @return TableHelper
-     */
     public function getTableHelper(): TableHelper
     {
         return $this->getHelper('table');

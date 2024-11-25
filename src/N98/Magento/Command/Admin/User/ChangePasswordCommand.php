@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Admin\User;
 
 use Exception;
@@ -26,12 +28,7 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -39,11 +36,11 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
             return 0;
         }
 
-        $dialog = $this->getQuestionHelper();
+        $questionHelper = $this->getQuestionHelper();
 
         // Username
         if (($username = $input->getArgument('username')) == null) {
-            $username = $dialog->ask($input, $output, new Question('<question>Username:</question> '));
+            $username = $questionHelper->ask($input, $output, new Question('<question>Username:</question> '));
         }
 
         $user = $this->getUserModel()->loadByUsername($username);
@@ -58,7 +55,7 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
             $question = new Question('<question>Password:</question> ');
             $question->setHidden(true);
             $question->setHiddenFallback(false);
-            $password = $dialog->ask($input, $output, $question);
+            $password = $questionHelper->ask($input, $output, $question);
         }
 
         try {
@@ -66,12 +63,14 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
             if (is_array($result)) {
                 throw new RuntimeException(implode(PHP_EOL, $result));
             }
+
             $user->setPassword($password);
             $user->save();
             $output->writeln('<info>Password successfully changed</info>');
-        } catch (Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
+        } catch (Exception $exception) {
+            $output->writeln('<error>' . $exception->getMessage() . '</error>');
         }
+
         return 0;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Developer\Module\Dependencies;
 
 use Exception;
@@ -31,12 +33,7 @@ class OnCommand extends AbstractMagentoCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $moduleName = $input->getArgument('moduleName');
@@ -56,6 +53,7 @@ class OnCommand extends AbstractMagentoCommand
             } else {
                 $dependencies = [];
             }
+
             if ($input->getOption('format') === null && count($dependencies) === 0) {
                 $output->writeln(sprintf("Module %s doesn't have dependencies", $moduleName));
             } else {
@@ -64,9 +62,10 @@ class OnCommand extends AbstractMagentoCommand
                     ->setHeaders(['Name', 'Status', 'Current installed version', 'Code pool'])
                     ->renderByFormat($output, $dependencies, $input->getOption('format'));
             }
-        } catch (Exception $e) {
-            $output->writeln($e->getMessage());
+        } catch (Exception $exception) {
+            $output->writeln($exception->getMessage());
         }
+
         return 0;
     }
 
@@ -88,7 +87,7 @@ class OnCommand extends AbstractMagentoCommand
         if (isset($this->modules[$moduleName])) {
             $dependencies = [];
             $module = $this->modules[$moduleName];
-            if (isset($module['depends']) && is_array($module['depends']) && count($module['depends']) > 0) {
+            if (isset($module['depends']) && is_array($module['depends']) && $module['depends'] !== []) {
                 foreach (array_keys($module['depends']) as $dependencyName) {
                     if (isset($this->modules[$dependencyName])) {
                         $dependencies[] = [$dependencyName, isset($this->modules[$dependencyName]['active'])
@@ -107,16 +106,13 @@ class OnCommand extends AbstractMagentoCommand
             }
 
             return $dependencies;
-        } else {
-            throw new InvalidArgumentException(sprintf('Module %s was not found', $moduleName));
         }
+        throw new InvalidArgumentException(sprintf('Module %s was not found', $moduleName));
     }
 
     /**
      * Sort dependencies list by module name ascending
      *
-     * @param array $a
-     * @param array $b
      * @return int
      */
     private function sortDependencies(array $a, array $b)

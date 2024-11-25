@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Config;
 
 use Mage;
@@ -25,15 +27,15 @@ class DeleteCommand extends AbstractConfigCommand
                 'scope',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'The config value\'s scope (default, websites, stores)',
+                "The config value's scope (default, websites, stores)",
                 'default'
             )
-            ->addOption('scope-id', null, InputOption::VALUE_OPTIONAL, 'The config value\'s scope ID', '0')
+            ->addOption('scope-id', null, InputOption::VALUE_OPTIONAL, "The config value's scope ID", '0')
             ->addOption(
                 'force',
                 null,
                 InputOption::VALUE_NONE,
-                'Allow deletion of non-standard scope-id\'s for websites and stores'
+                "Allow deletion of non-standard scope-id's for websites and stores"
             )
             ->addOption('all', null, InputOption::VALUE_NONE, 'Delete all entries by path')
         ;
@@ -49,12 +51,7 @@ To delete all entries of a path you can set the option --all.
 HELP;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -72,31 +69,26 @@ HELP;
 
         $path = $input->getArgument('path');
 
-        if (false !== strstr($path, '*')) {
-            $paths = $this->expandPathPattern($input, $path);
-        } else {
-            $paths = [$path];
-        }
+        $paths = false !== strstr($path, '*') ? $this->expandPathPattern($input, $path) : [$path];
 
         foreach ($paths as $path) {
             $deleted = array_merge($deleted, $this->_deletePath($input, $path, $scopeId));
         }
 
-        if (count($deleted) > 0) {
+        if ($deleted !== []) {
             $tableHelper = $this->getTableHelper();
             $tableHelper
                 ->setHeaders(['Deleted Path', 'Scope', 'Scope-ID'])
                 ->setRows($deleted)
                 ->render($output);
         }
+
         return 0;
     }
 
     /**
-     * @param InputInterface $input
      * @param string $path
      * @param int $scopeId
-     *
      * @return array
      */
     protected function _deletePath(InputInterface $input, $path, $scopeId)
@@ -140,6 +132,7 @@ HELP;
         if ($scope = $input->getOption('scope')) {
             $collection->addFieldToFilter('scope', ['eq' => $scope]);
         }
+
         $collection->addOrder('path', 'ASC');
 
         foreach ($collection as $item) {
@@ -160,9 +153,9 @@ HELP;
      */
     private function deleteConfigEntry($path, $scope, $scopeId)
     {
-        $config = $this->_getConfigModel();
+        $mageCoreModelConfig = $this->_getConfigModel();
 
-        $config->deleteConfig(
+        $mageCoreModelConfig->deleteConfig(
             $path,
             $scope,
             $scopeId
