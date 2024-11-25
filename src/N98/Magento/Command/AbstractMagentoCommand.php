@@ -13,6 +13,7 @@ use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Package\PackageInterface;
 use InvalidArgumentException;
 use Mage;
+use Mage_Core_Helper_Abstract;
 use Mage_Core_Helper_Data;
 use Mage_Core_Model_Abstract;
 use Mage_Core_Model_Resource_Db_Collection_Abstract;
@@ -45,35 +46,17 @@ use Symfony\Component\Console\Question\Question;
  */
 abstract class AbstractMagentoCommand extends Command
 {
-    /**
-     * @var string
-     */
-    protected $_magentoRootFolder;
+    protected string $_magentoRootFolder;
 
-    /**
-     * @var int
-     */
-    protected $_magentoMajorVersion = 1;
+    protected int $_magentoMajorVersion = 1;
 
-    /**
-     * @var bool
-     */
-    protected $_magentoEnterprise = false;
+    protected bool $_magentoEnterprise = false;
 
-    /**
-     * @var array
-     */
-    protected $_deprecatedAlias = [];
+    protected array $_deprecatedAlias = [];
 
-    /**
-     * @var array
-     */
-    protected $_websiteCodeMap = [];
+    protected array $_websiteCodeMap = [];
 
-    /**
-     * @var array
-     */
-    protected $config;
+    protected array $config;
 
     /**
      * Initializes the command just after the input has been validated.
@@ -84,12 +67,12 @@ abstract class AbstractMagentoCommand extends Command
      * @param InputInterface  $input  An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance
      */
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->checkDeprecatedAliases($input, $output);
     }
 
-    private function _initWebsites()
+    private function _initWebsites(): void
     {
         $this->_websiteCodeMap = [];
         $websites = Mage::app()->getWebsites();
@@ -98,11 +81,7 @@ abstract class AbstractMagentoCommand extends Command
         }
     }
 
-    /**
-     * @param int $websiteId
-     * @return string
-     */
-    protected function _getWebsiteCodeById($websiteId)
+    protected function _getWebsiteCodeById(int $websiteId): string
     {
         if (empty($this->_websiteCodeMap)) {
             $this->_initWebsites();
@@ -115,11 +94,7 @@ abstract class AbstractMagentoCommand extends Command
         return '';
     }
 
-    /**
-     * @param string $websiteCode
-     * @return int
-     */
-    protected function _getWebsiteIdByCode($websiteCode)
+    protected function _getWebsiteIdByCode(string $websiteCode): int
     {
         if (empty($this->_websiteCodeMap)) {
             $this->_initWebsites();
@@ -130,11 +105,7 @@ abstract class AbstractMagentoCommand extends Command
         return $websiteMap[$websiteCode];
     }
 
-    /**
-     * @param string|null $commandClass
-     * @return array
-     */
-    protected function getCommandConfig($commandClass = null)
+    protected function getCommandConfig(?string $commandClass = null): array
     {
         if (null === $commandClass) {
             $commandClass = get_class($this);
@@ -144,22 +115,15 @@ abstract class AbstractMagentoCommand extends Command
         return (array) $application->getConfig('commands', $commandClass);
     }
 
-    /**
-     * @param string $text
-     * @param string $style
-     */
-    protected function writeSection(OutputInterface $output, $text, $style = 'bg=blue;fg=white')
+    protected function writeSection(OutputInterface $output, string $text, string $style = 'bg=blue;fg=white'): void
     {
         $output->writeln(['', $this->getHelper('formatter')->formatBlock($text, $style, true), '']);
     }
 
     /**
      * Bootstrap magento shop
-     *
-     * @param bool $soft
-     * @return bool
      */
-    protected function initMagento($soft = false)
+    protected function initMagento(bool $soft = false): bool
     {
         $application = $this->getApplication();
         $init = $application->initMagento($soft);
@@ -176,7 +140,7 @@ abstract class AbstractMagentoCommand extends Command
      * @param bool $silent print debug messages
      * @throws RuntimeException
      */
-    public function detectMagento(OutputInterface $output, $silent = true)
+    public function detectMagento(OutputInterface $output, bool $silent = true): void
     {
         $this->getApplication()->detectMagento();
 
@@ -201,7 +165,7 @@ abstract class AbstractMagentoCommand extends Command
     /**
      * Die if not Enterprise
      */
-    protected function requireEnterprise(OutputInterface $output)
+    protected function requireEnterprise(OutputInterface $output): void
     {
         if (!$this->_magentoEnterprise) {
             $output->writeln('<error>Enterprise Edition is required but was not detected</error>');
@@ -209,31 +173,22 @@ abstract class AbstractMagentoCommand extends Command
         }
     }
 
-    /**
-     * @return Mage_Core_Helper_Data
-     */
-    protected function getCoreHelper()
+    protected function getCoreHelper(): Mage_Core_Helper_Data
     {
         /** @var Mage_Core_Helper_Data $helper */
         $helper = Mage::helper('core');
         return $helper;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return DownloadManager
-     */
-    protected function getComposerDownloadManager($input, $output)
+    protected function getComposerDownloadManager(InputInterface $input, OutputInterface $output): DownloadManager
     {
         return $this->getComposer($input, $output)->getDownloadManager();
     }
 
     /**
      * @param array|PackageInterface $config
-     * @return CompletePackage
      */
-    protected function createComposerPackageByConfig($config)
+    protected function createComposerPackageByConfig($config): CompletePackage
     {
         $arrayLoader = new PackageLoader();
         return $arrayLoader->load($config);
@@ -241,16 +196,14 @@ abstract class AbstractMagentoCommand extends Command
 
     /**
      * @param array|PackageInterface $config
-     * @param string $targetFolder
-     * @param bool $preferSource
      * @return CompletePackage|PackageInterface
      */
     protected function downloadByComposerConfig(
-        InputInterface $input,
+        InputInterface  $input,
         OutputInterface $output,
         $config,
-        $targetFolder,
-        $preferSource = true
+        string          $targetFolder,
+        bool            $preferSource = true
     ) {
         $downloadManager = $this->getComposerDownloadManager($input, $output);
         if (!$config instanceof PackageInterface) {
@@ -276,11 +229,8 @@ abstract class AbstractMagentoCommand extends Command
 
     /**
      * brings locally cached repository up to date if it is missing the requested tag
-     *
-     * @param PackageInterface $package
-     * @param string $targetFolder
      */
-    protected function checkRepository($package, $targetFolder)
+    protected function checkRepository(PackageInterface $package, string $targetFolder): void
     {
         if ($package->getSourceType() == 'git') {
             $command = sprintf(
@@ -312,11 +262,8 @@ abstract class AbstractMagentoCommand extends Command
      *
      * when using a path value that has been created in a cygwin shell but then PHP uses it inside a cmd shell it needs
      * to be filtered.
-     *
-     * @param  string $path
-     * @return string
      */
-    protected function normalizePath($path)
+    protected function normalizePath(string $path): string
     {
         if (defined('PHP_WINDOWS_VERSION_BUILD')) {
             $path = strtr($path, '/', '\\');
@@ -326,12 +273,9 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * obtain composer
-     *
-     *
-     * @return Composer
+     * Obtain composer
      */
-    protected function getComposer(InputInterface $input, OutputInterface $output)
+    protected function getComposer(InputInterface $input, OutputInterface $output): Composer
     {
         $consoleIO = new ConsoleIO($input, $output, $this->getHelperSet());
         $config = ['config' => ['secure-http' => false]];
@@ -340,18 +284,16 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @param string $alias
-     * @param string $message
-     * @return AbstractMagentoCommand
+     * @return $this
      */
-    protected function addDeprecatedAlias($alias, $message)
+    protected function addDeprecatedAlias(string $alias, string $message)
     {
         $this->_deprecatedAlias[$alias] = $message;
 
         return $this;
     }
 
-    protected function checkDeprecatedAliases(InputInterface $input, OutputInterface $output)
+    protected function checkDeprecatedAliases(InputInterface $input, OutputInterface $output): void
     {
         if (isset($this->_deprecatedAlias[$input->getArgument('command')])) {
             $output->writeln(
@@ -361,97 +303,60 @@ abstract class AbstractMagentoCommand extends Command
         }
     }
 
-    /**
-     * @param string $mage1code Magento 1 class code
-     * @return Mage_Core_Model_Abstract
-     */
-    protected function _getModel($mage1code)
+    protected function _getModel(string $class): Mage_Core_Model_Abstract
     {
-        return Mage::getModel($mage1code);
+        return Mage::getModel($class);
     }
 
-    /**
-     * @param string $mage1code Magento 1 class code
-     * @return \Mage_Core_Helper_Abstract
-     */
-    protected function _getHelper($mage1code)
+    protected function _getHelper(string $class): Mage_Core_Helper_Abstract
     {
-        return Mage::helper($mage1code);
+        return Mage::helper($class);
     }
 
-    /**
-     * @param string $mage1code Magento 1 class code
-     * @return Mage_Core_Model_Abstract
-     */
-    protected function _getSingleton($mage1code)
+    protected function _getSingleton(string $class): Mage_Core_Model_Abstract
     {
-        return Mage::getModel($mage1code);
+        return Mage::getModel($class);
     }
 
-    /**
-     * @param string $mage1code Magento 1 class code
-     * @return Mage_Core_Model_Resource_Db_Collection_Abstract
-     */
-    protected function _getResourceModel($mage1code)
+    protected function _getResourceModel(string $class): Mage_Core_Model_Resource_Db_Collection_Abstract
     {
-        return Mage::getResourceModel($mage1code);
+        return Mage::getResourceModel($class);
     }
 
-    /**
-     * @param string $mage1code Magento 1 class code
-     * @return Mage_Core_Model_Abstract
-     */
-    protected function _getResourceSingleton($mage1code)
+    protected function _getResourceSingleton(string $class): object
     {
-        return Mage::getResourceSingleton($mage1code);
+        return Mage::getResourceSingleton($class);
     }
 
-    /**
-     * @param string $value
-     * @return bool
-     */
-    protected function _parseBoolOption($value)
+    protected function _parseBoolOption(string $value): bool
     {
         return StringTyped::parseBoolOption($value);
     }
 
-    /**
-     * @param string $value
-     * @return bool
-     */
-    public function parseBoolOption($value)
+    public function parseBoolOption(string $value): bool
     {
         return $this->_parseBoolOption($value);
     }
 
-    /**
-     * @param string $value
-     * @return string
-     */
-    protected function formatActive($value)
+    protected function formatActive(string $value): string
     {
         return StringTyped::formatActive($value);
     }
 
-    /**
-     *
-     * @return int
-     */
-    public function run(InputInterface $input, OutputInterface $output)
+    public function run(InputInterface $input, OutputInterface $output): int
     {
         $this->getHelperSet()->setCommand($this);
 
         return parent::run($input, $output);
     }
 
-    protected function chooseInstallationFolder(InputInterface $input, OutputInterface $output)
+    protected function chooseInstallationFolder(InputInterface $input, OutputInterface $output): void
     {
         /**
          * @param string $folderName
-         *
          * @return string
          */
-        $validateInstallationFolder = function ($folderName) use ($input) {
+        $validateInstallationFolder = function (string $folderName) use ($input) {
             $folderName = rtrim(trim($folderName, ' '), '/');
             // resolve folder-name to current working directory if relative
             if (substr($folderName, 0, 1) === '.') {
@@ -519,22 +424,12 @@ abstract class AbstractMagentoCommand extends Command
         \chdir($this->config['installationFolder']);
     }
 
-    /**
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function isSourceTypeRepository($type)
+    protected function isSourceTypeRepository(string $type): bool
     {
         return in_array($type, ['git', 'hg']);
     }
 
-    /**
-     * @param string $argument
-     * @param string $message
-     * @return string
-     */
-    protected function getOrAskForArgument($argument, InputInterface $input, OutputInterface $output, $message = null)
+    protected function getOrAskForArgument(string $argument, InputInterface $input, OutputInterface $output, ?string $message = null): string
     {
         $inputArgument = $input->getArgument($argument);
         if ($inputArgument === null) {
@@ -549,10 +444,9 @@ abstract class AbstractMagentoCommand extends Command
 
     /**
      * @param array $entries zero-indexed array of entries (represented by strings) to select from
-     * @param string $question
      * @return mixed
      */
-    protected function askForArrayEntry(array $entries, InputInterface $input, OutputInterface $output, $question)
+    protected function askForArrayEntry(array $entries, InputInterface $input, OutputInterface $output, string $question)
     {
         $validator = function ($typeInput) use ($entries) {
             if (!in_array($typeInput, range(0, count($entries)))) {
@@ -574,14 +468,9 @@ abstract class AbstractMagentoCommand extends Command
         return $entries[$selected];
     }
 
-    /**
-     * @param string $argument
-     * @param string $message [optional]
-     * @return string
-     */
-    protected function getArgumentMessage($argument, $message = null)
+    protected function getArgumentMessage(string $argument, ?string $message = null): string
     {
-        if (null === $message) {
+        if (is_null($message)) {
             $message = ucfirst($argument);
         }
 
@@ -590,14 +479,12 @@ abstract class AbstractMagentoCommand extends Command
 
     /**
      * @param string $baseNamespace If this is set we can use relative class names.
-     *
-     * @return SubCommandFactory
      */
     protected function createSubCommandFactory(
         InputInterface $input,
         OutputInterface $output,
-        $baseNamespace = ''
-    ) {
+        string $baseNamespace = ''
+    ): SubCommandFactory {
         $configBag = new ConfigBag();
 
         $commandConfig = $this->getCommandConfig();

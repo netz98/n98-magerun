@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command;
 
+use Exception;
 use InvalidArgumentException;
 use Mage;
 use N98\Util\BinaryString;
 use N98\Util\Exec;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -24,22 +26,13 @@ use Symfony\Component\Console\Question\Question;
  */
 class ScriptCommand extends AbstractMagentoCommand
 {
-    /**
-     * @var array
-     */
-    protected $scriptVars = [];
+    protected array $scriptVars = [];
 
-    /**
-     * @var string
-     */
-    protected $_scriptFilename = '';
+    protected string $_scriptFilename = '';
 
-    /**
-     * @var bool
-     */
-    protected $_stopOnError = false;
+    protected bool $_stopOnError = false;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('script')
@@ -50,9 +43,6 @@ class ScriptCommand extends AbstractMagentoCommand
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -119,10 +109,7 @@ It's possible to define multiple values by passing more than one option.
 HELP;
     }
 
-    /**
-     * @return bool
-     */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return Exec::allowed();
     }
@@ -167,13 +154,13 @@ HELP;
             }
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
      * @throws InvalidArgumentException
      */
-    protected function _initDefines(InputInterface $input)
+    protected function _initDefines(InputInterface $input): void
     {
         $defines = $input->getOption('define');
         if (is_string($defines)) {
@@ -199,12 +186,10 @@ HELP;
     }
 
     /**
-     * @param string $filename
      * @throws RuntimeException
      * @internal param string $input
-     * @return string
      */
-    protected function _getContent($filename)
+    protected function _getContent(string $filename): string
     {
         if ($filename == '-' || empty($filename)) {
             // @phpstan-ignore argument.type
@@ -221,11 +206,10 @@ HELP;
     }
 
     /**
-     * @param string $commandString
-     * @throws RuntimeException
      * @return void|mixed
+     * @throws RuntimeException
      */
-    protected function registerVariable(InputInterface $input, OutputInterface $output, $commandString)
+    protected function registerVariable(InputInterface $input, OutputInterface $output, string $commandString)
     {
         if (preg_match('/^(\$\{[a-zA-Z0-9-_.]+})=(.+)/', $commandString, $matches)) {
             if ($matches[2][0] === '?') {
@@ -273,10 +257,9 @@ HELP;
     }
 
     /**
-     * @param string $commandString
-     * @throws RuntimeException
+     * @throws Exception
      */
-    protected function runMagerunCommand(InputInterface $input, OutputInterface $output, $commandString)
+    protected function runMagerunCommand(InputInterface $input, OutputInterface $output, string $commandString): void
     {
         $this->getApplication()->setAutoExit(false);
         $commandString = $this->_replaceScriptVars($commandString);
@@ -288,11 +271,7 @@ HELP;
         }
     }
 
-    /**
-     * @param string $commandString
-     * @return string
-     */
-    protected function _prepareShellCommand($commandString)
+    protected function _prepareShellCommand(string $commandString): string
     {
         $commandString = ltrim($commandString, '!');
 
@@ -309,7 +288,7 @@ HELP;
         return $this->_replaceScriptVars($commandString);
     }
 
-    protected function initScriptVars()
+    protected function initScriptVars(): void
     {
         if (class_exists('\Mage')) {
             $this->scriptVars['${magento.root}'] = $this->getApplication()->getMagentoRootFolder();
@@ -325,10 +304,9 @@ HELP;
     }
 
     /**
-     * @param string          $commandString
      * @internal param $returnValue
      */
-    protected function runShellCommand(OutputInterface $output, $commandString)
+    protected function runShellCommand(OutputInterface $output, string $commandString): void
     {
         $commandString = $this->_prepareShellCommand($commandString);
         $returnValue = shell_exec($commandString);
@@ -337,12 +315,7 @@ HELP;
         }
     }
 
-    /**
-     * @param string $commandString
-     *
-     * @return string
-     */
-    protected function _replaceScriptVars($commandString)
+    protected function _replaceScriptVars(string $commandString): string
     {
         return str_replace(array_keys($this->scriptVars), $this->scriptVars, $commandString);
     }

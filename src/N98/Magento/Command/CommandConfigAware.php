@@ -11,8 +11,5 @@ namespace N98\Magento\Command;
  */
 interface CommandConfigAware
 {
-    /**
-     * @return void
-     */
-    public function setCommandConfig(array $commandConfig);
+    public function setCommandConfig(array $commandConfig): void;
 }

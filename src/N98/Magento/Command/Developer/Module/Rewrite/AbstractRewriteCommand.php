@@ -9,6 +9,8 @@ use Mage_Core_Model_Config_Element;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Finder\Finder;
 
+use function simplexml_load_file;
+
 /**
  * Class AbstractRewriteCommand
  *
@@ -16,17 +18,15 @@ use Symfony\Component\Finder\Finder;
  */
 abstract class AbstractRewriteCommand extends AbstractMagentoCommand
 {
-    protected $_rewriteTypes = ['blocks', 'helpers', 'models'];
+    protected array $_rewriteTypes = ['blocks', 'helpers', 'models'];
 
     /**
      * Return all rewrites
-     *
-     * @return array
      */
-    protected function loadRewrites()
+    protected function loadRewrites(): array
     {
         $prototype = $this->_rewriteTypes;
-        $return = array_combine($prototype, array_fill(0, is_countable($prototype) ? count($prototype) : 0, []));
+        $return = array_combine($prototype, array_fill(0, count($prototype), []));
 
         // Load config of each module because modules can overwrite config each other. Global config is already merged
         $modules = Mage::getConfig()->getNode('modules')->children();
@@ -46,7 +46,7 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
                 continue;
             }
 
-            $xml = \simplexml_load_file($configXmlFile);
+            $xml = simplexml_load_file($configXmlFile);
             if (!$xml) {
                 continue;
             }
@@ -71,29 +71,28 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
 
     /**
      * Check codepools for core overwrites.
-     *
-     * @return array
      */
-    protected function loadAutoloaderRewrites()
+    protected function loadAutoloaderRewrites(): array
     {
         $return = $this->loadAutoloaderRewritesByCodepool('community');
-
         return array_merge($return, $this->loadAutoloaderRewritesByCodepool('local'));
     }
 
     /**
      * Searches for all rewrites over autoloader in "app/code/<codepool>" of
      * Mage, Enterprise Zend, Varien namespaces.
-     *
-     * @param string $codePool
-     * @return array
      */
-    protected function loadAutoloaderRewritesByCodepool($codePool)
+    protected function loadAutoloaderRewritesByCodepool(string $codePool): array
     {
         $return = [];
         $localCodeFolder = Mage::getBaseDir('code') . '/' . $codePool;
 
-        $folders = ['Mage'       => $localCodeFolder . '/Mage', 'Enterprise' => $localCodeFolder . '/Enterprise', 'Varien'     => $localCodeFolder . '/Varien', 'Zend'       => $localCodeFolder . '/Zend'];
+        $folders = [
+            'Mage'       => $localCodeFolder . '/Mage',
+            'Enterprise' => $localCodeFolder . '/Enterprise',
+            'Varien'     => $localCodeFolder . '/Varien',
+            'Zend'       => $localCodeFolder . '/Zend',
+        ];
 
         foreach ($folders as $vendorPrefix => $folder) {
             if (is_dir($folder)) {

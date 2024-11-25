@@ -19,17 +19,14 @@ use Symfony\Component\Console\Command\Command;
  */
 class FoldersCheck implements SimpleCheck, CommandAware, CommandConfigAware
 {
-    /**
-     * @var array
-     */
-    protected $_commandConfig;
+    protected array $_commandConfig;
 
     /**
      * @var CheckCommand
      */
     protected $_checkCommand;
 
-    public function check(ResultCollection $resultCollection)
+    public function check(ResultCollection $resultCollection): void
     {
         $folders = $this->_commandConfig['filesystem']['folders'];
         $magentoRoot = $this->_checkCommand->getApplication()->getMagentoRootFolder();
@@ -55,7 +52,7 @@ class FoldersCheck implements SimpleCheck, CommandAware, CommandConfigAware
         }
     }
 
-    public function setCommandConfig(array $commandConfig)
+    public function setCommandConfig(array $commandConfig): void
     {
         $this->_commandConfig = $commandConfig;
     }

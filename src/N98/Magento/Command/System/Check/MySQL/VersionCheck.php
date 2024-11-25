@@ -19,7 +19,7 @@ class VersionCheck extends ResourceCheck
     /**
      * @return void
      */
-    protected function checkImplementation(Result $result, Varien_Db_Adapter_Interface $varienDbAdapter)
+    protected function checkImplementation(Result $result, Varien_Db_Adapter_Interface $varienDbAdapter): void
     {
         /**
          * Check Version

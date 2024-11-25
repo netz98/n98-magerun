@@ -6,6 +6,7 @@ namespace N98\Magento\Command\Database;
 
 use Description;
 use N98\Util\Filesystem;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,38 +19,25 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class AbstractShowCommand extends AbstractDatabaseCommand
 {
-    protected $showMethod = 'getGlobalVariables';
+    protected string $showMethod = 'getGlobalVariables';
 
-    /**
-     * @var InputInterface
-     */
-    protected $_input;
+    protected InputInterface $_input;
 
-    /**
-     * @var OutputInterface
-     */
-    protected $_output;
+    protected OutputInterface $_output;
 
-    /**
-     * @var array
-     */
-    protected $_importantVars = [];
+    protected array $_importantVars = [];
 
     /**
      * Key = variable name => value method name in this class
-     *
-     * @var array
      */
-    protected $_specialFormat = [];
+    protected array $_specialFormat = [];
 
     /**
      * Contains all variables
-     *
-     * @var array
      */
-    protected $_allVariables = [];
+    protected array $_allVariables = [];
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument(
@@ -73,11 +61,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
             );
     }
 
-    /**
-     *
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->_input = $input;
         $this->_output = $output;
@@ -96,14 +80,11 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
         }
 
         $this->renderTable($header, $this->generateRows($outputVars, $hasDescription));
-        return 0;
+
+        return Command::SUCCESS;
     }
 
-    /**
-     * @param bool  $hasDescription
-     * @return array
-     */
-    protected function generateRows(array $outputVars, $hasDescription)
+    protected function generateRows(array $outputVars, bool $hasDescription): array
     {
         $rows = [];
         $i = 0;
@@ -134,11 +115,8 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
 
     /**
      * Extend or modify this method to add descriptions to other variables
-     *
-     *
-     * @return array
      */
-    protected function getVariableDescription(array $row)
+    protected function getVariableDescription(array $row): array
     {
         $row[] = '';
         return $row;
@@ -146,37 +124,27 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
 
     /**
      * Formats the description
-     *
-     * @param string $desc
-     *
-     * @return string
      */
-    protected function formatDesc($desc)
+    protected function formatDesc(string $desc): string
     {
         $desc = preg_replace('~\s+~', ' ', $desc);
         return wordwrap($desc);
     }
 
-    protected function renderTable(array $header, array $rows)
+    protected function renderTable(array $header, array $rows): void
     {
         $tableHelper = $this->getTableHelper();
         $tableHelper->setHeaders($header)
             ->renderByFormat($this->_output, $rows, $this->_input->getOption('format'));
     }
 
-    /**
-     * @param string|null $variable
-     */
-    protected function initVariables($variable = null)
+    protected function initVariables(?string $variable = null): void
     {
         $databaseHelper = $this->getDatabaseHelper();
         $this->_allVariables = $databaseHelper->{$this->showMethod}($variable);
     }
 
-    /**
-     * @return array
-     */
-    protected function formatVariables(array $vars)
+    protected function formatVariables(array $vars): array
     {
         $isStandardFormat = $this->_input->getOption('format') === null;
         $rounding = (int) $this->_input->getOption('rounding');
@@ -211,10 +179,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
         return $vars;
     }
 
-    /**
-     * @return int
-     */
-    protected function getMaxValueWidth(array $vars)
+    protected function getMaxValueWidth(array $vars): int
     {
         $maxWidth = 0;
         foreach ($vars as $var) {
@@ -227,10 +192,5 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
         return $maxWidth;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    abstract protected function allowRounding($name);
+    abstract protected function allowRounding(string $name): bool;
 }

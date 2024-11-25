@@ -9,6 +9,7 @@ use DOMElement;
 use DOMException;
 use RuntimeException;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\StreamOutput;
 
 /**
  * Class XmlRenderer
@@ -23,12 +24,9 @@ class XmlRenderer implements RendererInterface
 
     public const NAME_ROW = 'row';
 
-    private $headers;
+    private array $headers;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function render(OutputInterface $output, array $rows)
+    public function render(OutputInterface $output, array $rows): void
     {
         $domDocument = new DOMDocument('1.0', 'UTF-8');
         $domDocument->formatOutput = true;
@@ -43,11 +41,11 @@ class XmlRenderer implements RendererInterface
         $this->appendHeaders($table, $this->headers);
         $this->appendRows($table, $rows);
 
-        /** @var \Symfony\Component\Console\Output\StreamOutput $output */
+        /** @var StreamOutput $output */
         $output->write($domDocument->saveXML($domDocument, LIBXML_NOEMPTYTAG), false, $output::OUTPUT_RAW);
     }
 
-    private function appendRows(DOMElement $domElement, array $rows)
+    private function appendRows(DOMElement $domElement, array $rows): void
     {
         $doc = $domElement->ownerDocument;
 
@@ -64,7 +62,7 @@ class XmlRenderer implements RendererInterface
         }
     }
 
-    private function appendRowFields(DOMElement $domElement, array $fields)
+    private function appendRowFields(DOMElement $domElement, array $fields): void
     {
         $index = 0;
         foreach ($fields as $key => $value) {
@@ -74,7 +72,7 @@ class XmlRenderer implements RendererInterface
         }
     }
 
-    private function appendHeaders(DOMElement $domElement, array $headers = null)
+    private function appendHeaders(DOMElement $domElement, array $headers = null): void
     {
         if ($headers === null || $headers === []) {
             return;
@@ -91,12 +89,8 @@ class XmlRenderer implements RendererInterface
 
     /**
      * create a DOMElement containing the data
-     *
-     * @param string      $key
-     * @param string      $value
-     * @return DOMElement
      */
-    private function createField(DOMDocument $domDocument, $key, $value)
+    private function createField(DOMDocument $domDocument, string $key, string $value): DOMElement
     {
         $name = $this->getName($key);
 
@@ -112,14 +106,10 @@ class XmlRenderer implements RendererInterface
     }
 
     /**
-     * @param string $string
-     *
-     * @return string valid XML element name
-     *
      * @throws DOMException if no valid XML Name can be generated
      * @throws RuntimeException if character encoding is not US-ASCII or UTF-8
      */
-    private function getName($string)
+    private function getName(string $string): string
     {
         $name = preg_replace('/[^a-z0-9]/ui', '_', $string);
         if (null === $name) {
@@ -140,13 +130,7 @@ class XmlRenderer implements RendererInterface
         return $name;
     }
 
-    /**
-     * @param int   $index zero-based
-     * @param mixed $default
-     *
-     * @return string
-     */
-    private function getHeader($index, $default = null)
+    private function getHeader(int $index, ?string $default = null): ?string
     {
         if (!isset($this->headers[$index])) {
             return $default;
@@ -155,10 +139,7 @@ class XmlRenderer implements RendererInterface
         return $this->headers[$index];
     }
 
-    /**
-     * @return void
-     */
-    private function setHeadersFrom(array $rows)
+    private function setHeadersFrom(array $rows): void
     {
         $first = reset($rows);
 

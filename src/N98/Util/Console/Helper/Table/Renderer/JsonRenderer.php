@@ -13,10 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class JsonRenderer implements RendererInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function render(OutputInterface $output, array $rows)
+    public function render(OutputInterface $output, array $rows): void
     {
         $options = JSON_FORCE_OBJECT;
         $options |= JSON_PRETTY_PRINT;

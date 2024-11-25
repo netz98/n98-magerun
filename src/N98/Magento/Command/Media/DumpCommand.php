@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Media;
 
+use Carbon\Carbon;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,7 +22,7 @@ use ZipArchive;
  */
 class DumpCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('media:dump')
@@ -30,7 +32,6 @@ class DumpCommand extends AbstractMagentoCommand
         ;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $commandConfig = $this->getCommandConfig();
@@ -51,7 +52,7 @@ class DumpCommand extends AbstractMagentoCommand
         }
 
         if ($filename === '' || $filename === '0' || is_dir($filename)) {
-            $filename .= 'media_' . \Carbon\Carbon::now()->format('Ymd_his') . '.zip';
+            $filename .= 'media_' . Carbon::now()->format('Ymd_his') . '.zip';
         }
 
         $zipArchive = new ZipArchive();
@@ -74,6 +75,7 @@ class DumpCommand extends AbstractMagentoCommand
         }
 
         $zipArchive->close();
-        return 0;
+
+        return Command::SUCCESS;
     }
 }

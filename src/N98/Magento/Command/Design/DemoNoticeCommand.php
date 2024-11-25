@@ -23,18 +23,7 @@ class DemoNoticeCommand extends AbstractMagentoStoreConfigCommand
      */
     protected static $defaultDescription = 'Toggles demo store notice for a store view';
 
-    /**
-     * @var string
-     */
-    protected $configPath = 'design/head/demonotice';
-
-    /**
-     * @var string
-     */
-    protected $toggleComment = 'Demo Notice';
-
-    /**
-     * @var string
-     */
-    protected $scope = self::SCOPE_STORE_VIEW_GLOBAL;
+    protected string $configPath = 'design/head/demonotice';
+    protected string $toggleComment = 'Demo Notice';
+    protected string $scope = self::SCOPE_STORE_VIEW_GLOBAL;
 }

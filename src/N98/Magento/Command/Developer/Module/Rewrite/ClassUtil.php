@@ -13,34 +13,23 @@ namespace N98\Magento\Command\Developer\Module\Rewrite;
  */
 final class ClassUtil
 {
-    /**
-     * @var string
-     */
-    private $className;
+    private string $className;
 
-    /**
-     * @var bool
-     */
-    private $exists;
+    private ?bool $exists;
 
-    /**
-     * @param string $className
-     *
-     * @return ClassUtil
-     */
-    public static function create($className)
+    public static function create(string $className): ClassUtil
     {
         return new self($className);
     }
 
-    public function __construct($className)
+    public function __construct(string $className)
     {
         $this->className = $className;
     }
 
-    public function exists()
+    public function exists(): ?bool
     {
-        if (null === $this->exists) {
+        if (is_null($this->exists)) {
             $this->exists = ClassExistsChecker::create($this->className)->existsExtendsSafe();
         }
 
@@ -49,10 +38,8 @@ final class ClassUtil
 
     /**
      * This class is a $class (is or inherits from it)
-     *
-     * @return bool
      */
-    public function isA(ClassUtil $classUtil)
+    public function isA(ClassUtil $classUtil): bool
     {
         return is_a($this->className, $classUtil->className, true);
     }

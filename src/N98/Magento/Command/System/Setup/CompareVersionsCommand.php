@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\System\Setup;
 
-use DateTime;
 use Error;
 use Mage;
+use Mage_Core_Model_Config_Element;
 use Mage_Core_Model_Resource_Resource;
 use N98\JUnitXml\Document as JUnitXmlDocument;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CompareVersionsCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('sys:setup:compare-versions')
@@ -37,9 +38,6 @@ class CompareVersionsCommand extends AbstractMagentoCommand
             ->setDescription('Compare module version with core_resource table.');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -47,19 +45,25 @@ Compares module version with saved setup version in `core_resource` table and di
 HELP;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
+        }
+
+        $config = Mage::getConfig();
+        if (!$config) {
+            return Command::INVALID;
         }
 
         $time = microtime(true);
-        $modules = Mage::getConfig()->getNode('modules');
+        $modules = $config->getNode('modules');
         /** @var Mage_Core_Model_Resource_Resource $mageCoreModelAbstract */
         $mageCoreModelAbstract = $this->_getResourceSingleton('core/resource');
-        $setups = Mage::getConfig()->getNode('global/resources')->children();
+        /** @var Mage_Core_Model_Config_Element $node */
+        $node = $config->getNode('global/resources');
+        $setups = $node->children();
         $ignoreDataUpdate = $input->getOption('ignore-data');
 
         $headers = ['Setup', 'Module', 'DB', 'Data', 'Status'];
@@ -168,17 +172,13 @@ HELP;
 
         if ($hasStatusErrors) {
             //Return a non-zero status to indicate there is an error in the setup scripts.
-            return 1;
+            return Command::FAILURE;
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    /**
-     * @param string $filename
-     * @param float $duration
-     */
-    protected function logJUnit(array $data, $filename, $duration)
+    protected function logJUnit(array $data, string $filename, float $duration): void
     {
         $document = new JUnitXmlDocument();
         $testSuiteElement = $document->addTestSuite();

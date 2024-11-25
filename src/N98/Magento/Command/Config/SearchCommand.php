@@ -7,6 +7,7 @@ namespace N98\Magento\Command\Config;
 use Mage;
 use RuntimeException;
 use stdClass;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,7 +20,7 @@ use Varien_Simplexml_Config;
  */
 class SearchCommand extends AbstractConfigCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('config:search')
@@ -27,9 +28,6 @@ class SearchCommand extends AbstractConfigCommand
             ->addArgument('text', InputArgument::REQUIRED, 'The text to search for');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -37,12 +35,11 @@ Searches the merged system.xml configuration tree <labels/> and <comments/> for 
 HELP;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $this->writeSection($output, 'Config Search');
@@ -74,16 +71,10 @@ HELP;
             $output->writeln('<info>No matches for <comment>' . $searchString . '</comment></info>');
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    /**
-     * @param string $searchString
-     * @param Varien_Simplexml_Config $system
-     *
-     * @return array
-     */
-    protected function _searchConfiguration($searchString, $system)
+    protected function _searchConfiguration(string $searchString, Varien_Simplexml_Config $system): array
     {
         $xpathSections = ['sections/*', 'sections/*/groups/*', 'sections/*/groups/*/fields/*'];
 
@@ -99,13 +90,7 @@ HELP;
         return $matches;
     }
 
-    /**
-     * @param string $searchString
-     * @param array  $nodes
-     *
-     * @return array
-     */
-    protected function _searchConfigurationNodes($searchString, $nodes)
+    protected function _searchConfigurationNodes(string $searchString, array $nodes): array
     {
         $matches = [];
         foreach ($nodes as $node) {
@@ -119,12 +104,9 @@ HELP;
     }
 
     /**
-     * @param string $searchString
-     * @param object $node
-     *
-     * @return bool|stdClass
+     * @return false|stdClass
      */
-    protected function _searchNode($searchString, $node)
+    protected function _searchNode(string $searchString, object $node)
     {
         $match = new stdClass();
         $match->type = $this->_getNodeType($node);
@@ -145,12 +127,7 @@ HELP;
         return false;
     }
 
-    /**
-     * @param object $node
-     *
-     * @return string
-     */
-    protected function _getNodeType($node)
+    protected function _getNodeType(object $node): string
     {
         $parent = current($node->xpath('parent::*'));
         $grandParent = current($parent->xpath('parent::*'));
@@ -171,12 +148,9 @@ HELP;
     }
 
     /**
-     * @param object $match
-     *
-     * @return string
      * @throws RuntimeException
      */
-    protected function _getPhpMageStoreConfigPathFromMatch($match)
+    protected function _getPhpMageStoreConfigPathFromMatch(object $match): string
     {
         switch ($match->type) {
             case 'section':
@@ -208,12 +182,9 @@ HELP;
     }
 
     /**
-     * @param object $match
-     *
-     * @return string
      * @throws RuntimeException
      */
-    protected function _getPathFromMatch($match)
+    protected function _getPathFromMatch(object $match): string
     {
         switch ($match->type) {
             case 'section':

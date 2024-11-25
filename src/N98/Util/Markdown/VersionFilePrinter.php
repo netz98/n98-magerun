@@ -11,24 +11,14 @@ namespace N98\Util\Markdown;
  */
 class VersionFilePrinter
 {
-    /**
-     * @var string
-     */
-    private $content;
+    private string $content;
 
-    /**
-     * @param string $content
-     */
-    public function __construct($content)
+    public function __construct(string $content)
     {
         $this->content = $content;
     }
 
-    /**
-     * @param string $startVersion
-     * @return string
-     */
-    public function printFromVersion($startVersion)
+    public function printFromVersion(string $startVersion): string
     {
         $contentToReturn = '';
 

@@ -9,6 +9,7 @@ use Mage_Core_Model_Store;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
 use Parameter;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -21,17 +22,19 @@ class InfoCommand extends AbstractMagentoCommand
 {
     public const THEMES_EXCEPTION = '_ua_regexp';
 
-    /**
-     * @var array
-     */
-    protected $_configNodes = ['Theme translations' => 'design/theme/locale'];
+    protected array $_configNodes = [
+        'Theme translations' => 'design/theme/locale',
+    ];
 
-    /**
-     * @var array
-     */
-    protected $_configNodesWithExceptions = ['Design Package Name' => 'design/package/name', 'Theme template'      => 'design/theme/template', 'Theme skin'          => 'design/theme/skin', 'Theme layout'        => 'design/theme/layout', 'Theme default'       => 'design/theme/default'];
+    protected array $_configNodesWithExceptions = [
+        'Design Package Name' => 'design/package/name',
+        'Theme template'      => 'design/theme/template',
+        'Theme skin'          => 'design/theme/skin',
+        'Theme layout'        => 'design/theme/layout',
+        'Theme default'       => 'design/theme/default',
+    ];
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('dev:theme:info')
@@ -42,20 +45,21 @@ class InfoCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         foreach (Mage::app()->getWebsites() as $website) {
-            /* @var \Mage_Core_Model_Website $website */
             foreach ($website->getStores() as $store) {
-                /* @var \Mage_Core_Model_Store $store */
                 $this->_displayTable($output, $store);
             }
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
+    /**
+     * @return $this
+     */
     protected function _displayTable(OutputInterface $output, Mage_Core_Model_Store $mageCoreModelStore)
     {
         $this->writeSection(
@@ -73,10 +77,7 @@ class InfoCommand extends AbstractMagentoCommand
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    protected function _parse(array $nodes, Mage_Core_Model_Store $mageCoreModelStore, $withExceptions = false)
+    protected function _parse(array $nodes, Mage_Core_Model_Store $mageCoreModelStore, bool $withExceptions = false): array
     {
         $result = [];
 
@@ -94,10 +95,7 @@ class InfoCommand extends AbstractMagentoCommand
         return $result;
     }
 
-    /**
-     * @return string
-     */
-    protected function _parseException($node, Mage_Core_Model_Store $mageCoreModelStore)
+    protected function _parseException(string $node, Mage_Core_Model_Store $mageCoreModelStore): string
     {
         $exception = (string) Mage::getConfig()->getNode(
             $node . self::THEMES_EXCEPTION,

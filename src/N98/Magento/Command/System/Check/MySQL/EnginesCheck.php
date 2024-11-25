@@ -16,10 +16,7 @@ use Varien_Db_Adapter_Interface;
  */
 class EnginesCheck extends ResourceCheck
 {
-    /**
-     * @return void
-     */
-    protected function checkImplementation(Result $result, Varien_Db_Adapter_Interface $varienDbAdapter)
+    protected function checkImplementation(Result $result, Varien_Db_Adapter_Interface $varienDbAdapter): void
     {
         $innodbFound = $this->checkInnodbEngine($varienDbAdapter);
 
@@ -34,15 +31,11 @@ class EnginesCheck extends ResourceCheck
         }
     }
 
-    /**
-     * @return bool
-     */
-    private function checkInnodbEngine(Varien_Db_Adapter_Interface $varienDbAdapter)
+    private function checkInnodbEngine(Varien_Db_Adapter_Interface $varienDbAdapter): bool
     {
         $innodbFound = false;
 
         $engines = $varienDbAdapter->fetchAll('SHOW ENGINES');
-
         foreach ($engines as $engine) {
             if (strtolower($engine['Engine']) === 'innodb') {
                 $innodbFound = true;

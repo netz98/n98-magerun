@@ -6,6 +6,7 @@ namespace N98\Magento\Command\Database;
 
 use InvalidArgumentException;
 use N98\Util\Exec;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ImportCommand extends AbstractDatabaseCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('db:import')
@@ -38,9 +39,6 @@ class ImportCommand extends AbstractDatabaseCommand
             ->setDescription('Imports database with mysql cli client according to database defined in local.xml');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         $help = <<<HELP
@@ -53,20 +51,15 @@ HELP;
             . $this->getCompressionHelp() . PHP_EOL;
     }
 
-    /**
-     * @return bool
-     */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return Exec::allowed();
     }
 
     /**
      * Optimize a dump by converting single INSERTs per line to INSERTs with multiple lines
-     * @param $fileName
-     * @return string temporary filename
      */
-    protected function optimize($fileName)
+    protected function optimize(string $fileName): string
     {
         $in = fopen($fileName, 'r');
         $result = tempnam(sys_get_temp_dir(), 'dump') . '.sql';
@@ -74,7 +67,7 @@ HELP;
 
         fwrite($out, 'SET autocommit=0;' . "\n");
         $currentTable = '';
-        $maxlen = 8 * 1024 * 1024; // 8 MB
+        $maxLen = 8 * 1024 * 1024; // 8 MB
         $len = 0;
         while ($line = fgets($in)) {
             if (strtolower(substr($line, 0, 11)) === 'insert into') {
@@ -93,7 +86,7 @@ HELP;
                 $table = $m[1];
                 $values = $m[2];
 
-                if ($table !== $currentTable || ($len > $maxlen - 1000)) {
+                if ($table !== $currentTable || ($len > $maxLen - 1000)) {
                     if ($currentTable !== '') {
                         fwrite($out, ";\n");
                     }
@@ -126,7 +119,6 @@ HELP;
         return $result;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectDbSettings($output);
@@ -162,13 +154,13 @@ HELP;
         }
         if ($input->getOption('only-command')) {
             $output->writeln($exec);
-            return 0;
+            return Command::SUCCESS;
         }
 
         if ($input->getOption('only-if-empty')
             && (is_countable($databaseHelper->getTables()) ? count($databaseHelper->getTables()) : 0) > 0) {
             $output->writeln('<comment>Skip import. Database is not empty</comment>');
-            return 0;
+            return Command::SUCCESS;
         }
 
         if ($input->getOption('drop')) {
@@ -186,15 +178,13 @@ HELP;
             unlink($fileName);
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
-     *
-     * @return mixed
      * @throws InvalidArgumentException
      */
-    protected function checkFilename(InputInterface $input)
+    protected function checkFilename(InputInterface $input): string
     {
         if ($input->getOption('stdin')) {
             return '-';
@@ -208,12 +198,7 @@ HELP;
         return $fileName;
     }
 
-    /**
-     * @param string          $fileName
-     * @param string          $exec
-     * @return void
-     */
-    protected function doImport(OutputInterface $output, $fileName, $exec)
+    protected function doImport(OutputInterface $output, string $fileName, string $exec): void
     {
         $returnValue = null;
         $commandOutput = null;

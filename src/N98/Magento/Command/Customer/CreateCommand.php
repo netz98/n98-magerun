@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Customer;
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,7 +17,7 @@ use Symfony\Component\Console\Question\Question;
  */
 class CreateCommand extends AbstractCustomerCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('customer:create')
@@ -34,7 +35,7 @@ class CreateCommand extends AbstractCustomerCommand
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $questionHelper = $this->getQuestionHelper();
@@ -97,6 +98,6 @@ class CreateCommand extends AbstractCustomerCommand
                 ->renderByFormat($output, $table, $input->getOption('format'));
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

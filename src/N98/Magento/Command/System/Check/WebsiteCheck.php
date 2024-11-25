@@ -13,5 +13,5 @@ use Mage_Core_Model_Website;
  */
 interface WebsiteCheck
 {
-    public function check(ResultCollection $resultCollection, Mage_Core_Model_Website $mageCoreModelWebsite);
+    public function check(ResultCollection $resultCollection, Mage_Core_Model_Website $mageCoreModelWebsite): void;
 }

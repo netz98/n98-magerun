@@ -28,25 +28,15 @@ class DatabaseHelper extends AbstractHelper
     protected $dbSettings;
 
     /**
-     * @var bool
      * @deprecated since 1.97.9, use $dbSettings->isSocketConnect()
      */
-    protected $isSocketConnect = false;
+    protected bool $isSocketConnect = false;
 
-    /**
-     * @var PDO
-     */
-    protected $_connection;
+    protected ?PDO $_connection;
 
-    /**
-     * @var array
-     */
-    protected $_tables;
+    protected ?array $_tables;
 
-    /**
-     * @return void
-     */
-    public function detectDbSettings(OutputInterface $output, $connectionNode = null)
+    public function detectDbSettings(OutputInterface $output, ?string $connectionNode = null): void
     {
         if (null !== $this->dbSettings) {
             return;
@@ -77,12 +67,8 @@ class DatabaseHelper extends AbstractHelper
 
     /**
      * Connects to the database without initializing magento
-     *
-     * @param OutputInterface $output = null
-     *
-     * @return PDO
      */
-    public function getConnection(OutputInterface $output = null)
+    public function getConnection(?OutputInterface $output = null): PDO
     {
         if (!$this->_connection) {
             $this->_connection = $this->getDbSettings($output)->getConnection();
@@ -95,24 +81,18 @@ class DatabaseHelper extends AbstractHelper
      * Creates a PDO DSN for the adapter from $this->_config settings.
      *
      * @see Zend_Db_Adapter_Pdo_Abstract
-     * @return string
      */
-    public function dsn()
+    public function dsn(): string
     {
         return $this->getDbSettings()->getDsn();
     }
 
     /**
      * Check whether current mysql user has $privilege privilege
-     *
-     * @param string $privilege
-     *
-     * @return bool
      */
-    public function mysqlUserHasPrivilege($privilege)
+    public function mysqlUserHasPrivilege(string $privilege): bool
     {
         $statement = $this->getConnection()->query('SHOW GRANTS');
-
         $result = $statement->fetchAll(PDO::FETCH_COLUMN);
         foreach ($result as $row) {
             if (preg_match('/^GRANT(.*)' . strtoupper($privilege) . '/', $row)
@@ -121,14 +101,10 @@ class DatabaseHelper extends AbstractHelper
                 return true;
             }
         }
-
         return false;
     }
 
-    /**
-     * @return string
-     */
-    public function getMysqlClientToolConnectionString()
+    public function getMysqlClientToolConnectionString(): string
     {
         return $this->getDbSettings()->getMysqlClientToolConnectionString();
     }
@@ -136,11 +112,9 @@ class DatabaseHelper extends AbstractHelper
     /**
      * Get mysql variable value
      *
-     * @param string $variable
-     *
-     * @return bool|array returns array on success, false on failure
+     * @return false|array returns array on success, false on failure
      */
-    public function getMysqlVariableValue($variable)
+    public function getMysqlVariableValue(string $variable)
     {
         $statement = $this->getConnection()->query(sprintf('SELECT @@%s;', $variable));
         if (false === $statement) {
@@ -158,18 +132,18 @@ class DatabaseHelper extends AbstractHelper
     /**
      * obtain mysql variable value from the database connection.
      *
-     * in difference to @see getMysqlVariableValue(), this method allows to specify the type of the variable as well
-     * as to use any variable identifier even such that need quoting.
-     *
-     * @param string $name mysql variable name
-     * @param string $type [optional] variable type, can be a system variable ("@@", default) or a session variable
+     * in difference to @param string $name mysql variable name
+     * @param string|null $type [optional] variable type, can be a system variable ("@@", default) or a session variable
      *                     ("@").
-     *
+          *
      * @return string variable value, null if variable was not defined
      * @throws RuntimeException in case a system variable is unknown (SQLSTATE[HY000]: 1193: Unknown system variable
      *                          'nonexistent')
+     * @see getMysqlVariableValue(), this method allows to specify the type of the variable as well
+     * as to use any variable identifier even such that need quoting.
+     *
      */
-    public function getMysqlVariable($name, $type = null)
+    public function getMysqlVariable(string $name, ?string $type = null): string
     {
         $type = null === $type ? '@@' : (string) $type;
 
@@ -200,11 +174,9 @@ class DatabaseHelper extends AbstractHelper
     }
 
     /**
-     *
      * @throws RuntimeException
-     * @return array
      */
-    public function getTableDefinitions(array $commandConfig)
+    public function getTableDefinitions(array $commandConfig): array
     {
         $tableDefinitions = [];
         if (!isset($commandConfig['table-groups'])) {
@@ -240,7 +212,10 @@ class DatabaseHelper extends AbstractHelper
 
             $description = $definition['description'] ?? '';
 
-            $tableDefinitions[$id] = ['tables'      => $tables, 'description' => $description];
+            $tableDefinitions[$id] = [
+                'tables'      => $tables,
+                'description' => $description,
+            ];
         }
 
         return $tableDefinitions;
@@ -251,12 +226,11 @@ class DatabaseHelper extends AbstractHelper
      * @param array $definitions from to resolve
      * @param array $resolved Which definitions where already resolved -> prevent endless loops
      *
-     * @return array
      * @throws RuntimeException
      */
-    public function resolveTables(array $list, array $definitions = [], array $resolved = [])
+    public function resolveTables(array $list, array $definitions = [], array $resolved = []): array
     {
-        if ($this->_tables === null) {
+        if (is_null($this->_tables)) {
             $this->_tables = $this->getTables(true);
         }
 
@@ -312,11 +286,7 @@ class DatabaseHelper extends AbstractHelper
         return array_unique($resolvedList);
     }
 
-    /**
-     * @param string $code
-     * @return array tables
-     */
-    private function resolveRetrieveDefinitionsTablesByCode(array $definitions, $code)
+    private function resolveRetrieveDefinitionsTablesByCode(array $definitions, string $code): array
     {
         $tables = $definitions[$code]['tables'];
 
@@ -333,11 +303,10 @@ class DatabaseHelper extends AbstractHelper
 
     /**
      * @param array|null $carry [optional]
-     * @param $item [optional]
-     * @return array
+     * @param array|string $item [optional]
      * @throws InvalidArgumentException if item is not an array or string
      */
-    private function resolveTablesArray(array $carry = null, $item = null)
+    private function resolveTablesArray(?array $carry = null, $item = null): array
     {
         if (is_string($item)) {
             $item = preg_split('~\s+~', $item, -1, PREG_SPLIT_NO_EMPTY);
@@ -359,14 +328,11 @@ class DatabaseHelper extends AbstractHelper
      *
      * @param bool $withoutPrefix [optional] remove prefix from the returned table names. prefix is obtained from
      *                            magento database configuration. defaults to false.
-     *
-     * @return array
+     * @return array|false
      * @throws RuntimeException
      */
-    public function getTables($withoutPrefix = null)
+    public function getTables(bool $withoutPrefix = false)
     {
-        $withoutPrefix = (bool) $withoutPrefix;
-
         $pdo = $this->getConnection();
         $prefix = $this->dbSettings['prefix'];
         $prefixLength = strlen($prefix);
@@ -400,18 +366,15 @@ class DatabaseHelper extends AbstractHelper
             );
         } // @codeCoverageIgnoreEnd
 
-        $result = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
-
-        return $result;
+        return $statement->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     /**
      * throw a runtime exception and provide error info for the statement if available
      *
-     * @param string $message
      * @throws RuntimeException
      */
-    private function throwRuntimeException(PDOStatement $pdoStatement, $message = '')
+    private function throwRuntimeException(PDOStatement $pdoStatement, string $message = ''): void
     {
         $reason = $pdoStatement->errorInfo()
             ? vsprintf('SQLSTATE[%s]: %s: %s', $pdoStatement->errorInfo())
@@ -429,26 +392,18 @@ class DatabaseHelper extends AbstractHelper
     /**
      * quote a string so that it is safe to use in a LIKE
      *
-     * @param string $string
      * @param string $escape character - single us-ascii character
-     *
-     * @return string
      */
-    private function quoteLike($string, $escape = '=')
+    private function quoteLike(string $string, string $escape = '='): string
     {
         $translation = [$escape => $escape . $escape, '%'     => $escape . '%', '_'     => $escape . '_'];
-
         return strtr($string, $translation);
     }
 
     /**
      * Get list of db tables status
-     *
-     * @param bool $withoutPrefix
-     *
-     * @return array
      */
-    public function getTablesStatus($withoutPrefix = false)
+    public function getTablesStatus(bool $withoutPrefix = false): array
     {
         $pdo = $this->getConnection();
         $prefix = $this->dbSettings['prefix'];
@@ -479,11 +434,11 @@ class DatabaseHelper extends AbstractHelper
     }
 
     /**
-     * @param OutputInterface $output [optional]
+     * @param OutputInterface|null $output [optional]
      *
      * @return array|DbSettings
      */
-    public function getDbSettings(OutputInterface $output = null)
+    public function getDbSettings(?OutputInterface $output = null)
     {
         if ($this->dbSettings) {
             return $this->dbSettings;
@@ -500,10 +455,7 @@ class DatabaseHelper extends AbstractHelper
         return $this->dbSettings;
     }
 
-    /**
-     * @return boolean
-     */
-    public function getIsSocketConnect()
+    public function getIsSocketConnect(): bool
     {
         return $this->getDbSettings()->isSocketConnect();
     }
@@ -515,15 +467,12 @@ class DatabaseHelper extends AbstractHelper
      *
      * @api
      */
-    public function getName()
+    public function getName(): string
     {
         return 'database';
     }
 
-    /**
-     * @param OutputInterface $output
-     */
-    public function dropDatabase($output)
+    public function dropDatabase(OutputInterface $output): void
     {
         $this->detectDbSettings($output);
         $pdo = $this->getConnection();
@@ -532,10 +481,7 @@ class DatabaseHelper extends AbstractHelper
         $output->writeln('<info>Dropped database</info> <comment>' . $this->dbSettings['dbname'] . '</comment>');
     }
 
-    /**
-     * @param OutputInterface $output
-     */
-    public function dropTables($output)
+    public function dropTables(OutputInterface $output): void
     {
         $result = $this->getTables();
         $query = 'SET FOREIGN_KEY_CHECKS = 0; ';
@@ -550,10 +496,7 @@ class DatabaseHelper extends AbstractHelper
         $output->writeln('<info>Dropped database tables</info> <comment>' . $count . ' tables dropped</comment>');
     }
 
-    /**
-     * @param OutputInterface $output
-     */
-    public function createDatabase($output)
+    public function createDatabase(OutputInterface $output): void
     {
         $this->detectDbSettings($output);
         $pdo = $this->getConnection();
@@ -565,10 +508,8 @@ class DatabaseHelper extends AbstractHelper
     /**
      * @param string $command example: 'VARIABLES', 'STATUS'
      * @param string|null $variable [optional]
-     *
-     * @return array
      */
-    private function runShowCommand($command, $variable = null)
+    private function runShowCommand(string $command, ?string $variable = null): array
     {
         $pdo = $this->getConnection();
 
@@ -600,20 +541,16 @@ class DatabaseHelper extends AbstractHelper
 
     /**
      * @param string|null $variable [optional]
-     *
-     * @return array
      */
-    public function getGlobalVariables($variable = null)
+    public function getGlobalVariables(?string $variable = null): array
     {
         return $this->runShowCommand('VARIABLES', $variable);
     }
 
     /**
      * @param string|null $variable [optional]
-     *
-     * @return array
      */
-    public function getGlobalStatus($variable = null)
+    public function getGlobalStatus(?string $variable = null): array
     {
         return $this->runShowCommand('STATUS', $variable);
     }

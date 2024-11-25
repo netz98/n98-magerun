@@ -13,10 +13,8 @@ class CatalogProduct extends AbstractEntityType implements EntityType
 {
     /**
      * Gets key legend for catalog product attribute
-     *
-     * @return array
      */
-    protected function _getKeyMapping()
+    protected function _getKeyMapping(): array
     {
         return [
             //catalog
@@ -45,10 +43,7 @@ class CatalogProduct extends AbstractEntityType implements EntityType
         ];
     }
 
-    /**
-     * @return string
-     */
-    public function generateCode()
+    public function generateCode(): string
     {
         // get a map of "real attribute properties to properties used in setup resource array
         $realToSetupKeyLegend = $this->_getKeyMapping();
@@ -67,7 +62,7 @@ class CatalogProduct extends AbstractEntityType implements EntityType
         }
 
         // unset items from model that we don't need and would be discarded by
-        // resource script anyways
+        // resource script anyway
         unset($newData['attribute_id']);
         unset($newData['attribute_code']);
         unset($newData['entity_type_id']);
@@ -89,7 +84,7 @@ class CatalogProduct extends AbstractEntityType implements EntityType
         //get text for script
         $arrayCode = var_export($newData, true);
 
-        //generate script using simpnle string concatenation, making
+        //generate script using simple string concatenation, making
         //a single tear fall down the cheek of a CS professor
         $script = "<?php
 \$setup = new Mage_Catalog_Model_Resource_Setup('core_setup');

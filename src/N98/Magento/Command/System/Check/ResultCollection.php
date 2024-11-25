@@ -15,15 +15,9 @@ use Traversable;
  */
 class ResultCollection implements IteratorAggregate
 {
-    /**
-     * @var array
-     */
-    protected $_results;
+    protected array $_results;
 
-    /**
-     * @var string
-     */
-    protected $_resultGroup;
+    protected string $_resultGroup;
 
     /**
      * @return $this
@@ -31,16 +25,10 @@ class ResultCollection implements IteratorAggregate
     public function addResult(Result $result)
     {
         $this->_results[] = $result;
-
         return $this;
     }
 
-    /**
-     * @param string $status
-     * @param string $message
-     * @return Result
-     */
-    public function createResult($status = Result::STATUS_OK, $message = '')
+    public function createResult(string $status = Result::STATUS_OK, string $message = ''): Result
     {
         $result = new Result($status, $message);
         $result->setResultGroup($this->_resultGroup);
@@ -49,18 +37,12 @@ class ResultCollection implements IteratorAggregate
         return $result;
     }
 
-    /**
-     * @param string $resultGroup
-     */
-    public function setResultGroup($resultGroup)
+    public function setResultGroup(string $resultGroup): void
     {
         $this->_resultGroup = $resultGroup;
     }
 
-    /**
-     * @return Traversable An instance of an object implementing <b>Iterator</b> or
-     */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayObject($this->_results);
     }

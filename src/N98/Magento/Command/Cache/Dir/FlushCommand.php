@@ -8,6 +8,7 @@ use FilesystemIterator;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Filesystem;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -20,21 +21,18 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class FlushCommand extends AbstractMagentoCommand
 {
-    /**
-     * @var OutputInterface
-     */
-    private $output;
+    private OutputInterface $output;
 
     public const NAME = 'cache:dir:flush';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName(FlushCommand::NAME)
             ->setDescription('Flush (empty) Magento cache directory');
     }
 
-    public function getHelp()
+    public function getHelp(): string
     {
         return <<<HELP
 The default cache backend is the files cache in Magento. The default
@@ -42,7 +40,7 @@ directory of that default cache backend is the directory "var/cache"
 within the Magento web-root directory (should be blocked from external
 access).
 
-The cache:dir:flish Magerun command will remove all files within that
+The cache:dir:flush Magerun command will remove all files within that
 directory. This is currently the most purist form to reset default
 caching configuration in Magento.
 
@@ -52,14 +50,13 @@ cache initialization, old config data within the files cache and similar.
 HELP;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->output = $output;
-        $this->detectMagento($output, true);
+        $this->detectMagento($output);
 
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $workingDirectory = getcwd();
@@ -74,15 +71,10 @@ HELP;
         $this->emptyDirectory($cacheDir);
 
         $output->writeln('Cache directory flushed');
-        return 0;
+        return Command::SUCCESS;
     }
 
-    /**
-     * @param string $path
-     *
-     * @return bool
-     */
-    private function emptyDirectory($path)
+    private function emptyDirectory(string $path): bool
     {
         $errors = [];
 
@@ -92,7 +84,7 @@ HELP;
                 $this->verbose(
                     '<debug>Filesystem::recursiveRemoveDirectory() <comment>' . $file . '</comment></debug>'
                 );
-                if (!isset($fs)) {
+                if (!isset($filesystem)) {
                     $filesystem = new Filesystem();
                 }
 
@@ -119,17 +111,9 @@ HELP;
         throw new RuntimeException($message);
     }
 
-    /**
-     * @param string $message
-     */
-    private function verbose($message)
+    private function verbose(string $message): void
     {
         $output = $this->output;
-
-        if (!$output) {
-            return;
-        }
-
         if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
             $output->writeln($message);
         }

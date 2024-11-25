@@ -12,25 +12,16 @@ use Symfony\Contracts\EventDispatcher\Event as BaseEvent;
 
 class Event extends BaseEvent
 {
-    /**
-     * @var Application
-     */
-    protected $application;
+    protected Application $application;
 
-    /**
-     * @var InputInterface
-     */
-    protected $input;
+    protected InputInterface $input;
 
-    /**
-     * @var OutputInterface
-     */
-    protected $output;
+    protected OutputInterface $output;
 
     /**
      * @var EventDispatcherInterface Dispatcher that dispatched this event
      */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(Application $application, InputInterface $input, OutputInterface $output)
     {
@@ -41,28 +32,21 @@ class Event extends BaseEvent
 
     /**
      * Gets the input instance.
-     *
-     * @return InputInterface An InputInterface instance
      */
-    public function getInput()
+    public function getInput(): InputInterface
     {
         return $this->input;
     }
 
     /**
      * Gets the output instance.
-     *
-     * @return OutputInterface An OutputInterface instance
      */
-    public function getOutput()
+    public function getOutput(): OutputInterface
     {
         return $this->output;
     }
 
-    /**
-     * @return Application
-     */
-    public function getApplication()
+    public function getApplication(): Application
     {
         return $this->application;
     }
@@ -70,10 +54,9 @@ class Event extends BaseEvent
     /**
      * Stores the EventDispatcher that dispatches this Event.
      *
-     *
      * @deprecated since version 2.4, to be removed in 3.0. The event dispatcher is passed to the listener call.
      */
-    public function setDispatcher(EventDispatcherInterface $eventDispatcher)
+    public function setDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
     }
@@ -85,7 +68,7 @@ class Event extends BaseEvent
      *
      * @deprecated since version 2.4, to be removed in 3.0. The event dispatcher is passed to the listener call.
      */
-    public function getDispatcher()
+    public function getDispatcher(): EventDispatcherInterface
     {
         return $this->eventDispatcher;
     }

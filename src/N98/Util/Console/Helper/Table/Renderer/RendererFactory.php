@@ -14,29 +14,24 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class RendererFactory
 {
-    protected static $formats = ['csv'  => CsvRenderer::class, 'json' => JsonRenderer::class, 'text' => TextRenderer::class, 'xml'  => XmlRenderer::class];
+    protected static array $formats = [
+        'csv'  => CsvRenderer::class,
+        'json' => JsonRenderer::class,
+        'text' => TextRenderer::class,
+        'xml'  => XmlRenderer::class,
+    ];
 
-    /**
-     * @param string $format
-     *
-     * @return bool|RendererInterface
-     */
-    public function create($format)
+    public function create(string $format): ?RendererInterface
     {
         $format = strtolower($format);
         if (isset(self::$formats[$format])) {
             $rendererClass = self::$formats[$format];
-
             return new $rendererClass();
         }
-
-        return false;
+        return null;
     }
 
-    /**
-     * @param string $format
-     */
-    public static function render($format, OutputInterface $output, array $rows)
+    public static function render(string $format, OutputInterface $output, array $rows): void
     {
         $factory = new self();
 
@@ -53,10 +48,7 @@ class RendererFactory
         $renderer->render($output, $rows);
     }
 
-    /**
-     * @return array
-     */
-    public static function getFormats()
+    public static function getFormats(): array
     {
         return array_keys(self::$formats);
     }

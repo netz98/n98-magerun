@@ -15,7 +15,6 @@ interface RendererInterface
 {
     /**
      * @param array $rows headers are expected to be the keys of the first row.
-     * @return void
      */
-    public function render(OutputInterface $output, array $rows);
+    public function render(OutputInterface $output, array $rows): void;
 }

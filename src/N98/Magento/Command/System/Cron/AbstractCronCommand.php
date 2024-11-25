@@ -7,6 +7,7 @@ namespace N98\Magento\Command\System\Cron;
 use AppendIterator;
 use IteratorIterator;
 use Mage;
+use Mage_Core_Exception;
 use Mage_Core_Model_Config_Element;
 use Mage_Cron_Exception;
 use Mage_Cron_Model_Schedule;
@@ -89,7 +90,9 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
      *
      * uses magento 1 internal parser of cron expressions
      *
+     * @param mixed $expr
      * @return array|false with five values (zero-indexed) or FALSE in case it does not exist.
+     * @throws Mage_Core_Exception
      */
     private function parseCronExpression($expr)
     {

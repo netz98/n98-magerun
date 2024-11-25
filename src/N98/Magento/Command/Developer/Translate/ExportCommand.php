@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Developer\Translate;
 
-use Locale;
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,22 +19,21 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ExportCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('dev:translate:export')
             ->setDescription('Export inline translations')
-            ->addArgument('locale', InputOption::VALUE_REQUIRED, Locale::class)
+            ->addArgument('locale', InputOption::VALUE_REQUIRED, 'Locale')
             ->addArgument('filename', InputArgument::OPTIONAL, 'Export filename')
             ->addOption('store', null, InputOption::VALUE_OPTIONAL, 'Limit to a special store');
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $databaseHelper = $this->getDatabaseHelper();
@@ -60,13 +59,15 @@ class ExportCommand extends AbstractMagentoCommand
         $statement->execute($parameters);
 
         $result = $statement->fetchAll();
-        $f = fopen($filename, 'w');
+        $fopen = fopen($filename, 'w');
 
-        foreach ($result as $row) {
-            fputcsv($f, [$row['string'], $row['translate']]);
+        if ($result && $fopen) {
+            foreach ($result as $row) {
+                fputcsv($fopen, [$row['string'], $row['translate']]);
+            }
+            fclose($fopen);
         }
 
-        fclose($f);
-        return 0;
+        return Command::SUCCESS;
     }
 }

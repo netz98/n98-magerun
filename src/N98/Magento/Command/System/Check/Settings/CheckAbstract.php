@@ -19,26 +19,22 @@ use ReflectionMethod;
  */
 abstract class CheckAbstract implements StoreCheck
 {
-    private $storeConfigPaths = [];
+    private array $storeConfigPaths = [];
 
     final public function __construct()
     {
         $this->initConfigPaths();
     }
 
-    abstract protected function initConfigPaths();
+    abstract protected function initConfigPaths(): void;
 
-    /**
-     * @param string $name
-     * @param string $configPath
-     */
-    protected function registerStoreConfigPath($name, $configPath)
+    protected function registerStoreConfigPath(string $name, string $configPath): void
     {
         $this->storeConfigPaths[$name] = $configPath;
     }
 
     
-    public function check(ResultCollection $resultCollection, Mage_Core_Model_Store $mageCoreModelStore)
+    public function check(ResultCollection $resultCollection, Mage_Core_Model_Store $mageCoreModelStore): void
     {
         $result = $resultCollection->createResult();
 

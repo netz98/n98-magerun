@@ -7,6 +7,7 @@ namespace N98\Magento\Command\Installer;
 use Exception;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Filesystem;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
@@ -21,7 +22,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  */
 class UninstallCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('uninstall')
@@ -38,9 +39,6 @@ class UninstallCommand extends AbstractMagentoCommand
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -49,7 +47,6 @@ HELP;
     }
 
     /**
-     *
      * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -83,6 +80,6 @@ HELP;
             $output->writeln('<info>Done</info>');
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

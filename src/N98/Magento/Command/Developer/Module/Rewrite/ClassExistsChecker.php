@@ -18,32 +18,16 @@ use stdClass;
  */
 final class ClassExistsChecker
 {
-    /**
-     * @var string
-     */
-    private $className;
+    private string $className;
 
-    /**
-     * @var stdClass|null
-     */
-    private $context;
+    private ?stdClass $context;
 
-    /**
-     * @param string $className
-     *
-     * @return ClassExistsChecker
-     */
-    public static function create($className)
+    public static function create(string $className): ClassExistsChecker
     {
         return new self($className);
     }
 
-    /**
-     * ClassExistsChecker constructor.
-     *
-     * @param string $className
-     */
-    public function __construct($className)
+    public function __construct(string $className)
     {
         $this->className = $className;
     }
@@ -51,10 +35,8 @@ final class ClassExistsChecker
     /**
      * Check for class-existence while handling conditional definition of classes that extend from non-existent classes
      * as it can happen with Magento Varien_Autoload that is using include to execute files for class definitions.
-     *
-     * @return bool
      */
-    public function existsExtendsSafe()
+    public function existsExtendsSafe(): bool
     {
         $context = $this->startContext();
         try {
@@ -68,10 +50,7 @@ final class ClassExistsChecker
         return $exists;
     }
 
-    /**
-     * @return stdClass
-     */
-    private function startContext()
+    private function startContext(): stdClass
     {
         $context = new stdClass();
         $context->lastException = null;
@@ -82,11 +61,7 @@ final class ClassExistsChecker
         return $this->context = $context;
     }
 
-    /**
-     * @param $context
-     * @return bool
-     */
-    private function exceptionContext($context, Exception $exception)
+    private function exceptionContext(stdClass $context, Exception $exception): bool
     {
         /** @var AutoloadHandler $terminator */
         $terminator = $context->terminator;
@@ -100,10 +75,7 @@ final class ClassExistsChecker
         return false;
     }
 
-    /**
-     * @param $context
-     */
-    private function endContext($context)
+    private function endContext(stdClass $context): void
     {
         if (isset($context->terminator)) {
             /** @var AutoloadHandler $terminator */
@@ -115,19 +87,18 @@ final class ClassExistsChecker
     }
 
     /**
-     * Method is called as last auto-loader (if all others have failed), so the class does not exists (is not
+     * Method is called as last autoloader (if all others have failed), so the class does not exist (is not
      * resolve-able)
      *
-     * @param $notFoundClass
      * @throws CanNotAutoloadCollaboratorClassException
      */
-    public function autoloadTerminator($notFoundClass)
+    public function autoloadTerminator(string $notFoundClass): void
     {
         $className = $this->className;
-        if (null === $context = $this->context) {
-            //@codeCoverageIgnoreStart
+        if (is_null($context = $this->context)) {
+            // @codeCoverageIgnoreStart
             // sanity check, should never come here
-            throw new BadMethodCallException('No autoloading in place');
+            throw new BadMethodCallException('No autoload in place');
             // @codeCoverageIgnoreStop
         }
 

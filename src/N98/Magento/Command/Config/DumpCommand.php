@@ -7,6 +7,7 @@ namespace N98\Magento\Command\Config;
 use DOMDocument;
 use InvalidArgumentException;
 use Mage;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DumpCommand extends AbstractConfigCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('config:dump')
@@ -27,9 +28,6 @@ class DumpCommand extends AbstractConfigCommand
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -54,14 +52,13 @@ HELP;
     }
 
     /**
-     *
      * @throws InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $config = Mage::app()->getConfig()->getNode($input->getArgument('xpath'));
@@ -74,6 +71,7 @@ HELP;
         $domDocument->formatOutput = true;
         $domDocument->loadXML($config->asXml());
         $output->writeln($domDocument->saveXML(), OutputInterface::OUTPUT_RAW);
-        return 0;
+
+        return Command::SUCCESS;
     }
 }

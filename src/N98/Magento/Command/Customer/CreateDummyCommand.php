@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Customer;
 
 use Faker\Factory;
-use Locale;
+use Faker\Generator;
+use Mage_Customer_Model_Address;
 use N98\Util\Faker\Provider\Internet;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,12 +21,12 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CreateDummyCommand extends AbstractCustomerCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('customer:create:dummy')
             ->addArgument('count', InputArgument::REQUIRED, 'Count')
-            ->addArgument('locale', InputArgument::REQUIRED, Locale::class)
+            ->addArgument('locale', InputArgument::REQUIRED, 'Locale')
             ->addArgument('website', InputArgument::OPTIONAL, 'Website')
             ->addOption(
                 'with-addresses',
@@ -37,9 +39,6 @@ class CreateDummyCommand extends AbstractCustomerCommand
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -67,7 +66,7 @@ HELP;
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $res = $this->getCustomerModel()->getResource();
@@ -133,10 +132,10 @@ HELP;
                 ->renderByFormat($output, $table, $input->getOption('format'));
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    private function createAddress($faker)
+    private function createAddress(Generator $faker): Mage_Customer_Model_Address
     {
         $country = $this->getCountryCollection()
             ->addCountryCodeFilter($faker->countryCode, 'iso2')

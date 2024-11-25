@@ -41,7 +41,7 @@ class SelfUpdateCommand extends AbstractMagentoCommand
 
     public const CHANGELOG_DOWNLOAD_URL_STABLE = 'https://raw.github.com/netz98/n98-magerun/master/CHANGELOG.md';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('self-update')
@@ -51,9 +51,6 @@ class SelfUpdateCommand extends AbstractMagentoCommand
             ->setDescription('Updates n98-magerun2.phar to the latest version.');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -66,10 +63,9 @@ HELP;
     }
 
     /**
-     * @return int
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $isDryRun = $input->getOption('dry-run');
 
@@ -161,16 +157,13 @@ HELP;
      *
      * This is a workaround to prevent warning of dispatcher after replacing
      * the phar file.
-     *
-     * @param int $statusCode
-     * @return void
      */
-    protected function _exit($statusCode = 0)
+    protected function _exit(int $statusCode = 0): void
     {
         exit($statusCode);
     }
 
-    private function downloadNewPhar(OutputInterface $output, string $remoteUrl, string $tempFilename)
+    private function downloadNewPhar(OutputInterface $output, string $remoteUrl, string $tempFilename): void
     {
         $progressBar = new ProgressBar($output);
         $progressBar->setFormat('[%bar%] %current% of %max% bytes downloaded');
@@ -231,12 +224,9 @@ HELP;
         }
     }
 
-    /**
-     * @param string $tempFilename
-     */
-    private function checkNewPharFile($tempFilename)
+    private function checkNewPharFile(string $tempFilename): void
     {
-        error_reporting(E_ALL); // supress notices
+        error_reporting(E_ALL); // suppress notices
 
         @chmod($tempFilename, 0777 & ~umask());
         // test the phar validity
@@ -245,11 +235,7 @@ HELP;
         unset($phar);
     }
 
-    /**
-     * @param string $tempFilename
-     * @param string $localFilename
-     */
-    private function replaceExistingPharFile($tempFilename, $localFilename)
+    private function replaceExistingPharFile(string $tempFilename, string $localFilename): void
     {
         if (!@rename($tempFilename, $localFilename)) {
             throw new RuntimeException(
@@ -260,11 +246,8 @@ HELP;
 
     /**
      * Download changelog
-     *
-     * @param bool $loadUnstable
-     * @return string
      */
-    private function getChangelog($loadUnstable)
+    private function getChangelog(bool $loadUnstable): string
     {
         $changelog = '';
 
@@ -307,16 +290,11 @@ UNSTABLE_FOOTER;
         return $changelog;
     }
 
-    /**
-     * @param $latest
-     * @param $loadUnstable
-     * @return bool
-     */
-    private function isOutdatedVersion($latest, $loadUnstable)
+    private function isOutdatedVersion(string $latest, bool $loadUnstable): bool
     {
         if ($this->getApplication()->getVersion() !== $latest) {
             return true;
         }
-        return (bool) $loadUnstable;
+        return $loadUnstable;
     }
 }

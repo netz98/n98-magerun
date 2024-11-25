@@ -29,84 +29,54 @@ class ConfigurationLoader
 {
     /**
      * Config passed in the constructor
-     *
-     * @var array
      */
-    protected $_initialConfig;
+    protected array $_initialConfig;
 
-    /**
-     * @var array
-     */
-    protected $_configArray;
+    protected ?array $_configArray;
 
     /**
      * Cache
-     *
-     * @var array
      */
-    protected $_distConfig;
+    protected ?array $_distConfig;
 
     /**
      * Cache
-     *
-     * @var array
      */
-    protected $_pluginConfig;
+    protected ?array $_pluginConfig;
 
     /**
      * Cache
-     *
-     * @var array
      */
-    protected $_systemConfig;
+    protected ?array $_systemConfig;
 
     /**
      * Cache
-     *
-     * @var array
      */
-    protected $_userConfig;
+    protected ?array $_userConfig;
 
     /**
      * Cache
-     *
-     * @var array
      */
-    protected $_projectConfig;
+    protected ?array $_projectConfig;
 
-    /**
-     * @var string
-     */
-    protected $_customConfigFilename = 'n98-magerun.yaml';
+    protected string $_customConfigFilename = 'n98-magerun.yaml';
 
-    /**
-     * @var bool
-     */
-    protected $_isPharMode = true;
+    protected bool $_isPharMode = true;
 
-    /**
-     * @var OutputInterface
-     */
-    protected $_output;
+    protected OutputInterface $_output;
 
     /**
      * Load config
      * If $magentoRootFolder is null, only non-project config is loaded
-     *
-     * @param bool $isPharMode
      */
-    public function __construct(array $config, $isPharMode, OutputInterface $output)
+    public function __construct(array $config, bool $isPharMode, OutputInterface $output)
     {
         $this->_initialConfig = $config;
         $this->_isPharMode = $isPharMode;
         $this->_output = $output;
     }
 
-    /**
-     * @param bool $loadExternalConfig
-     * @return array
-     */
-    public function getPartialConfig($loadExternalConfig = true)
+    public function getPartialConfig(bool $loadExternalConfig = true): array
     {
         $config = $this->_initialConfig;
         $config = $this->loadDistConfig($config);
@@ -118,12 +88,7 @@ class ConfigurationLoader
         return $config;
     }
 
-    /**
-     * @param string $magentoRootFolder
-     * @param bool $loadExternalConfig
-     * @param string $magerunStopFileFolder
-     */
-    public function loadStageTwo($magentoRootFolder, $loadExternalConfig = true, $magerunStopFileFolder = '')
+    public function loadStageTwo(string $magentoRootFolder, bool $loadExternalConfig = true, string $magerunStopFileFolder = ''): void
     {
         $config = $this->_initialConfig;
         $config = $this->loadDistConfig($config);
@@ -139,24 +104,19 @@ class ConfigurationLoader
 
     /**
      * @throws ErrorException
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
-        if ($this->_configArray == null) {
+        if (is_null($this->_configArray)) {
             throw new ErrorException('Configuration not yet fully loaded');
         }
 
         return $this->_configArray;
     }
 
-    /**
-     * @return array
-     */
-    protected function loadDistConfig(array $initConfig)
+    protected function loadDistConfig(array $initConfig): array
     {
-        if ($this->_distConfig == null) {
+        if (is_null($this->_distConfig)) {
             $distConfigFilePath = __DIR__ . '/../../../../config.yaml';
             $this->logDebug('Load dist config <comment>' . $distConfigFilePath . '</comment>');
             $this->_distConfig = ConfigFile::createFromFile($distConfigFilePath)->toArray();
@@ -169,13 +129,10 @@ class ConfigurationLoader
 
     /**
      * Check if there is a global config file in /etc folder
-     *
-     *
-     * @return array
      */
-    public function loadSystemConfig(array $config)
+    public function loadSystemConfig(array $config): array
     {
-        if ($this->_systemConfig == null) {
+        if (is_null($this->_systemConfig)) {
             if (OperatingSystem::isWindows()) {
                 $systemWideConfigFile = getenv('WINDIR') . '/' . $this->_customConfigFilename;
             } else {
@@ -195,13 +152,10 @@ class ConfigurationLoader
 
     /**
      * Load config from all installed bundles
-     *
-     * @param string $magentoRootFolder
-     * @return array
      */
-    public function loadPluginConfig(array $config, $magentoRootFolder)
+    public function loadPluginConfig(array $config, string $magentoRootFolder): array
     {
-        if (null === $this->_pluginConfig) {
+        if (is_null($this->_pluginConfig)) {
             $this->_pluginConfig = [];
             $customName = pathinfo($this->_customConfigFilename, PATHINFO_FILENAME);
             if (OperatingSystem::isWindows()) {
@@ -214,7 +168,7 @@ class ConfigurationLoader
 
             # Modules placed in vendor folder
             $vendorDir = $this->getVendorDir();
-            if (strlen($vendorDir ?? '') !== 0) {
+            if (strlen($vendorDir) !== 0) {
                 $this->logDebug('Vendor directory <comment>' . $vendorDir . '</comment>');
                 $this->traversePluginFoldersForConfigFile($magentoRootFolder, $vendorDir, 2);
             }
@@ -227,11 +181,9 @@ class ConfigurationLoader
     }
 
     /**
-     * @param string $magentoRootFolder
      * @param string|array $in
-     * @param integer $depth
      */
-    private function traversePluginFoldersForConfigFile($magentoRootFolder, $in, $depth)
+    private function traversePluginFoldersForConfigFile(string $magentoRootFolder, $in, int $depth): void
     {
         $basename = $this->_customConfigFilename;
         $in = array_filter((array) $in, function ($value): bool {
@@ -256,13 +208,10 @@ class ConfigurationLoader
 
     /**
      * Check if there is a user config file. ~/.n98-magerun.yaml
-     *
-     * @param string $magentoRootFolder [optional]
-     * @return array
      */
-    public function loadUserConfig(array $config, $magentoRootFolder = null)
+    public function loadUserConfig(array $config, string $magentoRootFolder = null): array
     {
-        if (null === $this->_userConfig) {
+        if (is_null($this->_userConfig)) {
             $this->_userConfig = [];
             $configLocator = new ConfigLocator($this->_customConfigFilename, $magentoRootFolder);
             if ($userConfigFile = $configLocator->getUserConfigFile()) {
@@ -275,16 +224,11 @@ class ConfigurationLoader
     }
 
     /**
-     * MAGENTO_ROOT/app/etc/n98-magerun.yaml
-     *
-     * @param string $magentoRootFolder
-     * @param string $magerunStopFileFolder
-     *
-     * @return array
+     * See MAGENTO_ROOT/app/etc/n98-magerun.yaml
      */
-    public function loadProjectConfig($magentoRootFolder, $magerunStopFileFolder, array $config)
+    public function loadProjectConfig(string $magentoRootFolder, string $magerunStopFileFolder, array $config): array
     {
-        if (null !== $this->_projectConfig) {
+        if (!is_null($this->_projectConfig)) {
             return ArrayFunctions::mergeArrays($config, $this->_projectConfig);
         }
 
@@ -305,11 +249,8 @@ class ConfigurationLoader
 
     /**
      * Loads a plugin config file and merges it to plugin config
-     *
-     * @param string $magentoRootFolder
-     * @param SplFileInfo $file
      */
-    protected function registerPluginConfigFile($magentoRootFolder, $file)
+    protected function registerPluginConfigFile(string $magentoRootFolder, SplFileInfo $file): void
     {
         $path = $file->getPathname();
 
@@ -320,10 +261,7 @@ class ConfigurationLoader
         $this->_pluginConfig = $localPluginConfigFile->mergeArray($this->_pluginConfig);
     }
 
-    /**
-     * @return string
-     */
-    public function getVendorDir()
+    public function getVendorDir(): string
     {
         $configurationLoaderDir = $this->getConfigurationLoaderDir();
 
@@ -342,28 +280,19 @@ class ConfigurationLoader
         return '';
     }
 
-    /**
-     * @return string
-     */
-    public function getConfigurationLoaderDir()
+    public function getConfigurationLoaderDir(): string
     {
         return __DIR__;
     }
 
-    /**
-     * @param string $message
-     */
-    private function logDebug($message)
+    private function logDebug(string $message): void
     {
         if (OutputInterface::VERBOSITY_DEBUG <= $this->_output->getVerbosity()) {
             $this->log('<debug>' . $message . '</debug>');
         }
     }
 
-    /**
-     * @param string $message
-     */
-    private function log($message)
+    private function log(string $message): void
     {
         $this->_output->writeln($message);
     }

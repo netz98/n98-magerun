@@ -16,30 +16,21 @@ use N98\Magento\Command\AbstractMagentoCommand;
  */
 abstract class AbstractAdminUserCommand extends AbstractMagentoCommand
 {
-    /**
-     * @return Mage_Admin_Model_User
-     */
-    protected function getUserModel()
+    protected function getUserModel(): Mage_Admin_Model_User
     {
         /** @var Mage_Admin_Model_User $mageCoreModelAbstract */
         $mageCoreModelAbstract = $this->_getModel('admin/user');
         return $mageCoreModelAbstract;
     }
 
-    /**
-     * @return Mage_Admin_Model_Roles
-     */
-    protected function getRoleModel()
+    protected function getRoleModel(): Mage_Admin_Model_Roles
     {
         /** @var Mage_Admin_Model_Roles $mageCoreModelAbstract */
         $mageCoreModelAbstract = $this->_getModel('admin/roles');
         return $mageCoreModelAbstract;
     }
 
-    /**
-     * @return Mage_Admin_Model_Rules
-     */
-    protected function getRulesModel()
+    protected function getRulesModel(): Mage_Admin_Model_Rules
     {
         /** @var Mage_Admin_Model_Rules $mageCoreModelAbstract */
         $mageCoreModelAbstract = $this->_getModel('admin/rules');

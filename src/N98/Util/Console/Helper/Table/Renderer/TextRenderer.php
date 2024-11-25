@@ -17,11 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class TextRenderer implements RendererInterface
 {
-    /**
-     * @param array $rows headers are expected to be the keys of the first row.
-     * @return void
-     */
-    public function render(OutputInterface $output, array $rows)
+    public function render(OutputInterface $output, array $rows): void
     {
         $table = new Table($output);
         $table->setStyle(new TableStyle());

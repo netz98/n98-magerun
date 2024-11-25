@@ -6,15 +6,18 @@ namespace N98\Magento\Command\System\Cron;
 
 use Exception;
 use Mage;
+use Mage_Core_Exception;
 use Mage_Core_Model_Config_Element;
 use Mage_Cron_Model_Schedule;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
+use Throwable;
 
 /**
  * Run cronjob command
@@ -25,12 +28,9 @@ class RunCommand extends AbstractCronCommand
 {
     public const REGEX_RUN_MODEL = '#^([a-z0-9_]+/[a-z0-9_]+)::([a-z0-9_]+)$#i';
 
-    /**
-     * @var array
-     */
-    protected $infos;
+    protected array $infos;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('sys:cron:run')
@@ -39,9 +39,6 @@ class RunCommand extends AbstractCronCommand
             ->setDescription('Runs a cronjob by job code');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -52,14 +49,13 @@ HELP;
     }
 
     /**
-     *
      * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output, true);
+        $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $jobCode = $input->getArgument('job');
@@ -81,15 +77,15 @@ HELP;
         }
 
         $output->writeln('<info>done</info>');
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
      * @param array $jobs array of array containing "job" keyed string entries of job-codes
-     * @return string         job-code
+     * @return string     job-code
      * @throws InvalidArgumentException|Exception when user selects invalid job interactively
      */
-    protected function askJobCode(InputInterface $input, OutputInterface $output, array $jobs)
+    protected function askJobCode(InputInterface $input, OutputInterface $output, array $jobs): string
     {
         $keyMap = array_keys($jobs);
 
@@ -112,12 +108,7 @@ HELP;
         return $questionHelper->ask($input, $output, $choiceQuestion);
     }
 
-    /**
-     * @param string $runConfigModel
-     * @param string $jobCode
-     * @return array
-     */
-    private function getCallbackFromRunConfigModel($runConfigModel, $jobCode)
+    private function getCallbackFromRunConfigModel(string $runConfigModel, string $jobCode): array
     {
         if (in_array(preg_match(self::REGEX_RUN_MODEL, $runConfigModel, $runMatches), [0, false], true)) {
             throw new RuntimeException(
@@ -147,11 +138,11 @@ HELP;
     }
 
     /**
-     * @param array $callback
-     * @param string $jobCode
-     * @throws Exception
+     * @param mixed $callback
+     * @throws Throwable
+     * @throws Mage_Core_Exception
      */
-    private function executeConfigModel($callback, $jobCode)
+    private function executeConfigModel($callback, string $jobCode): void
     {
         Mage::getConfig()->init()->loadEventObservers('crontab');
         Mage::app()->addEventArea('crontab');
@@ -198,10 +189,11 @@ HELP;
     }
 
     /**
-     * @param array $callback
-     * @param string $jobCode
+     * @param mixed $callback
+     * @throws Throwable
+     * @throws Mage_Core_Exception
      */
-    private function scheduleConfigModel($callback, $jobCode)
+    private function scheduleConfigModel($callback, string $jobCode): void
     {
         /** @var Mage_Cron_Model_Schedule|false $schedule */
         $schedule = Mage::getModel('cron/schedule');
@@ -230,16 +222,12 @@ HELP;
         }
     }
 
-    /**
-     * @param $jobCode
-     * @return string
-     */
-    private function getRunConfigModelByJobCode($jobCode)
+    private function getRunConfigModelByJobCode(string $jobCode): string
     {
         $jobsRoot = Mage::getConfig()->getNode('crontab/jobs');
         $defaultJobsRoot = Mage::getConfig()->getNode('default/crontab/jobs');
 
-        /* @var Mage_Core_Model_Config_Element $jobConfig */
+        /** @var Mage_Core_Model_Config_Element $jobConfig */
         $jobConfig = $jobsRoot->{$jobCode};
         if (!$jobConfig || !$jobConfig->run) {
             $jobConfig = $defaultJobsRoot->{$jobCode};
@@ -249,7 +237,7 @@ HELP;
             throw new RuntimeException(sprintf('No job-config found for job "%s"!', $jobCode));
         }
 
-        /* @var Mage_Core_Model_Config_Element $runConfig */
+        /** @var Mage_Core_Model_Config_Element $runConfig */
         $runConfig = $jobConfig->run;
         if (empty($runConfig->model)) {
             throw new RuntimeException(sprintf('No run-config found for job "%s"!', $jobCode));

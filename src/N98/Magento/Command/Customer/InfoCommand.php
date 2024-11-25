@@ -7,6 +7,7 @@ namespace N98\Magento\Command\Customer;
 use Attribute;
 use Exception;
 use Mage_Customer_Model_Attribute;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,12 +19,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InfoCommand extends AbstractCustomerCommand
 {
-    /**
-     * @var array
-     */
-    protected $blacklist = ['password_hash', 'increment_id'];
+    protected array $blacklist = ['password_hash', 'increment_id'];
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('customer:info')
@@ -32,12 +30,11 @@ class InfoCommand extends AbstractCustomerCommand
             ->setDescription('Loads basic customer info by email address.');
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $parameterHelper = $this->getParameterHelper();
@@ -50,7 +47,7 @@ class InfoCommand extends AbstractCustomerCommand
             ->loadByEmail($email);
         if ($customer->getId() <= 0) {
             $output->writeln('<error>Customer was not found</error>');
-            return 0;
+            return Command::FAILURE;
         }
 
         $table = [];
@@ -79,6 +76,7 @@ class InfoCommand extends AbstractCustomerCommand
             ->setHeaders([Attribute::class, 'Value'])
             ->setRows($table)
             ->render($output);
-        return 0;
+
+        return Command::SUCCESS;
     }
 }

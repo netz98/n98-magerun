@@ -19,20 +19,14 @@ use RuntimeException;
 class AbstractCacheCommand extends AbstractMagentoCommand
 {
     /**
-     * @return Mage_Core_Model_Cache
-     *
      * @throws RuntimeException
      */
-    protected function _getCacheModel()
+    protected function _getCacheModel(): Mage_Core_Model_Cache
     {
         return Mage::app()->getCacheInstance();
     }
 
-    /**
-     * @param array $codeArgument
-     * @param bool  $status
-     */
-    protected function saveCacheStatus($codeArgument, $status)
+    protected function saveCacheStatus(array $codeArgument, bool $status): void
     {
         $this->validateCacheCodes($codeArgument);
 
@@ -50,7 +44,7 @@ class AbstractCacheCommand extends AbstractMagentoCommand
     /**
      * @throws InvalidArgumentException
      */
-    protected function validateCacheCodes(array $codes)
+    protected function validateCacheCodes(array $codes): void
     {
         $cacheTypes = $this->_getCacheModel()->getTypes();
         foreach ($codes as $code) {
@@ -65,7 +59,7 @@ class AbstractCacheCommand extends AbstractMagentoCommand
      *
      * @see https://github.com/netz98/n98-magerun/issues/483
      */
-    protected function banUseCache()
+    protected function banUseCache(): void
     {
         if (!$this->_canUseBanCacheFunction()) {
             return;
@@ -78,7 +72,7 @@ class AbstractCacheCommand extends AbstractMagentoCommand
         }
     }
 
-    protected function reinitCache()
+    protected function reinitCache(): void
     {
         if (!$this->_canUseBanCacheFunction()) {
             return;
@@ -88,10 +82,7 @@ class AbstractCacheCommand extends AbstractMagentoCommand
         Mage::getConfig()->reinit();
     }
 
-    /**
-     * @return bool
-     */
-    protected function _canUseBanCacheFunction()
+    protected function _canUseBanCacheFunction(): bool
     {
         // @phpstan-ignore function.alreadyNarrowedType
         return method_exists('\Mage_Core_Model_App', 'baseInit');

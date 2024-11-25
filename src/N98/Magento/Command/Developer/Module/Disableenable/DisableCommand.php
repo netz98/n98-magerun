@@ -14,5 +14,5 @@ class DisableCommand extends AbstractCommand
     /**
      * @var string
      */
-    protected $commandName = 'disable';
+    protected string $commandName = 'disable';
 }

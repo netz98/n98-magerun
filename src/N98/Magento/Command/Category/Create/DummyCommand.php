@@ -10,6 +10,7 @@ use Mage_Catalog_Model_Resource_Category_Collection;
 use Mage_Core_Model_Store;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,7 +32,7 @@ class DummyCommand extends AbstractMagentoCommand
      // enabled
     public const DEFAULT_STORE_ID = 1; // Default Store ID
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('category:create:dummy')
@@ -49,7 +50,6 @@ class DummyCommand extends AbstractMagentoCommand
             )
             ->setDescription('Create a dummy category');
     }
-
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -132,18 +132,13 @@ class DummyCommand extends AbstractMagentoCommand
             }
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
      * Ask for command arguments
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return array
      */
-    private function askForArguments($input, $output)
+    private function askForArguments(InputInterface $input, OutputInterface $output): array
     {
         $questionHelper = $this->getQuestionHelper();
         $_argument = [];
@@ -235,13 +230,8 @@ class DummyCommand extends AbstractMagentoCommand
      *
      * @param int|Mage_Core_Model_Store|string $storeId
      */
-    private function setCategoryStoreId(Mage_Catalog_Model_Category $mageCatalogModelCategory, $storeId)
+    private function setCategoryStoreId(Mage_Catalog_Model_Category $mageCatalogModelCategory, $storeId): void
     {
-        if (Mage::getVersion() === '1.5.1.0') {
-            // @phpstan-ignore argument.type
-            $mageCatalogModelCategory->setStoreId([0, $storeId]);
-        } else {
-            $mageCatalogModelCategory->setStoreId($storeId);
-        }
+        $mageCatalogModelCategory->setStoreId($storeId);
     }
 }

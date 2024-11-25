@@ -10,6 +10,7 @@ use Mage_Core_Exception;
 use Mage_Eav_Model_Config;
 use Mage_Eav_Model_Entity_Setup;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,7 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class RemoveCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('eav:attribute:remove')
@@ -32,12 +33,11 @@ class RemoveCommand extends AbstractMagentoCommand
             ->setDescription('Removes attribute for a given attribute code');
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $entityType = $input->getArgument('entityType');
@@ -81,6 +81,6 @@ class RemoveCommand extends AbstractMagentoCommand
             }
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

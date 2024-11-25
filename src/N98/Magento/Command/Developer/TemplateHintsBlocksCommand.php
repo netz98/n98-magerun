@@ -24,27 +24,10 @@ class TemplateHintsBlocksCommand extends AbstractMagentoStoreConfigCommand
      */
     protected static $defaultDescription = 'Toggles template hints block names';
 
-    /**
-     * @var string
-     */
-    protected $configPath = 'dev/debug/template_hints_blocks';
-
-    /**
-     * @var string
-     */
-    protected $toggleComment = 'Template Hints Blocks';
-
-    /**
-     * @var string
-     */
-    protected $scope = self::SCOPE_STORE_VIEW;
-
-    /**
-     * Add admin store to interactive prompt
-     *
-     * @var bool
-     */
-    protected $withAdminStore = true;
+    protected string $configPath = 'dev/debug/template_hints_blocks';
+    protected string $toggleComment = 'Template Hints Blocks';
+    protected string $scope = self::SCOPE_STORE_VIEW;
+    protected bool $withAdminStore = true;
 
     /**
      * If required, handle the output and possible change of the developer IP restrictions

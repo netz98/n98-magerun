@@ -6,8 +6,10 @@ namespace N98\Magento\Command\Config;
 
 use InvalidArgumentException;
 use Mage;
+use Mage_Core_Exception;
 use Mage_Core_Helper_Data;
 use Mage_Core_Model_Config;
+use Mage_Core_Model_Config_Data;
 use Mage_Core_Model_Encryption;
 use N98\Magento\Command\AbstractMagentoCommand;
 
@@ -23,32 +25,23 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     /**
      * @var array strings of configuration scopes
      */
-    protected $_scopes = ['default', 'websites', 'stores'];
+    protected array $_scopes = ['default', 'websites', 'stores'];
 
-    /**
-     * @return Mage_Core_Model_Encryption
-     */
-    protected function getEncryptionModel()
+    protected function getEncryptionModel(): Mage_Core_Model_Encryption
     {
         /** @var Mage_Core_Helper_Data $helper */
         $helper = Mage::helper('core');
         return $helper->getEncryptor();
     }
 
-    /**
-     * @return \Mage_Core_Model_Abstract
-     */
-    protected function _getConfigDataModel()
+    protected function _getConfigDataModel(): Mage_Core_Model_Config_Data
     {
-        return $this->_getModel('core/config_data');
+        /** @var Mage_Core_Model_Config_Data $model */
+        $model = $this->_getModel('core/config_data');
+        return $model;
     }
 
-    /**
-     * @param string $value
-     * @param string $encryptionType
-     * @return string
-     */
-    protected function _formatValue($value, $encryptionType)
+    protected function _formatValue(?string $value, string $encryptionType): ?string
     {
         if ($value === null) {
             $formatted = $value;
@@ -63,12 +56,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
         return $formatted;
     }
 
-    /**
-     * @param string $scope
-     *
-     * @return string
-     */
-    protected function _validateScopeParam($scope)
+    protected function _validateScopeParam(string $scope): string
     {
         if (!in_array($scope, $this->_scopes)) {
             throw new InvalidArgumentException(
@@ -80,13 +68,10 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param string $scope
-     * @param string $scopeId
-     * @param bool $allowZeroScope
-     *
      * @return string|int|null non-negative integer number
+     * @throws Mage_Core_Exception
      */
-    protected function _convertScopeIdParam($scope, $scopeId, $allowZeroScope = false)
+    protected function _convertScopeIdParam(string $scope, string $scopeId, bool $allowZeroScope = false)
     {
         if ($scope === 'default') {
             if ($scopeId !== '0') {
@@ -136,11 +121,9 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param boolean $condition
-     * @param string $mask
-     * @param string $scopeId
+     * @param mixed $condition
      */
-    private function invalidScopeId($condition, $mask, $scopeId)
+    private function invalidScopeId($condition, string $mask, string $scopeId): void
     {
         if (!$condition) {
             return;
@@ -151,13 +134,10 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
         );
     }
 
-    /**
-     * @return Mage_Core_Model_Config
-     */
-    protected function _getConfigModel()
+    protected function _getConfigModel(): Mage_Core_Model_Config
     {
         /** @var Mage_Core_Model_Config $mageCoreModelAbstract */
-        $mageCoreModelAbstract = $this->_getModel('core/config');
+        $mageCoreModelAbstract = Mage::getModel('core/config');
         return $mageCoreModelAbstract;
     }
 }

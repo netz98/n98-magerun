@@ -14,10 +14,7 @@ use Symfony\Component\Console\Output\StreamOutput;
  */
 class CsvRenderer implements RendererInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function render(OutputInterface $output, array $rows)
+    public function render(OutputInterface $output, array $rows): void
     {
         // no rows - there is nothing to do
         if ($rows === []) {

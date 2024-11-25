@@ -17,10 +17,7 @@ use Symfony\Component\Console\Helper\Helper;
  */
 class TwigHelper extends Helper
 {
-    /**
-     * @var Twig
-     */
-    protected $twig;
+    protected Twig $twig;
 
     /**
      * @throws RuntimeException
@@ -38,25 +35,16 @@ class TwigHelper extends Helper
 
     /**
      * Renders a twig template file
-     *
-     * @param string $template
-     * @param array $variables
-     * @return string
      */
-    public function render($template, $variables = [])
+    public function render(string $template, array $variables = []): string
     {
         return $this->twig->render($template, $variables);
     }
 
     /**
      * Renders a twig string
-     *
-     * @param       $string
-     * @param array $variables
-     *
-     * @return string
      */
-    public function renderString($string, $variables = [])
+    public function renderString(string $string, array $variables = []): string
     {
         return $this->twig->renderString($string, $variables);
     }
@@ -64,15 +52,12 @@ class TwigHelper extends Helper
     /**
      * @inheritdoc
      */
-    public function getName()
+    public function getName(): string
     {
         return 'twig';
     }
 
-    /**
-     * @return array
-     */
-    private function getBaseDirsFromConfig(Config $config)
+    private function getBaseDirsFromConfig(Config $config): array
     {
         $baseDir = __DIR__ . '/../../../../..'; # root of project source tree
 

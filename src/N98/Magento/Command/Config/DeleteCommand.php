@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Config;
 
 use Mage;
+use Mage_Core_Model_Resource_Db_Collection_Abstract;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DeleteCommand extends AbstractConfigCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('config:delete')
@@ -41,9 +43,6 @@ class DeleteCommand extends AbstractConfigCommand
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -51,13 +50,12 @@ To delete all entries of a path you can set the option --all.
 HELP;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
 
         if (!$this->initMagento()) {
-            return 0;
+            return Command::FAILURE;
         }
 
         $deleted = [];
@@ -83,15 +81,10 @@ HELP;
                 ->render($output);
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    /**
-     * @param string $path
-     * @param int $scopeId
-     * @return array
-     */
-    protected function _deletePath(InputInterface $input, $path, $scopeId)
+    protected function _deletePath(InputInterface $input, string $path, int $scopeId): array
     {
         $deleted = [];
         $force = $input->getOption('force');
@@ -115,15 +108,10 @@ HELP;
         return $deleted;
     }
 
-    /**
-     * @param string $pattern
-     * @return array
-     */
-    private function expandPathPattern($input, $pattern)
+    private function expandPathPattern(InputInterface $input, string $pattern): array
     {
         $paths = [];
 
-        /* @var \Mage_Core_Model_Resource_Db_Collection_Abstract $collection */
         $collection = $this->_getConfigDataModel()->getCollection();
 
         $likePattern = str_replace('*', '%', $pattern);
@@ -144,14 +132,8 @@ HELP;
 
     /**
      * Delete concrete entry from config table specified by path, scope and scope-id
-     *
-     * @param string $path
-     * @param string $scope
-     * @param int $scopeId
-     *
-     * @return array
      */
-    private function deleteConfigEntry($path, $scope, $scopeId)
+    private function deleteConfigEntry(string $path, string $scope, int $scopeId): array
     {
         $mageCoreModelConfig = $this->_getConfigModel();
 
@@ -161,6 +143,10 @@ HELP;
             $scopeId
         );
 
-        return ['path'    => $path, 'scope'   => $scope, 'scopeId' => $scopeId];
+        return [
+            'path'    => $path,
+            'scope'   => $scope,
+            'scopeId' => $scopeId,
+        ];
     }
 }

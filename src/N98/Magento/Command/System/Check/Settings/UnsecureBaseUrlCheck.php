@@ -11,5 +11,5 @@ namespace N98\Magento\Command\System\Check\Settings;
  */
 class UnsecureBaseUrlCheck extends BaseUrlCheckAbstract
 {
-    protected $class = 'unsecure';
+    protected string $class = 'unsecure';
 }

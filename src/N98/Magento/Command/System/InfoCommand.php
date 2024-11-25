@@ -8,6 +8,7 @@ use Exception;
 use InvalidArgumentException;
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,12 +21,9 @@ use Symfony\Component\Finder\Finder;
  */
 class InfoCommand extends AbstractMagentoCommand
 {
-    /**
-     * @var array
-     */
-    protected $infos;
+    protected array $infos;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('sys:info')
@@ -95,10 +93,10 @@ class InfoCommand extends AbstractMagentoCommand
                 ->renderByFormat($output, $table, $input->getOption('format'));
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    protected function magentoVersion()
+    protected function magentoVersion(): string
     {
         // @phpstan-ignore function.alreadyNarrowedType
         if (method_exists('Mage', 'getOpenMageVersion')) {
@@ -108,7 +106,7 @@ class InfoCommand extends AbstractMagentoCommand
         return Mage::getVersion();
     }
 
-    protected function addCacheInfos()
+    protected function addCacheInfos(): void
     {
         $this->infos['Cache Backend'] = get_class(Mage::app()->getCache()->getBackend());
 
@@ -122,7 +120,7 @@ class InfoCommand extends AbstractMagentoCommand
         }
     }
 
-    protected function findCoreOverwrites()
+    protected function findCoreOverwrites(): void
     {
         $folders = [$this->_magentoRootFolder . '/app/code/local/Mage', $this->_magentoRootFolder . '/app/code/local/Enterprise', $this->_magentoRootFolder . '/app/code/community/Mage', $this->_magentoRootFolder . '/app/code/community/Enterprise'];
         foreach ($folders as $key => $folder) {
@@ -141,7 +139,7 @@ class InfoCommand extends AbstractMagentoCommand
         }
     }
 
-    protected function findVendors()
+    protected function findVendors(): void
     {
         $codePools = ['core'      => $this->_magentoRootFolder . '/app/code/core/', 'community' => $this->_magentoRootFolder . '/app/code/community/'];
 
@@ -171,22 +169,22 @@ class InfoCommand extends AbstractMagentoCommand
         }
     }
 
-    protected function categoryCount()
+    protected function categoryCount(): void
     {
         $this->infos['Category Count'] = Mage::getModel('catalog/category')->getCollection()->getSize();
     }
 
-    protected function productCount()
+    protected function productCount(): void
     {
         $this->infos['Product Count'] = Mage::getModel('catalog/product')->getCollection()->getSize();
     }
 
-    protected function customerCount()
+    protected function customerCount(): void
     {
         $this->infos['Customer Count'] = Mage::getModel('customer/customer')->getCollection()->getSize();
     }
 
-    protected function attributeCount()
+    protected function attributeCount(): void
     {
         $this->infos['Attribute Count'] = Mage::getModel('eav/entity_attribute')->getCollection()->getSize();
     }

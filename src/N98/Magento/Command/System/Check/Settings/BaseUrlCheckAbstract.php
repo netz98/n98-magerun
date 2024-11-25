@@ -16,17 +16,14 @@ use N98\Magento\Command\System\Check\Result;
  */
 abstract class BaseUrlCheckAbstract extends CheckAbstract
 {
-    protected $class = 'abstract';
+    protected string $class = 'abstract';
 
-    protected function initConfigPaths()
+    protected function initConfigPaths(): void
     {
         $this->registerStoreConfigPath('baseUrl', 'web/' . $this->class . '/base_url');
     }
 
-    /**
-     * @param string $baseUrl setting
-     */
-    protected function checkSettings(Result $result, Mage_Core_Model_Store $mageCoreModelStore, $baseUrl)
+    protected function checkSettings(Result $result, Mage_Core_Model_Store $mageCoreModelStore, string $baseUrl): void
     {
         $errorMessage = 'Wrong hostname configured. <info>Hostname must contain a dot</info>';
 

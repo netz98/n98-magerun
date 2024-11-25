@@ -20,7 +20,7 @@ use Varien_Db_Adapter_Interface;
  */
 abstract class ResourceCheck implements SimpleCheck
 {
-    public function check(ResultCollection $resultCollection)
+    public function check(ResultCollection $resultCollection): void
     {
         /** @var Mage_Core_Model_Resource $resourceModel */
         $resourceModel = Mage::getModel('core/resource');
@@ -40,8 +40,5 @@ abstract class ResourceCheck implements SimpleCheck
         }
     }
 
-    /**
-     * @return void
-     */
-    abstract protected function checkImplementation(Result $result, Varien_Db_Adapter_Interface $varienDbAdapter);
+    abstract protected function checkImplementation(Result $result, Varien_Db_Adapter_Interface $varienDbAdapter): void;
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-/*
+/**
  * this file is part of magerun
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
@@ -34,25 +34,23 @@ class Initialiser
     /**
      * @var string path to Magento root directory
      */
-    private $magentoPath;
+    private string $magentoPath;
+
+    /**
+     * Initializer constructor.
+     */
+    public function __construct(string $magentoPath)
+    {
+        $this->magentoPath = $magentoPath;
+    }
 
     /**
      * Bootstrap Magento application
      */
-    public static function bootstrap($magentoPath)
+    public static function bootstrap(string $magentoPath): void
     {
-        $initialiser = new Initialiser($magentoPath);
-        $initialiser->requireMage();
-    }
-
-    /**
-     * Initialiser constructor.
-     *
-     * @param string $magentoPath
-     */
-    public function __construct($magentoPath)
-    {
-        $this->magentoPath = $magentoPath;
+        $initializer = new Initialiser($magentoPath);
+        $initializer->requireMage();
     }
 
     /**
@@ -60,7 +58,7 @@ class Initialiser
      *
      * @see \Mage (final class)
      */
-    public function requireMage()
+    public function requireMage(): void
     {
         if (class_exists(self::CLASS_MAGE, false)) {
             return;
@@ -74,7 +72,7 @@ class Initialiser
     /**
      * Require app/Mage.php in its own scope while preserving all autoloader.
      */
-    private function requireOnce()
+    private function requireOnce(): void
     {
         // Create a new AutoloadRestorer to capture current auto-loaders
         $autoloadRestorer = new AutoloadRestorer();
@@ -88,9 +86,9 @@ class Initialiser
 }
 
 /**
- * use require-once inside a function with it's own variable scope and no $this (?)
+ * use require-once inside a function with its own variable scope and no $this (?)
  */
-function initialiser_require_once()
+function initialiser_require_once(): void
 {
     require_once func_get_arg(0);
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Config;
 
 use InvalidArgumentException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SetCommand extends AbstractConfigCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('config:set')
@@ -53,9 +54,6 @@ class SetCommand extends AbstractConfigCommand
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -64,18 +62,17 @@ To set a value of a specify store view you must set the "scope" and "scope-id" o
 HELP;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $mageCoreModelConfig = $this->_getConfigModel();
         if (!$mageCoreModelConfig->getResourceModel()) {
             // without a resource model, a config option can't be saved.
-            return 0;
+            return Command::FAILURE;
         }
 
         $allowZeroScope = $input->getOption('force');
@@ -109,6 +106,7 @@ HELP;
             '<comment>' . $input->getArgument('path') . '</comment> => <comment>' . $valueDisplay .
             '</comment>'
         );
-        return 0;
+
+        return Command::SUCCESS;
     }
 }

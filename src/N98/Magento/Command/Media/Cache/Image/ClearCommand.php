@@ -7,6 +7,7 @@ namespace N98\Magento\Command\Media\Cache\Image;
 use Mage;
 use Mage_Catalog_Model_Product_Image;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -17,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ClearCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('media:cache:image:clear')
              ->setDescription('Clears image cache');
@@ -35,6 +36,6 @@ class ClearCommand extends AbstractMagentoCommand
             $output->writeln('<info>Image cache cleared</info>');
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

@@ -6,9 +6,11 @@ namespace N98\Magento\Command\Eav\Attribute;
 
 use InvalidArgumentException;
 use Mage;
+use Mage_Core_Exception;
 use Mage_Eav_Model_Config;
 use Mage_Eav_Model_Entity_Attribute_Abstract;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ViewCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('eav:attribute:view')
@@ -30,12 +32,11 @@ class ViewCommand extends AbstractMagentoCommand
             ->addFormatOption();
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $entityType = $input->getArgument('entityType');
@@ -82,16 +83,15 @@ class ViewCommand extends AbstractMagentoCommand
         $tableHelper
             ->setHeaders(['Type', 'Value'])
             ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+
+        return Command::SUCCESS;
     }
 
     /**
-     * @param string $entityType
-     * @param string $attributeCode
-     *
      * @return Mage_Eav_Model_Entity_Attribute_Abstract|false
+     * @throws Mage_Core_Exception
      */
-    protected function getAttribute($entityType, $attributeCode)
+    protected function getAttribute(string $entityType, string $attributeCode)
     {
         /** @var Mage_Eav_Model_Config $model */
         $model = Mage::getModel('eav/config');

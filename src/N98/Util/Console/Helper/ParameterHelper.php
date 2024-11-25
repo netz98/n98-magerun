@@ -6,8 +6,11 @@ namespace N98\Util\Console\Helper;
 
 use Exception;
 use InvalidArgumentException;
-use JsonSchema\Validator;
 use Mage;
+use Mage_Core_Exception;
+use Mage_Core_Model_App;
+use Mage_Core_Model_Store;
+use Mage_Core_Model_Store_Exception;
 use Mage_Core_Model_Website;
 use N98\Util\Validator\FakeMetadataFactory;
 use RuntimeException;
@@ -17,7 +20,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Translation\Translator;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\Email;
@@ -37,10 +39,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class ParameterHelper extends AbstractHelper
 {
-    /**
-     * @var ValidatorInterface
-     */
-    private $validator;
+    private ?ValidatorInterface $validator;
 
     /**
      * Returns the canonical name of this helper.
@@ -49,26 +48,24 @@ class ParameterHelper extends AbstractHelper
      *
      * @api
      */
-    public function getName()
+    public function getName(): string
     {
         return 'parameter';
     }
 
     /**
-     * @param string $argumentName
      * @param bool $withDefaultStore [optional]
+     * @return Mage_Core_Model_Store|null
      *
-     * @return mixed
-     *
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException|Mage_Core_Model_Store_Exception
      */
     public function askStore(
-        InputInterface $input,
+        InputInterface  $input,
         OutputInterface $output,
-        $argumentName = 'store',
-        $withDefaultStore = false
-    ) {
-        /* @var \Mage_Core_Model_App $storeManager */
+        string          $argumentName = 'store',
+        bool            $withDefaultStore = false
+    ): ?Mage_Core_Model_Store {
+        /** @var Mage_Core_Model_App $storeManager */
         $storeManager = Mage::app();
 
         try {
@@ -76,7 +73,7 @@ class ParameterHelper extends AbstractHelper
                 throw new RuntimeException('No store given');
             }
 
-            /** @var \Mage_Core_Model_Store $store */
+            /** @var Mage_Core_Model_Store $store */
             $store = $storeManager->getStore($input->getArgument($argumentName));
         } catch (Exception $exception) {
             if (!$input->isInteractive()) {
@@ -98,7 +95,7 @@ class ParameterHelper extends AbstractHelper
             if (count($stores) > 1) {
                 $validator = function ($typeInput) use ($stores) {
                     if (!isset($stores[$typeInput])) {
-                        throw new InvalidArgumentException('Invalid store', $exception->getCode(), $exception);
+                        throw new InvalidArgumentException('Invalid store');
                     }
 
                     return $stores[$typeInput];
@@ -122,13 +119,11 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param string $argumentName
-     * @return mixed
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException|Mage_Core_Exception
      */
-    public function askWebsite(InputInterface $input, OutputInterface $output, $argumentName = 'website')
+    public function askWebsite(InputInterface $input, OutputInterface $output, string $argumentName = 'website'): ?Mage_Core_Model_Website
     {
-        /* @var \Mage_Core_Model_App $storeManager */
+        /* @var Mage_Core_Model_App $storeManager */
         $storeManager = Mage::app();
 
         $website = null;
@@ -158,7 +153,6 @@ class ParameterHelper extends AbstractHelper
             return $websites[$typeInput];
         };
 
-        /* @var QuestionHelper $dialog */
         $questionHelper = new QuestionHelper();
         $choiceQuestion = new ChoiceQuestion('<question>Please select a website:</question> ', $choices);
         $choiceQuestion->setValidator($validator);
@@ -172,11 +166,10 @@ class ParameterHelper extends AbstractHelper
      * @see askWebsite
      * @return array websites (integers with website IDs, 0-indexed) and question array (strings)
      */
-    private function websitesQuestion($storeManager)
+    private function websitesQuestion(Mage_Core_Model_App $storeManager): array
     {
         $websites = [];
         $question = [];
-        /* @var Mage_Core_Model_Website $website */
         foreach ($storeManager->getWebsites() as $website) {
             $websites[] = $website->getId();
             $question[] = sprintf('%s - %s', $website->getCode(), $website->getName());
@@ -185,12 +178,7 @@ class ParameterHelper extends AbstractHelper
         return [$websites, $question];
     }
 
-    /**
-     * @param string $argumentName
-     *
-     * @return string
-     */
-    public function askEmail(InputInterface $input, OutputInterface $output, $argumentName = 'email')
+    public function askEmail(InputInterface $input, OutputInterface $output, string $argumentName = 'email'): string
     {
         $collection = new Collection(
             ['email' => [new NotBlank(), new Email()]]
@@ -200,16 +188,14 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param string $argumentName
      * @param bool $needDigits [optional]
-     * @return string
      */
     public function askPassword(
-        InputInterface $input,
+        InputInterface  $input,
         OutputInterface $output,
-        $argumentName = 'password',
-        $needDigits = true
-    ) {
+        string          $argumentName = 'password',
+        bool            $needDigits = true
+    ): string {
         $validators = [];
 
         if ($needDigits) {
@@ -228,11 +214,10 @@ class ParameterHelper extends AbstractHelper
 
     /**
      * @param string|array $question
-     * @param callable $callback
      *
      * @return mixed
      */
-    private function askAndValidate(InputInterface $input, OutputInterface $output, $question, $callback)
+    private function askAndValidate(InputInterface $input, OutputInterface $output, $question, callable $callback)
     {
         $questionHelper = new QuestionHelper();
         $questionObj = new Question($question);
@@ -241,15 +226,13 @@ class ParameterHelper extends AbstractHelper
         return $questionHelper->ask($input, $output, $questionObj);
     }
 
-    /**
-     * @param string $name
-     * @param string $value
-     * @param Constraints\Collection $constraints The constraint(s) to validate against.
-     *
-     * @return string
-     */
-    private function validateArgument(InputInterface  $input, OutputInterface $output, $name, $value, $constraints)
-    {
+    private function validateArgument(
+        InputInterface  $input,
+        OutputInterface $output,
+        string          $name,
+        string          $value,
+        Collection      $constraints
+    ): string {
         $this->initValidator();
 
         if (strlen($value) !== 0) {
@@ -279,13 +262,9 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param string $name
-     * @param string $value
-     * @param Constraints\Collection $constraints The constraint(s) to validate against.
-     *
      * @return ConstraintViolationInterface[]|ConstraintViolationListInterface
      */
-    private function validateValue($name, $value, $constraints)
+    private function validateValue(string $name, string $value, Collection $constraints)
     {
         $validator = $this->validator;
         /** @var ConstraintViolationListInterface|ConstraintViolationInterface[] $constraintViolationList */
@@ -294,12 +273,9 @@ class ParameterHelper extends AbstractHelper
         return $constraintViolationList;
     }
 
-    /**
-     * @return ValidatorInterface
-     */
-    protected function initValidator()
+    protected function initValidator(): ValidatorInterface
     {
-        if (null === $this->validator) {
+        if (is_null($this->validator)) {
             $this->validator = Validation::createValidatorBuilder()
                 ->setConstraintValidatorFactory(new ConstraintValidatorFactory())
                 ->setMetadataFactory(new FakeMetadataFactory())

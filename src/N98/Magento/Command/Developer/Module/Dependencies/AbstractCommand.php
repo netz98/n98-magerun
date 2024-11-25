@@ -7,6 +7,7 @@ namespace N98\Magento\Command\Developer\Module\Dependencies;
 use Exception;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -36,15 +37,10 @@ abstract class AbstractCommand extends AbstractMagentoCommand
 
     /**
      * Array of magento modules found in config
-     *
-     * @var array
      */
-    protected $modules;
+    protected ?array $modules;
 
-    /**
-     * Configure command
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName(static::COMMAND_NAME)
             ->addArgument('moduleName', InputArgument::REQUIRED, 'Module to show dependencies')
@@ -81,7 +77,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
             $output->writeln($exception->getMessage());
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
@@ -89,20 +85,14 @@ abstract class AbstractCommand extends AbstractMagentoCommand
      *
      * If $recursive = true, dependencies will be collected recursively for all module dependencies
      *
-     * @param string $moduleName
-     * @param bool   $recursive  [optional]
-     *
-     * @return array
      * @throws InvalidArgumentException of module-name is not found
      */
-    abstract protected function findModuleDependencies($moduleName, $recursive = false);
+    abstract protected function findModuleDependencies(string $moduleName, bool $recursive = false): array;
 
     /**
      * Sort dependencies list by module name ascending
-     *
-     * @return int
      */
-    private function sortDependencies(array $a, array $b)
+    private function sortDependencies(array $a, array $b): int
     {
         return strcmp($a[0], $b[0]);
     }

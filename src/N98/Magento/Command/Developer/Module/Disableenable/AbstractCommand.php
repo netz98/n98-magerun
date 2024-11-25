@@ -9,6 +9,7 @@ use Mage;
 use Mage_Core_Model_Config;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,27 +23,13 @@ use Varien_Simplexml_Element;
  */
 class AbstractCommand extends AbstractMagentoCommand
 {
-    /**
-     * @var Mage_Core_Model_Config
-     */
-    protected $modulesConfig;
+    protected Mage_Core_Model_Config $modulesConfig;
 
-    /**
-     * @var string
-     */
-    protected $modulesDir;
+    protected string $modulesDir;
 
-    /**
-     * @var string
-     */
-    protected $commandName;
+    protected string $commandName;
 
-    /**
-     * Setup
-     *
-     * @return void
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('dev:module:' . $this->commandName)
@@ -52,10 +39,6 @@ class AbstractCommand extends AbstractMagentoCommand
     }
 
     /**
-     * Execute command
-     *
-     *
-     *
      * @throws InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -77,15 +60,13 @@ class AbstractCommand extends AbstractMagentoCommand
             throw new InvalidArgumentException('No code-pool option nor module-name argument');
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
      * Search a code pool for modules and enable them
-     *
-     * @param string $codePool
      */
-    protected function enableCodePool($codePool, OutputInterface $output)
+    protected function enableCodePool(string $codePool, OutputInterface $output): void
     {
         $modules = $this->modulesConfig->getNode('modules')->asArray();
         foreach ($modules as $module => $data) {
@@ -97,10 +78,8 @@ class AbstractCommand extends AbstractMagentoCommand
 
     /**
      * Enable a single module
-     *
-     * @param string $module
      */
-    protected function enableModule($module, OutputInterface $output)
+    protected function enableModule(string $module, OutputInterface $output): void
     {
         $xml = null;
         $validDecFile = false;
@@ -140,10 +119,8 @@ class AbstractCommand extends AbstractMagentoCommand
     /**
      * Load module files in the opposite order to core Magento, so that we find the last loaded declaration
      * of a module first.
-     *
-     * @return array
      */
-    protected function getDeclaredModuleFiles()
+    protected function getDeclaredModuleFiles(): array
     {
         $collectModuleFiles = ['base'   => [], 'mage'   => [], 'custom' => []];
 

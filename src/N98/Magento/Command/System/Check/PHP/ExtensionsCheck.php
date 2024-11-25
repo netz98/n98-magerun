@@ -16,12 +16,9 @@ use N98\Magento\Command\System\Check\SimpleCheck;
  */
 class ExtensionsCheck implements SimpleCheck, CommandConfigAware
 {
-    /**
-     * @var array
-     */
-    protected $_commandConfig;
+    protected array $_commandConfig;
 
-    public function check(ResultCollection $resultCollection)
+    public function check(ResultCollection $resultCollection): void
     {
         $requiredExtensions = $this->_commandConfig['php']['required-extensions'];
 
@@ -36,7 +33,7 @@ class ExtensionsCheck implements SimpleCheck, CommandConfigAware
         }
     }
 
-    public function setCommandConfig(array $commandConfig)
+    public function setCommandConfig(array $commandConfig): void
     {
         $this->_commandConfig = $commandConfig;
     }

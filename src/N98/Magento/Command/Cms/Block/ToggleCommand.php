@@ -6,6 +6,7 @@ namespace N98\Magento\Command\Cms\Block;
 
 use Mage_Cms_Model_Block;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,10 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ToggleCommand extends AbstractMagentoCommand
 {
-    /**
-     * Configure command
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('cms:block:toggle')
@@ -31,26 +29,19 @@ class ToggleCommand extends AbstractMagentoCommand
 
     /**
      * Get an instance of cms/block
-     *
-     * @return Mage_Cms_Model_Block
      */
-    protected function _getBlockModel()
+    protected function _getBlockModel(): Mage_Cms_Model_Block
     {
         /** @var Mage_Cms_Model_Block $mageCoreModelAbstract */
         $mageCoreModelAbstract = $this->_getModel('cms/block');
         return $mageCoreModelAbstract;
     }
 
-    /**
-     * Execute the command
-     *
-     *
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::FAILURE;
         }
 
         $blockId = $input->getArgument('block_id');
@@ -72,6 +63,7 @@ class ToggleCommand extends AbstractMagentoCommand
             '<comment>Block</comment> <info>%s</info>',
             $newStatus ? 'enabled' : 'disabled'
         ));
-        return 0;
+
+        return Command::SUCCESS;
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace N98\Util;
 
 use BadMethodCallException;
+use Closure;
 
 /**
  * Autoloader with self-registration, de-registration, muting and implementation switching
@@ -26,26 +27,21 @@ final class AutoloadHandler
      */
     public const NO_AUTO_REGISTER = 2;
 
-    /**
-     * @var integer
-     */
-    private $flags;
+    private ?int $flags;
 
+    /**
+     * @var callable|null
+     */
     private $callback;
 
-    private $splRegistered;
+    private bool $splRegistered;
+
+    private bool $enabled;
 
     /**
-     * @var bool
+     * @param int|null $flags [optional]
      */
-    private $enabled;
-
-    /**
-     * @param $callback
-     * @param integer $flags [optional]
-     * @return AutoloadHandler
-     */
-    public static function create($callback, $flags = null)
+    public static function create(callable $callback, ?int $flags = null): AutoloadHandler
     {
         return new self($callback, $flags);
     }
@@ -53,10 +49,9 @@ final class AutoloadHandler
     /**
      * AutoloadHandler constructor.
      *
-     * @param $callback
-     * @param integer $flags [optional]
+     * @param int|null $flags [optional]
      */
-    public function __construct($callback, $flags = null)
+    public function __construct(callable$callback, ?int $flags = null)
     {
         if (null === $flags) {
             $flags = 0;
@@ -68,19 +63,22 @@ final class AutoloadHandler
         $this->flags & self::NO_AUTO_REGISTER || $this->register();
     }
 
-    public function register()
+    public function register(): void
     {
         spl_autoload_register($this);
         $this->splRegistered = true;
     }
 
-    public function unregister()
+    public function unregister(): void
     {
         spl_autoload_unregister($this);
         $this->splRegistered = false;
     }
 
-    public function __invoke($className)
+    /**
+     * @return false|mixed
+     */
+    public function __invoke(string $className)
     {
         if (!$this->splRegistered) {
             return false;
@@ -101,7 +99,7 @@ final class AutoloadHandler
         return call_user_func($this->callback, $className);
     }
 
-    public function getCleanupCallback()
+    public function getCleanupCallback(): Closure
     {
         $self = (object) ['ref' => $this];
 
@@ -116,42 +114,33 @@ final class AutoloadHandler
     /**
      * Unregister from SPL Stack and destroy callback reference.
      */
-    public function reset()
+    public function reset(): void
     {
         $this->unregister();
         $this->callback = null;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return $this->enabled;
     }
 
-    /**
-     * @param boolean $flagEnabled
-     */
-    public function setEnabled($flagEnabled)
+    public function setEnabled(bool $flagEnabled): void
     {
-        $this->enabled = (bool) $flagEnabled;
+        $this->enabled = $flagEnabled;
     }
 
-    public function disable()
+    public function disable(): void
     {
         $this->enabled = false;
     }
 
-    public function enable()
+    public function enable(): void
     {
         $this->enabled = true;
     }
 
-    /**
-     * @param mixed $callback
-     */
-    public function setCallback($callback)
+    public function setCallback(callable $callback): void
     {
         $this->callback = $callback;
     }

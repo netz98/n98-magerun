@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Developer\Theme;
 
-use DateTime;
+use Carbon\Carbon;
 use N98\JUnitXml\Document as JUnitXmlDocument;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * Find duplicate theme command
@@ -20,7 +22,7 @@ use Symfony\Component\Finder\Finder;
  */
 class DuplicatesCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('dev:theme:duplicates')
@@ -41,9 +43,6 @@ class DuplicatesCommand extends AbstractMagentoCommand
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -51,7 +50,6 @@ class DuplicatesCommand extends AbstractMagentoCommand
 HELP;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $time = microtime(true);
@@ -81,14 +79,11 @@ HELP;
             $output->writeln($duplicates);
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    /**
-     * @param string $baseFolder
-     * @return array
-     */
-    protected function getChecksums($baseFolder)
+
+    protected function getChecksums(string $baseFolder): array
     {
         $finder = Finder::create();
         $finder
@@ -100,7 +95,7 @@ HELP;
             ->in($baseFolder);
         $checksums = [];
         foreach ($finder as $file) {
-            /* @var \Symfony\Component\Finder\SplFileInfo $file */
+            /** @var SplFileInfo $file */
             if (file_exists($file->getRealPath())) {
                 $checksums[$file->getRelativePathname()] = md5_file($file->getRealPath());
             }
@@ -109,17 +104,12 @@ HELP;
         return $checksums;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param string         $filename
-     * @param float          $duration
-     */
-    protected function logJUnit($input, array $duplicates, $filename, $duration)
+    protected function logJUnit(InputInterface $input, array $duplicates, string $filename, float $duration): void
     {
         $document = new JUnitXmlDocument();
         $testSuiteElement = $document->addTestSuite();
         $testSuiteElement->setName('n98-magerun: ' . $this->getName());
-        $testSuiteElement->setTimestamp(\Carbon\Carbon::now());
+        $testSuiteElement->setTimestamp(Carbon::now());
         $testSuiteElement->setTime($duration);
 
         $testCaseElement = $testSuiteElement->addTestCase();

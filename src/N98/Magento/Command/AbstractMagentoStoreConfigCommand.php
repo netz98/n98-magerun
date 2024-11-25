@@ -26,8 +26,9 @@ use Symfony\Component\Console\Question\Question;
  */
 abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 {
-    public $commandName;
-    public $commandDescription;
+    public string $commandName;
+    public string $commandDescription;
+
     public const COMMAND_ARGUMENT_STORE = 'store';
 
     public const COMMAND_OPTION_OFF = 'off';
@@ -56,49 +57,31 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
      */
     public const SCOPE_STORE_VIEW_GLOBAL = 'store_view_global';
 
-    /**
-     * @var string
-     */
-    protected $configPath = '';
+    protected string $configPath = '';
 
-    /**
-     * @var string
-     */
-    protected $toggleComment = '';
+    protected string $toggleComment = '';
 
-    /**
-     * @var string
-     */
-    protected $falseName = 'disabled';
+    protected string $falseName = 'disabled';
 
-    /**
-     * @var string
-     */
-    protected $trueName = 'enabled';
+    protected string $trueName = 'enabled';
 
     /**
      * Add admin store to interactive prompt
-     *
-     * @var bool
      */
-    protected $withAdminStore = false;
+    protected bool $withAdminStore = false;
 
-    /**
-     * @var string
-     */
-    protected $scope = self::SCOPE_STORE_VIEW;
+    protected string $scope = self::SCOPE_STORE_VIEW;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         // for backwards compatibility before v3.0
+        // @phpstan-ignore function.alreadyNarrowedType
         if (property_exists($this, 'commandName')) {
             $this->setName($this->commandName);
         }
 
         // for backwards compatibility before v3.0
+        // @phpstan-ignore function.alreadyNarrowedType
         if (property_exists($this, 'commandDescription')) {
             $this->setDescription($this->commandDescription);
         }
@@ -136,17 +119,16 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function initialize(InputInterface $input,OutputInterface $output)
+    protected function initialize(InputInterface $input,OutputInterface $output): void
     {
         // for backwards compatibility before v3.0
+        // @phpstan-ignore function.alreadyNarrowedType
         if (property_exists($this, 'commandName')) {
             $output->writeln('<warning>Property "commandName" is deprecated, use "public static $defaultName"</warning>');
         }
 
         // for backwards compatibility before v3.0
+        // @phpstan-ignore function.alreadyNarrowedType
         if (property_exists($this, 'commandDescription')) {
             $output->writeln('<warning>Property "commandDescription" is deprecated, use "public static $defaultDescription"</warning>');
         }

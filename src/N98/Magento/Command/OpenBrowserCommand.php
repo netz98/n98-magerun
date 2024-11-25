@@ -10,6 +10,7 @@ use Mage_Core_Model_Store;
 use N98\Util\Exec;
 use N98\Util\OperatingSystem;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class OpenBrowserCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('open-browser')
@@ -30,10 +31,7 @@ class OpenBrowserCommand extends AbstractMagentoCommand
         ;
     }
 
-    /**
-     * @return bool
-     */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return Exec::allowed();
     }
@@ -42,7 +40,7 @@ class OpenBrowserCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $parameterHelper = $this->getParameterHelper();
@@ -59,13 +57,11 @@ class OpenBrowserCommand extends AbstractMagentoCommand
 
         $opener = $this->resolveOpenerCommand($output);
         Exec::run(escapeshellcmd($opener . ' ' . $url));
-        return 0;
+
+        return Command::SUCCESS;
     }
 
-    /**
-     * @return string
-     */
-    private function resolveOpenerCommand(OutputInterface $output)
+    private function resolveOpenerCommand(OutputInterface $output): string
     {
         $opener = '';
         if (OperatingSystem::isMacOs()) {
@@ -81,7 +77,7 @@ class OpenBrowserCommand extends AbstractMagentoCommand
             $opener = 'kde-open';
         }
 
-        if ($opener === '' || $opener === '0') {
+        if ($opener === '') {
             throw new RuntimeException('No opener command like xdg-open, gnome-open, kde-open was found.');
         }
 

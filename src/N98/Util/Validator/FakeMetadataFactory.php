@@ -16,10 +16,7 @@ use Symfony\Component\Validator\Mapping\MetadataInterface;
  */
 class FakeMetadataFactory implements MetadataFactoryInterface
 {
-    /**
-     * @var array
-     */
-    protected $metadatas = [];
+    protected array $metadatas = [];
 
     /**
      * Returns whether the class is able to return metadata for the given value.
@@ -28,7 +25,7 @@ class FakeMetadataFactory implements MetadataFactoryInterface
      *
      * @return MetadataInterface Whether metadata can be returned for that value
      */
-    public function getMetadataFor($value)
+    public function getMetadataFor($value): MetadataInterface
     {
         if (is_object($value)) {
             $value = get_class($value);
@@ -52,7 +49,7 @@ class FakeMetadataFactory implements MetadataFactoryInterface
      *
      * @return bool Whether metadata can be returned for that value
      */
-    public function hasMetadataFor($value)
+    public function hasMetadataFor($value): bool
     {
         if (is_object($value)) {
             $value = get_class($value);
@@ -65,7 +62,7 @@ class FakeMetadataFactory implements MetadataFactoryInterface
         return isset($this->metadatas[$value]);
     }
 
-    public function addMetadata(ClassMetadata $classMetadata)
+    public function addMetadata(ClassMetadata $classMetadata): void
     {
         $this->metadatas[$classMetadata->getClassName()] = $classMetadata;
     }

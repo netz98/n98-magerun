@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace N98\Magento\Command\System\Setup;
 
 use InvalidArgumentException;
+use Mage;
 use Mage_Core_Model_Resource;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Remove setup ommand
+ * Remove setup command
  *
  * @package N98\Magento\Command\System\Setup
  *
@@ -20,10 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class RemoveCommand extends AbstractSetupCommand
 {
-    /**
-     * Set up CLI options
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('sys:setup:remove')
@@ -32,12 +31,11 @@ class RemoveCommand extends AbstractSetupCommand
             ->setDescription('Remove module setup resource entry');
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output, true);
+        $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $moduleName = $this->getModule($input);
@@ -46,8 +44,7 @@ class RemoveCommand extends AbstractSetupCommand
 
         if (empty($moduleSetups)) {
             $output->writeln(sprintf('No setup resources found for module: "%s"', $moduleName));
-
-            return 0;
+            return Command::FAILURE;
         }
 
         if ($setupName === 'all') {
@@ -60,17 +57,13 @@ class RemoveCommand extends AbstractSetupCommand
             throw new InvalidArgumentException(sprintf('Error no setup found with the name: "%s"', $setupName));
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    /**
-     * @param string $moduleName
-     * @param string $setupResource
-     */
-    public function removeSetupResource($moduleName, $setupResource, OutputInterface $output)
+    public function removeSetupResource(string $moduleName, string $setupResource, OutputInterface $output): void
     {
         /** @var Mage_Core_Model_Resource $mageCoreModelAbstract */
-        $mageCoreModelAbstract = $this->_getModel('core/resource');
+        $mageCoreModelAbstract = Mage::getModel('core/resource');
         $writeAdapter = $mageCoreModelAbstract->getConnection('core_write');
         if (!$writeAdapter) {
             throw new RuntimeException('Database not configured');

@@ -16,19 +16,15 @@ use N98\Magento\Command\System\Check\Result;
  */
 abstract class CookieDomainCheckAbstract extends CheckAbstract
 {
-    protected $class = 'abstract';
+    protected string $class = 'abstract';
 
-    protected function initConfigPaths()
+    protected function initConfigPaths(): void
     {
         $this->registerStoreConfigPath('baseUrl', 'web/' . $this->class . '/base_url');
         $this->registerStoreConfigPath('cookieDomain', 'web/cookie/cookie_domain');
     }
 
-    /**
-     * @param string                 $baseUrl      setting
-     * @param string                 $cookieDomain setting
-     */
-    protected function checkSettings(Result $result, Mage_Core_Model_Store $mageCoreModelStore, $baseUrl, $cookieDomain)
+    protected function checkSettings(Result $result, Mage_Core_Model_Store $mageCoreModelStore, string $baseUrl, string $cookieDomain): void
     {
         $errorMessage = 'cookie-domain and ' . $this->class . ' base-URL do not match';
 

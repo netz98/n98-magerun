@@ -6,6 +6,8 @@ namespace N98\Magento\Command\Installer;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\SubCommand\SubCommandFactory;
+use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,17 +20,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InstallCommand extends AbstractMagentoCommand
 {
-    /**
-     * @var array
-     */
-    protected $commandConfig;
+    protected array $commandConfig;
+    protected SubCommandFactory $subCommandFactory;
 
-    /**
-     * @var SubCommandFactory
-     */
-    protected $subCommandFactory;
-
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('install')
@@ -87,9 +82,6 @@ class InstallCommand extends AbstractMagentoCommand
             ->setDescription('Install magento');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -115,19 +107,15 @@ See it in action: https://youtu.be/WU-CbJ86eQc
 HELP;
     }
 
-    /**
-     * @return bool
-     */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return function_exists('exec');
     }
 
     /**
-     * @throws \RuntimeException
-     * @return int
+     * @throws RuntimeException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->commandConfig = $this->getCommandConfig();
         $this->writeSection($output, 'Magento Installation');
@@ -146,7 +134,7 @@ HELP;
 
         $subCommandFactory->create('DownloadMagento')->execute();
         if ($input->getOption('only-download')) {
-            return 0;
+            return Command::SUCCESS;
         }
 
         $subCommandFactory->create('CreateDatabase')->execute();
@@ -158,6 +146,6 @@ HELP;
         $subCommandFactory->create('PostInstallation')->execute();
         $output->writeln('<info>Successfully installed magento</info>');
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

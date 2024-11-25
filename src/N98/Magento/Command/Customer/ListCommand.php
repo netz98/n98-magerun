@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Customer;
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ListCommand extends AbstractCustomerCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('customer:list')
@@ -25,9 +26,6 @@ class ListCommand extends AbstractCustomerCommand
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -36,12 +34,11 @@ If search parameter is given the customers are filtered (searchs in firstname, l
 HELP;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $config = $this->getCommandConfig();
@@ -71,6 +68,6 @@ HELP;
             $output->writeln('<comment>No customers found</comment>');
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

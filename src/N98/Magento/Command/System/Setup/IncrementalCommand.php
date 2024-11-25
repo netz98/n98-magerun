@@ -7,15 +7,19 @@ namespace N98\Magento\Command\System\Setup;
 use Exception;
 use Mage;
 use Mage_Core_Model_Config;
+use Mage_Core_Model_Config_Element;
 use Mage_Core_Model_Resource_Resource;
 use Mage_Core_Model_Resource_Setup;
 use N98\Magento\Command\AbstractMagentoCommand;
 use ReflectionClass;
+use ReflectionException;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Varien_Simplexml_Config;
 
 /**
  * Run incremental setup command
@@ -29,15 +33,9 @@ class IncrementalCommand extends AbstractMagentoCommand
 
     public const TYPE_MIGRATION_DATA = 'data';
 
-    /**
-     * @var OutputInterface
-     */
-    protected $_output;
+    protected OutputInterface $_output;
 
-    /**
-     * @var InputInterface
-     */
-    protected $_input;
+    protected InputInterface $_input;
 
     /**
      * Holds our copy of the global config.
@@ -45,19 +43,17 @@ class IncrementalCommand extends AbstractMagentoCommand
      * Loaded to avoid grabbing the cached version, and so
      * we still have all our original information when we
      * destroy the real configuration
-     *
-     * @var mixed $_secondConfig
      */
-    protected $_secondConfig;
-
-    protected $_eventStash;
+    protected Varien_Simplexml_Config $_secondConfig;
 
     /**
-     * @var array
+     * @var mixed $_eventStash
      */
-    protected $_config;
+    protected $_eventStash;
 
-    protected function configure()
+    protected array $_config;
+
+    protected function configure(): void
     {
         $this
             ->setName('sys:setup:incremental')
@@ -65,9 +61,6 @@ class IncrementalCommand extends AbstractMagentoCommand
             ->addOption('stop-on-error', null, InputOption::VALUE_NONE, 'Stops execution of script on error');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -75,7 +68,6 @@ Examines an un-cached configuration tree and determines which
 structure and data setup resource scripts need to run, and then runs them.
 HELP;
     }
-
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -85,22 +77,22 @@ HELP;
         $this->_setOutput($output);
         $this->_setInput($input);
         if (false === $this->_init()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $needsUpdate = $this->_analyzeSetupResourceClasses();
 
         if (count($needsUpdate) === 0) {
-            return 0;
+            return Command::FAILURE;
         }
 
         $this->_listDetailedUpdateInformation($needsUpdate);
         $this->_runAllStructureUpdates($needsUpdate);
         $output->writeln('We have run all the setup resource scripts.');
-        return 0;
+        return Command::SUCCESS;
     }
 
-    protected function _loadSecondConfig()
+    protected function _loadSecondConfig(): void
     {
         $mageCoreModelConfig = new Mage_Core_Model_Config();
         $mageCoreModelConfig->loadBase();
@@ -108,12 +100,10 @@ HELP;
         $this->_secondConfig = Mage::getConfig()->loadModulesConfiguration('config.xml', $mageCoreModelConfig);
     }
 
-    /**
-     * @return array
-     */
-    protected function _getAllSetupResourceObjects()
+    protected function _getAllSetupResourceObjects(): array
     {
         $config = $this->_secondConfig;
+        /** @var Mage_Core_Model_Config_Element[] $resources */
         $resources = $config->getNode('global/resources')->children();
         $setupResources = [];
         foreach ($resources as $name => $resource) {
@@ -132,21 +122,15 @@ HELP;
         return $setupResources;
     }
 
-    /**
-     * @return Mage_Core_Model_Resource_Resource
-     */
-    protected function _getResource()
+    protected function _getResource(): Mage_Core_Model_Resource_Resource
     {
         return Mage::getResourceSingleton('core/resource');
     }
 
     /**
-     * @param \Mage_Core_Model_Resource_Setup $setupResource
-     * @param array $args
-     *
-     * @return array|mixed
+     * @throws ReflectionException
      */
-    protected function _getAvaiableDbFilesFromResource($setupResource, $args = [])
+    protected function _getAvaiableDbFilesFromResource(Mage_Core_Model_Resource_Setup $setupResource, array $args = []): array
     {
         $result = $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $setupResource, $args);
 
@@ -164,12 +148,9 @@ HELP;
     }
 
     /**
-     * @param \Mage_Core_Model_Resource_Setup $setupResource
-     * @param array $args
-     *
-     * @return array|mixed
+     * @throws ReflectionException
      */
-    protected function _getAvaiableDataFilesFromResource($setupResource, $args = [])
+    protected function _getAvaiableDataFilesFromResource(Mage_Core_Model_Resource_Setup $setupResource, array $args = []): array
     {
         $result = $this->_callProtectedMethodFromObject('_getAvailableDataFiles', $setupResource, $args);
         if ($args[0] == Mage_Core_Model_Resource_Setup::TYPE_DATA_INSTALL) {
@@ -185,13 +166,9 @@ HELP;
     }
 
     /**
-     * @param string $method
-     * @param object $object
-     * @param array $args
-     *
-     * @return mixed
+     * @throws ReflectionException
      */
-    protected function _callProtectedMethodFromObject($method, $object, $args = [])
+    protected function _callProtectedMethodFromObject(string $method, object $object, array $args = []): array
     {
         $reflectionClass = new ReflectionClass($object);
         $reflectionMethod = $reflectionClass->getMethod($method);
@@ -201,11 +178,10 @@ HELP;
     }
 
     /**
-     * @param string $property
-     * @param object $object
      * @param mixed $value
+     * @throws ReflectionException
      */
-    protected function _setProtectedPropertyFromObjectToValue($property, $object, $value)
+    protected function _setProtectedPropertyFromObjectToValue(string $property, object $object, $value): void
     {
         $reflectionClass = new ReflectionClass($object);
         $reflectionProperty = $reflectionClass->getProperty($property);
@@ -214,12 +190,10 @@ HELP;
     }
 
     /**
-     * @param string $property
-     * @param object $object
-     *
      * @return mixed
+     * @throws ReflectionException
      */
-    protected function _getProtectedPropertyFromObject($property, $object)
+    protected function _getProtectedPropertyFromObject(string $property, object $object)
     {
         $reflectionClass = new ReflectionClass($object);
         $reflectionProperty = $reflectionClass->getProperty($property);
@@ -228,32 +202,21 @@ HELP;
         return $reflectionProperty->getValue($object);
     }
 
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    protected function _getDbVersionFromName($name)
+    protected function _getDbVersionFromName(string $name): string
     {
         return $this->_getResource()->getDbVersion($name);
     }
 
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    protected function _getDbDataVersionFromName($name)
+    protected function _getDbDataVersionFromName(string $name): string
     {
         return $this->_getResource()->getDataVersion($name);
     }
 
     /**
-     * @param Object $object
-     *
      * @return mixed
+     * @throws ReflectionException
      */
-    protected function _getConfiguredVersionFromResourceObject($object)
+    protected function _getConfiguredVersionFromResourceObject(object $object)
     {
         $moduleConfig = $this->_getProtectedPropertyFromObject('_moduleConfig', $object);
 
@@ -261,11 +224,9 @@ HELP;
     }
 
     /**
-     * @param bool|array $setupResources
-     *
-     * @return array
+     * @throws ReflectionException
      */
-    protected function _getAllSetupResourceObjectThatNeedUpdates($setupResources = false)
+    protected function _getAllSetupResourceObjectThatNeedUpdates(?array $setupResources = null): array
     {
         $setupResources = $setupResources ?: $this->_getAllSetupResourceObjects();
         $needsUpdate = [];
@@ -286,25 +247,25 @@ HELP;
         return $needsUpdate;
     }
 
-    /**
-     * @param string $message
-     */
-    protected function _log($message)
+    protected function _log(string $message): void
     {
         $this->_output->writeln($message);
     }
 
-    protected function _setOutput(OutputInterface $output)
+    protected function _setOutput(OutputInterface $output): void
     {
         $this->_output = $output;
     }
 
-    protected function _setInput(InputInterface $input)
+    protected function _setInput(InputInterface $input): void
     {
         $this->_input = $input;
     }
 
-    protected function _outputUpdateInformation(array $needsUpdate)
+    /**
+     * @throws ReflectionException
+     */
+    protected function _outputUpdateInformation(array $needsUpdate): void
     {
         $output = $this->_output;
         foreach ($needsUpdate as $name => $setupResource) {
@@ -338,10 +299,7 @@ HELP;
         }
     }
 
-    /**
-     * @param array $files
-     */
-    protected function _outputFileArray($files)
+    protected function _outputFileArray(array $files): void
     {
         $output = $this->_output;
         if (count($files) == 0) {
@@ -368,15 +326,10 @@ HELP;
      * The downside is we should probably exit quickly, as anything else that
      * uses the global/resources node is going to behave weird.
      *
-     * @todo     Repopulate global config after running?  Non trivial since setNode escapes strings
-     *
-     * @param string $name
-     * @param string $type
-     *
      * @throws RuntimeException
-     * @internal param $string
+     * @todo     Repopulate global config after running?  Non trivial since setNode escapes strings
      */
-    protected function _runNamedSetupResource($name, array $needsUpdate, $type)
+    protected function _runNamedSetupResource(string $name, array $needsUpdate, string $type): void
     {
         $output = $this->_output;
         if (!in_array($type, [self::TYPE_MIGRATION_STRUCTURE, self::TYPE_MIGRATION_DATA])) {
@@ -410,7 +363,7 @@ HELP;
         $specificResource = $realConfig->getNode('global/resources/' . $name);
         $setup = $specificResource->addChild('setup');
         if ($moduleName) {
-            $setup->addChild('module', $moduleName);
+            $setup->addChild('module', $moduleName->__toString());
         } else {
             $output->writeln(
                 '<error>No module node configured for ' . $name . ', possible configuration error </error>'
@@ -418,7 +371,7 @@ HELP;
         }
 
         if ($className) {
-            $setup->addChild('class', $className);
+            $setup->addChild('class', $className->__toString());
         }
 
         //and finally, RUN THE UPDATES
@@ -445,15 +398,11 @@ HELP;
         }
     }
 
-    /**
-     * @param string $name
-     * @param string $magentoExceptionOutput
-     */
     protected function _processExceptionDuringUpdate(
         Exception $exception,
-        $name,
-        $magentoExceptionOutput
-    ) {
+        string    $name,
+        string    $magentoExceptionOutput
+    ): void {
         $input = $this->_input;
         $output = $this->_output;
         $output->writeln(['<error>Magento encountered an error while running the following setup resource.</error>', '', sprintf('    %s ', $name), '', '<error>The Good News:</error> You know the error happened, and the database', 'information below will  help you fix this error!', '', "<error>The Bad News:</error> Because Magento/MySQL can't run setup resources", 'transactionally your database is now in an half upgraded, invalid', 'state. Even if you fix the error, new errors may occur due to', 'this half upgraded, invalid state.', '', 'What to Do: ', '1. Figure out why the error happened, and manually fix your', "   database and/or system so it won't happen again.", '2. Restore your database from backup.', '3. Re-run the scripts.', '', 'Exception Message:', $exception->getMessage(), '']);
@@ -468,10 +417,7 @@ HELP;
         }
     }
 
-    /**
-     * @return bool
-     */
-    protected function _checkCacheSettings()
+    protected function _checkCacheSettings(): bool
     {
         $output = $this->_output;
         $allTypes = Mage::app()->useCache();
@@ -487,11 +433,7 @@ HELP;
         return true;
     }
 
-    /**
-     * @param string $toUpdate
-     * @param string $type
-     */
-    protected function _runStructureOrDataScripts($toUpdate, array $needsUpdate, $type)
+    protected function _runStructureOrDataScripts(string $toUpdate, array $needsUpdate, string $type): void
     {
         $input = $this->_input;
         $output = $this->_output;
@@ -509,21 +451,24 @@ HELP;
         $output->writeln('Ran in ' . floor($time_ran * 1000) . 'ms');
     }
 
-    /**
-     * @return array
-     */
-    protected function _getTestedVersions()
+    protected function _getTestedVersions(): array
     {
         return $this->_config['tested-versions'];
     }
 
-    protected function _restoreEventContext()
+    /**
+     * @throws ReflectionException
+     */
+    protected function _restoreEventContext(): void
     {
         $app = Mage::app();
         $this->_setProtectedPropertyFromObjectToValue('_events', $app, $this->_eventStash);
     }
 
-    protected function _stashEventContext()
+    /**
+     * @throws ReflectionException
+     */
+    protected function _stashEventContext(): void
     {
         $app = Mage::app();
         $events = $this->_getProtectedPropertyFromObject('_events', $app);
@@ -531,10 +476,7 @@ HELP;
         $this->_setProtectedPropertyFromObjectToValue('_events', $app, []);
     }
 
-    /**
-     * @return bool
-     */
-    protected function _init()
+    protected function _init(): bool
     {
         //bootstrap magento
         $this->detectMagento($this->_output);
@@ -555,9 +497,9 @@ HELP;
     }
 
     /**
-     * @return array
+     * @throws ReflectionException
      */
-    protected function _analyzeSetupResourceClasses()
+    protected function _analyzeSetupResourceClasses(): array
     {
         $output = $this->_output;
         $this->writeSection($output, 'Analyzing Setup Resource Classes');
@@ -574,7 +516,10 @@ HELP;
         return $needsUpdate;
     }
 
-    protected function _listDetailedUpdateInformation(array $needsUpdate)
+    /**
+     * @throws ReflectionException
+     */
+    protected function _listDetailedUpdateInformation(array $needsUpdate): void
     {
         $input = $this->_input;
         $output = $this->_output;
@@ -587,7 +532,7 @@ HELP;
         $this->_outputUpdateInformation($needsUpdate);
     }
 
-    protected function _runAllStructureUpdates(array $needsUpdate)
+    protected function _runAllStructureUpdates(array $needsUpdate): void
     {
         $output = $this->_output;
         $this->writeSection($output, 'Run Structure Updates');

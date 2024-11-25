@@ -9,6 +9,10 @@ use Composer\IO\ConsoleIO;
 use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+use function chdir;
+use function get_class;
+use function strstr;
+
 /**
  * Class EventSubscriber
  *
@@ -23,12 +27,12 @@ class EventSubscriber implements EventSubscriberInterface
      *
      * @api
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return ['console.command' => 'registerComposer'];
     }
 
-    public function registerComposer(ConsoleEvent $consoleEvent)
+    public function registerComposer(ConsoleEvent $consoleEvent): void
     {
         /*
          * Inject composer object in composer commands
@@ -39,7 +43,7 @@ class EventSubscriber implements EventSubscriberInterface
             $magentoRootFolder = $command->getApplication()->getMagentoRootFolder();
             $configFile = $magentoRootFolder . '/composer.json';
             $composer = Factory::create($consoleIO, $configFile);
-            \chdir($magentoRootFolder);
+            chdir($magentoRootFolder);
             $command->setComposer($composer);
             $command->setIO($consoleIO);
         }

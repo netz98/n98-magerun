@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
 
 use Mage_Eav_Model_Entity_Attribute;
+use Varien_Db_Adapter_Interface;
 
 /**
  * EntityType interface
@@ -15,19 +16,9 @@ interface EntityType
 {
     public function __construct(Mage_Eav_Model_Entity_Attribute $mageEavModelEntityAttribute);
 
-    /**
-     * @param $connection
-     * @return void
-     */
-    public function setReadConnection($connection);
+    public function setReadConnection(Varien_Db_Adapter_Interface $connection): void;
 
-    /**
-     * @return array
-     */
-    public function getWarnings();
+    public function getWarnings(): array;
 
-    /**
-     * @return string
-     */
-    public function generateCode();
+    public function generateCode(): string;
 }

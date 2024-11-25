@@ -7,10 +7,10 @@ parameters:
 			path: src/N98/Magento/Application/ConfigFile.php
 
 		-
-			message: '#^Parameter \#1 \$value of method Mage_Admin_Model_User\:\:setIsActive\(\) expects int, bool given\.$#'
-			identifier: argument.type
+			message: '#^Strict comparison using \=\=\= between non\-falsy\-string\|null and false will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
 			count: 1
-			path: src/N98/Magento/Command/Admin/User/ChangeStatusCommand.php
+			path: src/N98/Magento/Command/AbstractMagentoCommand.php
 
 		-
 			message: '#^Call to an undefined method Mage_Admin_Model_Roles\:\:setName\(\)\.$#'
@@ -91,6 +91,18 @@ parameters:
 			path: src/N98/Magento/Command/Database/StatusCommand.php
 
 		-
+			message: '#^Variable \$classPrefix might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: src/N98/Magento/Command/Developer/Ide/PhpStorm/MetaCommand.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between non\-empty\-string\|false and '''' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: src/N98/Magento/Command/Installer/SubCommand/ChooseInstallationFolder.php
+
+		-
 			message: '#^Call to an undefined static method N98\\Util\\OperatingSystem\:\:getCurrentPhpBinary\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
@@ -101,6 +113,30 @@ parameters:
 			identifier: staticMethod.notFound
 			count: 1
 			path: src/N98/Magento/Command/Installer/SubCommand/InstallComposer.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between ''composer''\|''composer\.phar'' and ''0'' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: src/N98/Magento/Command/Installer/SubCommand/InstallComposer.php
+
+		-
+			message: '#^Variable \$composerBin might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: src/N98/Magento/Command/Installer/SubCommand/InstallComposer.php
+
+		-
+			message: '#^Variable \$exception might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: src/N98/Magento/Command/Installer/SubCommand/InstallMagento.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between non\-falsy\-string\|null and false will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: src/N98/Magento/Command/ScriptCommand.php
 
 		-
 			message: '#^Property N98\\Magento\\Command\\System\\Check\\Filesystem\\FilesCheck\:\:\$_checkCommand \(N98\\Magento\\Command\\System\\CheckCommand\) does not accept Symfony\\Component\\Console\\Command\\Command\.$#'
@@ -115,10 +151,10 @@ parameters:
 			path: src/N98/Magento/Command/System/Check/Filesystem/FoldersCheck.php
 
 		-
-			message: '#^Negated boolean expression is always true\.$#'
-			identifier: booleanNot.alwaysTrue
+			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, Symfony\\Component\\Finder\\SplFileInfo given\.$#'
+			identifier: argument.type
 			count: 1
-			path: src/N98/Magento/Initialiser.php
+			path: src/N98/Magento/Command/System/InfoCommand.php
 
 		-
 			message: '#^Call to an undefined method object\{ref\: \$this\(N98\\Util\\AutoloadHandler\)\}&stdClass\:\:reset\(\)\.$#'
@@ -131,3 +167,15 @@ parameters:
 			identifier: binaryOp.invalid
 			count: 2
 			path: src/N98/Util/DateTime.php
+
+		-
+			message: '#^Instanceof between N98\\Util\\WindowsSystem and N98\\Util\\WindowsSystem will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/N98/Util/WindowsSystem.php
+
+		-
+			message: '#^Left side of \|\| is always true\.$#'
+			identifier: booleanOr.leftAlwaysTrue
+			count: 1
+			path: src/N98/Util/WindowsSystem.php

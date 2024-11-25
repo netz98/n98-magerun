@@ -8,6 +8,7 @@ use Exception;
 use Mage;
 use Mage_Eav_Model_Entity_Type;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ListCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('eav:attribute:list')
@@ -30,12 +31,11 @@ class ListCommand extends AbstractMagentoCommand
             ->addFormatOption();
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $table = [];
@@ -87,14 +87,15 @@ class ListCommand extends AbstractMagentoCommand
         $tableHelper
             ->setHeaders($headers)
             ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+
+        return Command::SUCCESS;
     }
 
     /**
      * @param $attribute
      * @return null|string
      */
-    protected function _getEntityType($attribute)
+    protected function _getEntityType($attribute): ?string
     {
         $entityTypeCode = '';
         try {

@@ -6,6 +6,7 @@ namespace N98\Magento\Command\Cache;
 
 use Exception;
 use Mage;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CleanCommand extends AbstractCacheCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('cache:clean')
@@ -39,9 +40,6 @@ class CleanCommand extends AbstractCacheCommand
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -71,9 +69,9 @@ HELP;
             $this->banUseCache();
         }
 
-        $this->detectMagento($output, true);
+        $this->detectMagento($output);
         if (!$this->initMagento(true)) {
-            return 0;
+            return Command::INVALID;
         }
 
         try {
@@ -99,6 +97,6 @@ HELP;
             $this->reinitCache();
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

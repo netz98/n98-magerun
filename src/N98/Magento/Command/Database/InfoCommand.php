@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Database;
 
 use InvalidArgumentException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,30 +17,26 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InfoCommand extends AbstractDatabaseCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('db:info')
             ->addArgument('setting', InputArgument::OPTIONAL, 'Only output value of named setting')
-            ->setDescription('Dumps database informations')
+            ->setDescription('Dumps database information')
             ->addFormatOption()
         ;
         $this->addDeprecatedAlias('database:info', 'Please use db:info');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
-This command is useful to print all informations about the current configured database in app/etc/local.xml.
+This command is useful to print all information about the current configured database in app/etc/local.xml.
 It can print connection string for JDBC, PDO connections.
 HELP;
     }
 
     /**
-     *
      * @throws InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -113,6 +110,6 @@ HELP;
                 ->renderByFormat($output, $rows, $input->getOption('format'));
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

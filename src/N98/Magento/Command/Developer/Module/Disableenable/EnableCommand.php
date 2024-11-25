@@ -14,5 +14,5 @@ class EnableCommand extends AbstractCommand
     /**
      * @var string
      */
-    protected $commandName = 'enable';
+    protected string $commandName = 'enable';
 }

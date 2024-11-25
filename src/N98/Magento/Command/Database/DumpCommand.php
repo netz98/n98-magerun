@@ -9,6 +9,7 @@ use N98\Magento\Command\Database\Compressor\Compressor;
 use N98\Util\Console\Enabler;
 use N98\Util\Exec;
 use N98\Util\VerifyOrDie;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,17 +23,11 @@ use Symfony\Component\Console\Question\Question;
  */
 class DumpCommand extends AbstractDatabaseCommand
 {
-    /**
-     * @var array
-     */
-    protected $tableDefinitions;
+    protected ?array $tableDefinitions;
 
-    /**
-     * @var array
-     */
-    protected $commandConfig;
+    protected array $commandConfig;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('db:dump')
@@ -145,9 +140,6 @@ class DumpCommand extends AbstractDatabaseCommand
             ->setDescription('Dumps database with mysqldump cli client');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         $help = <<<HELP
@@ -174,11 +166,9 @@ HELP;
     }
 
     /**
-     * @return array
-     *
      * @deprecated Use database helper
      */
-    private function getTableDefinitions()
+    private function getTableDefinitions(): array
     {
         $this->commandConfig = $this->getCommandConfig();
 
@@ -192,10 +182,8 @@ HELP;
 
     /**
      * Generate help for table definitions
-     *
-     * @return string
      */
-    public function getTableDefinitionHelp()
+    public function getTableDefinitionHelp(): string
     {
         $messages = PHP_EOL;
         $this->commandConfig = $this->getCommandConfig();
@@ -249,7 +237,6 @@ Extended: https://github.com/netz98/n98-magerun/wiki/Stripped-Database-Dumps
 HELP;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // communicate early what is required for this command to run (is enabled)
@@ -269,13 +256,10 @@ HELP;
 
         $success = $this->runExecs($execs, $fileName, $input, $output);
 
-        return $success ? 0 : 1; // return with correct exec code
+        return $success ? Command::SUCCESS : Command::FAILURE; // return with correct exec code
     }
 
-    /**
-     * @return array
-     */
-    private function createExecsArray(InputInterface $input, OutputInterface $output)
+    private function createExecsArray(InputInterface $input, OutputInterface $output): array
     {
         $execs = [];
 
@@ -349,11 +333,7 @@ HELP;
         return [$fileName, $execs];
     }
 
-    /**
-     * @param string $fileName
-     * @return bool
-     */
-    private function runExecs(array $execs, $fileName, InputInterface $input, OutputInterface $output)
+    private function runExecs(array $execs, string $fileName, InputInterface $input, OutputInterface $output): bool
     {
         if ($input->getOption('only-command') && !$input->getOption('print-only-filename')) {
             foreach ($execs as $exec) {
@@ -387,11 +367,7 @@ HELP;
         return true;
     }
 
-    /**
-     * @param string $command
-     * @return bool
-     */
-    private function runExec($command, InputInterface $input, OutputInterface $output)
+    private function runExec(string $command, InputInterface $input, OutputInterface $output): bool
     {
         $commandOutput = '';
 
@@ -411,10 +387,7 @@ HELP;
         return true;
     }
 
-    /**
-     * @return array
-     */
-    private function stripTables(InputInterface $input, OutputInterface $output)
+    private function stripTables(InputInterface $input, OutputInterface $output): array
     {
         if (!$input->getOption('strip')) {
             return [];
@@ -431,10 +404,7 @@ HELP;
         return $stripTables;
     }
 
-    /**
-     * @return array
-     */
-    private function excludeTables(InputInterface $input, OutputInterface $output)
+    private function excludeTables(InputInterface $input, OutputInterface $output): array
     {
         if ($input->getOption('exclude') && $input->getOption('include')) {
             throw new InvalidArgumentException('Cannot specify --include with --exclude');
@@ -467,9 +437,8 @@ HELP;
 
     /**
      * @param string $list space separated list of tables
-     * @return array
      */
-    private function resolveDatabaseTables($list)
+    private function resolveDatabaseTables(string $list): array
     {
         $databaseHelper = $this->getDatabaseHelper();
 
@@ -481,19 +450,13 @@ HELP;
 
     /**
      * Commands which filter mysql data. Piped to mysqldump command
-     *
-     * @return string
      */
-    protected function postDumpPipeCommands()
+    protected function postDumpPipeCommands(): string
     {
         return ' | LANG=C LC_CTYPE=C LC_ALL=C sed -e ' . escapeshellarg('s/DEFINER[ ]*=[ ]*[^*]*\*/\*/');
     }
 
-    /**
-     *
-     * @return string
-     */
-    protected function getFileName(InputInterface $input, OutputInterface $output, Compressor $compressor)
+    protected function getFileName(InputInterface $input, OutputInterface $output, Compressor $compressor): string
     {
         $nameExtension = $input->getOption('xml') ? '.xml' : '.sql';
 
@@ -533,9 +496,8 @@ HELP;
 
     /**
      * @param null|bool|string $optionAddTime [optional] true for default "suffix", other string values: "prefix", "no"
-     * @return array
      */
-    private function getFileNamePrefixSuffix($optionAddTime = null)
+    private function getFileNamePrefixSuffix($optionAddTime = null): array
     {
         $namePrefix = '';
         $nameSuffix = '';
@@ -561,10 +523,7 @@ HELP;
         return [$namePrefix, $nameSuffix];
     }
 
-    /**
-     * @return bool
-     */
-    private function nonCommandOutput(InputInterface $input)
+    private function nonCommandOutput(InputInterface $input): bool
     {
         return
             !$input->getOption('stdout')

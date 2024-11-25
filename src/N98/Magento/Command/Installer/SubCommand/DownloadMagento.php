@@ -22,9 +22,8 @@ class DownloadMagento extends AbstractSubCommand
 {
     /**
      * @throws Exception
-     * @return void
      */
-    public function execute()
+    public function execute(): void
     {
         if ($this->input->getOption('noDownload')) {
             return;
@@ -37,7 +36,7 @@ class DownloadMagento extends AbstractSubCommand
         }
     }
 
-    private function implementation()
+    private function implementation(): void
     {
         $package = $this->config['magentoVersionData'];
         $this->config->setArray('magentoPackage', $package);
@@ -60,15 +59,12 @@ class DownloadMagento extends AbstractSubCommand
         $this->composerInstall();
     }
 
-    /**
-     * @param $package
-     */
-    private function composerCreateProject($package): void
+    private function composerCreateProject(array $package): void
     {
         $processArguments = new ProcessArguments(array_merge($this->config['composer_bin'], ['create-project']));
         $processArguments
             // Add composer options
-            ->addArgs(isset($package['options']) ? $package['options'] : [])
+            ->addArgs($package['options'] ?? [])
             ->addArg('--no-dev')
             ->addArg('--no-install')
             // Add arguments
@@ -99,10 +95,7 @@ class DownloadMagento extends AbstractSubCommand
         }
     }
 
-    /**
-     * @param string $pluginName
-     */
-    protected function composerAllowPlugins($pluginName): void
+    protected function composerAllowPlugins(string $pluginName): void
     {
         $process = new Process(
             array_merge(

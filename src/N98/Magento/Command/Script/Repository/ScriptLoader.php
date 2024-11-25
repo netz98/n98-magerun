@@ -20,31 +20,13 @@ class ScriptLoader
      */
     private $homeDir;
 
-    /**
-     * @var array
-     */
-    protected $_scriptFiles = [];
+    protected array $_scriptFiles = [];
 
-    /**
-     * @var string
-     * @deprecated since 1.97.29
-     */
-    protected $_homeScriptFolder = '';
+    protected ?string $_magentoRootFolder = '';
 
-    /**
-     * @var string
-     */
-    protected $_magentoRootFolder = '';
+    protected array $_scriptFolders = [];
 
-    /**
-     * @var array
-     */
-    protected $_scriptFolders = [];
-
-    /**
-     * @param string $magentoRootFolder
-     */
-    public function __construct(array $scriptFolders, $magentoRootFolder = null)
+    public function __construct(array $scriptFolders, ?string $magentoRootFolder = null)
     {
         $this->homeDir = OperatingSystem::getHomeDir();
 
@@ -59,15 +41,12 @@ class ScriptLoader
         $this->findScripts($scriptFolders);
     }
 
-    /**
-     * @return array
-     */
-    public function getFiles()
+    public function getFiles(): array
     {
         return $this->_scriptFiles;
     }
 
-    protected function findScripts(array $scriptFolders = null)
+    protected function findScripts(array $scriptFolders = null): void
     {
         if (null === $scriptFolders) {
             $scriptFolders = $this->_scriptFolders;
@@ -101,12 +80,8 @@ class ScriptLoader
 
     /**
      * Reads the first line. If it's a comment return it.
-     *
-     * @param string $file
-     *
-     * @return string
      */
-    protected function _readFirstLineOfFile($file)
+    protected function _readFirstLineOfFile(string $file): string
     {
         $f = @fopen($file, 'r');
         if (!$f) {
@@ -123,12 +98,7 @@ class ScriptLoader
         return trim(substr($line, 1));
     }
 
-    /**
-     * @param string $pathname
-     *
-     * @return string
-     */
-    protected function _getLocation($pathname)
+    protected function _getLocation(string $pathname): string
     {
         if (strstr($pathname, $this->_magentoRootFolder)) {
             return 'project';

@@ -15,6 +15,7 @@ use N98\Magento\Command\System\Check\SimpleCheck;
 use N98\Magento\Command\System\Check\StoreCheck;
 use N98\Magento\Command\System\Check\WebsiteCheck;
 use N98\Util\Unicode\Charset;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -30,9 +31,9 @@ class CheckCommand extends AbstractMagentoCommand
      *
      * @var array
      */
-    protected $config;
+    protected array $config;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('sys:check')
@@ -40,9 +41,6 @@ class CheckCommand extends AbstractMagentoCommand
             ->addFormatOption();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -53,12 +51,11 @@ class CheckCommand extends AbstractMagentoCommand
 HELP;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $this->config = $this->getCommandConfig();
@@ -78,13 +75,10 @@ HELP;
             $this->_printResults($output, $resultCollection);
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    /**
-     * @param string $checkGroupClass name
-     */
-    protected function _invokeCheckClass(ResultCollection $resultCollection, $checkGroupClass)
+    protected function _invokeCheckClass(ResultCollection $resultCollection, string $checkGroupClass): void
     {
         $check = $this->_createCheck($checkGroupClass);
 
@@ -108,7 +102,7 @@ HELP;
         }
     }
 
-    protected function _printResults(OutputInterface $output, ResultCollection $resultCollection)
+    protected function _printResults(OutputInterface $output, ResultCollection $resultCollection): void
     {
         $lastResultGroup = null;
         foreach ($resultCollection as $result) {
@@ -138,11 +132,11 @@ HELP;
         }
     }
 
-    protected function _printTable(InputInterface $input, OutputInterface $output, ResultCollection $resultCollection)
+    protected function _printTable(InputInterface $input, OutputInterface $output, ResultCollection $resultCollection): void
     {
         $table = [];
         foreach ($resultCollection as $result) {
-            /* @var Result $result */
+            /** @var Result $result */
             $table[] = [$result->getResultGroup(), strip_tags($result->getMessage()), $result->getStatus()];
         }
 
@@ -153,11 +147,9 @@ HELP;
     }
 
     /**
-     * @param string $checkGroupClass
-     *
      * @return object
      */
-    private function _createCheck($checkGroupClass)
+    private function _createCheck(string $checkGroupClass)
     {
         $check = new $checkGroupClass();
 
@@ -167,18 +159,13 @@ HELP;
 
         if ($check instanceof CommandConfigAware) {
             $check->setCommandConfig($this->config);
-
             return $check;
         }
 
         return $check;
     }
 
-    /**
-     * @param string $context
-     * @param string $checkGroupClass
-     */
-    private function _markCheckWarning(ResultCollection $resultCollection, $context, $checkGroupClass)
+    private function _markCheckWarning(ResultCollection $resultCollection, string $context, string $checkGroupClass): void
     {
         $result = $resultCollection->createResult();
         $result->setMessage(
@@ -186,14 +173,10 @@ HELP;
             '</comment>'
         );
         $result->setStatus($result::STATUS_WARNING);
-
         $resultCollection->addResult($result);
     }
 
-    /**
-     * @param string $checkGroupClass name
-     */
-    private function checkStores(ResultCollection $resultCollection, $checkGroupClass, StoreCheck $storeCheck)
+    private function checkStores(ResultCollection $resultCollection, string $checkGroupClass, StoreCheck $storeCheck): void
     {
         if (!$stores = Mage::app()->getStores()) {
             $this->_markCheckWarning($resultCollection, 'stores', $checkGroupClass);
@@ -204,10 +187,7 @@ HELP;
         }
     }
 
-    /**
-     * @param string $checkGroupClass name
-     */
-    private function checkWebsites(ResultCollection $resultCollection, $checkGroupClass, WebsiteCheck $websiteCheck)
+    private function checkWebsites(ResultCollection $resultCollection, string $checkGroupClass, WebsiteCheck $websiteCheck): void
     {
         if (!$websites = Mage::app()->getWebsites()) {
             $this->_markCheckWarning($resultCollection, 'websites', $checkGroupClass);

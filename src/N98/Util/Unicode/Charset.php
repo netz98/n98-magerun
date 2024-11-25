@@ -28,9 +28,8 @@ class Charset
 
     /**
      * @param int|array $codes
-     * @return string
      */
-    public static function convertInteger(...$codes)
+    public static function convertInteger(...$codes): string
     {
         if (count($codes) === 1 && is_array($codes[0])) {
             $codes = $codes[0];

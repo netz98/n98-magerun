@@ -44,6 +44,9 @@ class VerifyOrDie
         return $basename;
     }
 
+    /**
+     * @param mixed $subject
+     */
     public static function argumentType(string $name, string $internalType, $subject): void
     {
         $actual = gettype($subject);
@@ -54,7 +57,7 @@ class VerifyOrDie
         }
     }
 
-    private static function violation(string $message)
+    private static function violation(string $message): void
     {
         throw new RuntimeException($message);
     }

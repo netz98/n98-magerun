@@ -2,9 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 namespace N98\Magento\Application;
 
 use Composer\Autoload\ClassLoader;
@@ -26,6 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * functionality from @see \N98\Magento\Application
  *
  * @package N98\Magento\Application
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
 class Config
 {
@@ -35,47 +33,23 @@ class Config
 
     public const COMMAND_CLASS = 'Symfony\Component\Console\Command\Command';
 
-    /**
-     * @var array config data
-     */
-    private $config = [];
+    private array $config = [];
 
-    /**
-     * @var array
-     */
-    private $partialConfig = [];
+    private array $partialConfig = [];
 
-    /**
-     * @var ConfigurationLoader
-     */
-    private $configurationLoader;
+    private ?ConfigurationLoader $configurationLoader;
 
-    /**
-     * @var array
-     */
-    private $initConfig = [];
+    private array $initConfig;
 
-    /**
-     * @var boolean
-     */
-    private $isPharMode;
+    private bool $isPharMode;
 
-    /**
-     * @var OutputInterface
-     */
-    private $output;
+    private OutputInterface $output;
 
-    /**
-     * Config constructor.
-     *
-     * @param bool $isPharMode
-     * @param OutputInterface $output [optional]
-     */
-    public function __construct(array $initConfig = [], $isPharMode = false, OutputInterface $output = null)
+    public function __construct(array $initConfig = [], bool $isPharMode = false, OutputInterface $output = null)
     {
         $this->initConfig = $initConfig;
         $this->isPharMode = (bool) $isPharMode;
-        $this->output = $output instanceof \Symfony\Component\Console\Output\OutputInterface ? $output : new NullOutput();
+        $this->output = $output instanceof OutputInterface ? $output : new NullOutput();
     }
 
     /**
@@ -116,7 +90,7 @@ class Config
         return $input;
     }
 
-    public function registerConfigCommandAlias(Command $command)
+    public function registerConfigCommandAlias(Command $command): void
     {
         foreach ($this->getArray(['commands', 'aliases']) as $alias) {
             if (!is_array($alias)) {
@@ -134,7 +108,7 @@ class Config
         }
     }
 
-    public function registerCustomCommands(Application $application)
+    public function registerCustomCommands(Application $application): void
     {
         foreach ($this->getArray(['commands', 'customCommands']) as $commandClass) {
             $commandName = null;
@@ -169,12 +143,10 @@ class Config
     }
 
     /**
-     * @param string $className
-     * @param string|null $commandName
-     * @return Command|null
+     * @param mixed $className
      * @throws InvalidArgumentException
      */
-    private function newCommand($className, $commandName)
+    private function newCommand($className, ?string $commandName): ?Command
     {
         if (!is_string($className) && !is_object($className)) {
             throw new InvalidArgumentException(
@@ -204,7 +176,7 @@ class Config
     /**
      * Adds autoloader prefixes from user's config
      */
-    public function registerCustomAutoloaders(ClassLoader $classLoader)
+    public function registerCustomAutoloaders(ClassLoader $classLoader): void
     {
         $mask = '<debug>Registered %s autoloader </debug> <info>%s</info> -> <comment>%s</comment>';
 
@@ -221,7 +193,7 @@ class Config
         }
     }
 
-    public function setConfig(array $config)
+    public function setConfig(array $config): void
     {
         $this->config = $config;
     }
@@ -230,9 +202,8 @@ class Config
      * Get config array (whole or in part)
      *
      * @param string|array $key
-     * @return array
      */
-    public function getConfig($key = null)
+    public function getConfig($key = null): array
     {
         if (null === $key) {
             return $this->config;
@@ -241,15 +212,12 @@ class Config
         return $this->getArray($key);
     }
 
-    public function setLoader(ConfigurationLoader $configurationLoader)
+    public function setLoader(ConfigurationLoader $configurationLoader): void
     {
         $this->configurationLoader = $configurationLoader;
     }
 
-    /**
-     * @return ConfigurationLoader
-     */
-    public function getLoader()
+    public function getLoader(): ConfigurationLoader
     {
         if (!$this->configurationLoader) {
             $this->configurationLoader = $this->createLoader($this->initConfig, $this->isPharMode, $this->output);
@@ -259,15 +227,12 @@ class Config
         return $this->configurationLoader;
     }
 
-    public function load()
+    public function load(): void
     {
         $this->config = $this->getLoader()->toArray();
     }
 
-    /**
-     * @param bool $loadExternalConfig
-     */
-    public function loadPartialConfig($loadExternalConfig)
+    public function loadPartialConfig(bool $loadExternalConfig): void
     {
         $configurationLoader = $this->getLoader();
         $this->partialConfig = $configurationLoader->getPartialConfig($loadExternalConfig);
@@ -275,10 +240,8 @@ class Config
 
     /**
      * Get names of sub-folders to be scanned during Magento detection
-     *
-     * @return array
      */
-    public function getDetectSubFolders()
+    public function getDetectSubFolders(): array
     {
         if (isset($this->partialConfig['detect']['subFolders'])) {
             return $this->partialConfig['detect']['subFolders'];
@@ -287,22 +250,13 @@ class Config
         return [];
     }
 
-    /**
-     * @param bool $isPharMode
-     *
-     * @return ConfigurationLoader
-     */
-    public function createLoader(array $initConfig, $isPharMode, OutputInterface $output)
+    public function createLoader(array $initConfig, bool $isPharMode, OutputInterface $output): ConfigurationLoader
     {
         $config = ArrayFunctions::mergeArrays($this->config, $initConfig);
-
         return new ConfigurationLoader($config, $isPharMode, $output);
     }
 
-    /**
-     * @param string $message
-     */
-    private function debugWriteln($message)
+    private function debugWriteln(string $message): void
     {
         $output = $this->output;
         if (OutputInterface::VERBOSITY_DEBUG <= $output->getVerbosity()) {
@@ -314,10 +268,8 @@ class Config
      * Get array from config, default to an empty array if not set
      *
      * @param string|array $key
-     * @param array $default [optional]
-     * @return array
      */
-    private function getArray($key, $default = [])
+    private function getArray($key, array $default = []): array
     {
         $result = $this->traverse((array) $key);
         if (null === $result) {
@@ -327,7 +279,7 @@ class Config
         return $result;
     }
 
-    private function traverse(array $keys)
+    private function traverse(array $keys): ?array
     {
         $anchor = &$this->config;
         foreach ($keys as $key) {

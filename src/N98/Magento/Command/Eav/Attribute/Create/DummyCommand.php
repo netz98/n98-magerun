@@ -11,6 +11,7 @@ use Mage_Eav_Model_Entity_Attribute;
 use Mage_Eav_Model_Entity_Attribute_Source_Table;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,9 +25,9 @@ use Symfony\Component\Console\Question\Question;
  */
 class DummyCommand extends AbstractMagentoCommand
 {
-    private $supportedLocales = ['en_US', 'en_GB'];
+    private array $supportedLocales = ['en_US', 'en_GB'];
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('eav:attribute:create-dummy-values')->addArgument('locale', InputArgument::OPTIONAL, Locale::class)
@@ -37,9 +38,6 @@ class DummyCommand extends AbstractMagentoCommand
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -50,12 +48,11 @@ Supported Locales:
 HELP;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $output->writeln(
@@ -93,16 +90,13 @@ HELP;
             }
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
      * Ask for command arguments
-     *
-     *
-     * @return array
      */
-    private function askForArguments(InputInterface $input, OutputInterface $output)
+    private function askForArguments(InputInterface $input, OutputInterface $output): array
     {
         $questionHelper = $this->getQuestionHelper();
         $argument = [];
@@ -163,11 +157,8 @@ HELP;
 
     /**
      * Check if an option exist
-     *
-     * @param string                          $arg_value
-     * @return bool
      */
-    private function attributeValueExists(Mage_Eav_Model_Entity_Attribute $mageEavModelEntityAttribute, $arg_value)
+    private function attributeValueExists(Mage_Eav_Model_Entity_Attribute $mageEavModelEntityAttribute, string $arg_value): bool
     {
         /** @var Mage_Eav_Model_Entity_Attribute_Source_Table $options */
         $options = Mage::getModel('eav/entity_attribute_source_table');

@@ -9,11 +9,16 @@ use Mage;
 use Mage_Core_Model_Resource_Setup;
 use N98\Magento\Command\AbstractMagentoCommand;
 use ReflectionObject;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use function file;
+use function ob_end_clean;
+use function ob_start;
 
 /**
  * Run setup command
@@ -22,7 +27,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class RunCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('sys:setup:run')
@@ -35,9 +40,6 @@ class RunCommand extends AbstractMagentoCommand
             ->setDescription('Runs all new setup scripts.');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -50,7 +52,7 @@ HELP;
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         try {
@@ -62,24 +64,24 @@ HELP;
              * Put output in buffer. \Mage_Core_Model_Resource_Setup::_modifyResourceDb should print any error
              * directly to stdout. Use exception which will be thrown to show error
              */
-            \ob_start();
+            ob_start();
             Mage_Core_Model_Resource_Setup::applyAllUpdates();
             if (is_callable(['\Mage_Core_Model_Resource_Setup', 'applyAllDataUpdates'])) {
                 Mage_Core_Model_Resource_Setup::applyAllDataUpdates();
             }
 
-            \ob_end_clean();
+            ob_end_clean();
             $output->writeln('<info>done</info>');
         } catch (Exception $exception) {
-            \ob_end_clean();
+            ob_end_clean();
             $this->getApplication()->renderThrowable($exception, $output);
             $this->printStackTrace($output, $exception);
             $this->printFile($output, $exception);
 
-            return 1; // exit with error status
+            return Command::FAILURE;
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
@@ -111,11 +113,11 @@ HELP;
         $tableHelper->render($output);
     }
 
-    protected function printFile(OutputInterface $output, Exception $exception)
+    protected function printFile(OutputInterface $output, Exception $exception): void
     {
         if (preg_match('/Error\sin\sfile\:\s"(.+)\"\s-/', $exception->getMessage(), $matches)) {
             $tableHelper = $this->getTableHelper();
-            $lines = \file($matches[1]);
+            $lines = file($matches[1]);
             $rows = [];
             $i = 0;
             foreach ($lines as $line) {
@@ -128,7 +130,7 @@ HELP;
         }
     }
 
-    private function flushCache()
+    private function flushCache(): void
     {
         /**
          * Get events before cache flush command is called.

@@ -34,32 +34,30 @@ class Result
     protected $_status;
 
     /**
-     * @var array[string]
+     * @var string|string[]
      */
     protected $_message;
 
-    /**
-     * @var string
-     */
-    protected $_resultGroup;
+    protected string $_resultGroup;
 
-    public function __construct($status = self::STATUS_OK, $message = '', $resultGroup = '')
+    /**
+     * @param bool|string $status
+     * @param string|string[] $message
+     */
+    public function __construct($status = self::STATUS_OK, $message = '', string $resultGroup = '')
     {
         $this->_status = $status;
         $this->_message = $message;
         $this->_resultGroup = $resultGroup;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isValid()
+    public function isValid(): bool
     {
         return $this->_status === self::STATUS_OK;
     }
 
     /**
-     * @param boolean|string $status
+     * @param bool|string $status
      * @return $this
      */
     public function setStatus($status)
@@ -75,20 +73,16 @@ class Result
         }
 
         $this->_status = $status;
-
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->_status;
     }
 
     /**
-     * @return string
+     * @return string|string[]
      */
     public function getMessage()
     {
@@ -99,25 +93,18 @@ class Result
      * @param string $message
      * @return $this
      */
-    public function setMessage($message)
+    public function setMessage(string $message)
     {
         $this->_message = $message;
-
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getResultGroup()
+    public function getResultGroup(): string
     {
         return $this->_resultGroup;
     }
 
-    /**
-     * @param string $resultGroup
-     */
-    public function setResultGroup($resultGroup)
+    public function setResultGroup(string $resultGroup): void
     {
         $this->_resultGroup = $resultGroup;
     }

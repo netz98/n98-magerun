@@ -6,6 +6,7 @@ namespace N98\Magento\Command\Cms\Block;
 
 use Mage_Cms_Model_Block;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -16,10 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ListCommand extends AbstractMagentoCommand
 {
-    /**
-     * Configure command
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('cms:block:list')
@@ -30,31 +28,23 @@ class ListCommand extends AbstractMagentoCommand
 
     /**
      * Get an instance of cms/block
-     *
-     * @return Mage_Cms_Model_Block
      */
-    protected function _getBlockModel()
+    protected function _getBlockModel(): Mage_Cms_Model_Block
     {
         /** @var Mage_Cms_Model_Block $mageCoreModelAbstract */
         $mageCoreModelAbstract = $this->_getModel('cms/block');
         return $mageCoreModelAbstract;
     }
 
-    /**
-     * Execute the command
-     *
-     *
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::FAILURE;
         }
 
         $cmsBlockCollection = $this->_getBlockModel()->getCollection()->addFieldToSelect('*');
 
-        /** @var \Mage_Cms_Model_Resource_Block $resourceModel */
         $resourceModel = $this->_getBlockModel()->getResource();
 
         $table = [];
@@ -68,6 +58,7 @@ class ListCommand extends AbstractMagentoCommand
         $tableHelper
             ->setHeaders(['block_id', 'identifier', 'title', 'is_active', 'store_ids'])
             ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+
+        return Command::SUCCESS;
     }
 }

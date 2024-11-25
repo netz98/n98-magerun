@@ -11,6 +11,7 @@ use Mage_Sitemap_Model_Resource_Catalog_Category;
 use Mage_Sitemap_Model_Resource_Catalog_Product;
 use Mage_Sitemap_Model_Resource_Cms_Page;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -37,7 +38,7 @@ use Varien_Object;
  */
 class ListCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('sys:url:list')
@@ -50,9 +51,6 @@ class ListCommand extends AbstractMagentoCommand
             ->setDescription('Get all urls.');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -72,16 +70,11 @@ Examples:
 HELP;
     }
 
-    /**
-     * Execute command
-     *
-     *
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->detectMagento($output, true);
+        $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         if ($input->getOption('add-all')) {
@@ -95,7 +88,8 @@ HELP;
         $urls = [];
 
         foreach ($stores as $store) {
-            $currentStore = Mage::app()->getStore($store); /* @var \Mage_Core_Model_Store $currentStore */
+            /** @var Mage_Core_Model_Store $currentStore */
+            $currentStore = Mage::app()->getStore($store);
 
             // base url
             $urls[] = $currentStore->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
@@ -116,7 +110,7 @@ HELP;
         }
 
         if (count($urls) === 0) {
-            return 0;
+            return Command::SUCCESS;
         }
 
         foreach ($urls as $url) {
@@ -124,6 +118,7 @@ HELP;
             $line = $input->getArgument('linetemplate');
             $line = str_replace('{url}', $url, $line);
 
+            /** @var array $parts */
             $parts = parse_url($url);
             foreach ($parts as $key => $value) {
                 $line = str_replace('{' . $key . '}', $value, $line);
@@ -133,7 +128,7 @@ HELP;
             $output->writeln($line);
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**

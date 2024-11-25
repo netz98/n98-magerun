@@ -6,9 +6,11 @@ namespace N98\Magento\Command\Developer\Code\Model;
 
 use InvalidArgumentException;
 use Mage;
+use Mage_Core_Model_Abstract;
 use N98\Magento\Command\AbstractMagentoCommand;
 use PDO;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,38 +22,22 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class MethodCommand extends AbstractMagentoCommand
 {
-    /**
-     * @var InputInterface
-     */
-    protected $_input;
+    protected InputInterface $_input;
+
+    protected OutputInterface $_output;
+
+    protected Mage_Core_Model_Abstract $_mageModel;
+
+    protected string $_mageModelTable;
+
+    protected string $_fileName = '';
 
     /**
-     * @var OutputInterface
-     */
-    protected $_output;
-
-    /**
-     * @var \Mage_Core_Model_Abstract
-     */
-    protected $_mageModel;
-
-    /**
-     * @var string
-     */
-    protected $_mageModelTable;
-
-    /**
-     * @var string
-     */
-    protected $_fileName = '';
-
-    /**
-     * @var array
      * @see initTableColumns
      */
-    protected $_tableColumns = [];
+    protected array $_tableColumns = [];
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('dev:code:model:method')
@@ -63,7 +49,6 @@ class MethodCommand extends AbstractMagentoCommand
     }
 
     /**
-     *
      * @throws RuntimeException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -80,10 +65,11 @@ class MethodCommand extends AbstractMagentoCommand
         $this->initTableColumns();
         $this->writeToClassFile();
         $this->_output->writeln('Wrote getter and setter @methods into file: ' . $this->_fileName);
-        return 0;
+
+        return Command::SUCCESS;
     }
 
-    protected function writeToClassFile()
+    protected function writeToClassFile(): void
     {
         $modelFileContent = implode('', file($this->_fileName));
         $fileParts = preg_split('~(\s+)(class)(\s+)([a-z0-9_]+)~i', $modelFileContent, -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -100,18 +86,12 @@ class MethodCommand extends AbstractMagentoCommand
         }
     }
 
-    /**
-     * @return string
-     */
-    protected function generateComment()
+    protected function generateComment(): string
     {
         return PHP_EOL . '/**' . PHP_EOL . implode(PHP_EOL, $this->getGetterSetter()) . PHP_EOL . ' */' . PHP_EOL;
     }
 
-    /**
-     * @return array
-     */
-    protected function getGetterSetter()
+    protected function getGetterSetter(): array
     {
         $modelClassName = get_class($this->_mageModel);
         $getterSetter = [];
@@ -132,28 +112,36 @@ class MethodCommand extends AbstractMagentoCommand
         return $getterSetter;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    protected function camelize($name)
+    protected function camelize(string $name): string
     {
         return uc_words($name, '');
     }
 
     /**
      * Mapping method to transform MySQL column types into PHP types
-     *
-     * @param $columnType
-     *
-     * @return string
      */
-    protected function getColumnType($columnType)
+    protected function getColumnType(string $columnType): string
     {
         $cte = explode('(', $columnType);
         $columnType = strtolower($cte[0]);
-        $typeMapper = ['int'        => 'int', 'tinyint'    => 'int', 'smallint'   => 'int', 'decimal'    => 'float', 'float'      => 'float', 'double'     => 'float', 'real'       => 'float', 'char'       => 'string', 'varchar'    => 'string', 'text'       => 'string', 'tinytext'   => 'string', 'mediumtext' => 'string', 'longtext'   => 'string', 'date'       => 'string', 'datetime'   => 'string', 'timestamp'  => 'string'];
+        $typeMapper = [
+            'int'        => 'int',
+            'tinyint'    => 'int',
+            'smallint'   => 'int',
+            'decimal'    => 'float',
+            'float'      => 'float',
+            'double'     => 'float',
+            'real'       => 'float',
+            'char'       => 'string',
+            'varchar'    => 'string',
+            'text'       => 'string',
+            'tinytext'   => 'string',
+            'mediumtext' => 'string',
+            'longtext'   => 'string',
+            'date'       => 'string',
+            'datetime'   => 'string',
+            'timestamp'  => 'string',
+        ];
 
         return $typeMapper[$columnType] ?? '';
     }
@@ -163,7 +151,7 @@ class MethodCommand extends AbstractMagentoCommand
      *
      * @see _tableColumns
      */
-    protected function initTableColumns()
+    protected function initTableColumns(): void
     {
         $databaseHelper = $this->getDatabaseHelper();
         $pdo = $databaseHelper->getConnection($this->_output);
@@ -178,11 +166,9 @@ class MethodCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @param string $filename
-     *
      * @return string|false
      */
-    protected function searchFullPath($filename)
+    protected function searchFullPath(string $filename)
     {
         $paths = explode(PATH_SEPARATOR, get_include_path());
         foreach ($paths as $path) {
@@ -195,7 +181,7 @@ class MethodCommand extends AbstractMagentoCommand
         return false;
     }
 
-    protected function checkClassFileName()
+    protected function checkClassFileName(): void
     {
         $fileName = str_replace(
             ' ',
@@ -209,7 +195,7 @@ class MethodCommand extends AbstractMagentoCommand
         }
     }
 
-    protected function checkModel()
+    protected function checkModel(): void
     {
         $modelName = $this->_input->getArgument('modelName');
 

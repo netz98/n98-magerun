@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Console\Helper\DatabaseHelper;
 use PDO;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -24,32 +25,17 @@ class CheckTablesCommand extends AbstractMagentoCommand
 
     public const MESSAGE_REPAIR_NOT_SUPPORTED = "The storage engine for the table doesn't support repair";
 
-    /**
-     * @var InputInterface
-     */
-    protected $input;
+    protected InputInterface $input;
 
-    /**
-     * @var OutputInterface
-     */
-    protected $output;
+    protected OutputInterface $output;
 
-    /**
-     * @var DatabaseHelper
-     */
-    protected $dbHelper;
+    protected DatabaseHelper $dbHelper;
 
-    /**
-     * @var bool
-     */
-    protected $showProgress = false;
+    protected bool $showProgress = false;
 
-    /**
-     * @var array
-     */
-    protected $allowedTypes = ['QUICK', 'FAST', 'CHANGED', 'MEDIUM', 'EXTENDED'];
+    protected array $allowedTypes = ['QUICK', 'FAST', 'CHANGED', 'MEDIUM', 'EXTENDED'];
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('db:maintain:check-tables')
@@ -71,9 +57,6 @@ class CheckTablesCommand extends AbstractMagentoCommand
             ->addFormatOption();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -107,9 +90,8 @@ HELP;
 
     /**
      * @throws InvalidArgumentException
-     *
      */
-    protected function isTypeAllowed()
+    protected function isTypeAllowed(): void
     {
         $type = $this->input->getOption('type');
         $type = strtoupper($type);
@@ -118,13 +100,12 @@ HELP;
         }
     }
 
-    protected function progressAdvance(ProgressBar $progressBar)
+    protected function progressAdvance(ProgressBar $progressBar): void
     {
         if ($this->showProgress) {
             $progressBar->advance();
         }
     }
-
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -162,7 +143,12 @@ HELP;
                 $m = '_check' . $allTableStatus[$table]['Engine'];
                 $tableOutput = array_merge($tableOutput, $this->$m($table));
             } else {
-                $tableOutput[] = ['table'     => $table, 'operation' => 'not supported', 'type'      => '', 'status'    => ''];
+                $tableOutput[] = [
+                    'table'     => $table,
+                    'operation' => 'not supported',
+                    'type'      => '',
+                    'status'    => '',
+                ];
             }
 
             $this->progressAdvance($progressBar);
@@ -176,50 +162,35 @@ HELP;
         $tableHelper
             ->setHeaders(['Table', 'Operation', 'Type', 'Status'])
             ->renderByFormat($this->output, $tableOutput, $this->input->getOption('format'));
-        return 0;
+
+        return Command::SUCCESS;
     }
 
-    /**
-     * @param string $tableName
-     * @param string $engine
-     *
-     * @return array
-     */
-    protected function _queryAlterTable($tableName, $engine)
+    protected function _queryAlterTable(string $tableName, string $engine): array
     {
         $pdo = $this->dbHelper->getConnection($this->output);
         $start = microtime(true);
         $affectedRows = $pdo->exec(sprintf('ALTER TABLE %s ENGINE=%s', $tableName, $engine));
 
-        return [['table'     => $tableName, 'operation' => 'ENGINE ' . $engine, 'type'      => sprintf('%15s rows', (string) $affectedRows), 'status'    => sprintf('%.3f secs', microtime(true) - $start)]];
+        return [[
+            'table'     => $tableName,
+            'operation' => 'ENGINE ' . $engine,
+            'type'      => sprintf('%15s rows', (string) $affectedRows),
+            'status'    => sprintf('%.3f secs', microtime(true) - $start),
+        ]];
     }
 
-    /**
-     * @param string $tableName
-     *
-     * @return array
-     */
-    protected function _checkInnoDB($tableName)
+    protected function _checkInnoDB(string $tableName): array
     {
         return $this->_queryAlterTable($tableName, 'InnoDB');
     }
 
-    /**
-     * @param string $tableName
-     *
-     * @return array
-     */
-    protected function _checkMEMORY($tableName)
+    protected function _checkMEMORY(string $tableName): array
     {
         return $this->_queryAlterTable($tableName, 'MEMORY');
     }
 
-    /**
-     * @param string $tableName
-     *
-     * @return array
-     */
-    protected function _checkMyISAM($tableName)
+    protected function _checkMyISAM(string $tableName): array
     {
         $table = [];
         $type = $this->input->getOption('type');
@@ -243,11 +214,9 @@ HELP;
     }
 
     /**
-     * @param string $sql
-     *
      * @return array|bool
      */
-    protected function _query($sql)
+    protected function _query(string $sql)
     {
         $pdo = $this->dbHelper->getConnection($this->output);
         $query = $pdo->prepare($sql);

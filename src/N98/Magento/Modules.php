@@ -22,10 +22,7 @@ use Traversable;
  */
 class Modules implements IteratorAggregate, Countable
 {
-    /**
-     * @var array
-     */
-    private $list;
+    private ?array $list;
 
     public function __construct(array $list = null)
     {
@@ -36,10 +33,7 @@ class Modules implements IteratorAggregate, Countable
         $this->list = $list;
     }
 
-    /**
-     * @return Modules
-     */
-    public function findInstalledModules()
+    public function findInstalledModules(): Modules
     {
         $list = [];
 

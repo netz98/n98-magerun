@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Cache;
 
-use Enterprise_PageCache_Model_Cache;
 use Exception;
 use Mage;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class FlushCommand extends AbstractCacheCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('cache:flush')
@@ -38,9 +38,6 @@ class FlushCommand extends AbstractCacheCommand
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -54,7 +51,6 @@ Options:
 HELP;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -65,7 +61,7 @@ HELP;
         }
 
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         try {
@@ -86,22 +82,6 @@ HELP;
             $this->reinitCache();
         }
 
-        /* Since Magento 1.10 we have an own cache handler for FPC */
-        if ($this->isEnterpriseFullPageCachePresent() && class_exists('Enterprise_PageCache_Model_Cache')) {
-            $result = Enterprise_PageCache_Model_Cache::getCacheInstance()->flush();
-            if ($result) {
-                $output->writeln('<info>FPC cleared</info>');
-            } else {
-                $output->writeln('<error>Failed to clear FPC</error>');
-            }
-        }
-
-        return 0;
-    }
-
-    protected function isEnterpriseFullPageCachePresent()
-    {
-        $isModuleEnabled = Mage::helper('core')->isModuleEnabled('Enterprise_PageCache');
-        return $this->_magentoEnterprise && $isModuleEnabled && version_compare(Mage::getVersion(), '1.11.0.0', '>=');
+        return Command::SUCCESS;
     }
 }

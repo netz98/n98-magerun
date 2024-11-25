@@ -6,6 +6,7 @@ namespace N98\Magento\Command\Developer\Log;
 
 use N98\Util\Filesystem;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SizeCommand extends AbstractLogCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('dev:log:size')
@@ -28,14 +29,13 @@ class SizeCommand extends AbstractLogCommand
     }
 
     /**
-     *
      * @throws RuntimeException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $fileName = $input->getArgument('log_filename');
@@ -57,6 +57,6 @@ class SizeCommand extends AbstractLogCommand
             $output->writeln('' . $size);
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

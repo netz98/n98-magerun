@@ -16,12 +16,9 @@ use N98\Magento\Command\System\Check\SimpleCheck;
  */
 class BytecodeCacheExtensionsCheck implements SimpleCheck, CommandConfigAware
 {
-    /**
-     * @var array
-     */
-    protected $_commandConfig;
+    protected array $_commandConfig;
 
-    public function check(ResultCollection $resultCollection)
+    public function check(ResultCollection $resultCollection): void
     {
         $result = $resultCollection->createResult();
 
@@ -47,7 +44,7 @@ class BytecodeCacheExtensionsCheck implements SimpleCheck, CommandConfigAware
         }
     }
 
-    public function setCommandConfig(array $commandConfig)
+    public function setCommandConfig(array $commandConfig): void
     {
         $this->_commandConfig = $commandConfig;
     }

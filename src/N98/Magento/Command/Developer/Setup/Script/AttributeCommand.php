@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Developer\Setup\Script;
 
 use Exception;
+use Mage;
 use Mage_Catalog_Model_Resource_Eav_Attribute;
+use Mage_Core_Exception;
 use Mage_Core_Model_Resource;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType\Factory;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,7 +32,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class AttributeCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('dev:setup:script:attribute')
@@ -38,12 +41,11 @@ class AttributeCommand extends AbstractMagentoCommand
             ->setDescription('Creates attribute script for a given attribute code');
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         try {
@@ -53,7 +55,7 @@ class AttributeCommand extends AbstractMagentoCommand
             $attribute = $this->getAttribute($entityType, $attributeCode);
 
             /** @var Mage_Core_Model_Resource $coreResource */
-            $coreResource = $this->_getModel('core/resource');
+            $coreResource = Mage::getModel('core/resource');
 
             $generator = Factory::create($entityType, $attribute);
             $generator->setReadConnection(
@@ -67,19 +69,16 @@ class AttributeCommand extends AbstractMagentoCommand
             $output->writeln('<error>' . $exception->getMessage() . '</error>');
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
-     * @param string $entityType
-     * @param string $attributeCode
-     *
-     * @return mixed
+     * @throws Mage_Core_Exception
      */
-    protected function getAttribute($entityType, $attributeCode)
+    protected function getAttribute(string $entityType, string $attributeCode): Mage_Catalog_Model_Resource_Eav_Attribute
     {
         /** @var Mage_Catalog_Model_Resource_Eav_Attribute $mageCoreModelAbstract */
-        $mageCoreModelAbstract = $this->_getModel('catalog/resource_eav_attribute');
+        $mageCoreModelAbstract = Mage::getModel('catalog/resource_eav_attribute');
         return $mageCoreModelAbstract->loadByCode($entityType, $attributeCode);
     }
 }

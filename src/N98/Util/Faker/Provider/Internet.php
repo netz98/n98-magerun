@@ -11,7 +11,11 @@ namespace N98\Util\Faker\Provider;
  */
 class Internet extends \Faker\Provider\Internet
 {
-    // Reduce the chance of conflicts.
+    /**
+     * Reduce the chance of conflicts.
+     *
+     * @var array $userNameFormats
+     */
     protected static $userNameFormats = [
         '{{lastName}}.{{firstName}}.######',
         '{{firstName}}.{{lastName}}.######',

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Config;
 
 use Path;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,7 +19,7 @@ use UnexpectedValueException;
  */
 class GetCommand extends AbstractConfigCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('config:get')
@@ -42,9 +43,6 @@ class GetCommand extends AbstractConfigCommand
             ->addFormatOption();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -58,13 +56,12 @@ is the same as
 HELP;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $table = [];
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         /* @var \Mage_Core_Model_Resource_Db_Collection_Abstract $collection */
@@ -100,7 +97,7 @@ HELP;
         if ($collection->count() == 0) {
             $output->writeln(sprintf("Couldn't find a config value for \"%s\"", $input->getArgument('path')));
 
-            return 0;
+            return Command::FAILURE;
         }
 
         foreach ($collection as $item) {
@@ -120,18 +117,19 @@ HELP;
             $this->renderAsTable($output, $table, $input->getOption('format'));
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    /**
-     * @param array $table
-     * @param string $format
-     */
-    protected function renderAsTable(OutputInterface $output, $table, $format)
+    protected function renderAsTable(OutputInterface $output, array $table, string $format): void
     {
         $formattedTable = [];
         foreach ($table as $row) {
-            $formattedTable[] = [$row['path'], $row['scope'], $row['scope_id'], $this->renderTableValue($row['value'], $format)];
+            $formattedTable[] = [
+                $row['path'],
+                $row['scope'],
+                $row['scope_id'],
+                $this->renderTableValue($row['value'], $format),
+            ];
         }
 
         $tableHelper = $this->getTableHelper();
@@ -141,7 +139,10 @@ HELP;
             ->renderByFormat($output, $formattedTable, $format);
     }
 
-    private function renderTableValue($value, $format)
+    /**
+     * @param mixed $value
+     */
+    private function renderTableValue($value, ?string $format): string
     {
         if ($value === null) {
             switch ($format) {
@@ -164,10 +165,7 @@ HELP;
         return $value;
     }
 
-    /**
-     * @param array $table
-     */
-    protected function renderAsUpdateScript(OutputInterface $output, $table)
+    protected function renderAsUpdateScript(OutputInterface $output, array $table): void
     {
         $output->writeln('<?php');
         $output->writeln('$installer = $this;');
@@ -196,10 +194,7 @@ HELP;
         }
     }
 
-    /**
-     * @param array $table
-     */
-    protected function renderAsMagerunScript(OutputInterface $output, $table)
+    protected function renderAsMagerunScript(OutputInterface $output, array $table): void
     {
         foreach ($table as $row) {
             $value = $row['value'];
@@ -207,7 +202,7 @@ HELP;
                 $value = str_replace(["\n", "\r"], ['\n', '\r'], $value);
             }
 
-            $disaplayValue = $value === null ? 'NULL' : escapeshellarg($value);
+            $displayValue = $value === null ? 'NULL' : escapeshellarg($value);
             $protectNullString = $value === 'NULL' ? '--no-null ' : '';
 
             $line = sprintf(
@@ -216,7 +211,7 @@ HELP;
                 $row['scope_id'],
                 $row['scope'],
                 escapeshellarg($row['path']),
-                $disaplayValue
+                $displayValue
             );
             $output->writeln($line);
         }

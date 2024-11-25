@@ -7,6 +7,7 @@ namespace N98\Magento\Command\Developer\Setup\Script\Attribute\EntityType;
 use Mage;
 use Mage_Core_Model_Resource;
 use Mage_Eav_Model_Entity_Attribute;
+use Varien_Db_Adapter_Interface;
 
 /**
  * Class AbstractEntityType
@@ -15,51 +16,30 @@ use Mage_Eav_Model_Entity_Attribute;
  */
 abstract class AbstractEntityType implements EntityType
 {
-    /**
-     * @var \Varien_Db_Adapter_Interface
-     */
-    protected $readConnection;
+    protected Varien_Db_Adapter_Interface $readConnection;
 
-    /**
-     * @var Mage_Eav_Model_Entity_Attribute
-     */
-    protected $attribute;
+    protected Mage_Eav_Model_Entity_Attribute $attribute;
 
-    /**
-     * @var string
-     */
-    protected $entityType;
+    protected string $entityType;
 
-    /**
-     * @var array
-     */
-    protected $warnings = [];
+    protected array $warnings = [];
 
     public function __construct(Mage_Eav_Model_Entity_Attribute $mageEavModelEntityAttribute)
     {
         $this->attribute = $mageEavModelEntityAttribute;
     }
 
-    /**
-     * @param $connection
-     */
-    public function setReadConnection($connection)
+    public function setReadConnection(Varien_Db_Adapter_Interface $connection): void
     {
         $this->readConnection = $connection;
     }
 
-    /**
-     * @param array $warnings
-     */
-    public function setWarnings($warnings)
+    public function setWarnings(array $warnings): void
     {
         $this->warnings = $warnings;
     }
 
-    /**
-     * @return array
-     */
-    public function getWarnings()
+    public function getWarnings(): array
     {
         return $this->warnings;
     }
@@ -68,10 +48,8 @@ abstract class AbstractEntityType implements EntityType
      * Gets attribute labels from database
      *
      * @param Mage_Eav_Model_Entity_Attribute $attribute
-     *
-     * @return array
      */
-    public function getAttributeLabels($attribute)
+    public function getAttributeLabels($attribute): array
     {
         // FIXME: after having this warning in for some time, promote to a parameter type-hint.
         if (!$attribute instanceof Mage_Eav_Model_Entity_Attribute) {
@@ -98,11 +76,8 @@ abstract class AbstractEntityType implements EntityType
 
     /**
      * Gets attribute options from database
-     *
-     *
-     * @return array
      */
-    protected function getOptions(Mage_Eav_Model_Entity_Attribute $mageEavModelEntityAttribute)
+    protected function getOptions(Mage_Eav_Model_Entity_Attribute $mageEavModelEntityAttribute): array
     {
         /** @var Mage_Core_Model_Resource $resourceModel */
         $resourceModel = Mage::getSingleton('core/resource');

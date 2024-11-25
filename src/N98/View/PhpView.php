@@ -11,58 +11,37 @@ namespace N98\View;
  */
 class PhpView implements View
 {
-    /**
-     * @var array
-     */
-    protected $vars = [];
+    protected array $vars = [];
 
-    /**
-     * @var string
-     */
-    protected $template;
+    protected string $template;
 
-    /**
-     * @param string $template
-     * @return PhpView
-     */
-    public function setTemplate($template)
+    public function setTemplate(string $template): PhpView
     {
         $this->template = $template;
-
         return $this;
     }
 
     /**
-     * @param string $key
      * @param mixed $value
-     *
-     * @return PhpView
      */
-    public function assign($key, $value)
+    public function assign(string $key, $value): PhpView
     {
         $this->vars[$key] = $value;
-
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function render()
+    public function render(): string
     {
         extract($this->vars);
         ob_start();
         include $this->template;
-        $content = ob_get_contents();
+        $content = (string) ob_get_contents();
         ob_end_clean();
 
         return $content;
     }
 
-    /**
-     * @return string
-     */
-    protected function xmlProlog()
+    protected function xmlProlog(): string
     {
         return '<?xml version="1.0"?>' . "\n";
     }

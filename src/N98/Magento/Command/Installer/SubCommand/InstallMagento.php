@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Installer\SubCommand;
 
+use Closure;
 use Exception;
+use InvalidArgumentException;
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
 use N98\Util\Exec;
 use N98\Util\OperatingSystem;
@@ -19,28 +21,18 @@ use Symfony\Component\Console\Question\Question;
  */
 class InstallMagento extends AbstractSubCommand
 {
-    /**
-     * @deprecated since since 1.3.1; Use constant from Exec-Utility instead
-     * @see Exec::CODE_CLEAN_EXIT
-     */
-    const EXEC_STATUS_OK = 0;
-
     const MAGENTO_INSTALL_SCRIPT_PATH = 'install.php';
 
-    /**
-     * @var \Closure
-     */
-    protected $notEmptyCallback;
+    protected Closure $notEmptyCallback;
 
     /**
-     * @return void
      * @throws Exception
      */
-    public function execute()
+    public function execute(): void
     {
         $this->notEmptyCallback = function ($input) {
             if (empty($input)) {
-                throw new \InvalidArgumentException('Please enter a value');
+                throw new InvalidArgumentException('Please enter a value');
             }
 
             return $input;
@@ -205,11 +197,11 @@ class InstallMagento extends AbstractSubCommand
 
         $validateBaseUrl = function ($url) {
             if (in_array(preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $url), [0, false], true)) {
-                throw new \InvalidArgumentException('Please enter a valid URL');
+                throw new InvalidArgumentException('Please enter a valid URL');
             }
 
             if (parse_url($url, \PHP_URL_HOST) === 'localhost') {
-                throw new \InvalidArgumentException(
+                throw new InvalidArgumentException(
                     'localhost cause problems! Please use 127.0.0.1 or another hostname'
                 );
             }
@@ -283,12 +275,9 @@ class InstallMagento extends AbstractSubCommand
         $this->runInstallScriptCommand($this->output, $this->config->getString('installationFolder'), $argv);
     }
 
-    /**
-     * @param $sessionSave
-     */
-    protected function _getDefaultSessionFolder($sessionSave)
+    protected function _getDefaultSessionFolder(string $sessionSave): void
     {
-        /**
+        /*
          * Try to create session folder
          */
         $defaultSessionFolder = $this->config->getString('installationFolder') . '/var/session';
@@ -297,10 +286,7 @@ class InstallMagento extends AbstractSubCommand
         }
     }
 
-    /**
-     * @return string
-     */
-    protected function _prepareDbHost()
+    protected function _prepareDbHost(): string
     {
         $dbHost = $this->config->getString('db_host');
 
@@ -314,10 +300,9 @@ class InstallMagento extends AbstractSubCommand
     /**
      * Invoke Magento PHP install script
      *
-     * @param string $installationFolder folder where magento is installed in, must exists setup script in
-     * @return void
+     * @param string $installationFolder folder where magento is installed in, must exist setup script in
      */
-    private function runInstallScriptCommand(OutputInterface $output, $installationFolder, array $argv)
+    private function runInstallScriptCommand(OutputInterface $output, string $installationFolder, array $argv): void
     {
         $installArgs = '';
         foreach ($argv as $argName => $argValue) {
@@ -340,7 +325,7 @@ class InstallMagento extends AbstractSubCommand
         );
 
         $output->writeln('<comment>' . $installCommand . '</comment>');
-        $installationOutput = null;
+        $installationOutput = '';
         $returnStatus = null;
         try {
             Exec::run($installCommand, $installationOutput, $returnStatus);

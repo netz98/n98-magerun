@@ -7,6 +7,7 @@ namespace N98\Magento\Command\LocalConfig;
 use DateTime;
 use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,7 +20,7 @@ use Symfony\Component\Console\Question\Question;
  */
 class GenerateCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('local-config:generate')
@@ -34,9 +35,6 @@ class GenerateCommand extends AbstractMagentoCommand
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -48,7 +46,6 @@ Generates the app/etc/local.xml.
 HELP;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -59,19 +56,19 @@ HELP;
             $output->writeln(
                 sprintf('<info>local.xml file already exists in folder "%s/app/etc"</info>', dirname($configFile))
             );
-            return 0;
+            return Command::FAILURE;
         }
 
         $this->writeSection($output, 'Generate Magento local.xml');
         $this->askForArguments($input, $output);
         if (!file_exists($configFileTemplate)) {
             $output->writeln(sprintf('<error>File %s does not exist.</error>', $configFileTemplate));
-            return 0;
+            return Command::FAILURE;
         }
 
         if (!is_writable(dirname($configFileTemplate))) {
             $output->writeln(sprintf('<error>Folder %s is not writeable</error>', dirname($configFileTemplate)));
-            return 0;
+            return Command::FAILURE;
         }
 
         $content = file_get_contents($configFileTemplate);
@@ -97,14 +94,14 @@ HELP;
         $newFileContent = str_replace(array_keys($replace), array_values($replace), $content);
         if (false === file_put_contents($configFile, $newFileContent)) {
             $output->writeln('<error>could not save config</error>');
-            return 0;
+            return Command::FAILURE;
         }
 
         $output->writeln('<info>Generated config</info>');
-        return 0;
+        return Command::SUCCESS;
     }
 
-    protected function askForArguments(InputInterface $input, OutputInterface $output)
+    protected function askForArguments(InputInterface $input, OutputInterface $output): void
     {
         $questionHelper = $this->getQuestionHelper();
 

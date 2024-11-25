@@ -13,6 +13,7 @@ use PDO;
 use PDOException;
 use RuntimeException;
 use SimpleXMLElement;
+use Traversable;
 
 /**
  * Class DbSettings
@@ -30,32 +31,26 @@ class DbSettings implements ArrayAccess, IteratorAggregate
     /**
      * @var string|null known field members
      */
-    private $tablePrefix;
+    private ?string $tablePrefix;
 
-    private $host;
+    private string $host;
 
-    private $port;
+    private ?string $port;
 
-    private $unixSocket;
+    private ?string $unixSocket;
 
-    private $dbName;
+    private string $dbName;
 
-    private $username;
+    private string $username;
 
-    private $password;
+    private string $password;
 
-    /**
-     * @var array field array
-     */
-    private $config;
+    private array $config;
 
     /** @var string Connection Node from Local Xml */
-    private $connectionNode = 'default_setup';
+    private string $connectionNode = 'default_setup';
 
-    /**
-     * @param string $file path to app/etc/local.xml
-     */
-    public function __construct($file, $connectionNode = null)
+    public function __construct(string $file, ?string $connectionNode = null)
     {
         $this->setFile($file);
         if (!is_null($connectionNode)) {
@@ -64,11 +59,9 @@ class DbSettings implements ArrayAccess, IteratorAggregate
     }
 
     /**
-     * @param string $file path to app/etc/local.xml
-     *
      * @throws InvalidArgumentException if the file is invalid
      */
-    public function setFile($file)
+    public function setFile(string $file): void
     {
         if (!is_readable($file)) {
             throw new InvalidArgumentException(
@@ -105,14 +98,15 @@ class DbSettings implements ArrayAccess, IteratorAggregate
     }
 
     /**
-     * helper method to parse config file segment related to the database settings
+     * Helper method to parse config file segment related to the database settings
      */
-    private function parseResources(SimpleXMLElement $resources)
+    private function parseResources(SimpleXMLElement $resources): void
     {
         // default values
         $config = ['host'        => null, 'port'        => null, 'unix_socket' => null, 'dbname'      => null, 'username'    => null, 'password'    => null];
 
         $connectionNode = $this->connectionNode;
+        /** @var string[] $config */
         $config = array_merge($config, (array) $resources->$connectionNode->connection);
         $config['prefix'] = (string) $resources->db->table_prefix;
 
@@ -177,9 +171,8 @@ class DbSettings implements ArrayAccess, IteratorAggregate
      * Connects to the database without initializing magento
      *
      * @throws RuntimeException if pdo_mysql extension is not installed
-     * @return \PDO
      */
-    public function getConnection()
+    public function getConnection(): PDO
     {
         if (!extension_loaded('pdo_mysql')) {
             throw new RuntimeException('pdo_mysql extension is not installed');
@@ -211,7 +204,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
         return $pdo;
     }
 
-    public function getMysqlClientToolConnectionString()
+    public function getMysqlClientToolConnectionString(): string
     {
         $segments = [];
 
@@ -239,12 +232,10 @@ class DbSettings implements ArrayAccess, IteratorAggregate
      * Mysql quoting of an identifier
      *
      * @param string $identifier UTF-8 encoded
-     *
-     * @return string quoted identifier
      */
-    private function quoteIdentifier($identifier)
+    private function quoteIdentifier(string $identifier): string
     {
-        $quote = '`'; // le backtique
+        $quote = '`';
 
         $pattern = '~^(?:[\x1-\x7F]|[\xC2-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF]{2})+$~';
 
@@ -261,10 +252,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
         return $quote . strtr($identifier, [$quote => $quote . $quote]) . $quote;
     }
 
-    /**
-     * @return bool
-     */
-    public function isSocketConnect()
+    public function isSocketConnect(): bool
     {
         return isset($this->config['unix_socket']);
     }
@@ -272,7 +260,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
     /**
      * @return string table prefix, null if not in the settings (no or empty prefix)
      */
-    public function getTablePrefix()
+    public function getTablePrefix(): ?string
     {
         return $this->tablePrefix;
     }
@@ -280,7 +268,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
     /**
      * @return string hostname, null if there is no hostname setup (e.g. unix_socket)
      */
-    public function getHost()
+    public function getHost(): string
     {
         return $this->host;
     }
@@ -288,7 +276,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
     /**
      * @return string port, null if not setup
      */
-    public function getPort()
+    public function getPort(): ?string
     {
         return $this->port;
     }
@@ -296,7 +284,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
     /**
      * @return string username
      */
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -304,7 +292,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
     /**
      * @return string password
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -312,7 +300,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
     /**
      * @return string unix socket, null if not in use
      */
-    public function getUnixSocket()
+    public function getUnixSocket(): ?string
     {
         return $this->unixSocket;
     }
@@ -322,7 +310,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
      *
      * @return array
      */
-    public function getConfig()
+    public function getConfig(): array
     {
         return $this->config;
     }
@@ -330,7 +318,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
     /**
      * @return string of the database identifier, null if not in use
      */
-    public function getDatabaseName()
+    public function getDatabaseName(): string
     {
         return $this->dbName;
     }
@@ -379,10 +367,10 @@ class DbSettings implements ArrayAccess, IteratorAggregate
         throw new BadMethodCallException('dbSettings are read-only');
     }
 
-    /*
+    /**
      * IteratorAggregate
      */
-    public function getIterator(): \Traversable
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->config);
     }

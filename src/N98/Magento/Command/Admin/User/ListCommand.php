@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Admin\User;
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -14,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ListCommand extends AbstractAdminUserCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('admin:user:list')
@@ -23,26 +24,30 @@ class ListCommand extends AbstractAdminUserCommand
         ;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
-        /** @var \Mage_Admin_Model_User $mageAdminModelUser */
         $mageAdminModelUser = $this->getUserModel();
         $userList = $mageAdminModelUser->getCollection();
         $table = [];
         foreach ($userList as $user) {
-            $table[] = [$user->getId(), $user->getUsername(), $user->getEmail(), $user->getIsActive() ? 'active' : 'inactive'];
+            $table[] = [
+                $user->getId(),
+                $user->getUsername(),
+                $user->getEmail(),
+                $user->getIsActive() ? 'active' : 'inactive',
+            ];
         }
 
         $tableHelper = $this->getTableHelper();
         $tableHelper
             ->setHeaders(['id', 'username', 'email', 'status'])
             ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+
+        return Command::SUCCESS;
     }
 }

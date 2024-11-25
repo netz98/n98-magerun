@@ -23,18 +23,7 @@ class MergeCssCommand extends AbstractMagentoStoreConfigCommand
      */
     protected static $defaultDescription = 'Toggles CSS Merging';
 
-    /**
-     * @var string
-     */
-    protected $toggleComment = 'CSS Merging';
-
-    /**
-     * @var string
-     */
-    protected $configPath = 'dev/css/merge_css_files';
-
-    /**
-     * @var string
-     */
-    protected $scope = self::SCOPE_STORE_VIEW_GLOBAL;
+    protected string $toggleComment = 'CSS Merging';
+    protected string $configPath = 'dev/css/merge_css_files';
+    protected string $scope = self::SCOPE_STORE_VIEW_GLOBAL;
 }

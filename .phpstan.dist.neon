@@ -5,5 +5,10 @@ parameters:
       - src
     scanDirectories:
       - magento
-    level: 5
+    level: 6
     treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        - identifier: missingType.generics
+        - identifier: missingType.iterableValue
+        - identifier: parameterByRef.unusedType
+        - identifier: property.unusedType

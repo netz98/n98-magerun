@@ -32,10 +32,9 @@ class ProcessArguments
     }
 
     /**
-     * @param $argument
      * @return $this
      */
-    public function addArg($argument)
+    public function addArg(string $argument)
     {
         $this->arguments[] = $argument;
         return $this;
@@ -44,9 +43,8 @@ class ProcessArguments
     /**
      * @param string $separator [optional]
      * @param string $prefix [optional]
-     * @return $this
      */
-    public function addArgs(array $arguments, string $separator = '=', string $prefix = '--')
+    public function addArgs(array $arguments, string $separator = '=', string $prefix = '--'): ProcessArguments
     {
         foreach ($arguments as $key => $value) {
             $this->addArg(

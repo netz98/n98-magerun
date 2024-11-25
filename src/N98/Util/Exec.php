@@ -28,14 +28,7 @@ class Exec
      */
     public const SET_O_PIPEFAIL = 'set -o pipefail;';
 
-    /**
-     * @param string $command
-     * @param string|null $output
-     * @param int $returnCode
-     *
-     * @phpstan-ignore parameterByRef.unusedType,parameterByRef.unusedType
-     */
-    public static function run($command, &$output = null, &$returnCode = null)
+    public static function run(string $command, ?string &$output = null, ?int &$returnCode = null): void
     {
         if (!self::allowed()) {
             $message = sprintf("No PHP exec(), can not execute command '%s'.", $command);
@@ -60,27 +53,20 @@ class Exec
 
     /**
      * Exec class is allowed to run
-     *
-     * @return bool
      */
-    public static function allowed()
+    public static function allowed(): bool
     {
         return function_exists('exec');
     }
 
     /**
      * string from array of strings representing one line per entry
-     *
-     * @return string
      */
-    private static function parseCommandOutput(array $commandOutput)
+    private static function parseCommandOutput(array $commandOutput): string
     {
         return implode(PHP_EOL, $commandOutput) . PHP_EOL;
     }
 
-    /**
-     * @return bool
-     */
     private static function isPipefailOptionAvailable(): bool
     {
         exec('set -o | grep pipefail 2>&1', $output, $returnCode);

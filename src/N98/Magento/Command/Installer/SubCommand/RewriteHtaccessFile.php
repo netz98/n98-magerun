@@ -13,10 +13,7 @@ use N98\Magento\Command\SubCommand\AbstractSubCommand;
  */
 class RewriteHtaccessFile extends AbstractSubCommand
 {
-    /**
-     * @return void
-     */
-    public function execute()
+    public function execute(): void
     {
         if ($this->hasFlagOrOptionalBoolOption('useDefaultConfigParams')) {
             return;
@@ -31,7 +28,7 @@ class RewriteHtaccessFile extends AbstractSubCommand
         }
     }
 
-    protected function replaceHtaccessFile()
+    protected function replaceHtaccessFile(): void
     {
         $installationArgs = $this->config->getArray('installation_args');
         $baseUrl = $installationArgs['base-url'];
@@ -41,19 +38,15 @@ class RewriteHtaccessFile extends AbstractSubCommand
         $this->_replaceContent($htaccessFile, $baseUrl);
     }
 
-    protected function _backupOriginalFile($htaccesFile)
+    protected function _backupOriginalFile(string $htaccessFile): void
     {
         copy(
-            $htaccesFile,
-            $htaccesFile . '.dist'
+            $htaccessFile,
+            $htaccessFile . '.dist'
         );
     }
 
-    /**
-     * @param string $htaccessFile
-     * @param string $baseUrl
-     */
-    protected function _replaceContent($htaccessFile, $baseUrl)
+    protected function _replaceContent(string $htaccessFile, string $baseUrl): void
     {
         $content = file_get_contents($htaccessFile);
         $content = str_replace('#RewriteBase /magento/', 'RewriteBase ' . parse_url($baseUrl, PHP_URL_PATH), $content);

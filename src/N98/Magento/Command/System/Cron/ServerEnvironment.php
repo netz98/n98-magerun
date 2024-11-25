@@ -24,20 +24,11 @@ use UnexpectedValueException;
  */
 class ServerEnvironment
 {
-    /**
-     * @var array|null
-     */
-    private $backup;
+    private ?array $backup;
 
-    /**
-     * @var array
-     */
-    private $keys = ['SCRIPT_NAME', 'SCRIPT_FILENAME'];
+    private array $keys = ['SCRIPT_NAME', 'SCRIPT_FILENAME'];
 
-    /**
-     *
-     */
-    public function initalize()
+    public function initalize(): void
     {
         if ($this->backup !== null) {
             throw new BadMethodCallException("Environment already backed up, can't initialize any longer");
@@ -56,10 +47,10 @@ class ServerEnvironment
         }
     }
 
-    public function reset()
+    public function reset(): void
     {
         if ($this->backup === null) {
-            throw new BadMethodCallException("Environment not yet backed up, initalize first, can't reset");
+            throw new BadMethodCallException("Environment not yet backed up, initialize first, can't reset");
         }
 
         foreach ($this->backup as $key => $value) {

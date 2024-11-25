@@ -21,49 +21,32 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @author Timothy Anido <xanido@gmail.com> */
 class TableHelper extends AbstractHelper
 {
-    /**
-     * @var string
-     */
-    protected $format;
+    protected string $format;
 
-    /**
-     * @var array
-     */
-    protected $headers = [];
+    protected array $headers = [];
 
-    /**
-     * @var array
-     */
-    protected $rows = [];
+    protected array $rows = [];
 
-    /**
-     * @param string $format
-     * @return $this
-     */
-    public function setFormat($format)
+    public function setFormat(string $format): TableHelper
     {
         $this->format = $format;
-
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getFormat()
+    public function getFormat(): string
     {
         return $this->format;
     }
 
     /**
-     * @param string $format [optional]
+     * @param string|null $format [optional]
      */
-    public function renderByFormat(OutputInterface $output, array $rows, $format = null)
+    public function renderByFormat(OutputInterface $output, array $rows, ?string $format = null): void
     {
         $rendererFactory = new RendererFactory();
         $renderer = $rendererFactory->create($format);
 
-        if ($renderer && $renderer instanceof RendererInterface) {
+        if ($renderer instanceof RendererInterface) {
             foreach ($rows as &$row) {
                 if ($this->headers !== []) {
                     $row = array_combine($this->headers, $row);
@@ -78,21 +61,18 @@ class TableHelper extends AbstractHelper
     }
 
     /**
-     * Takes a two dimensional tabular array with headers as keys in the first row and outputs an ascii table
+     * Takes a two-dimensional tabular array with headers as keys in the first row and outputs an ascii table
      *
      * @deprecated since 1.98.0 use original Symfony table instead.
      */
-    public function write(OutputInterface $output, array $rows)
+    public function write(OutputInterface $output, array $rows): void
     {
         $this->setHeaders(array_keys($rows[0]));
         $this->setRows($rows);
         $this->render($output);
     }
 
-    /**
-     * @param array $rows
-     */
-    public function render(OutputInterface $output, $rows = [])
+    public function render(OutputInterface $output, array $rows = []): void
     {
         if (empty($rows)) {
             $rows = $this->rows;
@@ -107,7 +87,7 @@ class TableHelper extends AbstractHelper
     /**
      * @inheritDoc
      */
-    public function getName()
+    public function getName(): string
     {
         return 'table';
     }
@@ -115,21 +95,19 @@ class TableHelper extends AbstractHelper
     /**
      * @return $this
      */
-    public function setRows(array $rows)
+    public function setRows(array $rows): TableHelper
     {
         $this->rows = $rows;
-
         return $this;
     }
 
     /**
-     * @param array|string[] $headers
+     * @param string[] $headers
      * @return $this
      */
-    public function setHeaders(array $headers)
+    public function setHeaders(array $headers): TableHelper
     {
         $this->headers = array_values($headers);
-
         return $this;
     }
 }

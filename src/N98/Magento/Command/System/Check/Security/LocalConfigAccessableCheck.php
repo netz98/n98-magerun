@@ -20,12 +20,9 @@ use Zend_Http_Response;
  */
 class LocalConfigAccessableCheck implements SimpleCheck
 {
-    /**
-     * @var int
-     */
-    protected $_verificationTimeOut = 30;
+    protected int $_verificationTimeOut = 30;
 
-    public function check(ResultCollection $resultCollection)
+    public function check(ResultCollection $resultCollection): void
     {
         $result = $resultCollection->createResult();
         $filePath = 'app/etc/local.xml';

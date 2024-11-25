@@ -11,8 +11,5 @@ namespace N98\Magento\Command\System\Check;
  */
 interface SimpleCheck
 {
-    /**
-     * @return void
-     */
-    public function check(ResultCollection $resultCollection);
+    public function check(ResultCollection $resultCollection): void;
 }

@@ -8,6 +8,7 @@ use Mage;
 use Mage_Core_Model_Design_Package;
 use MagentoHackathon\Composer\Magento\Deploystrategy\Move;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -18,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ClearCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('media:cache:jscss:clear')
              ->setDescription('Clears JS/CSS cache');
@@ -36,6 +37,6 @@ class ClearCommand extends AbstractMagentoCommand
             $output->writeln('<info>Js/CSS cache cleared</info>');
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

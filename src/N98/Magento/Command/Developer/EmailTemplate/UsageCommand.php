@@ -9,6 +9,7 @@ use Mage_Adminhtml_Model_Email_Template;
 use Mage_Core_Model_Email_Template;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Path;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -22,7 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class UsageCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('dev:email-template:usage')
@@ -30,7 +31,6 @@ class UsageCommand extends AbstractMagentoCommand
             ->addFormatOption();
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
@@ -46,10 +46,10 @@ class UsageCommand extends AbstractMagentoCommand
             $output->writeln('No transactional email templates stored in the database.');
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    protected function findEmailTemplates()
+    protected function findEmailTemplates(): array
     {
         $templates = Mage::getModel('adminhtml/email_template')->getCollection();
 
@@ -69,11 +69,21 @@ class UsageCommand extends AbstractMagentoCommand
             $configPaths = $template->getSystemConfigPathsWhereUsedCurrently();
 
             if ((is_countable($configPaths) ? count($configPaths) : 0) === 0) {
-                $configPaths[] = ['scope'    => 'Unused', 'scope_id' => 'Unused', 'path'     => 'Unused'];
+                $configPaths[] = [
+                    'scope'    => 'Unused',
+                    'scope_id' => 'Unused',
+                    'path'     => 'Unused'
+                ];
             }
 
             foreach ($configPaths as $configPath) {
-                $return[] = ['id'            => $this->sanitizeEmailProperty($template->getId()), 'Template Code' => $this->sanitizeEmailProperty($template->getTemplateCode()), 'Scope'         => $this->sanitizeEmailProperty($configPath['scope']), 'Scope Id'      => $this->sanitizeEmailProperty($configPath['scope_id']), Path::class          => $this->sanitizeEmailProperty($configPath['path'])];
+                $return[] = [
+                    'id'            => $this->sanitizeEmailProperty((string) $template->getId()),
+                    'Template Code' => $this->sanitizeEmailProperty($template->getTemplateCode()),
+                    'Scope'         => $this->sanitizeEmailProperty($configPath['scope']),
+                    'Scope Id'      => $this->sanitizeEmailProperty($configPath['scope_id']),
+                    Path::class     => $this->sanitizeEmailProperty($configPath['path']),
+                ];
             }
         }
 
@@ -82,10 +92,8 @@ class UsageCommand extends AbstractMagentoCommand
 
     /**
      * @param string $input Module property to be sanitized
-     *
-     * @return string
      */
-    private function sanitizeEmailProperty($input)
+    private function sanitizeEmailProperty(string $input): string
     {
         return trim($input);
     }

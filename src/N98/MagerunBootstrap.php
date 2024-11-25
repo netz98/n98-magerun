@@ -33,9 +33,8 @@ class MagerunBootstrap
 
     /**
      * @throws ErrorException
-     * @return ClassLoader
      */
-    public static function getLoader()
+    public static function getLoader(): string
     {
         $projectBasedir = __DIR__ . '/../..';
         if (!($loader = self::includeIfExists($projectBasedir . '/vendor/autoload.php'))
@@ -43,7 +42,7 @@ class MagerunBootstrap
         ) {
             throw new ErrorException(
                 'You must set up the project dependencies, run the following commands:' . PHP_EOL .
-                'curl -s http://getcomposer.org/installer | php' . PHP_EOL .
+                'curl -s https://getcomposer.org/installer | php' . PHP_EOL .
                 'php composer.phar install' . PHP_EOL
             );
         }
@@ -51,11 +50,7 @@ class MagerunBootstrap
         return $loader;
     }
 
-    /**
-     * @param string $file
-     * @return mixed
-     */
-    public static function includeIfExists($file)
+    public static function includeIfExists(string $file): ?string
     {
         if (file_exists($file)) {
             return include $file;

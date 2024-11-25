@@ -6,6 +6,7 @@ namespace N98\Magento\Command\System;
 
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class MaintenanceCommand extends AbstractMagentoCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('sys:maintenance')
@@ -27,7 +28,6 @@ class MaintenanceCommand extends AbstractMagentoCommand
         ;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -43,13 +43,10 @@ class MaintenanceCommand extends AbstractMagentoCommand
             $this->_switchOn($output, $flagFile);
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    /**
-     * @param $flagFile
-     */
-    protected function _switchOn(OutputInterface $output, $flagFile)
+    protected function _switchOn(OutputInterface $output, string $flagFile): void
     {
         if (!file_exists($flagFile) && !touch($flagFile)) {
             throw new RuntimeException('maintenance.flag file is not writable.');
@@ -58,11 +55,7 @@ class MaintenanceCommand extends AbstractMagentoCommand
         $output->writeln('Maintenance mode <info>on</info>');
     }
 
-    /**
-     * @param OutputInterface $output
-     * @param string $flagFile
-     */
-    protected function _switchOff($output, $flagFile)
+    protected function _switchOff(OutputInterface $output, string $flagFile): void
     {
         if (file_exists($flagFile) && !unlink($flagFile)) {
             throw new RuntimeException('maintenance.flag file is not removable.');

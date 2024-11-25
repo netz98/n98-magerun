@@ -6,6 +6,7 @@ namespace N98\Magento\Command\Admin\User;
 
 use Exception;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ChangeStatusCommand extends AbstractAdminUserCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('admin:user:change-status')
@@ -29,7 +30,6 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
         ;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -44,7 +44,7 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
 
             if (!$user->getId()) {
                 $output->writeln('<error>User was not found</error>');
-                return 0;
+                return Command::FAILURE;
             }
 
             try {
@@ -64,7 +64,7 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
 
                 // toggle is_active
                 if (!$input->getOption('activate') && !$input->getOption('deactivate')) {
-                    $user->setIsActive(!$user->getIsActive()); // toggle
+                    $user->setIsActive((int) !$user->getIsActive()); // toggle
                 }
 
                 $user->save();
@@ -85,6 +85,6 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
             }
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

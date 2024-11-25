@@ -13,9 +13,5 @@ use Mage_Core_Model_Store;
  */
 interface StoreCheck
 {
-    /**
-     *
-     * @return void
-     */
-    public function check(ResultCollection $resultCollection, Mage_Core_Model_Store $mageCoreModelStore);
+    public function check(ResultCollection $resultCollection, Mage_Core_Model_Store $mageCoreModelStore): void;
 }

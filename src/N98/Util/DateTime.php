@@ -15,11 +15,8 @@ class DateTime
 {
     /**
      * Human-readable string with time difference
-     *
-     *
-     * @return string
      */
-    public static function difference(PhpDateTime $time1, PhpDateTime $time2)
+    public static function difference(PhpDateTime $time1, PhpDateTime $time2): string
     {
         if ($time1 == $time2) {
             return '0';
@@ -52,11 +49,8 @@ class DateTime
 
     /**
      * Returns a readable string with time difference
-     *
-     *
-     * @return string
      */
-    public function getDifferenceAsString(PhpDateTime $time1, PhpDateTime $time2)
+    public function getDifferenceAsString(PhpDateTime $time1, PhpDateTime $time2): string
     {
         return self::difference($time1, $time2);
     }

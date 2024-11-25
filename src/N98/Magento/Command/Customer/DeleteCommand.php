@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Customer;
 
 use Exception;
+use Mage_Core_Exception;
 use Mage_Customer_Model_Customer;
 use Mage_Customer_Model_Entity_Customer_Collection;
 use Mage_Customer_Model_Resource_Customer_Collection;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,6 +18,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Throwable;
 
 /**
  * Delete customer command
@@ -24,25 +27,16 @@ use Symfony\Component\Console\Question\Question;
  */
 class DeleteCommand extends AbstractCustomerCommand
 {
-    /**
-     * @var InputInterface
-     */
-    protected $input;
+    protected InputInterface $input;
 
-    /**
-     * @var OutputInterface
-     */
-    protected $output;
+    protected OutputInterface $output;
 
-    /**
-     * @var QuestionHelper
-     */
-    protected $questionHelper;
+    protected QuestionHelper $questionHelper;
 
     /**
      * Set up options
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('customer:delete')
@@ -53,9 +47,6 @@ class DeleteCommand extends AbstractCustomerCommand
             ->setDescription('Delete Customer/s');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -70,12 +61,11 @@ n98-magerun customer:delete --range             <info># Will prompt for start an
 HELP;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output, true);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $this->input = $input;
@@ -175,13 +165,10 @@ HELP;
             }
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    /**
-     * @return bool
-     */
-    protected function shouldRemove()
+    protected function shouldRemove(): bool
     {
         $shouldRemove = $this->input->getOption('force');
         if (!$shouldRemove) {
@@ -198,12 +185,10 @@ HELP;
     /**
      * @param int|string $id
      *
-     * @return \Mage_Customer_Model_Customer
-     * @throws RuntimeException
+     * @throws RuntimeException|Mage_Core_Exception
      */
-    protected function getCustomer($id)
+    protected function getCustomer($id): Mage_Customer_Model_Customer
     {
-        /** @var \Mage_Customer_Model_Customer $customer */
         $customer = $this->getCustomerModel()->load($id);
         if (!$customer->getId()) {
             $parameterHelper = $this->getParameterHelper();
@@ -222,6 +207,7 @@ HELP;
 
     /**
      * @return true|Exception
+     * @throws Throwable
      */
     protected function deleteCustomer(Mage_Customer_Model_Customer $mageCustomerModelCustomer)
     {
@@ -239,10 +225,8 @@ HELP;
 
     /**
      * @param Mage_Customer_Model_Entity_Customer_Collection|Mage_Customer_Model_Resource_Customer_Collection $customers
-     *
-     * @return int
      */
-    protected function batchDelete($customers)
+    protected function batchDelete($customers): int
     {
         $count = 0;
         foreach ($customers as $customer) {
@@ -254,11 +238,7 @@ HELP;
         return $count;
     }
 
-    /**
-     * @param string $answer
-     * @return string
-     */
-    public function validateInt($answer)
+    public function validateInt(string $answer): string
     {
         if ((int)$answer === 0) {
             throw new RuntimeException(
@@ -269,13 +249,7 @@ HELP;
         return $answer;
     }
 
-    /**
-     * @param string $message
-     * @param string $default [optional]
-     *
-     * @return Question
-     */
-    private function getQuestion($message, $default = null)
+    private function getQuestion(string $message, ?string $default = null): Question
     {
         $params = [$message];
         $pattern = '%s: ';

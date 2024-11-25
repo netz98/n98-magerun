@@ -8,6 +8,7 @@ use Exception;
 use InvalidArgumentException;
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,9 +21,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class OnCommand extends AbstractMagentoCommand
 {
-    private $modules;
+    private ?array $modules;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('dev:module:dependencies:on')
@@ -33,7 +34,6 @@ class OnCommand extends AbstractMagentoCommand
         ;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $moduleName = $input->getArgument('moduleName');
@@ -66,19 +66,16 @@ class OnCommand extends AbstractMagentoCommand
             $output->writeln($exception->getMessage());
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
      * Find dependencies of given module $moduleName.
      * If $recursive = true, dependencies will be collected recursively for all module dependencies
      *
-     * @param string $moduleName
-     * @param bool $recursive
-     * @return array
      * @throws InvalidArgumentException
      */
-    protected function findModuleDependencies($moduleName, $recursive = false)
+    protected function findModuleDependencies(string $moduleName, bool $recursive = false): array
     {
         if ($this->modules === null) {
             $this->modules = Mage::app()->getConfig()->getNode('modules')->asArray();
@@ -112,10 +109,8 @@ class OnCommand extends AbstractMagentoCommand
 
     /**
      * Sort dependencies list by module name ascending
-     *
-     * @return int
      */
-    private function sortDependencies(array $a, array $b)
+    private function sortDependencies(array $a, array $b): int
     {
         return strcmp($a[0], $b[0]);
     }

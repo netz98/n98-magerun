@@ -6,6 +6,7 @@ namespace N98\Magento\Command\Script\Repository;
 
 use Description;
 use Location;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -16,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ListCommand extends AbstractRepositoryCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('script:repo:list')
@@ -25,9 +26,6 @@ class ListCommand extends AbstractRepositoryCommand
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelp(): string
     {
         return <<<HELP
@@ -44,7 +42,6 @@ The first line of the script can contain a comment (line prefixed with #) which 
 HELP;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $files = $this->getScripts();
@@ -65,6 +62,7 @@ HELP;
         $tableHelper
             ->setHeaders(['Script', Location::class, Description::class])
             ->renderByFormat($output, $table, $input->getOption('format'));
-        return 0;
+
+        return Command::SUCCESS;
     }
 }

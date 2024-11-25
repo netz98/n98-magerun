@@ -6,6 +6,7 @@ namespace N98\Magento\Command\Admin\User;
 
 use Exception;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,7 +19,7 @@ use Symfony\Component\Console\Question\Question;
  */
 class ChangePasswordCommand extends AbstractAdminUserCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('admin:user:change-password')
@@ -28,12 +29,11 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
         ;
     }
 
-    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return 0;
+            return Command::INVALID;
         }
 
         $questionHelper = $this->getQuestionHelper();
@@ -46,8 +46,7 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
         $user = $this->getUserModel()->loadByUsername($username);
         if ($user->getId() <= 0) {
             $output->writeln('<error>User was not found</error>');
-
-            return 0;
+            return Command::FAILURE;
         }
 
         // Password
@@ -71,6 +70,6 @@ class ChangePasswordCommand extends AbstractAdminUserCommand
             $output->writeln('<error>' . $exception->getMessage() . '</error>');
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

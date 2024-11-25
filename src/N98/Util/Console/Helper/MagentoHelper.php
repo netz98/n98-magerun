@@ -20,45 +20,27 @@ use Symfony\Component\Finder\Finder;
  */
 class MagentoHelper extends AbstractHelper
 {
-    /**
-     * @var string
-     */
-    protected $_magentoRootFolder;
+    protected string $_magentoRootFolder;
+
+    protected int $_magentoMajorVersion = 1;
+
+    protected bool $_magentoEnterprise = false;
+
+    protected bool $_magerunStopFileFound = false;
+
+    protected string $_magerunStopFileFolder;
 
     /**
-     * @var int
-     */
-    protected $_magentoMajorVersion = 1;
-
-    /**
-     * @var bool
-     */
-    protected $_magentoEnterprise = false;
-
-    /**
-     * @var bool
-     */
-    protected $_magerunStopFileFound = false;
-
-    /**
-     * @var string
-     */
-    protected $_magerunStopFileFolder;
-
-    /**
-     * @var InputInterface
+     * @var InputInterface|ArgvInput
      */
     protected $input;
 
     /**
-     * @var OutputInterface
+     * @var OutputInterface|ConsoleOutput
      */
     protected $output;
 
-    /**
-     * @var string
-     */
-    protected $_customConfigFilename = 'n98-magerun.yaml';
+    protected string $_customConfigFilename = 'n98-magerun.yaml';
 
     /**
      * Returns the canonical name of this helper.
@@ -67,18 +49,18 @@ class MagentoHelper extends AbstractHelper
      *
      * @api
      */
-    public function getName()
+    public function getName(): string
     {
         return 'magento';
     }
 
     public function __construct(InputInterface $input = null, OutputInterface $output = null)
     {
-        if (!$input instanceof \Symfony\Component\Console\Input\InputInterface) {
+        if (!$input instanceof InputInterface) {
             $input = new ArgvInput();
         }
 
-        if (!$output instanceof \Symfony\Component\Console\Output\OutputInterface) {
+        if (!$output instanceof OutputInterface) {
             $output = new ConsoleOutput();
         }
 
@@ -89,11 +71,9 @@ class MagentoHelper extends AbstractHelper
     /**
      * Start Magento detection
      *
-     * @param string $folder
      * @param array $subFolders [optional] sub-folders to check
-     * @return bool
      */
-    public function detect($folder, array $subFolders = [])
+    public function detect(string $folder, array $subFolders = []): bool
     {
         $folders = $this->splitPathFolders($folder);
         $folders = $this->checkMagerunFile($folders);
@@ -116,57 +96,37 @@ class MagentoHelper extends AbstractHelper
         return false;
     }
 
-    /**
-     * @return string
-     */
-    public function getRootFolder()
+    public function getRootFolder(): string
     {
         return $this->_magentoRootFolder;
     }
 
-    public function getEdition()
+    public function getEdition(): int
     {
         return $this->_magentoMajorVersion;
     }
 
-    /**
-     * @return bool
-     */
-    public function isEnterpriseEdition()
+    public function isEnterpriseEdition(): bool
     {
         return $this->_magentoEnterprise;
     }
 
-    /**
-     * @return int
-     */
-    public function getMajorVersion()
+    public function getMajorVersion(): int
     {
         return $this->_magentoMajorVersion;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isMagerunStopFileFound()
+    public function isMagerunStopFileFound(): bool
     {
         return $this->_magerunStopFileFound;
     }
 
-    /**
-     * @return string
-     */
-    public function getMagerunStopFileFolder()
+    public function getMagerunStopFileFolder(): string
     {
         return $this->_magerunStopFileFolder;
     }
 
-    /**
-     * @param string $folder
-     *
-     * @return array
-     */
-    protected function splitPathFolders($folder)
+    protected function splitPathFolders(string $folder): array
     {
         $folders = [];
 
@@ -183,11 +143,8 @@ class MagentoHelper extends AbstractHelper
 
     /**
      * Check for modman file and .basedir
-     *
-     *
-     * @return array
      */
-    protected function checkModman(array $folders)
+    protected function checkModman(array $folders): array
     {
         foreach (array_reverse($folders) as $searchFolder) {
             if (!is_readable($searchFolder)) {
@@ -230,11 +187,8 @@ class MagentoHelper extends AbstractHelper
 
     /**
      * Check for magerun stop-file
-     *
-     *
-     * @return array
      */
-    protected function checkMagerunFile(array $folders)
+    protected function checkMagerunFile(array $folders): array
     {
         foreach (array_reverse($folders) as $searchFolder) {
             if (!is_readable($searchFolder)) {
@@ -280,12 +234,7 @@ class MagentoHelper extends AbstractHelper
         return $folders;
     }
 
-    /**
-     * @param string $searchFolder
-     *
-     * @return bool
-     */
-    protected function _search($searchFolder)
+    protected function _search(string $searchFolder): bool
     {
         if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
             $this->output->writeln('<debug>Search for Magento in folder <info>' . $searchFolder . '</info></debug>');
@@ -297,7 +246,7 @@ class MagentoHelper extends AbstractHelper
 
         $finder = Finder::create();
         $finder
-            ->ignoreUnreadableDirs(true)
+            ->ignoreUnreadableDirs()
             ->depth(0)
             ->followLinks()
             ->name('Mage.php')
