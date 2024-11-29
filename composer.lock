@@ -111,16 +111,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v5.0.2",
+            "version": "v5.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "139676794dc1e9231bf7bcd123cfc0c99182cb13"
+                "reference": "8eea230464783aa9671db8eea6f8c6ac5285794b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/139676794dc1e9231bf7bcd123cfc0c99182cb13",
-                "reference": "139676794dc1e9231bf7bcd123cfc0c99182cb13",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/8eea230464783aa9671db8eea6f8c6ac5285794b",
+                "reference": "8eea230464783aa9671db8eea6f8c6ac5285794b",
                 "shasum": ""
             },
             "require": {
@@ -131,7 +131,7 @@
             },
             "require-dev": {
                 "ircmaxell/php-yacc": "^0.0.7",
-                "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0"
+                "phpunit/phpunit": "^9.0"
             },
             "bin": [
                 "bin/php-parse"
@@ -163,9 +163,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v5.0.2"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v5.3.1"
             },
-            "time": "2024-03-05T20:51:40+00:00"
+            "time": "2024-10-08T18:51:32+00:00"
         },
         {
             "name": "psr/container",
@@ -272,16 +272,16 @@
         },
         {
             "name": "psy/psysh",
-            "version": "v0.12.4",
+            "version": "v0.12.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "2fd717afa05341b4f8152547f142cd2f130f6818"
+                "reference": "36a03ff27986682c22985e56aabaf840dd173cb5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/2fd717afa05341b4f8152547f142cd2f130f6818",
-                "reference": "2fd717afa05341b4f8152547f142cd2f130f6818",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/36a03ff27986682c22985e56aabaf840dd173cb5",
+                "reference": "36a03ff27986682c22985e56aabaf840dd173cb5",
                 "shasum": ""
             },
             "require": {
@@ -308,12 +308,12 @@
             ],
             "type": "library",
             "extra": {
-                "branch-alias": {
-                    "dev-main": "0.12.x-dev"
-                },
                 "bamarni-bin": {
                     "bin-links": false,
                     "forward-command": false
+                },
+                "branch-alias": {
+                    "dev-main": "0.12.x-dev"
                 }
             },
             "autoload": {
@@ -345,9 +345,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bobthecow/psysh/issues",
-                "source": "https://github.com/bobthecow/psysh/tree/v0.12.4"
+                "source": "https://github.com/bobthecow/psysh/tree/v0.12.5"
             },
-            "time": "2024-06-10T01:18:23+00:00"
+            "time": "2024-11-29T06:14:30+00:00"
         },
         {
             "name": "rmccue/requests",
@@ -537,16 +537,16 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v2.5.3",
+            "version": "v2.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
-                "reference": "80d075412b557d41002320b96a096ca65aa2c98d"
+                "reference": "605389f2a7e5625f273b53960dc46aeaf9c62918"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/80d075412b557d41002320b96a096ca65aa2c98d",
-                "reference": "80d075412b557d41002320b96a096ca65aa2c98d",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/605389f2a7e5625f273b53960dc46aeaf9c62918",
+                "reference": "605389f2a7e5625f273b53960dc46aeaf9c62918",
                 "shasum": ""
             },
             "require": {
@@ -584,7 +584,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v2.5.3"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v2.5.4"
             },
             "funding": [
                 {
@@ -600,7 +600,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-01-24T14:02:46+00:00"
+            "time": "2024-09-25T14:11:13+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -1781,16 +1781,16 @@
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v5.4.40",
+            "version": "v5.4.48",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "af8868a6e9d6082dfca11f1a1f205ae93a8b6d93"
+                "reference": "42f18f170aa86d612c3559cfb3bd11a375df32c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/af8868a6e9d6082dfca11f1a1f205ae93a8b6d93",
-                "reference": "af8868a6e9d6082dfca11f1a1f205ae93a8b6d93",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/42f18f170aa86d612c3559cfb3bd11a375df32c8",
+                "reference": "42f18f170aa86d612c3559cfb3bd11a375df32c8",
                 "shasum": ""
             },
             "require": {
@@ -1850,7 +1850,7 @@
                 "dump"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-dumper/tree/v5.4.40"
+                "source": "https://github.com/symfony/var-dumper/tree/v5.4.48"
             },
             "funding": [
                 {
@@ -1866,7 +1866,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-05-31T14:33:22+00:00"
+            "time": "2024-11-08T15:21:10+00:00"
         },
         {
             "name": "symfony/yaml",
