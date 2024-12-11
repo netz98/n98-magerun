@@ -7,6 +7,7 @@ namespace N98\Magento\Command\Developer\Ide\PhpStorm;
 use Directory;
 use Exception;
 use Mage;
+use Mage_Core_Model_Config_Element;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -155,7 +156,9 @@ class MetaCommand extends AbstractMagentoCommand
             return $classes;
         }
 
-        $modelAliases = array_keys((array) Mage::getConfig()->getNode('global/models'));
+        $modelAliasesNode = Mage::getConfig()->getNode('global/models');
+        /** @var string[] $modelAliases */
+        $modelAliases = array_keys((array) $modelAliasesNode);
         foreach ($modelAliases as $modelAlias) {
             $resourceHelper = @Mage::getResourceHelper($modelAlias);
             if (is_object($resourceHelper)) {
@@ -481,6 +484,7 @@ PHP;
             $group = 'models';
         }
 
+        /** @var Mage_Core_Model_Config_Element $definitions */
         $definitions = Mage::getConfig()->getNode('global/' . $group);
 
         switch ($group) {

@@ -48,7 +48,7 @@ class RewriteHtaccessFile extends AbstractSubCommand
 
     protected function _replaceContent(string $htaccessFile, string $baseUrl): void
     {
-        $content = file_get_contents($htaccessFile);
+        $content = (string) file_get_contents($htaccessFile);
         $content = str_replace('#RewriteBase /magento/', 'RewriteBase ' . parse_url($baseUrl, PHP_URL_PATH), $content);
         file_put_contents($htaccessFile, $content);
     }

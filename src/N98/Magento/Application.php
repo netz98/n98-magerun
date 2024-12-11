@@ -8,7 +8,6 @@ use Composer\Autoload\ClassLoader;
 use Exception;
 use Mage;
 use Mage_Core_Model_Config_Options;
-use Magento\Mtf\EntryPoint\EntryPoint;
 use N98\Magento\Application\Config;
 use N98\Magento\Application\ConfigurationLoader;
 use N98\Magento\Application\Console\Event;
@@ -21,7 +20,7 @@ use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
-use Symfony\Component\Console\Helper\FormatterHelper;
+use Symfony\Component\Console\Helper\HelperInterface;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,6 +28,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Throwable;
 use UnexpectedValueException;
 
@@ -63,16 +63,19 @@ class Application extends BaseApplication
     /**
      * Shadow copy of the Application parent when using this concrete setAutoExit() implementation
      *
-     * @see \Symfony\Component\Console\Application::$autoExit
+     * @see BaseApplication
      */
     private bool $autoExitShadow = true;
 
-    protected ?ClassLoader $autoloader;
+    /**
+     * @var ClassLoader|string|null
+     */
+    protected $autoloader;
 
     protected ?Config $config;
 
     /**
-     * @see \N98\Magento\Application::setConfigurationLoader()
+     * @see Application::setConfigurationLoader
      */
     private ?ConfigurationLoader $configurationLoader;
 
@@ -102,7 +105,7 @@ class Application extends BaseApplication
     protected bool $_magentoDetected = false;
 
     /**
-     * @param ClassLoader $autoloader
+     * @param ClassLoader|string $autoloader
      */
     public function __construct($autoloader = null)
     {
@@ -199,6 +202,8 @@ class Application extends BaseApplication
             $folder = $this->getMagentoRootFolder();
         }
 
+        $folder = $folder ?: '';
+
         $this->getHelperSet()->set(new MagentoHelper($input, $output), 'magento');
         /** @var MagentoHelper $magentoHelper */
         $magentoHelper = $this->getHelperSet()->get('magento');
@@ -214,7 +219,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * Add own helpers to helperset.
+     * Add own helpers to helper-set.
      *
      * @return void
      */
@@ -231,6 +236,7 @@ class Application extends BaseApplication
             }
 
             // Twig helper needs the config-file
+            /** @var HelperInterface $helper */
             $helper = TwigHelper::class === $helperClass
                 ? new $helperClass($this->config)
                 : new $helperClass()
@@ -245,14 +251,12 @@ class Application extends BaseApplication
     protected function checkConfigCommandAlias(InputInterface $input)
     {
         trigger_error(__METHOD__ . ' moved, use getConfig()->checkConfigCommandAlias()', E_USER_DEPRECATED);
-
         return $this->config->checkConfigCommandAlias($input);
     }
 
     protected function registerConfigCommandAlias(Command $command): void
     {
         trigger_error(__METHOD__ . ' moved, use getConfig()->registerConfigCommandAlias() instead', E_USER_DEPRECATED);
-
         $this->config->registerConfigCommandAlias($command);
     }
 
@@ -579,6 +583,7 @@ class Application extends BaseApplication
         $config = $this->config->getConfig();
         $subscriberClasses = $config['event']['subscriber'];
         foreach ($subscriberClasses as $subscriberClass) {
+            /** @var EventSubscriberInterface $subscriber */
             $subscriber = new $subscriberClass();
             $this->dispatcher->addSubscriber($subscriber);
         }
@@ -616,9 +621,9 @@ class Application extends BaseApplication
             $path = OperatingSystem::getHomeDir() . substr($path, 1);
         }
 
-        $folder = realpath($path);
         $this->_directRootDir = true;
-        if (is_dir($folder)) {
+        $folder = realpath($path);
+        if ($folder && is_dir($folder)) {
             chdir($folder);
         }
     }
@@ -670,7 +675,7 @@ class Application extends BaseApplication
             $this->config->setLoader($configurationLoader);
         } else {
             /* inject loader to be used later when config is created in */
-            /* @see \N98\Magento\Application::init */
+            /* @see Application::init */
             $this->configurationLoader = $configurationLoader;
         }
 

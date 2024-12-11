@@ -22,10 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DatabaseHelper extends AbstractHelper
 {
-    /**
-     * @var array|DbSettings
-     */
-    protected $dbSettings;
+    protected ?DbSettings $dbSettings;
 
     /**
      * @deprecated since 1.97.9, use $dbSettings->isSocketConnect()
@@ -38,7 +35,7 @@ class DatabaseHelper extends AbstractHelper
 
     public function detectDbSettings(OutputInterface $output, ?string $connectionNode = null): void
     {
-        if (null !== $this->dbSettings) {
+        if (!is_null($this->dbSettings)) {
             return;
         }
 
@@ -93,7 +90,15 @@ class DatabaseHelper extends AbstractHelper
     public function mysqlUserHasPrivilege(string $privilege): bool
     {
         $statement = $this->getConnection()->query('SHOW GRANTS');
+        if (!$statement) {
+            return false;
+        }
+
         $result = $statement->fetchAll(PDO::FETCH_COLUMN);
+        if (!$result) {
+            return false;
+        }
+
         foreach ($result as $row) {
             if (preg_match('/^GRANT(.*)' . strtoupper($privilege) . '/', $row)
                 || preg_match('/^GRANT(.*)ALL/', $row)
@@ -136,16 +141,16 @@ class DatabaseHelper extends AbstractHelper
      * @param string|null $type [optional] variable type, can be a system variable ("@@", default) or a session variable
      *                     ("@").
           *
-     * @return string variable value, null if variable was not defined
+     * @return int|string|false|null variable value, null if variable was not defined
      * @throws RuntimeException in case a system variable is unknown (SQLSTATE[HY000]: 1193: Unknown system variable
      *                          'nonexistent')
      * @see getMysqlVariableValue(), this method allows to specify the type of the variable as well
      * as to use any variable identifier even such that need quoting.
      *
      */
-    public function getMysqlVariable(string $name, ?string $type = null): string
+    public function getMysqlVariable(string $name, ?string $type = null)
     {
-        $type = null === $type ? '@@' : (string) $type;
+        $type = is_null($type) ? '@@' : $type;
 
         if (!in_array($type, ['@@', '@'], true)) {
             throw new InvalidArgumentException(
@@ -231,7 +236,7 @@ class DatabaseHelper extends AbstractHelper
     public function resolveTables(array $list, array $definitions = [], array $resolved = []): array
     {
         if (is_null($this->_tables)) {
-            $this->_tables = $this->getTables(true);
+            $this->_tables = (array) $this->getTables(true);
         }
 
         $resolvedList = [];
@@ -269,14 +274,16 @@ class DatabaseHelper extends AbstractHelper
                     [':like' => $this->dbSettings['prefix'] . $entry]
                 );
                 $rows = $sth->fetchAll();
-                foreach ($rows as $row) {
-                    $resolvedList[] = $row[0];
+                if ($rows) {
+                    foreach ($rows as $row) {
+                        $resolvedList[] = $row[0];
+                    }
                 }
 
                 continue;
             }
 
-            if (in_array($entry, $this->_tables)) {
+            if ($this->_tables && in_array($entry, $this->_tables)) {
                 $resolvedList[] = $this->dbSettings['prefix'] . $entry;
             }
         }
@@ -417,13 +424,17 @@ class DatabaseHelper extends AbstractHelper
         }
 
         if ($statement) {
-            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
             $return = [];
+
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+            if (!$result) {
+                return $return;
+            }
+
             foreach ($result as $table) {
                 if (true === $withoutPrefix) {
                     $table['Name'] = str_replace($prefix, '', $table['Name']);
                 }
-
                 $return[$table['Name']] = $table;
             }
 
@@ -433,12 +444,7 @@ class DatabaseHelper extends AbstractHelper
         return [];
     }
 
-    /**
-     * @param OutputInterface|null $output [optional]
-     *
-     * @return array|DbSettings
-     */
-    public function getDbSettings(?OutputInterface $output = null)
+    public function getDbSettings(?OutputInterface $output = null): ?DbSettings
     {
         if ($this->dbSettings) {
             return $this->dbSettings;
@@ -483,16 +489,20 @@ class DatabaseHelper extends AbstractHelper
 
     public function dropTables(OutputInterface $output): void
     {
-        $result = $this->getTables();
-        $query = 'SET FOREIGN_KEY_CHECKS = 0; ';
         $count = 0;
-        foreach ($result as $tableName) {
-            $query .= 'DROP TABLE IF EXISTS `' . $tableName . '`; ';
-            ++$count;
+        $query = 'SET FOREIGN_KEY_CHECKS = 0; ';
+
+        $result = $this->getTables();
+        if ($result) {
+            foreach ($result as $tableName) {
+                $query .= 'DROP TABLE IF EXISTS `' . $tableName . '`; ';
+                ++$count;
+            }
         }
 
         $query .= 'SET FOREIGN_KEY_CHECKS = 1;';
         $this->getConnection()->query($query);
+
         $output->writeln('<info>Dropped database tables</info> <comment>' . $count . ' tables dropped</comment>');
     }
 

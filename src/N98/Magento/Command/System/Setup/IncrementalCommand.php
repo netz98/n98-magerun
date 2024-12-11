@@ -20,6 +20,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Varien_Simplexml_Config;
+use Varien_Simplexml_Element;
 
 /**
  * Run incremental setup command
@@ -103,9 +104,15 @@ HELP;
     protected function _getAllSetupResourceObjects(): array
     {
         $config = $this->_secondConfig;
-        /** @var Mage_Core_Model_Config_Element[] $resources */
-        $resources = $config->getNode('global/resources')->children();
         $setupResources = [];
+
+        $resourcesNode = $config->getNode('global/resources');
+        if (!$resourcesNode) {
+            return $setupResources;
+        }
+
+        /** @var Mage_Core_Model_Config_Element[] $resources */
+        $resources = $resourcesNode->children();
         foreach ($resources as $name => $resource) {
             if (!$resource->setup) {
                 continue;
@@ -116,7 +123,9 @@ HELP;
                 $className = $resource->setup->getClassName();
             }
 
-            $setupResources[$name] = new $className($name);
+            /** @var Mage_Core_Model_Resource_Resource $setupResourcesClass */
+            $setupResourcesClass    = new $className($name);
+            $setupResources[$name]  = $setupResourcesClass;
         }
 
         return $setupResources;
@@ -124,7 +133,9 @@ HELP;
 
     protected function _getResource(): Mage_Core_Model_Resource_Resource
     {
-        return Mage::getResourceSingleton('core/resource');
+        /** @var Mage_Core_Model_Resource_Resource $model */
+        $model = Mage::getResourceSingleton('core/resource');
+        return $model;
     }
 
     /**
@@ -202,12 +213,18 @@ HELP;
         return $reflectionProperty->getValue($object);
     }
 
-    protected function _getDbVersionFromName(string $name): string
+    /**
+     * @return string|bool
+     */
+    protected function _getDbVersionFromName(string $name)
     {
         return $this->_getResource()->getDbVersion($name);
     }
 
-    protected function _getDbDataVersionFromName(string $name): string
+    /**
+     * @return string|bool
+     */
+    protected function _getDbDataVersionFromName(string $name)
     {
         return $this->_getResource()->getDataVersion($name);
     }
@@ -346,20 +363,24 @@ HELP;
         //(in memory, do not persist this to cache)
         $realConfig = Mage::getConfig();
         $resources = $realConfig->getNode('global/resources');
-        foreach ($resources->children() as $resource) {
-            if (!$resource->setup) {
-                continue;
+        if ($resources) {
+            foreach ($resources->children() as $resource) {
+                if (!$resource->setup) {
+                    continue;
+                }
+                unset($resource->setup);
             }
-
-            unset($resource->setup);
         }
 
         //recreate our specific node in <global><resources></resource></global>
         //allows for theoretical multiple runs
-        $setupResourceConfig = $this->_secondConfig->getNode('global/resources/' . $name);
-        $moduleName = $setupResourceConfig->setup->module;
-        $className = $setupResourceConfig->setup->class;
+        /** @var Varien_Simplexml_Element $setupResourceConfig */
+        $setupResourceConfig    = $this->_secondConfig->getNode('global/resources/' . $name);
+        $setupResourceSetup     = $setupResourceConfig->setup;
+        $moduleName             = $setupResourceSetup->module;
+        $className              = $setupResourceSetup->class;
 
+        /** @var Varien_Simplexml_Element $specificResource */
         $specificResource = $realConfig->getNode('global/resources/' . $name);
         $setup = $specificResource->addChild('setup');
         if ($moduleName) {
@@ -387,10 +408,10 @@ HELP;
                 Mage_Core_Model_Resource_Setup::applyAllDataUpdates();
             }
 
-            $exceptionOutput = ob_get_clean();
+            $exceptionOutput = (string) ob_get_clean();
             $this->_output->writeln($exceptionOutput);
         } catch (Exception $exception) {
-            $exceptionOutput = ob_get_clean();
+            $exceptionOutput = (string) ob_get_clean();
             $this->_processExceptionDuringUpdate($exception, $name, $exceptionOutput);
             if ($this->_input->getOption('stop-on-error')) {
                 throw new RuntimeException('Setup stopped with errors', $exception->getCode(), $exception);
@@ -421,7 +442,7 @@ HELP;
     {
         $output = $this->_output;
         $allTypes = Mage::app()->useCache();
-        if ($allTypes['config'] !== '1') {
+        if ($allTypes && $allTypes['config'] !== '1') {
             $output->writeln('<error>ERROR: Config Cache is Disabled</error>');
             $output->writeln('This command will not run with the configuration cache disabled.');
             $output->writeln('Please change your Magento settings at System -> Cache Management');

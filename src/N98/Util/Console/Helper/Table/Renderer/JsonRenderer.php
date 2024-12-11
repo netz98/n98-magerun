@@ -18,6 +18,9 @@ class JsonRenderer implements RendererInterface
         $options = JSON_FORCE_OBJECT;
         $options |= JSON_PRETTY_PRINT;
 
-        $output->writeln(json_encode($rows, $options));
+        $out = json_encode($rows, $options);
+        if ($out) {
+            $output->writeln($out);
+        }
     }
 }

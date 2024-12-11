@@ -71,9 +71,11 @@ class DummyCommand extends AbstractMagentoCommand
                 $name = self::DEFAULT_CATEGORY_NAME . ' ' . $i;
             }
 
+            /** @var Mage_Catalog_Model_Category $categoryModel */
+            $categoryModel = Mage::getModel('catalog/category');
+
             // Check if product exists
-            /** @var Mage_Catalog_Model_Resource_Category_Collection $collection */
-            $collection = Mage::getModel('catalog/category')->getCollection();
+            $collection = $categoryModel->getCollection();
             $collection
                 ->addAttributeToSelect('name')
                 ->addAttributeToFilter('name', ['eq' => $name]);
@@ -97,7 +99,8 @@ class DummyCommand extends AbstractMagentoCommand
             $category->setIsAnchor(self::DEFAULT_CATEGORY_ANCHOR);
             $this->setCategoryStoreId($category, $storeId);
             /** @var Mage_Catalog_Model_Category $parentCategory */
-            $parentCategory = Mage::getModel('catalog/category')->load($rootCategoryId);
+            $parentCategory = Mage::getModel('catalog/category');
+            $parentCategory->load($rootCategoryId);
             $category->setPath($parentCategory->getPath());
 
             $category->save();
@@ -119,8 +122,9 @@ class DummyCommand extends AbstractMagentoCommand
                 $category->setDisplayMode('PRODUCTS');
                 $category->setIsAnchor(self::DEFAULT_CATEGORY_ANCHOR);
                 $this->setCategoryStoreId($category, $storeId);
-                /** @var Mage_Catalog_Model_Category $parentCategory */
-                $parentCategory = Mage::getModel('catalog/category')->load($parentCategoryId);
+                /** @var Mage_Catalog_Model_Category $parentCategoryModel */
+                $parentCategoryModel = Mage::getModel('catalog/category');
+                $parentCategory = $parentCategoryModel->load($parentCategoryId);
                 $category->setPath($parentCategory->getPath());
 
                 $category->save();
@@ -145,7 +149,9 @@ class DummyCommand extends AbstractMagentoCommand
 
         // Store ID
         if (is_null($input->getArgument('store-id'))) {
-            $store_id = Mage::getModel('core/store')->getCollection()
+            /** @var Mage_Core_Model_Store $model */
+            $model = Mage::getModel('core/store');
+            $store_id = $model->getCollection()
                 ->addFieldToSelect('*')
                 ->addFieldToFilter('store_id', ['gt' => 0])
                 ->setOrder('store_id', 'ASC');

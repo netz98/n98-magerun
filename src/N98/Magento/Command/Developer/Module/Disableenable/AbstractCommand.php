@@ -68,10 +68,13 @@ class AbstractCommand extends AbstractMagentoCommand
      */
     protected function enableCodePool(string $codePool, OutputInterface $output): void
     {
-        $modules = $this->modulesConfig->getNode('modules')->asArray();
-        foreach ($modules as $module => $data) {
-            if (isset($data['codePool']) && $data['codePool'] == $codePool) {
-                $this->enableModule($module, $output);
+        $modulesNode = $this->modulesConfig->getNode('modules');
+        if ($modulesNode) {
+            $modules = $modulesNode->asArray();
+            foreach ($modules as $module => $data) {
+                if (isset($data['codePool']) && $data['codePool'] == $codePool) {
+                    $this->enableModule($module, $output);
+                }
             }
         }
     }
@@ -83,11 +86,15 @@ class AbstractCommand extends AbstractMagentoCommand
     {
         $xml = null;
         $validDecFile = false;
-        foreach ($this->getDeclaredModuleFiles() as $decFile) {
-            $xml = new Varien_Simplexml_Element(file_get_contents($decFile));
-            if ($xml->modules->{$module}) {
-                $validDecFile = $decFile;
-                break;
+        foreach ($this->getDeclaredModuleFiles() as $declaredModuleFile)
+        {
+            $content = file_get_contents($declaredModuleFile);
+            if ($content) {
+                $xml = new Varien_Simplexml_Element($content);
+                if ($xml->modules->{$module}) {
+                    $validDecFile = $declaredModuleFile;
+                    break;
+                }
             }
         }
 
@@ -122,18 +129,25 @@ class AbstractCommand extends AbstractMagentoCommand
      */
     protected function getDeclaredModuleFiles(): array
     {
-        $collectModuleFiles = ['base'   => [], 'mage'   => [], 'custom' => []];
+        $collectModuleFiles = [
+            'base'   => [],
+            'mage'   => [],
+            'custom' => [],
+        ];
 
-        foreach (glob($this->modulesDir . '*.xml') as $v) {
-            $name = explode(DIRECTORY_SEPARATOR, $v);
-            $name = substr($name[count($name) - 1], 0, -4);
+        $paths = glob($this->modulesDir . '*.xml');
+        if ($paths) {
+            foreach ($paths as $path) {
+                $name = explode(DIRECTORY_SEPARATOR, $path);
+                $name = substr($name[count($name) - 1], 0, -4);
 
-            if ($name === 'Mage_All') {
-                $collectModuleFiles['base'][] = $v;
-            } elseif (substr($name, 0, 5) === 'Mage_') {
-                $collectModuleFiles['mage'][] = $v;
-            } else {
-                $collectModuleFiles['custom'][] = $v;
+                if ($name === 'Mage_All') {
+                    $collectModuleFiles['base'][] = $path;
+                } elseif (substr($name, 0, 5) === 'Mage_') {
+                    $collectModuleFiles['mage'][] = $path;
+                } else {
+                    $collectModuleFiles['custom'][] = $path;
+                }
             }
         }
 

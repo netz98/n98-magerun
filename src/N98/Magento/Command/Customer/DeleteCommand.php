@@ -190,11 +190,11 @@ HELP;
     protected function getCustomer($id): Mage_Customer_Model_Customer
     {
         $customer = $this->getCustomerModel()->load($id);
-        if (!$customer->getId()) {
+        if (!$customer->getId() && is_string($id)) {
             $parameterHelper = $this->getParameterHelper();
             $website = $parameterHelper->askWebsite($this->input, $this->output);
             $customer = $this->getCustomerModel()
-                ->setWebsiteId($website->getId())
+                ->setWebsiteId((int) $website->getId())
                 ->loadByEmail($id);
         }
 

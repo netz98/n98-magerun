@@ -51,7 +51,9 @@ class UsageCommand extends AbstractMagentoCommand
 
     protected function findEmailTemplates(): array
     {
-        $templates = Mage::getModel('adminhtml/email_template')->getCollection();
+        /** @var Mage_Adminhtml_Model_Email_Template $model */
+        $model = Mage::getModel('adminhtml/email_template');
+        $templates = $model->getCollection();
 
         $return = [];
 

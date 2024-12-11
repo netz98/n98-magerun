@@ -67,14 +67,14 @@ class CreateCommand extends AbstractCustomerCommand
 
         // create new customer
         $mageCustomerModelCustomer = $this->getCustomerModel();
-        $mageCustomerModelCustomer->setWebsiteId($website->getId());
+        $mageCustomerModelCustomer->setWebsiteId((int) $website->getId());
         $mageCustomerModelCustomer->loadByEmail($email);
 
         $outputPlain = $input->getOption('format') === null;
 
         $table = [];
         if (!$mageCustomerModelCustomer->getId()) {
-            $mageCustomerModelCustomer->setWebsiteId($website->getId());
+            $mageCustomerModelCustomer->setWebsiteId((int) $website->getId());
             $mageCustomerModelCustomer->setEmail($email);
             $mageCustomerModelCustomer->setFirstname($firstname);
             $mageCustomerModelCustomer->setLastname($lastname);

@@ -25,11 +25,15 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
      */
     protected function loadRewrites(): array
     {
-        $prototype = $this->_rewriteTypes;
-        $return = array_combine($prototype, array_fill(0, count($prototype), []));
+        $prototype      = $this->_rewriteTypes;
+        /** @var array $return */
+        $return         = array_combine($prototype, array_fill(0, count($prototype), []));
 
         // Load config of each module because modules can overwrite config each other. Global config is already merged
-        $modules = Mage::getConfig()->getNode('modules')->children();
+        /** @var Mage_Core_Model_Config_Element $modulesNode */
+        $modulesNode    = Mage::getConfig()->getNode('modules');
+        $modules        = $modulesNode->children();
+
         /**
          * @var  string $moduleName
          * @var  Mage_Core_Model_Config_Element $moduleData
@@ -53,14 +57,24 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
 
             $rewriteElements = $xml->xpath('//*/*/rewrite');
             foreach ($rewriteElements as $rewriteElement) {
-                $type = dom_import_simplexml($rewriteElement)->parentNode->parentNode->nodeName;
+                $rewriteDomElement = dom_import_simplexml($rewriteElement);
+                if (!$rewriteDomElement) {
+                    continue;
+                }
+
+                $type = $rewriteDomElement->parentNode->parentNode->nodeName;
                 if (!isset($return[$type])) {
                     continue;
                 }
 
                 foreach ($rewriteElement->children() as $child) {
-                    $groupClassName = dom_import_simplexml($rewriteElement)->parentNode->nodeName;
-                    $modelName = $child->getName();
+                    $childDomElement    = dom_import_simplexml($rewriteElement);
+                    if (!$childDomElement) {
+                        continue;
+                    }
+
+                    $groupClassName     = $childDomElement->parentNode->nodeName;
+                    $modelName          = $child->getName();
                     $return[$type][$groupClassName . '/' . $modelName][] = (string) $child;
                 }
             }
@@ -70,7 +84,7 @@ abstract class AbstractRewriteCommand extends AbstractMagentoCommand
     }
 
     /**
-     * Check codepools for core overwrites.
+     * Check code-pools for core overwrites.
      */
     protected function loadAutoloaderRewrites(): array
     {

@@ -37,13 +37,21 @@ class Modules implements IteratorAggregate, Countable
     {
         $list = [];
 
-        $modules = Mage::app()->getConfig()->getNode('modules')->asArray();
-        foreach ($modules as $moduleName => $moduleInfo) {
-            $codePool = $moduleInfo['codePool'] ?? '';
-            $version = $moduleInfo['version'] ?? '';
-            $active = $moduleInfo['active'] ?? '';
+        $modulesNode = Mage::app()->getConfig()->getNode('modules');
+        if ($modulesNode) {
+            $modules = $modulesNode->asArray();
+            foreach ($modules as $moduleName => $moduleInfo) {
+                $codePool   = $moduleInfo['codePool'] ?? '';
+                $version    = $moduleInfo['version'] ?? '';
+                $active     = $moduleInfo['active'] ?? '';
 
-            $list[] = ['codePool' => trim($codePool), 'Name'     => trim($moduleName), 'Version'  => trim($version), 'Status'   => StringTyped::formatActive($active)];
+                $list[] = [
+                    'codePool' => trim($codePool),
+                    'Name'     => trim($moduleName),
+                    'Version'  => trim($version),
+                    'Status'   => StringTyped::formatActive($active),
+                ];
+            }
         }
 
         return new Modules($list);
@@ -51,10 +59,8 @@ class Modules implements IteratorAggregate, Countable
 
     /**
      * Filter modules by codepool, status and vendor if such options were inputted by user
-     *
-     * @return Modules
      */
-    public function filterModules(InputInterface $input)
+    public function filterModules(InputInterface $input): Modules
     {
         $filtered = $this->list;
 

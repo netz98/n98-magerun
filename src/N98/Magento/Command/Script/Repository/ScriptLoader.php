@@ -16,7 +16,7 @@ use Symfony\Component\Finder\SplFileInfo;
 class ScriptLoader
 {
     /**
-     * @var string
+     * @var string|false
      */
     private $homeDir;
 
@@ -83,13 +83,13 @@ class ScriptLoader
      */
     protected function _readFirstLineOfFile(string $file): string
     {
-        $f = @fopen($file, 'r');
-        if (!$f) {
+        $fopen = @fopen($file, 'r');
+        if (!$fopen) {
             return '';
         }
 
-        $line = trim(fgets($f));
-        fclose($f);
+        $line = trim((string) fgets($fopen));
+        fclose($fopen);
 
         if (isset($line[0]) && $line[0] !== '#') {
             return '';

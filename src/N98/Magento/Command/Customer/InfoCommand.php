@@ -43,7 +43,7 @@ class InfoCommand extends AbstractCustomerCommand
         $website = $parameterHelper->askWebsite($input, $output);
 
         $customer = $this->getCustomerModel()
-            ->setWebsiteId($website->getId())
+            ->setWebsiteId((int) $website->getId())
             ->loadByEmail($email);
         if ($customer->getId() <= 0) {
             $output->writeln('<error>Customer was not found</error>');

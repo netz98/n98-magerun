@@ -7,6 +7,7 @@ namespace N98\Magento\Command\Eav\Attribute;
 use Exception;
 use Mage;
 use Mage_Eav_Model_Entity_Type;
+use Mage_Eav_Model_Resource_Entity_Attribute_Collection;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -39,6 +40,7 @@ class ListCommand extends AbstractMagentoCommand
         }
 
         $table = [];
+        /** @var Mage_Eav_Model_Resource_Entity_Attribute_Collection $attributesCollection */
         $attributesCollection = Mage::getResourceModel('eav/entity_attribute_collection');
         $attributesCollection->setOrder('attribute_code', 'asc');
         foreach ($attributesCollection as $attributeCollection) {

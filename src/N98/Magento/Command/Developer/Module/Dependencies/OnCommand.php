@@ -77,8 +77,9 @@ class OnCommand extends AbstractMagentoCommand
      */
     protected function findModuleDependencies(string $moduleName, bool $recursive = false): array
     {
-        if ($this->modules === null) {
-            $this->modules = Mage::app()->getConfig()->getNode('modules')->asArray();
+        if (is_null($this->modules)) {
+            $modulesNode = Mage::app()->getConfig()->getNode('modules');
+            $this->modules = $modulesNode ? $modulesNode->asArray() : [];
         }
 
         if (isset($this->modules[$moduleName])) {

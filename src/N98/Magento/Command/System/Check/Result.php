@@ -28,26 +28,16 @@ class Result
      */
     public const STATUS_WARNING = 'warning';
 
-    /**
-     * @var string
-     */
-    protected $_status;
+    protected string $_status;
 
-    /**
-     * @var string|string[]
-     */
-    protected $_message;
+    protected string $_message;
 
     protected string $_resultGroup;
 
-    /**
-     * @param bool|string $status
-     * @param string|string[] $message
-     */
-    public function __construct($status = self::STATUS_OK, $message = '', string $resultGroup = '')
+    public function __construct(string $status = self::STATUS_OK, string $message = '', string $resultGroup = '')
     {
-        $this->_status = $status;
-        $this->_message = $message;
+        $this->_status      = $status;
+        $this->_message     = $message;
         $this->_resultGroup = $resultGroup;
     }
 
@@ -82,7 +72,7 @@ class Result
     }
 
     /**
-     * @return string|string[]
+     * @return string
      */
     public function getMessage()
     {

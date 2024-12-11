@@ -1,6 +1,24 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Method N98\\Magento\\Application\:\:getAutoloader\(\) should return Composer\\Autoload\\ClassLoader\|null but returns Composer\\Autoload\\ClassLoader\|string\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/N98/Magento/Application.php
+
+		-
+			message: '#^Parameter \#1 \$classLoader of method N98\\Magento\\Application\\Config\:\:registerCustomAutoloaders\(\) expects Composer\\Autoload\\ClassLoader, Composer\\Autoload\\ClassLoader\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/N98/Magento/Application.php
+
+		-
+			message: '#^Parameter \#1 \$classLoader of method N98\\Magento\\Application\\Config\:\:registerCustomAutoloaders\(\) expects Composer\\Autoload\\ClassLoader, Composer\\Autoload\\ClassLoader\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/N98/Magento/Application.php
+
+		-
 			message: '#^Unsafe usage of new static\(\)\.$#'
 			identifier: new.static
 			count: 1
@@ -17,6 +35,12 @@ parameters:
 			identifier: method.notFound
 			count: 1
 			path: src/N98/Magento/Command/Admin/User/CreateUserCommand.php
+
+		-
+			message: '#^Cannot call method isDir\(\) on SplFileInfo\|string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/N98/Magento/Command/Cache/Dir/FlushCommand.php
 
 		-
 			message: '#^Parameter \#1 \$value of method Mage_Catalog_Model_Category\:\:setIsActive\(\) expects bool, int given\.$#'
@@ -85,16 +109,34 @@ parameters:
 			path: src/N98/Magento/Command/Customer/CreateDummyCommand.php
 
 		-
-			message: '#^Access to an undefined property DateInterval\:\:\$w\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/N98/Magento/Command/Database/StatusCommand.php
-
-		-
 			message: '#^Variable \$classPrefix might not be defined\.$#'
 			identifier: variable.undefined
 			count: 1
 			path: src/N98/Magento/Command/Developer/Ide/PhpStorm/MetaCommand.php
+
+		-
+			message: '#^Method N98\\Magento\\Command\\Developer\\Module\\Rewrite\\ClassUtil\:\:exists\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/N98/Magento/Command/Developer/Module/Rewrite/ClassUtil.php
+
+		-
+			message: '#^Method N98\\Magento\\Command\\Developer\\Setup\\Script\\Attribute\\EntityType\\Factory\:\:create\(\) has parameter \$attribute with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/N98/Magento/Command/Developer/Setup/Script/Attribute/EntityType/Factory.php
+
+		-
+			message: '#^Method N98\\Magento\\Command\\Developer\\Setup\\Script\\Attribute\\EntityType\\Factory\:\:create\(\) has parameter \$entityType with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/N98/Magento/Command/Developer/Setup/Script/Attribute/EntityType/Factory.php
+
+		-
+			message: '#^Method N98\\Magento\\Command\\Eav\\Attribute\\ListCommand\:\:_getEntityType\(\) has parameter \$attribute with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/N98/Magento/Command/Eav/Attribute/ListCommand.php
 
 		-
 			message: '#^Strict comparison using \=\=\= between non\-empty\-string\|false and '''' will always evaluate to false\.$#'
@@ -151,10 +193,22 @@ parameters:
 			path: src/N98/Magento/Command/System/Check/Filesystem/FoldersCheck.php
 
 		-
+			message: '#^Parameter \#1 \$function of function call_user_func_array expects callable\(\)\: mixed, array\{\$this\(N98\\Magento\\Command\\System\\Check\\Settings\\CheckAbstract\), ''checkSettings''\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/N98/Magento/Command/System/Check/Settings/CheckAbstract.php
+
+		-
 			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, Symfony\\Component\\Finder\\SplFileInfo given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/N98/Magento/Command/System/InfoCommand.php
+
+		-
+			message: '#^Parameter \#2 \$callback of function array_filter expects \(callable\(array\{function\: string, line\?\: int, file\?\: string, class\?\: class\-string, type\?\: ''\-\>''\|''\:\:'', args\?\: array\<mixed\>, object\?\: object\}\)\: bool\)\|null, Closure\(mixed\)\: \(array\{function\: string, line\?\: int, file\: string, class\?\: class\-string, type\?\: ''\-\>''\|''\:\:'', args\?\: array\<mixed\>, object\?\: object\}\|false\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/N98/Magento/Command/System/Setup/RunCommand.php
 
 		-
 			message: '#^Call to an undefined method object\{ref\: \$this\(N98\\Util\\AutoloadHandler\)\}&stdClass\:\:reset\(\)\.$#'

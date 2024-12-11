@@ -62,9 +62,12 @@ class InfoCommand extends AbstractMagentoCommand
      */
     protected function _displayTable(OutputInterface $output, Mage_Core_Model_Store $mageCoreModelStore)
     {
+        $website        = $mageCoreModelStore->getWebsite();
+        $websiteCode    = $website ? $website->getCode() . '/' : '';
+
         $this->writeSection(
             $output,
-            'Current design setting on store: ' . $mageCoreModelStore->getWebsite()->getCode() . '/' . $mageCoreModelStore->getCode()
+            'Current design setting on store: ' . $websiteCode . $mageCoreModelStore->getCode()
         );
         $storeInfoLines = $this->_parse($this->_configNodesWithExceptions, $mageCoreModelStore, true);
         $storeInfoLines = array_merge($storeInfoLines, $this->_parse($this->_configNodes, $mageCoreModelStore));

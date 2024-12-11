@@ -76,12 +76,11 @@ HELP;
         }
 
         $allowZeroScope = $input->getOption('force');
-
-        $scope = $input->getOption('scope');
+        $scope          = $input->getOption('scope');
         $this->_validateScopeParam($scope);
-        $scopeId = $this->_convertScopeIdParam($scope, $input->getOption('scope-id'), $allowZeroScope);
-        $valueDisplay = $input->getArgument('value');
-        $value = $valueDisplay;
+        $scopeId        = (int) $this->_convertScopeIdParam($scope, $input->getOption('scope-id'), $allowZeroScope);
+        $valueDisplay   = $input->getArgument('value');
+        $value          = $valueDisplay;
 
         if ($value === 'NULL' && !$input->getOption('no-null')) {
             if ($input->getOption('encrypt')) {

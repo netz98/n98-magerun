@@ -26,11 +26,17 @@ class MethodCommand extends AbstractMagentoCommand
 
     protected OutputInterface $_output;
 
-    protected Mage_Core_Model_Abstract $_mageModel;
+    /**
+     * @var Mage_Core_Model_Abstract|false
+     */
+    protected $_mageModel;
 
     protected string $_mageModelTable;
 
-    protected string $_fileName = '';
+    /**
+     * @var string|false
+     */
+    protected $_fileName = '';
 
     /**
      * @see initTableColumns
@@ -71,18 +77,30 @@ class MethodCommand extends AbstractMagentoCommand
 
     protected function writeToClassFile(): void
     {
-        $modelFileContent = implode('', file($this->_fileName));
-        $fileParts = preg_split('~(\s+)(class)(\s+)([a-z0-9_]+)~i', $modelFileContent, -1, PREG_SPLIT_DELIM_CAPTURE);
-        foreach ($fileParts as $index => $part) {
-            if (strtolower($part) === 'class') {
-                $fileParts[$index] = $this->generateComment() . $part;
-                break;
-            }
+        if ($this->_fileName === false) {
+            throw new RuntimeException('No filename set');
         }
 
-        $written = file_put_contents($this->_fileName, implode('', $fileParts));
-        if (false === $written) {
-            throw new RuntimeException('Cannot write to file: ' . $this->_fileName);
+        $file = file($this->_fileName);
+        if ($file === false) {
+            throw new RuntimeException('No filename set');
+        }
+
+        $modelFileContent   = implode('', $file);
+        $fileParts          = preg_split('~(\s+)(class)(\s+)([a-z0-9_]+)~i', $modelFileContent, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+        if ($fileParts) {
+            foreach ($fileParts as $index => $part) {
+                if (strtolower($part) === 'class') {
+                    $fileParts[$index] = $this->generateComment() . $part;
+                    break;
+                }
+            }
+            $written = file_put_contents($this->_fileName, implode('', $fileParts));
+
+            if ($written === false) {
+                throw new RuntimeException('Cannot write to file: ' . $this->_fileName);
+            }
         }
     }
 
@@ -93,8 +111,14 @@ class MethodCommand extends AbstractMagentoCommand
 
     protected function getGetterSetter(): array
     {
-        $modelClassName = get_class($this->_mageModel);
         $getterSetter = [];
+
+        if (!$this->_mageModel) {
+            return $getterSetter;
+        }
+
+        $modelClassName = get_class($this->_mageModel);
+
         foreach ($this->_tableColumns as $colName => $colProp) {
             $getterSetter[] = sprintf(
                 ' * @method %s get%s()',
@@ -154,13 +178,16 @@ class MethodCommand extends AbstractMagentoCommand
     protected function initTableColumns(): void
     {
         $databaseHelper = $this->getDatabaseHelper();
-        $pdo = $databaseHelper->getConnection($this->_output);
-        $stmt = $pdo->query('SHOW COLUMNS FROM ' . $this->_mageModelTable, PDO::FETCH_ASSOC);
-        foreach ($stmt as $row) {
-            $this->_tableColumns[$row['Field']] = $row;
+        $pdo            = $databaseHelper->getConnection($this->_output);
+        $stmt           = $pdo->query('SHOW COLUMNS FROM ' . $this->_mageModelTable, PDO::FETCH_ASSOC);
+
+        if ($stmt) {
+            foreach ($stmt as $row) {
+                $this->_tableColumns[$row['Field']] = $row;
+            }
         }
 
-        if (0 === count($this->_tableColumns)) {
+        if (!count($this->_tableColumns)) {
             throw new InvalidArgumentException('No columns found in table: ' . $this->_mageModelTable);
         }
     }
@@ -183,6 +210,10 @@ class MethodCommand extends AbstractMagentoCommand
 
     protected function checkClassFileName(): void
     {
+        if ($this->_mageModel === false) {
+            throw new InvalidArgumentException('No model set');
+        }
+
         $fileName = str_replace(
             ' ',
             DIRECTORY_SEPARATOR,
@@ -190,8 +221,8 @@ class MethodCommand extends AbstractMagentoCommand
         ) . '.php';
         $this->_fileName = $this->searchFullPath($fileName);
 
-        if (false === $this->_fileName) {
-            throw new InvalidArgumentException('File not found: ' . $this->_fileName);
+        if ($this->_fileName === false) {
+            throw new InvalidArgumentException('No file set');
         }
     }
 

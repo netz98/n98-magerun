@@ -47,6 +47,12 @@ class ViewCommand extends AbstractMagentoCommand
             throw new InvalidArgumentException('Attribute was not found.');
         }
 
+        /** @var array|false $cacheIdTags */
+        $cacheIdTags    = $attribute->getCacheIdTags();
+        /** @var array|false $cacheTags */
+        $cacheTags      = $attribute->getCacheTags();
+        $flatColumns    = $attribute->getFlatColumns();
+
         $table = [
             ['ID', $attribute->getId()],
             ['Code', $attribute->getName()],
@@ -57,10 +63,10 @@ class ViewCommand extends AbstractMagentoCommand
             ['Backend-Table', $attribute->getBackendTable() ?: ''],
             ['Backend-Type', $attribute->getBackendType() ?: ''],
             ['Source-Model', $attribute->getSourceModel() ?: ''],
-            ['Cache-ID-Tags', $attribute->getCacheIdTags() ? implode(',', $attribute->getCacheIdTags()) : ''],
-            ['Cache-Tags', $attribute->getCacheTags() ? implode(',', $attribute->getCacheTags()) : ''],
+            ['Cache-ID-Tags', $cacheIdTags ? implode(',', $cacheIdTags) : ''],
+            ['Cache-Tags', $cacheTags ? implode(',', $cacheTags) : ''],
             ['Default-Value', $attribute->getDefaultValue() ?: ''],
-            ['Flat-Columns', $attribute->getFlatColumns() ? implode(',', array_keys($attribute->getFlatColumns())) : '']
+            ['Flat-Columns', $flatColumns ? implode(',', array_keys($flatColumns)) : '']
         ];
 
         $flatIndexes = $attribute->getFlatIndexes() ? $attribute->getFlatIndexes() : '';

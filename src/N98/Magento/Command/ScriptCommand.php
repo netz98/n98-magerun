@@ -291,16 +291,17 @@ HELP;
     protected function initScriptVars(): void
     {
         if (class_exists('\Mage')) {
-            $this->scriptVars['${magento.root}'] = $this->getApplication()->getMagentoRootFolder();
+            $this->scriptVars['${magento.root}']    = $this->getApplication()->getMagentoRootFolder();
             $this->scriptVars['${magento.version}'] = Mage::getVersion();
             $this->scriptVars['${magento.edition}'] = is_callable(['\Mage', 'getEdition'])
                 ? Mage::getEdition() : 'Community';
         }
 
-        $this->scriptVars['${php.version}'] = substr(phpversion(), 0, strpos(phpversion(), '-'));
+        $phpVersion = (string) phpversion();
+        $this->scriptVars['${php.version}']     = substr($phpVersion, 0, (int) strpos($phpVersion, '-'));
         $this->scriptVars['${magerun.version}'] = $this->getApplication()->getVersion();
-        $this->scriptVars['${script.file}'] = $this->_scriptFilename;
-        $this->scriptVars['${script.dir}'] = dirname($this->_scriptFilename);
+        $this->scriptVars['${script.file}']     = $this->_scriptFilename;
+        $this->scriptVars['${script.dir}']      = dirname($this->_scriptFilename);
     }
 
     /**

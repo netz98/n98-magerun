@@ -34,7 +34,7 @@ class LocalConfigAccessableCheck implements SimpleCheck
         $varienHttpAdapterCurl->setConfig(['timeout' => $this->_verificationTimeOut]);
         $varienHttpAdapterCurl->write(Zend_Http_Client::POST, $defaultUnsecureBaseURL . $filePath);
 
-        $responseBody = $varienHttpAdapterCurl->read();
+        $responseBody = (string) $varienHttpAdapterCurl->read();
         $responseCode = Zend_Http_Response::extractCode($responseBody);
         $varienHttpAdapterCurl->close();
 

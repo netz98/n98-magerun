@@ -45,7 +45,8 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
     }
 
     /**
-     * @return array of five cron values,keyed by 'm', 'h', 'D', 'M' and 'WD'
+     * @return array|false of five cron values,keyed by 'm', 'h', 'D', 'M' and 'WD'
+     * @throws Mage_Core_Exception
      */
     protected function getSchedule(Mage_Core_Model_Config_Element $mageCoreModelConfigElement)
     {
@@ -67,15 +68,12 @@ abstract class AbstractCronCommand extends AbstractMagentoCommand
 
     /**
      * Get job configuration from XML and database. Expression priority is given to the database.
-     *
-     * @return AppendIterator|Mage_Core_Model_Config_Element[]
      */
-    private function getJobConfigElements()
+    private function getJobConfigElements(): AppendIterator
     {
         $jobs = new AppendIterator();
 
         $paths = ['crontab/jobs', 'default/crontab/jobs'];
-
         foreach ($paths as $path) {
             if ($jobConfig = Mage::getConfig()->getNode($path)) {
                 $jobs->append(new IteratorIterator($jobConfig->children()));

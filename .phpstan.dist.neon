@@ -5,10 +5,12 @@ parameters:
       - src
     scanDirectories:
       - magento
-    level: 6
+    level: 7
     treatPhpDocTypesAsCertain: false
     ignoreErrors:
         - identifier: missingType.generics
         - identifier: missingType.iterableValue
         - identifier: parameterByRef.unusedType
+        - identifier: offsetAccess.notFound
+        - identifier: property.notFound
         - identifier: property.unusedType

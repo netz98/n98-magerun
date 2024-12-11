@@ -7,6 +7,11 @@ namespace N98\Magento\Command\System;
 use Exception;
 use InvalidArgumentException;
 use Mage;
+use Mage_Catalog_Model_Category;
+use Mage_Catalog_Model_Product;
+use Mage_Customer_Model_Customer;
+use Mage_Eav_Model_Entity_Attribute;
+use Mage_Eav_Model_Resource_Entity_Attribute_Collection;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -171,21 +176,31 @@ class InfoCommand extends AbstractMagentoCommand
 
     protected function categoryCount(): void
     {
-        $this->infos['Category Count'] = Mage::getModel('catalog/category')->getCollection()->getSize();
+        /** @var Mage_Catalog_Model_Category $model */
+        $model = Mage::getModel('catalog/category');
+        $this->infos['Category Count'] = $model->getCollection()->getSize();
     }
 
     protected function productCount(): void
     {
-        $this->infos['Product Count'] = Mage::getModel('catalog/product')->getCollection()->getSize();
+        /** @var Mage_Catalog_Model_Product $model */
+        $model = Mage::getModel('catalog/product');
+        $this->infos['Product Count'] = $model->getCollection()->getSize();
     }
 
     protected function customerCount(): void
     {
-        $this->infos['Customer Count'] = Mage::getModel('customer/customer')->getCollection()->getSize();
+        /** @var Mage_Customer_Model_Customer $model */
+        $model = Mage::getModel('customer/customer');
+        $this->infos['Customer Count'] = $model->getCollection()->getSize();
     }
 
     protected function attributeCount(): void
     {
-        $this->infos['Attribute Count'] = Mage::getModel('eav/entity_attribute')->getCollection()->getSize();
+        /** @var Mage_Eav_Model_Entity_Attribute $model */
+        $model = Mage::getModel('eav/entity_attribute');
+        /** @var Mage_Eav_Model_Resource_Entity_Attribute_Collection $collection */
+        $collection = $model->getCollection();
+        $this->infos['Attribute Count'] = $collection->getSize();
     }
 }

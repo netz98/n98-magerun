@@ -90,12 +90,10 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
         $i = 0;
         foreach ($outputVars as $variableName => $variableValue) {
             $rows[$i] = [$variableName, $variableValue];
-            if (true === $hasDescription &&
-                isset($this->_importantVars[$variableName], $this->_importantVars[$variableName]['desc'])
+            if (isset($this->_importantVars[$variableName]['desc']) && true === $hasDescription
             ) {
                 $rows[$i][] = $this->formatDesc($this->_importantVars[$variableName]['desc']);
             }
-
             ++$i;
         }
 
@@ -152,7 +150,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
             foreach ($vars as $k => &$v) {
                 $v = trim($v);
                 if (true === $this->allowRounding($k)) {
-                    $v = Filesystem::humanFileSize($v, $rounding);
+                    $v = Filesystem::humanFileSize((int) $v, $rounding);
                 }
 
                 if (isset($this->_specialFormat[$k])) {

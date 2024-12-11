@@ -54,10 +54,7 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param bool $withDefaultStore [optional]
-     * @return Mage_Core_Model_Store|null
-     *
-     * @throws InvalidArgumentException|Mage_Core_Model_Store_Exception
+     * @throws Mage_Core_Model_Store_Exception
      */
     public function askStore(
         InputInterface  $input,
@@ -213,11 +210,9 @@ class ParameterHelper extends AbstractHelper
     }
 
     /**
-     * @param string|array $question
-     *
      * @return mixed
      */
-    private function askAndValidate(InputInterface $input, OutputInterface $output, $question, callable $callback)
+    private function askAndValidate(InputInterface $input, OutputInterface $output, string $question, callable $callback)
     {
         $questionHelper = new QuestionHelper();
         $questionObj = new Question($question);
@@ -253,7 +248,7 @@ class ParameterHelper extends AbstractHelper
             function ($inputValue) use ($constraints, $name) {
                 $errors = $this->validateValue($name, $inputValue, $constraints);
                 if ($errors->count() > 0) {
-                    throw new InvalidArgumentException($errors[0]->getMessage());
+                    throw new InvalidArgumentException((string) $errors[0]->getMessage());
                 }
 
                 return $inputValue;

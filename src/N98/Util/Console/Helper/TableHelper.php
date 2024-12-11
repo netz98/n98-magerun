@@ -102,7 +102,7 @@ class TableHelper extends AbstractHelper
     }
 
     /**
-     * @param string[] $headers
+     * @param array<int|string> $headers
      * @return $this
      */
     public function setHeaders(array $headers): TableHelper

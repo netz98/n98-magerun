@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Developer\Module;
 
 use Exception;
-use InvalidArgumentException;
 use Mage;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
 use SimpleXMLElement;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,7 +17,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Validator\Constraints\Choice;
 
 /**
  * Update module command
@@ -28,8 +25,6 @@ use Symfony\Component\Validator\Constraints\Choice;
  */
 class UpdateCommand extends AbstractMagentoCommand
 {
-    protected string $baseFolder;
-
     protected ?string $moduleDirectory;
 
     protected string $vendorNamespace;
@@ -323,7 +318,6 @@ class UpdateCommand extends AbstractMagentoCommand
     protected function getConfigXml(): SimpleXMLElement
     {
         $currentConfigXml = $this->getCurrentConfigContent();
-
         return new SimpleXMLElement($currentConfigXml);
     }
 
@@ -333,8 +327,7 @@ class UpdateCommand extends AbstractMagentoCommand
     protected function getCurrentConfigContent(): string
     {
         $configFile = $this->getModuleDir() . '/etc/config.xml';
-
-        return file_get_contents($configFile);
+        return (string) file_get_contents($configFile);
     }
 
     protected function getModuleDir(): string
@@ -827,10 +820,8 @@ class UpdateCommand extends AbstractMagentoCommand
     /**
      * Removes a child node if not null.
      * Deals with duplications of nodes when already in config
-     *
-     * @param $node
      */
-    protected function removeChildNodeIfNotNull($node, string $child): void
+    protected function removeChildNodeIfNotNull(SimpleXMLElement $node, string $child): void
     {
         if (!is_null($node->{$child})) {
             unset($node->{$child});

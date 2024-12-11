@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace N98\Magento\Command\Eav\Attribute\Create;
 
 use Exception;
-use Locale;
 use Mage;
 use Mage_Eav_Model_Entity_Attribute;
 use Mage_Eav_Model_Entity_Attribute_Source_Table;
+use Mage_Eav_Model_Resource_Entity_Attribute_Collection;
 use N98\Magento\Command\AbstractMagentoCommand;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
@@ -30,7 +30,7 @@ class DummyCommand extends AbstractMagentoCommand
     protected function configure(): void
     {
         $this
-            ->setName('eav:attribute:create-dummy-values')->addArgument('locale', InputArgument::OPTIONAL, Locale::class)
+            ->setName('eav:attribute:create-dummy-values')->addArgument('locale', InputArgument::OPTIONAL, 'Locale')
             ->addArgument('attribute-id', InputArgument::OPTIONAL, 'Attribute ID to add values')
             ->addArgument('values-type', InputArgument::OPTIONAL, 'Types of Values to create (default int)')
             ->addArgument('values-number', InputArgument::OPTIONAL, 'Number of Values to create (default 1)')
@@ -74,7 +74,8 @@ HELP;
         }
 
         /** @var Mage_Eav_Model_Entity_Attribute $attribute */
-        $attribute = Mage::getModel('eav/entity_attribute')->load($argument['attribute-id']);
+        $attribute = Mage::getModel('eav/entity_attribute');
+        $attribute->load($argument['attribute-id']);
         $dummyValues = new DummyValues();
         for ($i = 0; $i < $argument['values-number']; ++$i) {
             $value = $dummyValues->createValue($argument['values-type'], $argument['locale']);
@@ -103,15 +104,20 @@ HELP;
 
         // Attribute ID
         if (is_null($input->getArgument('attribute-id'))) {
-            $attribute_code = Mage::getModel('eav/entity_attribute')
-                ->getCollection()->addFieldToSelect('*')
+            /** @var Mage_Eav_Model_Entity_Attribute $attributeModel */
+            $attributeModel         = Mage::getModel('eav/entity_attribute');
+            /** @var Mage_Eav_Model_Resource_Entity_Attribute_Collection $attributeCollection */
+            $attributeCollection    = $attributeModel->getCollection();
+
+            $attribute = $attributeCollection
+                ->addFieldToSelect('*')
                 ->addFieldToFilter('entity_type_id', ['eq' => 4])
                 ->addFieldToFilter('backend_type', ['in' => ['int']])
                 ->setOrder('attribute_id', 'ASC')
             ;
             $attribute_codes = [];
 
-            foreach ($attribute_code as $item) {
+            foreach ($attribute as $item) {
                 $attribute_codes[$item['attribute_id']] = $item['attribute_id'] . '|' . $item['attribute_code'];
             }
 
@@ -157,8 +163,10 @@ HELP;
 
     /**
      * Check if an option exist
+     *
+     * @param string|int $argValue
      */
-    private function attributeValueExists(Mage_Eav_Model_Entity_Attribute $mageEavModelEntityAttribute, string $arg_value): bool
+    private function attributeValueExists(Mage_Eav_Model_Entity_Attribute $mageEavModelEntityAttribute, $argValue): bool
     {
         /** @var Mage_Eav_Model_Entity_Attribute_Source_Table $options */
         $options = Mage::getModel('eav/entity_attribute_source_table');
@@ -166,7 +174,7 @@ HELP;
         $options = $options->getAllOptions(false);
 
         foreach ($options as $option) {
-            if ($option['label'] === $arg_value) {
+            if ($option['label'] === $argValue) {
                 return true;
             }
         }

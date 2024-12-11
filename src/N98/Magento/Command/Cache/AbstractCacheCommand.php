@@ -31,11 +31,15 @@ class AbstractCacheCommand extends AbstractMagentoCommand
         $this->validateCacheCodes($codeArgument);
 
         $cacheTypes = $this->_getCacheModel()->getTypes();
-        $enable = Mage::app()->useCache();
-        foreach ($cacheTypes as $cacheCode => $cacheModel) {
-            if (empty($codeArgument) || in_array($cacheCode, $codeArgument)) {
-                $enable[$cacheCode] = $status ? 1 : 0;
+        $enable     = Mage::app()->useCache();
+        if ($enable) {
+            foreach ($cacheTypes as $cacheCode => $cacheModel) {
+                if (empty($codeArgument) || in_array($cacheCode, $codeArgument)) {
+                    $enable[$cacheCode] = $status ? 1 : 0;
+                }
             }
+        } else {
+            $enable = [];
         }
 
         Mage::app()->saveUseCache($enable);

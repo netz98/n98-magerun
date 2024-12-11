@@ -56,8 +56,8 @@ class DbCommand extends AbstractLogCommand
 
     protected function _replaceVariable(InputInterface $input, OutputInterface $output, string $variable): void
     {
-        $varienAdapterPhpFile = $this->_getVarienAdapterPhpFile();
-        $contents = file_get_contents($varienAdapterPhpFile);
+        $varienAdapterPhpFile   = $this->_getVarienAdapterPhpFile();
+        $contents               = (string) file_get_contents($varienAdapterPhpFile);
 
         $debugLinePattern = '/protected\s\\' . $variable . '\\s*?=\\s(false|true)/m';
         preg_match($debugLinePattern, $contents, $matches);

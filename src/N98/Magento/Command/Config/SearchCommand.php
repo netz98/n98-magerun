@@ -6,6 +6,7 @@ namespace N98\Magento\Command\Config;
 
 use Mage;
 use RuntimeException;
+use SimpleXMLElement;
 use stdClass;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -80,11 +81,14 @@ HELP;
 
         $matches = [];
         foreach ($xpathSections as $xpathSection) {
-            $tmp = $this->_searchConfigurationNodes(
-                $searchString,
-                $system->getNode()->xpath($xpathSection)
-            );
-            $matches = array_merge($matches, $tmp);
+            $systemNode = $system->getNode();
+            if ($systemNode) {
+                $tmp = $this->_searchConfigurationNodes(
+                    $searchString,
+                    $systemNode->xpath($xpathSection)
+                );
+                $matches = array_merge($matches, $tmp);
+            }
         }
 
         return $matches;
@@ -106,7 +110,7 @@ HELP;
     /**
      * @return false|stdClass
      */
-    protected function _searchNode(string $searchString, object $node)
+    protected function _searchNode(string $searchString, SimpleXMLElement $node)
     {
         $match = new stdClass();
         $match->type = $this->_getNodeType($node);
@@ -127,10 +131,12 @@ HELP;
         return false;
     }
 
-    protected function _getNodeType(object $node): string
+    protected function _getNodeType(SimpleXMLElement $node): string
     {
-        $parent = current($node->xpath('parent::*'));
-        $grandParent = current($parent->xpath('parent::*'));
+        /** @var SimpleXMLElement $parent */
+        $parent         = current($node->xpath('parent::*'));
+        /** @var SimpleXMLElement $grandParent */
+        $grandParent    = current($parent->xpath('parent::*'));
         if ($grandParent->getName() == 'config') {
             return 'section';
         }

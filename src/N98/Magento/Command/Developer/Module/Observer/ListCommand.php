@@ -58,7 +58,12 @@ class ListCommand extends AbstractMagentoCommand
             $this->writeSection($output, 'Observers: ' . $type);
         }
 
-        $frontendEvents = Mage::getConfig()->getNode($type . '/events')->asArray();
+        $frontendEvents = Mage::getConfig()->getNode($type . '/events');
+        if (!$frontendEvents) {
+            return Command::FAILURE;
+        }
+
+        $frontendEvents = $frontendEvents->asArray();
         if (true === $input->getOption('sort')) {
             // sorting for Observers is a bad idea because the order in which observers will be called is important.
             ksort($frontendEvents);

@@ -26,7 +26,9 @@ class RendererFactory
         $format = strtolower($format);
         if (isset(self::$formats[$format])) {
             $rendererClass = self::$formats[$format];
-            return new $rendererClass();
+            /** @var RendererInterface $renderer */
+            $renderer = new $rendererClass();
+            return $renderer;
         }
         return null;
     }

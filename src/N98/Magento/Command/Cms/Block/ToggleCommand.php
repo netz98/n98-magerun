@@ -44,6 +44,7 @@ class ToggleCommand extends AbstractMagentoCommand
             return Command::FAILURE;
         }
 
+        /** @var string $blockId */
         $blockId = $input->getArgument('block_id');
         if (is_numeric($blockId)) {
             $block = $this->_getBlockModel()->load($blockId);

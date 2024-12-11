@@ -61,9 +61,17 @@ HELP;
      */
     protected function optimize(string $fileName): string
     {
-        $in = fopen($fileName, 'r');
         $result = tempnam(sys_get_temp_dir(), 'dump') . '.sql';
+
+        $in = fopen($fileName, 'r');
+        if (!$in) {
+            return $result;
+        }
+
         $out = fopen($result, 'w');
+        if (!$out) {
+            return $result;
+        }
 
         fwrite($out, 'SET autocommit=0;' . "\n");
         $currentTable = '';

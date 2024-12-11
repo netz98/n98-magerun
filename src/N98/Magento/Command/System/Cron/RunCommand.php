@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\System\Cron;
 
+use Carbon\Carbon;
 use Exception;
 use Mage;
 use Mage_Core_Exception;
@@ -50,6 +51,7 @@ HELP;
 
     /**
      * @throws Exception
+     * @throws Throwable
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -157,7 +159,7 @@ HELP;
         $serverEnvironment->initalize();
 
         try {
-            $timestamp = strftime('%Y-%m-%d %H:%M:%S', \Carbon\Carbon::now()->timestamp);
+            $timestamp = (string) strftime('%Y-%m-%d %H:%M:%S', Carbon::now()->getTimestamp());
             $schedule
                 ->setJobCode($jobCode)
                 ->setStatus(Mage_Cron_Model_Schedule::STATUS_RUNNING)
@@ -173,7 +175,8 @@ HELP;
             $schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
         }
 
-        $schedule->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', \Carbon\Carbon::now()->timestamp))->save();
+        $schedule->setFinishedAt((string) strftime('%Y-%m-%d %H:%M:%S', Carbon::now()->getTimestamp()))
+            ->save();
 
         if (isset($exception)) {
             throw new RuntimeException(
@@ -206,7 +209,7 @@ HELP;
         }
 
         try {
-            $timestamp = strftime('%Y-%m-%d %H:%M:%S', \Carbon\Carbon::now()->timestamp);
+            $timestamp = (string) strftime('%Y-%m-%d %H:%M:%S', Carbon::now()->getTimestamp());
             $schedule
                 ->setJobCode($jobCode)
                 ->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING)

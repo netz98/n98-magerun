@@ -41,9 +41,11 @@ final class WindowsSystem
      */
     private function getExecutableExtensions(): array
     {
-        // PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.PSC1
+        /** @var string $paths PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.PSC1 */
+        $paths = getenv('PATHEXT');
+        $paths = explode(self::PATH_SEPARATOR, $paths);
         $this->extensions || $this->extensions = array_flip(
-            array_map('strtoupper', explode(self::PATH_SEPARATOR, getenv('PATHEXT')))
+            array_map('strtoupper', $paths)
         );
 
         return $this->extensions;
@@ -80,10 +82,13 @@ final class WindowsSystem
 
         $isExecutable = self::isExecutableName($program);
 
-        $paths = explode(self::PATH_SEPARATOR, getenv('PATH'));
+        /** @var string $envPaths */
+        $envPaths = getenv('PATH');
+        $paths = explode(self::PATH_SEPARATOR, $envPaths);
         array_unshift($paths, getcwd());
         $extensions = self::getInstance()->getExecutableExtensions();
 
+        /** @var list<string> $paths */
         foreach ($paths as $path) {
             if (!is_dir($path)) {
                 continue;

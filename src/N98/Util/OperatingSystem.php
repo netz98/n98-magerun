@@ -98,11 +98,11 @@ class OperatingSystem
     }
 
     /**
-     * get current working directory
+     * Get current working directory
      *
-     * @return string the current working directory on success, or false on failure.
+     * @return string|false the current working directory on success, or false on failure.
      */
-    public static function getCwd(): string
+    public static function getCwd()
     {
         return getcwd();
     }
@@ -126,9 +126,7 @@ class OperatingSystem
 
     public static function isBashCompatibleShell(): bool
     {
-        return in_array(
-            basename(getenv('SHELL')),
-            ['bash', 'zsh']
-        );
+        $env = getenv('SHELL');
+        return $env && in_array(basename($env), ['bash', 'zsh']);
     }
 }

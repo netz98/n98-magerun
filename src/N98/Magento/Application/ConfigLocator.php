@@ -2,11 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
 namespace N98\Magento\Application;
 
 use InvalidArgumentException;
@@ -19,37 +14,25 @@ use RuntimeException;
  * Has all the information encoded to retrieve the various config files
  *
  * @package N98\Magento\Application
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
 class ConfigLocator
 {
-    /**
-     * @var string
-     */
-    private $customConfigFilename;
+    private string $customConfigFilename;
 
-    /**
-     * @var string
-     */
-    private $magentoRootFolder;
+    private string $magentoRootFolder;
 
-    /**
-     * ConfigLocator constructor.
-     *
-     * @param string $configFilename
-     * @param string $magentoRootFolder
-     */
-    public function __construct($configFilename, $magentoRootFolder)
+    public function __construct(string $configFilename, string $magentoRootFolder)
     {
         $this->customConfigFilename = $configFilename;
-        $this->magentoRootFolder = $magentoRootFolder;
+        $this->magentoRootFolder    = $magentoRootFolder;
     }
 
     /**
      * Obtain the user-config-file, it is placed in the homedir, e.g. ~/.n98-magerun2.yaml
-     *
-     * @return ConfigFile|null
      */
-    public function getUserConfigFile()
+    public function getUserConfigFile(): ?ConfigFile
     {
         $userConfigFile = null;
 
@@ -70,12 +53,10 @@ class ConfigLocator
 
     /**
      * Obtain the project-config-file, it is placed in the magento app/etc dir, e.g. app/etc/n98-magerun2.yaml
-     *
-     * @return \N98\Magento\Application\ConfigFile|null
      */
-    public function getProjectConfigFile()
+    public function getProjectConfigFile(): ?ConfigFile
     {
-        if ((string)$this->magentoRootFolder === '') {
+        if ($this->magentoRootFolder === '') {
             return null;
         }
 
@@ -97,11 +78,8 @@ class ConfigLocator
     /**
      * Obtain the (optional) stop-file-config-file, it is placed in the folder of the stop-file, always
      * prefixed with a dot: stop-file-folder/.n98-magerun2.yaml
-     *
-     * @param string $magerunStopFileFolder
-     * @return \N98\Magento\Application\ConfigFile|null
      */
-    public function getStopFileConfigFile($magerunStopFileFolder)
+    public function getStopFileConfigFile(string $magerunStopFileFolder): ?ConfigFile
     {
         if (empty($magerunStopFileFolder)) {
             return null;
@@ -123,16 +101,12 @@ class ConfigLocator
         return $stopFileConfigFile;
     }
 
-    /**
-     * @return array
-     */
-    private function getUserConfigFilePaths()
+    private function getUserConfigFilePaths(): array
     {
         $paths = [];
 
         $homeDirectory = OperatingSystem::getHomeDir();
-
-        if ((string) ($homeDirectory ?? '') === '') {
+        if ($homeDirectory === false || $homeDirectory === '') {
             return $paths;
         }
 

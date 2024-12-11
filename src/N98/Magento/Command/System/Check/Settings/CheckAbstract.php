@@ -66,7 +66,8 @@ abstract class CheckAbstract implements StoreCheck
             $arguments[] = $paramValues[$paramName];
         }
 
-        call_user_func_array([$this, $name], $arguments);
+        $callable = [$this, $name];
+        call_user_func_array($callable, $arguments);
     }
 
     /**

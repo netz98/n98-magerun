@@ -18,17 +18,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
 {
-    /**
-     * @var array|DbSettings
-     */
-    protected $dbSettings;
+    protected DbSettings $dbSettings;
 
     protected bool $isSocketConnect = false;
 
     protected function detectDbSettings(OutputInterface $output, ?string $connectionNode = null): void
     {
-        $database = $this->getDatabaseHelper();
-        $this->dbSettings = $database->getDbSettings($output);
+        $database           = $this->getDatabaseHelper();
+        $this->dbSettings   = $database->getDbSettings($output);
     }
 
     /**

@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class Config
  *
  * Class representing the application configuration. Created to factor out configuration related application
- * functionality from @see \N98\Magento\Application
+ * functionality from @see Application
  *
  * @package N98\Magento\Application
  * @author Tom Klingenberg <https://github.com/ktomk>
@@ -114,11 +114,12 @@ class Config
             $commandName = null;
             if (is_array($commandClass)) {
                 // Support for key => value (name -> class)
-                $commandName = key($commandClass);
-                $commandClass = current($commandClass);
+                $commandName    = (string) key($commandClass);
+                $commandClass   = current($commandClass);
             }
 
-            if (null === $command = $this->newCommand($commandClass, $commandName)) {
+            $command = $this->newCommand($commandClass, $commandName);
+            if (is_null($command)) {
                 $this->output->writeln(
                     sprintf(
                         '<error>Can not add nonexistent command class "%s" as command to the application</error>',
@@ -154,11 +155,12 @@ class Config
             );
         }
 
-        if (!class_exists($className)) {
+        if (is_string($className) && !class_exists($className)) {
             return null;
         }
 
         if (false === is_subclass_of($className, self::COMMAND_CLASS, true)) {
+            $className = is_object($className) ? get_class($className) : $className;
             throw new InvalidArgumentException(
                 sprintf('Class "%s" is not a Command (subclass of "%s")', $className, self::COMMAND_CLASS)
             );
@@ -181,13 +183,11 @@ class Config
         $mask = '<debug>Registered %s autoloader </debug> <info>%s</info> -> <comment>%s</comment>';
 
         foreach ($this->getArray('autoloaders') as $prefix => $paths) {
-            $paths = (array) $paths;
             $this->debugWriteln(sprintf($mask, self::PSR_0, OutputFormatter::escape($prefix), implode(',', $paths)));
             $classLoader->add($prefix, $paths);
         }
 
         foreach ($this->getArray('autoloaders_psr4') as $prefix => $paths) {
-            $paths = (array) $paths;
             $this->debugWriteln(sprintf($mask, self::PSR_4, OutputFormatter::escape($prefix), implode(',', $paths)));
             $classLoader->addPsr4($prefix, $paths);
         }

@@ -16,7 +16,7 @@ namespace N98\Util;
 class AutoloadRestorer
 {
     /**
-     * @var array
+     * @var array|false
      */
     private $snapshot;
 
@@ -40,11 +40,15 @@ class AutoloadRestorer
     {
         $unregistered = [];
         $current = spl_autoload_functions();
+
+        if (!$this->snapshot || !$current) {
+            return $unregistered;
+        }
+
         foreach ($this->snapshot as $callback) {
             if (in_array($callback, $current, true)) {
                 continue;
             }
-
             $unregistered[] = $callback;
         }
         return $unregistered;

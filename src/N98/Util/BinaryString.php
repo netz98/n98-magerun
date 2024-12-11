@@ -13,6 +13,7 @@ class BinaryString
 {
     public static function trimExplodeEmpty(string $delimiter, string $string): array
     {
+        /** @var list<string> $array */
         $array = explode($delimiter, $string);
         foreach ($array as $key => &$data) {
             $data = trim($data);

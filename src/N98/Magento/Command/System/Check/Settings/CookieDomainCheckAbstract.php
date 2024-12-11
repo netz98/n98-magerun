@@ -66,16 +66,13 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
      * - otherwise the dot is removed and the cookie-domain is now with removed starting dot.
      * - the cookie domain must be the suffix of the site-domain and the remaining prefix of site-domain must end with
      *   a dot. returns true/false
-     *
-     * @param string $cookieDomain
-     * @param string $siteUrl
-     *
-     * @return bool
      */
-    public function validateCookieDomainAgainstUrl($cookieDomain, $siteUrl)
+    public function validateCookieDomainAgainstUrl(string $cookieDomain, string $siteUrl): bool
     {
-        $siteDomain = strtolower(parse_url($siteUrl, PHP_URL_HOST));
-        $siteLen = strlen($siteDomain);
+        /** @var string $host */
+        $host       = parse_url($siteUrl, PHP_URL_HOST);
+        $siteDomain = strtolower($host);
+        $siteLen    = strlen($siteDomain);
 
         if (0 === $siteLen) {
             return false;
@@ -90,8 +87,8 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
 
         $hasLeadingDot = $cookieDomain[0] === '.';
         if ($hasLeadingDot) {
-            $cookieDomain = substr($cookieDomain, 1);
-            $cookieLen = strlen($cookieDomain);
+            $cookieDomain = (string) substr($cookieDomain, 1);
+            $cookieLen    = strlen($cookieDomain);
         } elseif ($siteDomain === $cookieDomain) {
             return true;
         }
@@ -102,15 +99,15 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
         }
 
         $suffix = substr($siteDomain, -$cookieLen);
-
         if ($suffix !== $cookieDomain) {
             return false;
         }
 
         $prefix = substr($siteDomain, 0, -$cookieLen);
-        if ($prefix === '') {
+        if (!$prefix) {
             return false;
         }
+
         return substr($prefix, -1) === '.';
     }
 }

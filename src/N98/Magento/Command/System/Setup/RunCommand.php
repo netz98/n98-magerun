@@ -116,14 +116,16 @@ HELP;
     protected function printFile(OutputInterface $output, Exception $exception): void
     {
         if (preg_match('/Error\sin\sfile\:\s"(.+)\"\s-/', $exception->getMessage(), $matches)) {
-            $tableHelper = $this->getTableHelper();
-            $lines = file($matches[1]);
-            $rows = [];
-            $i = 0;
-            foreach ($lines as $line) {
-                $rows[] = [++$i, rtrim($line)];
+            $lines  = file($matches[1]);
+            $rows   = [];
+            if ($lines) {
+                $i = 0;
+                foreach ($lines as $line) {
+                    $rows[] = [++$i, rtrim($line)];
+                }
             }
 
+            $tableHelper = $this->getTableHelper();
             $tableHelper->setHeaders(['Line', 'Code']);
             $tableHelper->setRows($rows);
             $tableHelper->render($output);

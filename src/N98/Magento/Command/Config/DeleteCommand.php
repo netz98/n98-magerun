@@ -62,12 +62,11 @@ HELP;
 
         $allowZeroScope = $input->getOption('force');
 
-        $scope = $this->_validateScopeParam($input->getOption('scope'));
-        $scopeId = $this->_convertScopeIdParam($scope, $input->getOption('scope-id'), $allowZeroScope);
+        $scope      = $this->_validateScopeParam($input->getOption('scope'));
+        $scopeId    = (int) $this->_convertScopeIdParam($scope, $input->getOption('scope-id'), $allowZeroScope);
 
-        $path = $input->getArgument('path');
-
-        $paths = false !== strstr($path, '*') ? $this->expandPathPattern($input, $path) : [$path];
+        $path       = $input->getArgument('path');
+        $paths      = false !== strstr($path, '*') ? $this->expandPathPattern($input, $path) : [$path];
 
         foreach ($paths as $path) {
             $deleted = array_merge($deleted, $this->_deletePath($input, $path, $scopeId));
@@ -94,7 +93,7 @@ HELP;
 
             // Delete websites
             foreach (Mage::app()->getWebsites($force) as $website) {
-                $deleted[] = $this->deleteConfigEntry($path, 'websites', $website->getId());
+                $deleted[] = $this->deleteConfigEntry($path, 'websites', (int) $website->getId());
             }
 
             // Delete stores

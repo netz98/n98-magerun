@@ -119,10 +119,9 @@ class Filesystem
     }
 
     /**
-     * @param int|string $bytes
      * @see http://www.php.net/manual/en/function.filesize.php#106569
      */
-    public static function humanFileSize($bytes, int $decimals = 2): string
+    public static function humanFileSize(int $bytes, int $decimals = 2): string
     {
         $units = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
         $factor = floor((strlen((string)$bytes) - 1) / 3);

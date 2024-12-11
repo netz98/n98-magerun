@@ -126,11 +126,13 @@ HELP;
             $tables = $this->dbHelper->getTables();
         }
 
+        if (!$tables) {
+            return Command::FAILURE;
+        }
+
         $allTableStatus = $this->dbHelper->getTablesStatus();
-
-        $tableOutput = [];
-
-        $progressBar = new ProgressBar($output, 50);
+        $tableOutput    = [];
+        $progressBar    = new ProgressBar($output, 50);
 
         if ($this->showProgress) {
             $progressBar->start(count($tables));
@@ -192,21 +194,36 @@ HELP;
 
     protected function _checkMyISAM(string $tableName): array
     {
-        $table = [];
-        $type = $this->input->getOption('type');
+        $table  = [];
+        $type   = $this->input->getOption('type');
         $result = $this->_query(sprintf('CHECK TABLE %s %s', $tableName, $type));
-        if ($result['Msg_text'] == self::MESSAGE_CHECK_NOT_SUPPORTED) {
-            return [];
+
+        if (!$result) {
+            return $table;
         }
 
-        $table[] = ['table'     => $tableName, 'operation' => $result['Op'], 'type'      => $type, 'status'    => $result['Msg_text']];
+        if ($result['Msg_text'] == self::MESSAGE_CHECK_NOT_SUPPORTED) {
+            return $table;
+        }
+
+        $table[] = [
+            'table'     => $tableName,
+            'operation' => $result['Op'],
+            'type'      => $type,
+            'status'    => $result['Msg_text'],
+        ];
 
         if ($result['Msg_text'] != 'OK'
             && $this->input->getOption('repair')
         ) {
             $result = $this->_query(sprintf('REPAIR TABLE %s %s', $tableName, $type));
-            if ($result['Msg_text'] != self::MESSAGE_REPAIR_NOT_SUPPORTED) {
-                $table[] = ['table'     => $tableName, 'operation' => $result['Op'], 'type'      => $type, 'status'    => $result['Msg_text']];
+            if ($result && $result['Msg_text'] != self::MESSAGE_REPAIR_NOT_SUPPORTED) {
+                $table[] = [
+                    'table'     => $tableName,
+                    'operation' => $result['Op'],
+                    'type'      => $type,
+                    'status'    => $result['Msg_text'],
+                ];
             }
         }
 
@@ -214,7 +231,7 @@ HELP;
     }
 
     /**
-     * @return array|bool
+     * @return array|false
      */
     protected function _query(string $sql)
     {

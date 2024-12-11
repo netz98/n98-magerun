@@ -343,7 +343,7 @@ class InstallMagento extends AbstractSubCommand
         }
 
         $output->writeln('<info>Successfully installed Magento</info>');
-        $encryptionKey = trim(substr(strstr($installationOutput, ':'), 1));
+        $encryptionKey = trim(substr((string) strstr($installationOutput, ':'), 1));
         $output->writeln('<comment>Encryption Key:</comment> <info>' . $encryptionKey . '</info>');
     }
 }

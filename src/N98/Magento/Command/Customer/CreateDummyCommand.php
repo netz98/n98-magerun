@@ -88,12 +88,12 @@ HELP;
 
             $email = $generator->safeEmail;
 
-            $customer->setWebsiteId($website->getId());
+            $customer->setWebsiteId((int) $website->getId());
             $customer->loadByEmail($email);
             $password = $customer->generatePassword();
 
             if (!$customer->getId()) {
-                $customer->setWebsiteId($website->getId());
+                $customer->setWebsiteId((int) $website->getId());
                 $customer->setEmail($email);
                 $customer->setFirstname($generator->firstName);
                 $customer->setLastname($generator->lastName);

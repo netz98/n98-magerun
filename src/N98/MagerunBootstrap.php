@@ -18,13 +18,12 @@ use N98\Magento\Application;
 class MagerunBootstrap
 {
     /**
-     * @param ClassLoader|null $classLoader [optional]
      * @return Magento\Application
      * @throws ErrorException
      */
-    public static function createApplication(ClassLoader $classLoader = null)
+    public static function createApplication(?ClassLoader $classLoader = null)
     {
-        if (!$classLoader instanceof \Composer\Autoload\ClassLoader) {
+        if (!$classLoader instanceof ClassLoader) {
             $classLoader = self::getLoader();
         }
 

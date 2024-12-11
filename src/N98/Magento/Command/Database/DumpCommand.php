@@ -423,12 +423,15 @@ HELP;
         }
 
         if ($input->getOption('include')) {
-            $includeTables = $this->resolveDatabaseTables($input->getOption('include'));
-            $excludeTables = array_diff($this->getDatabaseHelper()->getTables(), $includeTables);
-            if ($this->nonCommandOutput($input)) {
-                $output->writeln(
-                    sprintf('<comment>Included: <info>%s</info></comment>', implode(' ', $includeTables))
-                );
+            $allTables = $this->getDatabaseHelper()->getTables();
+            if ($allTables) {
+                $includeTables  = $this->resolveDatabaseTables($input->getOption('include'));
+                $excludeTables  = array_diff($allTables, $includeTables);
+                if ($this->nonCommandOutput($input)) {
+                    $output->writeln(
+                        sprintf('<comment>Included: <info>%s</info></comment>', implode(' ', $includeTables))
+                    );
+                }
             }
         }
 
@@ -486,9 +489,15 @@ HELP;
                 $fileName = $defaultName;
             }
         } elseif ($optionAddTime) {
-            $pathParts = pathinfo($fileName);
-            $fileName = ($pathParts['dirname'] == '.' ? '' : $pathParts['dirname'] . '/') .
-                $namePrefix . $pathParts['filename'] . $nameSuffix . '.' . $pathParts['extension'];
+            $pathParts          = pathinfo($fileName);
+            $pathPartsDirname   = $pathParts['dirname'] ?? '';
+            $pathPartsFilename  = $pathParts['filename'] ?? '';
+            $fileName = ($pathPartsDirname == '.' ? '' : $pathPartsDirname . '/')
+                . $namePrefix
+                . $pathPartsFilename
+                . $nameSuffix
+                . '.'
+                . $pathPartsFilename;
         }
 
         return $compressor->getFileName($fileName);

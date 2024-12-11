@@ -69,8 +69,19 @@ HELP;
         $domDocument = new DOMDocument();
         $domDocument->preserveWhiteSpace = false;
         $domDocument->formatOutput = true;
-        $domDocument->loadXML($config->asXml());
-        $output->writeln($domDocument->saveXML(), OutputInterface::OUTPUT_RAW);
+
+        $configXml = $config->asXml();
+        if (!$configXml) {
+            return Command::FAILURE;
+        }
+
+        $domDocument->loadXML($configXml);
+        $domDocumentXml = $domDocument->saveXML();
+        if (!$domDocumentXml) {
+            return Command::FAILURE;
+        }
+
+        $output->writeln($domDocumentXml, OutputInterface::OUTPUT_RAW);
 
         return Command::SUCCESS;
     }

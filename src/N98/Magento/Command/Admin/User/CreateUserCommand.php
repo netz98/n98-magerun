@@ -62,7 +62,7 @@ class CreateUserCommand extends AbstractAdminUserCommand
 
                     // give "all" privileges to role
                     $this->getRulesModel()
-                        ->setRoleId($role->getId())
+                        ->setRoleId((int) $role->getId())
                         ->setResources(['all'])
                         ->saveRel();
 

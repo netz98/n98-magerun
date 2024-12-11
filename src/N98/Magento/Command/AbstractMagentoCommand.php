@@ -8,6 +8,7 @@ use Composer\Composer;
 use Composer\Downloader\DownloadManager;
 use Composer\Factory as ComposerFactory;
 use Composer\IO\ConsoleIO;
+use Composer\Package\CompleteAliasPackage;
 use Composer\Package\CompletePackage;
 use Composer\Package\Loader\ArrayLoader as PackageLoader;
 use Composer\Package\PackageInterface;
@@ -36,6 +37,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
+
+use function chdir;
 
 /**
  * Class AbstractMagentoCommand
@@ -186,9 +189,10 @@ abstract class AbstractMagentoCommand extends Command
     }
 
     /**
-     * @param array|PackageInterface $config
+     * @param mixed $config
+     * @return CompleteAliasPackage|CompletePackage
      */
-    protected function createComposerPackageByConfig($config): CompletePackage
+    protected function createComposerPackageByConfig($config)
     {
         $arrayLoader = new PackageLoader();
         return $arrayLoader->load($config);
@@ -305,7 +309,9 @@ abstract class AbstractMagentoCommand extends Command
 
     protected function _getModel(string $class): Mage_Core_Model_Abstract
     {
-        return Mage::getModel($class);
+        /** @var Mage_Core_Model_Abstract $model */
+        $model = Mage::getModel($class);
+        return $model;
     }
 
     protected function _getHelper(string $class): Mage_Core_Helper_Abstract
@@ -315,17 +321,23 @@ abstract class AbstractMagentoCommand extends Command
 
     protected function _getSingleton(string $class): Mage_Core_Model_Abstract
     {
-        return Mage::getModel($class);
+        /** @var Mage_Core_Model_Abstract $model */
+        $model = Mage::getSingleton($class);
+        return $model;
     }
 
     protected function _getResourceModel(string $class): Mage_Core_Model_Resource_Db_Collection_Abstract
     {
-        return Mage::getResourceModel($class);
+        /** @var Mage_Core_Model_Resource_Db_Collection_Abstract $model */
+        $model = Mage::getResourceModel($class);
+        return $model;
     }
 
-    protected function _getResourceSingleton(string $class): object
+    protected function _getResourceSingleton(string $class): Mage_Core_Model_Resource_Db_Collection_Abstract
     {
-        return Mage::getResourceSingleton($class);
+        /** @var Mage_Core_Model_Resource_Db_Collection_Abstract $model */
+        $model = Mage::getResourceSingleton($class);
+        return $model;
     }
 
     protected function _parseBoolOption(string $value): bool
@@ -420,8 +432,8 @@ abstract class AbstractMagentoCommand extends Command
             $installationFolder = $validateInstallationFolder($installationFolder);
         }
 
-        $this->config['installationFolder'] = realpath($installationFolder);
-        \chdir($this->config['installationFolder']);
+        $this->config['installationFolder'] = (string) realpath($installationFolder);
+        chdir($this->config['installationFolder']);
     }
 
     protected function isSourceTypeRepository(string $type): bool

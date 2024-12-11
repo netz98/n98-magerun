@@ -110,7 +110,7 @@ HELP;
     protected function timeElapsedString($datetime, bool $full = false): string
     {
         if (is_numeric($datetime)) {
-            $datetime = Carbon::now()->timestamp - $datetime;
+            $datetime = Carbon::now()->getTimestamp() - $datetime;
             $datetime = '@' . $datetime;
         }
 

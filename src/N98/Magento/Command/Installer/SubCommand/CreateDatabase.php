@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Installer\SubCommand;
 
+use Closure;
+use Exception;
+use InvalidArgumentException;
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
+use PDO;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,25 +21,19 @@ use Symfony\Component\Console\Question\Question;
  */
 class CreateDatabase extends AbstractSubCommand
 {
-    /**
-     * @var array
-     */
-    private $argv;
+    private ?array $argv;
 
-    /**
-     * @var \Closure
-     */
-    protected $notEmptyCallback;
+    protected Closure $notEmptyCallback;
 
     /**
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function execute()
     {
         $this->notEmptyCallback = function ($input) {
             if (empty($input)) {
-                throw new \InvalidArgumentException('Please enter a value');
+                throw new InvalidArgumentException('Please enter a value');
             }
 
             return $input;
@@ -63,7 +61,7 @@ class CreateDatabase extends AbstractSubCommand
             $db = $this->validateDatabaseSettings($this->input, $this->output);
 
             if ($db === false) {
-                throw new \InvalidArgumentException('Database configuration is invalid');
+                throw new InvalidArgumentException('Database configuration is invalid');
             }
         } else {
             /** @var QuestionHelper $questionHelper */
@@ -183,7 +181,7 @@ class CreateDatabase extends AbstractSubCommand
     }
 
     /**
-     * @return bool|\PDO
+     * @return false|PDO
      */
     protected function validateDatabaseSettings(InputInterface $input, OutputInterface $output)
     {
@@ -194,8 +192,8 @@ class CreateDatabase extends AbstractSubCommand
                 $this->config->getString('db_port')
             );
 
-            $pdo = new \PDO($dsn, $this->config->getString('db_user'), $this->config->getString('db_pass'));
-            $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $pdo = new PDO($dsn, $this->config->getString('db_user'), $this->config->getString('db_pass'));
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $dbName = $this->config->getString('db_name');
 
@@ -206,7 +204,7 @@ class CreateDatabase extends AbstractSubCommand
             $result = $stmt->fetchAll();
 
             // Check if database exists
-            if (count($result) === 0) {
+            if ($result && count($result) === 0) {
                 $pdo->query('CREATE DATABASE `' . $dbName . '`');
                 $output->writeln('<info>Created database ' . $dbName . '</info>');
                 $pdo->query('USE `' . $dbName . '`');
@@ -220,22 +218,18 @@ class CreateDatabase extends AbstractSubCommand
             }
 
             return $pdo;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $output->writeln('<error>' . $exception->getMessage() . '</error>');
         }
 
         return false;
     }
 
-    /**
-     * @return array
-     */
-    private function getCliArguments()
+    private function getCliArguments(): ?array
     {
-        if ($this->argv === null) {
+        if (is_null($this->argv)) {
             $this->argv = $_SERVER['argv'];
         }
-
         return $this->argv;
     }
 }

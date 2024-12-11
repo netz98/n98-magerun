@@ -7,9 +7,9 @@ namespace N98\Util\Console\Helper\Table\Renderer;
 use DOMDocument;
 use DOMElement;
 use DOMException;
+use DOMNode;
 use RuntimeException;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\StreamOutput;
 
 /**
  * Class XmlRenderer
@@ -34,18 +34,19 @@ class XmlRenderer implements RendererInterface
         $rows && $this->setHeadersFrom($rows);
 
         $table = $domDocument->createElement(self::NAME_ROOT);
+         if ($table) {
+            $table = $domDocument->appendChild($table);
+            $this->appendHeaders($table, $this->headers);
+            $this->appendRows($table, $rows);
+         }
 
-        /** @var DOMElement $table */
-        $table = $domDocument->appendChild($table);
-
-        $this->appendHeaders($table, $this->headers);
-        $this->appendRows($table, $rows);
-
-        /** @var StreamOutput $output */
-        $output->write($domDocument->saveXML($domDocument, LIBXML_NOEMPTYTAG), false, $output::OUTPUT_RAW);
+         $xml = $domDocument->saveXML($domDocument, LIBXML_NOEMPTYTAG);
+         if ($xml) {
+             $output->write($xml, false, $output::OUTPUT_RAW);
+         }
     }
 
-    private function appendRows(DOMElement $domElement, array $rows): void
+    private function appendRows(DOMNode $domElement, array $rows): void
     {
         $doc = $domElement->ownerDocument;
 
@@ -72,7 +73,7 @@ class XmlRenderer implements RendererInterface
         }
     }
 
-    private function appendHeaders(DOMElement $domElement, array $headers = null): void
+    private function appendHeaders(DOMNode $domElement, array $headers = null): void
     {
         if ($headers === null || $headers === []) {
             return;

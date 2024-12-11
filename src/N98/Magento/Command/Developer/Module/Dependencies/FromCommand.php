@@ -35,7 +35,8 @@ class FromCommand extends AbstractCommand
     protected function findModuleDependencies(string $moduleName, bool $recursive = false): array
     {
         if (is_null($this->modules)) {
-            $this->modules = Mage::app()->getConfig()->getNode('modules')->asArray();
+            $modulesNode = Mage::app()->getConfig()->getNode('modules');
+            $this->modules = $modulesNode ? $modulesNode->asArray() : [];
         }
 
         if (!isset($this->modules[$moduleName])) {

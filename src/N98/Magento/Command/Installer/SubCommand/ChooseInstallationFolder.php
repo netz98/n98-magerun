@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Installer\SubCommand;
 
+use InvalidArgumentException;
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
 use Symfony\Component\Console\Question\Question;
+use function chdir;
 
 /**
  * Class ChooseInstallationFolder
@@ -32,12 +34,12 @@ class ChooseInstallationFolder extends AbstractSubCommand
             }
 
             if ($folderName === '' || $folderName === '0') {
-                throw new \InvalidArgumentException('Installation folder cannot be empty');
+                throw new InvalidArgumentException('Installation folder cannot be empty');
             }
 
             if (!is_dir($folderName)) {
                 if (!mkdir($folderName, 0777, true) && !is_dir($folderName)) {
-                    throw new \InvalidArgumentException('Cannot create folder.');
+                    throw new InvalidArgumentException('Cannot create folder.');
                 }
 
                 return $folderName;
@@ -68,9 +70,9 @@ class ChooseInstallationFolder extends AbstractSubCommand
             $installationFolder = $validateInstallationFolder($installationFolder);
         }
 
-        $this->config->setString('initialFolder', getcwd());
-        $this->config->setString('installationFolder', realpath($installationFolder));
-        \chdir($this->config->getString('installationFolder'));
+        $this->config->setString('initialFolder', (string) getcwd());
+        $this->config->setString('installationFolder', (string) realpath($installationFolder));
+        chdir($this->config->getString('installationFolder'));
 
         return true;
     }

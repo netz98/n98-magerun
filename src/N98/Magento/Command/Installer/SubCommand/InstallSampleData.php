@@ -162,7 +162,7 @@ class InstallSampleData extends AbstractSubCommand
         $expandedFolder = $this->config['installationFolder'] . '/_temp_demo_data';
         // Check if expanded folder contains only one directory. If yes, use this as expanded folder
         $expandedFolderContent = scandir($expandedFolder);
-        if (count($expandedFolderContent) === 3) {
+        if ($expandedFolderContent && count($expandedFolderContent) === 3) {
             return $expandedFolder . '/' . $expandedFolderContent[2];
         }
 

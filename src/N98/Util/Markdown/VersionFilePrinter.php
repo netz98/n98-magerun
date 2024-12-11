@@ -23,13 +23,13 @@ class VersionFilePrinter
         $contentToReturn = '';
 
         $lines = preg_split("/((\r?\n)|(\r\n?))/", $this->content);
-
-        foreach ($lines as $line) {
-            if ($line === $startVersion) {
-                break;
+        if ($lines) {
+            foreach ($lines as $line) {
+                if ($line === $startVersion) {
+                    break;
+                }
+                $contentToReturn .= $line . "\n";
             }
-
-            $contentToReturn .= $line . "\n";
         }
 
         return trim($contentToReturn) . "\n";

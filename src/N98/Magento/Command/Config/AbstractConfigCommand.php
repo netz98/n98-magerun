@@ -41,7 +41,10 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
         return $model;
     }
 
-    protected function _formatValue(?string $value, string $encryptionType): ?string
+    /**
+     * @param string|false $encryptionType
+     */
+    protected function _formatValue(?string $value, $encryptionType): ?string
     {
         if ($value === null) {
             $formatted = $value;

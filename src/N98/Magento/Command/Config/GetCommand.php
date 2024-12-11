@@ -64,7 +64,6 @@ HELP;
             return Command::INVALID;
         }
 
-        /* @var \Mage_Core_Model_Resource_Db_Collection_Abstract $collection */
         $collection = $this->_getConfigDataModel()->getCollection();
 
         $searchPath = $input->getArgument('path');
@@ -101,10 +100,15 @@ HELP;
         }
 
         foreach ($collection as $item) {
-            $table[] = ['path'     => $item->getPath(), 'scope'    => $item->getScope(), 'scope_id' => $item->getScopeId(), 'value'    => $this->_formatValue(
-                $item->getValue(),
-                $input->getOption('decrypt') ? 'decrypt' : false
-            )];
+            $table[] = [
+                'path'     => $item->getPath(),
+                'scope'    => $item->getScope(),
+                'scope_id' => $item->getScopeId(),
+                'value'    => $this->_formatValue(
+                    $item->getValue(),
+                    $input->getOption('decrypt') ? 'decrypt' : false
+                )
+            ];
         }
 
         ksort($table);
@@ -199,6 +203,7 @@ HELP;
         foreach ($table as $row) {
             $value = $row['value'];
             if ($value !== null) {
+                /** @var string $value */
                 $value = str_replace(["\n", "\r"], ['\n', '\r'], $value);
             }
 

@@ -137,7 +137,11 @@ HELP;
         $table = [];
         foreach ($resultCollection as $result) {
             /** @var Result $result */
-            $table[] = [$result->getResultGroup(), strip_tags($result->getMessage()), $result->getStatus()];
+            $table[] = [
+                $result->getResultGroup(),
+                strip_tags($result->getMessage()),
+                $result->getStatus(),
+            ];
         }
 
         $tableHelper = $this->getTableHelper();
