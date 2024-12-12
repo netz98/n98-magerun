@@ -35,13 +35,13 @@ class InfoCommand extends AbstractMagentoCommand
             ->addArgument(
                 'key',
                 InputArgument::OPTIONAL,
-                'Only output value of named param like "version". Key is case insensitive.'
+                'Only output value of named param like "version". Key is case insensitive.',
             )->setDescription('Prints infos about the current magento system.')
             ->addFormatOption()
         ;
     }
 
-    
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -166,7 +166,7 @@ class InfoCommand extends AbstractMagentoCommand
                 function ($value) use ($codePoolDir) {
                     return str_replace($codePoolDir, '', $value);
                 },
-                $vendors
+                $vendors,
             );
 
             // @phpstan-ignore argument.type

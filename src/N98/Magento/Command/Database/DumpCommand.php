@@ -37,105 +37,105 @@ class DumpCommand extends AbstractDatabaseCommand
                 't',
                 InputOption::VALUE_OPTIONAL,
                 'Append or prepend a timestamp to filename if a filename is provided. ' .
-                'Possible values are "suffix", "prefix" or "no".'
+                'Possible values are "suffix", "prefix" or "no".',
             )
             ->addOption(
                 'compression',
                 'c',
                 InputOption::VALUE_REQUIRED,
-                'Compress the dump file using one of the supported algorithms'
+                'Compress the dump file using one of the supported algorithms',
             )
             ->addOption(
                 'dump-option',
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Option(s) to pass to mysqldump command. E.g. --dump-option="--set-gtid-purged=off"'
+                'Option(s) to pass to mysqldump command. E.g. --dump-option="--set-gtid-purged=off"',
             )
             ->addOption(
                 'xml',
                 null,
                 InputOption::VALUE_NONE,
-                'Dump database in xml format'
+                'Dump database in xml format',
             )
             ->addOption(
                 'hex-blob',
                 null,
                 InputOption::VALUE_NONE,
-                'Dump binary columns using hexadecimal notation (for example, "abc" becomes 0x616263)'
+                'Dump binary columns using hexadecimal notation (for example, "abc" becomes 0x616263)',
             )
             ->addOption(
                 'only-command',
                 null,
                 InputOption::VALUE_NONE,
-                'Print only mysqldump command. Do not execute'
+                'Print only mysqldump command. Do not execute',
             )
             ->addOption(
                 'print-only-filename',
                 null,
                 InputOption::VALUE_NONE,
-                'Execute and prints no output except the dump filename'
+                'Execute and prints no output except the dump filename',
             )
             ->addOption(
                 'dry-run',
                 null,
                 InputOption::VALUE_NONE,
-                'do everything but the dump'
+                'do everything but the dump',
             )
             ->addOption(
                 'no-single-transaction',
                 null,
                 InputOption::VALUE_NONE,
-                'Do not use single-transaction (not recommended, this is blocking)'
+                'Do not use single-transaction (not recommended, this is blocking)',
             )
             ->addOption(
                 'human-readable',
                 null,
                 InputOption::VALUE_NONE,
                 'Use a single insert with column names per row. Useful to track database differences. Use db:import ' .
-                '--optimize for speeding up the import.'
+                '--optimize for speeding up the import.',
             )
             ->addOption(
                 'add-routines',
                 null,
                 InputOption::VALUE_NONE,
-                'Include stored routines in dump (procedures & functions)'
+                'Include stored routines in dump (procedures & functions)',
             )
             ->addOption(
                 'no-tablespaces',
                 null,
                 InputOption::VALUE_NONE,
-                'Use this option if you want to create a dump without having the PROCESS privilege'
+                'Use this option if you want to create a dump without having the PROCESS privilege',
             )
             ->addOption('stdout', null, InputOption::VALUE_NONE, 'Dump to stdout')
             ->addOption(
                 'strip',
                 's',
                 InputOption::VALUE_OPTIONAL,
-                'Tables to strip (dump only structure of those tables)'
+                'Tables to strip (dump only structure of those tables)',
             )
             ->addOption(
                 'exclude',
                 'e',
                 InputOption::VALUE_OPTIONAL,
-                'Tables to exclude from the dump'
+                'Tables to exclude from the dump',
             )
             ->addOption(
                 'include',
                 'i',
                 InputOption::VALUE_OPTIONAL,
-                'Tables to include in the dump'
+                'Tables to include in the dump',
             )
             ->addOption(
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
-                'Do not prompt if all options are defined'
+                'Do not prompt if all options are defined',
             )
             ->addOption(
                 'connection',
                 'con',
                 InputOption::VALUE_OPTIONAL,
-                'Specify local.xml connection node, default to default_setup'
+                'Specify local.xml connection node, default to default_setup',
             )
             ->setDescription('Dumps database with mysqldump cli client');
     }
@@ -343,7 +343,7 @@ HELP;
             if ($this->nonCommandOutput($input)) {
                 $output->writeln(
                     '<comment>Start dumping database <info>' . $this->dbSettings['dbname'] .
-                    '</info> to file <info>' . $fileName . '</info>'
+                    '</info> to file <info>' . $fileName . '</info>',
                 );
             }
 
@@ -397,7 +397,7 @@ HELP;
 
         if ($this->nonCommandOutput($input)) {
             $output->writeln(
-                sprintf('<comment>No-data export for: <info>%s</info></comment>', implode(' ', $stripTables))
+                sprintf('<comment>No-data export for: <info>%s</info></comment>', implode(' ', $stripTables)),
             );
         }
 
@@ -417,7 +417,7 @@ HELP;
 
             if ($this->nonCommandOutput($input)) {
                 $output->writeln(
-                    sprintf('<comment>Excluded: <info>%s</info></comment>', implode(' ', $excludeTables))
+                    sprintf('<comment>Excluded: <info>%s</info></comment>', implode(' ', $excludeTables)),
                 );
             }
         }
@@ -429,7 +429,7 @@ HELP;
                 $excludeTables  = array_diff($allTables, $includeTables);
                 if ($this->nonCommandOutput($input)) {
                     $output->writeln(
-                        sprintf('<comment>Included: <info>%s</info></comment>', implode(' ', $includeTables))
+                        sprintf('<comment>Included: <info>%s</info></comment>', implode(' ', $includeTables)),
                     );
                 }
             }
@@ -447,7 +447,7 @@ HELP;
 
         return $databaseHelper->resolveTables(
             explode(' ', $list),
-            $databaseHelper->getTableDefinitions($this->getCommandConfig())
+            $databaseHelper->getTableDefinitions($this->getCommandConfig()),
         );
     }
 
@@ -472,12 +472,12 @@ HELP;
         )
             && !$input->getOption('stdout')) {
             $defaultName = VerifyOrDie::filename(
-                $namePrefix . $this->dbSettings['dbname'] . $nameSuffix . $nameExtension
+                $namePrefix . $this->dbSettings['dbname'] . $nameSuffix . $nameExtension,
             );
             if (isset($isDir) && $isDir) {
                 $defaultName = rtrim($fileName, '/') . '/' . $defaultName;
             }
-            
+
             if (!$input->getOption('force')) {
                 $dialog = $this->getQuestionHelper();
                 $fileName = $dialog->ask(
@@ -524,8 +524,8 @@ HELP;
             throw new InvalidArgumentException(
                 sprintf(
                     'Invalid --add-time value %s, possible values are none (for) "suffix", "prefix" or "no"',
-                    var_export($optionAddTime, true)
-                )
+                    var_export($optionAddTime, true),
+                ),
             );
         }
 

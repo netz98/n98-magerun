@@ -46,7 +46,7 @@ class Twig
     {
         // cast_to_array
         $twigEnvironment->addFilter(
-            new TwigFilter('cast_to_array', [$this, 'filterCastToArray'])
+            new TwigFilter('cast_to_array', [$this, 'filterCastToArray']),
         );
     }
 

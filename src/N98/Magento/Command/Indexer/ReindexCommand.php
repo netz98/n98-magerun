@@ -46,7 +46,7 @@ indexer.
 HELP;
     }
 
-    
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->detectMagento($output);
@@ -93,7 +93,7 @@ HELP;
             $choices[] = sprintf(
                 '%-40s <info>(last runtime: %s)</info>',
                 $indexer['code'],
-                $indexer['last_runtime']
+                $indexer['last_runtime'],
             );
         }
 
@@ -115,7 +115,7 @@ HELP;
         $questionHelper = $this->getQuestionHelper();
         $choiceQuestion = new ChoiceQuestion(
             '<question>Please select a indexer:</question> ',
-            $choices
+            $choices,
         );
         $choiceQuestion->setValidator($validator);
 

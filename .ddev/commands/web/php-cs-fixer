@@ -1,0 +1,7 @@
+#!/bin/bash
+
+## Description: run PHP-CS-Fixer
+## Usage: php-cs-fixer
+## Example: ddev php-cs-fixer <path-to-files>
+
+php vendor/bin/php-cs-fixer fix "$@"

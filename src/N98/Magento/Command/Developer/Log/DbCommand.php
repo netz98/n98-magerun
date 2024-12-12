@@ -75,7 +75,7 @@ class DbCommand extends AbstractLogCommand
         }
 
         $output->writeln(
-            '<info>Changed <comment>' . $variable . '</comment> to <comment>' . $newValue . '</comment></info>'
+            '<info>Changed <comment>' . $variable . '</comment> to <comment>' . $newValue . '</comment></info>',
         );
 
         $contents = preg_replace($debugLinePattern, 'protected ' . $variable . ' = ' . $newValue, $contents);

@@ -48,7 +48,7 @@ class Enabler
         }
 
         throw new RuntimeException(
-            sprintf('Command %s is not available because %s.', $this->command->getName(), $message)
+            sprintf('Command %s is not available because %s.', $this->command->getName(), $message),
         );
     }
 }

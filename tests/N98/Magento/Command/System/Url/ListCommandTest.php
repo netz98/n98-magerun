@@ -23,7 +23,7 @@ class ListCommandTest extends TestCase
                 '--add-categories' => true,
                 '--add-products'   => true,
                 '--add-cmspages'   => true,
-            ]
+            ],
         );
 
         self::assertMatchesRegularExpression('/prefix/', $commandTester->getDisplay());

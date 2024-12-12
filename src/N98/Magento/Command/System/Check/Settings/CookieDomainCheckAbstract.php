@@ -36,19 +36,19 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
             if ($isValid) {
                 $result->setMessage(
                     '<info>Cookie Domain (' . $this->class . '): <comment>' . $cookieDomain .
-                    '</comment> of Store: <comment>' . $mageCoreModelStore->getCode() . '</comment> - OK</info>'
+                    '</comment> of Store: <comment>' . $mageCoreModelStore->getCode() . '</comment> - OK</info>',
                 );
             } else {
                 $result->setMessage(
                     '<error>Cookie Domain (' . $this->class . '): <comment>' . $cookieDomain .
                     '</comment> of Store: <comment>' . $mageCoreModelStore->getCode() . '</comment> - ERROR: ' . $errorMessage .
-                    '</error>'
+                    '</error>',
                 );
             }
         } else {
             $result->setMessage(
                 '<info>Empty cookie Domain (' . $this->class . ') of Store: <comment>' . $mageCoreModelStore->getCode() .
-                '</comment> - OK</info>'
+                '</comment> - OK</info>',
             );
         }
     }

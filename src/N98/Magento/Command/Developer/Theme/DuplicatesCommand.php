@@ -31,13 +31,13 @@ class DuplicatesCommand extends AbstractMagentoCommand
                 'originalTheme',
                 InputArgument::OPTIONAL,
                 'Original theme to comapre. Default is "base/default"',
-                'base/default'
+                'base/default',
             )
             ->addOption(
                 'log-junit',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Log duplicates in JUnit XML format to defined file.'
+                'Log duplicates in JUnit XML format to defined file.',
             )
             ->setDescription('Find duplicate files (templates, layout, locale, etc.) between two themes.')
         ;
@@ -56,7 +56,7 @@ HELP;
         $this->detectMagento($output);
 
         $referenceFiles = $this->getChecksums(
-            $this->_magentoRootFolder . '/app/design/frontend/' . $input->getArgument('originalTheme')
+            $this->_magentoRootFolder . '/app/design/frontend/' . $input->getArgument('originalTheme'),
         );
 
         $themeFolder = $this->_magentoRootFolder . '/app/design/frontend/' . $input->getArgument('theme');
@@ -115,13 +115,13 @@ HELP;
         $testCaseElement = $testSuiteElement->addTestCase();
         $testCaseElement->setName(
             'Magento Duplicate Theme Files: ' . $input->getArgument('theme') . ' | ' .
-            $input->getArgument('originalTheme')
+            $input->getArgument('originalTheme'),
         );
         $testCaseElement->setClassname('ConflictsCommand');
         foreach ($duplicates as $duplicate) {
             $testCaseElement->addFailure(
                 sprintf('Duplicate File: %s', $duplicate),
-                'MagentoThemeDuplicateFileException'
+                'MagentoThemeDuplicateFileException',
             );
         }
 

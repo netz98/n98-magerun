@@ -100,7 +100,7 @@ class Filesystem
                 // we call this function with the new path
                 $this->recursiveRemoveDirectory($path);
 
-            // if the new path is a file
+                // if the new path is a file
             } else {
                 // we remove the file
                 unlink($path);
@@ -124,7 +124,7 @@ class Filesystem
     public static function humanFileSize(int $bytes, int $decimals = 2): string
     {
         $units = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
-        $factor = floor((strlen((string)$bytes) - 1) / 3);
+        $factor = floor((strlen((string) $bytes) - 1) / 3);
 
         return sprintf('%.%df' . $decimals, $bytes / 1024 ** $factor, $units[$factor]);
     }

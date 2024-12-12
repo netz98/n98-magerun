@@ -32,7 +32,7 @@ class CompareVersionsCommand extends AbstractMagentoCommand
                 'errors-only',
                 null,
                 InputOption::VALUE_NONE,
-                'Only display Setup resources where Status equals Error.'
+                'Only display Setup resources where Status equals Error.',
             )
             ->addFormatOption()
             ->setDescription('Compare module version with core_resource table.');
@@ -137,7 +137,7 @@ HELP;
                     '<%s>%s</%s>',
                     $availableStatus[$status],
                     $status,
-                    $availableStatus[$status]
+                    $availableStatus[$status],
                 );
                 $row['Status'] = $statusString;
             });
@@ -160,9 +160,9 @@ HELP;
                             '%s error%s %s found!',
                             $errorCounter,
                             $errorCounter === 1 ? '' : 's',
-                            $errorCounter === 1 ? 'was' : 'were'
+                            $errorCounter === 1 ? 'was' : 'were',
                         ),
-                        'error'
+                        'error',
                     );
                 } else {
                     $this->writeSection($output, 'No setup problems were found.', 'info');
@@ -194,9 +194,9 @@ HELP;
                 $testCaseElement->addFailure(
                     sprintf(
                         'Setup Script Error: [Setup %s]',
-                        $moduleSetup['Setup']
+                        $moduleSetup['Setup'],
                     ),
-                    'MagentoSetupScriptVersionException'
+                    'MagentoSetupScriptVersionException',
                 );
             }
         }

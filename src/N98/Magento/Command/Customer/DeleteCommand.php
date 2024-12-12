@@ -214,7 +214,7 @@ HELP;
         try {
             $mageCustomerModelCustomer->delete();
             $this->output->writeln(
-                sprintf('<info>%s (%s) was successfully deleted</info>', $mageCustomerModelCustomer->getName(), $mageCustomerModelCustomer->getEmail())
+                sprintf('<info>%s (%s) was successfully deleted</info>', $mageCustomerModelCustomer->getName(), $mageCustomerModelCustomer->getEmail()),
             );
             return true;
         } catch (Exception $exception) {
@@ -240,9 +240,9 @@ HELP;
 
     public function validateInt(string $answer): string
     {
-        if ((int)$answer === 0) {
+        if ((int) $answer === 0) {
             throw new RuntimeException(
-                'The range should be numeric and above 0 e.g. 1'
+                'The range should be numeric and above 0 e.g. 1',
             );
         }
 

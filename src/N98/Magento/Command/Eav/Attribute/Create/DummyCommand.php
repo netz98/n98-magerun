@@ -56,7 +56,7 @@ HELP;
         }
 
         $output->writeln(
-            '<warning>This only create sample attribute values, do not use on production environment</warning>'
+            '<warning>This only create sample attribute values, do not use on production environment</warning>',
         );
 
         // Ask for Arguments
@@ -65,8 +65,8 @@ HELP;
             $output->writeln(
                 sprintf(
                     "<warning>Locale '%s' not supported, switch to default locale 'us_US'.</warning>",
-                    $input->getArgument('locale')
-                )
+                    $input->getArgument('locale'),
+                ),
             );
             $argument['locale'] = 'en_US';
         } else {

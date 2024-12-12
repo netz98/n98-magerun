@@ -32,9 +32,7 @@ final class WindowsSystem
         return self::$windowsSystem;
     }
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * @return array keys are uppercase extensions incl. dot
@@ -45,7 +43,7 @@ final class WindowsSystem
         $paths = getenv('PATHEXT');
         $paths = explode(self::PATH_SEPARATOR, $paths);
         $this->extensions || $this->extensions = array_flip(
-            array_map('strtoupper', $paths)
+            array_map('strtoupper', $paths),
         );
 
         return $this->extensions;

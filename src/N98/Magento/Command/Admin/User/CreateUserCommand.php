@@ -78,7 +78,7 @@ class CreateUserCommand extends AbstractAdminUserCommand
                     'lastname'  => $lastname,
                     'email'     => $email,
                     'password'  => $password,
-                    'is_active' => 1
+                    'is_active' => 1,
                 ])->save();
 
             $user->setRoleIds([$role->getId()])

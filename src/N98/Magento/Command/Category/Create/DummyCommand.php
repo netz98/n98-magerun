@@ -27,9 +27,9 @@ class DummyCommand extends AbstractMagentoCommand
     public const DEFAULT_CATEGORY_NAME = 'My Awesome Category';
 
     public const DEFAULT_CATEGORY_STATUS = 1;
-     // enabled
+    // enabled
     public const DEFAULT_CATEGORY_ANCHOR = 1;
-     // enabled
+    // enabled
     public const DEFAULT_STORE_ID = 1; // Default Store ID
 
     protected function configure(): void
@@ -41,12 +41,12 @@ class DummyCommand extends AbstractMagentoCommand
             ->addArgument(
                 'children-categories-number',
                 InputArgument::OPTIONAL,
-                "Number of children for each category created (default: 0 - use '-1' for random from 0 to 5)"
+                "Number of children for each category created (default: 0 - use '-1' for random from 0 to 5)",
             )
             ->addArgument(
                 'category-name-prefix',
                 InputArgument::OPTIONAL,
-                "Category Name Prefix (default: 'My Awesome Category')"
+                "Category Name Prefix (default: 'My Awesome Category')",
             )
             ->setDescription('Create a dummy category');
     }
@@ -107,7 +107,7 @@ class DummyCommand extends AbstractMagentoCommand
             $parentCategoryId = $category->getId();
             $output->writeln(
                 "<comment>CATEGORY: '" . $category->getName() . "' WITH ID: '" . $category->getId() .
-                "' CREATED!</comment>"
+                "' CREATED!</comment>",
             );
             unset($category);
 
@@ -130,7 +130,7 @@ class DummyCommand extends AbstractMagentoCommand
                 $category->save();
                 $output->writeln(
                     "<comment>CATEGORY CHILD: '" . $category->getName() . "' WITH ID: '" . $category->getId() .
-                    "' CREATED!</comment>"
+                    "' CREATED!</comment>",
                 );
                 unset($category);
             }
@@ -185,7 +185,7 @@ class DummyCommand extends AbstractMagentoCommand
         }
 
         $output->writeln(
-            '<info>Number of categories to create: ' . $input->getArgument('category-number') . '</info>'
+            '<info>Number of categories to create: ' . $input->getArgument('category-number') . '</info>',
         );
         $_argument['category-number'] = $input->getArgument('category-number');
 
@@ -193,7 +193,7 @@ class DummyCommand extends AbstractMagentoCommand
         if (is_null($input->getArgument('children-categories-number'))) {
             $question = new Question(
                 "Number of children for each category created (default: 0 - use '-1' for random from 0 to 5): ",
-                0
+                0,
             );
             $question->setValidator(function ($answer) {
                 $answer = (int) $answer;
@@ -212,7 +212,7 @@ class DummyCommand extends AbstractMagentoCommand
 
         $output->writeln(
             '<info>Number of categories children to create: ' . $input->getArgument('children-categories-number') .
-            '</info>'
+            '</info>',
         );
         $_argument['children-categories-number'] = $input->getArgument('children-categories-number');
 
@@ -220,7 +220,7 @@ class DummyCommand extends AbstractMagentoCommand
         if (is_null($input->getArgument('category-name-prefix'))) {
             $question = new Question(
                 "Please enter the category name prefix (default '" . self::DEFAULT_CATEGORY_NAME . "'): ",
-                self::DEFAULT_CATEGORY_NAME
+                self::DEFAULT_CATEGORY_NAME,
             );
             $input->setArgument('category-name-prefix', $questionHelper->ask($input, $output, $question));
         }

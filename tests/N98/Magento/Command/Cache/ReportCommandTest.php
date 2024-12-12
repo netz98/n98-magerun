@@ -15,7 +15,7 @@ class ReportCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName(), '--tags'  => true, '--mtime' => true]
+            ['command' => $command->getName(), '--tags'  => true, '--mtime' => true],
         );
 
         self::assertMatchesRegularExpression('/ID/', $commandTester->getDisplay());

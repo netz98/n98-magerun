@@ -21,7 +21,7 @@ use Symfony\Component\Console\Question\Question;
  */
 class InstallMagento extends AbstractSubCommand
 {
-    const MAGENTO_INSTALL_SCRIPT_PATH = 'install.php';
+    public const MAGENTO_INSTALL_SCRIPT_PATH = 'install.php';
 
     protected Closure $notEmptyCallback;
 
@@ -49,150 +49,150 @@ class InstallMagento extends AbstractSubCommand
         $question = new Question(
             sprintf(
                 '<question>Please enter the session save:</question> <comment>[%s]</comment>: ',
-                $defaults['session_save']
+                $defaults['session_save'],
             ),
-            $defaults['session_save']
+            $defaults['session_save'],
         );
 
         $sessionSave = $useDefaultConfigParams ? $defaults['session_save'] : $questionHelper->ask(
             $this->input,
             $this->output,
-            $question
+            $question,
         );
 
         $question = new Question(
             sprintf(
                 '<question>Please enter the admin/backend frontname:</question> <comment>[%s]</comment> ',
-                $defaults['admin_frontname']
+                $defaults['admin_frontname'],
             ),
-            $defaults['admin_frontname']
+            $defaults['admin_frontname'],
         );
         $question->setValidator($this->notEmptyCallback);
 
         $adminFrontname = $useDefaultConfigParams ? $defaults['admin_frontname'] : $questionHelper->ask(
             $this->input,
             $this->output,
-            $question
+            $question,
         );
 
         $question = new Question(
             sprintf(
                 '<question>Please enter the default currency code:</question> <comment>[%s]</comment>: ',
-                $defaults['currency']
+                $defaults['currency'],
             ),
-            $defaults['currency']
+            $defaults['currency'],
         );
         $question->setValidator($this->notEmptyCallback);
 
         $currency = $useDefaultConfigParams ? $defaults['currency'] : $questionHelper->ask(
             $this->input,
             $this->output,
-            $question
+            $question,
         );
 
         $question = new Question(
             sprintf(
                 '<question>Please enter the locale code:</question> <comment>[%s]</comment>: ',
-                $defaults['locale']
+                $defaults['locale'],
             ),
-            $defaults['locale']
+            $defaults['locale'],
         );
         $question->setValidator($this->notEmptyCallback);
 
         $locale = $useDefaultConfigParams ? $defaults['locale'] : $questionHelper->ask(
             $this->input,
             $this->output,
-            $question
+            $question,
         );
 
         $question = new Question(
             sprintf(
                 '<question>Please enter the timezone:</question> <comment>[%s]</comment>: ',
-                $defaults['timezone']
+                $defaults['timezone'],
             ),
-            $defaults['timezone']
+            $defaults['timezone'],
         );
         $question->setValidator($this->notEmptyCallback);
 
         $timezone = $useDefaultConfigParams ? $defaults['timezone'] : $questionHelper->ask(
             $this->input,
             $this->output,
-            $question
+            $question,
         );
 
         $question = new Question(
             sprintf(
                 '<question>Please enter the admin username:</question> <comment>[%s]</comment>: ',
-                $defaults['admin_username']
+                $defaults['admin_username'],
             ),
-            $defaults['admin_username']
+            $defaults['admin_username'],
         );
         $question->setValidator($this->notEmptyCallback);
 
         $adminUsername = $useDefaultConfigParams ? $defaults['admin_username'] : $questionHelper->ask(
             $this->input,
             $this->output,
-            $question
+            $question,
         );
 
         $question = new Question(
             sprintf(
                 '<question>Please enter the admin password:</question> <comment>[%s]</comment>: ',
-                $defaults['admin_password']
+                $defaults['admin_password'],
             ),
-            $defaults['admin_password']
+            $defaults['admin_password'],
         );
         $question->setValidator($this->notEmptyCallback);
 
         $adminPassword = $useDefaultConfigParams ? $defaults['admin_password'] : $questionHelper->ask(
             $this->input,
             $this->output,
-            $question
+            $question,
         );
 
         $question = new Question(
             sprintf(
                 "<question>Please enter the admin's firstname:</question> <comment>[%s]</comment>: ",
-                $defaults['admin_firstname']
+                $defaults['admin_firstname'],
             ),
-            $defaults['admin_firstname']
+            $defaults['admin_firstname'],
         );
         $question->setValidator($this->notEmptyCallback);
 
         $adminFirstname = $useDefaultConfigParams ? $defaults['admin_firstname'] : $questionHelper->ask(
             $this->input,
             $this->output,
-            $question
+            $question,
         );
 
         $question = new Question(
             sprintf(
                 "<question>Please enter the admin's lastname:</question> <comment>[%s]</comment>: ",
-                $defaults['admin_lastname']
+                $defaults['admin_lastname'],
             ),
-            $defaults['admin_lastname']
+            $defaults['admin_lastname'],
         );
         $question->setValidator($this->notEmptyCallback);
 
         $adminLastname = $useDefaultConfigParams ? $defaults['admin_lastname'] : $questionHelper->ask(
             $this->input,
             $this->output,
-            $question
+            $question,
         );
 
         $question = new Question(
             sprintf(
                 "<question>Please enter the admin's email:</question> <comment>[%s]</comment>: ",
-                $defaults['admin_email']
+                $defaults['admin_email'],
             ),
-            $defaults['admin_email']
+            $defaults['admin_email'],
         );
         $question->setValidator($this->notEmptyCallback);
 
         $adminEmail = $useDefaultConfigParams ? $defaults['admin_email'] : $questionHelper->ask(
             $this->input,
             $this->output,
-            $question
+            $question,
         );
 
         $validateBaseUrl = function ($url) {
@@ -202,7 +202,7 @@ class InstallMagento extends AbstractSubCommand
 
             if (parse_url($url, \PHP_URL_HOST) === 'localhost') {
                 throw new InvalidArgumentException(
-                    'localhost cause problems! Please use 127.0.0.1 or another hostname'
+                    'localhost cause problems! Please use 127.0.0.1 or another hostname',
                 );
             }
 
@@ -215,7 +215,7 @@ class InstallMagento extends AbstractSubCommand
         $baseUrl = $this->input->getOption('baseUrl') ?? $questionHelper->ask(
             $this->input,
             $this->output,
-            $question
+            $question,
         );
         $baseUrl = rtrim($baseUrl, '/') . '/'; // normalize baseUrl
 
@@ -321,7 +321,7 @@ class InstallMagento extends AbstractSubCommand
             '%s -ddisplay_startup_errors=1 -ddisplay_errors=1 -derror_reporting=-1 -f %s -- %s',
             OperatingSystem::getPhpBinary(),
             escapeshellarg($installationFolder . '/' . self::MAGENTO_INSTALL_SCRIPT_PATH),
-            $installArgs
+            $installArgs,
         );
 
         $output->writeln('<comment>' . $installCommand . '</comment>');
@@ -338,7 +338,7 @@ class InstallMagento extends AbstractSubCommand
             throw new RuntimeException(
                 sprintf('Installation failed (Exit code %s). %s', $returnStatus, $installationOutput),
                 1,
-                $exception
+                $exception,
             );
         }
 

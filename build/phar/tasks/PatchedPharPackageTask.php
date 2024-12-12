@@ -16,8 +16,7 @@
  * @since 2.4.0
  * @see PharPackageTask
  */
-class PatchedPharPackageTask
-    extends MatchingTask
+class PatchedPharPackageTask extends MatchingTask
 {
     /**
      * @var PhingFile
@@ -270,7 +269,7 @@ class PatchedPharPackageTask
         try {
             $this->log(
                 'Building package: ' . $this->destinationFile->__toString(),
-                Project::MSG_INFO
+                Project::MSG_INFO,
             );
 
             $baseDirectory = realpath($this->baseDirectory->getPath());
@@ -285,7 +284,7 @@ class PatchedPharPackageTask
             throw new BuildException(
                 'Problem creating package: ' . $e->getMessage(),
                 $e,
-                $this->getLocation()
+                $this->getLocation(),
             );
         }
     }
@@ -297,7 +296,7 @@ class PatchedPharPackageTask
     {
         if (!extension_loaded('phar')) {
             throw new BuildException(
-                "PharPackageTask require either PHP 5.3 or better or the PECL's Phar extension"
+                "PharPackageTask require either PHP 5.3 or better or the PECL's Phar extension",
             );
         }
 
@@ -315,7 +314,8 @@ class PatchedPharPackageTask
         if (!is_null($this->baseDirectory)) {
             if (!$this->baseDirectory->exists()) {
                 throw new BuildException(
-                    "basedir '" . (string) $this->baseDirectory . "' does not exist!", $this->getLocation()
+                    "basedir '" . (string) $this->baseDirectory . "' does not exist!",
+                    $this->getLocation(),
                 );
             }
         }
@@ -323,7 +323,8 @@ class PatchedPharPackageTask
 
             if (!extension_loaded('openssl')) {
                 throw new BuildException(
-                    'PHP OpenSSL extension is required for OpenSSL signing of Phars!', $this->getLocation()
+                    'PHP OpenSSL extension is required for OpenSSL signing of Phars!',
+                    $this->getLocation(),
                 );
             }
 
@@ -429,7 +430,7 @@ class PatchedPharPackageTask
         foreach ($this->filesets as $fileset) {
             $this->log(
                 'Adding specified files in ' . $fileset->getDir($this->project) . ' to package',
-                Project::MSG_VERBOSE
+                Project::MSG_VERBOSE,
             );
 
             $sortedFiles = $this->getSortedFilesFromFileSet($fileset);

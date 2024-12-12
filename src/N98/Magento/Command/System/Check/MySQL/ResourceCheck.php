@@ -33,7 +33,7 @@ abstract class ResourceCheck implements SimpleCheck
         if (!$dbAdapter instanceof Varien_Db_Adapter_Interface) {
             $result->setStatus($result::STATUS_ERROR);
             $result->setMessage(
-                "<error>Mysql Version: Can not check. Unable to obtain resource connection 'core_write'.</error>"
+                "<error>Mysql Version: Can not check. Unable to obtain resource connection 'core_write'.</error>",
             );
         } else {
             $this->checkImplementation($result, $dbAdapter);

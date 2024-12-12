@@ -3,6 +3,7 @@
 namespace N98\Util\Unicode;
 
 use PHPUnit\Framework\TestCase;
+
 class CharsetTest extends TestCase
 {
     public function testConvertInteger()

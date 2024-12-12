@@ -31,7 +31,7 @@ class ListCommand extends AbstractMagentoCommand
                 'sort',
                 null,
                 InputOption::VALUE_NONE,
-                'Sort by event name ascending'
+                'Sort by event name ascending',
             );
     }
 

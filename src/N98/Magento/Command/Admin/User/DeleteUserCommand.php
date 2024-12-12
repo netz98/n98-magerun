@@ -19,7 +19,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  */
 class DeleteUserCommand extends AbstractAdminUserCommand
 {
-    protected function configure() :void
+    protected function configure(): void
     {
         $this
             ->setName('admin:user:delete')

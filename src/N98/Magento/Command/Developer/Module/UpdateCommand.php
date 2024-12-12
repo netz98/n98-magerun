@@ -61,48 +61,48 @@ class UpdateCommand extends AbstractMagentoCommand
                 'add-all',
                 null,
                 InputOption::VALUE_NONE,
-                'Adds blocks, helpers and models classes to config.xml'
+                'Adds blocks, helpers and models classes to config.xml',
             )
             ->addOption(
                 'add-resource-model',
                 null,
                 InputOption::VALUE_NONE,
-                'Adds resource model class and entities to config.xml'
+                'Adds resource model class and entities to config.xml',
             )
             ->addOption(
                 'add-routers',
                 null,
                 InputOption::VALUE_NONE,
-                'Adds routers for frontend or admin areas to config.xml'
+                'Adds routers for frontend or admin areas to config.xml',
             )
             ->addOption(
                 'add-events',
                 null,
                 InputOption::VALUE_NONE,
-                'Adds events observer to global, frontend or adminhtml areas to config.xml'
+                'Adds events observer to global, frontend or adminhtml areas to config.xml',
             )
             ->addOption(
                 'add-layout-updates',
                 null,
                 InputOption::VALUE_NONE,
-                'Adds layout updates to frontend or adminhtml areas to config.xml'
+                'Adds layout updates to frontend or adminhtml areas to config.xml',
             )
             ->addOption(
                 'add-translate',
                 null,
                 InputOption::VALUE_NONE,
-                'Adds translate configuration to frontend or adminhtml areas to config.xml'
+                'Adds translate configuration to frontend or adminhtml areas to config.xml',
             )
             ->addOption(
                 'add-default',
                 null,
                 InputOption::VALUE_NONE,
-                'Adds default value (related to system.xml groups/fields)'
+                'Adds default value (related to system.xml groups/fields)',
             )
             ->setDescription('Update a Magento module.');
     }
 
-    
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->initMagento();
@@ -179,7 +179,7 @@ class UpdateCommand extends AbstractMagentoCommand
     {
         if (!file_exists($moduleDir)) {
             throw new RuntimeException(
-                'Module does not exist. Use dev:module:create to create it before updating. Stop.'
+                'Module does not exist. Use dev:module:create to create it before updating. Stop.',
             );
         }
 
@@ -250,7 +250,7 @@ class UpdateCommand extends AbstractMagentoCommand
 
         $question = new ConfirmationQuestion(
             '<question>Would you like to also add a Resource Model(y/n)?</question>',
-            false
+            false,
         );
 
         if ($questionHelper->ask($input, $output, $question)) {
@@ -288,7 +288,7 @@ class UpdateCommand extends AbstractMagentoCommand
             $this->addLayoutUpdate(
                 $configXml,
                 $this->configNodes['layout_updates_area'],
-                $this->configNodes['layout_update_module']
+                $this->configNodes['layout_update_module'],
             );
         }
     }
@@ -299,7 +299,7 @@ class UpdateCommand extends AbstractMagentoCommand
             $this->addTranslate(
                 $configXml,
                 $this->configNodes['translate_area'],
-                $this->configNodes['translate_module']
+                $this->configNodes['translate_module'],
             );
         }
     }
@@ -412,7 +412,7 @@ class UpdateCommand extends AbstractMagentoCommand
 
         $question = new ConfirmationQuestion(
             '<question>Would you like to set mysql4 deprecated node(y/n)?</question>',
-            false
+            false,
         );
         if ($questionHelper->ask($input, $output, $question)) {
             $this->configNodes['resource_deprecated_mysql4_node'] = true;
@@ -446,7 +446,7 @@ class UpdateCommand extends AbstractMagentoCommand
 
         $question = new ChoiceQuestion(
             '<question>Area (frontend|admin):</question> ',
-            ['frontend', 'admin']
+            ['frontend', 'admin'],
         );
         $area = trim($questionHelper->ask($input, $output, $question));
 
@@ -478,7 +478,7 @@ class UpdateCommand extends AbstractMagentoCommand
 
         $question = new ChoiceQuestion(
             '<question>Area (global|frontend|adminhtml):</question> ',
-            ['global', 'frontend', 'admin']
+            ['global', 'frontend', 'admin'],
         );
         $area = trim($questionHelper->ask($input, $output, $question));
 
@@ -518,7 +518,7 @@ class UpdateCommand extends AbstractMagentoCommand
 
         $question = new ChoiceQuestion(
             '<question>Area (frontend|admin):</question> ',
-            ['frontend', 'admin']
+            ['frontend', 'admin'],
         );
         $area = trim($questionHelper->ask($input, $output, $question));
 
@@ -550,7 +550,7 @@ class UpdateCommand extends AbstractMagentoCommand
 
         $question = new ChoiceQuestion(
             '<question>Area (frontend|admin):</question> ',
-            ['frontend', 'admin']
+            ['frontend', 'admin'],
         );
         $area = trim($questionHelper->ask($input, $output, $question));
 
@@ -611,7 +611,7 @@ class UpdateCommand extends AbstractMagentoCommand
     {
         if (is_null($simpleXml->global->models)) {
             throw new RuntimeException(
-                'Global models node is not set. Run --add-models before --add-resource-model command.'
+                'Global models node is not set. Run --add-models before --add-resource-model command.',
             );
         }
 
@@ -624,7 +624,7 @@ class UpdateCommand extends AbstractMagentoCommand
         if ($this->configNodes['resource_deprecated_mysql4_node'] === true) {
             $simpleXml->global->models->$resourceNamespace->deprecatedNode ? null : $resourceModelNode->addChild(
                 'deprecatedNode',
-                $resourceNamespace . '_eav_mysql4'
+                $resourceNamespace . '_eav_mysql4',
             );
         } else {
             $this->removeChildNodeIfNotNull($resourceModelNode, 'deprecatedNode');

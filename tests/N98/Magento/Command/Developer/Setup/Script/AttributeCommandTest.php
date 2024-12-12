@@ -16,12 +16,12 @@ class AttributeCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'       => $command->getName(), 'entityType'    => 'catalog_product', 'attributeCode' => 'sku']
+            ['command'       => $command->getName(), 'entityType'    => 'catalog_product', 'attributeCode' => 'sku'],
         );
         self::assertStringContainsString("'type' => 'static',", $commandTester->getDisplay());
         self::assertStringContainsString(
             "Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', 'sku');",
-            $commandTester->getDisplay()
+            $commandTester->getDisplay(),
         );
     }
 }

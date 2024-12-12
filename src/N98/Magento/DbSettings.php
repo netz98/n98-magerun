@@ -65,7 +65,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
     {
         if (!is_readable($file)) {
             throw new InvalidArgumentException(
-                sprintf('"app/etc/local.xml"-file %s is not readable', var_export($file, true))
+                sprintf('"app/etc/local.xml"-file %s is not readable', var_export($file, true)),
             );
         }
 
@@ -75,7 +75,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
 
         if (false === $config) {
             throw new InvalidArgumentException(
-                sprintf('Unable to open "app/etc/local.xml"-file %s and parse it as XML', var_export($file, true))
+                sprintf('Unable to open "app/etc/local.xml"-file %s and parse it as XML', var_export($file, true)),
             );
         }
 
@@ -89,8 +89,8 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             throw new InvalidArgumentException(
                 sprintf(
                     'DB settings (%s) was not found in "app/etc/local.xml"-file',
-                    $connectionNode
-                )
+                    $connectionNode,
+                ),
             );
         }
 
@@ -183,7 +183,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
         $pdo = new PDO(
             $this->getDsn(),
             $this->getUsername(),
-            $this->getPassword()
+            $this->getPassword(),
         );
 
         /** @link http://bugs.mysql.com/bug.php?id=18551 */
@@ -244,8 +244,8 @@ class DbSettings implements ArrayAccess, IteratorAggregate
                 sprintf(
                     'Invalid identifier, must not contain NUL and must be UTF-8 encoded in the BMP: %s (hex: %s)',
                     var_export($identifier, true),
-                    bin2hex($identifier)
-                )
+                    bin2hex($identifier),
+                ),
             );
         }
 

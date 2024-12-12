@@ -95,14 +95,14 @@ abstract class AbstractSubCommand implements SubCommandInterface
             sprintf(
                 '<question>%s</question> <comment>[%s]',
                 $question,
-                $default
+                $default,
             ),
-            $default
+            $default,
         );
         return $questionHelper->ask(
             $this->input,
             $this->output,
-            $question
+            $question,
         );
     }
 

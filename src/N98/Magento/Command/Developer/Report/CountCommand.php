@@ -33,7 +33,7 @@ class CountCommand extends AbstractMagentoCommand
         $dir = Mage::getBaseDir('var') . DIRECTORY_SEPARATOR . 'report' . DIRECTORY_SEPARATOR;
         $count = $this->getFileCount($dir);
 
-        $output->writeln((string)$count);
+        $output->writeln((string) $count);
         return Command::SUCCESS;
     }
 

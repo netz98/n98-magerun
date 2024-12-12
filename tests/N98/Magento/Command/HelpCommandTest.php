@@ -12,7 +12,7 @@ class HelpCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => 'help']
+            ['command' => 'help'],
         );
 
         self::assertStringContainsString('The help command displays help for a given command', $commandTester->getDisplay());

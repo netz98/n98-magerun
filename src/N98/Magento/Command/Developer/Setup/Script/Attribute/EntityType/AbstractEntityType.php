@@ -54,7 +54,7 @@ abstract class AbstractEntityType implements EntityType
         // FIXME: after having this warning in for some time, promote to a parameter type-hint.
         if (!$attribute instanceof Mage_Eav_Model_Entity_Attribute) {
             trigger_error(
-                sprintf('Attribute not of type Mage_Eav_Model_Entity_Attribute, is of type %s', get_class($attribute))
+                sprintf('Attribute not of type Mage_Eav_Model_Entity_Attribute, is of type %s', get_class($attribute)),
             );
         }
 
@@ -85,7 +85,7 @@ abstract class AbstractEntityType implements EntityType
             ->from(['o' => $resourceModel->getTableName('eav_attribute_option')])
             ->join(
                 ['ov' => $resourceModel->getTableName('eav_attribute_option_value')],
-                'o.option_id = ov.option_id'
+                'o.option_id = ov.option_id',
             )
             ->where('o.attribute_id = ?', $mageEavModelEntityAttribute->getId())
             ->where('ov.store_id = 0')

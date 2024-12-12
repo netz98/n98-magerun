@@ -43,7 +43,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
             ->addArgument(
                 'search',
                 InputArgument::OPTIONAL,
-                'Only output variables of specified name. The wildcard % is supported!'
+                'Only output variables of specified name. The wildcard % is supported!',
             )
             ->addFormatOption()
             ->addOption(
@@ -51,13 +51,13 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Amount of decimals to display. If -1 then disabled',
-                0
+                0,
             )
             ->addOption(
                 'no-description',
                 null,
                 InputOption::VALUE_NONE,
-                'Disable description'
+                'Disable description',
             );
     }
 

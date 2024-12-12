@@ -129,7 +129,7 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName(), 'id' => '1', '--force'   => true]
+            ['command' => $command->getName(), 'id' => '1', '--force'   => true],
         );
 
         self::assertStringContainsString('successfully deleted', $commandTester->getDisplay());
@@ -176,7 +176,7 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'   => $command->getName(), 'id'        => 'mike@testing.com', '--force'   => true]
+            ['command'   => $command->getName(), 'id'        => 'mike@testing.com', '--force'   => true],
         );
 
         self::assertStringContainsString('successfully deleted', $commandTester->getDisplay());
@@ -214,7 +214,7 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'   => $command->getName(), 'id'        => 'mike@testing.com', '--force'   => true]
+            ['command'   => $command->getName(), 'id'        => 'mike@testing.com', '--force'   => true],
         );
 
         self::assertStringContainsString('No customer found!', $commandTester->getDisplay());
@@ -255,7 +255,7 @@ class DeleteCommandTest extends TestCase
         $command->getHelperSet()->set($this->questionHelper, 'question');
 
         $commandTester->execute(
-            ['command'   => $command->getName(), 'id'        => '1', '--force'   => true]
+            ['command'   => $command->getName(), 'id'        => '1', '--force'   => true],
         );
 
         self::assertStringContainsString('Failed to save', $commandTester->getDisplay());
@@ -306,7 +306,7 @@ class DeleteCommandTest extends TestCase
         $commandTester = new CommandTester($command);
 
         $commandTester->execute(
-            ['command'   => $command->getName(), '--force'   => true]
+            ['command'   => $command->getName(), '--force'   => true],
         );
 
         self::assertStringContainsString('successfully deleted', $commandTester->getDisplay());
@@ -332,7 +332,7 @@ class DeleteCommandTest extends TestCase
         $command->getHelperSet()->set($this->questionHelper, 'question');
 
         $commandTester->execute(
-            ['command'   => $command->getName(), '--all'     => true]
+            ['command'   => $command->getName(), '--all'     => true],
         );
 
         self::assertStringContainsString('Aborting delete', $commandTester->getDisplay());
@@ -377,7 +377,7 @@ class DeleteCommandTest extends TestCase
         $command->getHelperSet()->set($this->questionHelper, 'question');
 
         $commandTester->execute(
-            ['command'   => $command->getName(), '--range'   => true]
+            ['command'   => $command->getName(), '--range'   => true],
         );
 
         self::assertStringContainsString('Aborting delete', $commandTester->getDisplay());
@@ -422,7 +422,7 @@ class DeleteCommandTest extends TestCase
         $command->getHelperSet()->set($this->questionHelper, 'question');
 
         $commandTester->execute(
-            ['command'   => $command->getName(), 'id'        => '1']
+            ['command'   => $command->getName(), 'id'        => '1'],
         );
 
         self::assertStringContainsString('Aborting delete', $commandTester->getDisplay());
@@ -467,7 +467,7 @@ class DeleteCommandTest extends TestCase
         $command->getHelperSet()->set($this->questionHelper, 'question');
 
         $commandTester->execute(
-            ['command'   => $command->getName(), 'id'        => '1']
+            ['command'   => $command->getName(), 'id'        => '1'],
         );
 
         self::assertStringContainsString('successfully deleted', $commandTester->getDisplay());
@@ -488,7 +488,7 @@ class DeleteCommandTest extends TestCase
         $command->getHelperSet()->set($this->questionHelper, 'question');
 
         $commandTester->execute(
-            ['command'   => $command->getName()]
+            ['command'   => $command->getName()],
         );
 
         self::assertStringContainsString('nothing to do', $commandTester->getDisplay());
@@ -519,7 +519,7 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'   => $command->getName(), '--force'   => true]
+            ['command'   => $command->getName(), '--force'   => true],
         );
 
         self::assertStringContainsString('Successfully deleted 3 customer/s', $commandTester->getDisplay());
@@ -568,7 +568,7 @@ class DeleteCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'   => $command->getName(), '--force'   => true]
+            ['command'   => $command->getName(), '--force'   => true],
         );
 
         self::assertStringContainsString('Successfully deleted 3 customer/s', $commandTester->getDisplay());

@@ -46,7 +46,7 @@ class ScriptLoader
         return $this->_scriptFiles;
     }
 
-    protected function findScripts(array $scriptFolders = null): void
+    protected function findScripts(?array $scriptFolders = null): void
     {
         if (null === $scriptFolders) {
             $scriptFolders = $this->_scriptFolders;

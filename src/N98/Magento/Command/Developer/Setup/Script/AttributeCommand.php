@@ -59,7 +59,7 @@ class AttributeCommand extends AbstractMagentoCommand
 
             $generator = Factory::create($entityType, $attribute);
             $generator->setReadConnection(
-                $coreResource->getConnection('core_read')
+                $coreResource->getConnection('core_read'),
             );
             $code = $generator->generateCode();
             $warnings = $generator->getWarnings();

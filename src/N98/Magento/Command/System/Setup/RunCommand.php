@@ -35,7 +35,7 @@ class RunCommand extends AbstractMagentoCommand
                 '--no-implicit-cache-flush',
                 null,
                 InputOption::VALUE_NONE,
-                'Do not flush the cache'
+                'Do not flush the cache',
             )
             ->setDescription('Runs all new setup scripts.');
     }

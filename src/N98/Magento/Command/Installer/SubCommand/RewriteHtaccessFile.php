@@ -42,7 +42,7 @@ class RewriteHtaccessFile extends AbstractSubCommand
     {
         copy(
             $htaccessFile,
-            $htaccessFile . '.dist'
+            $htaccessFile . '.dist',
         );
     }
 

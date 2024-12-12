@@ -74,7 +74,7 @@ class UsageCommand extends AbstractMagentoCommand
                 $configPaths[] = [
                     'scope'    => 'Unused',
                     'scope_id' => 'Unused',
-                    'path'     => 'Unused'
+                    'path'     => 'Unused',
                 ];
             }
 

@@ -45,14 +45,14 @@ class CheckTablesCommand extends AbstractMagentoCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Check type (one of QUICK, FAST, MEDIUM, EXTENDED, CHANGED)',
-                'MEDIUM'
+                'MEDIUM',
             )
             ->addOption('repair', null, InputOption::VALUE_NONE, 'Repair tables (only MyISAM)')
             ->addOption(
                 'table',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Process only given table (wildcards are supported)'
+                'Process only given table (wildcards are supported)',
             )
             ->addFormatOption();
     }
@@ -119,7 +119,7 @@ HELP;
         if ($input->getOption('table')) {
             $resolvedTables = [$this->dbHelper->resolveTables(
                 ['@check'],
-                ['check' => ['tables' => explode(' ', $input->getOption('table'))]]
+                ['check' => ['tables' => explode(' ', $input->getOption('table'))]],
             )];
             $tables = $resolvedTables[0];
         } else {

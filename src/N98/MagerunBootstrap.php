@@ -42,7 +42,7 @@ class MagerunBootstrap
             throw new ErrorException(
                 'You must set up the project dependencies, run the following commands:' . PHP_EOL .
                 'curl -s https://getcomposer.org/installer | php' . PHP_EOL .
-                'php composer.phar install' . PHP_EOL
+                'php composer.phar install' . PHP_EOL,
             );
         }
 

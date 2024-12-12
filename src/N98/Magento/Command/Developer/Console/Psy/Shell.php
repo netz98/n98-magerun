@@ -14,7 +14,7 @@ use Psy\Shell as BaseShell;
  */
 class Shell extends BaseShell
 {
-    public function __construct(Configuration $configuration = null)
+    public function __construct(?Configuration $configuration = null)
     {
         parent::__construct($configuration);
 

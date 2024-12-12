@@ -50,7 +50,7 @@ HELP;
                 $input,
                 $output,
                 new ConfirmationQuestion('<question>Really drop database ' . $this->dbSettings['dbname'] .
-                    ' ?</question> <comment>[n]</comment>: ', false)
+                    ' ?</question> <comment>[n]</comment>: ', false),
             );
         }
 

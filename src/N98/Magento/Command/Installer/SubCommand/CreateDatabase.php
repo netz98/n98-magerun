@@ -73,7 +73,7 @@ class CreateDatabase extends AbstractSubCommand
 
                 $question = new Question(
                     '<question>Please enter the database host</question> <comment>[' . $dbHostDefault . ']</comment>: ',
-                    $dbHostDefault
+                    $dbHostDefault,
                 );
                 $question->setValidator($this->notEmptyCallback);
 
@@ -82,8 +82,8 @@ class CreateDatabase extends AbstractSubCommand
                     $questionHelper->ask(
                         $this->input,
                         $this->output,
-                        $question
-                    )
+                        $question,
+                    ),
                 );
 
                 // Port
@@ -93,9 +93,9 @@ class CreateDatabase extends AbstractSubCommand
                 $question = new Question(
                     sprintf(
                         '<question>Please enter the database port </question> <comment>[%s]</comment>: ',
-                        $dbPortDefault
+                        $dbPortDefault,
                     ),
-                    $dbPortDefault
+                    $dbPortDefault,
                 );
                 $question->setValidator($this->notEmptyCallback);
 
@@ -104,8 +104,8 @@ class CreateDatabase extends AbstractSubCommand
                     (int) $questionHelper->ask(
                         $this->input,
                         $this->output,
-                        $question
-                    )
+                        $question,
+                    ),
                 );
 
                 // User
@@ -115,9 +115,9 @@ class CreateDatabase extends AbstractSubCommand
                 $question = new Question(
                     sprintf(
                         '<question>Please enter the database username</question> <comment>[%s]</comment>: ',
-                        $dbUserDefault
+                        $dbUserDefault,
                     ),
-                    $dbUserDefault
+                    $dbUserDefault,
                 );
                 $question->setValidator($this->notEmptyCallback);
 
@@ -126,8 +126,8 @@ class CreateDatabase extends AbstractSubCommand
                     $questionHelper->ask(
                         $this->input,
                         $this->output,
-                        $question
-                    )
+                        $question,
+                    ),
                 );
 
                 // Password
@@ -137,9 +137,9 @@ class CreateDatabase extends AbstractSubCommand
                 $question = new Question(
                     sprintf(
                         '<question>Please enter the database password</question> <comment>[%s]</comment>: ',
-                        $dbPassDefault
+                        $dbPassDefault,
                     ),
-                    $dbPassDefault
+                    $dbPassDefault,
                 );
 
                 $this->config->setString(
@@ -147,8 +147,8 @@ class CreateDatabase extends AbstractSubCommand
                     $questionHelper->ask(
                         $this->input,
                         $this->output,
-                        $question
-                    )
+                        $question,
+                    ),
                 );
 
                 // DB-Name
@@ -158,9 +158,9 @@ class CreateDatabase extends AbstractSubCommand
                 $question = new Question(
                     sprintf(
                         '<question>Please enter the database name</question> <comment>[%s]</comment>: ',
-                        $dbNameDefault
+                        $dbNameDefault,
                     ),
-                    $dbNameDefault
+                    $dbNameDefault,
                 );
                 $question->setValidator($this->notEmptyCallback);
 
@@ -169,8 +169,8 @@ class CreateDatabase extends AbstractSubCommand
                     $questionHelper->ask(
                         $this->input,
                         $this->output,
-                        $question
-                    )
+                        $question,
+                    ),
                 );
 
                 $db = $this->validateDatabaseSettings($this->input, $this->output);
@@ -189,7 +189,7 @@ class CreateDatabase extends AbstractSubCommand
             $dsn = sprintf(
                 'mysql:host=%s;port=%s',
                 $this->config->getString('db_host'),
-                $this->config->getString('db_port')
+                $this->config->getString('db_port'),
             );
 
             $pdo = new PDO($dsn, $this->config->getString('db_user'), $this->config->getString('db_pass'));

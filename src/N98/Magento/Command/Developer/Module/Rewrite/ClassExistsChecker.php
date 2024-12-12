@@ -109,7 +109,7 @@ final class ClassExistsChecker
         $context->stack[] = [$notFoundClass, $className];
 
         $context->lastException = new CanNotAutoloadCollaboratorClassException(
-            sprintf('%s for %s', $notFoundClass, $className)
+            sprintf('%s for %s', $notFoundClass, $className),
         );
         throw $context->lastException;
     }

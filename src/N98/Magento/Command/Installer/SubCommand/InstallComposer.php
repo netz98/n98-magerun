@@ -19,7 +19,7 @@ class InstallComposer extends AbstractSubCommand
     /**
      * @var int
      */
-    const EXEC_STATUS_OK = 0;
+    public const EXEC_STATUS_OK = 0;
 
     /**
      * @return void

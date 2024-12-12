@@ -139,12 +139,12 @@ HELP;
                 case '#':
                     break;
 
-                // set var
+                    // set var
                 case '$':
                     $this->registerVariable($input, $output, $command);
                     break;
 
-                // run shell script
+                    // run shell script
                 case '!':
                     $this->runShellCommand($output, $command);
                     break;
@@ -228,7 +228,7 @@ HELP;
                         $choices = BinaryString::trimExplodeEmpty(',', $choiceMatches[1]);
                         $question = new ChoiceQuestion(
                             '<info>Please enter a value for <comment>' . $matches[1] . '</comment>:</info> ',
-                            $choices
+                            $choices,
                         );
                         $selectedIndex = $dialog->ask($input, $output, $question);
 

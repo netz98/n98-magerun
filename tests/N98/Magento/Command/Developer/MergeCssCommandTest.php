@@ -16,13 +16,13 @@ class MergeCssCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'  => $command->getName(), '--on'     => true, 'store'    => 'admin']
+            ['command'  => $command->getName(), '--on'     => true, 'store'    => 'admin'],
         );
         self::assertMatchesRegularExpression('/CSS Merging enabled/', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'  => $command->getName(), '--off'    => true, 'store'    => 'admin']
+            ['command'  => $command->getName(), '--off'    => true, 'store'    => 'admin'],
         );
 
         self::assertMatchesRegularExpression('/CSS Merging disabled/', $commandTester->getDisplay());

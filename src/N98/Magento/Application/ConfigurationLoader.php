@@ -209,7 +209,7 @@ class ConfigurationLoader
     /**
      * Check if there is a user config file. ~/.n98-magerun.yaml
      */
-    public function loadUserConfig(array $config, string $magentoRootFolder = null): array
+    public function loadUserConfig(array $config, ?string $magentoRootFolder = null): array
     {
         if (is_null($this->_userConfig)) {
             $this->_userConfig = [];

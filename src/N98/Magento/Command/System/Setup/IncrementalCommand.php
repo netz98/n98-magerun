@@ -97,7 +97,7 @@ HELP;
     {
         $mageCoreModelConfig = new Mage_Core_Model_Config();
         $mageCoreModelConfig->loadBase();
-         //get app/etc
+        //get app/etc
         $this->_secondConfig = Mage::getConfig()->loadModulesConfiguration('config.xml', $mageCoreModelConfig);
     }
 
@@ -151,7 +151,7 @@ HELP;
             $args[1] = $result[0]['toVersion'];
             $result = array_merge(
                 $result,
-                $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $setupResource, $args)
+                $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $setupResource, $args),
             );
         }
 
@@ -169,7 +169,7 @@ HELP;
             $args[1] = $result[0]['toVersion'];
             $result = array_merge(
                 $result,
-                $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $setupResource, $args)
+                $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $setupResource, $args),
             );
         }
 
@@ -292,7 +292,7 @@ HELP;
 
             $moduleConfig = $this->_getProtectedPropertyFromObject('_moduleConfig', $setupResource);
             $output->writeln(
-                ['+--------------------------------------------------+', 'Resource Name:             ' . $name, 'For Module:                ' . $moduleConfig->getName(), 'Class:                     ' . get_class($setupResource), 'Current Structure Version: ' . $dbVersion, 'Current Data Version:      ' . $dbDataVersion, 'Configured Version:        ' . $configVersion]
+                ['+--------------------------------------------------+', 'Resource Name:             ' . $name, 'For Module:                ' . $moduleConfig->getName(), 'Class:                     ' . get_class($setupResource), 'Current Structure Version: ' . $dbVersion, 'Current Data Version:      ' . $dbDataVersion, 'Configured Version:        ' . $configVersion],
             );
 
             $args = ['', (string) $dbVersion, (string) $configVersion];
@@ -387,7 +387,7 @@ HELP;
             $setup->addChild('module', $moduleName->__toString());
         } else {
             $output->writeln(
-                '<error>No module node configured for ' . $name . ', possible configuration error </error>'
+                '<error>No module node configured for ' . $name . ', possible configuration error </error>',
             );
         }
 
@@ -528,10 +528,10 @@ HELP;
         $needsUpdate = $this->_getAllSetupResourceObjectThatNeedUpdates($setupResources);
 
         $output->writeln(
-            'Found <info>' . count($setupResources) . '</info> configured setup resource(s)</info>'
+            'Found <info>' . count($setupResources) . '</info> configured setup resource(s)</info>',
         );
         $output->writeln(
-            'Found <info>' . count($needsUpdate) . '</info> setup resource(s) which need an update</info>'
+            'Found <info>' . count($needsUpdate) . '</info> setup resource(s) which need an update</info>',
         );
 
         return $needsUpdate;

@@ -75,7 +75,7 @@ class IoHelper implements HelperInterface, EventSubscriberInterface
      *
      * @api
      */
-    public function setHelperSet(HelperSet $helperSet = null): void
+    public function setHelperSet(?HelperSet $helperSet = null): void
     {
         $this->helperSet = $helperSet;
     }

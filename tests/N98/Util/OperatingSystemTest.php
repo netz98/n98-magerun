@@ -8,6 +8,7 @@
 namespace N98\Util;
 
 use PHPUnit\Framework\TestCase;
+
 /**
  * Class OperatingSystemTest
  *

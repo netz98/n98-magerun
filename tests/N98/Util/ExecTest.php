@@ -4,6 +4,7 @@ namespace N98\Util;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+
 /**
  * Class ExecTest
  *

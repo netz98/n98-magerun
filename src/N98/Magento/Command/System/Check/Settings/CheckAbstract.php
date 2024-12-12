@@ -33,7 +33,7 @@ abstract class CheckAbstract implements StoreCheck
         $this->storeConfigPaths[$name] = $configPath;
     }
 
-    
+
     public function check(ResultCollection $resultCollection, Mage_Core_Model_Store $mageCoreModelStore): void
     {
         $result = $resultCollection->createResult();

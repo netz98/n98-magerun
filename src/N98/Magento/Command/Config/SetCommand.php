@@ -30,26 +30,26 @@ class SetCommand extends AbstractConfigCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 "The config value's scope (default, websites, stores)",
-                'default'
+                'default',
             )
             ->addOption('scope-id', null, InputOption::VALUE_OPTIONAL, "The config value's scope ID", '0')
             ->addOption(
                 'encrypt',
                 null,
                 InputOption::VALUE_NONE,
-                "The config value should be encrypted using local.xml's crypt key"
+                "The config value should be encrypted using local.xml's crypt key",
             )
             ->addOption(
                 'force',
                 null,
                 InputOption::VALUE_NONE,
-                "Allow creation of non-standard scope-id's for websites and stores"
+                "Allow creation of non-standard scope-id's for websites and stores",
             )
             ->addOption(
                 'no-null',
                 null,
                 InputOption::VALUE_NONE,
-                'Do not treat value NULL as ' . self::DISPLAY_NULL_UNKNOWN_VALUE . ' value'
+                'Do not treat value NULL as ' . self::DISPLAY_NULL_UNKNOWN_VALUE . ' value',
             )
         ;
     }
@@ -98,12 +98,12 @@ HELP;
             $input->getArgument('path'),
             $value,
             $scope,
-            $scopeId
+            $scopeId,
         );
 
         $output->writeln(
             '<comment>' . $input->getArgument('path') . '</comment> => <comment>' . $valueDisplay .
-            '</comment>'
+            '</comment>',
         );
 
         return Command::SUCCESS;

@@ -31,7 +31,7 @@ class ImportCommand extends AbstractDatabaseCommand
                 'optimize',
                 null,
                 InputOption::VALUE_NONE,
-                'Convert verbose INSERTs to short ones before import (not working with compression)'
+                'Convert verbose INSERTs to short ones before import (not working with compression)',
             )
             ->addOption('drop', null, InputOption::VALUE_NONE, 'Drop and recreate database before import')
             ->addOption('stdin', null, InputOption::VALUE_NONE, 'Import data from STDIN rather than file')
@@ -212,7 +212,7 @@ HELP;
         $commandOutput = null;
         $output->writeln(
             '<comment>Importing SQL dump <info>' . $fileName . '</info> to database <info>'
-            . $this->dbSettings['dbname'] . '</info>'
+            . $this->dbSettings['dbname'] . '</info>',
         );
 
         Exec::run($exec, $commandOutput, $returnValue);

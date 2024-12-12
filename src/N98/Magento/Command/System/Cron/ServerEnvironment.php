@@ -8,6 +8,7 @@ declare(strict_types=1);
  * Date: 13.12.16
  * Time: 00:08
  */
+
 namespace N98\Magento\Command\System\Cron;
 
 use BadMethodCallException;

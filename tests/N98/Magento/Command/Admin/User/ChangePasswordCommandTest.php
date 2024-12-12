@@ -57,7 +57,7 @@ class ChangePasswordCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'   => $command->getName(), 'username'  => 'aydin', 'password'  => 'password']
+            ['command'   => $command->getName(), 'username'  => 'aydin', 'password'  => 'password'],
         );
 
         self::assertStringContainsString('Password successfully changed', $commandTester->getDisplay());

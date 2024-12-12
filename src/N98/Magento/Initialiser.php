@@ -7,6 +7,7 @@ declare(strict_types=1);
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
+
 namespace N98\Magento;
 
 use N98\Util\AutoloadRestorer;

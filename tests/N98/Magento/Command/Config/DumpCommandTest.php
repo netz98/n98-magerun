@@ -15,7 +15,7 @@ class DumpCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'   => $command->getName(), 'xpath'     => 'global/install']
+            ['command'   => $command->getName(), 'xpath'     => 'global/install'],
         );
         self::assertStringContainsString('date', $commandTester->getDisplay());
     }

@@ -32,7 +32,7 @@ class CreateDummyCommand extends AbstractCustomerCommand
                 'with-addresses',
                 null,
                 InputOption::VALUE_NONE,
-                'Create dummy billing/shipping addresses for each customers'
+                'Create dummy billing/shipping addresses for each customers',
             )
             ->setDescription('Generate dummy customers. You can specify a count and a locale.')
             ->addFormatOption()
@@ -108,7 +108,7 @@ HELP;
                 if ($outputPlain) {
                     $output->writeln(
                         '<info>Customer <comment>' . $email . '</comment> with password <comment>' . $password .
-                        '</comment> successfully created</info>'
+                        '</comment> successfully created</info>',
                     );
                 } else {
                     $table[] = [$email, $password, $customer->getFirstname(), $customer->getLastname()];

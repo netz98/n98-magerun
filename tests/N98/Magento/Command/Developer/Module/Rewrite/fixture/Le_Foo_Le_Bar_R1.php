@@ -8,11 +8,7 @@
  */
 
 if (true) {
-    class Le_Foo_Le_Bar_R1 extends Le_Foo_Le_Bar_R2
-    {
-    }
+    class Le_Foo_Le_Bar_R1 extends Le_Foo_Le_Bar_R2 {}
 } else {
-    class Le_Foo_Le_Bar_R1 extends Le_Foo_Le_Bar_Nexiste_Pas
-    {
-    }
+    class Le_Foo_Le_Bar_R1 extends Le_Foo_Le_Bar_Nexiste_Pas {}
 }

@@ -27,7 +27,7 @@ class LocalConfigAccessableCheck implements SimpleCheck
         $result = $resultCollection->createResult();
         $filePath = 'app/etc/local.xml';
         $defaultUnsecureBaseURL = (string) Mage::getConfig()->getNode(
-            'default/' . Mage_Core_Model_Store::XML_PATH_UNSECURE_BASE_URL
+            'default/' . Mage_Core_Model_Store::XML_PATH_UNSECURE_BASE_URL,
         );
 
         $varienHttpAdapterCurl = new Varien_Http_Adapter_Curl();

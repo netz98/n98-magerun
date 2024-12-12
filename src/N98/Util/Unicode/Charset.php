@@ -14,17 +14,17 @@ class Charset
     /**
      * @var int
      */
-    const UNICODE_CHECKMARK_CHAR = 10004;
+    public const UNICODE_CHECKMARK_CHAR = 10004;
 
     /**
      * @var int
      */
-    const UNICODE_CROSS_CHAR = 10006;
+    public const UNICODE_CROSS_CHAR = 10006;
 
     /**
      * @var int
      */
-    const UNICODE_WHITE_SQUARE_CHAR = 9633;
+    public const UNICODE_WHITE_SQUARE_CHAR = 9633;
 
     /**
      * @param int|array $codes

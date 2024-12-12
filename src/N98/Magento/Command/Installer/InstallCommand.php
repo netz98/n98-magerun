@@ -32,7 +32,7 @@ class InstallCommand extends AbstractMagentoCommand
                 'magentoVersionByName',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Magento version name instead of order number'
+                'Magento version name instead of order number',
             )
             ->addOption('installationFolder', null, InputOption::VALUE_OPTIONAL, 'Installation folder')
             ->addOption('dbHost', null, InputOption::VALUE_OPTIONAL, 'Database host')
@@ -45,39 +45,39 @@ class InstallCommand extends AbstractMagentoCommand
                 'useDefaultConfigParams',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Use default installation parameters defined in the yaml file'
+                'Use default installation parameters defined in the yaml file',
             )
             ->addOption('baseUrl', null, InputOption::VALUE_OPTIONAL, 'Installation base url')
             ->addOption(
                 'replaceHtaccessFile',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Generate htaccess file (for non vhost environment)'
+                'Generate htaccess file (for non vhost environment)',
             )
             ->addOption(
                 'noDownload',
                 null,
                 InputOption::VALUE_NONE,
                 'If set skips download step. Used when installationFolder is already a Magento installation that has ' .
-                'to be installed on the given database.'
+                'to be installed on the given database.',
             )
             ->addOption(
                 'only-download',
                 null,
                 InputOption::VALUE_NONE,
-                'Downloads (and extracts) source code'
+                'Downloads (and extracts) source code',
             )
             ->addOption(
                 'forceUseDb',
                 null,
                 InputOption::VALUE_NONE,
-                'If --forceUseDb passed, force to use given database if it already exists.'
+                'If --forceUseDb passed, force to use given database if it already exists.',
             )
             ->addOption(
                 'composer-use-same-php-binary',
                 null,
                 InputOption::VALUE_NONE,
-                'If --composer-use-same-php-binary passed, will invoke composer with the same PHP binary'
+                'If --composer-use-same-php-binary passed, will invoke composer with the same PHP binary',
             )
             ->setDescription('Install magento');
     }
@@ -123,7 +123,7 @@ HELP;
         $subCommandFactory = $this->createSubCommandFactory(
             $input,
             $output,
-            'N98\Magento\Command\Installer\SubCommand' // sub-command namespace
+            'N98\Magento\Command\Installer\SubCommand', // sub-command namespace
         );
 
         // @todo load commands from config

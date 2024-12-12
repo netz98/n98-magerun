@@ -67,7 +67,7 @@ class InfoCommand extends AbstractMagentoCommand
 
         $this->writeSection(
             $output,
-            'Current design setting on store: ' . $websiteCode . $mageCoreModelStore->getCode()
+            'Current design setting on store: ' . $websiteCode . $mageCoreModelStore->getCode(),
         );
         $storeInfoLines = $this->_parse($this->_configNodesWithExceptions, $mageCoreModelStore, true);
         $storeInfoLines = array_merge($storeInfoLines, $this->_parse($this->_configNodes, $mageCoreModelStore));
@@ -88,7 +88,7 @@ class InfoCommand extends AbstractMagentoCommand
             $result[] = [$nodeLabel, (string) Mage::getConfig()->getNode(
                 $node,
                 AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW,
-                $mageCoreModelStore->getCode()
+                $mageCoreModelStore->getCode(),
             )];
             if ($withExceptions) {
                 $result[] = [$nodeLabel . ' exceptions', $this->_parseException($node, $mageCoreModelStore)];
@@ -103,7 +103,7 @@ class InfoCommand extends AbstractMagentoCommand
         $exception = (string) Mage::getConfig()->getNode(
             $node . self::THEMES_EXCEPTION,
             AbstractMagentoStoreConfigCommand::SCOPE_STORE_VIEW,
-            $mageCoreModelStore->getCode()
+            $mageCoreModelStore->getCode(),
         );
 
         if ($exception === '' || $exception === '0') {

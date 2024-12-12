@@ -76,16 +76,16 @@ class RemoveCommand extends AbstractSetupCommand
                 sprintf(
                     '<info>Successfully removed setup resource: "%s" from module: "%s" </info>',
                     $setupResource,
-                    $moduleName
-                )
+                    $moduleName,
+                ),
             );
         } else {
             $output->writeln(
                 sprintf(
                     '<error>No entry was found for setup resource: "%s" in module: "%s" </error>',
                     $setupResource,
-                    $moduleName
-                )
+                    $moduleName,
+                ),
             );
         }
     }

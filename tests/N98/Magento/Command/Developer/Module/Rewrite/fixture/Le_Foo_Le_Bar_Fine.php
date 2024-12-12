@@ -7,6 +7,4 @@
  * Class definition that just works when it is included from the same directory
  */
 
-class Le_Foo_Le_Bar_Fine
-{
-}
+class Le_Foo_Le_Bar_Fine {}

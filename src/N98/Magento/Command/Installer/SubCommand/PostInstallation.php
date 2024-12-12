@@ -31,7 +31,7 @@ class PostInstallation extends AbstractSubCommand
         $arrayInput->setInteractive(false);
         $this->getCommand()->getApplication()->run(
             $arrayInput,
-            $this->output
+            $this->output,
         );
 
         /**

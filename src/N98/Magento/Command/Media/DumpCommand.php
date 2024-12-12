@@ -65,7 +65,7 @@ class DumpCommand extends AbstractMagentoCommand
             $currentFolder = pathinfo($file->getRelativePathname(), PATHINFO_DIRNAME);
             if ($currentFolder !== $lastFolder) {
                 $output->writeln(
-                    sprintf('<info>Compress directory:</info> <comment>media/%s</comment>', $currentFolder)
+                    sprintf('<info>Compress directory:</info> <comment>media/%s</comment>', $currentFolder),
                 );
             }
 

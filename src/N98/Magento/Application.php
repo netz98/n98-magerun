@@ -137,7 +137,7 @@ class Application extends BaseApplication
             '--root-dir',
             '',
             InputOption::VALUE_OPTIONAL,
-            'Force magento root dir. No auto detection'
+            'Force magento root dir. No auto detection',
         );
         $inputDefinition->addOption($rootDirOption);
 
@@ -148,7 +148,7 @@ class Application extends BaseApplication
             '--skip-config',
             '',
             InputOption::VALUE_NONE,
-            'Do not load any custom config.'
+            'Do not load any custom config.',
         );
         $inputDefinition->addOption($skipExternalConfig);
 
@@ -159,7 +159,7 @@ class Application extends BaseApplication
             '--skip-root-check',
             '',
             InputOption::VALUE_NONE,
-            'Do not check if n98-magerun runs as root'
+            'Do not check if n98-magerun runs as root',
         );
         $inputDefinition->addOption($skipExternalConfig);
 
@@ -170,7 +170,7 @@ class Application extends BaseApplication
             '--developer-mode',
             '',
             InputOption::VALUE_NONE,
-            'Instantiate Magento in Developer Mode'
+            'Instantiate Magento in Developer Mode',
         );
         $inputDefinition->addOption($rootDirOption);
 
@@ -231,7 +231,7 @@ class Application extends BaseApplication
         foreach ($config['helpers'] as $helperName => $helperClass) {
             if (!class_exists($helperClass)) {
                 throw new RuntimeException(
-                    sprintf('Nonexistent helper class: "%s", check helpers configuration', $helperClass)
+                    sprintf('Nonexistent helper class: "%s", check helpers configuration', $helperClass),
                 );
             }
 
@@ -524,7 +524,7 @@ class Application extends BaseApplication
         return $return;
     }
 
-    private function init(array $initConfig = [], ?InputInterface $input = null, ?OutputInterface $output = null): void
+    public function init(array $initConfig = [], ?InputInterface $input = null, ?OutputInterface $output = null): void
     {
         if ($this->_isInitialized) {
             return;
@@ -596,7 +596,7 @@ class Application extends BaseApplication
     {
         trigger_error(
             __METHOD__ . ' removed, use $input->hasParameterOption(\'--skip-config\') instead',
-            E_USER_DEPRECATED
+            E_USER_DEPRECATED,
         );
 
         return $input->hasParameterOption('--skip-config');

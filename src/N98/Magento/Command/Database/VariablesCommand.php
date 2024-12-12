@@ -41,7 +41,7 @@ class VariablesCommand extends AbstractShowCommand
             'desc' => '',
             // @todo add description everywhere
             'opt'  => '',
-        ]
+        ],
     ];
 
     protected function configure(): void

@@ -8,6 +8,7 @@
 namespace N98\Magento;
 
 use PHPUnit\Framework\TestCase;
+
 class TestApplicationTest extends TestCase
 {
     /**

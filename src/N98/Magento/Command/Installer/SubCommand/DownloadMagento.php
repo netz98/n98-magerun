@@ -46,7 +46,7 @@ class DownloadMagento extends AbstractSubCommand
             $skipInstallation = $dialog->ask(
                 $this->input,
                 $this->output,
-                new ConfirmationQuestion('<question>A magento installation already exists in this folder. Skip download?</question> <comment>[y]</comment>: ', true)
+                new ConfirmationQuestion('<question>A magento installation already exists in this folder. Skip download?</question> <comment>[y]</comment>: ', true),
             );
 
             if ($skipInstallation) {
@@ -90,7 +90,7 @@ class DownloadMagento extends AbstractSubCommand
 
         if (Exec::CODE_CLEAN_EXIT !== $code) {
             throw new RuntimeException(
-                'Non-zero exit code for composer create-project command: ' . $process->getCommandLine()
+                'Non-zero exit code for composer create-project command: ' . $process->getCommandLine(),
             );
         }
     }
@@ -103,9 +103,9 @@ class DownloadMagento extends AbstractSubCommand
                 [
                     'config',
                     'allow-plugins.' . $pluginName,
-                    'true'
-                ]
-            )
+                    'true',
+                ],
+            ),
         );
 
         $process->setTimeout(86400);

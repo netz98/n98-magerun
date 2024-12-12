@@ -45,7 +45,7 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
                 'code'            => $indexer->getIndexerCode(),
                 'status'          => $indexer->getStatus(),
                 'last_runtime'    => $lastReadableRuntime,
-                'runtime_seconds' => $runtimeInSeconds
+                'runtime_seconds' => $runtimeInSeconds,
             ];
         }
 
@@ -102,7 +102,7 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
         $estimatedEnd->add(new DateInterval('PT' . $runtimeInSeconds . 'S'));
 
         $output->writeln(
-            sprintf('<info>Estimated end: <comment>%s</comment></info>', $estimatedEnd->format('Y-m-d H:i:s T'))
+            sprintf('<info>Estimated end: <comment>%s</comment></info>', $estimatedEnd->format('Y-m-d H:i:s T')),
         );
     }
 
@@ -116,8 +116,8 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
             sprintf(
                 '<info>Successfully re-indexed <comment>%s</comment> (Runtime: <comment>%s</comment>)</info>',
                 $mageIndexModelProcess->getIndexerCode(),
-                DateTimeUtils::difference($startTime, $endTime)
-            )
+                DateTimeUtils::difference($startTime, $endTime),
+            ),
         );
     }
 
@@ -133,8 +133,8 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
                 '<error>Reindex finished with error message "%s". %s</error> (Runtime: <comment>%s</comment>)</error>',
                 $errorMessage,
                 $mageIndexModelProcess->getIndexerCode(),
-                DateTimeUtils::difference($startTime, $endTime)
-            )
+                DateTimeUtils::difference($startTime, $endTime),
+            ),
         );
     }
 
@@ -162,7 +162,7 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
     private function executeProcess(OutputInterface $output, Mage_Index_Model_Process $mageIndexModelProcess): bool
     {
         $output->writeln(
-            sprintf('<info>Started reindex of: <comment>%s</comment></info>', $mageIndexModelProcess->getIndexerCode())
+            sprintf('<info>Started reindex of: <comment>%s</comment></info>', $mageIndexModelProcess->getIndexerCode()),
         );
         $this->writeEstimatedEnd($output, $mageIndexModelProcess);
 

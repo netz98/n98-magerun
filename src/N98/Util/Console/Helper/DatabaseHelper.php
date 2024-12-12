@@ -50,7 +50,7 @@ class DatabaseHelper extends AbstractHelper
 
         if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $output->writeln(
-                sprintf('<debug>Loading database configuration from file <info>%s</info></debug>', $configFile)
+                sprintf('<debug>Loading database configuration from file <info>%s</info></debug>', $configFile),
             );
         }
 
@@ -154,7 +154,7 @@ class DatabaseHelper extends AbstractHelper
 
         if (!in_array($type, ['@@', '@'], true)) {
             throw new InvalidArgumentException(
-                sprintf('Invalid mysql variable type "%s", must be "@@" (system) or "@" (session)', $type)
+                sprintf('Invalid mysql variable type "%s", must be "@@" (system) or "@" (session)', $type),
             );
         }
 
@@ -171,7 +171,7 @@ class DatabaseHelper extends AbstractHelper
                 : 'no error info';
 
             throw new RuntimeException(
-                sprintf('Failed to query mysql variable %s: %s', var_export($name, true), $reason)
+                sprintf('Failed to query mysql variable %s: %s', var_export($name, true), $reason),
             );
         }
 
@@ -252,7 +252,7 @@ class DatabaseHelper extends AbstractHelper
                     $tables = $this->resolveTables(
                         $this->resolveRetrieveDefinitionsTablesByCode($definitions, $code),
                         $definitions,
-                        $resolved
+                        $resolved,
                     );
                     $resolvedList = array_merge($resolvedList, $tables);
                 }
@@ -265,13 +265,13 @@ class DatabaseHelper extends AbstractHelper
                 $connection = $this->getConnection();
                 $sth = $connection->prepare(
                     'SHOW TABLES LIKE :like',
-                    [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]
+                    [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY],
                 );
                 $entry = str_replace('_', '\\_', $entry);
                 $entry = str_replace('*', '%', $entry);
                 $entry = str_replace('?', '_', $entry);
                 $sth->execute(
-                    [':like' => $this->dbSettings['prefix'] . $entry]
+                    [':like' => $this->dbSettings['prefix'] . $entry],
                 );
                 $rows = $sth->fetchAll();
                 if ($rows) {
@@ -369,7 +369,7 @@ class DatabaseHelper extends AbstractHelper
             // @codeCoverageIgnoreStart
             $this->throwRuntimeException(
                 $statement,
-                sprintf('Failed to obtain tables from database: %s', var_export($query, true))
+                sprintf('Failed to obtain tables from database: %s', var_export($query, true)),
             );
         } // @codeCoverageIgnoreEnd
 
@@ -417,7 +417,7 @@ class DatabaseHelper extends AbstractHelper
         if (strlen($prefix) > 0) {
             $statement = $pdo->prepare('SHOW TABLE STATUS LIKE :like', [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
             $statement->execute(
-                [':like' => $prefix . '%']
+                [':like' => $prefix . '%'],
             );
         } else {
             $statement = $pdo->query('SHOW TABLE STATUS');
@@ -526,10 +526,10 @@ class DatabaseHelper extends AbstractHelper
         if (null !== $variable) {
             $statement = $pdo->prepare(
                 'SHOW /*!50000 GLOBAL */ ' . $command . ' LIKE :like',
-                [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]
+                [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY],
             );
             $statement->execute(
-                [':like' => $variable]
+                [':like' => $variable],
             );
         } else {
             $statement = $pdo->query('SHOW /*!50000 GLOBAL */ ' . $command);
@@ -586,7 +586,7 @@ class DatabaseHelper extends AbstractHelper
      *
      * @return OutputInterface
      */
-    private function fallbackOutput(OutputInterface $output = null)
+    private function fallbackOutput(?OutputInterface $output = null)
     {
         if ($output instanceof \Symfony\Component\Console\Output\OutputInterface) {
             return $output;

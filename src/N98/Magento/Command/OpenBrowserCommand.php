@@ -84,7 +84,7 @@ class OpenBrowserCommand extends AbstractMagentoCommand
         if (OutputInterface::VERBOSITY_DEBUG <= $output->getVerbosity()) {
             $message = sprintf('open command is "%s"', $opener);
             $output->writeln(
-                '<debug>' . $message . '</debug>'
+                '<debug>' . $message . '</debug>',
             );
         }
 

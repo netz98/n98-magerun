@@ -57,7 +57,7 @@ class SetCommand extends AbstractMagentoCommand
             $input->getArgument('string'),
             $input->getArgument('translate'),
             $locale,
-            $store->getId()
+            $store->getId(),
         );
 
         $output->writeln(
@@ -65,8 +65,8 @@ class SetCommand extends AbstractMagentoCommand
                 'Translated (<info>%s</info>): <comment>%s</comment> => <comment>%s</comment>',
                 $locale,
                 $input->getArgument('string'),
-                $input->getArgument('translate')
-            )
+                $input->getArgument('translate'),
+            ),
         );
 
         $input = new StringInput('cache:flush');

@@ -82,7 +82,7 @@ HELP;
         foreach ($dir as $file => $info) {
             if ($info->isDir()) {
                 $this->verbose(
-                    '<debug>Filesystem::recursiveRemoveDirectory() <comment>' . $file . '</comment></debug>'
+                    '<debug>Filesystem::recursiveRemoveDirectory() <comment>' . $file . '</comment></debug>',
                 );
                 if (!isset($filesystem)) {
                     $filesystem = new Filesystem();

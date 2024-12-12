@@ -61,8 +61,8 @@ HELP;
                         str_ireplace(
                             $searchString,
                             '<info>' . $searchString . '</info>',
-                            (string) $match->node->comment
-                        )
+                            (string) $match->node->comment,
+                        ),
                     );
                 }
 
@@ -85,7 +85,7 @@ HELP;
             if ($systemNode) {
                 $tmp = $this->_searchConfigurationNodes(
                     $searchString,
-                    $systemNode->xpath($xpathSection)
+                    $systemNode->xpath($xpathSection),
                 );
                 $matches = array_merge($matches, $tmp);
             }

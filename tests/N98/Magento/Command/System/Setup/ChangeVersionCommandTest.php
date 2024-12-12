@@ -43,7 +43,7 @@ class ChangeVersionCommandTest extends TestCase
 
         self::assertStringContainsString(
             'Successfully updated: "Mage_Weee" - "weee_setup" to version: "1.6.0.0"',
-            $commandTester->getDisplay()
+            $commandTester->getDisplay(),
         );
     }
 
@@ -82,7 +82,7 @@ class ChangeVersionCommandTest extends TestCase
 
         self::assertStringContainsString(
             'Successfully updated: "Mage_Weee" - "weee_setup" to version: "1.6.0.0"',
-            $commandTester->getDisplay()
+            $commandTester->getDisplay(),
         );
     }
 
@@ -95,7 +95,7 @@ class ChangeVersionCommandTest extends TestCase
         $commandTester = new CommandTester($command);
 
         $this->expectException(
-            InvalidArgumentException::class
+            InvalidArgumentException::class,
         );
 
         $commandTester->execute(['command'   => $command->getName(), 'module'    => 'Mage_Weee', 'version'   => '1.6.0.0', 'setup'     => 'no_setup_exists']);
@@ -133,7 +133,7 @@ class ChangeVersionCommandTest extends TestCase
 
         self::assertStringContainsString(
             'No setup resources found for module: "Mage_Weee"',
-            $commandTester->getDisplay()
+            $commandTester->getDisplay(),
         );
     }
 }

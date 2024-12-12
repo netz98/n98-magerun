@@ -154,7 +154,7 @@ abstract class AbstractMagentoCommand extends Command
         if (!$silent) {
             $editionString = ($this->_magentoEnterprise ? ' (Enterprise Edition) ' : '');
             $output->writeln(
-                '<info>Found Magento ' . $editionString . 'in folder "' . $this->_magentoRootFolder . '"</info>'
+                '<info>Found Magento ' . $editionString . 'in folder "' . $this->_magentoRootFolder . '"</info>',
             );
         }
 
@@ -240,7 +240,7 @@ abstract class AbstractMagentoCommand extends Command
             $command = sprintf(
                 'cd %s && git rev-parse refs/tags/%s',
                 escapeshellarg($this->normalizePath($targetFolder)),
-                escapeshellarg($package->getSourceReference())
+                escapeshellarg($package->getSourceReference()),
             );
             $existingTags = shell_exec($command);
             if ($existingTags === '' || $existingTags === '0' || $existingTags === false || $existingTags === null) {
@@ -251,7 +251,7 @@ abstract class AbstractMagentoCommand extends Command
             $command = sprintf(
                 'cd %s && hg log --template "{tags}" -r %s',
                 escapeshellarg($targetFolder),
-                escapeshellarg($package->getSourceReference())
+                escapeshellarg($package->getSourceReference()),
             );
             $existingTag = shell_exec($command);
             if ($existingTag === $package->getSourceReference()) {
@@ -302,7 +302,7 @@ abstract class AbstractMagentoCommand extends Command
         if (isset($this->_deprecatedAlias[$input->getArgument('command')])) {
             $output->writeln(
                 '<error>Deprecated:</error> <comment>' . $this->_deprecatedAlias[$input->getArgument('command')] .
-                '</comment>'
+                '</comment>',
             );
         }
     }
@@ -396,8 +396,8 @@ abstract class AbstractMagentoCommand extends Command
                         sprintf(
                             'Folder "%s" is not a Magento working copy (%s)',
                             $folderName,
-                            var_export($magentoHelper->getRootFolder(), true)
-                        )
+                            var_export($magentoHelper->getRootFolder(), true),
+                        ),
                     );
                 }
 
@@ -407,8 +407,8 @@ abstract class AbstractMagentoCommand extends Command
                         sprintf(
                             'Magento working copy in %s seems already installed. Please remove %s and retry.',
                             $folderName,
-                            $localXml
-                        )
+                            $localXml,
+                        ),
                     );
                 }
             }
@@ -422,7 +422,7 @@ abstract class AbstractMagentoCommand extends Command
             $dialog = $this->getQuestionHelper();
             $question = new Question(
                 '<question>Enter installation folder:</question> [<comment>' . $defaultFolder . '</comment>]',
-                $defaultFolder
+                $defaultFolder,
             );
             $question->setValidator($validateInstallationFolder);
 
@@ -471,7 +471,7 @@ abstract class AbstractMagentoCommand extends Command
         $questionHelper = $this->getQuestionHelper();
         $question = new ChoiceQuestion(
             sprintf('<question>%s</question>', $question),
-            $entries
+            $entries,
         );
         $question->setValidator($validator);
 
@@ -510,7 +510,7 @@ abstract class AbstractMagentoCommand extends Command
             $input,
             $output,
             $commandConfig,
-            $configBag
+            $configBag,
         );
     }
 
@@ -527,7 +527,7 @@ abstract class AbstractMagentoCommand extends Command
             'format',
             null,
             InputOption::VALUE_OPTIONAL,
-            'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'
+            'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']',
         );
         return $this;
     }

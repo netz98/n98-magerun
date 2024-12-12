@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 /** @noinspection PhpComposerExtensionStubsInspection */
+
 namespace N98\Magento\Command\Installer\SubCommand;
 
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
@@ -41,7 +42,7 @@ class PreCheckPhp extends AbstractSubCommand
 
         if ($missingExtensions !== []) {
             throw new RuntimeException(
-                'The following PHP extensions are required to start installation: ' . implode(',', $missingExtensions)
+                'The following PHP extensions are required to start installation: ' . implode(',', $missingExtensions),
             );
         }
     }

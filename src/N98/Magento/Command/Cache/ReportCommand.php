@@ -29,7 +29,7 @@ class ReportCommand extends AbstractCacheCommand
                 'filter-tag',
                 '',
                 InputOption::VALUE_OPTIONAL,
-                'Filter output by TAG (separate multiple tags by comma)'
+                'Filter output by TAG (separate multiple tags by comma)',
             )
             ->addFormatOption()
         ;

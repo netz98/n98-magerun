@@ -73,8 +73,8 @@ class ChangeVersionCommand extends AbstractSetupCommand
                 '<info>Successfully updated: "%s" - "%s" to version: "%s"</info>',
                 $moduleName,
                 $setupResource,
-                $version
-            )
+                $version,
+            ),
         );
     }
 }

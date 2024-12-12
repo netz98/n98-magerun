@@ -39,7 +39,7 @@ class SelectMagentoVersion extends AbstractSubCommand
                 if (!in_array(
                     $typeInput - 1,
                     range(0, count($this->commandConfig['magento-packages']) - 1),
-                    true
+                    true,
                 )) {
                     throw new \InvalidArgumentException('Invalid type');
                 }
@@ -50,7 +50,7 @@ class SelectMagentoVersion extends AbstractSubCommand
             $type = $this->getCommand()->getQuestionHelper()->ask(
                 $this->input,
                 $this->output,
-                $choiceQuestion
+                $choiceQuestion,
             );
         } else {
             $type = null;

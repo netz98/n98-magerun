@@ -52,7 +52,7 @@ class VerifyOrDie
         $actual = gettype($subject);
         if ($actual !== $internalType) {
             throw new InvalidArgumentException(
-                sprintf('Parameter %s must be of type %s, %s given', $name, $internalType, $actual)
+                sprintf('Parameter %s must be of type %s, %s given', $name, $internalType, $actual),
             );
         }
     }

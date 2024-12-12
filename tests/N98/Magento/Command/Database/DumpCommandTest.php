@@ -36,7 +36,7 @@ class DumpCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--compression'  => 'gz']
+            ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--compression'  => 'gz'],
         );
 
         self::assertMatchesRegularExpression('/mysqldump/', $commandTester->getDisplay());
@@ -94,7 +94,7 @@ class DumpCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--strip'        => '@development not_existing_table_1', '--compression'  => 'gzip']
+            ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--strip'        => '@development not_existing_table_1', '--compression'  => 'gzip'],
         );
 
         $dbConfig = $this->getDatabaseConnection()->getConfig();
@@ -113,7 +113,7 @@ class DumpCommandTest extends TestCase
          */
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--strip'        => '@development']
+            ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--strip'        => '@development'],
         );
         self::assertStringNotContainsString('.sql.gz', $commandTester->getDisplay());
     }
@@ -130,7 +130,7 @@ class DumpCommandTest extends TestCase
          */
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--exclude'      => 'core_config_data', '--compression'  => 'gzip']
+            ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--exclude'      => 'core_config_data', '--compression'  => 'gzip'],
         );
         self::assertMatchesRegularExpression("/--ignore-table=$db\.core_config_data/", $commandTester->getDisplay());
 
@@ -139,7 +139,7 @@ class DumpCommandTest extends TestCase
          */
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--include'      => 'core_config_data', '--compression'  => 'gzip']
+            ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--include'      => 'core_config_data', '--compression'  => 'gzip'],
         );
         self::assertDoesNotMatchRegularExpression("/--ignore-table=$db\.core_config_data/", $commandTester->getDisplay());
         self::assertMatchesRegularExpression("/--ignore-table=$db\.catalog_product_entity/", $commandTester->getDisplay());
@@ -156,7 +156,7 @@ class DumpCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--include'      => 'core_config_data', '--exclude'      => 'catalog_product_entity', '--compression'  => 'gzip']
+            ['command'        => $command->getName(), '--add-time'     => true, '--only-command' => true, '--force'        => true, '--include'      => 'core_config_data', '--exclude'      => 'catalog_product_entity', '--compression'  => 'gzip'],
         );
     }
 
@@ -170,12 +170,12 @@ class DumpCommandTest extends TestCase
         if ($dumpFile->isReadable()) {
             self::assertTrue(unlink($dumpFile), 'Precondition to unlink that the file does not exists');
         }
-        self::assertIsNotReadable((string)$dumpFile, 'Precondition that the file does not exists');
+        self::assertIsNotReadable((string) $dumpFile, 'Precondition that the file does not exists');
 
         $command = $this->getCommand();
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'  => $command->getName(), '--strip'  => '@stripped', 'filename' => $dumpFile]
+            ['command'  => $command->getName(), '--strip'  => '@stripped', 'filename' => $dumpFile],
         );
 
         self::assertTrue($dumpFile->isReadable(), 'File was created');

@@ -56,7 +56,7 @@ class RemoveCommand extends AbstractMagentoCommand
                 $message = sprintf(
                     'Attribute: "%s" does not exist for entity type: "%s"',
                     $attributeCode,
-                    $entityType
+                    $entityType,
                 );
                 $output->writeln(sprintf('<comment>%s</comment>', $message));
             } else {
@@ -75,8 +75,8 @@ class RemoveCommand extends AbstractMagentoCommand
                     sprintf(
                         '<info>Successfully removed attribute: "%s" from entity type: "%s"</info>',
                         $attributeCode,
-                        $entityType
-                    )
+                        $entityType,
+                    ),
                 );
             }
         }

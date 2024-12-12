@@ -31,10 +31,10 @@ class UninstallCommand extends AbstractMagentoCommand
                 'installationFolder',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Folder where Magento is currently installed'
+                'Folder where Magento is currently installed',
             )
             ->setDescription(
-                'Uninstall magento (drops database and empties current folder or folder set via installationFolder)'
+                'Uninstall magento (drops database and empties current folder or folder set via installationFolder)',
             )
         ;
     }
@@ -61,7 +61,7 @@ HELP;
         if (!$shouldUninstall) {
             $confirmationQuestion = new ConfirmationQuestion(
                 '<question>Really uninstall ?</question> <comment>[n]</comment>: ',
-                false
+                false,
             );
             $shouldUninstall = $questionHelper->ask($input, $output, $confirmationQuestion);
         }

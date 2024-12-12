@@ -82,13 +82,13 @@ HELP;
         if (!is_writable($tempDirectory = dirname($tempFilename))) {
             throw new RuntimeException(
                 'n98-magerun2 update failed: the "' . $tempDirectory .
-                '" directory used to download the temp file could not be written'
+                '" directory used to download the temp file could not be written',
             );
         }
 
         if (!is_writable($localFilename)) {
             throw new RuntimeException(
-                'n98-magerun2 update failed: the "' . $localFilename . '" file could not be written'
+                'n98-magerun2 update failed: the "' . $localFilename . '" file could not be written',
             );
         }
 
@@ -106,7 +106,7 @@ HELP;
             [],
             [
                 'verify' => true,
-            ]
+            ],
         );
 
         if (!$response->success) {
@@ -176,9 +176,9 @@ HELP;
             [
                 'verify' => true,
                 'headers' => [
-                    'Accept-Encoding' => 'deflate, gzip, br, zstd'
-                ]
-            ]
+                    'Accept-Encoding' => 'deflate, gzip, br, zstd',
+                ],
+            ],
         );
 
         if (!$response->success) {
@@ -197,7 +197,7 @@ HELP;
             'request.progress',
             function ($data, $responseBytes, $responseByteLimit) use ($progressBar): void {
                 $progressBar->setProgress($responseBytes);
-            }
+            },
         );
 
         $response = Requests::get(
@@ -208,9 +208,9 @@ HELP;
                 'hooks' => $hooks,
                 'verify' => true,
                 'headers' => [
-                    'Accept-Encoding' => 'deflate, gzip, br, zstd'
-                ]
-            ]
+                    'Accept-Encoding' => 'deflate, gzip, br, zstd',
+                ],
+            ],
         );
 
         if (!$response->success) {
@@ -239,7 +239,7 @@ HELP;
     {
         if (!@rename($tempFilename, $localFilename)) {
             throw new RuntimeException(
-                sprintf('Cannot replace existing phar file "%s". Please check permissions.', $localFilename)
+                sprintf('Cannot replace existing phar file "%s". Please check permissions.', $localFilename),
             );
         }
     }
@@ -259,9 +259,9 @@ HELP;
             [
                 'verify' => true,
                 'headers' => [
-                    'Accept-Encoding' => 'deflate, gzip, br, zstd'
-                ]
-            ]
+                    'Accept-Encoding' => 'deflate, gzip, br, zstd',
+                ],
+            ],
         );
 
         if (!$response->success) {

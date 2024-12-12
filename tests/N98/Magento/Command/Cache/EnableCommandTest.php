@@ -28,7 +28,7 @@ class EnableCommandTest extends TestCase
         $command = $this->getApplication()->find('cache:enable');
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName(), 'code'    => 'eav,config']
+            ['command' => $command->getName(), 'code'    => 'eav,config'],
         );
 
         self::assertMatchesRegularExpression('/Cache config enabled/', $commandTester->getDisplay());

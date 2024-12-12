@@ -8,6 +8,7 @@
 namespace N98\Magento\Command\System\Check\Settings;
 
 use PHPUnit\Framework\TestCase;
+
 /**
  * Class CookieDomainCheckAbstractTest
  *

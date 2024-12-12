@@ -85,7 +85,7 @@ class ParameterHelper extends AbstractHelper
                 $choices[] = sprintf(
                     '%s - %s',
                     $store->getCode(),
-                    $store->getName()
+                    $store->getName(),
                 );
             }
 
@@ -178,7 +178,7 @@ class ParameterHelper extends AbstractHelper
     public function askEmail(InputInterface $input, OutputInterface $output, string $argumentName = 'email'): string
     {
         $collection = new Collection(
-            ['email' => [new NotBlank(), new Email()]]
+            ['email' => [new NotBlank(), new Email()]],
         );
 
         return $this->validateArgument($input, $output, $argumentName, $input->getArgument($argumentName), $collection);
@@ -203,7 +203,7 @@ class ParameterHelper extends AbstractHelper
         $validators[] = new Length(['min' => 6]);
 
         $collection = new Collection(
-            ['password' => $validators]
+            ['password' => $validators],
         );
 
         return $this->validateArgument($input, $output, $argumentName, $input->getArgument($argumentName), $collection);
@@ -252,7 +252,7 @@ class ParameterHelper extends AbstractHelper
                 }
 
                 return $inputValue;
-            }
+            },
         );
     }
 

@@ -33,7 +33,7 @@ class VersionCheck extends ResourceCheck
         } else {
             $result->setStatus(Result::STATUS_ERROR);
             $result->setMessage(
-                sprintf('<error>MySQL Version <comment>>%s</comment> found. Upgrade your MySQL Version.</error>', $mysqlVersion)
+                sprintf('<error>MySQL Version <comment>>%s</comment> found. Upgrade your MySQL Version.</error>', $mysqlVersion),
             );
         }
     }

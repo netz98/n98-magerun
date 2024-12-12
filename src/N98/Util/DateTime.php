@@ -36,7 +36,7 @@ class DateTime
             . ($days ? $days . 'd ' : '')
             . ($hours ? $hours . 'h ' : '')
             . ($minutes ? $minutes . 'm ' : '')
-            . ($seconds ? $seconds . 's ' : '')
+            . ($seconds ? $seconds . 's ' : ''),
         );
 
         if ($differenceString === '') {

@@ -15,7 +15,7 @@ class RunCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName()]
+            ['command' => $command->getName()],
         );
 
         self::assertMatchesRegularExpression('/done/', $commandTester->getDisplay());

@@ -54,7 +54,7 @@ class MagentoHelper extends AbstractHelper
         return 'magento';
     }
 
-    public function __construct(InputInterface $input = null, OutputInterface $output = null)
+    public function __construct(?InputInterface $input = null, ?OutputInterface $output = null)
     {
         if (!$input instanceof InputInterface) {
             $input = new ArgvInput();
@@ -150,7 +150,7 @@ class MagentoHelper extends AbstractHelper
             if (!is_readable($searchFolder)) {
                 if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
                     $this->output->writeln(
-                        '<debug>Folder <info>' . $searchFolder . '</info> is not readable. Skip.</debug>'
+                        '<debug>Folder <info>' . $searchFolder . '</info> is not readable. Skip.</debug>',
                     );
                 }
 
@@ -172,7 +172,7 @@ class MagentoHelper extends AbstractHelper
                 $baseFolderContent = trim((string) file_get_contents($searchFolder . DIRECTORY_SEPARATOR . '.basedir'));
                 if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
                     $this->output->writeln(
-                        '<debug>Found modman .basedir file with content <info>' . $baseFolderContent . '</info></debug>'
+                        '<debug>Found modman .basedir file with content <info>' . $baseFolderContent . '</info></debug>',
                     );
                 }
 
@@ -194,7 +194,7 @@ class MagentoHelper extends AbstractHelper
             if (!is_readable($searchFolder)) {
                 if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
                     $this->output->writeln(
-                        sprintf('<debug>Folder <info>%s</info> is not readable. Skip.</debug>', $searchFolder)
+                        sprintf('<debug>Folder <info>%s</info> is not readable. Skip.</debug>', $searchFolder),
                     );
                 }
 
@@ -222,7 +222,7 @@ class MagentoHelper extends AbstractHelper
                     $message = sprintf(
                         "<debug>Found stopfile '%s' file with content <info>%s</info></debug>",
                         $stopFile,
-                        $magerunFileContent
+                        $magerunFileContent,
                     );
                     $this->output->writeln($message);
                 }
@@ -269,7 +269,7 @@ class MagentoHelper extends AbstractHelper
 
             if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
                 $this->output->writeln(
-                    '<debug>Found Magento in folder <info>' . $this->_magentoRootFolder . '</info></debug>'
+                    '<debug>Found Magento in folder <info>' . $this->_magentoRootFolder . '</info></debug>',
                 );
             }
 

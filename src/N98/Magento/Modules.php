@@ -24,7 +24,7 @@ class Modules implements IteratorAggregate, Countable
 {
     private ?array $list;
 
-    public function __construct(array $list = null)
+    public function __construct(?array $list = null)
     {
         if (null === $list) {
             $list = [];

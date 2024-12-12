@@ -54,7 +54,7 @@ HELP;
 
         if (file_exists($configFile)) {
             $output->writeln(
-                sprintf('<info>local.xml file already exists in folder "%s/app/etc"</info>', dirname($configFile))
+                sprintf('<info>local.xml file already exists in folder "%s/app/etc"</info>', dirname($configFile)),
             );
             return Command::FAILURE;
         }
@@ -114,30 +114,30 @@ HELP;
         $arguments = [
             'db-host' => [
                 'prompt' => 'database host',
-                'required' => true
+                'required' => true,
             ],
             'db-user' => [
                 'prompt' => 'database username',
-                'required' => true
+                'required' => true,
             ],
             'db-pass' => [
                 'prompt' => 'database password',
-                'required' => false
+                'required' => false,
             ],
             'db-name' => [
                 'prompt' => 'database name',
-                'required' => true
+                'required' => true,
             ],
             'session-save' => [
                 'prompt' => 'session save',
                 'required' => true,
-                'default' => 'files'
+                'default' => 'files',
             ],
             'admin-frontname' => [
                 'prompt' => 'admin frontname',
                 'required' => true,
-                'default' => 'admin'
-            ]
+                'default' => 'admin',
+            ],
         ];
 
         foreach ($arguments as $argument => $options) {
@@ -149,14 +149,14 @@ HELP;
                         $output,
                         new Question(
                             sprintf('<question>%s%s:</question> ', $messagePrefix, $options['prompt']),
-                            (string) $options['default']
+                            (string) $options['default'],
                         ),
-                    )
+                    ),
                 );
             } else {
                 $input->setArgument(
                     $argument,
-                    $this->getOrAskForArgument($argument, $input, $output, $messagePrefix . $options['prompt'])
+                    $this->getOrAskForArgument($argument, $input, $output, $messagePrefix . $options['prompt']),
                 );
             }
 

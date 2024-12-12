@@ -24,7 +24,7 @@ class InstallCommandTest extends TestCase
             $result = rmdir($installDir);
             if (!$result) {
                 throw new RuntimeException(
-                    sprintf('Failed to remove temporary install dir "%s"', $installDir)
+                    sprintf('Failed to remove temporary install dir "%s"', $installDir),
                 );
             }
         }
@@ -55,8 +55,8 @@ class InstallCommandTest extends TestCase
                     '--dbHost' => 'hostWhichDoesNotExists',
                     '--dbUser' => 'user',
                     '--dbPass' => 'pa$$w0rd',
-                    '--dbName' => 'magento'
-                ]
+                    '--dbName' => 'magento',
+                ],
             );
         } catch (InvalidArgumentException $e) {
             self::assertEquals('Database configuration is invalid', $e->getMessage());

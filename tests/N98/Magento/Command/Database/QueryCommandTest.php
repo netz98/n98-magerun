@@ -15,7 +15,7 @@ class QueryCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName(), 'query'   => 'SHOW TABLES;']
+            ['command' => $command->getName(), 'query'   => 'SHOW TABLES;'],
         );
 
         self::assertStringContainsString('admin_user', $commandTester->getDisplay());

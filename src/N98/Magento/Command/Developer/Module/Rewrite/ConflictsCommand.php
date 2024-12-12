@@ -29,7 +29,7 @@ class ConflictsCommand extends AbstractRewriteCommand
                 'log-junit',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Log conflicts in JUnit XML format to defined file.'
+                'Log conflicts in JUnit XML format to defined file.',
             )
             ->setDescription('Lists all magento rewrite conflicts');
     }
@@ -122,7 +122,7 @@ HELP;
                 $conflict['Type'],
                 $conflict['Class'],
                 $conflict['Rewrites'],
-                $conflict['Loaded Class']
+                $conflict['Loaded Class'],
             );
             $testCaseElement->addFailure($message, 'MagentoRewriteConflictException');
         }
@@ -173,7 +173,7 @@ HELP;
         $message = sprintf(
             '%d %s found!',
             $number,
-            $number === 1 ? 'conflict was' : 'conflicts were'
+            $number === 1 ? 'conflict was' : 'conflicts were',
         );
 
         $output->writeln('<error>' . $message . '</error>');

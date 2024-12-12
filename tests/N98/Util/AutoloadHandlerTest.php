@@ -9,6 +9,7 @@ namespace N98\Util;
 
 use PHPUnit\Framework\TestCase;
 use BadMethodCallException;
+
 /**
  * Class AutoloadHandlerTest
  *

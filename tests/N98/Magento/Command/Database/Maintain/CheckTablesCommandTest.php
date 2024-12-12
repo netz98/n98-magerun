@@ -17,17 +17,17 @@ class CheckTablesCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'  => $command->getName(), '--format' => 'csv', '--type'   => 'quick', '--table'  => 'catalogsearch_*']
+            ['command'  => $command->getName(), '--format' => 'csv', '--type'   => 'quick', '--table'  => 'catalogsearch_*'],
         );
         self::assertStringContainsString('catalogsearch_fulltext,check,quick,OK', $commandTester->getDisplay());
         $timeRegex = '"\s+[0-9]+\srows","[0-9\.]+\ssecs"';
         self::assertMatchesRegularExpression(
             '~catalogsearch_query,"ENGINE InnoDB",' . $timeRegex . '~',
-            $commandTester->getDisplay()
+            $commandTester->getDisplay(),
         );
         self::assertMatchesRegularExpression(
             '~catalogsearch_result,"ENGINE InnoDB",' . $timeRegex . '~',
-            $commandTester->getDisplay()
+            $commandTester->getDisplay(),
         );
     }
 

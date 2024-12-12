@@ -17,22 +17,22 @@ class GetCommandTest extends TestCase
 
         $this->assertDisplayRegExp(
             ['command'   => 'config:set', '--no-null' => null, 'path'      => 'n98_magerun/foo/bar', 'value'     => 'NULL'],
-            '~^n98_magerun/foo/bar => NULL$~'
+            '~^n98_magerun/foo/bar => NULL$~',
         );
 
         $this->assertDisplayContains(
             ['command'          => 'config:get', '--magerun-script' => null, 'path'             => 'n98_magerun/foo/bar'],
-            'config:set --no-null --scope-id=0 --scope=default'
+            'config:set --no-null --scope-id=0 --scope=default',
         );
 
         $this->assertDisplayContains(
             ['command' => 'config:set', 'path'    => 'n98_magerun/foo/bar', 'value'   => 'NULL'],
-            'n98_magerun/foo/bar => NULL (NULL/"unknown" value)'
+            'n98_magerun/foo/bar => NULL (NULL/"unknown" value)',
         );
 
         $this->assertDisplayContains(
             ['command' => 'config:get', 'path'    => 'n98_magerun/foo/bar'],
-            '| n98_magerun/foo/bar | default | 0        | NULL (NULL/"unknown" value) |'
+            '| n98_magerun/foo/bar | default | 0        | NULL (NULL/"unknown" value) |',
         );
 
         $this->assertDisplayContains(
@@ -42,7 +42,7 @@ class GetCommandTest extends TestCase
                 # needed to not use the previous output cache
                 'path'             => 'n98_magerun/foo/bar',
             ],
-            'config:set --scope-id=0 --scope=default -- \'n98_magerun/foo/bar\' NULL'
+            'config:set --scope-id=0 --scope=default -- \'n98_magerun/foo/bar\' NULL',
         );
     }
 
@@ -62,12 +62,12 @@ class GetCommandTest extends TestCase
 
         $this->assertDisplayContains(
             ['command' => 'config:set', 'path'    => 'n98_magerun/foo/bar', 'value'   => 'NULL'],
-            'n98_magerun/foo/bar => NULL (NULL/"unknown" value)'
+            'n98_magerun/foo/bar => NULL (NULL/"unknown" value)',
         );
 
         $this->assertDisplayRegExp(
             ['command'  => 'config:get', '--format' => $format, 'path'     => 'n98_magerun/foo/bar'],
-            $expected
+            $expected,
         );
     }
 
@@ -78,22 +78,22 @@ class GetCommandTest extends TestCase
          */
         $this->assertDisplayContains(
             ['command' => 'config:set', 'path'    => 'n98_magerun/foo/bar', 'value'   => '1234'],
-            'n98_magerun/foo/bar => 1234'
+            'n98_magerun/foo/bar => 1234',
         );
 
         $this->assertDisplayContains(
             ['command' => 'config:get', 'path'    => 'n98_magerun/foo/bar'],
-            '| n98_magerun/foo/bar | default | 0        | 1234  |'
+            '| n98_magerun/foo/bar | default | 0        | 1234  |',
         );
 
         $this->assertDisplayContains(
             ['command'         => 'config:get', 'path'            => 'n98_magerun/foo/bar', '--update-script' => true],
-            "\$installer->setConfigData('n98_magerun/foo/bar', '1234');"
+            "\$installer->setConfigData('n98_magerun/foo/bar', '1234');",
         );
 
         $this->assertDisplayContains(
             ['command'          => 'config:get', 'path'             => 'n98_magerun/foo/bar', '--magerun-script' => true],
-            "config:set --scope-id=0 --scope=default -- 'n98_magerun/foo/bar' '1234'"
+            "config:set --scope-id=0 --scope=default -- 'n98_magerun/foo/bar' '1234'",
         );
 
         /**
@@ -115,7 +115,7 @@ class GetCommandTest extends TestCase
          */
         $this->assertDisplayRegExp(
             ['command'  => 'config:get', 'path'     => 'n98_magerun/foo/bar', '--format' => 'json'],
-            '/"Value":\s*"1234"/'
+            '/"Value":\s*"1234"/',
         );
     }
 
@@ -146,8 +146,8 @@ class GetCommandTest extends TestCase
                         sprintf(
                             'Test requires minimum Magento version of "%s", version "%s" is in use',
                             $community,
-                            $magentoVersion
-                        )
+                            $magentoVersion,
+                        ),
                     );
                 }
                 break;
@@ -157,8 +157,8 @@ class GetCommandTest extends TestCase
                         sprintf(
                             'Test requires minimum Magento version of "%s", version "%s" is in use',
                             $enterprise,
-                            $magentoVersion
-                        )
+                            $magentoVersion,
+                        ),
                     );
                 }
                 break;
@@ -166,8 +166,8 @@ class GetCommandTest extends TestCase
                 self::markTestSkipped(
                     sprintf(
                         'Test requires community or enterprise edition, Magento edition "%s" given',
-                        $magentoEdition
-                    )
+                        $magentoEdition,
+                    ),
                 );
         }
     }

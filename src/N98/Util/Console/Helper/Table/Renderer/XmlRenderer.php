@@ -34,16 +34,16 @@ class XmlRenderer implements RendererInterface
         $rows && $this->setHeadersFrom($rows);
 
         $table = $domDocument->createElement(self::NAME_ROOT);
-         if ($table) {
+        if ($table) {
             $table = $domDocument->appendChild($table);
             $this->appendHeaders($table, $this->headers);
             $this->appendRows($table, $rows);
-         }
+        }
 
-         $xml = $domDocument->saveXML($domDocument, LIBXML_NOEMPTYTAG);
-         if ($xml) {
-             $output->write($xml, false, $output::OUTPUT_RAW);
-         }
+        $xml = $domDocument->saveXML($domDocument, LIBXML_NOEMPTYTAG);
+        if ($xml) {
+            $output->write($xml, false, $output::OUTPUT_RAW);
+        }
     }
 
     private function appendRows(DOMNode $domElement, array $rows): void
@@ -73,7 +73,7 @@ class XmlRenderer implements RendererInterface
         }
     }
 
-    private function appendHeaders(DOMNode $domElement, array $headers = null): void
+    private function appendHeaders(DOMNode $domElement, ?array $headers = null): void
     {
         if ($headers === null || $headers === []) {
             return;
@@ -117,8 +117,8 @@ class XmlRenderer implements RendererInterface
             throw new RuntimeException(
                 sprintf(
                     'Encoding error, only US-ASCII and UTF-8 supported, can not process %s',
-                    var_export($string, true)
-                )
+                    var_export($string, true),
+                ),
             );
         }
 

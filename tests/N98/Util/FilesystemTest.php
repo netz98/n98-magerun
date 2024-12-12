@@ -9,6 +9,7 @@ namespace N98\Util;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+
 /**
  * Class FilesystemTest
  * @package N98\Util

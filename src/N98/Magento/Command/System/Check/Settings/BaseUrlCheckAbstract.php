@@ -34,12 +34,12 @@ abstract class BaseUrlCheckAbstract extends CheckAbstract
         if ($isValid) {
             $result->setMessage(
                 '<info>' . ucfirst($this->class) . ' BaseURL: <comment>' . $baseUrl . '</comment> of Store: <comment>' .
-                $mageCoreModelStore->getCode() . '</comment> - OK'
+                $mageCoreModelStore->getCode() . '</comment> - OK',
             );
         } else {
             $result->setMessage(
                 '<error>Invalid ' . ucfirst($this->class) . ' BaseURL: <comment>' . $baseUrl .
-                '</comment> of Store: <comment>' . $mageCoreModelStore->getCode() . '</comment> ' . $errorMessage . '</error>'
+                '</comment> of Store: <comment>' . $mageCoreModelStore->getCode() . '</comment> ' . $errorMessage . '</error>',
             );
         }
     }

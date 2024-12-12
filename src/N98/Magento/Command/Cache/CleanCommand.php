@@ -28,13 +28,13 @@ class CleanCommand extends AbstractCacheCommand
                 'reinit',
                 null,
                 InputOption::VALUE_NONE,
-                'Reinitialise the config cache after cleaning'
+                'Reinitialise the config cache after cleaning',
             )
             ->addOption(
                 'no-reinit',
                 null,
                 InputOption::VALUE_NONE,
-                "Don't reinitialise the config cache after flushing"
+                "Don't reinitialise the config cache after flushing",
             )
             ->setDescription('Clean magento cache')
         ;
@@ -61,7 +61,7 @@ Options:
 HELP;
     }
 
-    
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $noReinitOption = $input->getOption('no-reinit');

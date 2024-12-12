@@ -48,7 +48,7 @@ class ProcessArguments
     {
         foreach ($arguments as $key => $value) {
             $this->addArg(
-                $this->conditional($key, $value, $separator, $prefix)
+                $this->conditional($key, $value, $separator, $prefix),
             );
         }
 

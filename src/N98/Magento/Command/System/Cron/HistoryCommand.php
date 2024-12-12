@@ -32,7 +32,7 @@ class HistoryCommand extends AbstractMagentoCommand
                 'timezone',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Timezone to show finished at in'
+                'Timezone to show finished at in',
             )
             ->addFormatOption()
         ;

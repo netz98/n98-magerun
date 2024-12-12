@@ -69,7 +69,7 @@ HELP;
                 )
             );
             $rows[] = ['Full table scans', sprintf('%.2f%%', $tableScanRate * 100), $this->formatDesc(
-                'HINT: "Handler_read_rnd_next" is reset to zero when reached the value of 2^32 (4G).'
+                'HINT: "Handler_read_rnd_next" is reset to zero when reached the value of 2^32 (4G).',
             )];
         }
 
@@ -80,7 +80,7 @@ HELP;
 
             $rows[] = ['InnoDB Buffer Pool hit', sprintf('%.2f', $bufferHitRate * 100) . '%', $this->formatDesc(
                 'An InnoDB Buffer Pool hit ratio below 99.9% is a weak indicator that ' .
-                'your InnoDB Buffer Pool could be increased.'
+                'your InnoDB Buffer Pool could be increased.',
             )];
         }
 
@@ -119,7 +119,7 @@ HELP;
         $diff = $now->diff($ago);
 
         $diff->w = floor($diff->d / 7);
-        $diff->d -= (int)$diff->w * 7;
+        $diff->d -= (int) $diff->w * 7;
 
         $string = ['y' => 'year', 'm' => 'month', 'h' => 'hour', 'i' => 'minute', 's' => 'second'];
         foreach ($string as $k => &$v) {

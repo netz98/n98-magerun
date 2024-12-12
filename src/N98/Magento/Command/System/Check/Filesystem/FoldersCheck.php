@@ -40,13 +40,13 @@ class FoldersCheck implements SimpleCheck, CommandAware, CommandConfigAware
                     $result->setStatus(Result::STATUS_ERROR);
                     $result->setMessage(
                         '<error>Folder ' . $folder . ' is not writeable!</error><comment> Usage: ' . $comment .
-                        '</comment>'
+                        '</comment>',
                     );
                 }
             } else {
                 $result->setStatus(Result::STATUS_ERROR);
                 $result->setMessage(
-                    '<error>Folder ' . $folder . ' not found!</error><comment> Usage: ' . $comment . '</comment>'
+                    '<error>Folder ' . $folder . ' not found!</error><comment> Usage: ' . $comment . '</comment>',
                 );
             }
         }

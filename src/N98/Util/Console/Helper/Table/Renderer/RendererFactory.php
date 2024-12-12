@@ -42,8 +42,8 @@ class RendererFactory
                 sprintf(
                     'Unknown format %s, known formats are: %s',
                     var_export($format, true),
-                    implode(',', self::getFormats())
-                )
+                    implode(',', self::getFormats()),
+                ),
             );
         }
 

@@ -15,7 +15,7 @@ class BaseUrlListCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName()]
+            ['command' => $command->getName()],
         );
 
         self::assertMatchesRegularExpression('/secure_baseurl/', $commandTester->getDisplay());

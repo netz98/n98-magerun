@@ -58,7 +58,7 @@ class Result
 
         if (!in_array($status, [self::STATUS_OK, self::STATUS_ERROR, self::STATUS_WARNING])) {
             throw new LogicException(
-                'Wrong status was given. Use constants: Result::OK, Result::ERROR, Result::WARNING'
+                'Wrong status was given. Use constants: Result::OK, Result::ERROR, Result::WARNING',
             );
         }
 

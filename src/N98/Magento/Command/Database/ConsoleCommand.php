@@ -25,14 +25,14 @@ class ConsoleCommand extends AbstractDatabaseCommand
                 'use-mycli-instead-of-mysql',
                 null,
                 InputOption::VALUE_NONE,
-                'Use `mycli` as the MySQL client instead of `mysql`'
+                'Use `mycli` as the MySQL client instead of `mysql`',
             )
             ->addOption(
                 'no-auto-rehash',
                 null,
                 InputOption::VALUE_NONE,
                 'Same as `-A` option to MySQL client to turn off ' .
-                'auto-complete (avoids long initial connection time).'
+                'auto-complete (avoids long initial connection time).',
             )
             ->setDescription('Opens mysql client by database config from local.xml');
     }

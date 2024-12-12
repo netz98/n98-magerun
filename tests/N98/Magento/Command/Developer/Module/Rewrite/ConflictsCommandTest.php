@@ -24,7 +24,7 @@ class ConflictsCommandTest extends TestCase
          */
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName()]
+            ['command' => $command->getName()],
         );
         self::assertStringContainsString('No rewrite conflicts were found', $commandTester->getDisplay());
 
@@ -33,7 +33,7 @@ class ConflictsCommandTest extends TestCase
          */
         $commandTester = new CommandTester($command);
         $result = $commandTester->execute(
-            ['command'     => $command->getName(), '--log-junit' => '_output.xml']
+            ['command'     => $command->getName(), '--log-junit' => '_output.xml'],
         );
         self::assertEquals(0, $result);
         self::assertEquals('', $commandTester->getDisplay());

@@ -35,7 +35,7 @@ class ValidateExtensionCommandTest extends TestCase
 
         $commandTester = new CommandTester($commandMock);
         $commandTester->execute(
-            ['command'           => $commandMock->getName(), 'package'           => 'Mage_All_Latest', '--include-default' => true]
+            ['command'           => $commandMock->getName(), 'package'           => 'Mage_All_Latest', '--include-default' => true],
         );
 
         $output = $commandTester->getDisplay();

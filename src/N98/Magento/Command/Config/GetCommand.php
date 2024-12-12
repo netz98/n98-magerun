@@ -29,14 +29,14 @@ class GetCommand extends AbstractConfigCommand
                 'scope',
                 null,
                 InputOption::VALUE_REQUIRED,
-                "The config value's scope (default, websites, stores)"
+                "The config value's scope (default, websites, stores)",
             )
             ->addOption('scope-id', null, InputOption::VALUE_REQUIRED, "The config value's scope ID")
             ->addOption(
                 'decrypt',
                 null,
                 InputOption::VALUE_NONE,
-                "Decrypt the config value using local.xml's crypt key"
+                "Decrypt the config value using local.xml's crypt key",
             )
             ->addOption('update-script', null, InputOption::VALUE_NONE, 'Output as update script lines')
             ->addOption('magerun-script', null, InputOption::VALUE_NONE, 'Output for usage with config:set')
@@ -81,7 +81,7 @@ HELP;
         if ($scopeId = $input->getOption('scope-id')) {
             $collection->addFieldToFilter(
                 'scope_id',
-                ['eq' => $scopeId]
+                ['eq' => $scopeId],
             );
         }
 
@@ -106,8 +106,8 @@ HELP;
                 'scope_id' => $item->getScopeId(),
                 'value'    => $this->_formatValue(
                     $item->getValue(),
-                    $input->getOption('decrypt') ? 'decrypt' : false
-                )
+                    $input->getOption('decrypt') ? 'decrypt' : false,
+                ),
             ];
         }
 
@@ -161,7 +161,7 @@ HELP;
                     break;
                 default:
                     throw new UnexpectedValueException(
-                        sprintf('Unhandled format %s', var_export($value, true))
+                        sprintf('Unhandled format %s', var_export($value, true)),
                     );
             }
         }
@@ -181,8 +181,8 @@ HELP;
                     sprintf(
                         '$installer->setConfigData(%s, %s);',
                         var_export($row['path'], true),
-                        var_export($row['value'], true)
-                    )
+                        var_export($row['value'], true),
+                    ),
                 );
             } else {
                 $output->writeln(
@@ -191,8 +191,8 @@ HELP;
                         var_export($row['path'], true),
                         var_export($row['value'], true),
                         var_export($row['scope'], true),
-                        var_export($row['scope_id'], true)
-                    )
+                        var_export($row['scope_id'], true),
+                    ),
                 );
             }
         }
@@ -216,7 +216,7 @@ HELP;
                 $row['scope_id'],
                 $row['scope'],
                 escapeshellarg($row['path']),
-                $displayValue
+                $displayValue,
             );
             $output->writeln($line);
         }

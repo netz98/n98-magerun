@@ -18,7 +18,7 @@ class ViewCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName(), 'id'      => 'n98-magerun-unittest']
+            ['command' => $command->getName(), 'id'      => 'n98-magerun-unittest'],
         );
 
         self::assertMatchesRegularExpression('/TEST n98-magerun/', $commandTester->getDisplay());
@@ -35,7 +35,7 @@ class ViewCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'       => $command->getName(), 'id'            => 'n98-magerun-unittest', '--unserialize' => true]
+            ['command'       => $command->getName(), 'id'            => 'n98-magerun-unittest', '--unserialize' => true],
         );
 
         self::assertEquals(print_r($cacheData, true) . "\n", $commandTester->getDisplay(true));

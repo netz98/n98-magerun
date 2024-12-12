@@ -11,8 +11,8 @@ if (!file_exists($inputFile)) {
     throw new InvalidArgumentException(
         sprintf(
             'Invalid input file %s provided as first parameter. The file does not exists.',
-            var_export($inputFile, true)
-        )
+            var_export($inputFile, true),
+        ),
     );
 }
 

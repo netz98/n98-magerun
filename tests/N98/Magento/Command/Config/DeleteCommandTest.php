@@ -20,13 +20,13 @@ class DeleteCommandTest extends TestCase
          */
         $commandTester = new CommandTester($setCommand);
         $commandTester->execute(
-            ['command' => $setCommand->getName(), 'path'    => 'n98_magerun/foo/bar', 'value'   => '1234']
+            ['command' => $setCommand->getName(), 'path'    => 'n98_magerun/foo/bar', 'value'   => '1234'],
         );
         self::assertStringContainsString('n98_magerun/foo/bar => 1234', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($deleteCommand);
         $commandTester->execute(
-            ['command' => $deleteCommand->getName(), 'path'    => 'n98_magerun/foo/bar']
+            ['command' => $deleteCommand->getName(), 'path'    => 'n98_magerun/foo/bar'],
         );
         self::assertStringContainsString('| n98_magerun/foo/bar | default | 0        |', $commandTester->getDisplay());
 
@@ -43,13 +43,13 @@ class DeleteCommandTest extends TestCase
                     'path'       => 'n98_magerun/foo/bar',
                     '--scope'    => 'stores',
                     '--scope-id' => $store->getId(),
-                    'value'      => 'store-' . $store->getId()]
+                    'value'      => 'store-' . $store->getId()],
             );
         }
 
         $commandTester = new CommandTester($deleteCommand);
         $commandTester->execute(
-            ['command' => $deleteCommand->getName(), 'path'    => 'n98_magerun/foo/bar', '--all'   => true]
+            ['command' => $deleteCommand->getName(), 'path'    => 'n98_magerun/foo/bar', '--all'   => true],
         );
 
         foreach (Mage::app()->getStores() as $store) {

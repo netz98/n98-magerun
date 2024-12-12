@@ -31,7 +31,7 @@ printf("Timestamp: %d (%s, date of commit)\n", $timestamp, date(DATE_RFC3339, $t
 $threshold = 1343826993; # 2012-08-01T15:14:33Z
 if ($timestamp < $threshold) {
     throw new RuntimeException(
-        sprintf('Timestamp older than %d (%s).', $threshold, date(DATE_RFC3339, $threshold))
+        sprintf('Timestamp older than %d (%s).', $threshold, date(DATE_RFC3339, $threshold)),
     );
 }
 
@@ -43,7 +43,7 @@ if ($tmp !== $pharFilepath && file_exists($tmp)) {
 
 if (!rename($pharFilepath, $tmp)) {
     throw new RuntimeException(
-        sprintf('Failed to move phar %s to %s', var_export($pharFilepath, true), var_export($tmp, true))
+        sprintf('Failed to move phar %s to %s', var_export($pharFilepath, true), var_export($tmp, true)),
     );
 }
 

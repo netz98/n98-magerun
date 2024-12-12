@@ -58,14 +58,14 @@ HELP;
             $pdoConnectionString = sprintf(
                 'mysql:unix_socket=%s;dbname=%s',
                 $this->dbSettings['unix_socket'],
-                $this->dbSettings['dbname']
+                $this->dbSettings['dbname'],
             );
         } else {
             $pdoConnectionString = sprintf(
                 'mysql:host=%s;port=%s;dbname=%s',
                 $this->dbSettings['host'],
                 $portOrDefault,
-                $this->dbSettings['dbname']
+                $this->dbSettings['dbname'],
             );
         }
 
@@ -82,7 +82,7 @@ HELP;
                 $portOrDefault,
                 $this->dbSettings['dbname'],
                 $this->dbSettings['username'],
-                $this->dbSettings['password']
+                $this->dbSettings['password'],
             );
         }
 

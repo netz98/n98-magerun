@@ -45,7 +45,7 @@ class Config
 
     private OutputInterface $output;
 
-    public function __construct(array $initConfig = [], bool $isPharMode = false, OutputInterface $output = null)
+    public function __construct(array $initConfig = [], bool $isPharMode = false, ?OutputInterface $output = null)
     {
         $this->initConfig = $initConfig;
         $this->isPharMode = (bool) $isPharMode;
@@ -71,7 +71,7 @@ class Config
 
             $aliasCommandParams = array_slice(
                 BinaryString::trimExplodeEmpty(' ', $alias[$aliasCommandName]),
-                1
+                1,
             );
             if ([] === $aliasCommandParams) {
                 continue;
@@ -82,7 +82,7 @@ class Config
             $newArgv = array_merge(
                 array_slice($oldArgv, 0, 2),
                 $aliasCommandParams,
-                array_slice($oldArgv, 2)
+                array_slice($oldArgv, 2),
             );
             $input = new ArgvInput($newArgv);
         }
@@ -123,20 +123,20 @@ class Config
                 $this->output->writeln(
                     sprintf(
                         '<error>Can not add nonexistent command class "%s" as command to the application</error>',
-                        $commandClass
-                    )
+                        $commandClass,
+                    ),
                 );
                 $this->debugWriteln(
                     'Please check the configuration files contain the correct class-name. If the ' .
-                    'class-name is correct, check autoloader configurations.'
+                    'class-name is correct, check autoloader configurations.',
                 );
             } else {
                 $this->debugWriteln(
                     sprintf(
                         '<debug>Add command </debug> <info>%s</info> -> <comment>%s</comment>',
                         $command->getName(),
-                        get_class($command)
-                    )
+                        get_class($command),
+                    ),
                 );
                 $application->add($command);
             }
@@ -151,7 +151,7 @@ class Config
     {
         if (!is_string($className) && !is_object($className)) {
             throw new InvalidArgumentException(
-                sprintf('Command classname must be string, %s given', gettype($className))
+                sprintf('Command classname must be string, %s given', gettype($className)),
             );
         }
 
@@ -162,7 +162,7 @@ class Config
         if (false === is_subclass_of($className, self::COMMAND_CLASS, true)) {
             $className = is_object($className) ? get_class($className) : $className;
             throw new InvalidArgumentException(
-                sprintf('Class "%s" is not a Command (subclass of "%s")', $className, self::COMMAND_CLASS)
+                sprintf('Class "%s" is not a Command (subclass of "%s")', $className, self::COMMAND_CLASS),
             );
         }
 

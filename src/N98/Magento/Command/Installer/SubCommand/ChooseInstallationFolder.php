@@ -7,6 +7,7 @@ namespace N98\Magento\Command\Installer\SubCommand;
 use InvalidArgumentException;
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
 use Symfony\Component\Console\Question\Question;
+
 use function chdir;
 
 /**
@@ -54,16 +55,16 @@ class ChooseInstallationFolder extends AbstractSubCommand
             $question = new Question(
                 sprintf(
                     '<question>Enter installation folder:</question> [<comment>%s</comment>]',
-                    $defaultFolder
+                    $defaultFolder,
                 ),
-                $defaultFolder
+                $defaultFolder,
             );
             $question->setValidator($validateInstallationFolder);
 
             $installationFolder = $this->getCommand()->getQuestionHelper()->ask(
                 $this->input,
                 $this->output,
-                $question
+                $question,
             );
         } else {
             // @Todo improve validation and bring it to 1 single function

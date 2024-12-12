@@ -33,7 +33,7 @@ class InstallSampleData extends AbstractSubCommand
             : $questionHelper->ask(
                 $this->input,
                 $this->output,
-                new ConfirmationQuestion('<question>Install sample data?</question> <comment>[yes]</comment>: ', true)
+                new ConfirmationQuestion('<question>Install sample data?</question> <comment>[yes]</comment>: ', true),
             );
 
         if (!$installSampleData) {
@@ -46,7 +46,7 @@ class InstallSampleData extends AbstractSubCommand
         $flag = $this->getOptionalBooleanOption(
             'installSampleData',
             'Install sample data?',
-            'no'
+            'no',
         );
 
         if (!$flag) {
@@ -102,14 +102,14 @@ class InstallSampleData extends AbstractSubCommand
         if (is_dir($expandedFolder)) {
             $filesystem->recursiveCopy(
                 $expandedFolder,
-                $this->config['installationFolder']
+                $this->config['installationFolder'],
             );
             $filesystem->recursiveRemoveDirectory($expandedFolder);
         }
 
         // Install sample data
         $sampleDataSqlFile = glob(
-            $this->config['installationFolder'] . '/magento_*sample_data*sql'
+            $this->config['installationFolder'] . '/magento_*sample_data*sql',
         );
 
         $databaseHelper = $this->command->getDatabaseHelper();
@@ -173,7 +173,7 @@ class InstallSampleData extends AbstractSubCommand
     {
         $process = new Process(
             ['tar', '-xzf', $sampleDataFile],
-            $this->config['installationFolder'] . '/_temp_demo_data'
+            $this->config['installationFolder'] . '/_temp_demo_data',
         );
         $process->setTimeout(3600);
         $process->run();
@@ -186,7 +186,7 @@ class InstallSampleData extends AbstractSubCommand
     {
         $process = new Process(
             ['unzip', $sampleDataFile],
-            $this->config['installationFolder'] . '/_temp_demo_data'
+            $this->config['installationFolder'] . '/_temp_demo_data',
         );
         $process->setTimeout(3600);
         $process->run();

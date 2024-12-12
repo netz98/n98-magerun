@@ -91,13 +91,13 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
                 self::COMMAND_OPTION_ON,
                 null,
                 InputOption::VALUE_NONE,
-                'Switch on'
+                'Switch on',
             )
             ->addOption(
                 self::COMMAND_OPTION_OFF,
                 null,
                 InputOption::VALUE_NONE,
-                'Switch off'
+                'Switch off',
             )
         ;
 
@@ -106,7 +106,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
                 self::COMMAND_OPTION_GLOBAL,
                 null,
                 InputOption::VALUE_NONE,
-                'Set value on default scope'
+                'Set value on default scope',
             );
         }
 
@@ -114,12 +114,12 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             $this->addArgument(
                 self::COMMAND_ARGUMENT_STORE,
                 InputArgument::OPTIONAL,
-                'Store code or ID'
+                'Store code or ID',
             );
         }
     }
 
-    protected function initialize(InputInterface $input,OutputInterface $output): void
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         // for backwards compatibility before v3.0
         // @phpstan-ignore function.alreadyNarrowedType
@@ -175,7 +175,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             $this->configPath,
             $isFalse ? '1' : '0',
             $store->getId() == Mage_Core_Model_App::ADMIN_STORE_ID ? 'default' : 'stores',
-            $store->getId()
+            $store->getId(),
         );
 
         $comment =
@@ -224,8 +224,8 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
         $output->writeln(
             sprintf(
                 '<comment><info>Please note:</info> developer IP restriction is enabled for <info>%s</info>.',
-                $devRestriction
-            )
+                $devRestriction,
+            ),
         );
 
         $questionHelper = $this->getQuestionHelper();
@@ -240,7 +240,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
         $this->setDeveloperIp($mageCoreModelStore, $newDeveloperIp);
         $output->writeln(sprintf(
             '<comment><info>New developer IP restriction set to %s</info></comment>',
-            $newDeveloperIp
+            $newDeveloperIp,
         ));
     }
 
@@ -264,11 +264,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
         return $parameterHelper->askStore($input, $output, self::COMMAND_ARGUMENT_STORE, $this->withAdminStore);
     }
 
-    protected function _beforeSave(Mage_Core_Model_Store $mageCoreModelStore, bool $disabled): void
-    {
-    }
+    protected function _beforeSave(Mage_Core_Model_Store $mageCoreModelStore, bool $disabled): void {}
 
-    protected function _afterSave(Mage_Core_Model_Store $mageCoreModelStore, bool $disabled): void
-    {
-    }
+    protected function _afterSave(Mage_Core_Model_Store $mageCoreModelStore, bool $disabled): void {}
 }

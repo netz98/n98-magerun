@@ -67,7 +67,7 @@ class TestApplication
         # directory test
         if (!is_dir($root)) {
             throw new RuntimeException(
-                sprintf("%s path '%s' is not a directory (cwd: '%s', stopfile: '%s')", $varname, $root, getcwd(), $stopfile ?? '')
+                sprintf("%s path '%s' is not a directory (cwd: '%s', stopfile: '%s')", $varname, $root, getcwd(), $stopfile ?? ''),
             );
         }
 
@@ -75,7 +75,7 @@ class TestApplication
         $rootRealpath = realpath($root);
         if (false === $rootRealpath) {
             throw new RuntimeException(
-                sprintf("Failed to resolve %s path '%s' with realpath()", $varname, $root)
+                sprintf("Failed to resolve %s path '%s' with realpath()", $varname, $root),
             );
         }
 
@@ -132,7 +132,7 @@ class TestApplication
 
         if (null === $root) {
             throw new SkippedTestError(
-                "Please specify environment variable $varname with path to your test magento installation!"
+                "Please specify environment variable $varname with path to your test magento installation!",
             );
         }
 

@@ -63,7 +63,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     {
         if (!in_array($scope, $this->_scopes)) {
             throw new InvalidArgumentException(
-                sprintf('Invalid scope parameter, must be one of: %s.', implode(', ', $this->_scopes))
+                sprintf('Invalid scope parameter, must be one of: %s.', implode(', ', $this->_scopes)),
             );
         }
 
@@ -79,7 +79,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
         if ($scope === 'default') {
             if ($scopeId !== '0') {
                 throw new InvalidArgumentException(
-                    sprintf("Invalid scope ID %d in scope '%s', must be 0", $scopeId, $scope)
+                    sprintf("Invalid scope ID %d in scope '%s', must be 0", $scopeId, $scope),
                 );
             }
 
@@ -90,7 +90,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
             $website = Mage::app()->getWebsite($scopeId);
             if (!$website) {
                 throw new InvalidArgumentException(
-                    sprintf("Invalid scope parameter, website '%s' does not exist.", $scopeId)
+                    sprintf("Invalid scope parameter, website '%s' does not exist.", $scopeId),
                 );
             }
 
@@ -101,7 +101,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
             $store = Mage::app()->getStore($scopeId);
             if (!$store) {
                 throw new InvalidArgumentException(
-                    sprintf("Invalid scope parameter. store '%s' does not exist.", $scopeId)
+                    sprintf("Invalid scope parameter. store '%s' does not exist.", $scopeId),
                 );
             }
 
@@ -111,13 +111,13 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
         $this->invalidScopeId(
             (string) $scopeId !== (string) (int) $scopeId,
             'Invalid scope parameter, %s is not an integer value',
-            $scopeId
+            $scopeId,
         );
 
         $this->invalidScopeId(
             0 - (bool) $allowZeroScope >= (int) $scopeId,
             'Invalid scope parameter, %s is not a positive integer value',
-            $scopeId
+            $scopeId,
         );
 
         return $scopeId;
@@ -133,7 +133,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
         }
 
         throw new InvalidArgumentException(
-            sprintf($mask, var_export($scopeId, true))
+            sprintf($mask, var_export($scopeId, true)),
         );
     }
 

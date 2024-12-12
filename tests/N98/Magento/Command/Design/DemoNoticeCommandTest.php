@@ -16,13 +16,13 @@ class DemoNoticeCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'  => $command->getName(), 'store'    => 'admin', '--on'     => true]
+            ['command'  => $command->getName(), 'store'    => 'admin', '--on'     => true],
         );
         self::assertMatchesRegularExpression('/Demo Notice enabled/', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'  => $command->getName(), 'store'    => 'admin', '--off'    => true]
+            ['command'  => $command->getName(), 'store'    => 'admin', '--off'    => true],
         );
 
         self::assertMatchesRegularExpression('/Demo Notice disabled/', $commandTester->getDisplay());

@@ -15,6 +15,4 @@ use RuntimeException;
  *
  * @author Tom Klingenberg (https://github.com/ktomk)
  */
-class ClassExistsThrownException extends RuntimeException
-{
-}
+class ClassExistsThrownException extends RuntimeException {}

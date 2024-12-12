@@ -86,8 +86,7 @@ class AbstractCommand extends AbstractMagentoCommand
     {
         $xml = null;
         $validDecFile = false;
-        foreach ($this->getDeclaredModuleFiles() as $declaredModuleFile)
-        {
+        foreach ($this->getDeclaredModuleFiles() as $declaredModuleFile) {
             $content = file_get_contents($declaredModuleFile);
             if ($content) {
                 $xml = new Varien_Simplexml_Element($content);
@@ -112,7 +111,7 @@ class AbstractCommand extends AbstractMagentoCommand
                     $msg = sprintf(
                         '<error><comment>%s: </comment>Failed to update declaration file [%s]</error>',
                         $module,
-                        $validDecFile
+                        $validDecFile,
                     );
                 }
             } else {
@@ -154,7 +153,7 @@ class AbstractCommand extends AbstractMagentoCommand
         return array_reverse(array_merge(
             $collectModuleFiles['base'],
             $collectModuleFiles['mage'],
-            $collectModuleFiles['custom']
+            $collectModuleFiles['custom'],
         ));
     }
 }

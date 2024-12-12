@@ -26,7 +26,7 @@ class ListExtensionsCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName(), 'search'  => 'Mage_All_Latest']
+            ['command' => $command->getName(), 'search'  => 'Mage_All_Latest'],
         );
 
         self::assertContains('Package', $commandTester->getDisplay());

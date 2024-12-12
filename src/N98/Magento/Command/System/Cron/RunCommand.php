@@ -117,8 +117,8 @@ HELP;
                 sprintf(
                     'Invalid model/method definition "%s" for job "%s", expecting "model/class::method".',
                     $runConfigModel,
-                    $jobCode
-                )
+                    $jobCode,
+                ),
             );
         }
 
@@ -182,7 +182,7 @@ HELP;
             throw new RuntimeException(
                 sprintf('Cron-job "%s" threw exception %s', $jobCode, get_class($exception)),
                 0,
-                $exception
+                $exception,
             );
         }
 
@@ -220,7 +220,7 @@ HELP;
             throw new RuntimeException(
                 sprintf('Cron-job "%s" threw exception %s', $jobCode, get_class($exception)),
                 0,
-                $exception
+                $exception,
             );
         }
     }

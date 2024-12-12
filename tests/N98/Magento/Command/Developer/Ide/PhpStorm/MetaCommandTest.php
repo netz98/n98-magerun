@@ -15,7 +15,7 @@ class MetaCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'  => $command->getName(), '--stdout' => true]
+            ['command'  => $command->getName(), '--stdout' => true],
         );
 
         $fileContent = $commandTester->getDisplay(true);
@@ -35,7 +35,7 @@ class MetaCommandTest extends TestCase
 
         self::assertStringNotContainsString(
             '\'payment/paygate_request\' => \Mage_Payment_Model_Paygate_Request',
-            $fileContent
+            $fileContent,
         );
     }
 }

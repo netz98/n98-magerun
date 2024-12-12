@@ -54,7 +54,7 @@ class MetaCommand extends AbstractMagentoCommand
                 null,
                 InputOption::VALUE_REQUIRED,
                 'PhpStorm Meta version (' . self::VERSION_OLD . ', ' . self::VERSION_2017 . ', ' . self::VERSION_2019 . ')',
-                self::VERSION_2019
+                self::VERSION_2019,
             )
             ->addOption('stdout', null, InputOption::VALUE_NONE, 'Print to stdout instead of file .phpstorm.meta.php')
             ->setDescription('Generates meta data file for PhpStorm auto completion (default version : ' . self::VERSION_2019 . ')');
@@ -78,7 +78,7 @@ class MetaCommand extends AbstractMagentoCommand
 
             if (!$input->getOption('stdout') && $classMaps[$group] !== []) {
                 $output->writeln(
-                    '<info>Generated definitions for <comment>' . $group . '</comment> group</info>'
+                    '<info>Generated definitions for <comment>' . $group . '</comment> group</info>',
                 );
             }
         }
@@ -100,7 +100,7 @@ class MetaCommand extends AbstractMagentoCommand
         $path = $file->getRelativePathname();
         if (substr($path, -4) !== '.php') {
             throw new UnexpectedValueException(
-                sprintf('Expected that relative file %s ends with ".php"', var_export($path, true))
+                sprintf('Expected that relative file %s ends with ".php"', var_export($path, true)),
             );
         }
 

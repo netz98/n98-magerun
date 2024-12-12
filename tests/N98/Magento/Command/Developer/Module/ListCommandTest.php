@@ -15,7 +15,7 @@ class ListCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName()]
+            ['command' => $command->getName()],
         );
 
         self::assertMatchesRegularExpression('/Mage_Core/', $commandTester->getDisplay());

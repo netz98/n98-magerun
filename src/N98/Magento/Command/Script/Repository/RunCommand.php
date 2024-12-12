@@ -79,7 +79,7 @@ HELP;
             $dialog = $this->getQuestionHelper();
             $choiceQuestion = new ChoiceQuestion(
                 '<question>Please select a script file:</question> ',
-                $choices
+                $choices,
             );
             $choiceQuestion->setValidator($validator);
 

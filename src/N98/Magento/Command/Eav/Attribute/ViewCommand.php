@@ -66,7 +66,7 @@ class ViewCommand extends AbstractMagentoCommand
             ['Cache-ID-Tags', $cacheIdTags ? implode(',', $cacheIdTags) : ''],
             ['Cache-Tags', $cacheTags ? implode(',', $cacheTags) : ''],
             ['Default-Value', $attribute->getDefaultValue() ?: ''],
-            ['Flat-Columns', $flatColumns ? implode(',', array_keys($flatColumns)) : '']
+            ['Flat-Columns', $flatColumns ? implode(',', array_keys($flatColumns)) : ''],
         ];
 
         $flatIndexes = $attribute->getFlatIndexes() ? $attribute->getFlatIndexes() : '';

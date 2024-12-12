@@ -54,7 +54,7 @@ class FromCommand extends AbstractCommand
             if ($recursive) {
                 $dependencies = array_merge(
                     $dependencies,
-                    $this->findModuleDependencies($dependencyName, $recursive)
+                    $this->findModuleDependencies($dependencyName, $recursive),
                 );
             }
         }

@@ -50,7 +50,7 @@ class MethodCommand extends AbstractMagentoCommand
             ->addArgument('modelName', InputOption::VALUE_REQUIRED, 'Model Name namespace/modelName')
             ->setDescription(
                 'Code annotations: Reads the columns from a table and writes the getter and setter methods into the ' .
-                'class file for @methods.'
+                'class file for @methods.',
             );
     }
 
@@ -123,13 +123,13 @@ class MethodCommand extends AbstractMagentoCommand
             $getterSetter[] = sprintf(
                 ' * @method %s get%s()',
                 $this->getColumnType($colProp['Type']),
-                $this->camelize($colName)
+                $this->camelize($colName),
             );
             $getterSetter[] = sprintf(
                 ' * @method %s set%s(%s $value)',
                 $modelClassName,
                 $this->camelize($colName),
-                $this->getColumnType($colProp['Type'])
+                $this->getColumnType($colProp['Type']),
             );
         }
 
@@ -217,7 +217,7 @@ class MethodCommand extends AbstractMagentoCommand
         $fileName = str_replace(
             ' ',
             DIRECTORY_SEPARATOR,
-            ucwords(str_replace('_', ' ', get_class($this->_mageModel)))
+            ucwords(str_replace('_', ' ', get_class($this->_mageModel))),
         ) . '.php';
         $this->_fileName = $this->searchFullPath($fileName);
 
@@ -239,7 +239,7 @@ class MethodCommand extends AbstractMagentoCommand
             ? $this->_mageModel->getResource()->getMainTable() : null;
         if (empty($this->_mageModelTable)) {
             throw new InvalidArgumentException(
-                'Cannot find main table of model ' . $modelName
+                'Cannot find main table of model ' . $modelName,
             );
         }
     }

@@ -79,5 +79,21 @@
             "php": "7.4.0"
         },
         "sort-packages": true
+    },
+    "scripts": {
+        "php-cs-fixer:test": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+        "php-cs-fixer:fix": "vendor/bin/php-cs-fixer fix",
+        "phpstan": "XDEBUG_MODE=off php vendor/bin/phpstan analyze",
+        "phpstan:baseline": "XDEBUG_MODE=off php vendor/bin/phpstan analyze -b .phpstan.dist.baseline.neon",
+        "rector:test": "vendor/bin/rector process --config .rector.php --dry-run",
+        "rector:fix": "vendor/bin/rector --config .rector.php process"
+    },
+    "scripts-descriptions": {
+        "php-cs-fixer:test": "Run php-cs-fixer",
+        "php-cs-fixer:fix": "Run php-cs-fixer and fix issues",
+        "phpstan": "Run phpstan",
+        "phpstan:baseline": "Run phpstan and update baseline",
+        "rector:test": "Run rector",
+        "rector:fix": "Run rector and fix issues"
     }
 }

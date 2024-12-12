@@ -97,7 +97,7 @@ HELP;
 
             default:
                 throw new LogicException(
-                    sprintf('Unhandled check-class "%s"', $checkGroupClass)
+                    sprintf('Unhandled check-class "%s"', $checkGroupClass),
                 );
         }
     }
@@ -120,7 +120,7 @@ HELP;
                     case Result::STATUS_OK:
                     default:
                         $output->write(
-                            '<info>' . Charset::convertInteger(Charset::UNICODE_CHECKMARK_CHAR) . '</info> '
+                            '<info>' . Charset::convertInteger(Charset::UNICODE_CHECKMARK_CHAR) . '</info> ',
                         );
                         break;
                 }
@@ -174,7 +174,7 @@ HELP;
         $result = $resultCollection->createResult();
         $result->setMessage(
             '<error>No ' . $context . ' configured to run store check:</error> <comment>' . basename($checkGroupClass) .
-            '</comment>'
+            '</comment>',
         );
         $result->setStatus($result::STATUS_WARNING);
         $resultCollection->addResult($result);

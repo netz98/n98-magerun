@@ -13,6 +13,4 @@ use Exception;
  *
  * @author Tom Klingenberg (https://github.com/ktomk)
  */
-class CanNotAutoloadCollaboratorClassException extends Exception
-{
-}
+class CanNotAutoloadCollaboratorClassException extends Exception {}

@@ -94,7 +94,7 @@ class OnCommand extends AbstractMagentoCommand
                         if ($recursive) {
                             $dependencies = array_merge(
                                 $dependencies,
-                                $this->findModuleDependencies($dependencyName, $recursive)
+                                $this->findModuleDependencies($dependencyName, $recursive),
                             );
                         }
                     } else {
