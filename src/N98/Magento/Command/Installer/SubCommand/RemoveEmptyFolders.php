@@ -15,10 +15,7 @@ use Symfony\Component\Finder\Finder;
  */
 class RemoveEmptyFolders extends AbstractSubCommand
 {
-    /**
-     * @return void
-     */
-    public function execute()
+    public function execute(): void
     {
         if (is_dir(getcwd() . '/vendor')) {
             $finder = new Finder();

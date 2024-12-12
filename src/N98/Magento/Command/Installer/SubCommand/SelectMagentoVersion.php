@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Installer\SubCommand;
 
+use InvalidArgumentException;
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
@@ -16,10 +17,8 @@ class SelectMagentoVersion extends AbstractSubCommand
 {
     /**
      * Check PHP environment against minimal required settings modules
-     *
-     * @return void
      */
-    public function execute()
+    public function execute(): void
     {
         if ($this->input->getOption('noDownload')) {
             return;
@@ -41,7 +40,7 @@ class SelectMagentoVersion extends AbstractSubCommand
                     range(0, count($this->commandConfig['magento-packages']) - 1),
                     true,
                 )) {
-                    throw new \InvalidArgumentException('Invalid type');
+                    throw new InvalidArgumentException('Invalid type');
                 }
 
                 return $typeInput;
@@ -67,7 +66,7 @@ class SelectMagentoVersion extends AbstractSubCommand
             }
 
             if ($type == null) {
-                throw new \InvalidArgumentException('Unable to locate Magento version');
+                throw new InvalidArgumentException('Unable to locate Magento version');
             }
         }
 

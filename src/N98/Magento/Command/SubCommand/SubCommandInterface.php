@@ -15,38 +15,17 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 interface SubCommandInterface
 {
-    /**
-     * @return void
-     */
-    public function setConfig(ConfigBag $configBag);
+    public function setConfig(ConfigBag $configBag): void;
 
-    /**
-     * @return void
-     */
-    public function setCommandConfig(array $commandConfig);
+    public function setCommandConfig(array $commandConfig): void;
 
-    /**
-     * @return void
-     */
-    public function setInput(InputInterface $input);
+    public function setInput(InputInterface $input): void;
 
-    /**
-     * @return void
-     */
-    public function setOutput(OutputInterface $output);
+    public function setOutput(OutputInterface $output): void;
 
-    /**
-     * @return AbstractMagentoCommand
-     */
-    public function getCommand();
+    public function getCommand(): AbstractMagentoCommand;
 
-    /**
-     * @return void
-     */
-    public function setCommand(AbstractMagentoCommand $magentoCommand);
+    public function setCommand(AbstractMagentoCommand $magentoCommand): void;
 
-    /**
-     * @return void
-     */
-    public function execute();
+    public function execute(): void;
 }

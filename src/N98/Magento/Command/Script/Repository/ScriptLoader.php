@@ -26,7 +26,7 @@ class ScriptLoader
 
     protected array $_scriptFolders = [];
 
-    public function __construct(array $scriptFolders, ?string $magentoRootFolder = null)
+    public function __construct(array $scriptFolders, string $magentoRootFolder = '')
     {
         $this->homeDir = OperatingSystem::getHomeDir();
 

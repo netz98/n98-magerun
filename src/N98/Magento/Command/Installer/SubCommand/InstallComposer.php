@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Installer\SubCommand;
 
+use Exception;
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
 use N98\Util\Exec;
 use N98\Util\OperatingSystem;
+use RuntimeException;
 use WpOrg\Requests\Requests;
 
 /**
@@ -16,17 +18,12 @@ use WpOrg\Requests\Requests;
  */
 class InstallComposer extends AbstractSubCommand
 {
-    /**
-     * @var int
-     */
     public const EXEC_STATUS_OK = 0;
 
     /**
-     * @return void
-     *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function execute()
+    public function execute(): void
     {
         if (OperatingSystem::isProgramInstalled('composer.phar')) {
             $composerBin = 'composer.phar';
@@ -39,7 +36,7 @@ class InstallComposer extends AbstractSubCommand
         }
 
         if (empty($composerBin)) {
-            throw new \Exception('Cannot find or install composer. Please try it manually. https://getcomposer.org/');
+            throw new Exception('Cannot find or install composer. Please try it manually. https://getcomposer.org/');
         }
 
         $this->output->writeln('<info>Found executable <comment>' . $composerBin . '</comment></info>');
@@ -57,17 +54,15 @@ class InstallComposer extends AbstractSubCommand
     }
 
     /**
-     * @return string
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function downloadComposer()
+    protected function downloadComposer(): string
     {
         $this->output->writeln('<info>Could not find composer. Try to download it.</info>');
 
         $response = Requests::get('https://getcomposer.org/installer');
-
         if (!$response->success) {
-            throw new \RuntimeException('Cannot download Composer installer: ' . $response->status_code);
+            throw new RuntimeException('Cannot download Composer installer: ' . $response->status_code);
         }
 
         $composerInstaller = $response->body;
@@ -88,7 +83,7 @@ class InstallComposer extends AbstractSubCommand
         unlink($tempComposerInstaller);
         $installationOutput = implode(PHP_EOL, $installationOutput);
         if ($returnStatus !== self::EXEC_STATUS_OK) {
-            throw new \Exception('Installation failed.' . $installationOutput);
+            throw new Exception('Installation failed.' . $installationOutput);
         }
 
         $this->output->writeln('<info>Successfully installed composer to Magento root</info>');
@@ -99,15 +94,13 @@ class InstallComposer extends AbstractSubCommand
     /**
      * Composer 1 or Composer 2
      *
-     * @param $output
-     * @param $matches
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getMajorComposerVersion(): int
     {
         Exec::run(implode(' ', array_merge($this->config['composer_bin'], [' --version'])), $output);
         if (in_array(preg_match('#(\d+)\.(\d+)\.(\d+)#', $output, $matches), [0, false], true)) {
-            throw new \Exception('Could not detect a valid Composer version');
+            throw new Exception('Could not detect a valid Composer version');
         }
 
         return (int) $matches[1];

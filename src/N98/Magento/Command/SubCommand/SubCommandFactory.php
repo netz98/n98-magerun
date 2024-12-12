@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\SubCommand;
 
+use InvalidArgumentException;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,42 +16,21 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SubCommandFactory
 {
-    /**
-     * @var string
-     */
-    protected $baseNamespace;
+    protected string $baseNamespace;
 
-    /**
-     * @var InputInterface
-     */
-    protected $input;
+    protected InputInterface $input;
 
-    /**
-     * @var OutputInterface
-     */
-    protected $output;
+    protected OutputInterface $output;
 
-    /**
-     * @var ConfigBag
-     */
-    protected $config;
+    protected ConfigBag $config;
 
-    /**
-     * @var array
-     */
-    protected $commandConfig;
+    protected array $commandConfig;
 
-    /**
-     * @var AbstractMagentoCommand
-     */
-    protected $command;
+    protected AbstractMagentoCommand $command;
 
-    /**
-     * @param string $baseNamespace
-     */
     public function __construct(
         AbstractMagentoCommand $magentoCommand,
-        $baseNamespace,
+        string $baseNamespace,
         InputInterface $input,
         OutputInterface $output,
         array $commandConfig,
@@ -64,12 +44,7 @@ class SubCommandFactory
         $this->config = $configBag;
     }
 
-    /**
-     * @param string $className
-     * @param bool $userBaseNamespace
-     * @return SubCommandInterface
-     */
-    public function create($className, $userBaseNamespace = true)
+    public function create(string $className, bool $userBaseNamespace = true): SubCommandInterface
     {
         if ($userBaseNamespace) {
             $className = rtrim($this->baseNamespace, '\\') . '\\' . $className;
@@ -77,7 +52,7 @@ class SubCommandFactory
 
         $subCommand = new $className();
         if (!$subCommand instanceof SubCommandInterface) {
-            throw new \InvalidArgumentException('Subcommand must implement SubCommandInterface.');
+            throw new InvalidArgumentException('Subcommand must implement SubCommandInterface.');
         }
 
         // Inject objects
@@ -90,10 +65,7 @@ class SubCommandFactory
         return $subCommand;
     }
 
-    /**
-     * @return ConfigBag
-     */
-    public function getConfig()
+    public function getConfig(): ConfigBag
     {
         return $this->config;
     }

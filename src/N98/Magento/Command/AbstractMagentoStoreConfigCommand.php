@@ -26,8 +26,8 @@ use Symfony\Component\Console\Question\Question;
  */
 abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 {
-    public string $commandName;
-    public string $commandDescription;
+    public string $commandName = '';
+    public string $commandDescription = '';
 
     public const COMMAND_ARGUMENT_STORE = 'store';
 
@@ -76,13 +76,13 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
     {
         // for backwards compatibility before v3.0
         // @phpstan-ignore function.alreadyNarrowedType
-        if (property_exists($this, 'commandName')) {
+        if (property_exists($this, 'commandName') && $this->commandName) {
             $this->setName($this->commandName);
         }
 
         // for backwards compatibility before v3.0
         // @phpstan-ignore function.alreadyNarrowedType
-        if (property_exists($this, 'commandDescription')) {
+        if (property_exists($this, 'commandDescription') && $this->commandDescription) {
             $this->setDescription($this->commandDescription);
         }
 

@@ -20,7 +20,7 @@ use Symfony\Component\Finder\Finder;
  */
 class MagentoHelper extends AbstractHelper
 {
-    protected string $_magentoRootFolder;
+    protected string $_magentoRootFolder = '';
 
     protected int $_magentoMajorVersion = 1;
 
@@ -28,7 +28,7 @@ class MagentoHelper extends AbstractHelper
 
     protected bool $_magerunStopFileFound = false;
 
-    protected string $_magerunStopFileFolder;
+    protected string $_magerunStopFileFolder = '';
 
     /**
      * @var InputInterface|ArgvInput
@@ -121,7 +121,7 @@ class MagentoHelper extends AbstractHelper
         return $this->_magerunStopFileFound;
     }
 
-    public function getMagerunStopFileFolder(): string
+    public function getMagerunStopFileFolder(): ?string
     {
         return $this->_magerunStopFileFolder;
     }

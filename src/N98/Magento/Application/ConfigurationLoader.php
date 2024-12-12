@@ -32,32 +32,32 @@ class ConfigurationLoader
      */
     protected array $_initialConfig;
 
-    protected ?array $_configArray;
+    protected ?array $_configArray = null;
 
     /**
      * Cache
      */
-    protected ?array $_distConfig;
+    protected ?array $_distConfig = null;
 
     /**
      * Cache
      */
-    protected ?array $_pluginConfig;
+    protected ?array $_pluginConfig = null;
 
     /**
      * Cache
      */
-    protected ?array $_systemConfig;
+    protected ?array $_systemConfig = null;
 
     /**
      * Cache
      */
-    protected ?array $_userConfig;
+    protected ?array $_userConfig = null;
 
     /**
      * Cache
      */
-    protected ?array $_projectConfig;
+    protected ?array $_projectConfig = null;
 
     protected string $_customConfigFilename = 'n98-magerun.yaml';
 
@@ -209,7 +209,7 @@ class ConfigurationLoader
     /**
      * Check if there is a user config file. ~/.n98-magerun.yaml
      */
-    public function loadUserConfig(array $config, ?string $magentoRootFolder = null): array
+    public function loadUserConfig(array $config, string $magentoRootFolder = ''): array
     {
         if (is_null($this->_userConfig)) {
             $this->_userConfig = [];

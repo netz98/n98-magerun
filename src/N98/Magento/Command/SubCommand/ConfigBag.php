@@ -4,162 +4,95 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\SubCommand;
 
+use ArrayObject;
+
 /**
  * Class ConfigBag
  *
  * @package N98\Magento\Command\SubCommand
  */
-class ConfigBag extends \ArrayObject
+class ConfigBag extends ArrayObject
 {
     /**
-     * @param string $key
-     * @param bool $value
-     *
      * @return $this
      */
-    public function setBool($key, $value)
-    {
-        if ($value !== null && !is_bool($value)) {
-            throw new \InvalidArgumentException('Type must be of type bool');
-        }
-
-        $this->offsetSet($key, (bool) $value);
-
-        return $this;
-    }
-
-    /**
-     * @param string $key
-     * @param int $value
-     *
-     * @return $this
-     */
-    public function setInt($key, $value)
-    {
-        if ($value !== null && !is_int($value)) {
-            throw new \InvalidArgumentException('Type must be of type int');
-        }
-
-        $this->offsetSet($key, (int) $value);
-
-        return $this;
-    }
-
-    /**
-     * @param string $key
-     * @param string $value
-     *
-     * @return $this
-     */
-    public function setString($key, $value)
-    {
-        if ($value !== null && !is_string($value)) {
-            throw new \InvalidArgumentException('Type must be of type string');
-        }
-
-        $this->offsetSet($key, (string) $value);
-
-        return $this;
-    }
-
-    /**
-     * @param string $key
-     * @param float $value
-     *
-     * @return $this
-     */
-    public function setFloat($key, $value)
-    {
-        if ($value !== null && !is_float($value)) {
-            throw new \InvalidArgumentException('Type must be of type float');
-        }
-
-        $this->offsetSet($key, (float) $value);
-
-        return $this;
-    }
-
-    /**
-     * @param string $key
-     *
-     * @return $this
-     */
-    public function setArray($key, array $value)
+    public function setBool(string $key, bool $value)
     {
         $this->offsetSet($key, $value);
-
         return $this;
     }
 
     /**
-     * @param string $key
-     * @param object $value
-     *
      * @return $this
-     *
-     * @throws \InvalidArgumentException
      */
-    public function setObject($key, $value)
+    public function setInt(string $key, int $value)
     {
-        if ($value !== null && !is_object($value)) {
-            throw new \InvalidArgumentException('Type must be of type object');
-        }
-
         $this->offsetSet($key, $value);
-
         return $this;
     }
 
     /**
-     * @param string $key
-     * @return bool
+     * @return $this
      */
-    public function getBool($key)
+    public function setString(string $key, string $value)
+    {
+        $this->offsetSet($key, $value);
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setFloat(string $key, float $value)
+    {
+        $this->offsetSet($key, $value);
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setArray(string $key, array $value)
+    {
+        $this->offsetSet($key, $value);
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setObject(string $key, object $value)
+    {
+        $this->offsetSet($key, $value);
+        return $this;
+    }
+
+    public function getBool(string $key): bool
     {
         return (bool) $this->offsetGet($key);
     }
 
-    /**
-     * @param string $key
-     * @return int
-     */
-    public function getInt($key)
+    public function getInt(string $key): int
     {
         return (int) $this->offsetGet($key);
     }
 
-    /**
-     * @param string $key
-     * @return string
-     */
-    public function getString($key)
+    public function getString(string $key): string
     {
         return (string) $this->offsetGet($key);
     }
 
-    /**
-     * @param string $key
-     * @return float
-     */
-    public function getFloat($key)
+    public function getFloat(string $key): float
     {
         return (float) $this->offsetGet($key);
     }
 
-    /**
-     * @param string $key
-     * @return array
-     */
-    public function getArray($key)
+    public function getArray(string $key): array
     {
         return (array) $this->offsetGet($key);
     }
 
-    /**
-     * @param string $key
-     * @return object
-     */
-    public function getObject($key)
+    public function getObject(string $key): object
     {
         return $this->offsetGet($key);
     }

@@ -311,7 +311,7 @@ class InstallMagento extends AbstractSubCommand
             } elseif (is_bool($argValue)) {
                 $installArgs .= '--' . $argName . ' ' . (int) $argValue . ' ';
             } else {
-                $installArgs .= '--' . $argName . ' ' . escapeshellarg($argValue) . ' ';
+                $installArgs .= '--' . $argName . ' ' . escapeshellarg((string) $argValue) . ' ';
             }
         }
 

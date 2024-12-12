@@ -9,6 +9,7 @@ use N98\Magento\Command\SubCommand\AbstractSubCommand;
 use Symfony\Component\Console\Question\Question;
 
 use function chdir;
+use function getcwd;
 
 /**
  * Class ChooseInstallationFolder
@@ -17,16 +18,13 @@ use function chdir;
  */
 class ChooseInstallationFolder extends AbstractSubCommand
 {
-    /**
-     * @return bool
-     */
-    public function execute()
+    public function execute(): void
     {
         $input = $this->input;
         $validateInstallationFolder = function ($folderName) {
             $folderName = rtrim(trim($folderName, ' '), '/');
             if ($folderName[0] === '.') {
-                $cwd = \getcwd();
+                $cwd = getcwd();
                 if (($cwd === '' || $cwd === '0' || $cwd === false) && isset($_SERVER['PWD'])) {
                     $cwd = $_SERVER['PWD'];
                 }
@@ -74,7 +72,5 @@ class ChooseInstallationFolder extends AbstractSubCommand
         $this->config->setString('initialFolder', (string) getcwd());
         $this->config->setString('installationFolder', (string) realpath($installationFolder));
         chdir($this->config->getString('installationFolder'));
-
-        return true;
     }
 }

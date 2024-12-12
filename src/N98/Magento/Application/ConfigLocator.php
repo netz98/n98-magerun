@@ -21,7 +21,7 @@ class ConfigLocator
 {
     private string $customConfigFilename;
 
-    private string $magentoRootFolder;
+    private ?string $magentoRootFolder;
 
     public function __construct(string $configFilename, string $magentoRootFolder)
     {

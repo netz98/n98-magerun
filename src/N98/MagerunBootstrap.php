@@ -18,10 +18,9 @@ use N98\Magento\Application;
 class MagerunBootstrap
 {
     /**
-     * @return Magento\Application
      * @throws ErrorException
      */
-    public static function createApplication(?ClassLoader $classLoader = null)
+    public static function createApplication(?ClassLoader $classLoader = null): Application
     {
         if (!$classLoader instanceof ClassLoader) {
             $classLoader = self::getLoader();
@@ -33,7 +32,7 @@ class MagerunBootstrap
     /**
      * @throws ErrorException
      */
-    public static function getLoader(): string
+    public static function getLoader(): ClassLoader
     {
         $projectBasedir = __DIR__ . '/../..';
         if (!($loader = self::includeIfExists($projectBasedir . '/vendor/autoload.php'))
@@ -49,7 +48,7 @@ class MagerunBootstrap
         return $loader;
     }
 
-    public static function includeIfExists(string $file): ?string
+    public static function includeIfExists(string $file): ?ClassLoader
     {
         if (file_exists($file)) {
             return include $file;

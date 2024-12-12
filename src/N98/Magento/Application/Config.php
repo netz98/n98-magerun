@@ -37,7 +37,7 @@ class Config
 
     private array $partialConfig = [];
 
-    private ?ConfigurationLoader $configurationLoader;
+    private ?ConfigurationLoader $configurationLoader = null;
 
     private array $initConfig;
 

@@ -72,14 +72,14 @@ class Application extends BaseApplication
      */
     protected $autoloader;
 
-    protected ?Config $config;
+    protected ?Config $config = null;
 
     /**
      * @see Application::setConfigurationLoader
      */
-    private ?ConfigurationLoader $configurationLoader;
+    private ?ConfigurationLoader $configurationLoader = null;
 
-    protected ?string $_magentoRootFolder;
+    protected string $_magentoRootFolder = '';
 
     protected bool $_magentoEnterprise = false;
 
@@ -89,7 +89,7 @@ class Application extends BaseApplication
 
     protected bool $_magerunStopFileFound = false;
 
-    protected string $_magerunStopFileFolder;
+    protected string $_magerunStopFileFolder = '';
 
     protected bool $_magerunUseDeveloperMode;
 
@@ -327,9 +327,7 @@ class Application extends BaseApplication
 
         $this->detectMagento(null, $output);
         /* If magento is not installed yet, don't check */
-        if ($this->_magentoRootFolder === null
-            || !file_exists($this->_magentoRootFolder . '/app/etc/local.xml')
-        ) {
+        if (!file_exists($this->_magentoRootFolder . '/app/etc/local.xml')) {
             return null;
         }
 
@@ -571,10 +569,10 @@ class Application extends BaseApplication
 
     public function reinit(array $initConfig = [], ?InputInterface $input = null, ?OutputInterface $output = null): void
     {
-        $this->_isInitialized = false;
-        $this->_magentoDetected = false;
-        $this->_magentoRootFolder = null;
-        $this->config = null;
+        $this->_isInitialized       = false;
+        $this->_magentoDetected     = false;
+        $this->_magentoRootFolder   = '';
+        $this->config               = null;
         $this->init($initConfig, $input, $output);
     }
 

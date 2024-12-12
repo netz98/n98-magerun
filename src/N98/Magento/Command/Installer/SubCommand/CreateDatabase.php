@@ -21,15 +21,14 @@ use Symfony\Component\Console\Question\Question;
  */
 class CreateDatabase extends AbstractSubCommand
 {
-    private ?array $argv;
+    private ?array $argv = null;
 
     protected Closure $notEmptyCallback;
 
     /**
-     * @return void
      * @throws Exception
      */
-    public function execute()
+    public function execute(): void
     {
         $this->notEmptyCallback = function ($input) {
             if (empty($input)) {

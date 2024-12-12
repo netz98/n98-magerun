@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Installer\SubCommand;
 
+use Exception;
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
 use Symfony\Component\Finder\Finder;
 
@@ -14,10 +15,7 @@ use Symfony\Component\Finder\Finder;
  */
 class SetDirectoryPermissions extends AbstractSubCommand
 {
-    /**
-     * @return void
-     */
-    public function execute()
+    public function execute(): void
     {
         try {
             $installationFolder = $this->config->getString('installationFolder');
@@ -50,7 +48,7 @@ class SetDirectoryPermissions extends AbstractSubCommand
             foreach ($finder as $dir) {
                 @chmod($dir->getRealpath(), 0777);
             }
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->output->writeln('<error>' . $exception->getMessage() . '</error>');
         }
     }

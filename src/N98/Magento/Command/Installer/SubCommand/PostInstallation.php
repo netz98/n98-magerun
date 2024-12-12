@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Installer\SubCommand;
 
+use Exception;
 use N98\Magento\Command\SubCommand\AbstractSubCommand;
 use Symfony\Component\Console\Input\ArrayInput;
+
+use function chdir;
 
 /**
  * Class PostInstallation
@@ -15,14 +18,13 @@ use Symfony\Component\Console\Input\ArrayInput;
 class PostInstallation extends AbstractSubCommand
 {
     /**
-     * @return void
-     * @throws \Exception
+     * @throws Exception
      */
-    public function execute()
+    public function execute(): void
     {
         $this->getCommand()->getApplication()->setAutoExit(false);
 
-        \chdir($this->config->getString('installationFolder'));
+        chdir($this->config->getString('installationFolder'));
         $this->getCommand()->getApplication()->reinit();
 
         $this->output->writeln('<info>Reindex all after installation</info>');
