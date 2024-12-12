@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * this file is part of magerun
  *
@@ -16,26 +19,20 @@ use Symfony\Component\Console\Output\StreamOutput;
  * @covers  N98\Util\Console\Helper\Table\Renderer\TextRenderer
  * @package N98\Util\Console\Helper\Table\Renderer
  */
-class TextRendererTest extends TestCase
+final class TextRendererTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function creation()
+    public function testCreation()
     {
         $renderer = new TextRenderer();
-        self::assertInstanceOf(__NAMESPACE__ . '\\TextRenderer', $renderer);
+        $this->assertInstanceOf(__NAMESPACE__ . '\\TextRenderer', $renderer);
 
         $rendererFactory = new RendererFactory();
 
         $renderer = $rendererFactory->create('text');
-        self::assertInstanceOf(__NAMESPACE__ . '\\TextRenderer', $renderer);
+        $this->assertInstanceOf(__NAMESPACE__ . '\\TextRenderer', $renderer);
     }
 
-    /**
-     * @test
-     */
-    public function rendering()
+    public function testRendering()
     {
         $textRenderer = new TextRenderer();
         $streamOutput = new StreamOutput(fopen('php://memory', 'wb', false));
@@ -54,6 +51,6 @@ class TextRendererTest extends TestCase
 
         $textRenderer->render($streamOutput, $rows);
 
-        self::assertEquals($expected, $this->getOutputBuffer($streamOutput));
+        $this->assertSame($expected, $this->getOutputBuffer($streamOutput));
     }
 }

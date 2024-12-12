@@ -35,8 +35,8 @@ class MagerunBootstrap
     public static function getLoader(): ClassLoader
     {
         $projectBasedir = __DIR__ . '/../..';
-        if (!($loader = self::includeIfExists($projectBasedir . '/vendor/autoload.php'))
-            && !($loader = self::includeIfExists($projectBasedir . '/../../autoload.php'))
+        if (!($loader = self::includeIfExists($projectBasedir . '/vendor/autoload.php')) instanceof \Composer\Autoload\ClassLoader
+            && !($loader = self::includeIfExists($projectBasedir . '/../../autoload.php')) instanceof \Composer\Autoload\ClassLoader
         ) {
             throw new ErrorException(
                 'You must set up the project dependencies, run the following commands:' . PHP_EOL .
@@ -53,6 +53,7 @@ class MagerunBootstrap
         if (file_exists($file)) {
             return include $file;
         }
+
         return null;
     }
 }

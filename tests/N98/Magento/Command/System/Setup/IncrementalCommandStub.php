@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * this file is part of magerun
  *
@@ -13,7 +16,7 @@ namespace N98\Magento\Command\System\Setup;
 class IncrementalCommandStub extends IncrementalCommand
 {
     /** @noinspection MagicMethodsValidityInspection */
-    public function __construct($name = null)
+    public function __construct()
     {
         // missing parent constructor call by intention
     }

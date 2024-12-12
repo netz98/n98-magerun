@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * this file is part of magerun
  *
@@ -7,7 +10,7 @@
 
 namespace N98\Util;
 
-use PHPUnit\Framework\TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class StringTypedTest
@@ -15,16 +18,13 @@ use PHPUnit\Framework\TestCase as TestCase;
  * @package N98\Util
  * @covers N98\Util\StringTyped
  */
-class StringTypedTest extends TestCase
+final class StringTypedTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function scope()
+    public function testScope()
     {
-        self::assertTrue(StringTyped::parseBoolOption('true'));
+        $this->assertTrue(StringTyped::parseBoolOption('true'));
 
-        self::assertSame('inactive', StringTyped::formatActive(null));
-        self::assertSame('active', StringTyped::formatActive('1'));
+        $this->assertSame('inactive', StringTyped::formatActive(null));
+        $this->assertSame('active', StringTyped::formatActive('1'));
     }
 }

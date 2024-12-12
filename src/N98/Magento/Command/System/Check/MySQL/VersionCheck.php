@@ -16,9 +16,6 @@ use Varien_Db_Adapter_Interface;
  */
 class VersionCheck extends ResourceCheck
 {
-    /**
-     * @return void
-     */
     protected function checkImplementation(Result $result, Varien_Db_Adapter_Interface $varienDbAdapter): void
     {
         /**

@@ -31,6 +31,7 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
         if (!$indexer instanceof Mage_Index_Model_Indexer) {
             throw new UnexpectedValueException('Failure getting indexer model');
         }
+
         return $indexer;
     }
 
@@ -63,6 +64,7 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
         if ($startTime > $endTime) {
             return 'index not finished';
         }
+
         return $dateTime->getDifferenceAsString($startTime, $endTime);
     }
 

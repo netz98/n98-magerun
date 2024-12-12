@@ -24,6 +24,8 @@ class ProfilerCommand extends AbstractMagentoStoreConfigCommand
     protected static $defaultDescription = 'Toggles profiler for debugging';
 
     protected string $configPath = 'dev/debug/profiler';
+
     protected string $toggleComment = 'Profiler';
+
     protected string $scope = self::SCOPE_STORE_VIEW_GLOBAL;
 }

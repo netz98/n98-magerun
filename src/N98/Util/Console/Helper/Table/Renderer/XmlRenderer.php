@@ -46,19 +46,19 @@ class XmlRenderer implements RendererInterface
         }
     }
 
-    private function appendRows(DOMNode $domElement, array $rows): void
+    private function appendRows(DOMNode $domNode, array $rows): void
     {
-        $doc = $domElement->ownerDocument;
+        $doc = $domNode->ownerDocument;
 
         if ($rows === []) {
-            $domElement->appendChild($doc->createComment('intentionally left blank, the table is empty'));
+            $domNode->appendChild($doc->createComment('intentionally left blank, the table is empty'));
 
             return;
         }
 
         foreach ($rows as $fields) {
             /** @var DOMElement $row */
-            $row = $domElement->appendChild($doc->createElement(self::NAME_ROW));
+            $row = $domNode->appendChild($doc->createElement(self::NAME_ROW));
             $this->appendRowFields($row, $fields);
         }
     }
@@ -73,18 +73,18 @@ class XmlRenderer implements RendererInterface
         }
     }
 
-    private function appendHeaders(DOMNode $domElement, ?array $headers = null): void
+    private function appendHeaders(DOMNode $domNode, ?array $headers = null): void
     {
         if ($headers === null || $headers === []) {
             return;
         }
 
-        $doc = $domElement->ownerDocument;
+        $doc = $domNode->ownerDocument;
 
-        $domElement = $domElement->appendChild($doc->createElement('headers'));
+        $domNode = $domNode->appendChild($doc->createElement('headers'));
 
         foreach ($headers as $header) {
-            $domElement->appendChild($doc->createElement('header', $header));
+            $domNode->appendChild($doc->createElement('header', $header));
         }
     }
 

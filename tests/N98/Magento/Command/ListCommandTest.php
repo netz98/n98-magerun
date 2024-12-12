@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command;
 
 use Symfony\Component\Console\Tester\CommandTester;
 
-class ListCommandTest extends TestCase
+final class ListCommandTest extends TestCase
 {
     public function testExecute()
     {
@@ -15,9 +17,6 @@ class ListCommandTest extends TestCase
             ['command' => 'list'],
         );
 
-        self::assertStringContainsString(
-            sprintf('n98-magerun %s by valantic CEC', $this->getApplication()->getVersion()),
-            $commandTester->getDisplay(),
-        );
+        $this->assertStringContainsString(sprintf('n98-magerun %s by valantic CEC', $this->getApplication()->getVersion()), $commandTester->getDisplay());
     }
 }

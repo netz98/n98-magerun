@@ -50,8 +50,8 @@ class Initialiser
      */
     public static function bootstrap(string $magentoPath): void
     {
-        $initializer = new Initialiser($magentoPath);
-        $initializer->requireMage();
+        $initialiser = new Initialiser($magentoPath);
+        $initialiser->requireMage();
     }
 
     /**

@@ -48,13 +48,13 @@ class OnCommand extends AbstractMagentoCommand
 
         try {
             $dependencies = $this->findModuleDependencies($moduleName, $recursive);
-            if (!empty($dependencies)) {
+            if ($dependencies !== []) {
                 usort($dependencies, [$this, 'sortDependencies']);
             } else {
                 $dependencies = [];
             }
 
-            if ($input->getOption('format') === null && count($dependencies) === 0) {
+            if ($input->getOption('format') === null && $dependencies === []) {
                 $output->writeln(sprintf("Module %s doesn't have dependencies", $moduleName));
             } else {
                 $tableHelper = $this->getTableHelper();
@@ -105,6 +105,7 @@ class OnCommand extends AbstractMagentoCommand
 
             return $dependencies;
         }
+
         throw new InvalidArgumentException(sprintf('Module %s was not found', $moduleName));
     }
 

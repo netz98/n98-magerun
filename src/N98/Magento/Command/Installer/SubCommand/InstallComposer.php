@@ -35,7 +35,7 @@ class InstallComposer extends AbstractSubCommand
             $composerBin = $this->downloadComposer();
         }
 
-        if (empty($composerBin)) {
+        if ($composerBin === '0') {
             throw new Exception('Cannot find or install composer. Please try it manually. https://getcomposer.org/');
         }
 

@@ -14,9 +14,13 @@ namespace N98\Util;
 class OperatingSystem
 {
     public const OS_DARWIN  = 'darwin';
+
     public const OS_LINUX   = 'linux';
+
     public const OS_MAC     = 'mac';
+
     public const OS_NETWARE = 'netware';
+
     public const OS_WINDOWS = 'win';
 
     /**

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use Composer\Autoload\ClassLoader;
 use N98\Magento\TestApplication;
 
 // shim for phpunit mock-objects (deprecated) forward compatibility
-if (!interface_exists('PHPUnit\Framework\MockObject\MockObject')) {
-    class_alias('PHPUnit_Framework_MockObject_MockObject', 'PHPUnit\Framework\MockObject\MockObject');
+if (!interface_exists(\PHPUnit\Framework\MockObject\MockObject::class)) {
+    class_alias('PHPUnit_Framework_MockObject_MockObject', \PHPUnit\Framework\MockObject\MockObject::class);
 }
 
 $base = TestApplication::getTestMagentoRootFromEnvironment('N98_MAGERUN_TEST_MAGENTO_ROOT', '.n98-magerun');

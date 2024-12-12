@@ -29,9 +29,9 @@ abstract class AbstractEntityType implements EntityType
         $this->attribute = $mageEavModelEntityAttribute;
     }
 
-    public function setReadConnection(Varien_Db_Adapter_Interface $connection): void
+    public function setReadConnection(Varien_Db_Adapter_Interface $varienDbAdapter): void
     {
-        $this->readConnection = $connection;
+        $this->readConnection = $varienDbAdapter;
     }
 
     public function setWarnings(array $warnings): void

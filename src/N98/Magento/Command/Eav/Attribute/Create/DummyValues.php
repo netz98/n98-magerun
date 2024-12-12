@@ -14,7 +14,7 @@ use Faker\Generator;
  */
 class DummyValues
 {
-    private ?Generator $faker;
+    private ?Generator $generator;
 
     private array $sizes = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60'];
 
@@ -41,19 +41,19 @@ class DummyValues
      */
     public function createValue(string $type, string $locale)
     {
-        if ($this->faker === null) {
-            $this->faker = Factory::create($locale);
+        if (!$this->generator instanceof \Faker\Generator) {
+            $this->generator = Factory::create($locale);
         }
 
         switch ($type) {
             case 'int':
-                $value = $this->faker->randomNumber();
+                $value = $this->generator->randomNumber();
                 break;
             case 'string':
-                $value = $this->faker->sentence(3);
+                $value = $this->generator->sentence(3);
                 break;
             case 'color':
-                $value = $this->faker->colorName;
+                $value = $this->generator->colorName;
                 break;
             case 'size':
                 $value = $this->sizes[array_rand($this->sizes)];
@@ -62,7 +62,7 @@ class DummyValues
                 $value = $this->designer[array_rand($this->designer)];
                 break;
             default:
-                $value = $this->faker->randomNumber();
+                $value = $this->generator->randomNumber();
         }
 
         return $value;

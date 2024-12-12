@@ -42,13 +42,13 @@ class ChangeVersionCommand extends AbstractSetupCommand
         $setupName = $input->getArgument('setup');
         $moduleSetups = $this->getModuleSetupResources($moduleName);
 
-        if (empty($moduleSetups)) {
+        if ($moduleSetups === []) {
             $output->writeln(sprintf('No setup resources found for module: "%s"', $moduleName));
             return Command::FAILURE;
         }
 
         if ($setupName === 'all') {
-            foreach ($moduleSetups as $setupCode => $setup) {
+            foreach (array_keys($moduleSetups) as $setupCode) {
                 $this->updateSetupResource($moduleName, $setupCode, $moduleVersion, $output);
             }
         } elseif (array_key_exists($setupName, $moduleSetups)) {

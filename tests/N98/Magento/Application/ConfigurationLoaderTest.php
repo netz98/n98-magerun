@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * this file is part of magerun
  *
@@ -10,14 +13,11 @@ namespace N98\Magento\Application;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Output\NullOutput;
 
-class ConfigurationLoaderTest extends TestCase
+final class ConfigurationLoaderTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function creation()
+    public function testCreation()
     {
-        $loader = new ConfigurationLoader([], false, new NullOutput());
-        self::assertInstanceOf(__NAMESPACE__ . '\\ConfigurationLoader', $loader);
+        $configurationLoader = new ConfigurationLoader([], false, new NullOutput());
+        $this->assertInstanceOf(__NAMESPACE__ . '\\ConfigurationLoader', $configurationLoader);
     }
 }

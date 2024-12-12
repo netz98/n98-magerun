@@ -34,7 +34,7 @@ class AbstractCacheCommand extends AbstractMagentoCommand
         $enable     = Mage::app()->useCache();
         if ($enable) {
             foreach ($cacheTypes as $cacheCode => $cacheModel) {
-                if (empty($codeArgument) || in_array($cacheCode, $codeArgument)) {
+                if ($codeArgument === [] || in_array($cacheCode, $codeArgument)) {
                     $enable[$cacheCode] = $status ? 1 : 0;
                 }
             }

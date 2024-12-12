@@ -16,7 +16,7 @@ interface EntityType
 {
     public function __construct(Mage_Eav_Model_Entity_Attribute $mageEavModelEntityAttribute);
 
-    public function setReadConnection(Varien_Db_Adapter_Interface $connection): void;
+    public function setReadConnection(Varien_Db_Adapter_Interface $varienDbAdapter): void;
 
     public function getWarnings(): array;
 

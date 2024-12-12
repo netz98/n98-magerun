@@ -36,7 +36,7 @@ class EnableCommand extends AbstractCacheCommand
         $codeArgument = BinaryString::trimExplodeEmpty(',', $input->getArgument('code'));
         $this->saveCacheStatus($codeArgument, true);
 
-        if (count($codeArgument) > 0) {
+        if ($codeArgument !== []) {
             foreach ($codeArgument as $code) {
                 $output->writeln('<info>Cache <comment>' . $code . '</comment> enabled</info>');
             }

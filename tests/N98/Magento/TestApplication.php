@@ -1,9 +1,6 @@
 <?php
-/*
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
+
+declare(strict_types=1);
 
 namespace N98\Magento;
 
@@ -17,57 +14,43 @@ use RuntimeException;
  * Magento test-application, the one used in unit and integration testing.
  *
  * @package N98\Magento
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
 class TestApplication
 {
-    /**
-     * @var Application
-     */
-    private $application;
+    private ?Application $application;
+
+    private ?string $root;
+
+    private ?string $varName;
+
+    private ?string $baseName;
+
+    private TestCase $testCase;
 
     /**
-     * @var string|null
+     * @param string $varName name of the environment variable containing the test-root
+     * @param string $baseName name of the stop file containing the test-root
      */
-    private $root;
-
-    /**
-     * @var string
-     */
-    private $varname;
-
-    /**
-     * @var string
-     */
-    private $basename;
-
-    /**
-     * @var TestCase
-     */
-    private $testCase;
-
-    /**
-     * @param string $varname name of the environment variable containing the test-root
-     * @param string $basename name of the stopfile containing the test-root
-     *
-     * @return string|null
-     */
-    public static function getTestMagentoRootFromEnvironment($varname, $basename)
+    public static function getTestMagentoRootFromEnvironment(string $varName, string $baseName): ?string
     {
-        $root = getenv($varname);
-        if (empty($root) && strlen($basename)) {
-            $stopfile = getcwd() . '/' . $basename;
-            if (is_readable($stopfile) && $buffer = rtrim(file_get_contents($stopfile))) {
+        $root = getenv($varName);
+        if (empty($root) && strlen($baseName)) {
+            $stopFile = getcwd() . '/' . $baseName;
+            if (is_readable($stopFile) && $buffer = rtrim(file_get_contents($stopFile))) {
                 $root = $buffer;
             }
         }
+
         if (empty($root)) {
-            return;
+            return null;
         }
 
         # directory test
         if (!is_dir($root)) {
             throw new RuntimeException(
-                sprintf("%s path '%s' is not a directory (cwd: '%s', stopfile: '%s')", $varname, $root, getcwd(), $stopfile ?? ''),
+                sprintf("%s path '%s' is not a directory (cwd: '%s', stopfile: '%s')", $varName, $root, getcwd(), $stopFile ?? ''),
             );
         }
 
@@ -75,28 +58,22 @@ class TestApplication
         $rootRealpath = realpath($root);
         if (false === $rootRealpath) {
             throw new RuntimeException(
-                sprintf("Failed to resolve %s path '%s' with realpath()", $varname, $root),
+                sprintf("Failed to resolve %s path '%s' with realpath()", $varName, $root),
             );
         }
 
         return $rootRealpath;
     }
 
-    /**
-     * @param TestCase $testCase
-     * @return array
-     */
-    public static function getConfig(TestCase $testCase)
+    public static function getConfig(TestCase $testCase): array
     {
         $testApplication = new TestApplication($testCase);
-
         return $testApplication->getApplication()->getConfig();
     }
 
     /**
      * TestApplication constructor.
      *
-     * @param TestCase $testCase
      * @param null $varname [optional] name of the environment variable containing the path to magento-root, "N98_MAGERUN_TEST_MAGENTO_ROOT" by default
      * @param null $basename [optional] of the stop-file, ".n98-magerun" by default
      */
@@ -105,12 +82,14 @@ class TestApplication
         if (null === $varname) {
             $varname = 'N98_MAGERUN_TEST_MAGENTO_ROOT';
         }
+
         if (null === $basename) {
             $basename = '.n98-magerun';
         }
+
         $this->testCase = $testCase;
-        $this->varname = $varname;
-        $this->basename = $basename;
+        $this->varName = $varname;
+        $this->baseName = $basename;
     }
 
     /**
@@ -120,19 +99,18 @@ class TestApplication
      *
      * @return string
      */
-    public function getTestMagentoRoot()
+    public function getTestMagentoRoot(): ?string
     {
         if ($this->root) {
             return $this->root;
         }
 
-        $varname = $this->varname;
-
-        $root = self::getTestMagentoRootFromEnvironment($varname, $this->basename);
+        $varName = $this->varName;
+        $root = self::getTestMagentoRootFromEnvironment($varName, $this->baseName);
 
         if (null === $root) {
             throw new SkippedTestError(
-                "Please specify environment variable $varname with path to your test magento installation!",
+                sprintf('Please specify environment variable %s with path to your test magento installation!', $varName),
             );
         }
 

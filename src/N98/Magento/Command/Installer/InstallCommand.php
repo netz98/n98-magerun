@@ -21,6 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class InstallCommand extends AbstractMagentoCommand
 {
     protected array $commandConfig;
+
     protected SubCommandFactory $subCommandFactory;
 
     protected function configure(): void

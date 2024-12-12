@@ -38,7 +38,7 @@ class ListCommand extends AbstractMagentoCommand
         $table = [];
         foreach ($packages as $package => $themes) {
             foreach ($themes as $theme) {
-                $table[] = [($package ? $package . '/' : '') . $theme];
+                $table[] = [($package !== 0 && ($package !== '' && $package !== '0') ? $package . '/' : '') . $theme];
             }
         }
 

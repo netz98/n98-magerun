@@ -80,7 +80,6 @@ class Result
     }
 
     /**
-     * @param string $message
      * @return $this
      */
     public function setMessage(string $message)

@@ -81,7 +81,7 @@ class ConfigLocator
      */
     public function getStopFileConfigFile(string $magerunStopFileFolder): ?ConfigFile
     {
-        if (empty($magerunStopFileFolder)) {
+        if ($magerunStopFileFolder === '' || $magerunStopFileFolder === '0') {
             return null;
         }
 

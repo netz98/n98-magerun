@@ -1,16 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Config;
 
 use Mage;
 use N98\Magento\Command\TestCase;
 
-class GetCommandTest extends TestCase
+final class GetCommandTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function nullValues()
+    public function testNullValues()
     {
         # Very old Magento versions do not support NULL values in configuration values
         $this->skipMagentoMinimumVersion('1.6.2.0', '1.11.2.0');
@@ -42,20 +41,22 @@ class GetCommandTest extends TestCase
                 # needed to not use the previous output cache
                 'path'             => 'n98_magerun/foo/bar',
             ],
-            'config:set --scope-id=0 --scope=default -- \'n98_magerun/foo/bar\' NULL',
+            "config:set --scope-id=0 --scope=default -- 'n98_magerun/foo/bar' NULL",
         );
     }
 
-    public function provideFormatsWithNull()
+    public function provideFormatsWithNull(): \Iterator
     {
-        return [[null, '~\\Q| n98_magerun/foo/bar | default | 0        | NULL (NULL/"unknown" value) |\\E~'], ['csv', '~\\Qn98_magerun/foo/bar,default,0,NULL\\E~'], ['json', '~"Value": *null~'], ['xml', '~\\Q<Value>NULL</Value>\\E~']];
+        yield [null, '~\\Q| n98_magerun/foo/bar | default | 0        | NULL (NULL/"unknown" value) |\\E~'];
+        yield ['csv', '~\\Qn98_magerun/foo/bar,default,0,NULL\\E~'];
+        yield ['json', '~"Value": *null~'];
+        yield ['xml', '~\\Q<Value>NULL</Value>\\E~'];
     }
 
     /**
-     * @test
      * @dataProvider provideFormatsWithNull
      */
-    public function nullWithFormat($format, $expected)
+    public function testNullWithFormat($format, $expected)
     {
         # Very old Magento versions do not support NULL values in configuration values
         $this->skipMagentoMinimumVersion('1.6.2.0', '1.11.2.0');
@@ -150,6 +151,7 @@ class GetCommandTest extends TestCase
                         ),
                     );
                 }
+
                 break;
             case 'Enterprise':
                 if (version_compare($magentoVersion, $enterprise, '<')) {
@@ -161,6 +163,7 @@ class GetCommandTest extends TestCase
                         ),
                     );
                 }
+
                 break;
             default:
                 self::markTestSkipped(

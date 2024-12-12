@@ -36,7 +36,7 @@ class DisableCommand extends AbstractCacheCommand
         $codeArgument = BinaryString::trimExplodeEmpty(',', $input->getArgument('code'));
         $this->saveCacheStatus($codeArgument, false);
 
-        if (empty($codeArgument)) {
+        if ($codeArgument === []) {
             $this->_getCacheModel()->flush();
         } else {
             foreach ($codeArgument as $type) {
@@ -44,7 +44,7 @@ class DisableCommand extends AbstractCacheCommand
             }
         }
 
-        if (count($codeArgument) > 0) {
+        if ($codeArgument !== []) {
             foreach ($codeArgument as $code) {
                 $output->writeln('<info>Cache <comment>' . $code . '</comment> disabled</info>');
             }

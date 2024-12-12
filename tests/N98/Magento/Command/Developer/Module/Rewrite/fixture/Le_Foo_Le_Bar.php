@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * this file is part of magerun
  *
@@ -6,5 +9,4 @@
  *
  * Class definition that will cause a warning when the non-existing parent-class is included from the same directory
  */
-
 class Le_Foo_Le_Bar extends Le_Foo_Le_Bar_Nexiste_Pas {}

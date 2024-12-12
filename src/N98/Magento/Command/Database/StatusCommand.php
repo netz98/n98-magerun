@@ -87,11 +87,7 @@ HELP;
         return $rows;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
+
     protected function allowRounding(string $name): bool
     {
         return false !== strpos($name, '_size');

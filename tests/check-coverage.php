@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @see http://ocramius.github.io/blog/automated-code-coverage-check-for-github-pull-requests-with-travis/
  */

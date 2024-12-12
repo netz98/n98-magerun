@@ -28,6 +28,7 @@ class VersionFilePrinter
                 if ($line === $startVersion) {
                     break;
                 }
+
                 $contentToReturn .= $line . "\n";
             }
         }

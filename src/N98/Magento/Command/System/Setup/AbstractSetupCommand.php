@@ -28,7 +28,7 @@ class AbstractSetupCommand extends AbstractMagentoCommand
         $resources = $config->getNode('global/resources');
         foreach ($resources->children() as $resName => $resource) {
             $modName = (string) $resource->setup->module;
-            if ($modName == $moduleName) {
+            if ($modName === $moduleName) {
                 $moduleSetups[$resName] = $resource;
             }
         }

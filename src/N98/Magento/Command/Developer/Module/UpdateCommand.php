@@ -149,7 +149,7 @@ class UpdateCommand extends AbstractMagentoCommand
      */
     protected function determineModuleCodePool(): string
     {
-        if ($this->testMode === true) {
+        if ($this->testMode) {
             $this->codePool = 'local';
             $this->_magentoRootFolder = './' . $this->getModuleNamespace() . '/src';
             $this->moduleDirectory = $this->_magentoRootFolder

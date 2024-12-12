@@ -64,7 +64,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
 
         try {
             $dependencies = $this->findModuleDependencies($moduleName, $recursive);
-            if (!empty($dependencies)) {
+            if ($dependencies !== []) {
                 usort($dependencies, [$this, 'sortDependencies']);
                 $tableHelper = $this->getTableHelper();
                 $tableHelper

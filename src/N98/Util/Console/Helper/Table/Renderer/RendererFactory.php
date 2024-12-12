@@ -30,6 +30,7 @@ class RendererFactory
             $renderer = new $rendererClass();
             return $renderer;
         }
+
         return null;
     }
 
@@ -37,7 +38,7 @@ class RendererFactory
     {
         $factory = new self();
 
-        if (!$renderer = $factory->create($format)) {
+        if (!($renderer = $factory->create($format)) instanceof \N98\Util\Console\Helper\Table\Renderer\RendererInterface) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Unknown format %s, known formats are: %s',

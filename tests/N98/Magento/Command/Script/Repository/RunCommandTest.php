@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Script\Repository;
 
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class RunCommandTest extends TestCase
+final class RunCommandTest extends TestCase
 {
     public function testExecute()
     {
@@ -18,6 +20,7 @@ class RunCommandTest extends TestCase
         $application->setConfig($config);
 
         $application->add(new RunCommand());
+
         $command = $this->getApplication()->find('script:repo:run');
 
         $commandTester = new CommandTester($command);
@@ -26,12 +29,9 @@ class RunCommandTest extends TestCase
         );
 
         // Runs sys:info -> Check for any output
-        self::assertStringContainsString('Vendors (core)', $commandTester->getDisplay());
+        $this->assertStringContainsString('Vendors (core)', $commandTester->getDisplay());
 
-        self::assertStringContainsString(
-            $testDir . '/hello-world.magerun',
-            $this->normalizePathSeparators($commandTester->getDisplay()),
-        );
+        $this->assertStringContainsString($testDir . '/hello-world.magerun', $this->normalizePathSeparators($commandTester->getDisplay()));
     }
 
     /**

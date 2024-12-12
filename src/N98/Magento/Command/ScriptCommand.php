@@ -128,6 +128,7 @@ HELP;
             if ($command === '') {
                 continue;
             }
+
             if ($command === '0') {
                 continue;
             }
@@ -191,7 +192,7 @@ HELP;
      */
     protected function _getContent(string $filename): string
     {
-        if ($filename == '-' || empty($filename)) {
+        if ($filename === '-' || ($filename === '' || $filename === '0')) {
             // @phpstan-ignore argument.type
             $script = @\file_get_contents('php://stdin', 'r');
         } else {
@@ -253,6 +254,7 @@ HELP;
                 $this->scriptVars[$matches[1]] = $this->_replaceScriptVars($matches[2]);
             }
         }
+
         return null;
     }
 
@@ -297,7 +299,7 @@ HELP;
                 ? Mage::getEdition() : 'Community';
         }
 
-        $phpVersion = (string) phpversion();
+        $phpVersion = phpversion();
         $this->scriptVars['${php.version}']     = substr($phpVersion, 0, (int) strpos($phpVersion, '-'));
         $this->scriptVars['${magerun.version}'] = $this->getApplication()->getVersion();
         $this->scriptVars['${script.file}']     = $this->_scriptFilename;

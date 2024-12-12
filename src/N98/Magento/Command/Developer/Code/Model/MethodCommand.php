@@ -96,6 +96,7 @@ class MethodCommand extends AbstractMagentoCommand
                     break;
                 }
             }
+
             $written = file_put_contents($this->_fileName, implode('', $fileParts));
 
             if ($written === false) {
@@ -187,7 +188,7 @@ class MethodCommand extends AbstractMagentoCommand
             }
         }
 
-        if (!count($this->_tableColumns)) {
+        if ($this->_tableColumns === []) {
             throw new InvalidArgumentException('No columns found in table: ' . $this->_mageModelTable);
         }
     }

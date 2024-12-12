@@ -27,8 +27,10 @@ class DummyCommand extends AbstractMagentoCommand
     public const DEFAULT_CATEGORY_NAME = 'My Awesome Category';
 
     public const DEFAULT_CATEGORY_STATUS = 1;
+
     // enabled
     public const DEFAULT_CATEGORY_ANCHOR = 1;
+
     // enabled
     public const DEFAULT_STORE_ID = 1; // Default Store ID
 

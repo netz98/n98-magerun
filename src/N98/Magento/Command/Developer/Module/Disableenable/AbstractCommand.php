@@ -51,7 +51,7 @@ class AbstractCommand extends AbstractMagentoCommand
         $this->modulesConfig = Mage::getConfig();
         $this->modulesDir = $this->modulesConfig->getOptions()->getEtcDir() . DS . 'modules' . DS;
         if ($codePool = $input->getOption('codepool')) {
-            $output->writeln('<info>' . ($this->commandName == 'enable' ? 'Enabling' : 'Disabling') .
+            $output->writeln('<info>' . ($this->commandName === 'enable' ? 'Enabling' : 'Disabling') .
                 ' modules in <comment>' . $codePool . '</comment> codePool...</info>');
             $this->enableCodePool($codePool, $output);
         } elseif ($module = $input->getArgument('moduleName')) {
@@ -102,7 +102,7 @@ class AbstractCommand extends AbstractMagentoCommand
         } elseif (!is_writable($validDecFile)) {
             $msg = sprintf("<error><comment>%s: </comment>Can't write to declaration file</error>", $module);
         } else {
-            $setTo = $this->commandName == 'enable' ? 'true' : 'false';
+            $setTo = $this->commandName === 'enable' ? 'true' : 'false';
             if ((string) $xml->modules->{$module}->active !== $setTo) {
                 $xml->modules->{$module}->active = $setTo;
                 if (file_put_contents($validDecFile, $xml->asXML()) !== false) {
