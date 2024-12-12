@@ -25,7 +25,9 @@ class InlineAdminCommand extends AbstractMagentoStoreConfigCommand
     protected static $defaultDescription = 'Toggle inline translation tool for admin';
 
     protected string $configPath = 'dev/translate_inline/active_admin';
+
     protected string $toggleComment = 'Inline Translation (Admin)';
+
     protected string $scope = self::SCOPE_GLOBAL;
 
     /**

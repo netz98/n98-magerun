@@ -229,6 +229,7 @@ class CreateDatabase extends AbstractSubCommand
         if (is_null($this->argv)) {
             $this->argv = $_SERVER['argv'];
         }
+
         return $this->argv;
     }
 }

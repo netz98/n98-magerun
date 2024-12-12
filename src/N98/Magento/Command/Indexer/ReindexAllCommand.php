@@ -43,6 +43,7 @@ HELP;
         if (!$processes || !$this->executeProcesses($output, iterator_to_array($processes, false))) {
             return Command::FAILURE;
         }
+
         return Command::SUCCESS;
     }
 }

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * this file is part of magerun
  *
@@ -17,24 +20,22 @@ class InstallCommandTester extends InstallCommand
     public const COMMAND_CLASS = 'N98\Magento\Command\Installer\InstallCommand';
 
     /**
-     * @param InstallCommand $command
      * @return array
      */
-    public function getMagentoPackages(InstallCommand $command)
+    public function getMagentoPackages(InstallCommand $installCommand)
     {
         $commandClass = self::COMMAND_CLASS;
-        $commandConfig = $command->getCommandConfig($commandClass);
+        $commandConfig = $installCommand->getCommandConfig($commandClass);
         return $commandConfig['magento-packages'];
     }
 
     /**
-     * @param InstallCommand $command
      * @return array
      */
-    public function getSampleDataPackages(InstallCommand $command)
+    public function getSampleDataPackages(InstallCommand $installCommand)
     {
         $commandClass = self::COMMAND_CLASS;
-        $commandConfig = $command->getCommandConfig($commandClass);
+        $commandConfig = $installCommand->getCommandConfig($commandClass);
         return $commandConfig['demo-data-packages'];
     }
 }

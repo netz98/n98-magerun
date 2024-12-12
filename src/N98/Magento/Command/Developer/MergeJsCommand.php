@@ -24,6 +24,8 @@ class MergeJsCommand extends AbstractMagentoStoreConfigCommand
     protected static $defaultDescription = 'Toggles JS Merging';
 
     protected string $toggleComment = 'JS Merging';
+
     protected string $configPath = 'dev/js/merge_files';
+
     protected string $scope = self::SCOPE_STORE_VIEW_GLOBAL;
 }

@@ -28,8 +28,6 @@ class CheckCommand extends AbstractMagentoCommand
 {
     /**
      * Command config
-     *
-     * @var array
      */
     protected array $config;
 
@@ -177,6 +175,7 @@ HELP;
             '</comment>',
         );
         $result->setStatus($result::STATUS_WARNING);
+
         $resultCollection->addResult($result);
     }
 

@@ -25,6 +25,7 @@ class InlineShopCommand extends AbstractMagentoStoreConfigCommand
     protected static $defaultDescription = 'Toggle inline translation tool for shop';
 
     protected string $configPath = 'dev/translate_inline/active';
+
     protected string $toggleComment = 'Inline Translation';
 
     /**

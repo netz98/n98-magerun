@@ -27,6 +27,7 @@ use Symfony\Component\Console\Question\Question;
 abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
 {
     public string $commandName = '';
+
     public string $commandDescription = '';
 
     public const COMMAND_ARGUMENT_STORE = 'store';
@@ -101,7 +102,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             )
         ;
 
-        if ($this->scope == self::SCOPE_STORE_VIEW_GLOBAL) {
+        if ($this->scope === self::SCOPE_STORE_VIEW_GLOBAL) {
             $this->addOption(
                 self::COMMAND_OPTION_GLOBAL,
                 null,
@@ -110,7 +111,7 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
             );
         }
 
-        if ($this->scope == self::SCOPE_STORE_VIEW || $this->scope == self::SCOPE_STORE_VIEW_GLOBAL) {
+        if ($this->scope === self::SCOPE_STORE_VIEW || $this->scope === self::SCOPE_STORE_VIEW_GLOBAL) {
             $this->addArgument(
                 self::COMMAND_ARGUMENT_STORE,
                 InputArgument::OPTIONAL,
@@ -149,8 +150,8 @@ abstract class AbstractMagentoStoreConfigCommand extends AbstractMagentoCommand
         }
 
         $runOnStoreView = false;
-        if ($this->scope == self::SCOPE_STORE_VIEW
-            || ($this->scope == self::SCOPE_STORE_VIEW_GLOBAL && !$input->getOption(self::COMMAND_OPTION_GLOBAL))
+        if ($this->scope === self::SCOPE_STORE_VIEW
+            || ($this->scope === self::SCOPE_STORE_VIEW_GLOBAL && !$input->getOption(self::COMMAND_OPTION_GLOBAL))
         ) {
             $runOnStoreView = true;
         }

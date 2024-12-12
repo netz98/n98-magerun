@@ -295,6 +295,7 @@ UNSTABLE_FOOTER;
         if ($this->getApplication()->getVersion() !== $latest) {
             return true;
         }
+
         return $loadUnstable;
     }
 }

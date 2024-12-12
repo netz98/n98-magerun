@@ -95,7 +95,6 @@ class ListCommand extends AbstractMagentoCommand
 
     /**
      * @param $attribute
-     * @return null|string
      */
     protected function _getEntityType($attribute): ?string
     {

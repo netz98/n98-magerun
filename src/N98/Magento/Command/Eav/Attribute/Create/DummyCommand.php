@@ -76,6 +76,7 @@ HELP;
         /** @var Mage_Eav_Model_Entity_Attribute $attribute */
         $attribute = Mage::getModel('eav/entity_attribute');
         $attribute->load($argument['attribute-id']);
+
         $dummyValues = new DummyValues();
         for ($i = 0; $i < $argument['values-number']; ++$i) {
             $value = $dummyValues->createValue($argument['values-type'], $argument['locale']);

@@ -160,6 +160,7 @@ HELP;
         if ($fileName !== '-') {
             $exec = $compressor->getDecompressingCommand($exec, $fileName);
         }
+
         if ($input->getOption('only-command')) {
             $output->writeln($exec);
             return Command::SUCCESS;

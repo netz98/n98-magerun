@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database\Maintain;
 
 use Symfony\Component\Console\Command\Command;
@@ -9,7 +11,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 /**
  * @see \N98\Magento\Command\Database\Maintain\CheckTablesCommand
  */
-class CheckTablesCommandTest extends TestCase
+final class CheckTablesCommandTest extends TestCase
 {
     public function testExecute()
     {
@@ -19,27 +21,20 @@ class CheckTablesCommandTest extends TestCase
         $commandTester->execute(
             ['command'  => $command->getName(), '--format' => 'csv', '--type'   => 'quick', '--table'  => 'catalogsearch_*'],
         );
-        self::assertStringContainsString('catalogsearch_fulltext,check,quick,OK', $commandTester->getDisplay());
+        $this->assertStringContainsString('catalogsearch_fulltext,check,quick,OK', $commandTester->getDisplay());
         $timeRegex = '"\s+[0-9]+\srows","[0-9\.]+\ssecs"';
-        self::assertMatchesRegularExpression(
-            '~catalogsearch_query,"ENGINE InnoDB",' . $timeRegex . '~',
-            $commandTester->getDisplay(),
-        );
-        self::assertMatchesRegularExpression(
-            '~catalogsearch_result,"ENGINE InnoDB",' . $timeRegex . '~',
-            $commandTester->getDisplay(),
-        );
+        $this->assertMatchesRegularExpression('~catalogsearch_query,"ENGINE InnoDB",' . $timeRegex . '~', $commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('~catalogsearch_result,"ENGINE InnoDB",' . $timeRegex . '~', $commandTester->getDisplay());
     }
 
     /**
      * @return Command
      */
-    protected function getCommand()
+    private function getCommand()
     {
         $application = $this->getApplication();
         $application->add(new CheckTablesCommand());
-        $command = $this->getApplication()->find('db:maintain:check-tables');
 
-        return $command;
+        return $this->getApplication()->find('db:maintain:check-tables');
     }
 }

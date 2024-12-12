@@ -87,7 +87,7 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
 
         $hasLeadingDot = $cookieDomain[0] === '.';
         if ($hasLeadingDot) {
-            $cookieDomain = (string) substr($cookieDomain, 1);
+            $cookieDomain = substr($cookieDomain, 1);
             $cookieLen    = strlen($cookieDomain);
         } elseif ($siteDomain === $cookieDomain) {
             return true;
@@ -104,7 +104,7 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
         }
 
         $prefix = substr($siteDomain, 0, -$cookieLen);
-        if (!$prefix) {
+        if ($prefix === '' || $prefix === '0') {
             return false;
         }
 

@@ -26,7 +26,10 @@ class DisableNotificationsCommand extends AbstractMagentoStoreConfigCommand
     protected string $configPath = 'advanced/modules_disable_output/Mage_AdminNotification';
 
     protected string $toggleComment = 'Admin Notifications';
+
     protected string $trueName = 'hidden';
+
     protected string $falseName = 'visible';
+
     protected string $scope = self::SCOPE_GLOBAL;
 }

@@ -92,7 +92,7 @@ class ParameterHelper extends AbstractHelper
             if (count($stores) > 1) {
                 $validator = function ($typeInput) use ($stores) {
                     if (!isset($stores[$typeInput])) {
-                        throw new InvalidArgumentException('Invalid store');
+                        throw new InvalidArgumentException('Invalid store', $exception->getCode(), $exception);
                     }
 
                     return $stores[$typeInput];
@@ -163,11 +163,11 @@ class ParameterHelper extends AbstractHelper
      * @see askWebsite
      * @return array websites (integers with website IDs, 0-indexed) and question array (strings)
      */
-    private function websitesQuestion(Mage_Core_Model_App $storeManager): array
+    private function websitesQuestion(Mage_Core_Model_App $mageCoreModelApp): array
     {
         $websites = [];
         $question = [];
-        foreach ($storeManager->getWebsites() as $website) {
+        foreach ($mageCoreModelApp->getWebsites() as $website) {
             $websites[] = $website->getId();
             $question[] = sprintf('%s - %s', $website->getCode(), $website->getName());
         }
@@ -226,12 +226,12 @@ class ParameterHelper extends AbstractHelper
         OutputInterface $output,
         string          $name,
         string          $value,
-        Collection      $constraints
+        Collection      $collection
     ): string {
         $this->initValidator();
 
         if (strlen($value) !== 0) {
-            $errors = $this->validateValue($name, $value, $constraints);
+            $errors = $this->validateValue($name, $value, $collection);
             if ($errors->count() > 0) {
                 $output->writeln('<error>' . $errors[0]->getMessage() . '</error>');
             } else {
@@ -245,8 +245,8 @@ class ParameterHelper extends AbstractHelper
             $input,
             $output,
             $question,
-            function ($inputValue) use ($constraints, $name) {
-                $errors = $this->validateValue($name, $inputValue, $constraints);
+            function ($inputValue) use ($collection, $name) {
+                $errors = $this->validateValue($name, $inputValue, $collection);
                 if ($errors->count() > 0) {
                     throw new InvalidArgumentException((string) $errors[0]->getMessage());
                 }
@@ -259,11 +259,11 @@ class ParameterHelper extends AbstractHelper
     /**
      * @return ConstraintViolationInterface[]|ConstraintViolationListInterface
      */
-    private function validateValue(string $name, string $value, Collection $constraints)
+    private function validateValue(string $name, string $value, Collection $collection)
     {
         $validator = $this->validator;
         /** @var ConstraintViolationListInterface|ConstraintViolationInterface[] $constraintViolationList */
-        $constraintViolationList = $validator->validate([$name => $value], $constraints);
+        $constraintViolationList = $validator->validate([$name => $value], $collection);
 
         return $constraintViolationList;
     }

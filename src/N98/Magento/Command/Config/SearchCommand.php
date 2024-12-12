@@ -49,7 +49,7 @@ HELP;
         $system = Mage::getConfig()->loadModulesConfiguration('system.xml');
         $matches = $this->_searchConfiguration($searchString, $system);
 
-        if (count($matches) > 0) {
+        if ($matches !== []) {
             foreach ($matches as $match) {
                 $output->writeln('Found a <comment>' . $match->type . '</comment> with a match');
                 $output->writeln('  ' . $this->_getPhpMageStoreConfigPathFromMatch($match));
@@ -75,13 +75,13 @@ HELP;
         return Command::SUCCESS;
     }
 
-    protected function _searchConfiguration(string $searchString, Varien_Simplexml_Config $system): array
+    protected function _searchConfiguration(string $searchString, Varien_Simplexml_Config $varienSimplexmlConfig): array
     {
         $xpathSections = ['sections/*', 'sections/*/groups/*', 'sections/*/groups/*/fields/*'];
 
         $matches = [];
         foreach ($xpathSections as $xpathSection) {
-            $systemNode = $system->getNode();
+            $systemNode = $varienSimplexmlConfig->getNode();
             if ($systemNode) {
                 $tmp = $this->_searchConfigurationNodes(
                     $searchString,
@@ -137,7 +137,7 @@ HELP;
         $parent         = current($node->xpath('parent::*'));
         /** @var SimpleXMLElement $grandParent */
         $grandParent    = current($parent->xpath('parent::*'));
-        if ($grandParent->getName() == 'config') {
+        if ($grandParent->getName() === 'config') {
             return 'section';
         }
 

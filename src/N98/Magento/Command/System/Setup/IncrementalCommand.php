@@ -83,7 +83,7 @@ HELP;
 
         $needsUpdate = $this->_analyzeSetupResourceClasses();
 
-        if (count($needsUpdate) === 0) {
+        if ($needsUpdate === []) {
             return Command::FAILURE;
         }
 
@@ -141,9 +141,9 @@ HELP;
     /**
      * @throws ReflectionException
      */
-    protected function _getAvaiableDbFilesFromResource(Mage_Core_Model_Resource_Setup $setupResource, array $args = []): array
+    protected function _getAvaiableDbFilesFromResource(Mage_Core_Model_Resource_Setup $mageCoreModelResourceSetup, array $args = []): array
     {
-        $result = $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $setupResource, $args);
+        $result = $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $mageCoreModelResourceSetup, $args);
 
         //an install runs the install script first, then any upgrades
         if ($args[0] == Mage_Core_Model_Resource_Setup::TYPE_DB_INSTALL) {
@@ -151,7 +151,7 @@ HELP;
             $args[1] = $result[0]['toVersion'];
             $result = array_merge(
                 $result,
-                $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $setupResource, $args),
+                $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $mageCoreModelResourceSetup, $args),
             );
         }
 
@@ -161,15 +161,15 @@ HELP;
     /**
      * @throws ReflectionException
      */
-    protected function _getAvaiableDataFilesFromResource(Mage_Core_Model_Resource_Setup $setupResource, array $args = []): array
+    protected function _getAvaiableDataFilesFromResource(Mage_Core_Model_Resource_Setup $mageCoreModelResourceSetup, array $args = []): array
     {
-        $result = $this->_callProtectedMethodFromObject('_getAvailableDataFiles', $setupResource, $args);
+        $result = $this->_callProtectedMethodFromObject('_getAvailableDataFiles', $mageCoreModelResourceSetup, $args);
         if ($args[0] == Mage_Core_Model_Resource_Setup::TYPE_DATA_INSTALL) {
             $args[0] = Mage_Core_Model_Resource_Setup::TYPE_DATA_UPGRADE;
             $args[1] = $result[0]['toVersion'];
             $result = array_merge(
                 $result,
-                $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $setupResource, $args),
+                $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $mageCoreModelResourceSetup, $args),
             );
         }
 
@@ -245,7 +245,7 @@ HELP;
      */
     protected function _getAllSetupResourceObjectThatNeedUpdates(?array $setupResources = null): array
     {
-        $setupResources = $setupResources ?: $this->_getAllSetupResourceObjects();
+        $setupResources = $setupResources !== null && $setupResources !== [] ? $setupResources : $this->_getAllSetupResourceObjects();
         $needsUpdate = [];
         foreach ($setupResources as $name => $setupResource) {
             $db_ver = $this->_getDbVersionFromName($name);
@@ -368,6 +368,7 @@ HELP;
                 if (!$resource->setup) {
                     continue;
                 }
+
                 unset($resource->setup);
             }
         }
@@ -428,7 +429,7 @@ HELP;
         $output = $this->_output;
         $output->writeln(['<error>Magento encountered an error while running the following setup resource.</error>', '', sprintf('    %s ', $name), '', '<error>The Good News:</error> You know the error happened, and the database', 'information below will  help you fix this error!', '', "<error>The Bad News:</error> Because Magento/MySQL can't run setup resources", 'transactionally your database is now in an half upgraded, invalid', 'state. Even if you fix the error, new errors may occur due to', 'this half upgraded, invalid state.', '', 'What to Do: ', '1. Figure out why the error happened, and manually fix your', "   database and/or system so it won't happen again.", '2. Restore your database from backup.', '3. Re-run the scripts.', '', 'Exception Message:', $exception->getMessage(), '']);
 
-        if ($magentoExceptionOutput) {
+        if ($magentoExceptionOutput !== '' && $magentoExceptionOutput !== '0') {
             $dialog = $this->getQuestionHelper();
             $question = new Question('<question>Press Enter to view raw Magento error text:</question> ');
             $dialog->ask($input, $output, $question);
@@ -562,7 +563,7 @@ HELP;
 
         $c = 1;
         $total = count($needsUpdate);
-        foreach ($needsUpdate as $key => $value) {
+        foreach (array_keys($needsUpdate) as $key) {
             $toUpdate = $key;
             $this->_runStructureOrDataScripts($toUpdate, $needsUpdate, self::TYPE_MIGRATION_STRUCTURE);
             $output->writeln(sprintf('(%d of %d)', $c, $total));

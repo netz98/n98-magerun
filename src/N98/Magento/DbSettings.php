@@ -118,7 +118,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
 
         /* @see Varien_Db_Adapter_Pdo_Mysql::_connect */
         if (strpos($config['host'], '/') !== false) {
-            $config['unix_socket'] = (string) $config['host'];
+            $config['unix_socket'] = $config['host'];
             $config['host'] = null;
             $config['port'] = null;
         } elseif (strpos($config['host'], ':') !== false) {
@@ -307,8 +307,6 @@ class DbSettings implements ArrayAccess, IteratorAggregate
 
     /**
      * content of previous $dbSettings field of the DatabaseHelper
-     *
-     * @return array
      */
     public function getConfig(): array
     {
@@ -343,6 +341,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
         if (isset($this->config[$offset])) {
             return $this->config[$offset];
         }
+
         return null;
     }
 

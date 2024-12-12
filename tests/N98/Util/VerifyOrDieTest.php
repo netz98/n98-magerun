@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * this file is part of magerun
  *
@@ -8,7 +11,7 @@
 namespace N98\Util;
 
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 /**
@@ -16,56 +19,41 @@ use RuntimeException;
  *
  * @package N98\Util
  */
-class VerifyOrDieTest extends TestCase
+final class VerifyOrDieTest extends TestCase
 {
-    /**
-     * @test a portable filename passes
-     */
-    public function portableFilename()
+    public function testPortableFilename()
     {
-        self::assertSame('example.txt', VerifyOrDie::filename('example.txt'));
+        $this->assertSame('example.txt', VerifyOrDie::filename('example.txt'));
 
-        self::assertSame('.hidden', VerifyOrDie::filename('.hidden'));
+        $this->assertSame('.hidden', VerifyOrDie::filename('.hidden'));
     }
 
-    /**
-     * @test user-message for verification
-     */
-    public function userMessage()
+    public function testUserMessage()
     {
         $message = sprintf('Database name %s is not portable', var_export('-fail', true));
         try {
             VerifyOrDie::filename('-fail', $message);
             self::fail('An expected exception has not been thrown.');
         } catch (RuntimeException $runtimeException) {
-            self::assertSame($message, $runtimeException->getMessage());
+            $this->assertSame($message, $runtimeException->getMessage());
         }
     }
 
-    /**
-     * @test a filename must have at least one byte
-     */
-    public function zeroLengthFilename()
+    public function testZeroLengthFilename()
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Filename is zero-length string');
         VerifyOrDie::filename('');
     }
 
-    /**
-     * @test
-     */
-    public function invalidArugment()
+    public function testInvalidArugment()
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Parameter basename must be of type string, NULL given');
         VerifyOrDie::filename(null);
     }
 
-    /**
-     * @test a filename must not start with a dash
-     */
-    public function startWithDashFilename()
+    public function testStartWithDashFilename()
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage("Filename '-rf' starts with a dash");
@@ -73,10 +61,9 @@ class VerifyOrDieTest extends TestCase
     }
 
     /**
-     * @test
      * @dataProvider provideNonPortableFilenames
      */
-    public function nonPortableFilenameThrowsException($filename)
+    public function testNonPortableFilenameThrowsException($filename)
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('is not portable');
@@ -86,8 +73,10 @@ class VerifyOrDieTest extends TestCase
     /**
      * @see nonPortableFilenameThrowsException
      */
-    public function provideNonPortableFilenames()
+    public function provideNonPortableFilenames(): \Iterator
     {
-        return [['no-slash-/-in.there'], ['windoze-limits-<>:"/\\|?*'], ['lets-keep-spaces   out']];
+        yield ['no-slash-/-in.there'];
+        yield ['windoze-limits-<>:"/\\|?*'];
+        yield ['lets-keep-spaces   out'];
     }
 }

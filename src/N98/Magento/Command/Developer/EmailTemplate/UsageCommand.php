@@ -37,7 +37,7 @@ class UsageCommand extends AbstractMagentoCommand
         $this->initMagento();
         $templates = $this->findEmailTemplates();
 
-        if (!empty($templates)) {
+        if ($templates !== []) {
             $tableHelper = $this->getTableHelper();
             $tableHelper
                 ->setHeaders(['id', 'Name', 'Scope', 'Scope Id', Path::class])

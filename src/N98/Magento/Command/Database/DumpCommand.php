@@ -301,7 +301,7 @@ HELP;
         $mysqlClientToolConnectionString = $databaseHelper->getMysqlClientToolConnectionString();
 
         $stripTables = $this->stripTables($input, $output);
-        if ($stripTables) {
+        if ($stripTables !== []) {
             // dump structure for strip-tables
             $exec = 'mysqldump ' . $dumpOptions . '--no-data ' . $mysqlClientToolConnectionString;
             $exec .= ' ' . implode(' ', $stripTables);
@@ -326,7 +326,7 @@ HELP;
         $exec .= $this->postDumpPipeCommands();
         $exec = $compressor->getCompressingCommand($exec);
         if (!$input->getOption('stdout')) {
-            $exec .= (count($stripTables) > 0 ? ' >> ' : ' > ') . escapeshellarg($fileName);
+            $exec .= ($stripTables !== [] ? ' >> ' : ' > ') . escapeshellarg($fileName);
         }
 
         $execs[] = $exec;

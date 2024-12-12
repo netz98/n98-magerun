@@ -36,9 +36,9 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
 
     protected function _getConfigDataModel(): Mage_Core_Model_Config_Data
     {
-        /** @var Mage_Core_Model_Config_Data $model */
-        $model = $this->_getModel('core/config_data');
-        return $model;
+        /** @var Mage_Core_Model_Config_Data $mageCoreModelAbstract */
+        $mageCoreModelAbstract = $this->_getModel('core/config_data');
+        return $mageCoreModelAbstract;
     }
 
     /**
@@ -86,7 +86,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
             return $scopeId;
         }
 
-        if ($scope == 'websites' && !is_numeric($scopeId)) {
+        if ($scope === 'websites' && !is_numeric($scopeId)) {
             $website = Mage::app()->getWebsite($scopeId);
             if (!$website) {
                 throw new InvalidArgumentException(
@@ -97,7 +97,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
             return $website->getId();
         }
 
-        if ($scope == 'stores' && !is_numeric($scopeId)) {
+        if ($scope === 'stores' && !is_numeric($scopeId)) {
             $store = Mage::app()->getStore($scopeId);
             if (!$store) {
                 throw new InvalidArgumentException(
@@ -109,13 +109,13 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
         }
 
         $this->invalidScopeId(
-            (string) $scopeId !== (string) (int) $scopeId,
+            $scopeId !== (string) (int) $scopeId,
             'Invalid scope parameter, %s is not an integer value',
             $scopeId,
         );
 
         $this->invalidScopeId(
-            0 - (bool) $allowZeroScope >= (int) $scopeId,
+            0 - $allowZeroScope >= (int) $scopeId,
             'Invalid scope parameter, %s is not a positive integer value',
             $scopeId,
         );

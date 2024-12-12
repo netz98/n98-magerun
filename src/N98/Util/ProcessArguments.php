@@ -60,13 +60,11 @@ class ProcessArguments
      */
     private function conditional(string $key, $value, string $separator = '=', string $prefix = '--'): string
     {
-        $buffer = (string) $value;
-
         if ($key !== '' && $key !== '0') {
-            $buffer = $this->conditionalPrefix($key, $prefix) . $this->conditionalValue($value, $separator);
+            return $this->conditionalPrefix($key, $prefix) . $this->conditionalValue($value, $separator);
         }
 
-        return $buffer;
+        return (string) $value;
     }
 
     private function conditionalPrefix(string $arg, string $prefix = '--'): string

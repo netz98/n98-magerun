@@ -11,8 +11,5 @@ namespace N98\Magento\Command\Developer\Module\Disableenable;
  */
 class DisableCommand extends AbstractCommand
 {
-    /**
-     * @var string
-     */
     protected string $commandName = 'disable';
 }

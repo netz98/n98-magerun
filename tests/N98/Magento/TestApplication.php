@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * this file is part of magerun
  *
@@ -60,8 +63,9 @@ class TestApplication
                 $root = $buffer;
             }
         }
+
         if (empty($root)) {
-            return;
+            return null;
         }
 
         # directory test
@@ -83,7 +87,6 @@ class TestApplication
     }
 
     /**
-     * @param TestCase $testCase
      * @return array
      */
     public static function getConfig(TestCase $testCase)
@@ -96,7 +99,6 @@ class TestApplication
     /**
      * TestApplication constructor.
      *
-     * @param TestCase $testCase
      * @param null $varname [optional] name of the environment variable containing the path to magento-root, "N98_MAGERUN_TEST_MAGENTO_ROOT" by default
      * @param null $basename [optional] of the stop-file, ".n98-magerun" by default
      */
@@ -105,9 +107,11 @@ class TestApplication
         if (null === $varname) {
             $varname = 'N98_MAGERUN_TEST_MAGENTO_ROOT';
         }
+
         if (null === $basename) {
             $basename = '.n98-magerun';
         }
+
         $this->testCase = $testCase;
         $this->varname = $varname;
         $this->basename = $basename;
@@ -132,7 +136,7 @@ class TestApplication
 
         if (null === $root) {
             throw new SkippedTestError(
-                "Please specify environment variable $varname with path to your test magento installation!",
+                sprintf('Please specify environment variable %s with path to your test magento installation!', $varname),
             );
         }
 

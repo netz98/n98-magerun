@@ -214,7 +214,7 @@ class ConfigurationLoader
         if (is_null($this->_userConfig)) {
             $this->_userConfig = [];
             $configLocator = new ConfigLocator($this->_customConfigFilename, $magentoRootFolder);
-            if ($userConfigFile = $configLocator->getUserConfigFile()) {
+            if (($userConfigFile = $configLocator->getUserConfigFile()) instanceof \N98\Magento\Application\ConfigFile) {
                 $this->logDebug('Load user config <comment>' . $userConfigFile->getPath() . '</comment>');
                 $this->_userConfig = $userConfigFile->toArray();
             }
@@ -236,11 +236,11 @@ class ConfigurationLoader
 
         $configLocator = new ConfigLocator($this->_customConfigFilename, $magentoRootFolder);
 
-        if ($projectConfigFile = $configLocator->getProjectConfigFile()) {
+        if (($projectConfigFile = $configLocator->getProjectConfigFile()) instanceof \N98\Magento\Application\ConfigFile) {
             $this->_projectConfig = $projectConfigFile->toArray();
         }
 
-        if ($stopFileConfigFile = $configLocator->getStopFileConfigFile($magerunStopFileFolder)) {
+        if (($stopFileConfigFile = $configLocator->getStopFileConfigFile($magerunStopFileFolder)) instanceof \N98\Magento\Application\ConfigFile) {
             $this->_projectConfig = $stopFileConfigFile->mergeArray($this->_projectConfig);
         }
 

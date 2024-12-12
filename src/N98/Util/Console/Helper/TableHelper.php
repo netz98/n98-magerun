@@ -74,7 +74,7 @@ class TableHelper extends AbstractHelper
 
     public function render(OutputInterface $output, array $rows = []): void
     {
-        if (empty($rows)) {
+        if ($rows === []) {
             $rows = $this->rows;
         }
 
@@ -92,9 +92,6 @@ class TableHelper extends AbstractHelper
         return 'table';
     }
 
-    /**
-     * @return $this
-     */
     public function setRows(array $rows): TableHelper
     {
         $this->rows = $rows;
@@ -103,7 +100,6 @@ class TableHelper extends AbstractHelper
 
     /**
      * @param array<int|string> $headers
-     * @return $this
      */
     public function setHeaders(array $headers): TableHelper
     {

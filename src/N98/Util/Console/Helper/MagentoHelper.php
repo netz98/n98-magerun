@@ -84,9 +84,11 @@ class MagentoHelper extends AbstractHelper
             if (!is_dir($searchFolder)) {
                 continue;
             }
+
             if (!is_readable($searchFolder)) {
                 continue;
             }
+
             $found = $this->_search($searchFolder);
             if ($found) {
                 return true;

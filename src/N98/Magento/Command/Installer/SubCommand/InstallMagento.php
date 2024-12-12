@@ -251,7 +251,7 @@ class InstallMagento extends AbstractSubCommand
         ];
 
         $dbPass = $this->config->getString('db_pass');
-        if (!empty($dbPass)) {
+        if ($dbPass !== '' && $dbPass !== '0') {
             $argv['db_pass'] = $dbPass;
         }
 
@@ -281,7 +281,7 @@ class InstallMagento extends AbstractSubCommand
          * Try to create session folder
          */
         $defaultSessionFolder = $this->config->getString('installationFolder') . '/var/session';
-        if ($sessionSave == 'files' && !is_dir($defaultSessionFolder) && (!mkdir($defaultSessionFolder) && !is_dir($defaultSessionFolder))) {
+        if ($sessionSave === 'files' && !is_dir($defaultSessionFolder) && (!mkdir($defaultSessionFolder) && !is_dir($defaultSessionFolder))) {
             throw new RuntimeException(sprintf('Directory "%s" was not created', $defaultSessionFolder));
         }
     }

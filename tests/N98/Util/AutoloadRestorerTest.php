@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * this file is part of magerun
  *
@@ -14,37 +17,31 @@ use PHPUnit\Framework\TestCase;
  *
  * @package N98\Util
  */
-class AutoloadRestorerTest extends TestCase
+final class AutoloadRestorerTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function creation()
+    public function testCreation()
     {
         $autoloadRestorer = new AutoloadRestorer();
 
-        self::assertInstanceOf(AutoloadRestorer::class, $autoloadRestorer);
+        $this->assertInstanceOf(AutoloadRestorer::class, $autoloadRestorer);
     }
 
-    /**
-     * @test
-     */
-    public function restoration()
+    public function testRestoration()
     {
-        $callbackStub = function () {};
+        $callbackStub = function (): void {};
 
-        self::assertTrue(spl_autoload_register($callbackStub));
+        $this->assertTrue(spl_autoload_register($callbackStub));
 
         $autoloadRestorer = new AutoloadRestorer();
 
-        self::assertContains($callbackStub, spl_autoload_functions());
+        $this->assertContains($callbackStub, spl_autoload_functions());
 
-        self::assertTrue(spl_autoload_unregister($callbackStub));
+        $this->assertTrue(spl_autoload_unregister($callbackStub));
 
-        self::assertNotContains($callbackStub, spl_autoload_functions());
+        $this->assertNotContains($callbackStub, spl_autoload_functions());
 
         $autoloadRestorer->restore();
 
-        self::assertContains($callbackStub, spl_autoload_functions());
+        $this->assertContains($callbackStub, spl_autoload_functions());
     }
 }

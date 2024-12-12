@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TestModule;
 
 use N98\Magento\Command\AbstractMagentoCommand;
@@ -22,6 +24,7 @@ class FooCommand extends AbstractMagentoCommand
         if (!$this->initMagento()) {
             return Command::INVALID;
         }
+
         return Command::SUCCESS;
     }
 }

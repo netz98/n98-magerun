@@ -41,7 +41,7 @@ class AutoloadRestorer
         $unregistered = [];
         $current = spl_autoload_functions();
 
-        if (!$this->snapshot || !$current) {
+        if (!$this->snapshot || $current === []) {
             return $unregistered;
         }
 
@@ -49,8 +49,10 @@ class AutoloadRestorer
             if (in_array($callback, $current, true)) {
                 continue;
             }
+
             $unregistered[] = $callback;
         }
+
         return $unregistered;
     }
 }

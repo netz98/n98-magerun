@@ -67,7 +67,7 @@ class DatabaseHelper extends AbstractHelper
      */
     public function getConnection(?OutputInterface $output = null): PDO
     {
-        if (!$this->_connection) {
+        if (!$this->_connection instanceof \PDO) {
             $this->_connection = $this->getDbSettings($output)->getConnection();
         }
 
@@ -106,6 +106,7 @@ class DatabaseHelper extends AbstractHelper
                 return true;
             }
         }
+
         return false;
     }
 
@@ -432,9 +433,10 @@ class DatabaseHelper extends AbstractHelper
             }
 
             foreach ($result as $table) {
-                if (true === $withoutPrefix) {
+                if ($withoutPrefix) {
                     $table['Name'] = str_replace($prefix, '', $table['Name']);
                 }
+
                 $return[$table['Name']] = $table;
             }
 
@@ -446,7 +448,7 @@ class DatabaseHelper extends AbstractHelper
 
     public function getDbSettings(?OutputInterface $output = null): ?DbSettings
     {
-        if ($this->dbSettings) {
+        if ($this->dbSettings instanceof \N98\Magento\DbSettings) {
             return $this->dbSettings;
         }
 
@@ -454,7 +456,7 @@ class DatabaseHelper extends AbstractHelper
 
         $this->detectDbSettings($output);
 
-        if (!$this->dbSettings) {
+        if (!$this->dbSettings instanceof \N98\Magento\DbSettings) {
             throw new RuntimeException('Database settings fatal error');
         }
 
@@ -582,7 +584,6 @@ class DatabaseHelper extends AbstractHelper
     /**
      * small helper method to obtain an object of type OutputInterface
      *
-     * @param OutputInterface|null $output
      *
      * @return OutputInterface
      */

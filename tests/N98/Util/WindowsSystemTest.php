@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * this file is part of magerun
  *
@@ -15,38 +18,41 @@ use PHPUnit\Framework\TestCase;
  * @package N98\Util
  * @requires OS win
  */
-class WindowsSystemTest extends TestCase
+final class WindowsSystemTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function isProgramInstalled()
+    public function testIsProgramInstalled()
     {
-        self::assertTrue(WindowsSystem::isProgramInstalled('notepad'));
+        $this->assertTrue(WindowsSystem::isProgramInstalled('notepad'));
 
-        self::assertFalse(WindowsSystem::isProgramInstalled('notepad-that-never-made-it-into-windows-kernel'));
+        $this->assertFalse(WindowsSystem::isProgramInstalled('notepad-that-never-made-it-into-windows-kernel'));
 
-        self::assertFalse(WindowsSystem::isProgramInstalled('invalid\\command*name|thisis'));
+        $this->assertFalse(WindowsSystem::isProgramInstalled('invalid\\command*name|thisis'));
     }
 
     /**
      * @see isExecutableName
      * @return array
      */
-    public function provideExecutableNames()
+    public function provideExecutableNames(): \Iterator
     {
-        return [['notepad', false], ['notepad.com', true], ['notepad.exe', true], ['notepad.exe.exe', true], ['notepad.eXe', true], ['notepad.EXE', true], ['notepad.bat', true], ['notepad.txt', false]];
+        yield ['notepad', false];
+        yield ['notepad.com', true];
+        yield ['notepad.exe', true];
+        yield ['notepad.exe.exe', true];
+        yield ['notepad.eXe', true];
+        yield ['notepad.EXE', true];
+        yield ['notepad.bat', true];
+        yield ['notepad.txt', false];
     }
 
     /**
-     * @test
      *
      * @param string $name
      * @param bool $expected
      * @dataProvider provideExecutableNames
      */
-    public function isExecutableName($name, $expected)
+    public function testIsExecutableName($name, $expected)
     {
-        self::assertSame($expected, WindowsSystem::isExecutableName($name), $name);
+        $this->assertSame($expected, WindowsSystem::isExecutableName($name), $name);
     }
 }

@@ -68,6 +68,7 @@ abstract class AbstractSubCommand implements SubCommandInterface
         if ($this->input->getOption($name) !== null) {
             return $this->getCommand()->parseBoolOption($this->input->getOption($name));
         }
+
         $questionHelper = $this->getCommand()->getQuestionHelper();
         $question = new Question(
             sprintf(
@@ -99,6 +100,7 @@ abstract class AbstractSubCommand implements SubCommandInterface
         if (is_null($value)) {
             return $default;
         }
+
         if (is_bool($value)) {
             return $value;
         }

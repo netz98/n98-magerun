@@ -86,7 +86,7 @@ abstract class AbstractMagentoCommand extends Command
 
     protected function _getWebsiteCodeById(int $websiteId): string
     {
-        if (empty($this->_websiteCodeMap)) {
+        if ($this->_websiteCodeMap === []) {
             $this->_initWebsites();
         }
 
@@ -99,7 +99,7 @@ abstract class AbstractMagentoCommand extends Command
 
     protected function _getWebsiteIdByCode(string $websiteCode): int
     {
-        if (empty($this->_websiteCodeMap)) {
+        if ($this->_websiteCodeMap === []) {
             $this->_initWebsites();
         }
 
@@ -218,7 +218,7 @@ abstract class AbstractMagentoCommand extends Command
 
         $magentoHelper = new MagentoHelper();
         $magentoHelper->detect($targetFolder);
-        if ($this->isSourceTypeRepository($package->getSourceType()) && $magentoHelper->getRootFolder() == $targetFolder) {
+        if ($this->isSourceTypeRepository($package->getSourceType()) && $magentoHelper->getRootFolder() === $targetFolder) {
             $package->setInstallationSource('source');
             $this->checkRepository($package, $targetFolder);
             $downloadManager->update($package, $package, $targetFolder);
@@ -270,7 +270,7 @@ abstract class AbstractMagentoCommand extends Command
     protected function normalizePath(string $path): string
     {
         if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-            $path = strtr($path, '/', '\\');
+            return strtr($path, '/', '\\');
         }
 
         return $path;
@@ -500,7 +500,7 @@ abstract class AbstractMagentoCommand extends Command
         $configBag = new ConfigBag();
 
         $commandConfig = $this->getCommandConfig();
-        if (empty($commandConfig)) {
+        if ($commandConfig === []) {
             $commandConfig = [];
         }
 

@@ -80,8 +80,10 @@ HELP;
             if (!$process) {
                 throw new InvalidArgumentException(sprintf('Indexer "%s" was not found!', $indexCode));
             }
+
             $processes[] = $process;
         }
+
         return $processes;
     }
 

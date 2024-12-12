@@ -21,6 +21,7 @@ class BinaryString
                 unset($array[$key]);
             }
         }
+
         return $array;
     }
 

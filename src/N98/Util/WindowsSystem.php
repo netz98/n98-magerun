@@ -28,7 +28,10 @@ final class WindowsSystem
      */
     private static function getInstance(): WindowsSystem
     {
-        self::$windowsSystem || (self::$windowsSystem = new WindowsSystem()) instanceof \N98\Util\WindowsSystem;
+        if (!self::$windowsSystem instanceof \N98\Util\WindowsSystem) {
+            self::$windowsSystem = new WindowsSystem();
+        }
+
         return self::$windowsSystem;
     }
 

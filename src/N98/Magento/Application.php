@@ -49,9 +49,6 @@ class Application extends BaseApplication
      */
     public const APP_VERSION = '3.0.0-dev';
 
-    /**
-     * @var string
-     */
     private static string $logo = "
      ___ ___
  _ _/ _ ( _ )___ _ __  __ _ __ _ ___ _ _ _  _ _ _
@@ -220,8 +217,6 @@ class Application extends BaseApplication
 
     /**
      * Add own helpers to helper-set.
-     *
-     * @return void
      */
     protected function registerHelpers(): void
     {
@@ -274,7 +269,7 @@ class Application extends BaseApplication
     {
         trigger_error(__METHOD__ . ' moved, use config directly instead', E_USER_DEPRECATED);
 
-        return 0 < count($this->config->getConfig(['commands', 'customCommands']));
+        return [] !== $this->config->getConfig(['commands', 'customCommands']);
     }
 
     protected function registerCustomCommands(): void
@@ -298,7 +293,7 @@ class Application extends BaseApplication
      */
     public function add(Command $command): Command
     {
-        if ($this->config) {
+        if ($this->config instanceof \N98\Magento\Application\Config) {
             $this->config->registerConfigCommandAlias($command);
         }
 
@@ -361,6 +356,7 @@ class Application extends BaseApplication
 
             return false;
         }
+
         return null;
     }
 
@@ -538,14 +534,14 @@ class Application extends BaseApplication
         $input = $input instanceof InputInterface ? $input : new ArgvInput();
         $output = $output instanceof OutputInterface ? $output : new ConsoleOutput();
 
-        if (null !== $this->config) {
+        if ($this->config instanceof \N98\Magento\Application\Config) {
             throw new UnexpectedValueException('Config already initialized');
         }
 
         $loadExternalConfig = !$input->hasParameterOption('--skip-config');
         $this->config = new Config($initConfig, $this->isPharMode(), $output);
         $config = $this->config;
-        if ($this->configurationLoader) {
+        if ($this->configurationLoader instanceof \N98\Magento\Application\ConfigurationLoader) {
             $config->setLoader($this->configurationLoader);
         }
 
@@ -632,7 +628,7 @@ class Application extends BaseApplication
         Initialiser::bootstrap($this->_magentoRootFolder);
 
         // skip Mage::app init routine and return
-        if ($soft === true) {
+        if ($soft) {
             return;
         }
 
@@ -655,9 +651,9 @@ class Application extends BaseApplication
 
         unset($initConfig, $output);
 
-        $loader = $this->config ? $this->config->getLoader() : $this->configurationLoader;
+        $loader = $this->config instanceof \N98\Magento\Application\Config ? $this->config->getLoader() : $this->configurationLoader;
 
-        if (!$loader) {
+        if (!$loader instanceof \N98\Magento\Application\ConfigurationLoader) {
             throw new RuntimeException('ConfigurationLoader is not yet available, initialize it or Config first');
         }
 
@@ -669,7 +665,7 @@ class Application extends BaseApplication
      */
     public function setConfigurationLoader(ConfigurationLoader $configurationLoader)
     {
-        if ($this->config) {
+        if ($this->config instanceof \N98\Magento\Application\Config) {
             $this->config->setLoader($configurationLoader);
         } else {
             /* inject loader to be used later when config is created in */

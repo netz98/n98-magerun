@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Util;
 
 use PHPUnit\Framework\TestCase;
@@ -10,33 +12,24 @@ use RuntimeException;
  *
  * @package N98\Util
  */
-class ExecTest extends TestCase
+final class ExecTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function commandOnly()
+    public function testCommandOnly()
     {
         Exec::run('echo test', $output, $actual);
 
-        self::assertSame(0, $actual);
+        $this->assertSame(0, $actual);
     }
 
-    /**
-     * @test
-     */
-    public function fullParameters()
+    public function testFullParameters()
     {
         Exec::run('echo test', $commandOutput, $returnCode);
 
-        self::assertEquals(Exec::CODE_CLEAN_EXIT, $returnCode);
-        self::assertStringStartsWith('test', $commandOutput);
+        $this->assertSame(Exec::CODE_CLEAN_EXIT, $returnCode);
+        $this->assertStringStartsWith('test', $commandOutput);
     }
 
-    /**
-     * @test
-     */
-    public function exception()
+    public function testException()
     {
         $this->expectException(RuntimeException::class);
         Exec::run('foobar');

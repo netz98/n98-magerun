@@ -24,7 +24,8 @@ return $config
     ->setFinder(
         PhpCsFixer\Finder::create()
             ->in([
-                __DIR__,
+                __DIR__ . '/src',
+                __DIR__ . '/tests',
             ])
             ->name('*.php')
             ->ignoreDotFiles(true)

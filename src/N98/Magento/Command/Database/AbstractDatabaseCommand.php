@@ -24,8 +24,8 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
 
     protected function detectDbSettings(OutputInterface $output, ?string $connectionNode = null): void
     {
-        $database           = $this->getDatabaseHelper();
-        $this->dbSettings   = $database->getDbSettings($output);
+        $databaseHelper           = $this->getDatabaseHelper();
+        $this->dbSettings   = $databaseHelper->getDbSettings($output);
     }
 
     /**
@@ -33,10 +33,11 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
      */
     public function __get(string $name)
     {
-        if ($name == '_connection') {
+        if ($name === '_connection') {
             // TODO(tk): deprecate
             return $this->getDatabaseHelper()->getConnection();
         }
+
         return null;
     }
 

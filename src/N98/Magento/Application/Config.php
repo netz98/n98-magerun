@@ -48,7 +48,7 @@ class Config
     public function __construct(array $initConfig = [], bool $isPharMode = false, ?OutputInterface $output = null)
     {
         $this->initConfig = $initConfig;
-        $this->isPharMode = (bool) $isPharMode;
+        $this->isPharMode = $isPharMode;
         $this->output = $output instanceof OutputInterface ? $output : new NullOutput();
     }
 
@@ -219,7 +219,7 @@ class Config
 
     public function getLoader(): ConfigurationLoader
     {
-        if (!$this->configurationLoader) {
+        if (!$this->configurationLoader instanceof \N98\Magento\Application\ConfigurationLoader) {
             $this->configurationLoader = $this->createLoader($this->initConfig, $this->isPharMode, $this->output);
             $this->initConfig = [];
         }

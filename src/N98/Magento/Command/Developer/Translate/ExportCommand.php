@@ -65,6 +65,7 @@ class ExportCommand extends AbstractMagentoCommand
             foreach ($result as $row) {
                 fputcsv($fopen, [$row['string'], $row['translate']]);
             }
+
             fclose($fopen);
         }
 

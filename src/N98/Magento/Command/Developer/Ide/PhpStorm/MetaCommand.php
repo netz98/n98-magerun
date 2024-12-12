@@ -117,7 +117,7 @@ class MetaCommand extends AbstractMagentoCommand
 
         $parts = explode('/', $path);
         $parts = array_map('lcfirst', $parts);
-        if ($path == 'Data' && ($group == 'helpers')) {
+        if ($path == 'Data' && ($group === 'helpers')) {
             array_pop($parts);
         }
 
@@ -174,13 +174,13 @@ class MetaCommand extends AbstractMagentoCommand
         /**
          * Generate resource helper only for Magento >= EE 1.11 or CE 1.6
          */
-        if ($group == 'resource helpers') {
+        if ($group === 'resource helpers') {
             return $this->getResourceHelperMap();
         }
 
         $classes = [];
         foreach ($this->getGroupXmlDefinition($group) as $prefix => $varienSimplexmlElement) {
-            if ($group == 'resource models') {
+            if ($group === 'resource models') {
                 if (empty($varienSimplexmlElement->resourceModel)) {
                     continue;
                 }
@@ -193,9 +193,11 @@ class MetaCommand extends AbstractMagentoCommand
             } else {
                 $classPrefix = (string) ($varienSimplexmlElement->class);
             }
+
             if ($classPrefix === '') {
                 continue;
             }
+
             if ($classPrefix === '0') {
                 continue;
             }
@@ -259,7 +261,7 @@ class MetaCommand extends AbstractMagentoCommand
                     if ($addToList) {
                         $classes[$classIdentifier] = $classNameAfterRewrites;
 
-                        if ($group == 'helpers' && strpos($classIdentifier, '/') === false) {
+                        if ($group === 'helpers' && strpos($classIdentifier, '/') === false) {
                             $classes[$classIdentifier . '/data'] = $classNameAfterRewrites;
                         }
                     }
@@ -480,7 +482,7 @@ PHP;
 
     protected function getGroupXmlDefinition(string $group): ?Varien_Simplexml_Element
     {
-        if ($group == 'resource models') {
+        if ($group === 'resource models') {
             $group = 'models';
         }
 

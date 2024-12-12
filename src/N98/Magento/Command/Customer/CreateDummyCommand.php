@@ -102,6 +102,7 @@ HELP;
                     $address = $this->createAddress($generator);
                     $customer->addAddress($address);
                 }
+
                 $customer->save();
                 $customer->setConfirmation(null);
                 $customer->save();
