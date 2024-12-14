@@ -25,7 +25,7 @@ final class IncrementalCommandTest extends TestCase
         $this->assertSame('barBaz', $actual);
     }
 
-    protected function protectedMethod($arg): string
+    public function protectedMethod($arg): string
     {
         $this->assertSame('fooBar', $arg);
         $this->addToAssertionCount(1);

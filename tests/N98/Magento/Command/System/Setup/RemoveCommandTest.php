@@ -30,7 +30,7 @@ final class RemoveCommandTest extends TestCase
 
         $coreResource = $this->getMockBuilder(Mage_Core_Model_Resource::class)
             ->setMethods(['getConnection'])
-            ->getMock();;
+            ->getMock();
 
         $coreResource->expects($this->once())
             ->method('getConnection')
@@ -68,7 +68,7 @@ final class RemoveCommandTest extends TestCase
 
         $coreResource = $this->getMockBuilder(Mage_Core_Model_Resource::class)
             ->setMethods(['getConnection'])
-            ->getMock();;
+            ->getMock();
 
         $coreResource->expects($this->once())
             ->method('getConnection')
@@ -110,7 +110,7 @@ final class RemoveCommandTest extends TestCase
 
         $coreResource = $this->getMockBuilder(Mage_Core_Model_Resource::class)
             ->setMethods(['getConnection', 'getTableName'])
-            ->getMock();;
+            ->getMock();
 
         $coreResource->expects($this->once())
             ->method('getConnection')
