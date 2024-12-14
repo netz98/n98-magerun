@@ -1,4 +1,4 @@
-name: PHP-CS-Fixer
+name: Rector
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   php-cs-fixer:
-    name: Validation
+    name: Rector
     runs-on: [ubuntu-latest]
 
     steps:

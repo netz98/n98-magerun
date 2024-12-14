@@ -11,7 +11,7 @@ use BadMethodCallException;
 /**
  * Class AutoloadHandlerTest
  *
- * @covers \N98\Util\AutoloadHandler
+ * @covers AutoloadHandler
  * @package N98\Util
  *
  * @author Tom Klingenberg <https://github.com/ktomk>
@@ -40,7 +40,7 @@ final class AutoloadHandlerTest extends TestCase
     public function testNoRegistrationOnCreation()
     {
         $this->expectException(Error::class);
-        $this->expectExceptionMessage('Typed property N98\Util\AutoloadHandler::$splRegistered must not be accessed before initialization');
+        $this->expectExceptionMessage('Typed property ' . AutoloadHandler::class . '::$splRegistered must not be accessed before initialization');
 
         $handler = $this->create(null, AutoloadHandler::NO_AUTO_REGISTER);
         $handler->disable(); // assertions require a disabled handler b/c of exceptions

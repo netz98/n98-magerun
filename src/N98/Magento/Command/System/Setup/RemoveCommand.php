@@ -62,13 +62,13 @@ class RemoveCommand extends AbstractSetupCommand
 
     public function removeSetupResource(string $moduleName, string $setupResource, OutputInterface $output): void
     {
-        $mageCoreModelAbstract = $this->getMageCoreResource();
-        $writeAdapter = $mageCoreModelAbstract->getConnection('core_write');
+        $mageCoreModelResource = $this->getMageCoreResource();
+        $writeAdapter = $mageCoreModelResource->getConnection('core_write');
         if (!$writeAdapter) {
             throw new RuntimeException('Database not configured');
         }
 
-        $table = $mageCoreModelAbstract->getTableName('core_resource');
+        $table = $mageCoreModelResource->getTableName('core_resource');
 
         if ($writeAdapter->delete($table, ['code = ?' => $setupResource]) > 0) {
             $output->writeln(

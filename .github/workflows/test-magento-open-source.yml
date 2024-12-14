@@ -68,7 +68,7 @@ jobs:
         run: echo "N98_MAGERUN_TEST_MAGENTO_ROOT=${{ github.workspace }}/magento" >> $GITHUB_ENV
 
       - name: Run tests
-        run: php -f vendor/bin/phpunit
+        run: php vendor/bin/phpunit --configuration .phpunit.dist.xml
         env:
           COMPOSER_VENDOR_PATH : "${{ github.workspace }}/magento/vendor"
 
