@@ -41,6 +41,8 @@
         "mikey179/vfsstream": "^1.6",
         "phing/phing": "~2.17.0",
         "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^9",
         "rector/rector": "^2",
         "seld/phar-utils": "~1.2.0"
