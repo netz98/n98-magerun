@@ -38,10 +38,10 @@ class AutoloadRestorer
 
     private function getUnregisteredLoaders(): array
     {
-        $unregistered = [];
-        $current = spl_autoload_functions();
+        $unregistered   = [];
+        $current        = spl_autoload_functions();
 
-        if (!$this->snapshot || $current === []) {
+        if (!$this->snapshot || $current === [] || $current === false) {
             return $unregistered;
         }
 

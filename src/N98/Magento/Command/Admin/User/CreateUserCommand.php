@@ -56,7 +56,7 @@ class CreateUserCommand extends AbstractAdminUserCommand
                 // create new role if not yet existing
                 $role = $this->getRoleModel()->load('Development', 'role_name');
                 if (!$role->getId()) {
-                    $role->setName('Development')
+                    $role->setName('Development') # @phpstan-ignore method.notFound (missing in current OpenMage)
                         ->setRoleType('G')
                         ->save();
 

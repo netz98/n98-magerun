@@ -2,14 +2,9 @@
 
 declare(strict_types=1);
 
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
-
 namespace N98\Util;
 
+use Error;
 use PHPUnit\Framework\TestCase;
 use BadMethodCallException;
 
@@ -18,6 +13,8 @@ use BadMethodCallException;
  *
  * @covers \N98\Util\AutoloadHandler
  * @package N98\Util
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
 final class AutoloadHandlerTest extends TestCase
 {
@@ -40,10 +37,10 @@ final class AutoloadHandlerTest extends TestCase
         $this->assertIsCallable($handler);
     }
 
-    public function testNoRegistrationOnCreation(): never
+    public function testNoRegistrationOnCreation()
     {
-        $this->expectException(BadMethodCallException::class);
-        $this->expectExceptionMessage('Autoload callback is not callable');
+        $this->expectException(Error::class);
+        $this->expectExceptionMessage('Typed property N98\Util\AutoloadHandler::$splRegistered must not be accessed before initialization');
 
         $handler = $this->create(null, AutoloadHandler::NO_AUTO_REGISTER);
         $handler->disable(); // assertions require a disabled handler b/c of exceptions
@@ -98,7 +95,7 @@ final class AutoloadHandlerTest extends TestCase
 
         $handler = $this->create(null, AutoloadHandler::NO_EXCEPTION);
         $this->assertFalse($handler->__invoke('Test'));
-        $this->assertObjectNotHasAttribute('count', $calls);
+        $this->assertObjectNotHasProperty('count', $calls);
 
         $handler->setCallback($assertAble);
         $this->assertTrue($handler->__invoke('Test'));
@@ -109,7 +106,7 @@ final class AutoloadHandlerTest extends TestCase
         $this->assertSame(1, $calls->count['Test']);
     }
 
-    public function testDisablingAndEnabling(): never
+    public function testDisablingAndEnabling()
     {
         $handler = $this->create(null);
         $handler->setEnabled(false);

@@ -129,7 +129,10 @@ final class ConfigTest extends TestCase
 
     public function testRegisterCustomAutoloaders()
     {
-        $array = ['autoloaders'      => ['$prefix' => '$path'], 'autoloaders_psr4' => ['$prefix\\' => '$path']];
+        $array = [
+            'autoloaders'      => ['$prefix' => '$path'],
+            'autoloaders_psr4' => ['$prefix\\' => '$path'],
+        ];
 
         $expected =
             '<debug>Registered PSR-0 autoloader </debug> $prefix -> $path' . "\n" .

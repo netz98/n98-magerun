@@ -146,7 +146,10 @@ class InfoCommand extends AbstractMagentoCommand
 
     protected function findVendors(): void
     {
-        $codePools = ['core'      => $this->_magentoRootFolder . '/app/code/core/', 'community' => $this->_magentoRootFolder . '/app/code/community/'];
+        $codePools = [
+            'core'      => $this->_magentoRootFolder . '/app/code/core/',
+            'community' => $this->_magentoRootFolder . '/app/code/community/',
+        ];
 
         if (is_dir($this->_magentoRootFolder . '/app/code/local/')) {
             $codePools['local'] = $this->_magentoRootFolder . '/app/code/local/';
@@ -164,12 +167,11 @@ class InfoCommand extends AbstractMagentoCommand
             $vendors = iterator_to_array($finder);
             $vendors = array_map(
                 function ($value) use ($codePoolDir) {
-                    return str_replace($codePoolDir, '', $value);
+                    return str_replace($codePoolDir, '', (string) $value);
                 },
                 $vendors,
             );
 
-            // @phpstan-ignore argument.type
             $this->infos['Vendors (' . $codePool . ')'] = implode(', ', $vendors);
         }
     }

@@ -25,17 +25,18 @@ class InstallComposer extends AbstractSubCommand
      */
     public function execute(): void
     {
+        $composerBin = null;
         if (OperatingSystem::isProgramInstalled('composer.phar')) {
             $composerBin = 'composer.phar';
         } elseif (OperatingSystem::isProgramInstalled('composer')) {
             $composerBin = 'composer';
         }
 
-        if ($composerBin === '0') {
+        if (is_null($composerBin)) {
             $composerBin = $this->downloadComposer();
         }
 
-        if ($composerBin === '0') {
+        if ($composerBin === '' || $composerBin === '0') {
             throw new Exception('Cannot find or install composer. Please try it manually. https://getcomposer.org/');
         }
 
@@ -45,8 +46,8 @@ class InstallComposer extends AbstractSubCommand
         $composerUseSamePhpBinary = $this->hasFlagOrOptionalBoolOption('composer-use-same-php-binary', false);
         if ($composerUseSamePhpBinary) {
             $this->config['composer_bin'] = [
-                OperatingSystem::getCurrentPhpBinary(),
-                OperatingSystem::locateProgram($composerBin),
+                OperatingSystem::getPhpBinary(),
+                OperatingSystem::isProgramInstalled($composerBin),
             ];
         }
 

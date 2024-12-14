@@ -211,10 +211,12 @@ class CreateCommand extends AbstractMagentoCommand
 
     protected function writeModuleConfig(OutputInterface $output): void
     {
-        $outFile = $this->moduleDirectory . '/etc/config.xml';
+        $outFile    = $this->moduleDirectory . '/etc/config.xml';
+        /** @var TwigHelper $twigHelper */
+        $twigHelper = $this->getHelper('twig');
         file_put_contents(
             $outFile,
-            $this->getHelper('twig')->render('dev/module/create/app/etc/modules/config.twig', $this->twigVars),
+            $twigHelper->render('dev/module/create/app/etc/modules/config.twig', $this->twigVars),
         );
 
         $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
@@ -222,10 +224,12 @@ class CreateCommand extends AbstractMagentoCommand
 
     protected function writeModmanFile(OutputInterface $output): void
     {
-        $outFile = $this->_magentoRootFolder . '/../modman';
+        $outFile    = $this->_magentoRootFolder . '/../modman';
+        /** @var TwigHelper $twigHelper */
+        $twigHelper = $this->getHelper('twig');
         file_put_contents(
             $outFile,
-            $this->getHelper('twig')->render('dev/module/create/modman.twig', $this->twigVars),
+            $twigHelper->render('dev/module/create/modman.twig', $this->twigVars),
         );
         $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
     }
@@ -243,11 +247,12 @@ class CreateCommand extends AbstractMagentoCommand
             return;
         }
 
-        $outFile = $this->modmanMode ? $this->_magentoRootFolder . '/../readme.md' : $this->moduleDirectory . '/etc/readme.md';
-
+        $outFile    = $this->modmanMode ? $this->_magentoRootFolder . '/../readme.md' : $this->moduleDirectory . '/etc/readme.md';
+        /** @var TwigHelper $twigHelper */
+        $twigHelper = $this->getHelper('twig');
         file_put_contents(
             $outFile,
-            $this->getHelper('twig')->render('dev/module/create/app/etc/modules/readme.twig', $this->twigVars),
+            $twigHelper->render('dev/module/create/app/etc/modules/readme.twig', $this->twigVars),
         );
         $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
     }
@@ -267,9 +272,12 @@ class CreateCommand extends AbstractMagentoCommand
             $outFile = $this->moduleDirectory . '/etc/composer.json';
         }
 
+        /** @var TwigHelper $twigHelper */
+        $twigHelper = $this->getHelper('twig');
+
         file_put_contents(
             $outFile,
-            $this->getHelper('twig')->render('dev/module/create/composer.twig', $this->twigVars),
+            $twigHelper->render('dev/module/create/composer.twig', $this->twigVars),
         );
         $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
     }
@@ -285,7 +293,10 @@ class CreateCommand extends AbstractMagentoCommand
                     mkdir($outFileDir, 0777, true);
                 }
 
-                file_put_contents($outFile, $this->getHelper('twig')->render($template, $this->twigVars));
+                /** @var TwigHelper $twigHelper */
+                $twigHelper = $this->getHelper('twig');
+                file_put_contents($outFile, $twigHelper->render($template, $this->twigVars));
+
                 $output->writeln('<info>Created file: <comment>' . $outFile . '<comment></info>');
             }
         }

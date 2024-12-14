@@ -177,9 +177,10 @@ HELP;
     }
 
     /**
+     * @return array|string
      * @throws ReflectionException
      */
-    protected function _callProtectedMethodFromObject(string $method, object $object, array $args = []): array
+    protected function _callProtectedMethodFromObject(string $method, object $object, array $args = [])
     {
         $reflectionClass = new ReflectionClass($object);
         $reflectionMethod = $reflectionClass->getMethod($method);
@@ -292,7 +293,15 @@ HELP;
 
             $moduleConfig = $this->_getProtectedPropertyFromObject('_moduleConfig', $setupResource);
             $output->writeln(
-                ['+--------------------------------------------------+', 'Resource Name:             ' . $name, 'For Module:                ' . $moduleConfig->getName(), 'Class:                     ' . get_class($setupResource), 'Current Structure Version: ' . $dbVersion, 'Current Data Version:      ' . $dbDataVersion, 'Configured Version:        ' . $configVersion],
+                [
+                    '+--------------------------------------------------+',
+                    'Resource Name:             ' . $name,
+                    'For Module:                ' . $moduleConfig->getName(),
+                    'Class:                     ' . get_class($setupResource),
+                    'Current Structure Version: ' . $dbVersion,
+                    'Current Data Version:      ' . $dbDataVersion,
+                    'Configured Version:        ' . $configVersion,
+                ],
             );
 
             $args = ['', (string) $dbVersion, (string) $configVersion];

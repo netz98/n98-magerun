@@ -2,29 +2,24 @@
 
 declare(strict_types=1);
 
-/*
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
-
 namespace N98\Util;
 
+use Generator;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 /**
  * Class FilesystemTest
  * @package N98\Util
+ *
  * @author Aydin Hassan <aydin@hotmail.co.uk>
- * @covers N98\Util\Filesystem
+ * @author Tom Klingenberg <https://github.com/ktomk>
+ *
+ * @covers \N98\Util\Filesystem
  */
 final class FilesystemTest extends TestCase
 {
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
+    private Filesystem $filesystem;
 
     protected function setUp(): void
     {
@@ -209,21 +204,15 @@ final class FilesystemTest extends TestCase
     }
 
     /**
-     * @param int $bytes
-     * @param int $decimalPlaces
-     * @param string $expected
      * @dataProvider convertedBytesProvider
      */
-    public function testConvertBytesToHumanReadable($bytes, $decimalPlaces, $expected)
+    public function testConvertBytesToHumanReadable(int $bytes, int $decimalPlaces, string $expected)
     {
         $res = Filesystem::humanFileSize($bytes, $decimalPlaces);
         $this->assertSame($expected, $res);
     }
 
-    /**
-     * @return array
-     */
-    public static function convertedBytesProvider(): \Iterator
+    public static function convertedBytesProvider(): Generator
     {
         yield [20_000_000, 2, '19.07M'];
         yield [20_000_000, 3, '19.073M'];

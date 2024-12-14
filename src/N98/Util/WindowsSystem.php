@@ -19,7 +19,7 @@ final class WindowsSystem
 
     public const FORBIDDEN_CHARS = '<>:"/\|?*';
 
-    private static WindowsSystem $windowsSystem;
+    private static ?WindowsSystem $windowsSystem;
 
     private array $extensions;
 
@@ -28,7 +28,7 @@ final class WindowsSystem
      */
     private static function getInstance(): WindowsSystem
     {
-        if (!self::$windowsSystem instanceof \N98\Util\WindowsSystem) {
+        if (!self::$windowsSystem instanceof WindowsSystem) {
             self::$windowsSystem = new WindowsSystem();
         }
 

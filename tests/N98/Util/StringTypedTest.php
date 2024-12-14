@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
  * Class StringTypedTest
  *
  * @package N98\Util
- * @covers N98\Util\StringTyped
+ * @covers \N98\Util\StringTyped
  */
 final class StringTypedTest extends TestCase
 {

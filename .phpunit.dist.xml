@@ -13,7 +13,7 @@
          stopOnFailure="false"
          stopOnIncomplete="false"
          stopOnSkipped="false"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd">
   <php>
       <!--
       <env name="N98_MAGERUN_TEST_MAGENTO_ROOT" value="/opt/magento-test-environments/magento_20_0_17/" />

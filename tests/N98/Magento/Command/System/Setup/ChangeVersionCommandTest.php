@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace N98\Magento\Command\System\Setup;
 
 use InvalidArgumentException;
+use Mage_Core_Model_Resource_Db_Collection_Abstract;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -16,7 +17,7 @@ final class ChangeVersionCommandTest extends TestCase
             ->setMethods(['_getResourceSingleton'])
             ->getMock();
 
-        $mock = $this->getMockBuilder('\Mage_Core_Model_Resource_Resource')
+        $mock = $this->getMockBuilder(Mage_Core_Model_Resource_Db_Collection_Abstract::class)
             ->disableOriginalConstructor()
             ->setMethods(['setDbVersion', 'setDataVersion'])
             ->getMock();
@@ -53,7 +54,7 @@ final class ChangeVersionCommandTest extends TestCase
             ->setMethods(['_getResourceSingleton'])
             ->getMock();
 
-        $mock = $this->getMockBuilder('\Mage_Core_Model_Resource_Resource')
+        $mock = $this->getMockBuilder(Mage_Core_Model_Resource_Db_Collection_Abstract::class)
             ->disableOriginalConstructor()
             ->setMethods(['setDbVersion', 'setDataVersion'])
             ->getMock();

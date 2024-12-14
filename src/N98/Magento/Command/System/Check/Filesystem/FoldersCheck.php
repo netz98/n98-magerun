@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\System\Check\Filesystem;
 
+use N98\Magento\Application;
 use N98\Magento\Command\CommandAware;
 use N98\Magento\Command\CommandConfigAware;
 use N98\Magento\Command\System\Check\Result;
 use N98\Magento\Command\System\Check\ResultCollection;
 use N98\Magento\Command\System\Check\SimpleCheck;
-use N98\Magento\Command\System\CheckCommand;
 use Symfony\Component\Console\Command\Command;
 
 /**
@@ -21,15 +21,14 @@ class FoldersCheck implements SimpleCheck, CommandAware, CommandConfigAware
 {
     protected array $_commandConfig;
 
-    /**
-     * @var CheckCommand
-     */
-    protected $_checkCommand;
+    protected Command $_checkCommand;
 
     public function check(ResultCollection $resultCollection): void
     {
-        $folders = $this->_commandConfig['filesystem']['folders'];
-        $magentoRoot = $this->_checkCommand->getApplication()->getMagentoRootFolder();
+        $folders        = $this->_commandConfig['filesystem']['folders'];
+        /** @var Application $app */
+        $app            = $this->_checkCommand->getApplication();
+        $magentoRoot    = $app->getMagentoRootFolder();
 
         foreach ($folders as $folder => $comment) {
             $result = $resultCollection->createResult();

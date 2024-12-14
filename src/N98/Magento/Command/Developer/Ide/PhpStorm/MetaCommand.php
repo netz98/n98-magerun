@@ -178,7 +178,8 @@ class MetaCommand extends AbstractMagentoCommand
             return $this->getResourceHelperMap();
         }
 
-        $classes = [];
+        $classes        = [];
+        $classPrefix    = '';
         foreach ($this->getGroupXmlDefinition($group) as $prefix => $varienSimplexmlElement) {
             if ($group === 'resource models') {
                 if (empty($varienSimplexmlElement->resourceModel)) {

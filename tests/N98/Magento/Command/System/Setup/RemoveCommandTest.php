@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace N98\Magento\Command\System\Setup;
 
 use InvalidArgumentException;
+use Mage_Core_Model_Resource;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use Varien_Db_Adapter_Pdo_Mysql;
 
 /**
  * Class RemoveCommandTest
@@ -17,7 +19,7 @@ final class RemoveCommandTest extends TestCase
 {
     public function testRemoveModule()
     {
-        $mockAdapter = $this->getMockBuilder('\Varien_Db_Adapter_Pdo_Mysql')
+        $mockAdapter = $this->getMockBuilder(Varien_Db_Adapter_Pdo_Mysql::class)
             ->disableOriginalConstructor()
             ->setMethods(['delete'])
             ->getMock();
@@ -26,18 +28,20 @@ final class RemoveCommandTest extends TestCase
             ->method('delete')
             ->willReturn(1);
 
-        $coreResource = $this->createMock(\Mage_Core_Model_Resource::class);
+        $coreResource = $this->getMockBuilder(Mage_Core_Model_Resource::class)
+            ->setMethods(['getConnection'])
+            ->getMock();;
+
         $coreResource->expects($this->once())
             ->method('getConnection')
             ->willReturn($mockAdapter);
 
         $command = $this->getMockBuilder(RemoveCommand::class)
-            ->setMethods(['_getModel'])
+            ->setMethods(['getMageCoreResource'])
             ->getMock();
 
         $command->expects($this->once())
-            ->method('_getModel')
-            ->with('core/resource')
+            ->method('getMageCoreResource')
             ->willReturn($coreResource);
 
         $application = $this->getApplication();
@@ -53,7 +57,7 @@ final class RemoveCommandTest extends TestCase
 
     public function testRemoveBySetupName()
     {
-        $mockAdapter = $this->getMockBuilder('\Varien_Db_Adapter_Pdo_Mysql')
+        $mockAdapter = $this->getMockBuilder(Varien_Db_Adapter_Pdo_Mysql::class)
             ->disableOriginalConstructor()
             ->setMethods(['delete'])
             ->getMock();
@@ -62,18 +66,20 @@ final class RemoveCommandTest extends TestCase
             ->method('delete')
             ->willReturn(1);
 
-        $coreResource = $this->createMock('\Mage_Core_Model_Resource');
+        $coreResource = $this->getMockBuilder(Mage_Core_Model_Resource::class)
+            ->setMethods(['getConnection'])
+            ->getMock();;
+
         $coreResource->expects($this->once())
             ->method('getConnection')
             ->willReturn($mockAdapter);
 
         $command = $this->getMockBuilder(RemoveCommand::class)
-            ->setMethods(['_getModel'])
+            ->setMethods(['getMageCoreResource'])
             ->getMock();
 
         $command->expects($this->once())
-            ->method('_getModel')
-            ->with('core/resource')
+            ->method('getMageCoreResource')
             ->willReturn($coreResource);
 
         $application = $this->getApplication();
@@ -93,7 +99,7 @@ final class RemoveCommandTest extends TestCase
 
     public function testRemoveBySetupNameFailure()
     {
-        $mockAdapter = $this->getMockBuilder('\Varien_Db_Adapter_Pdo_Mysql')
+        $mockAdapter = $this->getMockBuilder(Varien_Db_Adapter_Pdo_Mysql::class)
             ->disableOriginalConstructor()
             ->setMethods(['delete'])
             ->getMock();
@@ -102,7 +108,10 @@ final class RemoveCommandTest extends TestCase
             ->method('delete')
             ->willReturn(0);
 
-        $coreResource = $this->createMock('\Mage_Core_Model_Resource');
+        $coreResource = $this->getMockBuilder(Mage_Core_Model_Resource::class)
+            ->setMethods(['getConnection', 'getTableName'])
+            ->getMock();;
+
         $coreResource->expects($this->once())
             ->method('getConnection')
             ->willReturn($mockAdapter);
@@ -113,12 +122,11 @@ final class RemoveCommandTest extends TestCase
             ->willReturn('core_resource');
 
         $command = $this->getMockBuilder(RemoveCommand::class)
-            ->setMethods(['_getModel'])
+            ->setMethods(['getMageCoreResource'])
             ->getMock();
 
         $command->expects($this->once())
-            ->method('_getModel')
-            ->with('core/resource')
+            ->method('getMageCoreResource')
             ->willReturn($coreResource);
 
         $application = $this->getApplication();

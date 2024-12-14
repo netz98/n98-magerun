@@ -183,12 +183,12 @@ class Config
         $mask = '<debug>Registered %s autoloader </debug> <info>%s</info> -> <comment>%s</comment>';
 
         foreach ($this->getArray('autoloaders') as $prefix => $paths) {
-            $this->debugWriteln(sprintf($mask, self::PSR_0, OutputFormatter::escape($prefix), implode(',', $paths)));
+            $this->debugWriteln(sprintf($mask, self::PSR_0, OutputFormatter::escape($prefix), implode(',', (array) $paths)));
             $classLoader->add($prefix, $paths);
         }
 
         foreach ($this->getArray('autoloaders_psr4') as $prefix => $paths) {
-            $this->debugWriteln(sprintf($mask, self::PSR_4, OutputFormatter::escape($prefix), implode(',', $paths)));
+            $this->debugWriteln(sprintf($mask, self::PSR_4, OutputFormatter::escape($prefix), implode(',', (array) $paths)));
             $classLoader->addPsr4($prefix, $paths);
         }
     }
@@ -219,7 +219,7 @@ class Config
 
     public function getLoader(): ConfigurationLoader
     {
-        if (!$this->configurationLoader instanceof \N98\Magento\Application\ConfigurationLoader) {
+        if (!$this->configurationLoader instanceof ConfigurationLoader) {
             $this->configurationLoader = $this->createLoader($this->initConfig, $this->isPharMode, $this->output);
             $this->initConfig = [];
         }

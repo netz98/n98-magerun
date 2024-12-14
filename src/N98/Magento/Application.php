@@ -65,7 +65,7 @@ class Application extends BaseApplication
     private bool $autoExitShadow = true;
 
     /**
-     * @var ClassLoader|string|null
+     * @var ClassLoader|null
      */
     protected $autoloader;
 
@@ -101,20 +101,16 @@ class Application extends BaseApplication
 
     protected bool $_magentoDetected = false;
 
-    /**
-     * @param ClassLoader|string $autoloader
-     */
-    public function __construct($autoloader = null)
+    public function __construct(?ClassLoader $classLoader = null)
     {
-        $this->autoloader = $autoloader;
+        $this->autoloader = $classLoader;
         parent::__construct(self::APP_NAME, self::APP_VERSION);
     }
 
     /**
-     * @param bool $boolean
      * @return bool previous auto-exit state
      */
-    public function setAutoExit($boolean): bool
+    public function setAutoExit(bool $boolean): bool
     {
         $previous = $this->autoExitShadow;
         $this->autoExitShadow = $boolean;
@@ -293,7 +289,7 @@ class Application extends BaseApplication
      */
     public function add(Command $command): Command
     {
-        if ($this->config instanceof \N98\Magento\Application\Config) {
+        if ($this->config instanceof Config) {
             $this->config->registerConfigCommandAlias($command);
         }
 
@@ -534,7 +530,7 @@ class Application extends BaseApplication
         $input = $input instanceof InputInterface ? $input : new ArgvInput();
         $output = $output instanceof OutputInterface ? $output : new ConsoleOutput();
 
-        if ($this->config instanceof \N98\Magento\Application\Config) {
+        if ($this->config instanceof Config) {
             throw new UnexpectedValueException('Config already initialized');
         }
 
@@ -651,7 +647,7 @@ class Application extends BaseApplication
 
         unset($initConfig, $output);
 
-        $loader = $this->config instanceof \N98\Magento\Application\Config ? $this->config->getLoader() : $this->configurationLoader;
+        $loader = $this->config instanceof Config ? $this->config->getLoader() : $this->configurationLoader;
 
         if (!$loader instanceof \N98\Magento\Application\ConfigurationLoader) {
             throw new RuntimeException('ConfigurationLoader is not yet available, initialize it or Config first');
@@ -665,7 +661,7 @@ class Application extends BaseApplication
      */
     public function setConfigurationLoader(ConfigurationLoader $configurationLoader)
     {
-        if ($this->config instanceof \N98\Magento\Application\Config) {
+        if ($this->config instanceof Config) {
             $this->config->setLoader($configurationLoader);
         } else {
             /* inject loader to be used later when config is created in */

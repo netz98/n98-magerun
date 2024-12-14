@@ -16,7 +16,7 @@ use Symfony\Component\Yaml\Yaml;
  * @package N98\Magento\Application
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
-class ConfigFile
+final class ConfigFile
 {
     private string $buffer;
 
@@ -27,7 +27,7 @@ class ConfigFile
      */
     public static function createFromFile(string $path): ConfigFile
     {
-        $static = new static();
+        $static = new self();
         $static->loadFile($path);
 
         return $static;

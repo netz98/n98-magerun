@@ -96,9 +96,9 @@ class DummyCommand extends AbstractMagentoCommand
             /** @var Mage_Catalog_Model_Category $category */
             $category = Mage::getModel('catalog/category');
             $category->setName($name);
-            $category->setIsActive(self::DEFAULT_CATEGORY_STATUS);
+            $category->setIsActive(self::DEFAULT_CATEGORY_STATUS); # @phpstan-ignore argument.type (needs to be fixed OpenMage)
             $category->setDisplayMode('PRODUCTS');
-            $category->setIsAnchor(self::DEFAULT_CATEGORY_ANCHOR);
+            $category->setIsAnchor(self::DEFAULT_CATEGORY_ANCHOR); # @phpstan-ignore argument.type (needs to be fixed OpenMage)
             $this->setCategoryStoreId($category, $storeId);
             /** @var Mage_Catalog_Model_Category $parentCategory */
             $parentCategory = Mage::getModel('catalog/category');
@@ -120,9 +120,9 @@ class DummyCommand extends AbstractMagentoCommand
                 /** @var Mage_Catalog_Model_Category $category */
                 $category = Mage::getModel('catalog/category');
                 $category->setName($name_child);
-                $category->setIsActive(self::DEFAULT_CATEGORY_STATUS);
+                $category->setIsActive(self::DEFAULT_CATEGORY_STATUS); # @phpstan-ignore argument.type (needs to be fixed OpenMage)
                 $category->setDisplayMode('PRODUCTS');
-                $category->setIsAnchor(self::DEFAULT_CATEGORY_ANCHOR);
+                $category->setIsAnchor(self::DEFAULT_CATEGORY_ANCHOR); # @phpstan-ignore argument.type (needs to be fixed OpenMage)
                 $this->setCategoryStoreId($category, $storeId);
                 /** @var Mage_Catalog_Model_Category $parentCategoryModel */
                 $parentCategoryModel = Mage::getModel('catalog/category');

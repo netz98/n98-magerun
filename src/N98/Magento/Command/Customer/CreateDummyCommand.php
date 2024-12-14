@@ -95,8 +95,8 @@ HELP;
             if (!$customer->getId()) {
                 $customer->setWebsiteId((int) $website->getId());
                 $customer->setEmail($email);
-                $customer->setFirstname($generator->firstName);
-                $customer->setLastname($generator->lastName);
+                $customer->setFirstname($generator->firstName); # @phpstan-ignore method.notFound (missing in current OpenMage)
+                $customer->setLastname($generator->lastName);   # @phpstan-ignore method.notFound (missing in current OpenMage)
                 $customer->setPassword($password);
                 if ($input->hasOption('with-addresses')) {
                     $address = $this->createAddress($generator);
@@ -142,7 +142,7 @@ HELP;
             ->addCountryCodeFilter($faker->countryCode, 'iso2')
             ->getFirstItem();
 
-        $regions = $country->getRegions()->getData();
+        $regions = $country->getRegions()->getData(); # @phpstan-ignore method.notFound (missing in current OpenMage)
         $region = $regions ? $regions[array_rand($regions)] : null;
 
         $mageCustomerModelAddress = $this->getAddressModel();
@@ -157,7 +157,7 @@ HELP;
         $mageCustomerModelAddress->setStreet($faker->streetAddress);
         $mageCustomerModelAddress->setPostcode($faker->postcode);
         $mageCustomerModelAddress->setTelephone($faker->phoneNumber);
-        $mageCustomerModelAddress->setIsSubscribed($faker->boolean());
+        $mageCustomerModelAddress->setIsSubscribed($faker->boolean()); # @phpstan-ignore method.notFound (missing in current OpenMage)
 
         $mageCustomerModelAddress->setIsDefaultShipping(true);
         $mageCustomerModelAddress->setIsDefaultBilling(true);

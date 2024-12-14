@@ -2,16 +2,14 @@
 
 declare(strict_types=1);
 
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
-
 namespace N98\Magento\Command\System\Setup;
+
+use ReflectionException;
 
 /**
  * Class IncrementalCommandStub
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
 class IncrementalCommandStub extends IncrementalCommand
 {
@@ -22,12 +20,11 @@ class IncrementalCommandStub extends IncrementalCommand
     }
 
     /**
-     * @param string        $method
      * @param object|string $object
-     * @param array         $args
-     * @return mixed
+     * @return array|string
+     * @throws ReflectionException
      */
-    public function callProtectedMethodFromObject($method, $object, $args = [])
+    public function callProtectedMethodFromObject(string $method, $object, array $args = [])
     {
         return $this->_callProtectedMethodFromObject($method, $object, $args);
     }

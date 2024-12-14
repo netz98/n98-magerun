@@ -86,6 +86,7 @@
         "php-cs-fixer:fix": "vendor/bin/php-cs-fixer fix",
         "phpstan": "XDEBUG_MODE=off php vendor/bin/phpstan analyze",
         "phpstan:baseline": "XDEBUG_MODE=off php vendor/bin/phpstan analyze -b .phpstan.dist.baseline.neon",
+        "phpunit:test": "XDEBUG_MODE=off php vendor/bin/phpunit --configuration .phpunit.dist.xml --no-coverage",
         "rector:test": "vendor/bin/rector process --config .rector.php --dry-run",
         "rector:fix": "vendor/bin/rector --config .rector.php process"
     },
@@ -94,6 +95,7 @@
         "php-cs-fixer:fix": "Run php-cs-fixer and fix issues",
         "phpstan": "Run phpstan",
         "phpstan:baseline": "Run phpstan and update baseline",
+        "phpunit:test": "Run PHPUnit",
         "rector:test": "Run rector",
         "rector:fix": "Run rector and fix issues"
     }

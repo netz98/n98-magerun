@@ -19,9 +19,9 @@ use RuntimeException;
  */
 class TestApplication
 {
-    private ?Application $application;
+    private ?Application $application = null;
 
-    private ?string $root;
+    private ?string $root = null;
 
     private ?string $varName;
 
@@ -101,7 +101,7 @@ class TestApplication
      */
     public function getTestMagentoRoot(): ?string
     {
-        if ($this->root) {
+        if ($this->root !== null && $this->root !== '' && $this->root !== '0') {
             return $this->root;
         }
 
@@ -122,7 +122,7 @@ class TestApplication
      */
     public function getApplication()
     {
-        if ($this->application === null) {
+        if (!$this->application instanceof \N98\Magento\Application) {
             $root = $this->getTestMagentoRoot();
 
             /** @var Application|MockObject $application */

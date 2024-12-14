@@ -24,7 +24,7 @@ class XmlRenderer implements RendererInterface
 
     public const NAME_ROW = 'row';
 
-    private array $headers;
+    private array $headers = [];
 
     public function render(OutputInterface $output, array $rows): void
     {
@@ -67,8 +67,9 @@ class XmlRenderer implements RendererInterface
     {
         $index = 0;
         foreach ($fields as $key => $value) {
-            $header = $this->getHeader($index++, $key);
-            $element = $this->createField($domElement->ownerDocument, $header, $value);
+            /** @var string $header */
+            $header     = $this->getHeader($index++, $key);
+            $element    = $this->createField($domElement->ownerDocument, $header, (string) $value);
             $domElement->appendChild($element);
         }
     }
@@ -131,7 +132,11 @@ class XmlRenderer implements RendererInterface
         return $name;
     }
 
-    private function getHeader(int $index, ?string $default = null): ?string
+    /**
+     * @param string|int|null $default
+     * @return string|int|null
+     */
+    private function getHeader(int $index, $default = null)
     {
         if (!isset($this->headers[$index])) {
             return $default;

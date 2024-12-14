@@ -8,6 +8,7 @@ use FilesystemIterator;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Util\Filesystem;
 use RuntimeException;
+use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -59,9 +60,9 @@ HELP;
             return Command::INVALID;
         }
 
-        $workingDirectory = getcwd();
-        $magentoRootFolder = $this->getApplication()->getMagentoRootFolder();
-        $cacheDir = $magentoRootFolder . '/var/cache';
+        $workingDirectory   = getcwd();
+        $magentoRootFolder  = $this->getApplication()->getMagentoRootFolder();
+        $cacheDir           = $magentoRootFolder . '/var/cache';
 
         $output->writeln(sprintf('<info>Flushing cache directory <comment>%s</comment></info>', $cacheDir));
 
@@ -79,6 +80,7 @@ HELP;
         $errors = [];
 
         $dir = new FilesystemIterator($path);
+        /** @var SplFileInfo $info */
         foreach ($dir as $file => $info) {
             if ($info->isDir()) {
                 $this->verbose(

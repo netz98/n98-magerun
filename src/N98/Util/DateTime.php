@@ -15,6 +15,8 @@ class DateTime
 {
     /**
      * Human-readable string with time difference
+     * @deprecated use Carbon
+     * @todo SR carbon
      */
     public static function difference(PhpDateTime $time1, PhpDateTime $time2): string
     {
@@ -22,13 +24,13 @@ class DateTime
             return '0';
         }
 
-        $dateInterval = $time1->diff($time2);
-        $years = $dateInterval->format('%y');
-        $months = $dateInterval->format('%m');
-        $days = $dateInterval->format('%d');
-        $hours = $dateInterval->format('%h');
-        $minutes = $dateInterval->format('%i');
-        $seconds = $dateInterval->format('%s');
+        $dateInterval   = $time1->diff($time2);
+        $years          = $dateInterval->format('%y');
+        $months         = $dateInterval->format('%m');
+        $days           = $dateInterval->format('%d');
+        $hours          = $dateInterval->format('%h');
+        $minutes        = $dateInterval->format('%i');
+        $seconds        = $dateInterval->format('%s');
 
         $differenceString = trim(
             ($years ? $years . 'Y ' : '')
@@ -40,7 +42,9 @@ class DateTime
         );
 
         if ($differenceString === '') {
-            $milliseconds = max(0, $time2->format('u') / 1000 - $time1->format('u') / 1000);
+            $time1format    = (int) $time1->format('u');
+            $time2format    = (int) $time2->format('u');
+            $milliseconds   = max(0, $time2format / 1000 - $time1format / 1000);
             $differenceString = $milliseconds ? sprintf('%0.2fms', $milliseconds) : '';
         }
 

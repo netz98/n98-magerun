@@ -333,6 +333,7 @@ class InstallMagento extends AbstractSubCommand
             /* fall-through intended */
         }
 
+        $exception = $exception ?? null;
         if (isset($exception) || $returnStatus !== Exec::CODE_CLEAN_EXIT) {
             $this->getCommand()->getApplication()->setAutoExit(true);
             throw new RuntimeException(

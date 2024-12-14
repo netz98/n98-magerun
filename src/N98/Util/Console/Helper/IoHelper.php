@@ -29,9 +29,9 @@ class IoHelper implements HelperInterface, EventSubscriberInterface
 
     private HelperSet $helperSet;
 
-    private OutputInterface $output;
+    private ?OutputInterface $output = null;
 
-    private InputInterface $input;
+    private ?InputInterface $input = null;
 
     /**
      * @see getSubscribedEvents
@@ -54,12 +54,12 @@ class IoHelper implements HelperInterface, EventSubscriberInterface
         $this->output = $output;
     }
 
-    public function getInput(): InputInterface
+    public function getInput(): ?InputInterface
     {
         return $this->input;
     }
 
-    public function getOutput(): OutputInterface
+    public function getOutput(): ?OutputInterface
     {
         return $this->output;
     }

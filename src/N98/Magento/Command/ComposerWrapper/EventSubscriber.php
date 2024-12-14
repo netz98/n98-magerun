@@ -6,6 +6,7 @@ namespace N98\Magento\Command\ComposerWrapper;
 
 use Composer\Factory;
 use Composer\IO\ConsoleIO;
+use N98\Magento\Application;
 use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -39,10 +40,12 @@ class EventSubscriber implements EventSubscriberInterface
          */
         $command = $consoleEvent->getCommand();
         if (strstr($command !== null ? get_class($command) : self::class, 'Composer\\Command\\')) {
-            $consoleIO = new ConsoleIO($consoleEvent->getInput(), $consoleEvent->getOutput(), $command->getHelperSet());
-            $magentoRootFolder = $command->getApplication()->getMagentoRootFolder();
-            $configFile = $magentoRootFolder . '/composer.json';
-            $composer = Factory::create($consoleIO, $configFile);
+            $consoleIO          = new ConsoleIO($consoleEvent->getInput(), $consoleEvent->getOutput(), $command->getHelperSet());
+            /** @var Application $application */
+            $application        = $command->getApplication();
+            $magentoRootFolder  = $application->getMagentoRootFolder();
+            $configFile         = $magentoRootFolder . '/composer.json';
+            $composer           = Factory::create($consoleIO, $configFile);
             chdir($magentoRootFolder);
             $command->setComposer($composer);
             $command->setIO($consoleIO);

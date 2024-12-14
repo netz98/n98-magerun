@@ -22,9 +22,6 @@ final class AutoloadHandler
      */
     public const NO_EXCEPTION = 1;
 
-    /**
-     *
-     */
     public const NO_AUTO_REGISTER = 2;
 
     private ?int $flags;
@@ -38,20 +35,12 @@ final class AutoloadHandler
 
     private bool $enabled;
 
-    /**
-     * @param int|null $flags [optional]
-     */
-    public static function create(callable $callback, ?int $flags = null): AutoloadHandler
+    public static function create(?callable $callback, ?int $flags = null): AutoloadHandler
     {
         return new self($callback, $flags);
     }
 
-    /**
-     * AutoloadHandler constructor.
-     *
-     * @param int|null $flags [optional]
-     */
-    public function __construct(callable$callback, ?int $flags = null)
+    public function __construct(?callable $callback, ?int $flags = null)
     {
         if (null === $flags) {
             $flags = 0;
@@ -140,7 +129,7 @@ final class AutoloadHandler
         $this->enabled = true;
     }
 
-    public function setCallback(callable $callback): void
+    public function setCallback(?callable $callback): void
     {
         $this->callback = $callback;
     }

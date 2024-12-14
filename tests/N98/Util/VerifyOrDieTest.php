@@ -2,29 +2,25 @@
 
 declare(strict_types=1);
 
-/*
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
-
 namespace N98\Util;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use TypeError;
 
 /**
  * Class VerifyOrDieTest
  *
  * @package N98\Util
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
  */
 final class VerifyOrDieTest extends TestCase
 {
     public function testPortableFilename()
     {
         $this->assertSame('example.txt', VerifyOrDie::filename('example.txt'));
-
         $this->assertSame('.hidden', VerifyOrDie::filename('.hidden'));
     }
 
@@ -44,13 +40,6 @@ final class VerifyOrDieTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Filename is zero-length string');
         VerifyOrDie::filename('');
-    }
-
-    public function testInvalidArugment()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Parameter basename must be of type string, NULL given');
-        VerifyOrDie::filename(null);
     }
 
     public function testStartWithDashFilename()

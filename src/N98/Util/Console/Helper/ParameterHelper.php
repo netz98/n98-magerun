@@ -90,7 +90,7 @@ class ParameterHelper extends AbstractHelper
             }
 
             if (count($stores) > 1) {
-                $validator = function ($typeInput) use ($stores) {
+                $validator = function ($typeInput) use ($stores, $exception) {
                     if (!isset($stores[$typeInput])) {
                         throw new InvalidArgumentException('Invalid store', $exception->getCode(), $exception);
                     }

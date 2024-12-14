@@ -11,15 +11,15 @@ declare(strict_types=1);
 namespace N98\Util\Console\Helper\Table\Renderer;
 
 use SimpleXMLElement;
-use DOMException;
 use RuntimeException;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\StreamOutput;
+use TypeError;
 
 /**
  * Class XmlRendererTest
  *
- * @covers  N98\Util\Console\Helper\Table\Renderer\XmlRenderer
+ * @covers  \N98\Util\Console\Helper\Table\Renderer\XmlRenderer
  * @package N98\Util\Console\Helper\Table\Renderer
  */
 final class XmlRendererTest extends TestCase
@@ -36,7 +36,6 @@ final class XmlRendererTest extends TestCase
     }
 
     /**
-     * @return array
      * @see tableRendering
      */
     public function provideTables(): \Iterator
@@ -104,8 +103,8 @@ ftw</Column2>
 
     public function testInvalidName()
     {
-        $this->expectException(DOMException::class);
-        $this->expectExceptionMessage("Invalid name '0'");
+        $this->expectException(TypeError::class);
+        $this->expectExceptionMessage('DOMDocument::createElement(): Argument #2 ($value) must be of type string, int given');
         $xmlRenderer = new XmlRenderer();
         $nullOutput = new NullOutput();
         $xmlRenderer->render($nullOutput, [['foo']]);

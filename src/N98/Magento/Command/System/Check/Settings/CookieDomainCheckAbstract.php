@@ -69,9 +69,8 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
      */
     public function validateCookieDomainAgainstUrl(string $cookieDomain, string $siteUrl): bool
     {
-        /** @var string $host */
         $host       = parse_url($siteUrl, PHP_URL_HOST);
-        $siteDomain = strtolower($host);
+        $siteDomain = strtolower((string) $host);
         $siteLen    = strlen($siteDomain);
 
         if (0 === $siteLen) {
@@ -87,7 +86,7 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
 
         $hasLeadingDot = $cookieDomain[0] === '.';
         if ($hasLeadingDot) {
-            $cookieDomain = substr($cookieDomain, 1);
+            $cookieDomain = (string) substr($cookieDomain, 1);
             $cookieLen    = strlen($cookieDomain);
         } elseif ($siteDomain === $cookieDomain) {
             return true;
@@ -104,7 +103,7 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
         }
 
         $prefix = substr($siteDomain, 0, -$cookieLen);
-        if ($prefix === '' || $prefix === '0') {
+        if ($prefix === false || $prefix === '' || $prefix === '0') {
             return false;
         }
 

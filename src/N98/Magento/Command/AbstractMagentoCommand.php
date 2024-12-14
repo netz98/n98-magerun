@@ -31,6 +31,7 @@ use N98\Util\OperatingSystem;
 use N98\Util\StringTyped;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -66,9 +67,6 @@ abstract class AbstractMagentoCommand extends Command
      *
      * This is mainly useful when a lot of commands extends one main command
      * where some things need to be initialized based on the input arguments and options.
-     *
-     * @param InputInterface  $input  An InputInterface instance
-     * @param OutputInterface $output An OutputInterface instance
      */
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
@@ -120,7 +118,9 @@ abstract class AbstractMagentoCommand extends Command
 
     protected function writeSection(OutputInterface $output, string $text, string $style = 'bg=blue;fg=white'): void
     {
-        $output->writeln(['', $this->getHelper('formatter')->formatBlock($text, $style, true), '']);
+        /** @var FormatterHelper $helper */
+        $helper = $this->getHelper('formatter');
+        $output->writeln(['', $helper->formatBlock($text, $style, true), '']);
     }
 
     /**
@@ -243,6 +243,7 @@ abstract class AbstractMagentoCommand extends Command
                 escapeshellarg($package->getSourceReference()),
             );
             $existingTags = shell_exec($command);
+            # @phpstan-ignore identical.alwaysFalse (https://github.com/phpstan/phpstan-src/pull/3730)
             if ($existingTags === '' || $existingTags === '0' || $existingTags === false || $existingTags === null) {
                 $command = sprintf('cd %s && git fetch', escapeshellarg($this->normalizePath($targetFolder)));
                 shell_exec($command);
@@ -497,12 +498,8 @@ abstract class AbstractMagentoCommand extends Command
         OutputInterface $output,
         string $baseNamespace = ''
     ): SubCommandFactory {
-        $configBag = new ConfigBag();
-
-        $commandConfig = $this->getCommandConfig();
-        if ($commandConfig === []) {
-            $commandConfig = [];
-        }
+        $configBag      = new ConfigBag();
+        $commandConfig  = $this->getCommandConfig();
 
         return new SubCommandFactory(
             $this,
@@ -534,26 +531,36 @@ abstract class AbstractMagentoCommand extends Command
 
     public function getDatabaseHelper(): DatabaseHelper
     {
-        return $this->getHelper('database');
+        /** @var DatabaseHelper $helper */
+        $helper = $this->getHelper('database');
+        return $helper;
     }
 
     public function getIoHelper(): IoHelper
     {
-        return $this->getHelper('io');
+        /** @var IoHelper $helper */
+        $helper = $this->getHelper('io');
+        return $helper;
     }
 
     public function getParameterHelper(): ParameterHelper
     {
-        return $this->getHelper('parameter');
+        /** @var ParameterHelper $helper */
+        $helper = $this->getHelper('parameter');
+        return $helper;
     }
 
     public function getQuestionHelper(): QuestionHelper
     {
-        return $this->getHelper('question');
+        /** @var QuestionHelper $helper */
+        $helper = $this->getHelper('question');
+        return $helper;
     }
 
     public function getTableHelper(): TableHelper
     {
-        return $this->getHelper('table');
+        /** @var TableHelper $helper */
+        $helper = $this->getHelper('table');
+        return $helper;
     }
 }

@@ -1,5 +1,7 @@
 includes:
     - .phpstan.dist.baseline.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-symfony/extension.neon
 parameters:
     paths:
       - src
@@ -14,3 +16,4 @@ parameters:
         - identifier: offsetAccess.notFound
         - identifier: property.notFound
         - identifier: property.unusedType
+        - identifier: return.unusedType

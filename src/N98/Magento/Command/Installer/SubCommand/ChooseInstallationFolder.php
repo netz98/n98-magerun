@@ -25,7 +25,7 @@ class ChooseInstallationFolder extends AbstractSubCommand
             $folderName = rtrim(trim($folderName, ' '), '/');
             if ($folderName[0] === '.') {
                 $cwd = getcwd();
-                if (($cwd === '' || $cwd === '0' || $cwd === false) && isset($_SERVER['PWD'])) {
+                if ($cwd === false && isset($_SERVER['PWD'])) {
                     $cwd = $_SERVER['PWD'];
                 }
 
