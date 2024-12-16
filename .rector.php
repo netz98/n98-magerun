@@ -6,6 +6,7 @@ use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsPar
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
+use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertEqualsToSameRector;
 use Rector\Privatization\Rector\ClassMethod\PrivatizeFinalClassMethodRector;
 
 return RectorConfig::configure()
@@ -23,7 +24,10 @@ return RectorConfig::configure()
         RemoveUnusedPrivateMethodRector::class => [
             __DIR__ . '/tests/N98/Magento/Command/System/Setup/IncrementalCommandTest.php',
         ],
-        PrivatizeFinalClassMethodRector::class => [
+        AssertEqualsToSameRector::class => [
+            __DIR__ . 'tests/N98/Util/Console/Helper/DatabaseHelperTest.php',
+        ],
+         PrivatizeFinalClassMethodRector::class => [
             __DIR__ . '/tests/N98/Magento/Command/System/Setup/IncrementalCommandTest.php',
         ],
     ])
