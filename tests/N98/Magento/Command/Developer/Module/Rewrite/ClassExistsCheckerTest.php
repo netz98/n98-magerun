@@ -25,9 +25,6 @@ use N98\Util\AutoloadHandler;
  */
 final class ClassExistsCheckerTest extends TestCase
 {
-    /**
-     * @var array
-     */
     private array $cleanup = [];
 
     protected function tearDown(): void
