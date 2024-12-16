@@ -27,7 +27,7 @@ class InfoCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName(), 'setting' => 'MySQL-Cli-String']
+            ['command' => $command->getName(), 'setting' => 'MySQL-Cli-String'],
         );
 
         self::assertDoesNotMatchRegularExpression('/MySQL-Cli-String/', $commandTester->getDisplay());

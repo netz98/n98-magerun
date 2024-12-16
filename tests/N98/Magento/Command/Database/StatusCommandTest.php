@@ -20,7 +20,7 @@ class StatusCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array_merge(['command' => $command->getName()], $options)
+            array_merge(['command' => $command->getName()], $options),
         );
         return $commandTester;
     }
@@ -54,7 +54,7 @@ class StatusCommandTest extends TestCase
         $commandTester = $this->getCommand(['--format'   => 'csv', '--rounding' => '2', 'search'     => '%size%']);
         self::assertMatchesRegularExpression(
             '~Innodb_page_size,[0-9\.]+K,~',
-            $commandTester->getDisplay()
+            $commandTester->getDisplay(),
         );
     }
 }

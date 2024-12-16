@@ -50,7 +50,7 @@ class RemoveCommandTest extends TestCase
 
         self::assertStringContainsString(
             'Successfully removed setup resource: "weee_setup" from module: "Mage_Weee"',
-            $commandTester->getDisplay()
+            $commandTester->getDisplay(),
         );
     }
 
@@ -93,7 +93,7 @@ class RemoveCommandTest extends TestCase
 
         self::assertStringContainsString(
             'Successfully removed setup resource: "weee_setup" from module: "Mage_Weee"',
-            $commandTester->getDisplay()
+            $commandTester->getDisplay(),
         );
     }
 
@@ -109,7 +109,8 @@ class RemoveCommandTest extends TestCase
             ->willReturn(0);
 
         $coreResource = $this->getMockBuilder(Mage_Core_Model_Resource::class)
-            ->getMock();;
+            ->getMock();
+        ;
 
         $coreResource->expects(self::once())
             ->method('getConnection')
@@ -137,7 +138,7 @@ class RemoveCommandTest extends TestCase
 
         self::assertStringContainsString(
             'No entry was found for setup resource: "weee_setup" in module: "Mage_Weee"',
-            $commandTester->getDisplay()
+            $commandTester->getDisplay(),
         );
     }
 
@@ -150,7 +151,7 @@ class RemoveCommandTest extends TestCase
         $commandTester = new CommandTester($command);
 
         $this->expectException(
-            InvalidArgumentException::class
+            InvalidArgumentException::class,
         );
 
         $commandTester->execute(['command'   => $command->getName(), 'module'    => 'Mage_Weee', 'setup'     => 'no_setup_exists']);
@@ -192,7 +193,7 @@ class RemoveCommandTest extends TestCase
 
         self::assertStringContainsString(
             'No setup resources found for module: "Mage_Weee"',
-            $commandTester->getDisplay()
+            $commandTester->getDisplay(),
         );
     }
 }

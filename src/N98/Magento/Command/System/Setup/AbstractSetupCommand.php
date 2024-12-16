@@ -50,7 +50,7 @@ class AbstractSetupCommand extends AbstractMagentoCommand
                     return $moduleName;
                 }
             }
-       }
+        }
 
         throw new InvalidArgumentException(sprintf('No module found with name: "%s"', $input->getArgument('module')));
     }

@@ -25,7 +25,7 @@ class CreateCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'         => $command->getName(), '--add-all'       => true, '--add-setup'     => true, '--add-readme'    => true, '--add-composer'  => true, '--modman'        => true, '--description'   => 'Unit Test Description', '--author-name'   => 'Unit Test', '--author-email'  => 'n98-magerun@example.com', 'vendorNamespace' => 'N98Magerun', 'moduleName'      => 'UnitTest']
+            ['command'         => $command->getName(), '--add-all'       => true, '--add-setup'     => true, '--add-readme'    => true, '--add-composer'  => true, '--modman'        => true, '--description'   => 'Unit Test Description', '--author-name'   => 'Unit Test', '--author-email'  => 'n98-magerun@example.com', 'vendorNamespace' => 'N98Magerun', 'moduleName'      => 'UnitTest'],
         );
 
         self::assertFileExists($root . '/N98Magerun_UnitTest/composer.json');

@@ -17,7 +17,7 @@ class ReindexAllCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName()]
+            ['command' => $command->getName()],
         );
 
         self::assertStringContainsString('Successfully reindexed catalog_product_attribute', $commandTester->getDisplay());

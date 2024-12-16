@@ -15,7 +15,7 @@ class HistoryCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName()]
+            ['command' => $command->getName()],
         );
 
         self::assertMatchesRegularExpression('/Last executed jobs/', $commandTester->getDisplay());

@@ -19,7 +19,7 @@ class DummyCommandTest extends TestCase
         $commandTester = new CommandTester($command);
 
         $commandTester->execute(
-            ['command'       => $command->getName(), 'locale'        => 'en_US', 'attribute-id'  => 92, 'values-type'   => 'int', 'values-number' => 1]
+            ['command'       => $command->getName(), 'locale'        => 'en_US', 'attribute-id'  => 92, 'values-type'   => 'int', 'values-number' => 1],
         );
 
         self::assertMatchesRegularExpression('/ATTRIBUTE VALUE: \'(.+)\' ADDED!/', $commandTester->getDisplay());
@@ -42,7 +42,7 @@ class DummyCommandTest extends TestCase
                ->with(
                    self::isInstanceOf(InputInterface::class),
                    self::isInstanceOf(OutputInterface::class),
-                   self::isInstanceOf(Question::class)
+                   self::isInstanceOf(Question::class),
                )
                ->willReturn(92);
 
@@ -52,7 +52,7 @@ class DummyCommandTest extends TestCase
                ->with(
                    self::isInstanceOf(InputInterface::class),
                    self::isInstanceOf(OutputInterface::class),
-                   self::isInstanceOf(Question::class)
+                   self::isInstanceOf(Question::class),
                )
                ->willReturn('int');
 
@@ -62,7 +62,7 @@ class DummyCommandTest extends TestCase
                ->with(
                    self::isInstanceOf(InputInterface::class),
                    self::isInstanceOf(OutputInterface::class),
-                   self::isInstanceOf(Question::class)
+                   self::isInstanceOf(Question::class),
                )
                ->willReturn(1);
 
@@ -72,7 +72,7 @@ class DummyCommandTest extends TestCase
         $commandTester = new CommandTester($command);
 
         $commandTester->execute(
-            ['command'                    => $command->getName()]
+            ['command'                    => $command->getName()],
         );
 
         $arguments = $commandTester->getInput()->getArguments();

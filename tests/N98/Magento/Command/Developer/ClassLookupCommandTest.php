@@ -25,7 +25,7 @@ class ClassLookupCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName(), 'type'    => $type, 'name'    => $name]
+            ['command' => $command->getName(), 'type'    => $type, 'name'    => $name],
         );
 
         $output = $commandTester->getDisplay();

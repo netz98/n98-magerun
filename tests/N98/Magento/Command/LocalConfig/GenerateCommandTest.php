@@ -36,7 +36,7 @@ class GenerateCommandTest extends TestCase
 
         copy(
             sprintf('%s/app/etc/local.xml.template', $this->getTestMagentoRoot()),
-            sprintf('%s/local.xml.template', dirname($this->configFile))
+            sprintf('%s/local.xml.template', dirname($this->configFile)),
         );
 
         parent::setUp();
@@ -58,13 +58,13 @@ class GenerateCommandTest extends TestCase
                 'session-save'    => 'my_session_save',
                 'admin-frontname' => 'my_admin_frontname',
                 'encryption-key'  => 'key123456789',
-            ]
+            ],
         );
 
         self::assertFileExists($this->configFile);
         self::assertStringContainsString(
             sprintf('local.xml file already exists in folder "%s/app/etc"', dirname($this->configFile)),
-            $commandTester->getDisplay()
+            $commandTester->getDisplay(),
         );
     }
 
@@ -83,12 +83,12 @@ class GenerateCommandTest extends TestCase
                 'session-save'    => 'my_session_save',
                 'admin-frontname' => 'my_admin_frontname',
                 'encryption-key'  => 'key123456789',
-            ]
+            ],
         );
 
         self::assertStringContainsString(
             sprintf('File %s/local.xml.template does not exist', dirname($this->configFile)),
-            $commandTester->getDisplay()
+            $commandTester->getDisplay(),
         );
     }
 
@@ -110,12 +110,12 @@ class GenerateCommandTest extends TestCase
                 'session-save'    => 'my_session_save',
                 'admin-frontname' => 'my_admin_frontname',
                 'encryption-key'  => 'key123456789',
-            ]
+            ],
         );
 
         self::assertStringContainsString(
             sprintf('Folder %s is not writeable', dirname($this->configFile)),
-            $commandTester->getDisplay()
+            $commandTester->getDisplay(),
         );
 
         chmod(dirname($this->configFile), $originalMode);
@@ -135,7 +135,7 @@ class GenerateCommandTest extends TestCase
                 'db-name'         => 'my_db_name',
                 'session-save'    => 'my_session_save',
                 'admin-frontname' => 'my_admin_frontname',
-            ]
+            ],
         );
 
         self::assertFileExists($this->configFile);
@@ -167,7 +167,7 @@ class GenerateCommandTest extends TestCase
                 'session-save'    => 'my_session_save',
                 'admin-frontname' => 'my_admin_frontname',
                 'encryption-key'  => 'key123456789',
-            ]
+            ],
         );
 
         self::assertFileExists($this->configFile);
@@ -200,7 +200,7 @@ class GenerateCommandTest extends TestCase
             ],
             [
                 'interactive' => false,
-            ]
+            ],
         );
 
         self::assertFileExists($this->configFile);
@@ -252,8 +252,8 @@ class GenerateCommandTest extends TestCase
                 self::isInstanceOf(StreamOutput::class),
                 new Question(
                     sprintf('<question>Please enter the %s:</question> ', $prompt),
-                    $default
-                )
+                    $default,
+                ),
             )
             ->willReturn(null);
 
@@ -305,8 +305,8 @@ class GenerateCommandTest extends TestCase
                     self::isInstanceOf(StreamOutput::class),
                     new Question(
                         sprintf('<question>Please enter the %s:</question> ', $prompt),
-                        $default
-                    )
+                        $default,
+                    ),
                 )
                 ->willReturn($returnValue);
         }
@@ -342,7 +342,7 @@ class GenerateCommandTest extends TestCase
             ->with(
                 self::isInstanceOf(InputInterface::class),
                 self::isInstanceOf(StreamOutput::class),
-                new Question('<question>Please enter the database password:</question> ')
+                new Question('<question>Please enter the database password:</question> '),
             )
             ->willReturn(null);
 
@@ -358,7 +358,7 @@ class GenerateCommandTest extends TestCase
                 'session-save'    => 'my_session_save',
                 'admin-frontname' => 'my_admin_frontname',
                 'encryption-key'  => 'key123456789',
-            ]
+            ],
         );
 
         self::assertFileExists($this->configFile);
@@ -389,8 +389,8 @@ class GenerateCommandTest extends TestCase
                 self::isInstanceOf(InputInterface::class),
                 self::isInstanceOf(StreamOutput::class),
                 new Question(
-                    '<question>Please enter the database host:</question> '
-                )
+                    '<question>Please enter the database host:</question> ',
+                ),
             )
             ->willReturn('CDATAdatabasehost');
 
@@ -406,7 +406,7 @@ class GenerateCommandTest extends TestCase
                 'session-save'    => 'my_session_save',
                 'admin-frontname' => 'my_admin_frontname',
                 'encryption-key'  => 'key123456789',
-            ]
+            ],
         );
 
         self::assertFileExists($this->configFile);

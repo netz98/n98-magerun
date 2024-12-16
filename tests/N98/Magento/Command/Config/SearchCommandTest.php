@@ -15,13 +15,13 @@ class SearchCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'   => $command->getName(), 'text'      => 'This message will be shown']
+            ['command'   => $command->getName(), 'text'      => 'This message will be shown'],
         );
         self::assertStringContainsString('Found a field with a match', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'   => $command->getName(), 'text'      => 'xyz1234567890']
+            ['command'   => $command->getName(), 'text'      => 'xyz1234567890'],
         );
         self::assertStringContainsString('No matches for xyz1234567890', $commandTester->getDisplay());
     }

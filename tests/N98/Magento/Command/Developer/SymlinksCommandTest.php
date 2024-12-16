@@ -16,13 +16,13 @@ class SymlinksCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'  => $command->getName(), '--global' => true, '--on'     => true]
+            ['command'  => $command->getName(), '--global' => true, '--on'     => true],
         );
         self::assertMatchesRegularExpression('/Symlinks allowed/', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'  => $command->getName(), '--global' => true, '--off'    => true]
+            ['command'  => $command->getName(), '--global' => true, '--off'    => true],
         );
 
         self::assertMatchesRegularExpression('/Symlinks denied/', $commandTester->getDisplay());

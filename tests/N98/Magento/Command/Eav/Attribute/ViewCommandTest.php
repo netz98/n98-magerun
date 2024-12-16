@@ -15,7 +15,7 @@ class ViewCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'       => $command->getName(), 'entityType'    => 'catalog_product', 'attributeCode' => 'sku']
+            ['command'       => $command->getName(), 'entityType'    => 'catalog_product', 'attributeCode' => 'sku'],
         );
 
         self::assertStringContainsString('sku', $commandTester->getDisplay());

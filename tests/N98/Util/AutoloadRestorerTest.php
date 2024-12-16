@@ -1,4 +1,5 @@
 <?php
+
 /**
  * this file is part of magerun
  *
@@ -8,6 +9,7 @@
 namespace N98\Util;
 
 use PHPUnit\Framework\TestCase;
+
 /**
  * Class AutoloadRestorerTest
  *
@@ -30,8 +32,7 @@ class AutoloadRestorerTest extends TestCase
      */
     public function restoration()
     {
-        $callbackStub = function () {
-        };
+        $callbackStub = function () {};
 
         self::assertTrue(spl_autoload_register($callbackStub));
 

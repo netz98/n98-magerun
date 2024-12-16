@@ -12,12 +12,12 @@ class ListCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => 'list']
+            ['command' => 'list'],
         );
 
         self::assertStringContainsString(
             sprintf('n98-magerun %s by valantic CEC', $this->getApplication()->getVersion()),
-            $commandTester->getDisplay()
+            $commandTester->getDisplay(),
         );
     }
 }

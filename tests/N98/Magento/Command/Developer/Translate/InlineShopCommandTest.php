@@ -16,13 +16,13 @@ class InlineShopCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'  => $command->getName(), 'store'    => 'admin', '--on'     => true]
+            ['command'  => $command->getName(), 'store'    => 'admin', '--on'     => true],
         );
         self::assertStringContainsString('Inline Translation enabled', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'  => $command->getName(), 'store'    => 'admin', '--off'    => true]
+            ['command'  => $command->getName(), 'store'    => 'admin', '--off'    => true],
         );
 
         self::assertStringContainsString('Inline Translation disabled', $commandTester->getDisplay());

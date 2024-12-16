@@ -50,7 +50,7 @@ class UninstallCommandTest extends TestCase
         $commandTester = new CommandTester($command);
 
         $commandTester->execute(
-            ['command'               => $command->getName(), '--force'               => true, '--installationFolder'  => $this->getTestMagentoRoot()]
+            ['command'               => $command->getName(), '--force'               => true, '--installationFolder'  => $this->getTestMagentoRoot()],
         );
 
         self::assertStringContainsString('Dropped database', $commandTester->getDisplay());

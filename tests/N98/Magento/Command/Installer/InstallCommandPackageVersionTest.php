@@ -1,4 +1,5 @@
 <?php
+
 /**
  * this file is part of magerun
  *
@@ -57,7 +58,7 @@ class InstallCommandPackageVersionTest extends TestCase
             self::assertArrayNotHasKey(
                 $name,
                 $nameConstraint,
-                sprintf('duplicate package "%s"', $name)
+                sprintf('duplicate package "%s"', $name),
             );
             $nameConstraint[$name] = 1;
 
@@ -80,7 +81,7 @@ class InstallCommandPackageVersionTest extends TestCase
                 $message = sprintf(
                     "Check order of versions for package \"$namespace\", higher comes first, but got %s before %s",
                     $nameStack[$namespace],
-                    $version
+                    $version,
                 );
                 self::assertGreaterThan(0, $comparison, $message);
             }
@@ -154,7 +155,8 @@ class InstallCommandPackageVersionTest extends TestCase
      * @param string $buffer
      * @return bool
      */
-    private function isTripartiteOpenMageVersionNumber($buffer) {
+    private function isTripartiteOpenMageVersionNumber($buffer)
+    {
         if (!preg_match('~^(?:19|2\d)\.\d+\.\d+$~', $buffer)) {
             return false;
         }

@@ -28,7 +28,7 @@ class VariablesCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            array_merge(['command' => $command->getName()], $options)
+            array_merge(['command' => $command->getName()], $options),
         );
 
         return $commandTester;

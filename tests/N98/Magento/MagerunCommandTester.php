@@ -122,12 +122,12 @@ class MagerunCommandTester
         $test->assertSame(
             $command->getName(),
             $this->commandName,
-            'Verifying that test is done against main command name'
+            'Verifying that test is done against main command name',
         );
 
         if (!$command instanceof Command) {
             throw new InvalidArgumentException(
-                sprintf('Command "%s" is not a console command', $this->commandName)
+                sprintf('Command "%s" is not a console command', $this->commandName),
             );
         }
 

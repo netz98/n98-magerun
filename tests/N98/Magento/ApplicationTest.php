@@ -57,7 +57,7 @@ class ApplicationTest extends TestCase
 
         $commandTester = new CommandTester($testDummyCommand);
         $commandTester->execute(
-            ['command'    => $testDummyCommand->getName()]
+            ['command'    => $testDummyCommand->getName()],
         );
         self::assertStringContainsString('dummy', $commandTester->getDisplay());
         self::assertTrue($application->getDefinition()->hasOption('root-dir'));
@@ -95,7 +95,7 @@ class ApplicationTest extends TestCase
     {
         vfsStream::setup('root');
         vfsStream::create(
-            ['htdocs' => ['app' => ['Mage.php' => '']], 'vendor' => ['acme' => ['magerun-test-module' => ['n98-magerun.yaml' => file_get_contents(__DIR__ . '/_ApplicationTestComposer/n98-magerun.yaml'), 'src'              => ['Acme' => ['FooCommand.php' => file_get_contents(__DIR__ . '/_ApplicationTestComposer/FooCommand.php')]]]], 'n98' => ['magerun' => ['src' => ['N98' => ['Magento' => ['Command' => ['ConfigurationLoader.php' => '']]]]]]]]
+            ['htdocs' => ['app' => ['Mage.php' => '']], 'vendor' => ['acme' => ['magerun-test-module' => ['n98-magerun.yaml' => file_get_contents(__DIR__ . '/_ApplicationTestComposer/n98-magerun.yaml'), 'src'              => ['Acme' => ['FooCommand.php' => file_get_contents(__DIR__ . '/_ApplicationTestComposer/FooCommand.php')]]]], 'n98' => ['magerun' => ['src' => ['N98' => ['Magento' => ['Command' => ['ConfigurationLoader.php' => '']]]]]]]],
         );
 
         /** @var ConfigurationLoader|MockObject $configurationLoader */

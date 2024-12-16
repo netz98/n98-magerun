@@ -1,4 +1,5 @@
 <?php
+
 /*
  * @author Tom Klingenberg <https://github.com/ktomk>
  */

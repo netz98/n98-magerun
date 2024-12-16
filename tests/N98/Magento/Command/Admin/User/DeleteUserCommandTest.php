@@ -63,7 +63,7 @@ class DeleteUserCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'   => $command->getName(), 'id'        => 'aydin', '--force'   => true]
+            ['command'   => $command->getName(), 'id'        => 'aydin', '--force'   => true],
         );
 
         self::assertStringContainsString('User was successfully deleted', $commandTester->getDisplay());
@@ -103,7 +103,7 @@ class DeleteUserCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'   => $command->getName(), 'id'        => 'aydin@hotmail.co.uk', '--force'   => true]
+            ['command'   => $command->getName(), 'id'        => 'aydin@hotmail.co.uk', '--force'   => true],
         );
 
         self::assertStringContainsString('User was successfully deleted', $commandTester->getDisplay());
@@ -179,7 +179,7 @@ class DeleteUserCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'   => $command->getName(), 'id'        => 'aydin@hotmail.co.uk', '--force'   => true]
+            ['command'   => $command->getName(), 'id'        => 'aydin@hotmail.co.uk', '--force'   => true],
         );
 
         self::assertStringContainsString('Error!', $commandTester->getDisplay());

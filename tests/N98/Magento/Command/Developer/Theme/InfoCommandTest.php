@@ -15,7 +15,7 @@ class InfoCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName()]
+            ['command' => $command->getName()],
         );
 
         self::assertStringContainsString('base/default', $commandTester->getDisplay());

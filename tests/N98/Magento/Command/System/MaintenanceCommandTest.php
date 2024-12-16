@@ -20,13 +20,13 @@ class MaintenanceCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName(), '--on'    => '']
+            ['command' => $command->getName(), '--on'    => ''],
         );
         self::assertMatchesRegularExpression('/Maintenance mode on/', $commandTester->getDisplay());
         self::assertFileExists($magentoRootFolder . '/maintenance.flag');
 
         $commandTester->execute(
-            ['command' => $command->getName(), '--off'   => '']
+            ['command' => $command->getName(), '--off'   => ''],
         );
         self::assertMatchesRegularExpression('/Maintenance mode off/', $commandTester->getDisplay());
         self::assertFileDoesNotExist($magentoRootFolder . '/maintenance.flag');

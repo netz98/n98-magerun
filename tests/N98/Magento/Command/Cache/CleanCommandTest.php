@@ -29,8 +29,9 @@ class CleanCommandTest extends TestCase
             self::markTestSkipped(
                 sprintf(
                     'Test skipped because it fails after new install of a Magento 1.9+ version (Magento version is: ' .
-                    '%s) which is the case on travis where we always have a new install.', $version
-                )
+                    '%s) which is the case on travis where we always have a new install.',
+                    $version,
+                ),
             );
         }
 

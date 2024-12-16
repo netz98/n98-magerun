@@ -19,7 +19,7 @@ class ListCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName()]
+            ['command' => $command->getName()],
         );
 
         self::assertStringContainsString('Cache Flush Command Test (Hello World)', $commandTester->getDisplay());

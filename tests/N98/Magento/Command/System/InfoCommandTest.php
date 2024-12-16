@@ -22,7 +22,7 @@ class InfoCommandTest extends TestCase
 
         // Settings argument
         $commandTester->execute(
-            ['command' => $command->getName(), 'key'     => 'version']
+            ['command' => $command->getName(), 'key'     => 'version'],
         );
 
         $commandResult = $commandTester->getDisplay();

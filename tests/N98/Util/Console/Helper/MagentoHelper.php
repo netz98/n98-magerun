@@ -33,7 +33,7 @@ class MagentoHelper extends TestCase
     {
         vfsStream::setup('root');
         vfsStream::create(
-            ['app' => ['Mage.php' => '']]
+            ['app' => ['Mage.php' => '']],
         );
 
         $helper = $this->getHelper();
@@ -49,7 +49,7 @@ class MagentoHelper extends TestCase
     {
         vfsStream::setup('root');
         vfsStream::create(
-            ['htdocs' => ['app' => ['Mage.php' => '']]]
+            ['htdocs' => ['app' => ['Mage.php' => '']]],
         );
 
         $helper = $this->getHelper();
@@ -57,7 +57,7 @@ class MagentoHelper extends TestCase
         // vfs cannot resolve relative path so we do 'root/htdocs' etc.
         $helper->detect(
             vfsStream::url('root'),
-            [vfsStream::url('root/www'), vfsStream::url('root/public'), vfsStream::url('root/htdocs')]
+            [vfsStream::url('root/www'), vfsStream::url('root/public'), vfsStream::url('root/htdocs')],
         );
 
         self::assertEquals(vfsStream::url('root/htdocs'), $helper->getRootFolder());
@@ -70,14 +70,14 @@ class MagentoHelper extends TestCase
     {
         vfsStream::setup('root');
         vfsStream::create(
-            ['htdocs' => []]
+            ['htdocs' => []],
         );
 
         $helper = $this->getHelper();
 
         // vfs cannot resolve relative path so we do 'root/htdocs' etc.
         $helper->detect(
-            vfsStream::url('root')
+            vfsStream::url('root'),
         );
 
         self::assertNull($helper->getRootFolder());
@@ -90,14 +90,14 @@ class MagentoHelper extends TestCase
     {
         vfsStream::setup('root');
         vfsStream::create(
-            ['.basedir' => 'root/htdocs/magento_root', 'htdocs'   => ['magento_root' => ['app' => ['Mage.php' => '']]]]
+            ['.basedir' => 'root/htdocs/magento_root', 'htdocs'   => ['magento_root' => ['app' => ['Mage.php' => '']]]],
         );
 
         $helper = $this->getHelper();
 
         // vfs cannot resolve relative path so we do 'root/htdocs' etc.
         $helper->detect(
-            vfsStream::url('root')
+            vfsStream::url('root'),
         );
 
         // Verify if this could be checked with more elegance

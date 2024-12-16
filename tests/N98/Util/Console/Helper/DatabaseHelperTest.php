@@ -133,7 +133,7 @@ class DatabaseHelperTest extends TestCase
             // test against the mysql error message
             self::assertEquals(
                 'Invalid mysql variable type "@@@", must be "@@" (system) or "@" (session)',
-                $invalidArgumentException->getMessage()
+                $invalidArgumentException->getMessage(),
             );
         }
     }
@@ -192,7 +192,7 @@ class DatabaseHelperTest extends TestCase
 
         $tables = $this->getHelper()->resolveTables(
             ['@wild_1', '@wild_2', '@dataflow'],
-            $definitions
+            $definitions,
         );
         self::assertContains('catalog_product_entity', $tables);
         self::assertContains('core_config_data', $tables);

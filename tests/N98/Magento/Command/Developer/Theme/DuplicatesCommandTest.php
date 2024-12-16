@@ -15,7 +15,7 @@ class DuplicatesCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'       => $command->getName(), 'theme'         => 'base/default', 'originalTheme' => 'base/default']
+            ['command'       => $command->getName(), 'theme'         => 'base/default', 'originalTheme' => 'base/default'],
         );
 
         $display = $commandTester->getDisplay();

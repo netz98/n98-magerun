@@ -1,4 +1,5 @@
 <?php
+
 /**
  * this file is part of magerun
  *
@@ -37,7 +38,7 @@ class ModulesTest extends TestCase
         $modules = new Modules();
 
         $result = $modules->filterModules(
-            $this->filter()
+            $this->filter(),
         );
         self::assertInstanceOf(__NAMESPACE__ . '\Modules', $result);
         self::assertCount(0, $result);

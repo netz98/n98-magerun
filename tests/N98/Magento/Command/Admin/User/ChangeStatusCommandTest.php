@@ -84,7 +84,7 @@ class ChangeStatusCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'   => $command->getName(), 'id'        => $username]
+            ['command'   => $command->getName(), 'id'        => $username],
         );
 
         self::assertStringContainsString("User $username is now active", $commandTester->getDisplay());
@@ -143,7 +143,7 @@ class ChangeStatusCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'   => $command->getName(), 'id'        => $username]
+            ['command'   => $command->getName(), 'id'        => $username],
         );
 
         self::assertStringContainsString("User $username is now inactive", $commandTester->getDisplay());
@@ -207,7 +207,7 @@ class ChangeStatusCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'   => $command->getName(), 'id'        => $username]
+            ['command'   => $command->getName(), 'id'        => $username],
         );
 
         self::assertStringContainsString("User $username is now active", $commandTester->getDisplay());

@@ -15,7 +15,7 @@ class ListCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'       => $command->getName(), '--filter-type' => 'catalog_product', '--add-source'  => true]
+            ['command'       => $command->getName(), '--filter-type' => 'catalog_product', '--add-source'  => true],
         );
 
         self::assertStringContainsString('eav/entity_attribute_source_boolean', $commandTester->getDisplay());

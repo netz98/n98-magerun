@@ -28,7 +28,7 @@ class DisableCommandTest extends TestCase
         $command = $this->getApplication()->find('cache:disable');
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName(), 'code'    => 'eav,config']
+            ['command' => $command->getName(), 'code'    => 'eav,config'],
         );
 
         self::assertMatchesRegularExpression('/Cache config disabled/', $commandTester->getDisplay());

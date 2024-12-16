@@ -20,7 +20,7 @@ class DummyCommandTest extends TestCase
         $commandTester = new CommandTester($command);
 
         $commandTester->execute(
-            ['command'                    => $command->getName(), 'store-id'                   => 1, 'children-categories-number' => 1, 'category-name-prefix'       => 'My Awesome Category', 'category-number'            => 1]
+            ['command'                    => $command->getName(), 'store-id'                   => 1, 'children-categories-number' => 1, 'category-name-prefix'       => 'My Awesome Category', 'category-number'            => 1],
         );
 
         self::assertMatchesRegularExpression('/CATEGORY: \'My Awesome Category (.+)\' WITH ID: \'(.+)\' CREATED!/', $commandTester->getDisplay());
@@ -68,7 +68,7 @@ class DummyCommandTest extends TestCase
             ->with(
                 self::isInstanceOf(InputInterface::class),
                 self::isInstanceOf(OutputInterface::class),
-                self::isInstanceOf(Question::class)
+                self::isInstanceOf(Question::class),
             )
             ->willReturn(1);
 
@@ -78,7 +78,7 @@ class DummyCommandTest extends TestCase
             ->with(
                 self::isInstanceOf(InputInterface::class),
                 self::isInstanceOf(OutputInterface::class),
-                self::isInstanceOf(Question::class)
+                self::isInstanceOf(Question::class),
             )
             ->willReturn(0);
 
@@ -88,7 +88,7 @@ class DummyCommandTest extends TestCase
             ->with(
                 self::isInstanceOf(InputInterface::class),
                 self::isInstanceOf(OutputInterface::class),
-                self::isInstanceOf(Question::class)
+                self::isInstanceOf(Question::class),
             )
             ->willReturn('My Awesome Category ');
 
@@ -98,7 +98,7 @@ class DummyCommandTest extends TestCase
             ->with(
                 self::isInstanceOf(InputInterface::class),
                 self::isInstanceOf(OutputInterface::class),
-                self::isInstanceOf(Question::class)
+                self::isInstanceOf(Question::class),
             )
             ->willReturn(0);
 
@@ -110,7 +110,7 @@ class DummyCommandTest extends TestCase
         $commandTester->execute(
             [
                 'command'                    => $command->getName(),
-            ]
+            ],
         );
 
         $arguments = $commandTester->getInput()->getArguments();

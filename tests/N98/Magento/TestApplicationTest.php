@@ -1,4 +1,5 @@
 <?php
+
 /*
  * this file is part of magerun
  *
@@ -8,6 +9,7 @@
 namespace N98\Magento;
 
 use PHPUnit\Framework\TestCase;
+
 class TestApplicationTest extends TestCase
 {
     /**

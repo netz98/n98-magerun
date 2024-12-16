@@ -1,4 +1,5 @@
 <?php
+
 /**
  * this file is part of magerun
  *
@@ -8,6 +9,7 @@
 namespace N98\Util;
 
 use PHPUnit\Framework\TestCase;
+
 /**
  * Class WindowsSystemTest
  *

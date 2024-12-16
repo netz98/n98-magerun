@@ -15,7 +15,7 @@ class ReindexCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'    => $command->getName(), 'index_code' => 'tag_summary,tag_summary']
+            ['command'    => $command->getName(), 'index_code' => 'tag_summary,tag_summary'],
         );
 
         self::assertStringContainsString('Successfully re-indexed tag_summary', $commandTester->getDisplay());
