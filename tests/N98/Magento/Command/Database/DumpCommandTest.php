@@ -67,8 +67,6 @@ final class DumpCommandTest extends TestCase
      */
     public function testFilenamePatterns($regex, array $options)
     {
-        $this->markTestSkipped();
-
         $command = $this->getCommand();
 
         $mandatory = ['command'               => $command->getName(), '--force'               => true, '--print-only-filename' => true, '--dry-run'             => null];
