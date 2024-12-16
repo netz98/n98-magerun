@@ -17,6 +17,8 @@
   <php>
       <!--
       <env name="N98_MAGERUN_TEST_MAGENTO_ROOT" value="/opt/magento-test-environments/magento_20_0_17/" />
+      <env name="N98_MAGERUN_TEST_MAGENTO_ROOT" value="magento/" />
+      <env name="COMPOSER_VENDOR_PATH" value="magento/vendor/" />
       -->
       <!-- hide deprecation warnings -->
       <ini name="error_reporting" value="E_ALL &amp; ~E_DEPRECATED &amp; ~E_USER_DEPRECATED" />
