@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Script\Repository;
 
-use Description;
-use Location;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -60,7 +58,7 @@ HELP;
 
         $tableHelper = $this->getTableHelper();
         $tableHelper
-            ->setHeaders(['Script', Location::class, Description::class])
+            ->setHeaders(['Script', 'Location', 'Description'])
             ->renderByFormat($output, $table, $input->getOption('format'));
 
         return Command::SUCCESS;

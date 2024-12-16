@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Config;
 
-use Path;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -138,7 +137,7 @@ HELP;
 
         $tableHelper = $this->getTableHelper();
         $tableHelper
-            ->setHeaders([Path::class, 'Scope', 'Scope-ID', 'Value'])
+            ->setHeaders(['Path', 'Scope', 'Scope-ID', 'Value'])
             ->setRows($formattedTable)
             ->renderByFormat($output, $formattedTable, $format);
     }

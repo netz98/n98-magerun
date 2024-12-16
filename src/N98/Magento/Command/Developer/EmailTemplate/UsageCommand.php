@@ -8,7 +8,6 @@ use Mage;
 use Mage_Adminhtml_Model_Email_Template;
 use Mage_Core_Model_Email_Template;
 use N98\Magento\Command\AbstractMagentoCommand;
-use Path;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,7 +39,7 @@ class UsageCommand extends AbstractMagentoCommand
         if ($templates !== []) {
             $tableHelper = $this->getTableHelper();
             $tableHelper
-                ->setHeaders(['id', 'Name', 'Scope', 'Scope Id', Path::class])
+                ->setHeaders(['id', 'Name', 'Scope', 'Scope Id', 'Path'])
                 ->renderByFormat($output, $templates, $input->getOption('format'));
         } else {
             $output->writeln('No transactional email templates stored in the database.');
@@ -84,7 +83,7 @@ class UsageCommand extends AbstractMagentoCommand
                     'Template Code' => $this->sanitizeEmailProperty($template->getTemplateCode()),
                     'Scope'         => $this->sanitizeEmailProperty($configPath['scope']),
                     'Scope Id'      => $this->sanitizeEmailProperty($configPath['scope_id']),
-                    Path::class     => $this->sanitizeEmailProperty($configPath['path']),
+                    'Path'          => $this->sanitizeEmailProperty($configPath['path']),
                 ];
             }
         }
