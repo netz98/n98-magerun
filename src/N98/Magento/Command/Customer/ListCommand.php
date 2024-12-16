@@ -63,7 +63,7 @@ HELP;
                 $customer->getEmail(),
                 $customer->getFirstname(),
                 $customer->getLastname(),
-                $this->_getWebsiteCodeById((int) $customer->getwebsiteId()),
+                $this->_getWebsiteCodeById((int) $customer->getWebsiteId()),
             ];
         }
 

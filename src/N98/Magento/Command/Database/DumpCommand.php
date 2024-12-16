@@ -9,7 +9,6 @@ use N98\Magento\Command\Database\Compressor\Compressor;
 use N98\Util\Console\Enabler;
 use N98\Util\Exec;
 use N98\Util\VerifyOrDie;
-use RectorPrefix202411\Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

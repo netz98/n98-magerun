@@ -143,15 +143,15 @@ HELP;
      */
     protected function _getAvaiableDbFilesFromResource(Mage_Core_Model_Resource_Setup $mageCoreModelResourceSetup, array $args = []): array
     {
-        $result = $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $mageCoreModelResourceSetup, $args);
+        $result = (array) $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $mageCoreModelResourceSetup, $args);
 
-        //an install runs the install script first, then any upgrades
+        //an installation runs the installation script first, then any upgrades
         if ($args[0] == Mage_Core_Model_Resource_Setup::TYPE_DB_INSTALL) {
             $args[0] = Mage_Core_Model_Resource_Setup::TYPE_DB_UPGRADE;
             $args[1] = $result[0]['toVersion'];
             $result = array_merge(
                 $result,
-                $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $mageCoreModelResourceSetup, $args),
+                (array) $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $mageCoreModelResourceSetup, $args),
             );
         }
 
@@ -163,13 +163,13 @@ HELP;
      */
     protected function _getAvaiableDataFilesFromResource(Mage_Core_Model_Resource_Setup $mageCoreModelResourceSetup, array $args = []): array
     {
-        $result = $this->_callProtectedMethodFromObject('_getAvailableDataFiles', $mageCoreModelResourceSetup, $args);
+        $result = (array) $this->_callProtectedMethodFromObject('_getAvailableDataFiles', $mageCoreModelResourceSetup, $args);
         if ($args[0] == Mage_Core_Model_Resource_Setup::TYPE_DATA_INSTALL) {
             $args[0] = Mage_Core_Model_Resource_Setup::TYPE_DATA_UPGRADE;
             $args[1] = $result[0]['toVersion'];
             $result = array_merge(
                 $result,
-                $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $mageCoreModelResourceSetup, $args),
+                (array) $this->_callProtectedMethodFromObject('_getAvailableDbFiles', $mageCoreModelResourceSetup, $args),
             );
         }
 
