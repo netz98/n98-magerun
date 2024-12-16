@@ -23,14 +23,14 @@ final class ReindexAllCommandTest extends TestCase
             ['command' => $command->getName()],
         );
 
-        $this->assertStringContainsString('Successfully reindexed catalog_product_attribute', $commandTester->getDisplay());
-        $this->assertStringContainsString('Successfully reindexed catalog_product_price', $commandTester->getDisplay());
-        $this->assertStringContainsString('Successfully reindexed catalog_url', $commandTester->getDisplay());
-        $this->assertStringContainsString('Successfully reindexed catalog_product_flat', $commandTester->getDisplay());
-        $this->assertStringContainsString('Successfully reindexed catalog_category_flat', $commandTester->getDisplay());
-        $this->assertStringContainsString('Successfully reindexed catalog_category_product', $commandTester->getDisplay());
-        $this->assertStringContainsString('Successfully reindexed catalogsearch_fulltext', $commandTester->getDisplay());
-        $this->assertStringContainsString('Successfully reindexed cataloginventory_stock', $commandTester->getDisplay());
-        $this->assertStringContainsString('Successfully reindexed tag_summary', $commandTester->getDisplay());
+        $this->assertStringContainsString('Successfully re-indexed catalog_product_attribute', $commandTester->getDisplay());
+        $this->assertStringContainsString('Successfully re-indexed catalog_product_price', $commandTester->getDisplay());
+        $this->assertStringContainsString('Successfully re-indexed catalog_url', $commandTester->getDisplay());
+        $this->assertStringContainsString('Successfully re-indexed catalog_product_flat', $commandTester->getDisplay());
+        $this->assertStringContainsString('Successfully re-indexed catalog_category_flat', $commandTester->getDisplay());
+        $this->assertStringContainsString('Successfully re-indexed catalog_category_product', $commandTester->getDisplay());
+        $this->assertStringContainsString('Successfully re-indexed catalogsearch_fulltext', $commandTester->getDisplay());
+        $this->assertStringContainsString('Successfully re-indexed cataloginventory_stock', $commandTester->getDisplay());
+        $this->assertStringContainsString('Successfully re-indexed tag_summary', $commandTester->getDisplay());
     }
 }
