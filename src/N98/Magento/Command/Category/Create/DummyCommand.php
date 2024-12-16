@@ -165,7 +165,7 @@ class DummyCommand extends AbstractMagentoCommand
 
             $question = new ChoiceQuestion('Please select Store ID (default: 1)', $_store_ids, self::DEFAULT_STORE_ID);
             $question->setErrorMessage('Store ID "%s" is invalid.');
-            $response = explode('|', $questionHelper->ask($input, $output, $question));
+            $response = explode('|', (string) $questionHelper->ask($input, $output, $question));
             $input->setArgument('store-id', $response[0]);
         }
 

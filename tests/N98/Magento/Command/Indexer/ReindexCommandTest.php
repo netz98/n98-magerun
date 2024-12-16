@@ -18,6 +18,6 @@ class ReindexCommandTest extends TestCase
             ['command'    => $command->getName(), 'index_code' => 'tag_summary,tag_summary']
         );
 
-        self::assertStringContainsString('Successfully reindexed tag_summary', $commandTester->getDisplay());
+        self::assertStringContainsString('Successfully re-indexed tag_summary', $commandTester->getDisplay());
     }
 }

@@ -23,23 +23,26 @@ abstract class BaseUrlCheckAbstract extends CheckAbstract
         $this->registerStoreConfigPath('baseUrl', 'web/' . $this->class . '/base_url');
     }
 
-    protected function checkSettings(Result $result, Mage_Core_Model_Store $mageCoreModelStore, string $baseUrl): void
+    protected function checkSettings(Result $result, ?Mage_Core_Model_Store $mageCoreModelStore, string $baseUrl): void
     {
         $errorMessage = 'Wrong hostname configured. <info>Hostname must contain a dot</info>';
 
         /** @var string $host */
         $host    = parse_url($baseUrl, PHP_URL_HOST);
         $isValid = (bool) strstr($host, '.');
+
+        $storeCode = $mageCoreModelStore ? $mageCoreModelStore->getCode() : 'n/a';
+
         $result->setStatus($isValid);
         if ($isValid) {
             $result->setMessage(
                 '<info>' . ucfirst($this->class) . ' BaseURL: <comment>' . $baseUrl . '</comment> of Store: <comment>' .
-                $mageCoreModelStore->getCode() . '</comment> - OK',
+                $storeCode . '</comment> - OK',
             );
         } else {
             $result->setMessage(
                 '<error>Invalid ' . ucfirst($this->class) . ' BaseURL: <comment>' . $baseUrl .
-                '</comment> of Store: <comment>' . $mageCoreModelStore->getCode() . '</comment> ' . $errorMessage . '</error>',
+                '</comment> of Store: <comment>' . $storeCode . '</comment> ' . $errorMessage . '</error>',
             );
         }
     }

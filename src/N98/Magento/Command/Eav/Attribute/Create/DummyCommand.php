@@ -79,7 +79,7 @@ HELP;
 
         $dummyValues = new DummyValues();
         for ($i = 0; $i < $argument['values-number']; ++$i) {
-            $value = $dummyValues->createValue($argument['values-type'], $argument['locale']);
+            $value = $dummyValues->createValue((string) $argument['values-type'], $argument['locale']);
             if (!$this->attributeValueExists($attribute, $value)) {
                 try {
                     $attribute->setData('option', ['value' => ['option' => [$value, $value]]]);
@@ -124,7 +124,7 @@ HELP;
 
             $question = new ChoiceQuestion('Please select Attribute ID', $attribute_codes);
             $question->setErrorMessage('Attribute ID "%s" is invalid.');
-            $response = explode('|', $questionHelper->ask($input, $output, $question));
+            $response = explode('|', (string) $questionHelper->ask($input, $output, $question));
             $input->setArgument('attribute-id', $response[0]);
         }
 

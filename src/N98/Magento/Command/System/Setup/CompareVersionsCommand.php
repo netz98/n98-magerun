@@ -60,7 +60,7 @@ HELP;
         $time = microtime(true);
         $modules = $config->getNode('modules');
         /** @var Mage_Core_Model_Resource_Resource $mageCoreModelAbstract */
-        $mageCoreModelAbstract = Mage::getModel('core/resource');
+        $mageCoreModelAbstract = Mage::getModel('core/resource_resource');
         /** @var Mage_Core_Model_Config_Element $node */
         $node = $config->getNode('global/resources');
         $setups = $node->children();

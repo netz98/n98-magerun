@@ -78,7 +78,7 @@ HELP;
         $allowZeroScope = $input->getOption('force');
         $scope          = $input->getOption('scope');
         $this->_validateScopeParam($scope);
-        $scopeId        = (int) $this->_convertScopeIdParam($scope, $input->getOption('scope-id'), $allowZeroScope);
+        $scopeId        = (int) $this->_convertScopeIdParam($scope, (string) $input->getOption('scope-id'), $allowZeroScope);
         $valueDisplay   = $input->getArgument('value');
         $value          = $valueDisplay;
 

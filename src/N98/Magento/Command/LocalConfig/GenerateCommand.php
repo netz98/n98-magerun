@@ -180,12 +180,11 @@ HELP;
      * in case the string has length and not the whole string can be wrapped in a CDATA section (because it contains
      * a sequence that can not be part of a CDATA section "]]>") the part that can well be.
      *
-     * @param string $string
-     *
      * @return string CDATA section or equivalent
      */
-    protected function _wrapCData($string)
+    protected function _wrapCData(?string $string): string
     {
+        $string = is_null($string) ? '' : $string;
         $buffer = strtr($string, [']]>' => ']]>]]&gt;<![CDATA[']);
         $buffer = '<![CDATA[' . $buffer . ']]>';
 

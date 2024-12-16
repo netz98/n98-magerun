@@ -14,7 +14,7 @@ use Faker\Generator;
  */
 class DummyValues
 {
-    private ?Generator $generator;
+    private ?Generator $generator = null;
 
     private array $sizes = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60'];
 
@@ -41,7 +41,7 @@ class DummyValues
      */
     public function createValue(string $type, string $locale)
     {
-        if (!$this->generator instanceof \Faker\Generator) {
+        if (!$this->generator instanceof Generator) {
             $this->generator = Factory::create($locale);
         }
 

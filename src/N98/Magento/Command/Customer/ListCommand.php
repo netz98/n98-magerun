@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Customer;
 
+use Mage_Customer_Model_Customer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -55,8 +56,15 @@ HELP;
         $mageCustomerModelResourceCustomerCollection->setPageSize($config['limit']);
 
         $table = [];
+        /** @var Mage_Customer_Model_Customer $customer */
         foreach ($mageCustomerModelResourceCustomerCollection as $customer) {
-            $table[] = [$customer->getId(), $customer->getEmail(), $customer->getFirstname(), $customer->getLastname(), $this->_getWebsiteCodeById($customer->getwebsiteId())];
+            $table[] = [
+                $customer->getId(),
+                $customer->getEmail(),
+                $customer->getFirstname(),
+                $customer->getLastname(),
+                $this->_getWebsiteCodeById((int) $customer->getwebsiteId()),
+            ];
         }
 
         if ($table !== []) {

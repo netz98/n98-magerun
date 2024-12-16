@@ -59,7 +59,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
     /**
      * @deprecated Since 1.97.29; use AbstractCompressor::create() instead
      */
-    protected function getCompressor(string $type): Compressor
+    protected function getCompressor(?string $type): Compressor
     {
         return AbstractCompressor::create($type);
     }

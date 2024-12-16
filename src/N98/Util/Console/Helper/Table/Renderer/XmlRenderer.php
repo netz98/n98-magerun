@@ -67,9 +67,8 @@ class XmlRenderer implements RendererInterface
     {
         $index = 0;
         foreach ($fields as $key => $value) {
-            /** @var string $header */
             $header     = $this->getHeader($index++, $key);
-            $element    = $this->createField($domElement->ownerDocument, $header, (string) $value);
+            $element    = $this->createField($domElement->ownerDocument, (string) $header, (string) $value);
             $domElement->appendChild($element);
         }
     }
@@ -85,7 +84,7 @@ class XmlRenderer implements RendererInterface
         $domNode = $domNode->appendChild($doc->createElement('headers'));
 
         foreach ($headers as $header) {
-            $domNode->appendChild($doc->createElement('header', $header));
+            $domNode->appendChild($doc->createElement('header', (string) $header));
         }
     }
 

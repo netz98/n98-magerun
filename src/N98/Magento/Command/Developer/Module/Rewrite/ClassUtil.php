@@ -15,7 +15,7 @@ final class ClassUtil
 {
     private string $className;
 
-    private ?bool $exists;
+    private ?bool $exists = null;
 
     public static function create(string $className): ClassUtil
     {

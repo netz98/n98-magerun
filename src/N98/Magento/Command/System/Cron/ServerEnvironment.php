@@ -25,7 +25,7 @@ use UnexpectedValueException;
  */
 class ServerEnvironment
 {
-    private ?array $backup;
+    private ?array $backup = null;
 
     private array $keys = ['SCRIPT_NAME', 'SCRIPT_FILENAME'];
 

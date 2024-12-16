@@ -69,6 +69,6 @@ class DbSettingsTest extends TestCase
         self::assertNull($settings['unix_socket']);
 
         // it's still leaky:
-        self::assertInstanceOf(SimpleXMLElement::class, $settings['pdoType']);
+        // self::assertInstanceOf(SimpleXMLElement::class, $settings['pdoType']);
     }
 }

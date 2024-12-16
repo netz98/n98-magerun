@@ -82,7 +82,7 @@ class ViewCommand extends AbstractMagentoCommand
             $table[] = ['Frontend-Label', $attribute->getFrontend()->getLabel()];
             $table[] = ['Frontend-Class', trim($attribute->getFrontend()->getClass())];
             $table[] = ['Frontend-Input', trim($attribute->getFrontend()->getInputType())];
-            $table[] = ['Frontend-Input-Renderer-Class', trim($attribute->getFrontend()->getInputRendererClass())];
+            $table[] = ['Frontend-Input-Renderer-Class', trim((string) $attribute->getFrontend()->getInputRendererClass())];
         }
 
         $tableHelper = $this->getTableHelper();

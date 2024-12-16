@@ -58,9 +58,9 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
      */
     protected function getRuntime(Mage_Index_Model_Process $mageIndexModelProcess): string
     {
-        $dateTime = new DateTimeUtils();
-        $startTime = new DateTime($mageIndexModelProcess->getStartedAt());
-        $endTime = new DateTime($mageIndexModelProcess->getEndedAt());
+        $dateTime   = new DateTimeUtils();
+        $startTime  = new DateTime((string) $mageIndexModelProcess->getStartedAt());
+        $endTime    = new DateTime((string) $mageIndexModelProcess->getEndedAt());
         if ($startTime > $endTime) {
             return 'index not finished';
         }
@@ -84,8 +84,8 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
      */
     protected function getRuntimeInSeconds(Mage_Index_Model_Process $mageIndexModelProcess): int
     {
-        $startTimestamp = strtotime($mageIndexModelProcess->getStartedAt());
-        $endTimestamp = strtotime($mageIndexModelProcess->getEndedAt());
+        $startTimestamp = strtotime((string) $mageIndexModelProcess->getStartedAt());
+        $endTimestamp   = strtotime((string) $mageIndexModelProcess->getEndedAt());
         return $endTimestamp - $startTimestamp;
     }
 
@@ -145,17 +145,17 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
         $isSuccessful = true;
 
         try {
-            \Mage::dispatchEvent('shell_reindex_init_process');
+            Mage::dispatchEvent('shell_reindex_init_process');
             foreach ($processes as $process) {
                 if (!$this->executeProcess($output, $process)) {
                     $isSuccessful = false;
                 }
             }
 
-            \Mage::dispatchEvent('shell_reindex_finalize_process');
+            Mage::dispatchEvent('shell_reindex_finalize_process');
         } catch (Exception $exception) {
             $isSuccessful = false;
-            \Mage::dispatchEvent('shell_reindex_finalize_process');
+            Mage::dispatchEvent('shell_reindex_finalize_process');
         }
 
         return $isSuccessful;
@@ -175,7 +175,7 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
 
         try {
             $mageIndexModelProcess->reindexEverything();
-            \Mage::dispatchEvent($mageIndexModelProcess->getIndexerCode() . '_shell_reindex_after');
+            Mage::dispatchEvent($mageIndexModelProcess->getIndexerCode() . '_shell_reindex_after');
         } catch (Exception $exception) {
             $errorMessage = $exception->getMessage();
             $isSuccessful = false;

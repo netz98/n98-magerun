@@ -2,6 +2,9 @@
 
 namespace N98\Magento\Command\Admin\User;
 
+use Mage_Admin_Model_Roles;
+use Mage_Admin_Model_Rules;
+use Mage_Admin_Model_User;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -23,7 +26,7 @@ class CreateUserCommandTest extends TestCase
             ->setMethods(['getUserModel', 'getRoleModel', 'getRulesModel'])
             ->getMock();
 
-        $this->userModel = $this->getMockBuilder('Mage_Admin_Model_User')
+        $this->userModel = $this->getMockBuilder(Mage_Admin_Model_User::class)
             ->setMethods(['setData', 'save', 'setRoleIds', 'getUserId', 'setRoleUserId', 'saveRelations'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -32,7 +35,7 @@ class CreateUserCommandTest extends TestCase
             ->method('getUserModel')
             ->willReturn($this->userModel);
 
-        $this->roleModel = $this->getMockBuilder('Mage_Admin_Model_Role')
+        $this->roleModel = $this->getMockBuilder(Mage_Admin_Model_Roles::class)
             ->setMethods(['load', 'getId', 'setName', 'setRoleType', 'save'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -41,7 +44,7 @@ class CreateUserCommandTest extends TestCase
             ->method('getRoleModel')
             ->willReturn($this->roleModel);
 
-        $this->rulesModel = $this->getMockBuilder('Mage_Admin_Model_Rules')
+        $this->rulesModel = $this->getMockBuilder(Mage_Admin_Model_Rules::class)
             ->setMethods(['setRoleId', 'setResources', 'saveRel'])
             ->disableOriginalConstructor()
             ->getMock();

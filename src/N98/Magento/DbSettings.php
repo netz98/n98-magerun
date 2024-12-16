@@ -69,7 +69,7 @@ class DbSettings implements ArrayAccess, IteratorAggregate
             );
         }
 
-        $saved = libxml_use_internal_errors(true);
+        $saved  = libxml_use_internal_errors(true);
         $config = simplexml_load_file($file);
         libxml_use_internal_errors($saved);
 

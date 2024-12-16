@@ -31,7 +31,7 @@ final class AutoloadHandler
      */
     private $callback;
 
-    private bool $splRegistered;
+    private bool $splRegistered = false;
 
     private bool $enabled;
 

@@ -339,7 +339,7 @@ class DatabaseHelper extends AbstractHelper
      * @return array|false
      * @throws RuntimeException
      */
-    public function getTables(bool $withoutPrefix = false)
+    public function getTables(?bool $withoutPrefix = false)
     {
         $pdo = $this->getConnection();
         $prefix = $this->dbSettings['prefix'];

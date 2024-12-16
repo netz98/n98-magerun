@@ -19,7 +19,7 @@ class VerifyOrDie
     /**
      * Portable basename
      */
-    public static function filename(string $basename, ?string $message = null): string
+    public static function filename(?string $basename, ?string $message = null): string
     {
         static::argumentType('basename', 'string', $basename);
         if (null !== $message) {

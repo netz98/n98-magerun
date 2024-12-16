@@ -24,11 +24,12 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
         $this->registerStoreConfigPath('cookieDomain', 'web/cookie/cookie_domain');
     }
 
-    protected function checkSettings(Result $result, Mage_Core_Model_Store $mageCoreModelStore, string $baseUrl, string $cookieDomain): void
+    protected function checkSettings(Result $result, ?Mage_Core_Model_Store $mageCoreModelStore, string $baseUrl, ?string $cookieDomain): void
     {
-        $errorMessage = 'cookie-domain and ' . $this->class . ' base-URL do not match';
+        $errorMessage   = 'cookie-domain and ' . $this->class . ' base-URL do not match';
+        $websiteCode    = $mageCoreModelStore ? $mageCoreModelStore->getCode() : '';
 
-        if (strlen($cookieDomain) !== 0) {
+        if ($cookieDomain && strlen($cookieDomain) !== 0) {
             $isValid = $this->validateCookieDomainAgainstUrl($cookieDomain, $baseUrl);
 
             $result->setStatus($isValid);
@@ -36,18 +37,18 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
             if ($isValid) {
                 $result->setMessage(
                     '<info>Cookie Domain (' . $this->class . '): <comment>' . $cookieDomain .
-                    '</comment> of Store: <comment>' . $mageCoreModelStore->getCode() . '</comment> - OK</info>',
+                    '</comment> of Store: <comment>' . $websiteCode . '</comment> - OK</info>',
                 );
             } else {
                 $result->setMessage(
                     '<error>Cookie Domain (' . $this->class . '): <comment>' . $cookieDomain .
-                    '</comment> of Store: <comment>' . $mageCoreModelStore->getCode() . '</comment> - ERROR: ' . $errorMessage .
+                    '</comment> of Store: <comment>' . $websiteCode . '</comment> - ERROR: ' . $errorMessage .
                     '</error>',
                 );
             }
         } else {
             $result->setMessage(
-                '<info>Empty cookie Domain (' . $this->class . ') of Store: <comment>' . $mageCoreModelStore->getCode() .
+                '<info>Empty cookie Domain (' . $this->class . ') of Store: <comment>' . $websiteCode .
                 '</comment> - OK</info>',
             );
         }

@@ -9,6 +9,7 @@ use N98\Magento\Command\Database\Compressor\Compressor;
 use N98\Util\Console\Enabler;
 use N98\Util\Exec;
 use N98\Util\VerifyOrDie;
+use RectorPrefix202411\Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -466,10 +467,8 @@ HELP;
         $optionAddTime = $input->getOption('add-time');
         [$namePrefix, $nameSuffix] = $this->getFileNamePrefixSuffix($optionAddTime);
 
-        if ((
-            ($fileName = $input->getArgument('filename')) === null
-                || ($isDir = is_dir($fileName))
-        )
+        $fileName = $input->getArgument('filename');
+        if ($fileName === null || $isDir = is_dir((string) $fileName)
             && !$input->getOption('stdout')) {
             $defaultName = VerifyOrDie::filename(
                 $namePrefix . $this->dbSettings['dbname'] . $nameSuffix . $nameExtension,
@@ -500,7 +499,7 @@ HELP;
                 . $pathPartsFilename;
         }
 
-        return $compressor->getFileName($fileName);
+        return $compressor->getFileName((string) $fileName);
     }
 
     /**

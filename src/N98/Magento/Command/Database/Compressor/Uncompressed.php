@@ -32,7 +32,7 @@ class Uncompressed extends AbstractCompressor
      * @param bool $pipe
      * @return string
      */
-    public function getFileName(string $fileName, bool $pipe = true)
+    public function getFileName(string $fileName, bool $pipe = true): string
     {
         if ((string) $fileName === '') {
             return $fileName;
