@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98\Magento;
 
 use InvalidArgumentException;
@@ -44,6 +42,7 @@ class MagerunCommandTester
     /**
      * MagerunCommandTester constructor.
      *
+     * @param TestCase $testCase
      * @param string|array $input
      */
     public function __construct(TestCase $testCase, array $input)
@@ -52,7 +51,6 @@ class MagerunCommandTester
 
         $testCase->assertArrayHasKey('command', $input);
         $testCase->assertIsString($input['command']);
-
         $this->commandName = $input['command'];
         $this->input = $input;
     }
@@ -88,7 +86,7 @@ class MagerunCommandTester
     private function getExecutedCommandTester()
     {
         $commandTester = $this->getCommandTester();
-        if ($this->status === null) {
+        if (!isset($this->status)) {
             $this->status = $commandTester->execute($this->input);
         }
 
@@ -101,7 +99,7 @@ class MagerunCommandTester
     private function getCommandTester()
     {
         $command = null;
-        if ($this->commandTester !== null) {
+        if (isset($this->commandTester)) {
             return $this->commandTester;
         }
 
@@ -124,12 +122,12 @@ class MagerunCommandTester
         $test->assertSame(
             $command->getName(),
             $this->commandName,
-            'Verifying that test is done against main command name',
+            'Verifying that test is done against main command name'
         );
 
         if (!$command instanceof Command) {
             throw new InvalidArgumentException(
-                sprintf('Command "%s" is not a console command', $this->commandName),
+                sprintf('Command "%s" is not a console command', $this->commandName)
             );
         }
 

@@ -1,12 +1,7 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98\Magento\Command\Admin\User;
 
-use Mage_Admin_Model_Roles;
-use Mage_Admin_Model_Rules;
-use Mage_Admin_Model_User;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -14,25 +9,21 @@ use Symfony\Component\Console\Tester\CommandTester;
 /**
  * Class CreateUserCommandTest
  */
-final class CreateUserCommandTest extends TestCase
+class CreateUserCommandTest extends TestCase
 {
-    private $command;
+    protected $command;
+    protected $userModel;
+    protected $roleModel;
+    protected $rulesModel;
+    protected $commandName = 'admin:user:create';
 
-    private $userModel;
-
-    private $roleModel;
-
-    private $rulesModel;
-
-    private $commandName = 'admin:user:create';
-
-    protected function setUp(): void
+    public function setUp(): void
     {
         $this->command = $this->getMockBuilder(CreateUserCommand::class)
             ->setMethods(['getUserModel', 'getRoleModel', 'getRulesModel'])
             ->getMock();
 
-        $this->userModel = $this->getMockBuilder(Mage_Admin_Model_User::class)
+        $this->userModel = $this->getMockBuilder('Mage_Admin_Model_User')
             ->setMethods(['setData', 'save', 'setRoleIds', 'getUserId', 'setRoleUserId', 'saveRelations'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -41,7 +32,7 @@ final class CreateUserCommandTest extends TestCase
             ->method('getUserModel')
             ->willReturn($this->userModel);
 
-        $this->roleModel = $this->getMockBuilder(Mage_Admin_Model_Roles::class)
+        $this->roleModel = $this->getMockBuilder('Mage_Admin_Model_Role')
             ->setMethods(['load', 'getId', 'setName', 'setRoleType', 'save'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -50,7 +41,7 @@ final class CreateUserCommandTest extends TestCase
             ->method('getRoleModel')
             ->willReturn($this->roleModel);
 
-        $this->rulesModel = $this->getMockBuilder(Mage_Admin_Model_Rules::class)
+        $this->rulesModel = $this->getMockBuilder('Mage_Admin_Model_Rules')
             ->setMethods(['setRoleId', 'setResources', 'saveRel'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -62,33 +53,33 @@ final class CreateUserCommandTest extends TestCase
 
     public function testArgumentPromptsWhenNotPresent()
     {
-        $mock = $this->getMockBuilder(QuestionHelper::class)
+        $questionHelper = $this->getMockBuilder(QuestionHelper::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['ask'])
             ->getMock();
 
-        $mock->expects(self::at(0))
+        $questionHelper->expects(self::at(0))
             ->method('ask')
             ->willReturn('aydin');
 
-        $mock->expects(self::at(1))
+        $questionHelper->expects(self::at(1))
             ->method('ask')
             ->willReturn('aydin@hotmail.co.uk');
 
-        $mock->expects(self::at(2))
+        $questionHelper->expects(self::at(2))
             ->method('ask')
             ->willReturn('p4ssw0rd');
 
-        $mock->expects(self::at(3))
+        $questionHelper->expects(self::at(3))
             ->method('ask')
             ->willReturn('Aydin');
 
-        $mock->expects(self::at(4))
+        $questionHelper->expects(self::at(4))
             ->method('ask')
             ->willReturn('Hassan');
 
         $this->roleModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with('Administrators', 'role_name')
             ->willReturn($this->roleModel);
@@ -111,12 +102,12 @@ final class CreateUserCommandTest extends TestCase
             ->willReturn($this->userModel);
 
         $this->userModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('save')
             ->willReturn($this->userModel);
 
         $this->userModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('setRoleIds')
             ->with([9])
             ->willReturn($this->userModel);
@@ -127,62 +118,59 @@ final class CreateUserCommandTest extends TestCase
             ->willReturn(2);
 
         $this->userModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('setRoleUserId')
             ->with(2)
             ->willReturn($this->userModel);
 
         $this->userModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('saveRelations');
 
         $application = $this->getApplication();
         $application->add($this->command);
-
         $command = $this->getApplication()->find($this->commandName);
 
         // We override the standard helper with our mock
-        $command->getHelperSet()->set($mock, 'question');
+        $command->getHelperSet()->set($questionHelper, 'question');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command' => $command->getName(), 'role' => 'Administrators']);
 
-        $this->assertStringContainsString('User aydin successfully created', $commandTester->getDisplay());
+        self::assertStringContainsString('User aydin successfully created', $commandTester->getDisplay());
     }
 
     public function testInvalidRole()
     {
         $application = $this->getApplication();
         $application->add($this->command);
-
         $command = $this->getApplication()->find($this->commandName);
 
         $this->roleModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with('invalid role', 'role_name')
             ->willReturn($this->roleModel);
 
         $this->roleModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getId')
             ->willReturn(null);
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command'   => $command->getName(), 'username'  => 'aydin', 'firstname' => 'Aydin', 'lastname'  => 'Hassan', 'email'     => 'aydin@hotmail.co.uk', 'password'  => 'p4ssw0rd', 'role'      => 'invalid role']);
 
-        $this->assertStringContainsString('Role was not found', $commandTester->getDisplay());
+        self::assertStringContainsString('Role was not found', $commandTester->getDisplay());
     }
 
     public function testCreatingDevelopmentRole()
     {
         $application = $this->getApplication();
         $application->add($this->command);
-
         $command = $this->getApplication()->find($this->commandName);
 
         $this->roleModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('load')
             ->with('Development', 'role_name')
             ->willReturn($this->roleModel);
@@ -193,19 +181,19 @@ final class CreateUserCommandTest extends TestCase
             ->willReturn(null);
 
         $this->roleModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('setName')
             ->with('Development')
             ->willReturn($this->roleModel);
 
         $this->roleModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('setRoleType')
             ->with('G')
             ->willReturn($this->roleModel);
 
         $this->roleModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('save');
 
         $this->roleModel
@@ -214,19 +202,19 @@ final class CreateUserCommandTest extends TestCase
             ->willReturn(5);
 
         $this->rulesModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('setRoleId')
             ->with(5)
             ->willReturn($this->rulesModel);
 
         $this->rulesModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('setResources')
             ->with(['all'])
             ->willReturn($this->rulesModel);
 
         $this->rulesModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('saveRel');
 
         $this->userModel
@@ -243,7 +231,7 @@ final class CreateUserCommandTest extends TestCase
             ->willReturn($this->userModel);
 
         $this->userModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('save')
             ->willReturn($this->userModel);
 
@@ -253,7 +241,7 @@ final class CreateUserCommandTest extends TestCase
             ->willReturn(5);
 
         $this->userModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('setRoleIds')
             ->with([5])
             ->willReturn($this->userModel);
@@ -264,13 +252,13 @@ final class CreateUserCommandTest extends TestCase
             ->willReturn(2);
 
         $this->userModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('setRoleUserId')
             ->with(2)
             ->willReturn($this->userModel);
 
         $this->userModel
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('saveRelations');
 
         $commandTester = new CommandTester($command);
@@ -283,7 +271,7 @@ final class CreateUserCommandTest extends TestCase
             'password'  => 'p4ssw0rd',
         ]);
 
-        $this->assertStringContainsString('The role Development was automatically created', $commandTester->getDisplay());
-        $this->assertStringContainsString('User aydin successfully created', $commandTester->getDisplay());
+        self::assertStringContainsString('The role Development was automatically created', $commandTester->getDisplay());
+        self::assertStringContainsString('User aydin successfully created', $commandTester->getDisplay());
     }
 }

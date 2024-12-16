@@ -1,29 +1,26 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98\Magento\Command\Cache;
 
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-final class ReportCommandTest extends TestCase
+class ReportCommandTest extends TestCase
 {
     public function testExecute()
     {
         $application = $this->getApplication();
         $application->add(new ListCommand());
-
         $command = $this->getApplication()->find('cache:report');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName(), '--tags'  => true, '--mtime' => true],
+            ['command' => $command->getName(), '--tags'  => true, '--mtime' => true]
         );
 
-        $this->assertMatchesRegularExpression('/ID/', $commandTester->getDisplay());
-        $this->assertMatchesRegularExpression('/EXPIRE/', $commandTester->getDisplay());
-        $this->assertMatchesRegularExpression('/MTIME/', $commandTester->getDisplay());
-        $this->assertMatchesRegularExpression('/TAGS/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/ID/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/EXPIRE/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/MTIME/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/TAGS/', $commandTester->getDisplay());
     }
 }

@@ -1,29 +1,30 @@
 <?php
-
-declare(strict_types=1);
+/*
+ * this file is part of magerun
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
+ */
 
 namespace N98\Util;
 
-use Generator;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-
 /**
  * Class FilesystemTest
  * @package N98\Util
- *
  * @author Aydin Hassan <aydin@hotmail.co.uk>
- * @author Tom Klingenberg <https://github.com/ktomk>
- *
- * @covers \N98\Util\Filesystem
+ * @covers N98\Util\Filesystem
  */
-final class FilesystemTest extends TestCase
+class FilesystemTest extends TestCase
 {
-    private Filesystem $filesystem;
+    /**
+     * @var Filesystem
+     */
+    protected $fileSystem;
 
     protected function setUp(): void
     {
-        $this->filesystem = new Filesystem();
+        $this->fileSystem = new Filesystem();
     }
 
     public function testRecursiveCopy()
@@ -42,9 +43,9 @@ final class FilesystemTest extends TestCase
         touch($file1);
         touch($file2);
 
-        $this->filesystem->recursiveCopy($basePath, $dest);
-        $this->assertFileExists($dest . '/folder1/file1.txt');
-        $this->assertFileExists($dest . '/folder2/file2.txt');
+        $this->fileSystem->recursiveCopy($basePath, $dest);
+        self::assertFileExists($dest . '/folder1/file1.txt');
+        self::assertFileExists($dest . '/folder2/file2.txt');
 
         //cleanup
         unlink($file1);
@@ -59,15 +60,14 @@ final class FilesystemTest extends TestCase
         rmdir($dest . '/folder2');
         rmdir($dest);
 
-        $this->assertFileDoesNotExist($dest . '/folder1/file1.txt');
-        $this->assertFileDoesNotExist($dest);
+        self::assertFileDoesNotExist($dest . '/folder1/file1.txt');
+        self::assertFileDoesNotExist($dest);
 
         if (!is_dir($tmp . '/a')) {
             mkdir($tmp . '/a');
         }
-
         touch($tmp . '/file1.txt');
-        $this->filesystem->recursiveCopy($tmp . '/a', $tmp . '/file1.txt');
+        $this->fileSystem->recursiveCopy($tmp . '/a', $tmp . '/file1.txt');
         unlink($tmp . '/file1.txt');
         rmdir($tmp . '/a');
     }
@@ -82,7 +82,7 @@ final class FilesystemTest extends TestCase
         $ignoreMe = $folder1 . '/ignore.me';
         $file2 = $folder2 . '/file2.txt';
         $dest = sys_get_temp_dir() . '/n98_copy_dest';
-        $this->filesystem->recursiveRemoveDirectory($dest, true);
+        $this->fileSystem->recursiveRemoveDirectory($dest, true);
 
         @mkdir($folder1, 0777, true);
         @mkdir($folder2, 0777, true);
@@ -90,10 +90,10 @@ final class FilesystemTest extends TestCase
         touch($ignoreMe);
         touch($file2);
 
-        $this->filesystem->recursiveCopy($basePath, $dest, ['ignore.me']);
-        $this->assertFileExists($dest . '/folder1/file1.txt');
-        $this->assertFileDoesNotExist($dest . '/folder1/ignore.me');
-        $this->assertFileExists($dest . '/folder2/file2.txt');
+        $this->fileSystem->recursiveCopy($basePath, $dest, ['ignore.me']);
+        self::assertFileExists($dest . '/folder1/file1.txt');
+        self::assertFileDoesNotExist($dest . '/folder1/ignore.me');
+        self::assertFileExists($dest . '/folder2/file2.txt');
 
         //cleanup
         unlink($file1);
@@ -126,12 +126,12 @@ final class FilesystemTest extends TestCase
         touch($symLinkedFile);
 
         $result = @symlink($symLinked, $basePath . '/symlink');
-        $this->assertTrue($result);
+        self::assertTrue($result);
 
-        $this->filesystem->recursiveRemoveDirectory($basePath);
+        $this->fileSystem->recursiveRemoveDirectory($basePath);
 
-        $this->assertFileExists($symLinkedFile);
-        $this->assertFileDoesNotExist($basePath);
+        self::assertFileExists($symLinkedFile);
+        self::assertFileDoesNotExist($basePath);
     }
 
     public function testRecursiveRemove()
@@ -148,8 +148,8 @@ final class FilesystemTest extends TestCase
         touch($file1);
         touch($file2);
 
-        $this->filesystem->recursiveRemoveDirectory($basePath);
-        $this->assertFileDoesNotExist($basePath);
+        $this->fileSystem->recursiveRemoveDirectory($basePath);
+        self::assertFileDoesNotExist($basePath);
     }
 
     public function testRecursiveRemoveWithTrailingSlash()
@@ -166,13 +166,13 @@ final class FilesystemTest extends TestCase
         touch($file1);
         touch($file2);
 
-        $this->filesystem->recursiveRemoveDirectory($basePath . '/');
-        $this->assertFileDoesNotExist($basePath);
+        $this->fileSystem->recursiveRemoveDirectory($basePath . '/');
+        self::assertFileDoesNotExist($basePath);
     }
 
     public function testFalseIsReturnedIfDirectoryNotExist()
     {
-        $this->assertFalse($this->filesystem->recursiveRemoveDirectory('not-a-folder'));
+        self::assertFalse($this->fileSystem->recursiveRemoveDirectory('not-a-folder'));
     }
 
     public function testFalseIsReturnedIfDirectoryNotReadable()
@@ -180,7 +180,7 @@ final class FilesystemTest extends TestCase
         $tmp = sys_get_temp_dir();
         $basePath = $tmp . '/n98_testdir-never-existed';
 
-        $this->assertFalse($this->filesystem->recursiveRemoveDirectory($basePath));
+        self::assertFalse($this->fileSystem->recursiveRemoveDirectory($basePath));
     }
 
     public function testParentIsNotRemovedIfEmptyIsTrue()
@@ -197,27 +197,29 @@ final class FilesystemTest extends TestCase
         touch($file1);
         touch($file2);
 
-        $this->filesystem->recursiveRemoveDirectory($basePath, true);
-        $this->assertFileExists($basePath);
-        $this->assertFileDoesNotExist($folder1);
-        $this->assertFileDoesNotExist($folder2);
+        $this->fileSystem->recursiveRemoveDirectory($basePath, true);
+        self::assertFileExists($basePath);
+        self::assertFileDoesNotExist($folder1);
+        self::assertFileDoesNotExist($folder2);
     }
 
     /**
+     * @param int $bytes
+     * @param int $decimalPlaces
+     * @param string $expected
      * @dataProvider convertedBytesProvider
      */
-    public function testConvertBytesToHumanReadable(int $bytes, int $decimalPlaces, string $expected)
+    public function testConvertBytesToHumanReadable($bytes, $decimalPlaces, $expected)
     {
         $res = Filesystem::humanFileSize($bytes, $decimalPlaces);
-        $this->assertSame($expected, $res);
+        self::assertSame($expected, $res);
     }
 
-    public static function convertedBytesProvider(): Generator
+    /**
+     * @return array
+     */
+    public static function convertedBytesProvider()
     {
-        yield [20_000_000, 2, '19.07M'];
-        yield [20_000_000, 3, '19.073M'];
-        yield [2_000_000_000, 2, '1.86G'];
-        yield [2, 2, '2.00B'];
-        yield [2048, 2, '2.00K'];
+        return [[20_000_000, 2, '19.07M'], [20_000_000, 3, '19.073M'], [2_000_000_000, 2, '1.86G'], [2, 2, '2.00B'], [2048, 2, '2.00K']];
     }
 }

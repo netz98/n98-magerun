@@ -1,7 +1,4 @@
 <?php
-
-declare(strict_types=1);
-
 /**
  * this file is part of magerun
  *
@@ -19,7 +16,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  *
  * @package N98\Magento\Command\Cache
  */
-final class FlushCommandTest extends TestCase
+class FlushCommandTest extends TestCase
 {
     public function testExecute()
     {
@@ -28,8 +25,8 @@ final class FlushCommandTest extends TestCase
         $commandTester->execute(['command' => $command->getName()]);
 
         $display = $commandTester->getDisplay();
-        $this->assertStringContainsString('Flushing cache directory ', $display);
-        $this->assertStringContainsString('Cache directory flushed', $display);
+        self::assertStringContainsString('Flushing cache directory ', $display);
+        self::assertStringContainsString('Cache directory flushed', $display);
     }
 
     /**
@@ -41,7 +38,8 @@ final class FlushCommandTest extends TestCase
     {
         $application = $this->getApplication();
         $application->add($object);
+        $command = $application->find($object::NAME);
 
-        return $application->find($object::NAME);
+        return $command;
     }
 }

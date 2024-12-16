@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98\Util\Console\Helper;
 
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,69 +26,81 @@ class MagentoHelper extends TestCase
         self::assertInstanceOf(\N98\Util\Console\Helper\MagentoHelper::class, $this->getHelper());
     }
 
-    public function testDetectMagentoInStandardFolder()
+    /**
+     * @test
+     */
+    public function detectMagentoInStandardFolder()
     {
         vfsStream::setup('root');
         vfsStream::create(
-            ['app' => ['Mage.php' => '']],
+            ['app' => ['Mage.php' => '']]
         );
 
-        $magentoHelper = $this->getHelper();
-        $magentoHelper->detect(vfsStream::url('root'), []);
+        $helper = $this->getHelper();
+        $helper->detect(vfsStream::url('root'), []);
 
-        self::assertSame(vfsStream::url('root'), $magentoHelper->getRootFolder());
+        self::assertEquals(vfsStream::url('root'), $helper->getRootFolder());
     }
 
-    public function testDetectMagentoInHtdocsSubfolder()
+    /**
+     * @test
+     */
+    public function detectMagentoInHtdocsSubfolder()
     {
         vfsStream::setup('root');
         vfsStream::create(
-            ['htdocs' => ['app' => ['Mage.php' => '']]],
+            ['htdocs' => ['app' => ['Mage.php' => '']]]
         );
 
-        $magentoHelper = $this->getHelper();
+        $helper = $this->getHelper();
 
         // vfs cannot resolve relative path so we do 'root/htdocs' etc.
-        $magentoHelper->detect(
+        $helper->detect(
             vfsStream::url('root'),
-            [vfsStream::url('root/www'), vfsStream::url('root/public'), vfsStream::url('root/htdocs')],
+            [vfsStream::url('root/www'), vfsStream::url('root/public'), vfsStream::url('root/htdocs')]
         );
 
-        self::assertSame(vfsStream::url('root/htdocs'), $magentoHelper->getRootFolder());
+        self::assertEquals(vfsStream::url('root/htdocs'), $helper->getRootFolder());
     }
 
-    public function testDetectMagentoFailed()
+    /**
+     * @test
+     */
+    public function detectMagentoFailed()
     {
         vfsStream::setup('root');
         vfsStream::create(
-            ['htdocs' => []],
+            ['htdocs' => []]
         );
 
-        $magentoHelper = $this->getHelper();
+        $helper = $this->getHelper();
 
         // vfs cannot resolve relative path so we do 'root/htdocs' etc.
-        $magentoHelper->detect(
-            vfsStream::url('root'),
+        $helper->detect(
+            vfsStream::url('root')
         );
 
-        self::assertNull($magentoHelper->getRootFolder());
+        self::assertNull($helper->getRootFolder());
     }
 
-    public function testDetectMagentoInModmanInfrastructure()
+    /**
+     * @test
+     */
+    public function detectMagentoInModmanInfrastructure()
     {
         vfsStream::setup('root');
         vfsStream::create(
-            ['.basedir' => 'root/htdocs/magento_root', 'htdocs'   => ['magento_root' => ['app' => ['Mage.php' => '']]]],
+            ['.basedir' => 'root/htdocs/magento_root', 'htdocs'   => ['magento_root' => ['app' => ['Mage.php' => '']]]]
         );
 
-        $magentoHelper = $this->getHelper();
+        $helper = $this->getHelper();
 
         // vfs cannot resolve relative path so we do 'root/htdocs' etc.
-        $magentoHelper->detect(
-            vfsStream::url('root'),
+        $helper->detect(
+            vfsStream::url('root')
         );
 
         // Verify if this could be checked with more elegance
-        self::assertSame(vfsStream::url('root/../root/htdocs/magento_root'), $magentoHelper->getRootFolder());
+        self::assertEquals(vfsStream::url('root/../root/htdocs/magento_root'), $helper->getRootFolder());
     }
 }

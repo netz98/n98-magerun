@@ -1,35 +1,41 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98\Util;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-
 /**
  * Class ExecTest
  *
  * @package N98\Util
  */
-final class ExecTest extends TestCase
+class ExecTest extends TestCase
 {
-    public function testCommandOnly()
+    /**
+     * @test
+     */
+    public function commandOnly()
     {
         Exec::run('echo test', $output, $actual);
 
-        $this->assertSame(0, $actual);
+        self::assertSame(0, $actual);
     }
 
-    public function testFullParameters()
+    /**
+     * @test
+     */
+    public function fullParameters()
     {
         Exec::run('echo test', $commandOutput, $returnCode);
 
-        $this->assertSame(Exec::CODE_CLEAN_EXIT, $returnCode);
-        $this->assertStringStartsWith('test', $commandOutput);
+        self::assertEquals(Exec::CODE_CLEAN_EXIT, $returnCode);
+        self::assertStringStartsWith('test', $commandOutput);
     }
 
-    public function testException()
+    /**
+     * @test
+     */
+    public function exception()
     {
         $this->expectException(RuntimeException::class);
         Exec::run('foobar');

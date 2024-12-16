@@ -1,7 +1,4 @@
 <?php
-
-declare(strict_types=1);
-
 /*
  * this file is part of magerun
  *
@@ -20,40 +17,51 @@ use N98\Magento\Command\TestCase;
  * @covers  N98\Magento\Application\ConfigFile
  * @package N98\Magento\Application
  */
-final class ConfigFileTest extends TestCase
+class ConfigFileTest extends TestCase
 {
-    public function testCreation()
+    /**
+     * @test
+     */
+    public function creation()
     {
         $configFile = new ConfigFile();
-        $this->assertInstanceOf(ConfigFile::class, $configFile);
+        self::assertInstanceOf(ConfigFile::class, $configFile);
 
         $configFile = ConfigFile::createFromFile(__FILE__);
-        $this->assertInstanceOf(ConfigFile::class, $configFile);
+        self::assertInstanceOf(ConfigFile::class, $configFile);
     }
 
-    public function testApplyVariables()
+    /**
+     * @test
+     */
+    public function applyVariables()
     {
         $configFile = new ConfigFile();
         $configFile->loadFile('data://,- %root%');
         $configFile->applyVariables('root-folder');
 
-        $this->assertSame(['root-folder'], $configFile->toArray());
+        self::assertSame(['root-folder'], $configFile->toArray());
     }
 
-    public function testMergeArray()
+    /**
+     * @test
+     */
+    public function mergeArray()
     {
         $configFile = new ConfigFile();
         $configFile->loadFile('data://,- bar');
-
         $result = $configFile->mergeArray(['foo']);
 
-        $this->assertSame(['foo', 'bar'], $result);
+        self::assertSame(['foo', 'bar'], $result);
     }
 
-    public function testParseEmptyFile()
+    /**
+     * @test
+     */
+    public function parseEmptyFile()
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage("Failed to parse config-file 'data://,'");
+        $this->expectExceptionMessage('Failed to parse config-file \'data://,\'');
         $configFile = new ConfigFile();
         $configFile->loadFile('data://,');
         $this->addToAssertionCount(1);
@@ -61,7 +69,10 @@ final class ConfigFileTest extends TestCase
         self::fail('An expected exception has not been thrown.');
     }
 
-    public function testInvalidFileThrowsException()
+    /**
+     * @test
+     */
+    public function invalidFileThrowsException()
     {
         $this->expectException(InvalidArgumentException::class);
         @ConfigFile::createFromFile(':');

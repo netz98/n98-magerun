@@ -1,37 +1,38 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98\Magento\Command\Config;
 
 use Mage;
 use N98\Magento\Command\TestCase;
 
-final class GetCommandTest extends TestCase
+class GetCommandTest extends TestCase
 {
-    public function testNullValues()
+    /**
+     * @test
+     */
+    public function nullValues()
     {
         # Very old Magento versions do not support NULL values in configuration values
         $this->skipMagentoMinimumVersion('1.6.2.0', '1.11.2.0');
 
         $this->assertDisplayRegExp(
             ['command'   => 'config:set', '--no-null' => null, 'path'      => 'n98_magerun/foo/bar', 'value'     => 'NULL'],
-            '~^n98_magerun/foo/bar => NULL$~',
+            '~^n98_magerun/foo/bar => NULL$~'
         );
 
         $this->assertDisplayContains(
             ['command'          => 'config:get', '--magerun-script' => null, 'path'             => 'n98_magerun/foo/bar'],
-            'config:set --no-null --scope-id=0 --scope=default',
+            'config:set --no-null --scope-id=0 --scope=default'
         );
 
         $this->assertDisplayContains(
             ['command' => 'config:set', 'path'    => 'n98_magerun/foo/bar', 'value'   => 'NULL'],
-            'n98_magerun/foo/bar => NULL (NULL/"unknown" value)',
+            'n98_magerun/foo/bar => NULL (NULL/"unknown" value)'
         );
 
         $this->assertDisplayContains(
             ['command' => 'config:get', 'path'    => 'n98_magerun/foo/bar'],
-            '| n98_magerun/foo/bar | default | 0        | NULL (NULL/"unknown" value) |',
+            '| n98_magerun/foo/bar | default | 0        | NULL (NULL/"unknown" value) |'
         );
 
         $this->assertDisplayContains(
@@ -41,34 +42,32 @@ final class GetCommandTest extends TestCase
                 # needed to not use the previous output cache
                 'path'             => 'n98_magerun/foo/bar',
             ],
-            "config:set --scope-id=0 --scope=default -- 'n98_magerun/foo/bar' NULL",
+            'config:set --scope-id=0 --scope=default -- \'n98_magerun/foo/bar\' NULL'
         );
     }
 
-    public function provideFormatsWithNull(): \Iterator
+    public function provideFormatsWithNull()
     {
-        yield [null, '~\\Q| n98_magerun/foo/bar | default | 0        | NULL (NULL/"unknown" value) |\\E~'];
-        yield ['csv', '~\\Qn98_magerun/foo/bar,default,0,NULL\\E~'];
-        yield ['json', '~"Value": *null~'];
-        yield ['xml', '~\\Q<Value>NULL</Value>\\E~'];
+        return [[null, '~\\Q| n98_magerun/foo/bar | default | 0        | NULL (NULL/"unknown" value) |\\E~'], ['csv', '~\\Qn98_magerun/foo/bar,default,0,NULL\\E~'], ['json', '~"Value": *null~'], ['xml', '~\\Q<Value>NULL</Value>\\E~']];
     }
 
     /**
+     * @test
      * @dataProvider provideFormatsWithNull
      */
-    public function testNullWithFormat($format, $expected)
+    public function nullWithFormat($format, $expected)
     {
         # Very old Magento versions do not support NULL values in configuration values
         $this->skipMagentoMinimumVersion('1.6.2.0', '1.11.2.0');
 
         $this->assertDisplayContains(
             ['command' => 'config:set', 'path'    => 'n98_magerun/foo/bar', 'value'   => 'NULL'],
-            'n98_magerun/foo/bar => NULL (NULL/"unknown" value)',
+            'n98_magerun/foo/bar => NULL (NULL/"unknown" value)'
         );
 
         $this->assertDisplayRegExp(
             ['command'  => 'config:get', '--format' => $format, 'path'     => 'n98_magerun/foo/bar'],
-            $expected,
+            $expected
         );
     }
 
@@ -79,22 +78,22 @@ final class GetCommandTest extends TestCase
          */
         $this->assertDisplayContains(
             ['command' => 'config:set', 'path'    => 'n98_magerun/foo/bar', 'value'   => '1234'],
-            'n98_magerun/foo/bar => 1234',
+            'n98_magerun/foo/bar => 1234'
         );
 
         $this->assertDisplayContains(
             ['command' => 'config:get', 'path'    => 'n98_magerun/foo/bar'],
-            '| n98_magerun/foo/bar | default | 0        | 1234  |',
+            '| n98_magerun/foo/bar | default | 0        | 1234  |'
         );
 
         $this->assertDisplayContains(
             ['command'         => 'config:get', 'path'            => 'n98_magerun/foo/bar', '--update-script' => true],
-            "\$installer->setConfigData('n98_magerun/foo/bar', '1234');",
+            "\$installer->setConfigData('n98_magerun/foo/bar', '1234');"
         );
 
         $this->assertDisplayContains(
             ['command'          => 'config:get', 'path'             => 'n98_magerun/foo/bar', '--magerun-script' => true],
-            "config:set --scope-id=0 --scope=default -- 'n98_magerun/foo/bar' '1234'",
+            "config:set --scope-id=0 --scope=default -- 'n98_magerun/foo/bar' '1234'"
         );
 
         /**
@@ -116,7 +115,7 @@ final class GetCommandTest extends TestCase
          */
         $this->assertDisplayRegExp(
             ['command'  => 'config:get', 'path'     => 'n98_magerun/foo/bar', '--format' => 'json'],
-            '/"Value":\s*"1234"/',
+            '/"Value":\s*"1234"/'
         );
     }
 
@@ -147,11 +146,10 @@ final class GetCommandTest extends TestCase
                         sprintf(
                             'Test requires minimum Magento version of "%s", version "%s" is in use',
                             $community,
-                            $magentoVersion,
-                        ),
+                            $magentoVersion
+                        )
                     );
                 }
-
                 break;
             case 'Enterprise':
                 if (version_compare($magentoVersion, $enterprise, '<')) {
@@ -159,18 +157,17 @@ final class GetCommandTest extends TestCase
                         sprintf(
                             'Test requires minimum Magento version of "%s", version "%s" is in use',
                             $enterprise,
-                            $magentoVersion,
-                        ),
+                            $magentoVersion
+                        )
                     );
                 }
-
                 break;
             default:
                 self::markTestSkipped(
                     sprintf(
                         'Test requires community or enterprise edition, Magento edition "%s" given',
-                        $magentoEdition,
-                    ),
+                        $magentoEdition
+                    )
                 );
         }
     }

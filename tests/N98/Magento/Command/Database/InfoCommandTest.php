@@ -1,40 +1,36 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98\Magento\Command\Database;
 
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-final class InfoCommandTest extends TestCase
+class InfoCommandTest extends TestCase
 {
     public function testExecute()
     {
         $application = $this->getApplication();
         $application->add(new InfoCommand());
-
         $command = $this->getApplication()->find('db:info');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command' => $command->getName()]);
 
-        $this->assertMatchesRegularExpression('/PDO-Connection-String/', $commandTester->getDisplay());
+        self::assertMatchesRegularExpression('/PDO-Connection-String/', $commandTester->getDisplay());
     }
 
     public function testExecuteWithSettingArgument()
     {
         $application = $this->getApplication();
         $application->add(new InfoCommand());
-
         $command = $this->getApplication()->find('db:info');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName(), 'setting' => 'MySQL-Cli-String'],
+            ['command' => $command->getName(), 'setting' => 'MySQL-Cli-String']
         );
 
-        $this->assertDoesNotMatchRegularExpression('/MySQL-Cli-String/', $commandTester->getDisplay());
-        $this->assertStringContainsString('mysql -h', $commandTester->getDisplay());
+        self::assertDoesNotMatchRegularExpression('/MySQL-Cli-String/', $commandTester->getDisplay());
+        self::assertStringContainsString('mysql -h', $commandTester->getDisplay());
     }
 }

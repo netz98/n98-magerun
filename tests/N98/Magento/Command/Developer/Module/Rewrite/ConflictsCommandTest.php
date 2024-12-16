@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98\Magento\Command\Developer\Module\Rewrite;
 
 use N98\Magento\Command\TestCase;
@@ -13,13 +11,12 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @TODO Check with simulated conflict
  * @package N98\Magento\Command\Developer\Module\Rewrite
  */
-final class ConflictsCommandTest extends TestCase
+class ConflictsCommandTest extends TestCase
 {
     public function testExecute()
     {
         $application = $this->getApplication();
         $application->add(new ConflictsCommand());
-
         $command = $this->getApplication()->find('dev:module:rewrite:conflicts');
 
         /**
@@ -27,20 +24,20 @@ final class ConflictsCommandTest extends TestCase
          */
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName()],
+            ['command' => $command->getName()]
         );
-        $this->assertStringContainsString('No rewrite conflicts were found', $commandTester->getDisplay());
+        self::assertStringContainsString('No rewrite conflicts were found', $commandTester->getDisplay());
 
         /**
          * Junit Log without any output
          */
         $commandTester = new CommandTester($command);
         $result = $commandTester->execute(
-            ['command'     => $command->getName(), '--log-junit' => '_output.xml'],
+            ['command'     => $command->getName(), '--log-junit' => '_output.xml']
         );
-        $this->assertSame(0, $result);
-        $this->assertSame('', $commandTester->getDisplay());
-        $this->assertFileExists('_output.xml');
+        self::assertEquals(0, $result);
+        self::assertEquals('', $commandTester->getDisplay());
+        self::assertFileExists('_output.xml');
         @unlink('_output.xml');
     }
 
@@ -50,11 +47,11 @@ final class ConflictsCommandTest extends TestCase
     public function testExecuteConflict()
     {
         $rewrites = ['blocks' => ['n98/mock_conflict' => ['Mage_Customer_Block_Account', 'Mage_Tag_Block_All']]];
-        $conflictsCommand = $this->getCommandWithMockLoadRewrites($rewrites);
-        $commandTester = new CommandTester($conflictsCommand);
-        $result = $commandTester->execute(['command' => $conflictsCommand->getName()]);
-        $this->assertNotSame(0, $result);
-        $this->assertStringContainsString('1 conflict was found', $commandTester->getDisplay());
+        $command = $this->getCommandWithMockLoadRewrites($rewrites);
+        $commandTester = new CommandTester($command);
+        $result = $commandTester->execute(['command' => $command->getName()]);
+        self::assertNotEquals(0, $result);
+        self::assertStringContainsString('1 conflict was found', $commandTester->getDisplay());
     }
 
     /**
@@ -65,17 +62,18 @@ final class ConflictsCommandTest extends TestCase
     public function testExecuteConflictFalsePositive()
     {
         $rewrites = ['blocks' => ['n98/mock_conflict' => ['Mage_Catalog_Block_Product_Price', 'Mage_Bundle_Block_Catalog_Product_Price']]];
-        $conflictsCommand = $this->getCommandWithMockLoadRewrites($rewrites);
-        $commandTester = new CommandTester($conflictsCommand);
-        $result = $commandTester->execute(['command' => $conflictsCommand->getName()]);
-        $this->assertSame(0, $result);
-        $this->assertStringContainsString('No rewrite conflicts were found', $commandTester->getDisplay());
+        $command = $this->getCommandWithMockLoadRewrites($rewrites);
+        $commandTester = new CommandTester($command);
+        $result = $commandTester->execute(['command' => $command->getName()]);
+        self::assertEquals(0, $result);
+        self::assertStringContainsString('No rewrite conflicts were found', $commandTester->getDisplay());
     }
 
     /**
      * Mock the ConflictsCommand and change the return value of loadRewrites()
      * to the given argument
      *
+     * @param  array            $return
      * @return ConflictsCommand
      */
     private function getCommandWithMockLoadRewrites(array $return)

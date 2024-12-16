@@ -1,17 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98MagerunTest;
 
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class TestDummyCommand extends AbstractMagentoCommand
 {
-    protected function configure(): void
+    protected function configure()
     {
         $this
             ->setName('n98mageruntest:test:dummy')
@@ -22,10 +19,10 @@ class TestDummyCommand extends AbstractMagentoCommand
     {
         $this->detectMagento($output);
         if (!$this->initMagento()) {
-            return Command::INVALID;
+            return 0;
         }
 
         $output->writeln('dummy');
-        return Command::SUCCESS;
+        return 0;
     }
 }

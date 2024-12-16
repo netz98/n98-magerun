@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98\Magento\Command\System\Setup;
 
 use N98\Magento\Command\TestCase;
@@ -12,22 +10,23 @@ use N98\Magento\Command\TestCase;
  * @package N98\Magento\Command\System\Setup
  * @covers  N98\Magento\Command\System\Setup\IncrementalCommand
  */
-final class IncrementalCommandTest extends TestCase
+class IncrementalCommandTest extends TestCase
 {
     /**
+     * @test
      * @link https://github.com/netz98/n98-magerun/pull/747
      */
-    public function testRegression747()
+    public function regression747()
     {
-        $incrementalCommandStub = new IncrementalCommandStub();
+        $stub = new IncrementalCommandStub();
 
-        $actual = $incrementalCommandStub->callProtectedMethodFromObject('protectedMethod', $this, ['fooBar']);
-        $this->assertSame('barBaz', $actual);
+        $actual = $stub->callProtectedMethodFromObject('protectedMethod', $this, ['fooBar']);
+        self::assertSame('barBaz', $actual);
     }
 
-    public function protectedMethod($arg): string
+    protected function protectedMethod($arg)
     {
-        $this->assertSame('fooBar', $arg);
+        self::assertSame('fooBar', $arg);
         $this->addToAssertionCount(1);
 
         return 'barBaz';

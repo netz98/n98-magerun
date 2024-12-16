@@ -1,7 +1,4 @@
 <?php
-
-declare(strict_types=1);
-
 /**
  * this file is part of magerun
  *
@@ -17,17 +14,20 @@ use N98\Magento\Command\TestCase;
  *
  * @package N98\Magento\Command\Installer
  */
-final class InstallCommandPackageVersionTest extends TestCase
+class InstallCommandPackageVersionTest extends TestCase
 {
-    public function testVersionListing()
+    /**
+     * @test that versions given are in order (latest up) across the package definitions in config.yml
+     */
+    public function versionListing()
     {
         $application = $this->getApplication();
         $application->add(new InstallCommand());
         /** @var InstallCommand $command */
         $command = $this->getApplication()->find('install');
 
-        $installCommandTester = new InstallCommandTester();
-        $packages = $installCommandTester->getMagentoPackages($command);
+        $tester = new InstallCommandTester();
+        $packages = $tester->getMagentoPackages($command);
 
         $this->assertOngoingPackageVersions($packages, 2, 5);
     }
@@ -36,6 +36,7 @@ final class InstallCommandPackageVersionTest extends TestCase
      * helper assertion to verify that all packages with multiple versions are listet with the latest and greatest
      * version first.
      *
+     * @param array $packages
      * @param int $namespacesMinimum minimum number of package namespace (e.g. CE and mirror), normally 2
      * @param int $nonVersionsMaximum maximum number of packages that will trigger an assertion
      */
@@ -47,58 +48,63 @@ final class InstallCommandPackageVersionTest extends TestCase
         $nameConstraint = [];
 
         foreach ($packages as $package) {
-            $this->assertArrayHasKey('name', $package);
-            $this->assertArrayHasKey('version', $package);
+            self::assertArrayHasKey('name', $package);
+            self::assertArrayHasKey('version', $package);
             $name = $package['name'];
             $version = $package['version'];
-            $nameAndVersion = sprintf('%s %s', $name, $version);
+            $nameAndVersion = "$name $version";
 
-            $this->assertArrayNotHasKey($name, $nameConstraint, sprintf('duplicate package "%s"', $name));
+            self::assertArrayNotHasKey(
+                $name,
+                $nameConstraint,
+                sprintf('duplicate package "%s"', $name)
+            );
             $nameConstraint[$name] = 1;
 
             if (!$this->isVersionNumber($version)) {
                 $nonVersionsList[] = $nameAndVersion;
-                ++$nonVersions;
+                $nonVersions++;
                 continue;
             }
 
             [$namespace, $nameVersion] = $this->splitName($name);
             if ($nameVersion === null || $nameVersion !== $version) {
                 $nonVersionsList[] = $name;
-                ++$nonVersions;
+                $nonVersions++;
                 continue;
             }
-
-            $this->assertSame($version, $nameVersion);
+            self::assertSame($version, $nameVersion);
 
             if (isset($nameStack[$namespace])) {
                 $comparison = version_compare($nameStack[$namespace], $version);
                 $message = sprintf(
-                    sprintf('Check order of versions for package "%s", higher comes first, but got %%s before %%s', $namespace),
+                    "Check order of versions for package \"$namespace\", higher comes first, but got %s before %s",
                     $nameStack[$namespace],
-                    $version,
+                    $version
                 );
-                $this->assertGreaterThan(0, $comparison, $message);
+                self::assertGreaterThan(0, $comparison, $message);
             }
-
             $nameStack[$namespace] = $nameVersion;
         }
 
-        $this->assertGreaterThanOrEqual($namespacesMinimum, count($nameStack));
+        self::assertGreaterThanOrEqual($namespacesMinimum, count($nameStack));
         $message = sprintf('Too many non-versions (%s)', implode(', ', $nonVersionsList));
-        $this->assertLessThan($nonVersionsMaximum, $nonVersions, $message);
+        self::assertLessThan($nonVersionsMaximum, $nonVersions, $message);
     }
 
-    public function testDemoDataPackages()
+    /**
+     * @test that demo-data-packages actually exist
+     */
+    public function demoDataPackages()
     {
         $application = $this->getApplication();
         $application->add(new InstallCommand());
         /** @var InstallCommand $command */
         $command = $this->getApplication()->find('install');
 
-        $installCommandTester = new InstallCommandTester();
-        $packages = $installCommandTester->getMagentoPackages($command);
-        $demoDataPackages = $installCommandTester->getSampleDataPackages($command);
+        $tester = new InstallCommandTester();
+        $packages = $tester->getMagentoPackages($command);
+        $demoDataPackages = $tester->getSampleDataPackages($command);
 
         $this->assertSampleDataPackagesExist($packages, $demoDataPackages);
     }
@@ -110,14 +116,13 @@ final class InstallCommandPackageVersionTest extends TestCase
             $map[$package['name']] = $index;
         }
 
-        foreach ($packages as $package) {
+        foreach ($packages as $index => $package) {
             if (!isset($package['extra']['sample-data'])) {
                 continue;
             }
-
             $name = $package['extra']['sample-data'];
             $message = sprintf('Invalid sample-data "%s" (undefined) in package "%s"', $name, $package['name']);
-            $this->assertArrayHasKey($name, $map, $message);
+            self::assertArrayHasKey($name, $map, $message);
         }
     }
 
@@ -138,11 +143,8 @@ final class InstallCommandPackageVersionTest extends TestCase
      */
     private function isVersionNumber($buffer)
     {
-        if ($this->isQuadripartiteVersionNumber($buffer)) {
-            return true;
-        }
-
-        return $this->isTripartiteOpenMageVersionNumber($buffer);
+        return $this->isQuadripartiteVersionNumber($buffer)
+            || $this->isTripartiteOpenMageVersionNumber($buffer);
     }
 
     /**
@@ -152,9 +154,8 @@ final class InstallCommandPackageVersionTest extends TestCase
      * @param string $buffer
      * @return bool
      */
-    private function isTripartiteOpenMageVersionNumber($buffer)
-    {
-        if (in_array(preg_match('~^(?:19|2\d)\.\d+\.\d+$~', $buffer), [0, false], true)) {
+    private function isTripartiteOpenMageVersionNumber($buffer) {
+        if (!preg_match('~^(?:19|2\d)\.\d+\.\d+$~', $buffer)) {
             return false;
         }
 
@@ -173,7 +174,7 @@ final class InstallCommandPackageVersionTest extends TestCase
      */
     private function isQuadripartiteVersionNumber($buffer)
     {
-        if (in_array(preg_match('~^\d+\.\d+\.\d+\.\d+$~', $buffer), [0, false], true)) {
+        if (!preg_match('~^\d+\.\d+\.\d+\.\d+$~', $buffer)) {
             return false;
         }
 

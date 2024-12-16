@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98\Magento\Command\Installer;
 
 use N98\Magento\Command\TestCase;
@@ -14,7 +12,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @package N98\Magento\Command\Installer
  * @author  Aydin Hassan <aydin@hotmail.co.uk>
  */
-final class UninstallCommandTest extends TestCase
+class UninstallCommandTest extends TestCase
 {
     /**
      * Check that Magento is not removed if confirmation is denied
@@ -24,21 +22,19 @@ final class UninstallCommandTest extends TestCase
         $this->markTestIncomplete('Find a replacement for setInputStream() of old DialogHelper');
         $application = $this->getApplication();
         $application->add(new UninstallCommand());
-
         $command = $this->getApplication()->find('uninstall');
 
         $commandTester = new CommandTester($command);
 
         $dialog = new QuestionHelper();
         $dialog->setInputStream($this->getInputStream('no\n'));
-
         $command->setHelperSet(new HelperSet([$dialog]));
 
         $commandTester->execute(['command'               => $command->getName(), '--installationFolder'  => $this->getTestMagentoRoot()]);
-        $this->assertSame('Really uninstall ? [n]: ', $commandTester->getDisplay());
+        self::assertEquals('Really uninstall ? [n]: ', $commandTester->getDisplay());
 
         //check magento still installed
-        $this->assertFileExists($this->getTestMagentoRoot() . '/app/etc/local.xml');
+        self::assertFileExists($this->getTestMagentoRoot() . '/app/etc/local.xml');
     }
 
     /**
@@ -49,29 +45,28 @@ final class UninstallCommandTest extends TestCase
         $this->markTestIncomplete('Find a replacement for setInputStream() of old DialogHelper');
         $application = $this->getApplication();
         $application->add(new UninstallCommand());
-
         $command = $this->getApplication()->find('uninstall');
 
         $commandTester = new CommandTester($command);
 
         $commandTester->execute(
-            ['command'               => $command->getName(), '--force'               => true, '--installationFolder'  => $this->getTestMagentoRoot()],
+            ['command'               => $command->getName(), '--force'               => true, '--installationFolder'  => $this->getTestMagentoRoot()]
         );
 
-        $this->assertStringContainsString('Dropped database', $commandTester->getDisplay());
-        $this->assertStringContainsString('Remove directory ' . $this->getTestMagentoRoot(), $commandTester->getDisplay());
-        $this->assertStringContainsString('Done', $commandTester->getDisplay());
-        $this->assertFileDoesNotExist($this->getTestMagentoRoot() . '/app/etc/local.xml');
+        self::assertStringContainsString('Dropped database', $commandTester->getDisplay());
+        self::assertStringContainsString('Remove directory ' . $this->getTestMagentoRoot(), $commandTester->getDisplay());
+        self::assertStringContainsString('Done', $commandTester->getDisplay());
+        self::assertFileDoesNotExist($this->getTestMagentoRoot() . '/app/etc/local.xml');
     }
 
     /**
      * @param $input
      * @return resource
      */
-    private function getInputStream($input)
+    protected function getInputStream($input)
     {
         $stream = fopen('php://memory', 'rb+', false);
-        fwrite($stream, $input);
+        fputs($stream, $input);
         rewind($stream);
         return $stream;
     }

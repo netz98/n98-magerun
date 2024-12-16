@@ -1,13 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98\Magento\Command\Script\Repository;
 
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-final class ListCommandTest extends TestCase
+class ListCommandTest extends TestCase
 {
     public function testExecute()
     {
@@ -17,16 +15,15 @@ final class ListCommandTest extends TestCase
         $application->setConfig($config);
 
         $application->add(new RunCommand());
-
         $command = $this->getApplication()->find('script:repo:list');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command' => $command->getName()],
+            ['command' => $command->getName()]
         );
 
-        $this->assertStringContainsString('Cache Flush Command Test (Hello World)', $commandTester->getDisplay());
-        $this->assertStringContainsString('Foo command', $commandTester->getDisplay());
-        $this->assertStringContainsString('Bar command', $commandTester->getDisplay());
+        self::assertStringContainsString('Cache Flush Command Test (Hello World)', $commandTester->getDisplay());
+        self::assertStringContainsString('Foo command', $commandTester->getDisplay());
+        self::assertStringContainsString('Bar command', $commandTester->getDisplay());
     }
 }

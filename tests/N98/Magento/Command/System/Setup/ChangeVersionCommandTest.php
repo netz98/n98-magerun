@@ -1,15 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98\Magento\Command\System\Setup;
 
 use InvalidArgumentException;
-use Mage_Core_Model_Resource_Db_Collection_Abstract;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-final class ChangeVersionCommandTest extends TestCase
+class ChangeVersionCommandTest extends TestCase
 {
     public function testChangeVersion()
     {
@@ -17,35 +14,37 @@ final class ChangeVersionCommandTest extends TestCase
             ->setMethods(['_getResourceSingleton'])
             ->getMock();
 
-        $mock = $this->getMockBuilder(Mage_Core_Model_Resource_Db_Collection_Abstract::class)
+        $resourceModel = $this->getMockBuilder('\Mage_Core_Model_Resource_Resource')
             ->disableOriginalConstructor()
             ->setMethods(['setDbVersion', 'setDataVersion'])
             ->getMock();
 
         $command
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('_getResourceSingleton')
-            ->willReturn($mock);
+            ->willReturn($resourceModel);
 
-        $mock
-            ->expects($this->once())
+        $resourceModel
+            ->expects(self::once())
             ->method('setDbVersion')
             ->with('weee_setup', '1.6.0.0');
 
-        $mock
-            ->expects($this->once())
+        $resourceModel
+            ->expects(self::once())
             ->method('setDataVersion')
             ->with('weee_setup', '1.6.0.0');
 
         $application = $this->getApplication();
         $application->add($command);
-
         $command = $this->getApplication()->find('sys:setup:change-version');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command'   => $command->getName(), 'module'    => 'Mage_Weee', 'version'   => '1.6.0.0']);
 
-        $this->assertStringContainsString('Successfully updated: "Mage_Weee" - "weee_setup" to version: "1.6.0.0"', $commandTester->getDisplay());
+        self::assertStringContainsString(
+            'Successfully updated: "Mage_Weee" - "weee_setup" to version: "1.6.0.0"',
+            $commandTester->getDisplay()
+        );
     }
 
     public function testUpdateBySetupName()
@@ -54,48 +53,49 @@ final class ChangeVersionCommandTest extends TestCase
             ->setMethods(['_getResourceSingleton'])
             ->getMock();
 
-        $mock = $this->getMockBuilder(Mage_Core_Model_Resource_Db_Collection_Abstract::class)
+        $resourceModel = $this->getMockBuilder('\Mage_Core_Model_Resource_Resource')
             ->disableOriginalConstructor()
             ->setMethods(['setDbVersion', 'setDataVersion'])
             ->getMock();
 
         $command
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('_getResourceSingleton')
-            ->willReturn($mock);
+            ->willReturn($resourceModel);
 
-        $mock
-            ->expects($this->once())
+        $resourceModel
+            ->expects(self::once())
             ->method('setDbVersion')
             ->with('weee_setup', '1.6.0.0');
 
-        $mock
-            ->expects($this->once())
+        $resourceModel
+            ->expects(self::once())
             ->method('setDataVersion')
             ->with('weee_setup', '1.6.0.0');
 
         $application = $this->getApplication();
         $application->add($command);
-
         $command = $this->getApplication()->find('sys:setup:change-version');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command'   => $command->getName(), 'module'    => 'Mage_Weee', 'version'   => '1.6.0.0', 'setup'     => 'weee_setup']);
 
-        $this->assertStringContainsString('Successfully updated: "Mage_Weee" - "weee_setup" to version: "1.6.0.0"', $commandTester->getDisplay());
+        self::assertStringContainsString(
+            'Successfully updated: "Mage_Weee" - "weee_setup" to version: "1.6.0.0"',
+            $commandTester->getDisplay()
+        );
     }
 
     public function testSetupNameNotFound()
     {
         $application = $this->getApplication();
         $application->add(new ChangeVersionCommand());
-
         $command = $this->getApplication()->find('sys:setup:change-version');
 
         $commandTester = new CommandTester($command);
 
         $this->expectException(
-            InvalidArgumentException::class,
+            InvalidArgumentException::class
         );
 
         $commandTester->execute(['command'   => $command->getName(), 'module'    => 'Mage_Weee', 'version'   => '1.6.0.0', 'setup'     => 'no_setup_exists']);
@@ -105,7 +105,6 @@ final class ChangeVersionCommandTest extends TestCase
     {
         $application = $this->getApplication();
         $application->add(new ChangeVersionCommand());
-
         $command = $this->getApplication()->find('sys:setup:change-version');
 
         $commandTester = new CommandTester($command);
@@ -120,19 +119,21 @@ final class ChangeVersionCommandTest extends TestCase
             ->setMethods(['getModuleSetupResources'])
             ->getMock();
 
-        $command->expects($this->once())
+        $command->expects(self::once())
             ->method('getModuleSetupResources')
             ->with('Mage_Weee')
             ->willReturn([]);
 
         $application = $this->getApplication();
         $application->add($command);
-
         $command = $this->getApplication()->find('sys:setup:change-version');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command'   => $command->getName(), 'module'    => 'Mage_Weee', 'version'   => '1.0.0.0', 'setup'     => 'weee_setup']);
 
-        $this->assertStringContainsString('No setup resources found for module: "Mage_Weee"', $commandTester->getDisplay());
+        self::assertStringContainsString(
+            'No setup resources found for module: "Mage_Weee"',
+            $commandTester->getDisplay()
+        );
     }
 }

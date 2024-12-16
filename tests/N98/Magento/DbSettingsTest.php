@@ -1,7 +1,4 @@
 <?php
-
-declare(strict_types=1);
-
 /**
  * this file is part of magerun
  *
@@ -20,49 +17,58 @@ use N98\Magento\Command\TestCase;
  *
  * @package N98\Magento
  */
-final class DbSettingsTest extends TestCase
+class DbSettingsTest extends TestCase
 {
-    public function testCreation()
+    /**
+     * @test
+     */
+    public function creation()
     {
         $file = $this->getTestMagentoRoot() . '/app/etc/local.xml';
-        $dbSettings = new DbSettings($file);
-        $this->assertInstanceOf(__NAMESPACE__ . '\\DbSettings', $dbSettings);
+        $settings = new DbSettings($file);
+        self::assertInstanceOf(__NAMESPACE__ . '\\DbSettings', $settings);
     }
 
-    public function testSettings()
+    /**
+     * @test
+     */
+    public function settings()
     {
         $file = __DIR__ . '/local.xml';
 
-        $dbSettings = new DbSettings($file);
+        $settings = new DbSettings($file);
 
-        $this->assertSame('', $dbSettings->getTablePrefix());
+        self::assertSame('', $settings->getTablePrefix());
 
-        $this->assertSame('localhost', $dbSettings->getHost());
-        $this->assertNull($dbSettings->getPort());
+        self::assertSame('localhost', $settings->getHost());
+        self::assertNull($settings->getPort());
 
-        $this->assertNull($dbSettings->getUnixSocket());
+        self::assertNull($settings->getUnixSocket());
 
-        $this->assertSame('user', $dbSettings->getUsername());
-        $this->assertSame('pass', $dbSettings->getPassword());
+        self::assertSame('user', $settings->getUsername());
+        self::assertSame('pass', $settings->getPassword());
 
         // DbSettings is more strict here, only using known DSN settings, see @link http://php.net/ref.pdo-mysql.connection
         // minus those settings that are black-listed: dbname, charset
         // "mysql:host=localhost;initStatements=SET NAMES utf8;model=mysql4;type=pdo_mysql;pdoType=;active=1;prefix="
-        $this->assertSame('mysql:host=localhost', $dbSettings->getDsn());
+        self::assertEquals('mysql:host=localhost', $settings->getDsn());
     }
 
-    public function testArrayAccess()
+    /**
+     * @test
+     */
+    public function arrayAccess()
     {
         $file = __DIR__ . '/local.xml';
-        $dbSettings = new DbSettings($file);
+        $settings = new DbSettings($file);
 
-        $this->assertSame('user', $dbSettings['username']);
-        $this->assertSame('pass', $dbSettings['password']);
+        self::assertSame('user', $settings['username']);
+        self::assertSame('pass', $settings['password']);
 
         // unix_socket should be NULL
-        $this->assertNull($dbSettings['unix_socket']);
+        self::assertNull($settings['unix_socket']);
 
         // it's still leaky:
-        $this->assertInstanceOf(SimpleXMLElement::class, $dbSettings['pdoType']);
+        self::assertInstanceOf(SimpleXMLElement::class, $settings['pdoType']);
     }
 }

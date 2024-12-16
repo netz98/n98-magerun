@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98\Magento\Command\Installer;
 
 use InvalidArgumentException;
@@ -9,24 +7,24 @@ use N98\Magento\Command\TestCase;
 use RuntimeException;
 use Symfony\Component\Console\Tester\CommandTester;
 
-final class InstallCommandTest extends TestCase
+class InstallCommandTest extends TestCase
 {
     /**
      * @var string Installation Directory
      */
-    private $installDir;
+    protected $installDir;
 
     /**
      * Create temp dir for install
      */
-    protected function setup(): void
+    public function setup(): void
     {
         $installDir = sys_get_temp_dir() . '/mageinstall';
         if (is_readable($installDir)) {
             $result = rmdir($installDir);
             if (!$result) {
                 throw new RuntimeException(
-                    sprintf('Failed to remove temporary install dir "%s"', $installDir),
+                    sprintf('Failed to remove temporary install dir "%s"', $installDir)
                 );
             }
         }
@@ -43,7 +41,6 @@ final class InstallCommandTest extends TestCase
         $this->markTestIncomplete('With PHPUnit 10 the test is waiting forever. This has to be fixed.');
         $application = $this->getApplication();
         $application->add(new InstallCommand());
-
         $command = $this->getApplication()->find('install');
         $commandTester = new CommandTester($command);
 
@@ -58,13 +55,13 @@ final class InstallCommandTest extends TestCase
                     '--dbHost' => 'hostWhichDoesNotExists',
                     '--dbUser' => 'user',
                     '--dbPass' => 'pa$$w0rd',
-                    '--dbName' => 'magento',
-                ],
+                    '--dbName' => 'magento'
+                ]
             );
-        } catch (InvalidArgumentException $invalidArgumentException) {
-            $this->assertSame('Database configuration is invalid', $invalidArgumentException->getMessage());
+        } catch (InvalidArgumentException $e) {
+            self::assertEquals('Database configuration is invalid', $e->getMessage());
             $display = $commandTester->getDisplay(true);
-            $this->assertStringContainsString('SQLSTATE', $display);
+            self::assertStringContainsString('SQLSTATE', $display);
 
             return;
         }
@@ -75,7 +72,7 @@ final class InstallCommandTest extends TestCase
     /**
      * Remove directory made by installer
      */
-    protected function tearDown(): void
+    public function tearDown(): void
     {
         if (is_readable($this->installDir)) {
             @rmdir($this->installDir);

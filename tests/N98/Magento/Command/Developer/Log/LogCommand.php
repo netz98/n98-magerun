@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98\Magento\Command\Developer\Log;
 
 use N98\Magento\Command\TestCase;
@@ -14,18 +12,17 @@ class LogCommand extends TestCase
         $application = $this->getApplication();
         $application->add(new LogCommand());
         $application->setAutoExit(false);
-
         $command = $this->getApplication()->find('dev:log');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'  => $command->getName(), '--global' => true, '--on'     => true],
+            ['command'  => $command->getName(), '--global' => true, '--on'     => true]
         );
         self::assertMatchesRegularExpression('/Development Log/', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'  => $command->getName(), '--global' => true, '--off'    => true],
+            ['command'  => $command->getName(), '--global' => true, '--off'    => true]
         );
 
         self::assertMatchesRegularExpression('/Development Log/', $commandTester->getDisplay());

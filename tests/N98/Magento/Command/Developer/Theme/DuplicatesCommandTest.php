@@ -1,31 +1,28 @@
 <?php
 
-declare(strict_types=1);
-
 namespace N98\Magento\Command\Developer\Theme;
 
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-final class DuplicatesCommandTest extends TestCase
+class DuplicatesCommandTest extends TestCase
 {
     public function testExecute()
     {
         $application = $this->getApplication();
         $application->add(new DuplicatesCommand());
-
         $command = $this->getApplication()->find('dev:theme:duplicates');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'       => $command->getName(), 'theme'         => 'base/default', 'originalTheme' => 'base/default'],
+            ['command'       => $command->getName(), 'theme'         => 'base/default', 'originalTheme' => 'base/default']
         );
 
         $display = $commandTester->getDisplay();
 
         $this->assertContainsPath('template/catalog/product/price.phtml', $display);
         $this->assertContainsPath('layout/catalog.xml', $display);
-        $this->assertStringNotContainsString('No duplicates was found', $display);
+        self::assertStringNotContainsString('No duplicates was found', $display);
     }
 
     /**
@@ -43,13 +40,12 @@ final class DuplicatesCommandTest extends TestCase
         $pattern = '~';
         while ($segment = array_shift($segments)) {
             $pattern .= preg_quote($segment, '~');
-            if ($segments !== []) {
-                $pattern .= $segmentCount++ !== 0 ? '\\1' : $separator;
+            if ($segments) {
+                $pattern .= $segmentCount++ ? '\\1' : $separator;
             }
         }
-
         $pattern .= '~';
 
-        $this->assertMatchesRegularExpression($pattern, $haystack);
+        self::assertMatchesRegularExpression($pattern, $haystack);
     }
 }

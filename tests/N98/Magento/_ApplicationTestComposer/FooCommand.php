@@ -1,23 +1,20 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Acme;
 
 use N98\Magento\Command\AbstractMagentoCommand;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class FooCommand extends AbstractMagentoCommand
 {
-    protected function configure(): void
+    protected function configure()
     {
         $this->setName('acme:foo');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        return Command::SUCCESS;
+        return 0;
     }
 }

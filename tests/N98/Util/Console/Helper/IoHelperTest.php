@@ -1,7 +1,4 @@
 <?php
-
-declare(strict_types=1);
-
 /**
  * this file is part of magerun
  *
@@ -18,15 +15,18 @@ use N98\Magento\Command\TestCase;
  *
  * @package N98\Util\Console\Helper
  */
-final class IoHelperTest extends TestCase
+class IoHelperTest extends TestCase
 {
-    public function testCreation()
+    /**
+     * @test
+     */
+    public function creation()
     {
         $ioHelper = new IoHelper();
-        $this->assertInstanceOf(IoHelper::class, $ioHelper);
-        $this->assertInstanceOf(HelperInterface::class, $ioHelper);
-        $this->assertNull($ioHelper->getOutput());
+        self::assertInstanceOf(IoHelper::class, $ioHelper);
+        self::assertInstanceOf(HelperInterface::class, $ioHelper);
+        self::assertNull($ioHelper->getOutput());
 
-        $this->assertSame('io', $ioHelper->getName());
+        self::assertSame('io', $ioHelper->getName());
     }
 }

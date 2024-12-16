@@ -1,7 +1,4 @@
 <?php
-
-declare(strict_types=1);
-
 /*
  * this file is part of magerun
  *
@@ -11,21 +8,23 @@ declare(strict_types=1);
 namespace N98\Util;
 
 use PHPUnit\Framework\TestCase;
-
 /**
  * Class OperatingSystemTest
  *
  * @package N98\Util
  * @covers N98\Util\OperatingSystem
  */
-final class OperatingSystemTest extends TestCase
+class OperatingSystemTest extends TestCase
 {
-    public function testOsDetection()
+    /**
+     * @test
+     */
+    public function osDetection()
     {
         $matrix = [OperatingSystem::isLinux(), OperatingSystem::isWindows(), OperatingSystem::isMacOs(), OperatingSystem::isNetware()];
 
-        $this->assertCount(4, $matrix, 'Number of OSes to check for');
-        $this->assertCount(1, array_filter($matrix), 'One OS must be detected');
+        self::assertCount(4, $matrix, 'Number of OSes to check for');
+        self::assertCount(1, array_filter($matrix), 'One OS must be detected');
     }
 
     /**
@@ -33,10 +32,10 @@ final class OperatingSystemTest extends TestCase
      */
     public function testIsLinux()
     {
-        $this->assertTrue(OperatingSystem::isLinux());
-        $this->assertFalse(OperatingSystem::isWindows());
-        $this->assertFalse(OperatingSystem::isMacOs());
-        $this->assertFalse(OperatingSystem::isNetware());
+        self::assertTrue(OperatingSystem::isLinux());
+        self::assertFalse(OperatingSystem::isWindows());
+        self::assertFalse(OperatingSystem::isMacOs());
+        self::assertFalse(OperatingSystem::isNetware());
     }
 
     /**
@@ -44,10 +43,10 @@ final class OperatingSystemTest extends TestCase
      */
     public function testIsWindows()
     {
-        $this->assertTrue(OperatingSystem::isWindows());
-        $this->assertFalse(OperatingSystem::isLinux());
-        $this->assertFalse(OperatingSystem::isMacOs());
-        $this->assertFalse(OperatingSystem::isNetware());
+        self::assertTrue(OperatingSystem::isWindows());
+        self::assertFalse(OperatingSystem::isLinux());
+        self::assertFalse(OperatingSystem::isMacOs());
+        self::assertFalse(OperatingSystem::isNetware());
     }
 
     /**
@@ -55,10 +54,10 @@ final class OperatingSystemTest extends TestCase
      */
     public function testIsMacOs()
     {
-        $this->assertTrue(OperatingSystem::isMacOs());
-        $this->assertFalse(OperatingSystem::isLinux());
-        $this->assertFalse(OperatingSystem::isWindows());
-        $this->assertFalse(OperatingSystem::isNetware());
+        self::assertTrue(OperatingSystem::isMacOs());
+        self::assertFalse(OperatingSystem::isLinux());
+        self::assertFalse(OperatingSystem::isWindows());
+        self::assertFalse(OperatingSystem::isNetware());
     }
 
     /**
@@ -66,23 +65,27 @@ final class OperatingSystemTest extends TestCase
      */
     public function testIsNetware()
     {
-        $this->assertTrue(OperatingSystem::isNetware());
-        $this->assertFalse(OperatingSystem::isLinux());
-        $this->assertFalse(OperatingSystem::isWindows());
-        $this->assertFalse(OperatingSystem::isMacOs());
-    }
-
-    public function testGetCwd()
-    {
-        $expected = getcwd();
-        $this->assertEquals($expected, OperatingSystem::getCwd());
+        self::assertTrue(OperatingSystem::isNetware());
+        self::assertFalse(OperatingSystem::isLinux());
+        self::assertFalse(OperatingSystem::isWindows());
+        self::assertFalse(OperatingSystem::isMacOs());
     }
 
     /**
+     * @test
+     */
+    public function getCwd()
+    {
+        $expected = getcwd();
+        self::assertEquals($expected, OperatingSystem::getCwd());
+    }
+
+    /**
+     * @test
      * @requires PHP 5.4
      */
-    public function testPhpBinary()
+    public function phpBinary()
     {
-        $this->assertSame(PHP_BINARY, OperatingSystem::getPhpBinary());
+        self::assertEquals(PHP_BINARY, OperatingSystem::getPhpBinary());
     }
 }

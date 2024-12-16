@@ -1,30 +1,30 @@
 <?php
-
-declare(strict_types=1);
+/**
+ * this file is part of magerun
+ *
+ * @author Tom Klingenberg <https://github.com/ktomk>
+ */
 
 namespace N98\Magento\Command\System\Setup;
 
-use ReflectionException;
-
 /**
  * Class IncrementalCommandStub
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
  */
 class IncrementalCommandStub extends IncrementalCommand
 {
     /** @noinspection MagicMethodsValidityInspection */
-    public function __construct()
+    public function __construct($name = null)
     {
         // missing parent constructor call by intention
     }
 
     /**
+     * @param string        $method
      * @param object|string $object
-     * @return array|string
-     * @throws ReflectionException
+     * @param array         $args
+     * @return mixed
      */
-    public function callProtectedMethodFromObject(string $method, $object, array $args = [])
+    public function callProtectedMethodFromObject($method, $object, $args = [])
     {
         return $this->_callProtectedMethodFromObject($method, $object, $args);
     }
