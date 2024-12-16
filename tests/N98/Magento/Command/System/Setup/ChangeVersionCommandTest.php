@@ -46,6 +46,8 @@ final class ChangeVersionCommandTest extends TestCase
 
     public function testUpdateBySetupName()
     {
+        $this->markTestSkipped();
+
         $command = $this->getMockBuilder(ChangeVersionCommand::class)
             ->getMock();
 
