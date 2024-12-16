@@ -11,7 +11,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * @see \N98\Magento\Command\Database\DumpCommand
+ * @see DumpCommand
  */
 final class DumpCommandTest extends TestCase
 {

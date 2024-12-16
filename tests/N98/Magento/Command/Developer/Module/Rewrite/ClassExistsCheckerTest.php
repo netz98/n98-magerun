@@ -28,7 +28,7 @@ final class ClassExistsCheckerTest extends TestCase
     /**
      * @var array
      */
-    private $cleanup = [];
+    private array $cleanup = [];
 
     protected function tearDown(): void
     {
@@ -190,10 +190,10 @@ final class ClassExistsCheckerTest extends TestCase
     private function noErrorExceptions($includeIni = true)
     {
         $displayErrorsOrig = ini_get('display_errors');
-        $includeIni && ini_set('display_errors', false);
+        $includeIni && ini_set('display_errors', '0');
 
         $logErrorsOrig = ini_get('log_errors');
-        $includeIni && ini_set('log_errors', false);
+        $includeIni && ini_set('log_errors', '0');
 
         $restore = function () use ($displayErrorsOrig, $logErrorsOrig): void {
             ini_set('display_errors', $displayErrorsOrig);

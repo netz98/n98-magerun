@@ -98,7 +98,7 @@ HELP;
 
             // Delete stores
             foreach (Mage::app()->getStores($force) as $store) {
-                $deleted[] = $this->deleteConfigEntry($path, 'stores', $store->getId());
+                $deleted[] = $this->deleteConfigEntry($path, 'stores', (int) $store->getId());
             }
         } else {
             $deleted[] = $this->deleteConfigEntry($path, $input->getOption('scope'), $scopeId);
