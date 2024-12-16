@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\MagentoConnect;
 
 use Mage;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class ValidateExtensionCommandTest extends TestCase
+final class ValidateExtensionCommandTest extends TestCase
 {
     public function testSetup()
     {
@@ -39,6 +41,6 @@ class ValidateExtensionCommandTest extends TestCase
         );
 
         $output = $commandTester->getDisplay();
-        self::assertContains('Mage_All_Latest', $output);
+        $this->assertContains('Mage_All_Latest', $output);
     }
 }

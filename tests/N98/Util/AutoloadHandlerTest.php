@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * this file is part of magerun
  *
@@ -17,7 +19,7 @@ use BadMethodCallException;
  * @covers \N98\Util\AutoloadHandler
  * @package N98\Util
  */
-class AutoloadHandlerTest extends TestCase
+final class AutoloadHandlerTest extends TestCase
 {
     private array $cleanup = [];
 
@@ -31,20 +33,14 @@ class AutoloadHandlerTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
-    public function creation()
+    public function testCreation()
     {
         $handler = $this->create(null);
-        self::assertInstanceOf(__NAMESPACE__ . '\AutoloadHandler', $handler);
-        self::assertIsCallable($handler);
+        $this->assertInstanceOf(__NAMESPACE__ . '\AutoloadHandler', $handler);
+        $this->assertIsCallable($handler);
     }
 
-    /**
-     * @test
-     */
-    public function noRegistrationOnCreation(): never
+    public function testNoRegistrationOnCreation(): never
     {
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('Autoload callback is not callable');
@@ -52,11 +48,11 @@ class AutoloadHandlerTest extends TestCase
         $handler = $this->create(null, AutoloadHandler::NO_AUTO_REGISTER);
         $handler->disable(); // assertions require a disabled handler b/c of exceptions
 
-        self::assertNotContains($handler, spl_autoload_functions());
-        self::assertFalse($handler->__invoke('test'));
+        $this->assertNotContains($handler, spl_autoload_functions());
+        $this->assertFalse($handler->__invoke('test'));
         $handler->register();
         $actual = in_array($handler, spl_autoload_functions());
-        self::assertTrue($actual);
+        $this->assertTrue($actual);
 
         $handler->enable();
         $handler->__invoke('test');
@@ -71,10 +67,7 @@ class AutoloadHandlerTest extends TestCase
         return $autoloadHandler;
     }
 
-    /**
-     * @test
-     */
-    public function registrationAndDeregistration()
+    public function testRegistrationAndDeregistration()
     {
         $calls = (object) ['retval' => true];
         $assertAble = function ($className) use (&$calls) {
@@ -85,18 +78,15 @@ class AutoloadHandlerTest extends TestCase
         };
 
         $handler = $this->create($assertAble);
-        self::assertTrue($handler->isEnabled());
-        self::assertTrue($handler->__invoke('Fake'));
+        $this->assertTrue($handler->isEnabled());
+        $this->assertTrue($handler->__invoke('Fake'));
 
         $handler->unregister();
-        self::assertFalse($handler->__invoke('Fake'));
-        self::assertEquals(1, $calls->count['Fake']);
+        $this->assertFalse($handler->__invoke('Fake'));
+        $this->assertSame(1, $calls->count['Fake']);
     }
 
-    /**
-     * @test
-     */
-    public function changingCallback()
+    public function testChangingCallback()
     {
         $calls = (object) ['retval' => true];
         $assertAble = function ($className) use (&$calls) {
@@ -107,55 +97,46 @@ class AutoloadHandlerTest extends TestCase
         };
 
         $handler = $this->create(null, AutoloadHandler::NO_EXCEPTION);
-        self::assertFalse($handler->__invoke('Test'));
-        self::assertObjectNotHasProperty('count', $calls);
+        $this->assertFalse($handler->__invoke('Test'));
+        $this->assertObjectNotHasProperty('count', $calls);
 
         $handler->setCallback($assertAble);
-        self::assertTrue($handler->__invoke('Test'));
-        self::assertEquals(1, $calls->count['Test']);
+        $this->assertTrue($handler->__invoke('Test'));
+        $this->assertSame(1, $calls->count['Test']);
 
         $handler->setCallback(null);
-        self::assertFalse($handler->__invoke('Test'));
-        self::assertEquals(1, $calls->count['Test']);
+        $this->assertFalse($handler->__invoke('Test'));
+        $this->assertSame(1, $calls->count['Test']);
     }
 
-    /**
-     * @test
-     */
-    public function disablingAndEnabling(): never
+    public function testDisablingAndEnabling(): never
     {
         $handler = $this->create(null);
         $handler->setEnabled(false);
-        self::assertFalse($handler->__invoke('Test'));
+        $this->assertFalse($handler->__invoke('Test'));
         $handler->setEnabled(true);
         $this->expectException(BadMethodCallException::class);
-        self::assertFalse($handler->__invoke('Test'));
+        $this->assertFalse($handler->__invoke('Test'));
         self::fail('An expected exception has not been thrown');
     }
 
-    /**
-     * @test
-     */
-    public function callbackSelfReference()
+    public function testCallbackSelfReference()
     {
         $testClass = 'MyOf' . random_int(1000, 9999) . 'Fake' . random_int(1000, 9999) . 'Class';
         $test = $this;
-        $handler = $this->create(function ($className) use (&$handler, $test, $testClass) {
+        $handler = $this->create(function ($className) use (&$handler, $test, $testClass): void {
             /** @var $handler AutoloadHandler */
-            $test->assertEquals($testClass, $className);
+            $test->assertSame($testClass, $className);
             $handler->disable();
         });
         $actual = class_exists($testClass);
         $isEnabled = $handler->isEnabled();
-        self::assertEquals(1, self::getCount());
-        self::assertFalse($isEnabled);
-        self::assertFalse($actual);
+        $this->assertSame(1, self::getCount());
+        $this->assertFalse($isEnabled);
+        $this->assertFalse($actual);
     }
 
-    /**
-     * @test
-     */
-    public function cleanupCallback()
+    public function testCleanupCallback()
     {
         $calls = (object) ['retval' => true];
         $assertAble = function ($className) use (&$calls) {
@@ -168,10 +149,10 @@ class AutoloadHandlerTest extends TestCase
         $handler = $this->create($assertAble, AutoloadHandler::NO_EXCEPTION);
         $cleanup = $handler->getCleanupCallback();
         $actual = class_exists('Test');
-        self::assertFalse($actual);
-        self::assertContains($handler, spl_autoload_functions(), 'before cleanup');
+        $this->assertFalse($actual);
+        $this->assertContains($handler, spl_autoload_functions(), 'before cleanup');
         $cleanup();
-        self::assertNotContains($handler, spl_autoload_functions(), 'after cleanup');
+        $this->assertNotContains($handler, spl_autoload_functions(), 'after cleanup');
         // calling cleanup again must not do any warnings etc.
         $cleanup();
     }

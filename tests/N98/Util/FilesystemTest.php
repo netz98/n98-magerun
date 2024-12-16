@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * this file is part of magerun
  *
@@ -17,16 +19,16 @@ use RuntimeException;
  * @author Aydin Hassan <aydin@hotmail.co.uk>
  * @covers N98\Util\Filesystem
  */
-class FilesystemTest extends TestCase
+final class FilesystemTest extends TestCase
 {
     /**
      * @var Filesystem
      */
-    protected $fileSystem;
+    private $filesystem;
 
     protected function setUp(): void
     {
-        $this->fileSystem = new Filesystem();
+        $this->filesystem = new Filesystem();
     }
 
     public function testRecursiveCopy()
@@ -45,9 +47,9 @@ class FilesystemTest extends TestCase
         touch($file1);
         touch($file2);
 
-        $this->fileSystem->recursiveCopy($basePath, $dest);
-        self::assertFileExists($dest . '/folder1/file1.txt');
-        self::assertFileExists($dest . '/folder2/file2.txt');
+        $this->filesystem->recursiveCopy($basePath, $dest);
+        $this->assertFileExists($dest . '/folder1/file1.txt');
+        $this->assertFileExists($dest . '/folder2/file2.txt');
 
         //cleanup
         unlink($file1);
@@ -62,14 +64,15 @@ class FilesystemTest extends TestCase
         rmdir($dest . '/folder2');
         rmdir($dest);
 
-        self::assertFileDoesNotExist($dest . '/folder1/file1.txt');
-        self::assertFileDoesNotExist($dest);
+        $this->assertFileDoesNotExist($dest . '/folder1/file1.txt');
+        $this->assertFileDoesNotExist($dest);
 
         if (!is_dir($tmp . '/a')) {
             mkdir($tmp . '/a');
         }
+
         touch($tmp . '/file1.txt');
-        $this->fileSystem->recursiveCopy($tmp . '/a', $tmp . '/file1.txt');
+        $this->filesystem->recursiveCopy($tmp . '/a', $tmp . '/file1.txt');
         unlink($tmp . '/file1.txt');
         rmdir($tmp . '/a');
     }
@@ -84,7 +87,7 @@ class FilesystemTest extends TestCase
         $ignoreMe = $folder1 . '/ignore.me';
         $file2 = $folder2 . '/file2.txt';
         $dest = sys_get_temp_dir() . '/n98_copy_dest';
-        $this->fileSystem->recursiveRemoveDirectory($dest, true);
+        $this->filesystem->recursiveRemoveDirectory($dest, true);
 
         @mkdir($folder1, 0777, true);
         @mkdir($folder2, 0777, true);
@@ -92,10 +95,10 @@ class FilesystemTest extends TestCase
         touch($ignoreMe);
         touch($file2);
 
-        $this->fileSystem->recursiveCopy($basePath, $dest, ['ignore.me']);
-        self::assertFileExists($dest . '/folder1/file1.txt');
-        self::assertFileDoesNotExist($dest . '/folder1/ignore.me');
-        self::assertFileExists($dest . '/folder2/file2.txt');
+        $this->filesystem->recursiveCopy($basePath, $dest, ['ignore.me']);
+        $this->assertFileExists($dest . '/folder1/file1.txt');
+        $this->assertFileDoesNotExist($dest . '/folder1/ignore.me');
+        $this->assertFileExists($dest . '/folder2/file2.txt');
 
         //cleanup
         unlink($file1);
@@ -128,12 +131,12 @@ class FilesystemTest extends TestCase
         touch($symLinkedFile);
 
         $result = @symlink($symLinked, $basePath . '/symlink');
-        self::assertTrue($result);
+        $this->assertTrue($result);
 
-        $this->fileSystem->recursiveRemoveDirectory($basePath);
+        $this->filesystem->recursiveRemoveDirectory($basePath);
 
-        self::assertFileExists($symLinkedFile);
-        self::assertFileDoesNotExist($basePath);
+        $this->assertFileExists($symLinkedFile);
+        $this->assertFileDoesNotExist($basePath);
     }
 
     public function testRecursiveRemove()
@@ -150,8 +153,8 @@ class FilesystemTest extends TestCase
         touch($file1);
         touch($file2);
 
-        $this->fileSystem->recursiveRemoveDirectory($basePath);
-        self::assertFileDoesNotExist($basePath);
+        $this->filesystem->recursiveRemoveDirectory($basePath);
+        $this->assertFileDoesNotExist($basePath);
     }
 
     public function testRecursiveRemoveWithTrailingSlash()
@@ -168,13 +171,13 @@ class FilesystemTest extends TestCase
         touch($file1);
         touch($file2);
 
-        $this->fileSystem->recursiveRemoveDirectory($basePath . '/');
-        self::assertFileDoesNotExist($basePath);
+        $this->filesystem->recursiveRemoveDirectory($basePath . '/');
+        $this->assertFileDoesNotExist($basePath);
     }
 
     public function testFalseIsReturnedIfDirectoryNotExist()
     {
-        self::assertFalse($this->fileSystem->recursiveRemoveDirectory('not-a-folder'));
+        $this->assertFalse($this->filesystem->recursiveRemoveDirectory('not-a-folder'));
     }
 
     public function testFalseIsReturnedIfDirectoryNotReadable()
@@ -182,7 +185,7 @@ class FilesystemTest extends TestCase
         $tmp = sys_get_temp_dir();
         $basePath = $tmp . '/n98_testdir-never-existed';
 
-        self::assertFalse($this->fileSystem->recursiveRemoveDirectory($basePath));
+        $this->assertFalse($this->filesystem->recursiveRemoveDirectory($basePath));
     }
 
     public function testParentIsNotRemovedIfEmptyIsTrue()
@@ -199,10 +202,10 @@ class FilesystemTest extends TestCase
         touch($file1);
         touch($file2);
 
-        $this->fileSystem->recursiveRemoveDirectory($basePath, true);
-        self::assertFileExists($basePath);
-        self::assertFileDoesNotExist($folder1);
-        self::assertFileDoesNotExist($folder2);
+        $this->filesystem->recursiveRemoveDirectory($basePath, true);
+        $this->assertFileExists($basePath);
+        $this->assertFileDoesNotExist($folder1);
+        $this->assertFileDoesNotExist($folder2);
     }
 
     /**
@@ -214,14 +217,18 @@ class FilesystemTest extends TestCase
     public function testConvertBytesToHumanReadable($bytes, $decimalPlaces, $expected)
     {
         $res = Filesystem::humanFileSize($bytes, $decimalPlaces);
-        self::assertSame($expected, $res);
+        $this->assertSame($expected, $res);
     }
 
     /**
-     * @return array
+     * @return \Iterator<(int | string), mixed>
      */
-    public static function convertedBytesProvider()
+    public static function convertedBytesProvider(): \Iterator
     {
-        return [[20_000_000, 2, '19.07M'], [20_000_000, 3, '19.073M'], [2_000_000_000, 2, '1.86G'], [2, 2, '2.00B'], [2048, 2, '2.00K']];
+        yield [20_000_000, 2, '19.07M'];
+        yield [20_000_000, 3, '19.073M'];
+        yield [2_000_000_000, 2, '1.86G'];
+        yield [2, 2, '2.00B'];
+        yield [2048, 2, '2.00K'];
     }
 }

@@ -1,16 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Url;
 
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class ListCommandTest extends TestCase
+final class ListCommandTest extends TestCase
 {
     public function testExecute()
     {
         $application = $this->getApplication();
         $application->add(new ListCommand());
+
         $command = $this->getApplication()->find('sys:url:list');
 
         $commandTester = new CommandTester($command);
@@ -26,8 +29,8 @@ class ListCommandTest extends TestCase
             ],
         );
 
-        self::assertMatchesRegularExpression('/prefix/', $commandTester->getDisplay());
-        self::assertMatchesRegularExpression('/http/', $commandTester->getDisplay());
-        self::assertMatchesRegularExpression('/suffix/', $commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/prefix/', $commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/http/', $commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/suffix/', $commandTester->getDisplay());
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * @author Tom Klingenberg <https://github.com/ktomk>
  */
@@ -25,82 +27,72 @@ use Symfony\Component\Console\Output\BufferedOutput;
  * @covers  N98\Magento\Application\Config
  * @package N98\Magento\Application
  */
-class ConfigTest extends TestCase
+final class ConfigTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function creation()
+    public function testCreation()
     {
         $config = new Config();
-        self::assertInstanceOf(__NAMESPACE__ . '\\Config', $config);
+        $this->assertInstanceOf(__NAMESPACE__ . '\\Config', $config);
     }
 
-    /**
-     * @test
-     */
-    public function loader()
+    public function testLoader()
     {
         $config = new Config();
 
         try {
             $config->load();
             self::fail('An expected exception was not thrown');
-        } catch (ErrorException $e) {
-            self::assertEquals('Configuration not yet fully loaded', $e->getMessage());
+        } catch (ErrorException $errorException) {
+            $this->assertSame('Configuration not yet fully loaded', $errorException->getMessage());
         }
 
-        self::assertEquals([], $config->getConfig());
+        $this->assertSame([], $config->getConfig());
 
-        $loader = $config->getLoader();
-        self::assertInstanceOf(__NAMESPACE__ . '\\ConfigurationLoader', $loader);
-        self::assertSame($loader, $config->getLoader());
+        $configurationLoader = $config->getLoader();
+        $this->assertInstanceOf(__NAMESPACE__ . '\\ConfigurationLoader', $configurationLoader);
+        $this->assertSame($configurationLoader, $config->getLoader());
 
-        $loader->loadStageTwo('');
+        $configurationLoader->loadStageTwo('');
         $config->load();
 
-        self::assertIsArray($config->getConfig());
-        self::assertGreaterThan(4, count($config->getConfig()));
+        $this->assertIsArray($config->getConfig());
+        $this->assertGreaterThan(4, count($config->getConfig()));
 
-        $config->setLoader($loader);
+        $config->setLoader($configurationLoader);
     }
 
     /**
      * config array setter is used in some tests on @see \N98\Magento\Application::setConfig()
-     *
-     * @test
      */
-    public function setConfig()
+    public function testSetConfig()
     {
         $config = new Config();
         $config->setConfig([0, 1, 2]);
+
         $actual = $config->getConfig();
-        self::assertSame($actual[1], 1);
+        $this->assertSame(1, $actual[1]);
     }
 
-    /**
-     * @test
-     */
-    public function configCommandAlias()
+    public function testConfigCommandAlias()
     {
         $config = new Config();
         $input = new ArgvInput();
         $actual = $config->checkConfigCommandAlias($input);
-        self::assertInstanceOf(InputInterface::class, $actual);
+        $this->assertInstanceOf(InputInterface::class, $actual);
 
         $saved = $_SERVER['argv'];
         {
             $config->setConfig(['commands' => ['aliases' => [['list-help' => 'list --help']]]]);
-            $definition = new InputDefinition();
-            $definition->addArgument(new InputArgument('command'));
+            $inputDefinition = new InputDefinition();
+            $inputDefinition->addArgument(new InputArgument('command'));
 
             $argv = ['/path/to/command', 'list-help'];
             $_SERVER['argv'] = $argv;
-            $input = new ArgvInput($argv, $definition);
-            self::assertSame('list-help', (string) $input);
+            $input = new ArgvInput($argv, $inputDefinition);
+            $this->assertSame('list-help', (string) $input);
             $actual = $config->checkConfigCommandAlias($input);
-            self::assertSame('list-help', $actual->getFirstArgument());
-            self::assertSame('list-help --help', (string) $actual);
+            $this->assertSame('list-help', $actual->getFirstArgument());
+            $this->assertSame('list-help --help', (string) $actual);
         }
         $_SERVER['argv'] = $saved;
 
@@ -108,13 +100,10 @@ class ConfigTest extends TestCase
 
         $config->registerConfigCommandAlias($command);
 
-        self::assertSame(['list-help'], $command->getAliases());
+        $this->assertSame(['list-help'], $command->getAliases());
     }
 
-    /**
-     * @test
-     */
-    public function customCommands()
+    public function testCustomCommands()
     {
         $configArray = [
             'commands' => [
@@ -125,10 +114,10 @@ class ConfigTest extends TestCase
             ],
         ];
 
-        $output = new BufferedOutput();
-        $output->setVerbosity($output::VERBOSITY_DEBUG);
+        $bufferedOutput = new BufferedOutput();
+        $bufferedOutput->setVerbosity($bufferedOutput::VERBOSITY_DEBUG);
 
-        $config = new Config([], false, $output);
+        $config = new Config([], false, $bufferedOutput);
         $config->setConfig($configArray);
 
         /** @var Application|MockObject $application */
@@ -138,10 +127,7 @@ class ConfigTest extends TestCase
         $config->registerCustomCommands($application);
     }
 
-    /**
-     * @test
-     */
-    public function registerCustomAutoloaders()
+    public function testRegisterCustomAutoloaders()
     {
         $array = ['autoloaders'      => ['$prefix' => '$path'], 'autoloaders_psr4' => ['$prefix\\' => '$path']];
 
@@ -149,30 +135,27 @@ class ConfigTest extends TestCase
             '<debug>Registered PSR-0 autoloader </debug> $prefix -> $path' . "\n" .
             '<debug>Registered PSR-4 autoloader </debug> $prefix\\ -> $path' . "\n";
 
-        $output = new BufferedOutput();
+        $bufferedOutput = new BufferedOutput();
 
-        $config = new Config([], false, $output);
+        $config = new Config([], false, $bufferedOutput);
         $config->setConfig($array);
 
-        $autloader = new ClassLoader();
-        $config->registerCustomAutoloaders($autloader);
+        $classLoader = new ClassLoader();
+        $config->registerCustomAutoloaders($classLoader);
 
-        $output->setVerbosity($output::VERBOSITY_DEBUG);
-        $config->registerCustomAutoloaders($autloader);
+        $bufferedOutput->setVerbosity($bufferedOutput::VERBOSITY_DEBUG);
+        $config->registerCustomAutoloaders($classLoader);
 
-        self::assertSame($expected, $output->fetch());
+        $this->assertSame($expected, $bufferedOutput->fetch());
     }
 
-    /**
-     * @test
-     */
-    public function loadPartialConfig()
+    public function testLoadPartialConfig()
     {
         $config = new Config();
-        self::assertEquals([], $config->getDetectSubFolders());
+        $this->assertSame([], $config->getDetectSubFolders());
         $config->loadPartialConfig(false);
         $actual = $config->getDetectSubFolders();
-        self::assertIsArray($actual);
-        self::assertNotEquals([], $actual);
+        $this->assertIsArray($actual);
+        $this->assertNotSame([], $actual);
     }
 }

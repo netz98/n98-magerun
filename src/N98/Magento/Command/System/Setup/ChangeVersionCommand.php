@@ -37,10 +37,10 @@ class ChangeVersionCommand extends AbstractSetupCommand
             return Command::INVALID;
         }
 
-        $moduleVersion = $input->getArgument('version');
-        $moduleName = $this->getModule($input);
-        $setupName = $input->getArgument('setup');
-        $moduleSetups = $this->getModuleSetupResources($moduleName);
+        $moduleVersion  = $input->getArgument('version');
+        $moduleName     = $this->getModule($input);
+        $setupName      = $input->getArgument('setup');
+        $moduleSetups   = $this->getModuleSetupResources($moduleName);
 
         if ($moduleSetups === []) {
             $output->writeln(sprintf('No setup resources found for module: "%s"', $moduleName));
@@ -63,7 +63,7 @@ class ChangeVersionCommand extends AbstractSetupCommand
     public function updateSetupResource(string $moduleName, string $setupResource, string $version, OutputInterface $output): void
     {
         /** @var Mage_Core_Model_Resource_Resource $mageCoreModelAbstract */
-        $mageCoreModelAbstract = Mage::getModel('core/resource');
+        $mageCoreModelAbstract = Mage::getResourceSingleton('core/resource');
 
         $mageCoreModelAbstract->setDbVersion($setupResource, $version);
         $mageCoreModelAbstract->setDataVersion($setupResource, $version);

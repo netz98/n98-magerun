@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Database;
 
 use N98\Magento\Command\TestCase;
 use N98\Util\Console\Helper\DatabaseHelper;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class VariablesCommandTest extends TestCase
+final class VariablesCommandTest extends TestCase
 {
     /**
      * @var StatusCommand
@@ -14,16 +16,15 @@ class VariablesCommandTest extends TestCase
     private $statusCommand;
 
     /**
-     * @param array $options
-     *
      * @return CommandTester
      */
-    protected function getCommand(array $options)
+    private function getCommand(array $options)
     {
         $this->statusCommand = new StatusCommand();
 
         $application = $this->getApplication();
         $application->add($this->statusCommand);
+
         $command = $this->getApplication()->find('db:variables');
 
         $commandTester = new CommandTester($command);
@@ -47,10 +48,10 @@ class VariablesCommandTest extends TestCase
         $commandTester = $this->getCommand(['--format' => 'csv']);
         $display = $commandTester->getDisplay();
 
-        self::assertStringContainsString('have_query_cache', $display);
-        self::assertStringContainsString('innodb_log_buffer_size', $display);
-        self::assertStringContainsString('max_connections', $display);
-        self::assertStringContainsString('thread_cache_size', $display);
+        $this->assertStringContainsString('have_query_cache', $display);
+        $this->assertStringContainsString('innodb_log_buffer_size', $display);
+        $this->assertStringContainsString('max_connections', $display);
+        $this->assertStringContainsString('thread_cache_size', $display);
     }
 
     /**
@@ -60,17 +61,18 @@ class VariablesCommandTest extends TestCase
     {
         $commandTester = $this->getCommand(['--format' => 'csv', 'search'   => 'Innodb%']);
 
-        $dbHelper = $this->getDatabaseHelper();
+        $databaseHelper = $this->getDatabaseHelper();
 
         $display = $commandTester->getDisplay();
 
-        self::assertStringContainsString('innodb_concurrency_tickets', $display);
+        $this->assertStringContainsString('innodb_concurrency_tickets', $display);
         // innodb_force_load_corrupted Introduced in 5.6.3
-        if (-1 < version_compare($dbHelper->getMysqlVariable('version'), '5.6.3')) {
-            self::assertStringContainsString('innodb_force_load_corrupted', $display);
+        if (-1 < version_compare($databaseHelper->getMysqlVariable('version'), '5.6.3')) {
+            $this->assertStringContainsString('innodb_force_load_corrupted', $display);
         }
-        self::assertStringContainsString('innodb_log_file_size', $display);
-        self::assertMatchesRegularExpression('~innodb_(?:file|read)_io_threads~', $display);
+
+        $this->assertStringContainsString('innodb_log_file_size', $display);
+        $this->assertMatchesRegularExpression('~innodb_(?:file|read)_io_threads~', $display);
     }
 
     /**
@@ -80,15 +82,15 @@ class VariablesCommandTest extends TestCase
     {
         $commandTester = $this->getCommand(['--format'   => 'csv', '--rounding' => '2', 'search'     => '%size%']);
 
-        $dbHelper = $this->getDatabaseHelper();
+        $databaseHelper = $this->getDatabaseHelper();
 
         $display = $commandTester->getDisplay();
 
-        self::assertMatchesRegularExpression('~myisam_max_sort_file_size,[0-9\.]+[A-Z]~', $commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('~myisam_max_sort_file_size,[0-9\.]+[A-Z]~', $commandTester->getDisplay());
 
         // max_binlog_stmt_cache_size Introduced in 5.5.9
-        if (-1 < version_compare($dbHelper->getMysqlVariable('version'), '5.5.9')) {
-            self::assertMatchesRegularExpression('~max_binlog_stmt_cache_size,[0-9\.]+[A-Z]~', $display);
+        if (-1 < version_compare($databaseHelper->getMysqlVariable('version'), '5.5.9')) {
+            $this->assertMatchesRegularExpression('~max_binlog_stmt_cache_size,[0-9\.]+[A-Z]~', $display);
         }
     }
 }

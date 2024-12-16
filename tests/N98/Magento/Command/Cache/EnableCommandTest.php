@@ -1,23 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cache;
 
 use N98\Magento\Application;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class EnableCommandTest extends TestCase
+final class EnableCommandTest extends TestCase
 {
     public function testExecute()
     {
         $application = $this->getApplication();
         $application->add(new EnableCommand());
+
         $command = $this->getApplication()->find('cache:enable');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command' => $command->getName()]);
 
-        self::assertMatchesRegularExpression('/Caches enabled/', $commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/Caches enabled/', $commandTester->getDisplay());
     }
 
     public function testExecuteMultipleCaches()
@@ -31,7 +34,7 @@ class EnableCommandTest extends TestCase
             ['command' => $command->getName(), 'code'    => 'eav,config'],
         );
 
-        self::assertMatchesRegularExpression('/Cache config enabled/', $commandTester->getDisplay());
-        self::assertMatchesRegularExpression('/Cache eav enabled/', $commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/Cache config enabled/', $commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/Cache eav enabled/', $commandTester->getDisplay());
     }
 }

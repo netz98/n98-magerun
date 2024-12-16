@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cache;
 
 use RuntimeException;
@@ -9,7 +11,7 @@ use Mage;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class CleanCommandTest extends TestCase
+final class CleanCommandTest extends TestCase
 {
     /**
      * @throws RuntimeException
@@ -25,6 +27,7 @@ class CleanCommandTest extends TestCase
         if ($application->isMagentoEnterprise()) {
             $against = '1.14.0.0';
         }
+
         if (-1 != version_compare($version, $against)) {
             self::markTestSkipped(
                 sprintf(
@@ -42,18 +45,20 @@ class CleanCommandTest extends TestCase
     {
         $application = $this->getApplication();
         $application->add(new CleanCommand());
+
         $command = $this->getApplication()->find('cache:clean');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command' => $command->getName()]);
 
-        self::assertStringContainsString('Cache config cleaned', $commandTester->getDisplay());
+        $this->assertStringContainsString('Cache config cleaned', $commandTester->getDisplay());
     }
 
     public function testItCanCleanMultipleCaches()
     {
         $application = $this->getApplication();
         $application->add(new CleanCommand());
+
         $command = $this->getApplication()->find('cache:clean');
 
         $commandTester = new CommandTester($command);
@@ -61,7 +66,7 @@ class CleanCommandTest extends TestCase
 
         $display = $commandTester->getDisplay();
 
-        self::assertStringContainsString('Cache config cleaned', $display);
-        self::assertStringContainsString('Cache layout cleaned', $display);
+        $this->assertStringContainsString('Cache config cleaned', $display);
+        $this->assertStringContainsString('Cache layout cleaned', $display);
     }
 }

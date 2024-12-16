@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * this file is part of magerun
  *
@@ -21,7 +23,7 @@ use N98\Util\AutoloadHandler;
  *
  * @covers \N98\Magento\Command\Developer\Module\Rewrite\ClassExistsChecker
  */
-class ClassExistsCheckerTest extends TestCase
+final class ClassExistsCheckerTest extends TestCase
 {
     /**
      * @var array
@@ -34,42 +36,30 @@ class ClassExistsCheckerTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
-    public function creation()
+    public function testCreation()
     {
         $checker = new ClassExistsChecker('Le_Foo_Le_Bar_Nexiste_Pas');
-        self::assertInstanceOf(__NAMESPACE__ . '\ClassExistsChecker', $checker);
+        $this->assertInstanceOf(__NAMESPACE__ . '\ClassExistsChecker', $checker);
 
         $checker = ClassExistsChecker::create('Le_Foo_Le_Bar_Nexiste_Pas');
-        self::assertInstanceOf(__NAMESPACE__ . '\ClassExistsChecker', $checker);
+        $this->assertInstanceOf(__NAMESPACE__ . '\ClassExistsChecker', $checker);
     }
 
-    /**
-     * @test
-     */
-    public function existingClass()
+    public function testExistingClass()
     {
-        self::assertTrue(ClassExistsChecker::create(IteratorIterator::class)->existsExtendsSafe());
+        $this->assertTrue(ClassExistsChecker::create(IteratorIterator::class)->existsExtendsSafe());
     }
 
-    /**
-     * @test
-     */
-    public function nonExistingClass()
+    public function testNonExistingClass()
     {
-        self::assertFalse(ClassExistsChecker::create('asdfu8jq23nklr08asASDF0oaosdufhoanl')->existsExtendsSafe());
+        $this->assertFalse(ClassExistsChecker::create('asdfu8jq23nklr08asASDF0oaosdufhoanl')->existsExtendsSafe());
     }
 
-    /**
-     * @test
-     */
-    public function throwingAnExceptionWhileIncluding()
+    public function testThrowingAnExceptionWhileIncluding()
     {
         // similar to Varien_Autoload
         $innerException = null;
-        $autoload = $this->create(function ($className) use (&$innerException) {
+        $autoloadHandler = $this->create(function ($className) use (&$innerException): void {
             $innerException = new BadMethodCallException('exception in include simulation for ' . $className);
             throw $innerException;
         });
@@ -77,54 +67,51 @@ class ClassExistsCheckerTest extends TestCase
         try {
             $className = 'Le_Foo_Le_Bar_Nexiste_Pas';
             ClassExistsChecker::create($className)->existsExtendsSafe();
-            $autoload->reset();
+            $autoloadHandler->reset();
             self::fail('An expected Exception has not been thrown');
-        } catch (Exception $ex) {
-            $autoload->reset();
-            self::assertInstanceOf(__NAMESPACE__ . '\ClassExistsThrownException', $ex);
-            isset($innerException) && self::assertInstanceOf(get_class($innerException), $ex->getPrevious());
-            self::assertSame($innerException, $ex->getPrevious());
+        } catch (Exception $exception) {
+            $autoloadHandler->reset();
+            $this->assertInstanceOf(__NAMESPACE__ . '\ClassExistsThrownException', $exception);
+            if (isset($innerException)) {
+                $this->assertInstanceOf(get_class($innerException), $exception->getPrevious());
+            }
+
+            $this->assertSame($innerException, $exception->getPrevious());
         }
     }
 
     /**
-     * @return array
+     * @return \Iterator<(int | string), mixed>
      * @see preventingFatalOnNonExistingBaseClass
      */
-    public function provideClassNames()
+    public function provideClassNames(): \Iterator
     {
-        return [
-            ['Le_Foo_Le_Bar'],
-            # extends from a non-existing file of that base-class
-            ['Le_Foo_Le_Bar_R1'],
-        ];
+        yield ['Le_Foo_Le_Bar'];
+        # extends from a non-existing file of that base-class
+        yield ['Le_Foo_Le_Bar_R1'];
     }
 
     /**
-     * @test
      * @dataProvider provideClassNames
      * @param string $className
      */
-    public function preventingFatalOnNonExistingBaseClass($className)
+    public function testPreventingFatalOnNonExistingBaseClass($className)
     {
-        $autoload = $this->create($this->getAutoloader());
+        $autoloadHandler = $this->create($this->getAutoloader());
         $restore = $this->noErrorExceptions();
         try {
             $actual = ClassExistsChecker::create($className)->existsExtendsSafe();
             $restore();
-            $autoload->reset();
-            self::assertFalse($actual);
-        } catch (Exception $ex) {
+            $autoloadHandler->reset();
+            $this->assertFalse($actual);
+        } catch (Exception $exception) {
             $restore();
-            $autoload->reset();
+            $autoloadHandler->reset();
             self::fail('An exception has been thrown');
         }
     }
 
-    /**
-     * @test
-     */
-    public function warningTriggeringExpectedBehaviour()
+    public function testWarningTriggeringExpectedBehaviour()
     {
         $this->markTestSkipped('Maybe not compatible with PHP 8.1 anymore. Has to be checked again.');
         $undef_var = null;
@@ -136,43 +123,43 @@ class ClassExistsCheckerTest extends TestCase
         $canary = error_get_last();
 
         // precondition is that there was no error yet
-        self::assertNotNull($canary, 'precondition not met');
+        $this->assertNotNull($canary, 'precondition not met');
 
         // precondition of the error reporting level
         $reporting = error_reporting();
         // 22527 - E_ALL & ~E_DEPRECATED & ~E_STRICT (PHP 5.6)
         // 32767 - E_ALL (Travis PHP 5.3, PHP 5.4)
         $knownErrorLevels = ['E_ALL & ~E_DEPRECATED & ~E_STRICT (Deb Sury 5.6)' => 22527, 'E_ALL (Travis PHP 5.3, 5.4, 5.5)'                 => 32767];
-        self::assertContains($reporting, $knownErrorLevels, "error reporting as of $reporting");
+        $this->assertContains($reporting, $knownErrorLevels, 'error reporting as of ' . $reporting);
 
         // by default the class must be loaded with a different autoloader
-        self::assertFalse(class_exists('Le_Foo_Le_Bar_Fine'));
+        $this->assertFalse(class_exists('Le_Foo_Le_Bar_Fine'));
 
         // post-condition is that there was no error yet
-        self::assertSame($canary, error_get_last());
+        $this->assertSame($canary, error_get_last());
 
         // should not trigger an error if the class exists
-        $autoload = $this->create($this->getAutoloader());
-        self::assertTrue(class_exists('Le_Foo_Le_Bar_Fine'));
-        self::assertSame($canary, error_get_last());
+        $this->create($this->getAutoloader());
+        $this->assertTrue(class_exists('Le_Foo_Le_Bar_Fine'));
+        $this->assertSame($canary, error_get_last());
 
         // should trigger a warning if the class does not exists as file on disk per auto-loading
         $restore = $this->noErrorExceptions();
         $actual = class_exists('Le_Foo_Le_Bar_Nexiste_Pas');
         $restore();
 
-        self::assertFalse($actual);
+        $this->assertFalse($actual);
         $lastError = error_get_last();
         if ($canary === $lastError) {
             self::markTestIncomplete('System does not triggers the expected warning on include');
         }
 
-        self::assertNotSame($canary, $lastError);
-        self::assertArrayHasKey('type', $lastError);
-        self::assertSame(2, $lastError['type']);
-        self::assertArrayHasKey('message', $lastError);
+        $this->assertNotSame($canary, $lastError);
+        $this->assertArrayHasKey('type', $lastError);
+        $this->assertSame(2, $lastError['type']);
+        $this->assertArrayHasKey('message', $lastError);
         $pattern = '~include\(\): Failed opening \'.*Rewrite/fixture/Le_Foo_Le_Bar_Nexiste_Pas\.php\' for inclusion ~';
-        self::assertMatchesRegularExpression($pattern, $lastError['message']);
+        $this->assertMatchesRegularExpression($pattern, $lastError['message']);
     }
 
     /**
@@ -183,9 +170,10 @@ class ClassExistsCheckerTest extends TestCase
     private function getAutoloader()
     {
         return function ($className) {
-            if (!preg_match('~^(Le_Foo_Le_Bar)~', $className)) {
+            if (in_array(preg_match('~^(Le_Foo_Le_Bar)~', $className), [0, false], true)) {
                 return false;
             }
+
             $file = __DIR__ . '/fixture/' . $className . '.php';
 
             return include $file;
@@ -207,7 +195,7 @@ class ClassExistsCheckerTest extends TestCase
         $logErrorsOrig = ini_get('log_errors');
         $includeIni && ini_set('log_errors', false);
 
-        $restore = function () use ($displayErrorsOrig, $logErrorsOrig) {
+        $restore = function () use ($displayErrorsOrig, $logErrorsOrig): void {
             ini_set('display_errors', $displayErrorsOrig);
             ini_set('log_errors', $logErrorsOrig);
         };
@@ -222,14 +210,13 @@ class ClassExistsCheckerTest extends TestCase
      * after test is over
      *
      * @param $callback
-     * @param null $flags
      * @return AutoloadHandler
      */
     private function create($callback, $flags = null)
     {
-        $handler = AutoloadHandler::create($callback, $flags);
-        $this->cleanup[] = $handler->getCleanupCallback();
-        return $handler;
+        $autoloadHandler = AutoloadHandler::create($callback, $flags);
+        $this->cleanup[] = $autoloadHandler->getCleanupCallback();
+        return $autoloadHandler;
     }
 
     private function cleanup()

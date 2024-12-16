@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * this file is part of magerun
  *
@@ -7,7 +9,6 @@
  *
  * Faux conditional class definition as this is common with module checks
  */
-
 if (true) {
     class Le_Foo_Le_Bar_R1 extends Le_Foo_Le_Bar_R2 {}
 } else {

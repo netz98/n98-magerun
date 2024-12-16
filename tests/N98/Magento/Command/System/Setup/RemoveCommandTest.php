@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System\Setup;
 
 use InvalidArgumentException;
@@ -13,7 +15,7 @@ use Varien_Db_Adapter_Pdo_Mysql;
  * @package N98\Magento\Command\System\Setup
  * @author Aydin Hassan <aydin@hotmail.co.uk>
  */
-class RemoveCommandTest extends TestCase
+final class RemoveCommandTest extends TestCase
 {
     public function testRemoveModule()
     {
@@ -22,14 +24,14 @@ class RemoveCommandTest extends TestCase
             ->setMethods(['delete'])
             ->getMock();
 
-        $mockAdapter->expects(self::once())
+        $mockAdapter->expects($this->once())
             ->method('delete')
             ->willReturn(1);
 
         $coreResource = $this->getMockBuilder(Mage_Core_Model_Resource::class)
             ->getMock();
 
-        $coreResource->expects(self::once())
+        $coreResource->expects($this->once())
             ->method('getConnection')
             ->willReturn($mockAdapter);
 
@@ -37,21 +39,19 @@ class RemoveCommandTest extends TestCase
             ->setMethods(['getMageCoreResource'])
             ->getMock();
 
-        $command->expects(self::once())
+        $command->expects($this->once())
             ->method('getMageCoreResource')
             ->willReturn($coreResource);
 
         $application = $this->getApplication();
         $application->add($command);
+
         $command = $this->getApplication()->find('sys:setup:remove');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command'   => $command->getName(), 'module'    => 'Mage_Weee']);
 
-        self::assertStringContainsString(
-            'Successfully removed setup resource: "weee_setup" from module: "Mage_Weee"',
-            $commandTester->getDisplay(),
-        );
+        $this->assertStringContainsString('Successfully removed setup resource: "weee_setup" from module: "Mage_Weee"', $commandTester->getDisplay());
     }
 
     public function testRemoveBySetupName()
@@ -61,14 +61,14 @@ class RemoveCommandTest extends TestCase
             ->setMethods(['delete'])
             ->getMock();
 
-        $mockAdapter->expects(self::once())
+        $mockAdapter->expects($this->once())
             ->method('delete')
             ->willReturn(1);
 
         $coreResource = $this->getMockBuilder(Mage_Core_Model_Resource::class)
             ->getMock();
 
-        $coreResource->expects(self::once())
+        $coreResource->expects($this->once())
             ->method('getConnection')
             ->willReturn($mockAdapter);
 
@@ -76,12 +76,13 @@ class RemoveCommandTest extends TestCase
             ->setMethods(['getMageCoreResource'])
             ->getMock();
 
-        $command->expects(self::once())
+        $command->expects($this->once())
             ->method('getMageCoreResource')
             ->willReturn($coreResource);
 
         $application = $this->getApplication();
         $application->add($command);
+
         $command = $this->getApplication()->find('sys:setup:remove');
 
         $commandTester = new CommandTester($command);
@@ -91,10 +92,7 @@ class RemoveCommandTest extends TestCase
             'setup'     => 'weee_setup',
         ]);
 
-        self::assertStringContainsString(
-            'Successfully removed setup resource: "weee_setup" from module: "Mage_Weee"',
-            $commandTester->getDisplay(),
-        );
+        $this->assertStringContainsString('Successfully removed setup resource: "weee_setup" from module: "Mage_Weee"', $commandTester->getDisplay());
     }
 
     public function testRemoveBySetupNameFailure()
@@ -104,7 +102,7 @@ class RemoveCommandTest extends TestCase
             ->setMethods(['delete'])
             ->getMock();
 
-        $mockAdapter->expects(self::once())
+        $mockAdapter->expects($this->once())
             ->method('delete')
             ->willReturn(0);
 
@@ -112,11 +110,11 @@ class RemoveCommandTest extends TestCase
             ->getMock();
         ;
 
-        $coreResource->expects(self::once())
+        $coreResource->expects($this->once())
             ->method('getConnection')
             ->willReturn($mockAdapter);
 
-        $coreResource->expects(self::once())
+        $coreResource->expects($this->once())
             ->method('getTableName')
             ->with('core_resource')
             ->willReturn('core_resource');
@@ -125,27 +123,26 @@ class RemoveCommandTest extends TestCase
             ->setMethods(['getMageCoreResource'])
             ->getMock();
 
-        $command->expects(self::once())
+        $command->expects($this->once())
             ->method('getMageCoreResource')
             ->willReturn($coreResource);
 
         $application = $this->getApplication();
         $application->add($command);
+
         $command = $this->getApplication()->find('sys:setup:remove');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command'   => $command->getName(), 'module'    => 'Mage_Weee', 'setup'     => 'weee_setup']);
 
-        self::assertStringContainsString(
-            'No entry was found for setup resource: "weee_setup" in module: "Mage_Weee"',
-            $commandTester->getDisplay(),
-        );
+        $this->assertStringContainsString('No entry was found for setup resource: "weee_setup" in module: "Mage_Weee"', $commandTester->getDisplay());
     }
 
     public function testSetupNameNotFound()
     {
         $application = $this->getApplication();
         $application->add(new RemoveCommand());
+
         $command = $this->getApplication()->find('sys:setup:remove');
 
         $commandTester = new CommandTester($command);
@@ -161,6 +158,7 @@ class RemoveCommandTest extends TestCase
     {
         $application = $this->getApplication();
         $application->add(new RemoveCommand());
+
         $command = $this->getApplication()->find('sys:setup:remove');
 
         $commandTester = new CommandTester($command);
@@ -175,13 +173,14 @@ class RemoveCommandTest extends TestCase
             ->setMethods(['getModuleSetupResources'])
             ->getMock();
 
-        $command->expects(self::once())
+        $command->expects($this->once())
             ->method('getModuleSetupResources')
             ->with('Mage_Weee')
             ->willReturn([]);
 
         $application = $this->getApplication();
         $application->add($command);
+
         $command = $this->getApplication()->find('sys:setup:remove');
 
         $commandTester = new CommandTester($command);
@@ -191,9 +190,6 @@ class RemoveCommandTest extends TestCase
             'setup'     => 'weee_setup',
         ]);
 
-        self::assertStringContainsString(
-            'No setup resources found for module: "Mage_Weee"',
-            $commandTester->getDisplay(),
-        );
+        $this->assertStringContainsString('No setup resources found for module: "Mage_Weee"', $commandTester->getDisplay());
     }
 }

@@ -1,16 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\System;
 
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class MaintenanceCommandTest extends TestCase
+final class MaintenanceCommandTest extends TestCase
 {
     public function testExecute()
     {
         $application = $this->getApplication();
         $application->add(new MaintenanceCommand());
+
         $command = $application->find('sys:maintenance');
 
         $magentoRootFolder = $application->getMagentoRootFolder();
@@ -22,13 +25,13 @@ class MaintenanceCommandTest extends TestCase
         $commandTester->execute(
             ['command' => $command->getName(), '--on'    => ''],
         );
-        self::assertMatchesRegularExpression('/Maintenance mode on/', $commandTester->getDisplay());
-        self::assertFileExists($magentoRootFolder . '/maintenance.flag');
+        $this->assertMatchesRegularExpression('/Maintenance mode on/', $commandTester->getDisplay());
+        $this->assertFileExists($magentoRootFolder . '/maintenance.flag');
 
         $commandTester->execute(
             ['command' => $command->getName(), '--off'   => ''],
         );
-        self::assertMatchesRegularExpression('/Maintenance mode off/', $commandTester->getDisplay());
-        self::assertFileDoesNotExist($magentoRootFolder . '/maintenance.flag');
+        $this->assertMatchesRegularExpression('/Maintenance mode off/', $commandTester->getDisplay());
+        $this->assertFileDoesNotExist($magentoRootFolder . '/maintenance.flag');
     }
 }

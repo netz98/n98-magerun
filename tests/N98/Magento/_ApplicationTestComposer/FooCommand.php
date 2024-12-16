@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Acme;
 
 use N98\Magento\Command\AbstractMagentoCommand;

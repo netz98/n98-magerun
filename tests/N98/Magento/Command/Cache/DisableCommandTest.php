@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Cache;
 
 use N98\Magento\Application;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class DisableCommandTest extends TestCase
+final class DisableCommandTest extends TestCase
 {
     public function testExecute()
     {
@@ -17,7 +19,7 @@ class DisableCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command' => $command->getName()]);
 
-        self::assertMatchesRegularExpression('/Caches disabled/', $commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/Caches disabled/', $commandTester->getDisplay());
     }
 
     public function testExecuteMultipleCaches()
@@ -31,7 +33,7 @@ class DisableCommandTest extends TestCase
             ['command' => $command->getName(), 'code'    => 'eav,config'],
         );
 
-        self::assertMatchesRegularExpression('/Cache config disabled/', $commandTester->getDisplay());
-        self::assertMatchesRegularExpression('/Cache eav disabled/', $commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/Cache config disabled/', $commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/Cache eav disabled/', $commandTester->getDisplay());
     }
 }

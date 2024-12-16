@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Media;
 
 use N98\Magento\Command\TestCase;
@@ -11,6 +13,7 @@ class DumpCommand extends TestCase
     {
         $application = $this->getApplication();
         $application->add(new DumpCommand());
+
         $command = $this->getApplication()->find('media:dump');
 
         $commandTester = new CommandTester($command);

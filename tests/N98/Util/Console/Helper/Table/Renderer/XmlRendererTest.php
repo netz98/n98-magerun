@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * this file is part of magerun
  *
@@ -20,29 +22,26 @@ use Symfony\Component\Console\Output\StreamOutput;
  * @covers  N98\Util\Console\Helper\Table\Renderer\XmlRenderer
  * @package N98\Util\Console\Helper\Table\Renderer
  */
-class XmlRendererTest extends TestCase
+final class XmlRendererTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function creation()
+    public function testCreation()
     {
         $renderer = new XmlRenderer();
-        self::assertInstanceOf(__NAMESPACE__ . '\\XmlRenderer', $renderer);
+        $this->assertInstanceOf(__NAMESPACE__ . '\\XmlRenderer', $renderer);
 
         $rendererFactory = new RendererFactory();
 
         $renderer = $rendererFactory->create('xml');
-        self::assertInstanceOf(__NAMESPACE__ . '\\XmlRenderer', $renderer);
+        $this->assertInstanceOf(__NAMESPACE__ . '\\XmlRenderer', $renderer);
     }
 
     /**
-     * @return array
+     * @return \Iterator<(int | string), mixed>
      * @see tableRendering
      */
-    public function provideTables()
+    public function provideTables(): \Iterator
     {
-        return [[[['column' => 'Doors wide > open'], ['column' => "null \0 bytes FTW"]], '<?xml version="1.0" encoding="UTF-8"?>
+        yield [[['column' => 'Doors wide > open'], ['column' => "null \0 bytes FTW"]], '<?xml version="1.0" encoding="UTF-8"?>
 <table>
   <headers>
     <header>column</header>
@@ -53,10 +52,12 @@ class XmlRendererTest extends TestCase
   <row>
     <column encoding="base64">bnVsbCAAIGJ5dGVzIEZUVw==</column>
   </row>
-</table>'], [[], '<?xml version="1.0" encoding="UTF-8"?>
+</table>'];
+        yield [[], '<?xml version="1.0" encoding="UTF-8"?>
 <table>
   <!--intentionally left blank, the table is empty-->
-</table>'], [[['Column1' => 'Value A1', 'Column2' => 'A2 is another value that there is'], [1, "multi\nline\nftw"], ['C1 cell here!', new SimpleXMLElement('<r>PHP Magic->toString() test</r>')]], '<?xml version="1.0" encoding="UTF-8"?>
+</table>'];
+        yield [[['Column1' => 'Value A1', 'Column2' => 'A2 is another value that there is'], [1, "multi\nline\nftw"], ['C1 cell here!', new SimpleXMLElement('<r>PHP Magic->toString() test</r>')]], '<?xml version="1.0" encoding="UTF-8"?>
 <table>
   <headers>
     <header>Column1</header>
@@ -76,7 +77,8 @@ ftw</Column2>
     <Column1>C1 cell here!</Column1>
     <Column2>PHP Magic-&gt;toString() test</Column2>
   </row>
-</table>'], [[["\x00" => 'foo']], '<?xml version="1.0" encoding="UTF-8"?>
+</table>'];
+        yield [[["\x00" => 'foo']], '<?xml version="1.0" encoding="UTF-8"?>
 <table>
   <headers>
     <header></header>
@@ -84,7 +86,8 @@ ftw</Column2>
   <row>
     <_>foo</_>
   </row>
-</table>'], [[['foo' => 'bar'], ['baz', 'buz' => 'here']], '<?xml version="1.0" encoding="UTF-8"?>
+</table>'];
+        yield [[['foo' => 'bar'], ['baz', 'buz' => 'here']], '<?xml version="1.0" encoding="UTF-8"?>
 <table>
   <headers>
     <header>foo</header>
@@ -96,13 +99,10 @@ ftw</Column2>
     <foo>baz</foo>
     <buz>here</buz>
   </row>
-</table>']];
+</table>'];
     }
 
-    /**
-     * @test
-     */
-    public function invalidName()
+    public function testInvalidName()
     {
         $this->expectException(DOMException::class);
         $this->expectExceptionMessage("Invalid name '0'");
@@ -111,10 +111,7 @@ ftw</Column2>
         $xmlRenderer->render($nullOutput, [['foo']]);
     }
 
-    /**
-     * @test
-     */
-    public function invalidEncoding()
+    public function testInvalidEncoding()
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage("Encoding error, only US-ASCII and UTF-8 supported, can not process '");
@@ -124,16 +121,15 @@ ftw</Column2>
     }
 
     /**
-     * @test
      * @dataProvider provideTables
      */
-    public function tableRendering($rows, $expected)
+    public function testTableRendering($rows, $expected)
     {
         $xmlRenderer = new XmlRenderer();
         $streamOutput = new StreamOutput(fopen('php://memory', 'wb', false));
 
         $xmlRenderer->render($streamOutput, $rows);
 
-        self::assertEquals($expected . "\n", $this->getOutputBuffer($streamOutput));
+        $this->assertSame($expected . "\n", $this->getOutputBuffer($streamOutput));
     }
 }

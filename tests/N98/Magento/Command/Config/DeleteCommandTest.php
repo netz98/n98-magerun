@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command\Config;
 
 use Mage;
 use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class DeleteCommandTest extends TestCase
+final class DeleteCommandTest extends TestCase
 {
     public function testExecute()
     {
         $application = $this->getApplication();
         $application->add(new DumpCommand());
+
         $setCommand = $this->getApplication()->find('config:set');
         $deleteCommand = $this->getApplication()->find('config:delete');
 
@@ -22,13 +25,13 @@ class DeleteCommandTest extends TestCase
         $commandTester->execute(
             ['command' => $setCommand->getName(), 'path'    => 'n98_magerun/foo/bar', 'value'   => '1234'],
         );
-        self::assertStringContainsString('n98_magerun/foo/bar => 1234', $commandTester->getDisplay());
+        $this->assertStringContainsString('n98_magerun/foo/bar => 1234', $commandTester->getDisplay());
 
         $commandTester = new CommandTester($deleteCommand);
         $commandTester->execute(
             ['command' => $deleteCommand->getName(), 'path'    => 'n98_magerun/foo/bar'],
         );
-        self::assertStringContainsString('| n98_magerun/foo/bar | default | 0        |', $commandTester->getDisplay());
+        $this->assertStringContainsString('| n98_magerun/foo/bar | default | 0        |', $commandTester->getDisplay());
 
         /**
          * Delete all
@@ -53,7 +56,7 @@ class DeleteCommandTest extends TestCase
         );
 
         foreach (Mage::app()->getStores() as $store) {
-            self::assertStringContainsString('| n98_magerun/foo/bar | stores   | ' . $store->getId() . '        |', $commandTester->getDisplay());
+            $this->assertStringContainsString('| n98_magerun/foo/bar | stores   | ' . $store->getId() . '        |', $commandTester->getDisplay());
         }
     }
 }
