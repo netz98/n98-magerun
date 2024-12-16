@@ -1,8 +1,8 @@
----
 name: PHP Compatibility
+
 on:
-  - push
-  - pull_request
+  workflow_call:
+  workflow_dispatch:
 
 env:
   MIN_PHP_VERSION: 7.4

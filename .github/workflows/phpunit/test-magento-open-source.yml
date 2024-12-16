@@ -1,6 +1,8 @@
 name: Test Magento Open Source 1.9 with PHP 7.4
 
-on: [push, pull_request]
+on:
+  workflow_call:
+  workflow_dispatch:
 
 jobs:
   test-magento-open-source-1-9:
@@ -20,7 +22,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Linux Setup
-        run: ./.github/workflows/linux-setup.sh
+        run: ./.github/workflows/scripts/linux-setup.sh
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2

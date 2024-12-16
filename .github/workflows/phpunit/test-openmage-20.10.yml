@@ -1,16 +1,18 @@
-name: Test OpenMage 20.0.x
+name: Test OpenMage 20.10.x
 
-on: [push, pull_request]
+on:
+  workflow_call:
+  workflow_dispatch:
 
 jobs:
-  test-openmage-20-0-marix:
+  test-openmage-20-9-matrix:
     name: OpenMage ${{ matrix.openmage_version }} / PHP ${{ matrix.php_version }} / MySQL ${{ matrix.mysql_version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        openmage_version: ["20.0.20"]
-        php_version: ["8.1", "7.4"]
+        openmage_version: ["20.10.0"]
+        php_version: ["8.3", "8.2", "8.1", "7.4"]
         mysql_version: ["8.0", "5.7"]
 
     services:
@@ -27,7 +29,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Linux Setup
-        run: ./.github/workflows/linux-setup.sh
+        run: ./.github/workflows/scripts/linux-setup.sh
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -87,5 +89,6 @@ jobs:
       - name: Run functional tests
         run: bats tests/bats/functional.bats
         env:
+          COMPOSER_VENDOR_PATH : "${{ github.workspace }}/magento/vendor"
           N98_MAGERUN_BIN: "${{ github.workspace }}/bin/n98-magerun"
           N98_MAGERUN_TEST_MAGENTO_ROOT: "${{ github.workspace }}/magento"

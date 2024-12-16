@@ -1,7 +1,8 @@
----
 name: Phar build and update test
 
-on: [push, pull_request]
+on:
+  workflow_call:
+  workflow_dispatch:
 
 jobs:
   build:
