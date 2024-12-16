@@ -31,22 +31,22 @@ jobs:
   unit_tests_magento_opensource:
     name: PHPUnit
     needs: [composer, php-cs-fixer, phpstan, rector]
-    uses: ./.github/workflows/phpunit/test-magento-open-source.yml
+    uses: ./.github/workflows/test-magento-open-source.yml
 
   unit_tests_openmage_20_0:
     name: PHPUnit
     needs: [composer, php-cs-fixer, phpstan, rector]
-    uses: ./.github/workflows/phpunit/test-openmage-20.0.yml
+    uses: ./.github/workflows/test-openmage-20.0.yml
 
   unit_tests_openmage_20_1:
     name: PHPUnit
     needs: [composer, php-cs-fixer, phpstan, rector]
-    uses: ./.github/workflows/phpunit/test-openmage-20.1.yml
+    uses: ./.github/workflows/test-openmage-20.1.yml
 
   unit_tests_openmage_20_10:
     name: PHPUnit
     needs: [composer, php-cs-fixer, phpstan, rector]
-    uses: ./.github/workflows/phpunit/test-openmage-20.10.yml
+    uses: ./.github/workflows/test-openmage-20.10.yml
 
   build_phar:
     name: PHPUnit
