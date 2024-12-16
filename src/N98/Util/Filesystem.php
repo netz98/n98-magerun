@@ -126,6 +126,6 @@ class Filesystem
         $units = ['B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
         $factor = floor((strlen((string) $bytes) - 1) / 3);
 
-        return sprintf("%.{$decimals}f%s", $bytes / 1024 ** $factor, $units[$factor]);
+        return sprintf('%.' . $decimals . 'f%s', $bytes / 1024 ** $factor, $units[$factor]);
     }
 }

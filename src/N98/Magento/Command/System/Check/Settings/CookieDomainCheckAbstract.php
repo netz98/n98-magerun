@@ -27,7 +27,7 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
     protected function checkSettings(Result $result, ?Mage_Core_Model_Store $mageCoreModelStore, string $baseUrl, ?string $cookieDomain): void
     {
         $errorMessage   = 'cookie-domain and ' . $this->class . ' base-URL do not match';
-        $websiteCode    = $mageCoreModelStore ? $mageCoreModelStore->getCode() : '';
+        $websiteCode    = $mageCoreModelStore instanceof Mage_Core_Model_Store ? $mageCoreModelStore->getCode() : '';
 
         if ($cookieDomain && strlen($cookieDomain) !== 0) {
             $isValid = $this->validateCookieDomainAgainstUrl($cookieDomain, $baseUrl);

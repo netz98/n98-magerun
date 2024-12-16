@@ -2,12 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * this file is part of magerun
- *
- * @author Tom Klingenberg <https://github.com/ktomk>
- */
-
 namespace N98\Magento;
 
 use N98\Util\AutoloadRestorer;
@@ -20,7 +14,7 @@ use RuntimeException;
  *
  * @author Tom Klingenberg (https://github.com/ktomk)
  */
-class Initialiser
+class Initializer
 {
     /**
      * Mage filename
@@ -50,8 +44,8 @@ class Initialiser
      */
     public static function bootstrap(string $magentoPath): void
     {
-        $initialiser = new Initialiser($magentoPath);
-        $initialiser->requireMage();
+        $initializer = new Initializer($magentoPath);
+        $initializer->requireMage();
     }
 
     /**
@@ -67,7 +61,7 @@ class Initialiser
 
         $this->requireOnce();
 
-        # @phpstan-ignore booleanNot.alwaysTrue
+        // @phpstan-ignore booleanNot.alwaysTrue
         if (!class_exists(self::CLASS_MAGE, false)) {
             throw new RuntimeException(sprintf('Failed to load definition of "%s" class', self::CLASS_MAGE));
         }

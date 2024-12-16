@@ -40,7 +40,7 @@ class Gzip extends AbstractCompressor
 
     public function getFileName(string $fileName, bool $pipe = true): string
     {
-        if ((string) $fileName === '') {
+        if ($fileName === '') {
             return $fileName;
         }
 

@@ -31,7 +31,7 @@ abstract class BaseUrlCheckAbstract extends CheckAbstract
         $host    = parse_url($baseUrl, PHP_URL_HOST);
         $isValid = (bool) strstr($host, '.');
 
-        $storeCode = $mageCoreModelStore ? $mageCoreModelStore->getCode() : 'n/a';
+        $storeCode = $mageCoreModelStore instanceof Mage_Core_Model_Store ? $mageCoreModelStore->getCode() : 'n/a';
 
         $result->setStatus($isValid);
         if ($isValid) {

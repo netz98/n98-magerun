@@ -621,7 +621,7 @@ class Application extends BaseApplication
     protected function _initMagento1(bool $soft = false): void
     {
         // Load Mage class definition
-        Initialiser::bootstrap($this->_magentoRootFolder);
+        Initializer::bootstrap($this->_magentoRootFolder);
 
         // skip Mage::app init routine and return
         if ($soft) {
