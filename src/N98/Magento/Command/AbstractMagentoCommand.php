@@ -442,7 +442,7 @@ abstract class AbstractMagentoCommand extends Command
         return in_array($type, ['git', 'hg']);
     }
 
-    protected function getOrAskForArgument(string $argument, InputInterface $input, OutputInterface $output, ?string $message = null): string
+    protected function getOrAskForArgument(string $argument, InputInterface $input, OutputInterface $output, ?string $message = null): ?string
     {
         $inputArgument = $input->getArgument($argument);
         if ($inputArgument === null) {

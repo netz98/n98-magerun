@@ -22,16 +22,16 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DatabaseHelper extends AbstractHelper
 {
-    protected ?DbSettings $dbSettings;
+    protected ?DbSettings $dbSettings = null;
 
     /**
      * @deprecated since 1.97.9, use $dbSettings->isSocketConnect()
      */
     protected bool $isSocketConnect = false;
 
-    protected ?PDO $_connection;
+    protected ?PDO $_connection = null;
 
-    protected ?array $_tables;
+    protected ?array $_tables = null;
 
     public function detectDbSettings(OutputInterface $output, ?string $connectionNode = null): void
     {

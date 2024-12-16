@@ -43,13 +43,14 @@ class AbstractSetupCommand extends AbstractMagentoCommand
     {
         $config = Mage::app()->getConfig();
 
-        /** @var Mage_Core_Model_Config_Element $modules */
         $modules = $config->getNode('modules');
-        foreach ($modules->asArray() as $moduleName => $data) {
-            if (strtolower($moduleName) === strtolower($input->getArgument('module'))) {
-                return $moduleName;
+        if ($modules) {
+            foreach ($modules->asArray() as $moduleName => $data) {
+                if (strtolower($moduleName) === strtolower($input->getArgument('module'))) {
+                    return $moduleName;
+                }
             }
-        }
+       }
 
         throw new InvalidArgumentException(sprintf('No module found with name: "%s"', $input->getArgument('module')));
     }

@@ -38,7 +38,7 @@ abstract class AbstractCommand extends AbstractMagentoCommand
     /**
      * Array of magento modules found in config
      */
-    protected ?array $modules;
+    protected ?array $modules = null;
 
     protected function configure(): void
     {

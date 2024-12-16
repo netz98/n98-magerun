@@ -67,7 +67,9 @@ class Initialiser
 
         $this->requireOnce();
 
-        throw new RuntimeException(sprintf('Failed to load definition of "%s" class', self::CLASS_MAGE));
+        if (!class_exists(self::CLASS_MAGE, false)) {
+            throw new RuntimeException(sprintf('Failed to load definition of "%s" class', self::CLASS_MAGE));
+        }
     }
 
     /**

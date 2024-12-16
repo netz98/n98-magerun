@@ -24,7 +24,7 @@ abstract class AbstractDatabaseCommand extends AbstractMagentoCommand
 
     protected function detectDbSettings(OutputInterface $output, ?string $connectionNode = null): void
     {
-        $databaseHelper           = $this->getDatabaseHelper();
+        $databaseHelper     = $this->getDatabaseHelper();
         $this->dbSettings   = $databaseHelper->getDbSettings($output);
     }
 

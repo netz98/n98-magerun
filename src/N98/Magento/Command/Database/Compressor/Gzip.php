@@ -11,14 +11,7 @@ namespace N98\Magento\Command\Database\Compressor;
  */
 class Gzip extends AbstractCompressor
 {
-    /**
-     * Returns the command line for compressing the dump file.
-     *
-     * @param string $command
-     * @param bool $pipe
-     * @return string
-     */
-    public function getCompressingCommand($command, $pipe = true)
+    public function getCompressingCommand(string $command, bool $pipe = true): string
     {
         if ($pipe) {
             return $command . ' | gzip -c ';
@@ -27,15 +20,7 @@ class Gzip extends AbstractCompressor
         return  'tar -czf ' . $command;
     }
 
-    /**
-     * Returns the command line for decompressing the dump file.
-     *
-     * @param string $command
-     * @param string $fileName Filename (shell argument escaped)
-     * @param bool $pipe
-     * @return string
-     */
-    public function getDecompressingCommand($command, $fileName, $pipe = true)
+    public function getDecompressingCommand(string $command, string $fileName, bool $pipe = true): string
     {
         if ($pipe) {
             if ($this->hasPipeViewer()) {
@@ -53,14 +38,7 @@ class Gzip extends AbstractCompressor
             . escapeshellarg(substr($fileName, 0, -4));
     }
 
-    /**
-     * Returns the file name for the compressed dump file.
-     *
-     * @param string $fileName
-     * @param bool $pipe
-     * @return string
-     */
-    public function getFileName($fileName, $pipe = true)
+    public function getFileName(string $fileName, bool $pipe = true): string
     {
         if ((string) $fileName === '') {
             return $fileName;

@@ -21,9 +21,9 @@ class RendererFactory
         'xml'  => XmlRenderer::class,
     ];
 
-    public function create(string $format): ?RendererInterface
+    public function create(?string $format): ?RendererInterface
     {
-        $format = strtolower($format);
+        $format = is_null($format) ? $format : strtolower($format);
         if (isset(self::$formats[$format])) {
             $rendererClass = self::$formats[$format];
             /** @var RendererInterface $renderer */

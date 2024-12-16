@@ -83,12 +83,12 @@ HELP;
             $input->setOption('add-cmspages', true);
         }
 
-        $stores = explode(',', $input->getArgument('stores') ?? '');
+        $stores = explode(',', (string) $input->getArgument('stores') ?? '');
 
         $urls = [];
 
+        /** @var Mage_Core_Model_Store $currentStore */
         foreach ($stores as $store) {
-            /** @var Mage_Core_Model_Store $currentStore */
             $currentStore = Mage::app()->getStore($store);
 
             // base url

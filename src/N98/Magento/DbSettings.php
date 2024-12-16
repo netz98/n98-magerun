@@ -103,11 +103,18 @@ class DbSettings implements ArrayAccess, IteratorAggregate
     private function parseResources(SimpleXMLElement $resources): void
     {
         // default values
-        $config = ['host'        => null, 'port'        => null, 'unix_socket' => null, 'dbname'      => null, 'username'    => null, 'password'    => null];
+        $config = [
+            'host'        => null,
+            'port'        => null,
+            'unix_socket' => null,
+            'dbname'      => null,
+            'username'    => null,
+            'password'    => null,
+        ];
 
         $connectionNode = $this->connectionNode;
         /** @var string[] $config */
-        $config = array_merge($config, (array) $resources->$connectionNode->connection);
+        $config = array_merge($config, array_map('strval', (array) $resources->$connectionNode->connection));
         $config['prefix'] = (string) $resources->db->table_prefix;
 
         // known parameters: host, port, unix_socket, dbname, username, password, options, charset, persistent,

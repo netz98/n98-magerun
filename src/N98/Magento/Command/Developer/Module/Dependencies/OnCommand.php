@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class OnCommand extends AbstractMagentoCommand
 {
-    private ?array $modules;
+    private ?array $modules = null;
 
     protected function configure(): void
     {

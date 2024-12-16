@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class ParameterHelper extends AbstractHelper
 {
-    private ?ValidatorInterface $validator;
+    private ?ValidatorInterface $validator = null;
 
     /**
      * Returns the canonical name of this helper.

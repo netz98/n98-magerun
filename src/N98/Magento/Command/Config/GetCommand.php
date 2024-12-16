@@ -124,7 +124,7 @@ HELP;
         return Command::SUCCESS;
     }
 
-    protected function renderAsTable(OutputInterface $output, array $table, string $format): void
+    protected function renderAsTable(OutputInterface $output, array $table, ?string $format): void
     {
         $formattedTable = [];
         foreach ($table as $row) {
@@ -146,7 +146,7 @@ HELP;
     /**
      * @param mixed $value
      */
-    private function renderTableValue($value, ?string $format): string
+    private function renderTableValue($value, ?string $format): ?string
     {
         if ($value === null) {
             switch ($format) {
