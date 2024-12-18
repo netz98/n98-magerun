@@ -76,7 +76,7 @@ class Application extends BaseApplication
      */
     private ?ConfigurationLoader $configurationLoader = null;
 
-    protected string $_magentoRootFolder = '';
+    protected ?string $_magentoRootFolder = null;
 
     protected bool $_magentoEnterprise = false;
 
@@ -86,7 +86,7 @@ class Application extends BaseApplication
 
     protected bool $_magerunStopFileFound = false;
 
-    protected string $_magerunStopFileFolder = '';
+    protected ?string $_magerunStopFileFolder = null;
 
     protected bool $_magerunUseDeveloperMode;
 
