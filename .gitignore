@@ -6,6 +6,8 @@
 /n98-magerun.phar.asc
 /build/output/
 /build/vendor/
+/*.phar
+composer-setup.php
 
 # Magerun stopfile
 /.n98-magerun

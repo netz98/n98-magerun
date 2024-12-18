@@ -1,0 +1,23 @@
+{
+    "compression": "GZ",
+    "algorithm": "SHA512",
+    "datetime": "release-date",
+    "files": [
+        "config.yaml",
+        "src/bootstrap.php",
+        "vendor/composer/installed.php"
+    ],
+    "force-autodiscovery": true,
+    "directories": [
+        "src",
+        "res",
+        "vendor/rmccue/requests/certificates",
+        "vendor/twig/twig/src"
+    ],
+    "replacements": {
+        "application_name": "n98-magerun"
+    },
+    "git-commit-short": "git_commit_short",
+    "stub": "build/phar/_cli_stub.php",
+    "output": "n98-magerun.phar"
+}
