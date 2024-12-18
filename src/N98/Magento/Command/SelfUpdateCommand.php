@@ -191,7 +191,7 @@ HELP;
             $filesize = $info['size_download'];
         });
 
-        $progressBar->setMaxSteps($filesize);
+        $progressBar->setMaxSteps((int) $filesize);
 
         $hooks->register(
             'request.progress',
