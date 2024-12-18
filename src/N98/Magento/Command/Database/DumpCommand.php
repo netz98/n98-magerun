@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Database;
 
+use Carbon\Carbon;
 use InvalidArgumentException;
 use N98\Magento\Command\Database\Compressor\Compressor;
 use N98\Util\Console\Enabler;
@@ -487,15 +488,9 @@ HELP;
                 $fileName = $defaultName;
             }
         } elseif ($optionAddTime) {
-            $pathParts          = pathinfo($fileName);
-            $pathPartsDirname   = $pathParts['dirname'] ?? '';
-            $pathPartsFilename  = $pathParts['filename'] ?? '';
-            $fileName = ($pathPartsDirname == '.' ? '' : $pathPartsDirname . '/')
-                . $namePrefix
-                . $pathPartsFilename
-                . $nameSuffix
-                . '.'
-                . $pathPartsFilename;
+            $pathParts = pathinfo($fileName);
+            $fileName = ($pathParts['dirname'] == '.' ? '' : $pathParts['dirname'] . '/') .
+                $namePrefix . $pathParts['filename'] . $nameSuffix . '.' . $pathParts['extension'];
         }
 
         return $compressor->getFileName((string) $fileName);
@@ -512,7 +507,7 @@ HELP;
             return [$namePrefix, $nameSuffix];
         }
 
-        $timeStamp = \Carbon\Carbon::now()->format('Y-m-d_His');
+        $timeStamp = Carbon::now()->format('Y-m-d_His');
 
         if (in_array($optionAddTime, ['suffix', true], true)) {
             $nameSuffix = '_' . $timeStamp;
