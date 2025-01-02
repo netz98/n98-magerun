@@ -84,8 +84,8 @@ HELP;
                 try {
                     $attribute->setData('option', ['value' => ['option' => [$value, $value]]]);
                     $attribute->save();
-                } catch (Exception $e) {
-                    $output->writeln('<error>' . $e->getMessage() . '</error>');
+                } catch (Exception $exception) {
+                    $output->writeln('<error>' . $exception->getMessage() . '</error>');
                 }
 
                 $output->writeln("<comment>ATTRIBUTE VALUE: '" . $value . "' ADDED!</comment>\r");

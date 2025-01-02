@@ -73,8 +73,8 @@ HELP;
             $output->writeln('<info>Remove directory </info><comment>' . $this->_magentoRootFolder . '</comment>');
             try {
                 $fileSystem->recursiveRemoveDirectory($this->_magentoRootFolder);
-            } catch (Exception $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
+            } catch (Exception $exception) {
+                $output->writeln('<error>' . $exception->getMessage() . '</error>');
             }
 
             $output->writeln('<info>Done</info>');

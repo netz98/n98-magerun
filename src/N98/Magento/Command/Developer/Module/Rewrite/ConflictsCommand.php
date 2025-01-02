@@ -148,7 +148,7 @@ HELP;
                 ) {
                     return true;
                 }
-            } catch (Exception $e) {
+            } catch (Exception $exception) {
                 return true;
             }
 

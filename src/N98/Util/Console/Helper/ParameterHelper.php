@@ -132,7 +132,7 @@ class ParameterHelper extends AbstractHelper
                 /* @var Mage_Core_Model_Website $website */
                 $website = $storeManager->getWebsite($argumentValue);
                 return $website;
-            } catch (Exception $e) {
+            } catch (Exception $exception) {
                 // catch all exceptions
             }
         }

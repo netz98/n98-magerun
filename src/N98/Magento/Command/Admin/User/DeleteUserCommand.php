@@ -64,8 +64,8 @@ class DeleteUserCommand extends AbstractAdminUserCommand
             try {
                 $user->delete();
                 $output->writeln('<info>User was successfully deleted</info>');
-            } catch (Exception $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
+            } catch (Exception $exception) {
+                $output->writeln('<error>' . $exception->getMessage() . '</error>');
             }
         } else {
             $output->writeln('<error>Aborting delete</error>');

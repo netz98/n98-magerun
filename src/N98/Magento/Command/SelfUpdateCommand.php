@@ -136,13 +136,13 @@ HELP;
                 $output->writeln('<info>---------------------------------</info>');
 
                 $this->_exit(0);
-            } catch (Exception $e) {
+            } catch (Exception $exception) {
                 @unlink($tempFilename);
-                if (!$e instanceof UnexpectedValueException && !$e instanceof PharException) {
-                    throw $e;
+                if (!$exception instanceof UnexpectedValueException && !$exception instanceof PharException) {
+                    throw $exception;
                 }
 
-                $output->writeln('<error>The download is corrupted (' . $e->getMessage() . ').</error>');
+                $output->writeln('<error>The download is corrupted (' . $exception->getMessage() . ').</error>');
                 $output->writeln('<error>Please re-run the self-update command to try again.</error>');
             }
         } else {

@@ -80,8 +80,8 @@ class ChangeStatusCommand extends AbstractAdminUserCommand
                         ' is now <comment>inactive</comment></info>',
                     );
                 }
-            } catch (Exception $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
+            } catch (Exception $exception) {
+                $output->writeln('<error>' . $exception->getMessage() . '</error>');
             }
         }
 

@@ -73,8 +73,8 @@ class InfoCommand extends AbstractMagentoCommand
                 $this->customerCount();
                 $this->categoryCount();
                 $this->productCount();
-            } catch (Exception $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
+            } catch (Exception $exception) {
+                $output->writeln('<error>' . $exception->getMessage() . '</error>');
             }
         }
 

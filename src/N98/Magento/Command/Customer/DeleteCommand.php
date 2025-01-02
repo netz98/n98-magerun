@@ -119,7 +119,7 @@ HELP;
 
             try {
                 $customer = $this->getCustomer($id);
-            } catch (Exception $e) {
+            } catch (Exception $exception) {
                 $this->output->writeln('<error>No customer found!</error>');
                 return (int) false;
             }

@@ -66,7 +66,7 @@ class InfoCommand extends AbstractCustomerCommand
                 }
 
                 $table[] = [$key, $value];
-            } catch (Exception $e) {
+            } catch (Exception $exception) {
                 $table[] = [$key, $value];
             }
         }
