@@ -38,7 +38,7 @@
         "friendsofphp/php-cs-fixer": "^3.4",
         "mikey179/vfsstream": "^1.6",
         "phpunit/phpunit": "^9",
-        "rector/rector": "^1.0.0",
+        "rector/rector": "^2.0.6",
         "seld/phar-utils": "~1.2.0"
     },
     "autoload": {
