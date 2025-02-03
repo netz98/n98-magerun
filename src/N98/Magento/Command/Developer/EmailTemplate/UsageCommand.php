@@ -96,17 +96,17 @@ class UsageCommand extends AbstractMagentoCommand implements CommandFormatable
                 $configPaths[] = [
                     'scope'    => 'Unused',
                     'scope_id' => 'Unused',
-                    'path'     => 'Unused'
+                    'path'     => 'Unused',
                 ];
             }
 
             foreach ($configPaths as $configPath) {
                 $return[] = [
-                    'id'            => $this->sanitizeEmailProperty($template->getId()),
+                    'id'            => $this->sanitizeEmailProperty((string)$template->getId()),
                     'Template Code' => $this->sanitizeEmailProperty($template->getTemplateCode()),
                     'Scope'         => $this->sanitizeEmailProperty($configPath['scope']),
                     'Scope Id'      => $this->sanitizeEmailProperty($configPath['scope_id']),
-                    'Path'          => $this->sanitizeEmailProperty($configPath['path'])
+                    'Path'          => $this->sanitizeEmailProperty($configPath['path']),
                 ];
             }
         }

@@ -2,126 +2,121 @@
 #
 # build from clean checkout
 #
-# usage: ./build.sh [--changes]
-#
-# options: --changes    build with local changes
-#
-# note:    run from project root
-#
+# usage: ./build.sh from project root
 set -euo pipefail
+
 IFS=$'\n\t'
+PHP_BIN="php"
+BOX_BIN="./box.phar"
+PHAR_OUTPUT_FILE="./n98-magerun.phar"
+COMPOSER_BIN="composer"
 
-remove_assume_unchanged() {
-  local git_dir="${1}"
-  local path="${2}"
-  (
-    cd "${git_dir}"
-    rm -f "${path}"
-    git update-index --assume-unchanged -- "${path}"
-  )
-}
-
-exit_trap() {
-  local status=$?
-  if [[ -d "${base_dir:?}/${build_dir}" ]]; then
-    echo "trap: removing '${build_dir}'.."
-    rm -rf "${base_dir:?}/${build_dir}"
+function system_setup() {
+  if [ "$(uname -s)" != "Darwin" ]; then
+    ulimit -Sn $(ulimit -Hn)
   fi
-  echo "exit ($status)."
 }
 
-name="$(awk '/<project name="([^"]*)"/ && !done {print gensub(/<project name="([^"]*)".*/, "\\1", "g"); done=1}' build.xml)"
-nice_name="$(php -r "echo str_replace(' ', '', ucwords(strtr('${name}', '-', ' ')));")"
-phar="${name}.phar"
-echo "Building ${phar}..."
+function check_dependencies() {
+  DEPENDENCY_ERROR=false
 
-# remove stub which is also the build result destination, so if build fails the file does not exists
-remove_assume_unchanged "." "${phar}"
+  if command -v curl &>/dev/null; then
+    echo "curl found"
+  else
+    echo "curl not found!"
+    DEPENDENCY_ERROR=true
+  fi
 
-base_dir="$(pwd -P)"
-build_dir="build/output"
+  if command -v git &>/dev/null; then
+    echo "git found"
+  else
+    echo "git not found!"
+    DEPENDENCY_ERROR=true
+  fi
 
-echo "$0 executed in ${base_dir}"
+  if command -v $PHP_BIN &>/dev/null; then
+    echo "php found"
+  else
+    echo "php not found!"
+    DEPENDENCY_ERROR=true
+  fi
 
-#trap exit_trap EXIT
+  if [ $DEPENDENCY_ERROR = true ]; then
+    echo "Some dependecies are not found. Cannot build."
+    exit 1
+  fi
 
-rm -rf "${build_dir}"
-if [[ -d "${build_dir}" ]]; then
-  >&2 echo "Error: Can not remove build-dir '${build_dir}'"
-  echo "aborting."
-  exit 1
-fi
-mkdir "${build_dir}"
-if [[ ! -d "${build_dir}" ]]; then
-  >&2 echo "Error: Can not create build-dir '${build_dir}'"
-  echo "aborting."
-  exit 1
-fi
+}
 
-git clone --quiet --no-local --depth 1 -- . "${build_dir}"
+function download_box() {
+  if [ ! -f box.phar ]; then
+    curl -L https://github.com/box-project/box/releases/download/3.16.0/box.phar -o $BOX_BIN
+    chmod +x ./box.phar
+  fi
+}
 
-# --changes : incorporate changes into the build, w/o builds latest revision
-if [[ "${1-}" == "--changes" ]]; then
-  echo "apply changes and copy untracked files..."
-  git diff HEAD | (cd "${build_dir}" && git apply)
-  # copy over files that are not tracked
-  git status --porcelain | awk 'match($1, "\\?\\?"){print "cp " $2 " '"${build_dir}"'/" $2}' | sh
-  (cd "${build_dir}" && git status --short)
-fi
+function download_composer() {
+  if command -v composer &>/dev/null; then
+    true; # do nothing
+  else
+    echo "Composer was not found. Try to install it ..."
+    # install composer
+    $PHP_BIN -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    $PHP_BIN composer-setup.php --install-dir=/usr/local/bin --filename=composer
+    if [ -f "./composer-setup.php" ]; then
+      rm "./composer-setup.php";
+    fi
+  fi
+}
 
-# remove fake-phar directly after clone
-remove_assume_unchanged "${build_dir}" "n98-magerun.phar"
+function find_commit_timestamp() {
+  LAST_COMMIT_TIMESTAMP="$(git log --format=format:%ct HEAD -1)" # reproducible build
+}
 
-composer_bin="composer"
-phing_bin="${base_dir}/vendor/bin/phing"
+function create_new_phar() {
+  # set composer suffix, otherwise Composer will generate a file with a unique identifier
+  # which will then create a no reproducable phar file with a differenz MD5
+  $COMPOSER_BIN config autoloader-suffix N98MagerunNTS
 
-# Set COMPOSER_HOME if HOME and COMPOSER_HOME not set (shell with no home-dir, e.g. build server with webhook)
-if [[ -z ${HOME+x} && -z ${COMPOSER_HOME+x} ]]; then
-  echo "provision: create COMPOSER_HOME directory for composer (no HOME)"
-  mkdir -p "build/composer-home"
-  export COMPOSER_HOME
-  COMPOSER_HOME="$(pwd -P)/build/composer-home"
-fi
+  # Run install again to get the latest install.php and install.json file
+  $COMPOSER_BIN install
 
-echo "with: $(php --version|head -n 1)"
-echo "with: $("${composer_bin}" --version)"
-echo "with: $("${phing_bin}" -version)"
+  $PHP_BIN $BOX_BIN compile
 
-cd "${build_dir}"
+  # unset composer suffix
+  $COMPOSER_BIN config autoloader-suffix --unset
 
-echo "building in $(pwd -P)"
-echo "build version: $(git --no-pager log --oneline -1)"
+  # Set timestamp of newly generted phar file to the commit timestamp
+  $PHP_BIN -f build/phar/phar-timestamp.php -- $LAST_COMMIT_TIMESTAMP
 
-echo "provision: ulimits (soft) set from $(ulimit -Sn) to $(ulimit -Hn) (hard) for faster phar builds..."
-ulimit -Sn "$(ulimit -Hn)"
-timestamp="$(git log --format=format:%ct HEAD -1)" # reproduceable build
-echo "build timestamp: ${timestamp}"
+  # Run a signature verification after the timestamp manipulation
+  $PHP_BIN $BOX_BIN verify $PHAR_OUTPUT_FILE
 
-if command -v composer &>/dev/null; then
-  true; # do nothing
-else
-  echo "Composer was not found. Try to install it ..."
-  # install composer
-  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-  php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-fi
+  # make phar executable
+  chmod +x $PHAR_OUTPUT_FILE
 
-php -f "${phing_bin}" -dphar.readonly=0 -- \
-  -Dcomposer_suffix="${nice_name}${timestamp}" \
-  -Dcomposer_bin="${composer_bin}" \
-  dist_clean
+  # Print version of new phar file which is also a test
+  $PHP_BIN -f $PHAR_OUTPUT_FILE -- --version
 
-LAST_COMMIT_TIMESTAMP="$(git log --format=format:%ct HEAD -1)"
+  # List new phar file for debugging
+  ls -al "$PHAR_OUTPUT_FILE"
+}
 
-php -f "${phar}" -- --version
-ls -al "${phar}"
+function print_info_before_build() {
+  echo "with: $($PHP_BIN --version | head -n 1)"
+  echo "with: $("${COMPOSER_BIN}" --version)"
+  echo "with: $("${BOX_BIN}" --version)"
+  echo "build version: $(git --no-pager log --oneline -1)"
+  echo "last commit timestamp: ${LAST_COMMIT_TIMESTAMP}"
+  echo "provision: ulimits (soft) set from $(ulimit -Sn) to $(ulimit -Hn) (hard) for faster phar builds..."
+}
 
-cd -
-cp -vp "${build_dir}"/"${phar}" "${phar}"
-rm -rf "${build_dir}"
-
-php -f build/phar/phar-timestamp.php -- $LAST_COMMIT_TIMESTAMP
-
-trap - EXIT
+check_dependencies
+system_setup
+download_box
+download_composer
+find_commit_timestamp
+print_info_before_build
+create_new_phar
 
 echo "done."

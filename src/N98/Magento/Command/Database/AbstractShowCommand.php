@@ -2,7 +2,6 @@
 
 namespace N98\Magento\Command\Database;
 
-use Description;
 use N98\Util\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -92,7 +91,7 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
             false === $this->_input->getOption('no-description');
         $header = ['Variable Name', 'Value'];
         if (true === $hasDescription) {
-            $header[] = Description::class;
+            $header[] = 'Description';
         }
 
         $this->renderTable($header, $this->generateRows($outputVars, $hasDescription));

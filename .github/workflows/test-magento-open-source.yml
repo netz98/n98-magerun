@@ -73,7 +73,7 @@ jobs:
           COMPOSER_VENDOR_PATH : "${{ github.workspace }}/magento/vendor"
 
       - name: Report coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           file: ./build/coverage/clover.xml # Or your specific coverage file
 

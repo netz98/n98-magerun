@@ -84,7 +84,7 @@ jobs:
         continue-on-error: true
 
       - name: Report coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           file: ./build/coverage/clover.xml
 

@@ -6,7 +6,6 @@ use Mage;
 use Mage_Core_Model_Store;
 use N98\Magento\Command\AbstractMagentoCommand;
 use N98\Magento\Command\AbstractMagentoStoreConfigCommand;
-use Parameter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -69,7 +68,7 @@ class InfoCommand extends AbstractMagentoCommand
 
         $tableHelper = $this->getTableHelper();
         $tableHelper
-            ->setHeaders([Parameter::class, 'Value'])
+            ->setHeaders(['Parameter', 'Value'])
             ->renderByFormat($output, $storeInfoLines);
 
         return $this;
