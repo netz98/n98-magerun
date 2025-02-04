@@ -123,18 +123,11 @@ class ModulesTest extends TestCase
             ->setMethods(['getOption'])
             ->getMock();
 
-        $i = 0;
-        foreach ($options as $opt => $val) {
-            if (!$val) {
-                continue;
-            }
-
-            $input
-                ->expects(self::at($i++))
-                ->method('getOption')
-                ->with($opt)
-                ->willReturn($val);
-        }
+        $input
+            ->expects(self::any())
+            ->method('getOption')
+            ->with($option)
+            ->willReturn($options[$option]);
 
         return $input;
     }
