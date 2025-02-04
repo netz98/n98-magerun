@@ -47,20 +47,52 @@ class ModulesTest extends TestCase
     /**
      * @test
      */
-    public function findInstalledModulesAndFilterThem()
+    public function findInstalledModulesAndCount()
     {
         $this->getApplication()->initMagento();
-
         $modules = new Modules();
         self::assertCount(0, $modules);
+
         $total = count($modules->findInstalledModules());
         self::assertGreaterThan(10, $total);
+
+    }
+
+    /**
+     * @test
+     */
+    public function findInstalledModulesAndFilterByCodepool()
+    {
+        $this->getApplication()->initMagento();
+        $modules = new Modules();
+        $total = count($modules->findInstalledModules());
 
         $filtered = $modules->filterModules($this->filter('codepool', 'core'));
         self::assertLessThan($total, count($filtered));
 
+    }
+
+    /**
+     * @test
+     */
+    public function findInstalledModulesAndFilterByStatus()
+    {
+        $this->getApplication()->initMagento();
+        $modules = new Modules();
+        $total = count($modules->findInstalledModules());
+
         $filtered = $modules->filterModules($this->filter('status', 'active'));
         self::assertLessThan($total, count($filtered));
+    }
+
+    /**
+     * @test
+     */
+    public function findInstalledModulesAndFilterByVendor()
+    {
+        $this->getApplication()->initMagento();
+        $modules = new Modules();
+        $total = count($modules->findInstalledModules());
 
         $filtered = $modules->filterModules($this->filter('vendor', 'Mage_'));
         self::assertLessThan($total, count($filtered));
