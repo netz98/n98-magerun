@@ -670,7 +670,7 @@ Dumps merged XML configuration to stdout. Useful to see all the XML.
 
 .. code-block:: sh
 
-   $ n98-magerun.phar [xpath]
+   $ n98-magerun.phar config:dump [xpath]
 
 Examples
 ^^^^^^^^
