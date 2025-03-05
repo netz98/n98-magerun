@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento\Command;
 
 use Composer\Composer;
@@ -39,6 +41,8 @@ use Symfony\Component\Console\Question\Question;
  */
 abstract class AbstractMagentoCommand extends Command
 {
+    public const COMMAND_OPTION_FORMAT = 'format';
+
     /**
      * @var string
      */
@@ -70,6 +74,28 @@ abstract class AbstractMagentoCommand extends Command
     protected $config;
 
     /**
+     * @var array|null
+     */
+    protected ?array $data = null;
+
+    /**
+     * @var string
+     */
+    protected static string $noResultMessage = '';
+
+    /**
+     * @var bool
+     */
+    protected static bool $detectMagentoSilent = true;
+
+    protected function configure()
+    {
+        if ($this instanceof CommandWithFormatOption || $this instanceof CommandFormatable) {
+            $this->addFormatOption();
+        }
+    }
+
+    /**
      * Initializes the command just after the input has been validated.
      *
      * This is mainly useful when a lot of commands extends one main command
@@ -83,11 +109,50 @@ abstract class AbstractMagentoCommand extends Command
         $this->checkDeprecatedAliases($input, $output);
     }
 
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        if ($this instanceof CommandFormatable) {
+            $this->detectMagento($output, static::$detectMagentoSilent);
+
+            $formatOption = $input->getOption(static::COMMAND_OPTION_FORMAT);
+
+            if ($formatOption === null) {
+                $this->writeSection($output, $this->getSectionTitle($input, $output));
+            }
+
+            if (!$this->initMagento()) {
+                return Command::FAILURE;
+            }
+
+            $data = $this->getListData($input, $output);
+            if ($formatOption === null && $data === []) {
+                if (static::$noResultMessage) {
+                    $output->writeln(sprintf(
+                        '<info>%s</info>',
+                        static::$noResultMessage
+                    ));
+                } else {
+                    $output->writeln(sprintf(
+                        '<info>No entry found for "%s" </info>',
+                        $this->getSectionTitle($input, $output)
+                    ));
+                }
+            }
+
+            $this->getTableHelper()
+                ->setHeaders($this->getListHeader($input, $output))
+                ->renderByFormat($output, $data, $input->getOption(self::COMMAND_OPTION_FORMAT));
+
+            return Command::SUCCESS;
+        }
+
+        return Command::INVALID;
+    }
+
     private function _initWebsites()
     {
         $this->_websiteCodeMap = [];
-        /** @var \Mage_Core_Model_Website[] $websites */
-        $websites = Mage::app()->getWebsites(false);
+        $websites = Mage::app()->getWebsites();
         foreach ($websites as $website) {
             $this->_websiteCodeMap[$website->getId()] = $website->getCode();
         }
@@ -638,7 +703,7 @@ abstract class AbstractMagentoCommand extends Command
     public function addFormatOption(): self
     {
         $this->addOption(
-            'format',
+            self::COMMAND_OPTION_FORMAT,
             null,
             InputOption::VALUE_OPTIONAL,
             'Output Format. One of [' . implode(',', RendererFactory::getFormats()) . ']'

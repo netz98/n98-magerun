@@ -59,12 +59,12 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return int
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $isDryRun = $input->getOption('dry-run');
 
@@ -165,7 +165,7 @@ HELP;
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      * @param string $remoteUrl
      * @param string $tempFilename
      */
@@ -261,7 +261,7 @@ HELP;
     /**
      * Download changelog
      *
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param OutputInterface $output
      * @param bool $loadUnstable
      * @return string
      */

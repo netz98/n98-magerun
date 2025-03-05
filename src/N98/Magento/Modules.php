@@ -1,15 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace N98\Magento;
 
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Mage;
+use N98\Magento\Command\Developer\Module\ListCommand;
 use N98\Util\ArrayFunctions;
 use N98\Util\StringTyped;
 use Symfony\Component\Console\Input\InputInterface;
 use Traversable;
+
+use function count;
+use function is_null;
+use function trim;
 
 /**
  * Magento Modules
@@ -21,13 +28,13 @@ use Traversable;
 class Modules implements IteratorAggregate, Countable
 {
     /**
-     * @var array
+     * @var array|null
      */
-    private $list;
+    private ?array $list;
 
     public function __construct(array $list = null)
     {
-        if (null === $list) {
+        if (is_null($list)) {
             $list = [];
         }
 
@@ -37,7 +44,7 @@ class Modules implements IteratorAggregate, Countable
     /**
      * @return Modules
      */
-    public function findInstalledModules()
+    public function findInstalledModules(): Modules
     {
         $list = [];
 
@@ -47,7 +54,12 @@ class Modules implements IteratorAggregate, Countable
             $version = $moduleInfo['version'] ?? '';
             $active = $moduleInfo['active'] ?? '';
 
-            $list[] = ['codePool' => trim($codePool), 'Name'     => trim($moduleName), 'Version'  => trim($version), 'Status'   => StringTyped::formatActive($active)];
+            $list[] = [
+                'codePool' => trim($codePool),
+                'Name'     => trim($moduleName),
+                'Version'  => trim($version),
+                'Status'   => StringTyped::formatActive($active)
+            ];
         }
 
         return new Modules($list);
@@ -59,20 +71,23 @@ class Modules implements IteratorAggregate, Countable
      * @param InputInterface $input
      * @return Modules
      */
-    public function filterModules(InputInterface $input)
+    public function filterModules(InputInterface $input): Modules
     {
         $filtered = $this->list;
 
-        if ($input->getOption('codepool')) {
-            $filtered = ArrayFunctions::matrixFilterByValue($filtered, 'codePool', $input->getOption('codepool'));
+        $codepool = $input->getOption(ListCommand::COMMAND_OPTION_COODPOOL);
+        if ($codepool) {
+            $filtered = ArrayFunctions::matrixFilterByValue($filtered, 'codePool', $codepool);
         }
 
-        if ($input->getOption('status')) {
-            $filtered = ArrayFunctions::matrixFilterByValue($filtered, 'Status', $input->getOption('status'));
+        $status = $input->getOption(ListCommand::COMMAND_OPTION_STATUS);
+        if ($status) {
+            $filtered = ArrayFunctions::matrixFilterByValue($filtered, 'Status', $status);
         }
 
-        if ($input->getOption('vendor')) {
-            $filtered = ArrayFunctions::matrixFilterStartswith($filtered, 'Name', $input->getOption('vendor'));
+        $vendor = $input->getOption(ListCommand::COMMAND_OPTION_VENDOR);
+        if ($vendor) {
+            $filtered = ArrayFunctions::matrixFilterStartswith($filtered, 'Name', $vendor);
         }
 
         return new self($filtered);
