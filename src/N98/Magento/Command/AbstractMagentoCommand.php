@@ -243,7 +243,6 @@ abstract class AbstractMagentoCommand extends Command
                 escapeshellarg($package->getSourceReference()),
             );
             $existingTags = shell_exec($command);
-            # @phpstan-ignore identical.alwaysFalse (https://github.com/phpstan/phpstan-src/pull/3730)
             if ($existingTags === '' || $existingTags === '0' || $existingTags === false || $existingTags === null) {
                 $command = sprintf('cd %s && git fetch', escapeshellarg($this->normalizePath($targetFolder)));
                 shell_exec($command);

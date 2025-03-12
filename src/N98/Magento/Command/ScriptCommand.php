@@ -313,7 +313,6 @@ HELP;
     {
         $commandString = $this->_prepareShellCommand($commandString);
         $returnValue = shell_exec($commandString);
-        # @phpstan-ignore identical.alwaysFalse (https://github.com/phpstan/phpstan-src/pull/3730)
         if (!($returnValue === '' || $returnValue === '0' || $returnValue === false || $returnValue === null)) {
             $output->writeln($returnValue);
         }
