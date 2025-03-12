@@ -164,6 +164,11 @@ commands:
         version: 20.13.0
         extra:
           sample-data: sample-data-1.9.2.4
+      - name: openmage-20.12.3
+        package: openmage/magento-lts
+        version: 20.12.3
+        extra:
+          sample-data: sample-data-1.9.2.4
       - name: openmage-20.12.2
         package: openmage/magento-lts
         version: 20.12.2
