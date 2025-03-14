@@ -31,7 +31,7 @@ class MethodCommand extends AbstractMagentoCommand
      */
     protected $_mageModel;
 
-    protected string $_mageModelTable;
+    protected ?string $_mageModelTable;
 
     /**
      * @var string|false

@@ -50,7 +50,7 @@ use function chdir;
  */
 abstract class AbstractMagentoCommand extends Command
 {
-    protected string $_magentoRootFolder;
+    protected ?string $_magentoRootFolder;
 
     protected int $_magentoMajorVersion = 1;
 
