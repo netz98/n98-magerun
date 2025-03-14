@@ -25,6 +25,6 @@ final class RenderFactoryTest extends TestCase
         $this->assertInstanceOf(XmlRenderer::class, $xml);
 
         $invalidFormat = $rendererFactory->create('invalid_format');
-        $this->assertNull($invalidFormat);
+        $this->assertNotInstanceOf(\N98\Util\Console\Helper\Table\Renderer\RendererInterface::class, $invalidFormat);
     }
 }

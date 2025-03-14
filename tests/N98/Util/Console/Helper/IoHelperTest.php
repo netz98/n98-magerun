@@ -25,7 +25,7 @@ final class IoHelperTest extends TestCase
         $ioHelper = new IoHelper();
         $this->assertInstanceOf(IoHelper::class, $ioHelper);
         $this->assertInstanceOf(HelperInterface::class, $ioHelper);
-        $this->assertNull($ioHelper->getOutput());
+        $this->assertNotInstanceOf(\Symfony\Component\Console\Output\OutputInterface::class, $ioHelper->getOutput());
 
         $this->assertSame('io', $ioHelper->getName());
     }

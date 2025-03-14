@@ -29,10 +29,10 @@ final class UninstallCommandTest extends TestCase
 
         $commandTester = new CommandTester($command);
 
-        $dialog = new QuestionHelper();
-        $dialog->setInputStream($this->getInputStream('no\n'));
+        $questionHelper = new QuestionHelper();
+        $questionHelper->setInputStream($this->getInputStream('no\n'));
 
-        $command->setHelperSet(new HelperSet([$dialog]));
+        $command->setHelperSet(new HelperSet([$questionHelper]));
 
         $commandTester->execute(['command'               => $command->getName(), '--installationFolder'  => $this->getTestMagentoRoot()]);
         $this->assertSame('Really uninstall ? [n]: ', $commandTester->getDisplay());

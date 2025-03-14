@@ -158,7 +158,7 @@ abstract class AbstractMagentoCommand extends Command
             );
         }
 
-        if (!empty($this->_magentoRootFolder)) {
+        if (isset($this->_magentoRootFolder) && ($this->_magentoRootFolder !== '' && $this->_magentoRootFolder !== '0')) {
             return;
         }
 

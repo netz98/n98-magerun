@@ -37,8 +37,8 @@ final class ModulesTest extends TestCase
             $this->filter(),
         );
         $this->assertInstanceOf(__NAMESPACE__ . '\Modules', $result);
-        $this->assertCount(0, $result);
-        $this->assertCount(0, iterator_to_array($result));
+        $this->assertEmpty($result);
+        $this->assertEmpty(iterator_to_array($result));
     }
 
     public function testFindInstalledModulesAndFilterThem()
@@ -46,7 +46,7 @@ final class ModulesTest extends TestCase
         $this->getApplication()->initMagento();
 
         $modules = new Modules();
-        $this->assertCount(0, $modules);
+        $this->assertEmpty($modules);
         $total = count($modules->findInstalledModules());
         $this->assertGreaterThan(10, $total);
 

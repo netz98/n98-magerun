@@ -81,19 +81,17 @@ final class ConfigTest extends TestCase
         $this->assertInstanceOf(InputInterface::class, $actual);
 
         $saved = $_SERVER['argv'];
-        {
-            $config->setConfig(['commands' => ['aliases' => [['list-help' => 'list --help']]]]);
-            $inputDefinition = new InputDefinition();
-            $inputDefinition->addArgument(new InputArgument('command'));
+        $config->setConfig(['commands' => ['aliases' => [['list-help' => 'list --help']]]]);
+        $inputDefinition = new InputDefinition();
+        $inputDefinition->addArgument(new InputArgument('command'));
 
-            $argv = ['/path/to/command', 'list-help'];
-            $_SERVER['argv'] = $argv;
-            $input = new ArgvInput($argv, $inputDefinition);
-            $this->assertSame('list-help', (string) $input);
-            $actual = $config->checkConfigCommandAlias($input);
-            $this->assertSame('list-help', $actual->getFirstArgument());
-            $this->assertSame('list-help --help', (string) $actual);
-        }
+        $argv = ['/path/to/command', 'list-help'];
+        $_SERVER['argv'] = $argv;
+        $input = new ArgvInput($argv, $inputDefinition);
+        $this->assertSame('list-help', (string) $input);
+        $actual = $config->checkConfigCommandAlias($input);
+        $this->assertSame('list-help', $actual->getFirstArgument());
+        $this->assertSame('list-help --help', (string) $actual);
         $_SERVER['argv'] = $saved;
 
         $command = new Command('list');

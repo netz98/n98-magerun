@@ -238,7 +238,7 @@ class MethodCommand extends AbstractMagentoCommand
 
         $this->_mageModelTable = $this->_mageModel->getResource()
             ? $this->_mageModel->getResource()->getMainTable() : null;
-        if (empty($this->_mageModelTable)) {
+        if (!isset($this->_mageModelTable) || ($this->_mageModelTable === '' || $this->_mageModelTable === '0')) {
             throw new InvalidArgumentException(
                 'Cannot find main table of model ' . $modelName,
             );
