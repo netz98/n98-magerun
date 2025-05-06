@@ -61,7 +61,6 @@ class Initializer
 
         $this->requireOnce();
 
-        // @phpstan-ignore booleanNot.alwaysTrue
         if (!class_exists(self::CLASS_MAGE, false)) {
             throw new RuntimeException(sprintf('Failed to load definition of "%s" class', self::CLASS_MAGE));
         }
