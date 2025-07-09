@@ -3284,16 +3284,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.82.1",
+            "version": "v3.82.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "240f67bbf812ab8ac097c3097e7e65d43f9a0079"
+                "reference": "684ed3ab41008a2a4848de8bde17eb168c596247"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/240f67bbf812ab8ac097c3097e7e65d43f9a0079",
-                "reference": "240f67bbf812ab8ac097c3097e7e65d43f9a0079",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/684ed3ab41008a2a4848de8bde17eb168c596247",
+                "reference": "684ed3ab41008a2a4848de8bde17eb168c596247",
                 "shasum": ""
             },
             "require": {
@@ -3377,7 +3377,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.82.1"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.82.2"
             },
             "funding": [
                 {
@@ -3385,7 +3385,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-07-08T10:18:50+00:00"
+            "time": "2025-07-08T21:13:15+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
