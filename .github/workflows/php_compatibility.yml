@@ -13,12 +13,12 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - name: Checkout PR
-          uses: actions/checkout@v4.0.0
+          uses: actions/checkout@v5
           if: github.event_name == 'pull_request'
           with:
             ref: ${{ github.event.pull_request.head.sha }}
         - name: Checkout HEAD
-          uses: actions/checkout@v4.0.0
+          uses: actions/checkout@v5
           if: github.event_name == 'push'
         - name: Setup PHP
           uses: shivammathur/setup-php@v2
