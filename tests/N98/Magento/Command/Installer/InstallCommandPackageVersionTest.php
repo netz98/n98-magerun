@@ -123,7 +123,7 @@ final class InstallCommandPackageVersionTest extends TestCase
 
     /**
      * @param string $name
-     * @return array
+     * @return array<int, mixed>
      */
     private function splitName($name)
     {

@@ -42,7 +42,7 @@ class XmlRenderer implements RendererInterface
 
         $xml = $domDocument->saveXML($domDocument, LIBXML_NOEMPTYTAG);
         if ($xml) {
-            $output->write($xml, false, $output::OUTPUT_RAW);
+            $output->write($xml, false, \Symfony\Component\Console\Output\OutputInterface::OUTPUT_RAW);
         }
     }
 

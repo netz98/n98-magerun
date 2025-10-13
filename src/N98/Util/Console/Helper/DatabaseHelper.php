@@ -181,6 +181,7 @@ class DatabaseHelper extends AbstractHelper
 
     /**
      * @throws RuntimeException
+     * @param array<string, mixed> $commandConfig
      */
     public function getTableDefinitions(array $commandConfig): array
     {
@@ -229,8 +230,8 @@ class DatabaseHelper extends AbstractHelper
 
     /**
      * @param array $list to resolve
-     * @param array $definitions from to resolve
-     * @param array $resolved Which definitions where already resolved -> prevent endless loops
+     * @param array<string, mixed> $definitions from to resolve
+     * @param array<string, mixed> $resolved Which definitions where already resolved -> prevent endless loops
      *
      * @throws RuntimeException
      */
@@ -294,6 +295,9 @@ class DatabaseHelper extends AbstractHelper
         return array_unique($resolvedList);
     }
 
+    /**
+     * @param array<string, mixed> $definitions
+     */
     private function resolveRetrieveDefinitionsTablesByCode(array $definitions, string $code): array
     {
         $tables = $definitions[$code]['tables'];
@@ -415,7 +419,7 @@ class DatabaseHelper extends AbstractHelper
     {
         $pdo = $this->getConnection();
         $prefix = $this->dbSettings['prefix'];
-        if (strlen($prefix) > 0) {
+        if ((string) $prefix !== '') {
             $statement = $pdo->prepare('SHOW TABLE STATUS LIKE :like', [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
             $statement->execute(
                 [':like' => $prefix . '%'],

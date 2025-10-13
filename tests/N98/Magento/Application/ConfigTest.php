@@ -113,7 +113,7 @@ final class ConfigTest extends TestCase
         ];
 
         $bufferedOutput = new BufferedOutput();
-        $bufferedOutput->setVerbosity($bufferedOutput::VERBOSITY_DEBUG);
+        $bufferedOutput->setVerbosity(\Symfony\Component\Console\Output\BufferedOutput::VERBOSITY_DEBUG);
 
         $config = new Config([], false, $bufferedOutput);
         $config->setConfig($configArray);
@@ -141,7 +141,7 @@ final class ConfigTest extends TestCase
         $classLoader = new ClassLoader();
         $config->registerCustomAutoloaders($classLoader);
 
-        $bufferedOutput->setVerbosity($bufferedOutput::VERBOSITY_DEBUG);
+        $bufferedOutput->setVerbosity(\Symfony\Component\Console\Output\BufferedOutput::VERBOSITY_DEBUG);
         $config->registerCustomAutoloaders($classLoader);
 
         $this->assertSame($expected, $bufferedOutput->fetch());

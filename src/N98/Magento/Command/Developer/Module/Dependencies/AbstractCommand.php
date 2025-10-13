@@ -91,6 +91,8 @@ abstract class AbstractCommand extends AbstractMagentoCommand
 
     /**
      * Sort dependencies list by module name ascending
+     * @param array<int, mixed> $a
+     * @param array<int, mixed> $b
      */
     private function sortDependencies(array $a, array $b): int
     {

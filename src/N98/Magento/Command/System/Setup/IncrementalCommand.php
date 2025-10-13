@@ -140,6 +140,7 @@ HELP;
 
     /**
      * @throws ReflectionException
+     * @param array<int, mixed> $args
      */
     protected function _getAvaiableDbFilesFromResource(Mage_Core_Model_Resource_Setup $mageCoreModelResourceSetup, array $args = []): array
     {
@@ -160,6 +161,7 @@ HELP;
 
     /**
      * @throws ReflectionException
+     * @param array<int, mixed> $args
      */
     protected function _getAvaiableDataFilesFromResource(Mage_Core_Model_Resource_Setup $mageCoreModelResourceSetup, array $args = []): array
     {
@@ -328,7 +330,7 @@ HELP;
     protected function _outputFileArray(array $files): void
     {
         $output = $this->_output;
-        if (count($files) == 0) {
+        if ($files === []) {
             $output->writeln('No files found');
 
             return;

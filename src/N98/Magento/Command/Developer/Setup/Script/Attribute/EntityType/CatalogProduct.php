@@ -13,6 +13,7 @@ class CatalogProduct extends AbstractEntityType implements EntityType
 {
     /**
      * Gets key legend for catalog product attribute
+     * @return array<string, string>
      */
     protected function _getKeyMapping(): array
     {

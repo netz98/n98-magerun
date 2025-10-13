@@ -21,6 +21,9 @@ use function json_decode;
  */
 class ComposerHelper extends AbstractHelper implements InputAwareInterface
 {
+    /**
+     * @param string[] $composerArgs
+     */
     public function run(array $composerArgs, bool $silent = false): string
     {
         $commandArgs = array_merge([$this->getBinPath()], $composerArgs);

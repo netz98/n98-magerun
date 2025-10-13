@@ -24,6 +24,9 @@ class SubCommandFactory
 
     protected ConfigBag $config;
 
+    /**
+     * @var mixed[]
+     */
     protected array $commandConfig;
 
     protected AbstractMagentoCommand $command;

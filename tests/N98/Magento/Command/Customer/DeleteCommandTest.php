@@ -38,6 +38,9 @@ final class DeleteCommandTest extends TestCase
         return get_class(Mage::getModel($mage1Code));
     }
 
+    /**
+     * @param string[] $methods
+     */
     private function getCustomerModel(array $methods)
     {
         $className = $this->getModelClassName('customer/customer');
@@ -47,6 +50,9 @@ final class DeleteCommandTest extends TestCase
             ->getMock();
     }
 
+    /**
+     * @param string[] $methods
+     */
     private function getCustomerCollection(array $methods)
     {
         $className = $this->getResourceClassName('customer/customer_collection');

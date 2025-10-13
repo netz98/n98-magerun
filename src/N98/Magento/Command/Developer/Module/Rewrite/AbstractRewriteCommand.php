@@ -18,6 +18,9 @@ use function simplexml_load_file;
  */
 abstract class AbstractRewriteCommand extends AbstractMagentoCommand
 {
+    /**
+     * @var string[]
+     */
     protected array $_rewriteTypes = ['blocks', 'helpers', 'models'];
 
     /**

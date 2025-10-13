@@ -17,6 +17,7 @@ final class VariablesCommandTest extends TestCase
 
     /**
      * @return CommandTester
+     * @param array<string, string> $options
      */
     private function getCommand(array $options)
     {

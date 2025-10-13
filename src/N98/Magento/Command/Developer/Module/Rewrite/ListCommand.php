@@ -45,7 +45,7 @@ class ListCommand extends AbstractRewriteCommand
         if ($table === [] && $input->getOption('format') === null) {
             $output->writeln('<info>No rewrites were found.</info>');
         } else {
-            if (count($table) == 0) {
+            if ($table === []) {
                 $table = [];
             }
 

@@ -16,6 +16,9 @@ use Symfony\Component\Process\Process;
  */
 class ProcessArguments
 {
+    /**
+     * @var mixed[]
+     */
     private array $arguments;
 
     public static function create(array $arguments = []): ProcessArguments

@@ -178,6 +178,9 @@ HELP;
         return Command::SUCCESS;
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $data
+     */
     protected function logJUnit(array $data, string $filename, float $duration): void
     {
         $document = new JUnitXmlDocument();

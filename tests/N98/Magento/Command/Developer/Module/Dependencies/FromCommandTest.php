@@ -14,6 +14,9 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 final class FromCommandTest extends TestCase
 {
+    /**
+     * @return \Iterator<array<array<string, mixed>, mixed>>
+     */
     public static function dataProviderTestExecute(): \Iterator
     {
         yield 'Not existing module, no --all' => ['$moduleName'   => 'NotExistentModule', '$all'          => 0, '$expectations' => ['Module NotExistentModule was not found'], '$notContains'  => []];
@@ -28,6 +31,8 @@ final class FromCommandTest extends TestCase
      * @dataProvider dataProviderTestExecute
      * @param string $moduleName
      * @param int $all
+     * @param string[] $contains
+     * @param string[] $notContains
      */
     public function testExecute($moduleName, $all, array $contains, array $notContains)
     {

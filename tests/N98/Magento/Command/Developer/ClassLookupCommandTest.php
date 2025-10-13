@@ -40,7 +40,7 @@ final class ClassLookupCommandTest extends TestCase
 
     /**
      * Provide data for the class lookup testExecute()
-     * @return array
+     * @return array<mixed, array<string, string|bool>>
      */
     public function classLookupProvider()
     {

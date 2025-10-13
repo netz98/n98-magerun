@@ -101,6 +101,9 @@ class ConfigLocator
         return $stopFileConfigFile;
     }
 
+    /**
+     * @return string[]
+     */
     private function getUserConfigFilePaths(): array
     {
         $paths = [];

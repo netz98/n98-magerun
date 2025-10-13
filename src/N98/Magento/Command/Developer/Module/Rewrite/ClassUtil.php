@@ -27,7 +27,7 @@ final class ClassUtil
         $this->className = $className;
     }
 
-    public function exists(): ?bool
+    public function exists(): bool
     {
         if (is_null($this->exists)) {
             $this->exists = ClassExistsChecker::create($this->className)->existsExtendsSafe();

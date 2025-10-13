@@ -104,6 +104,9 @@ HELP;
         return $checksums;
     }
 
+    /**
+     * @param string[] $duplicates
+     */
     protected function logJUnit(InputInterface $input, array $duplicates, string $filename, float $duration): void
     {
         $document = new JUnitXmlDocument();

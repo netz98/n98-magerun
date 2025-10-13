@@ -39,6 +39,9 @@ class Config
 
     private ?ConfigurationLoader $configurationLoader = null;
 
+    /**
+     * @var mixed[]
+     */
     private array $initConfig;
 
     private bool $isPharMode;

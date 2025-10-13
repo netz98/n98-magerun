@@ -90,6 +90,7 @@ class ListCommand extends AbstractMagentoCommand
 
     /**
      * Get observer string (list entry)
+     * @param array<string, mixed> $observer
      */
     protected function getObserver(array $observer, string $area): string
     {
@@ -107,6 +108,9 @@ class ListCommand extends AbstractMagentoCommand
         return $type . $class . $method;
     }
 
+    /**
+     * @param array<string, mixed> $observer
+     */
     private function getObserverType(array $observer, string $area): string
     {
         // singleton is the default type Mage_Core_Model_App::dispatchEvent

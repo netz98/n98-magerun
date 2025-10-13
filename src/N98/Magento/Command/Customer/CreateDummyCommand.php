@@ -118,7 +118,7 @@ HELP;
                 $output->writeln('<error>Customer ' . $email . ' already exists</error>');
             }
 
-            if ($i % 1000 == 0) {
+            if ($i % 1000 === 0) {
                 $res->commit();
                 $res->beginTransaction();
             }

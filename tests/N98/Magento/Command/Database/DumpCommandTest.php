@@ -47,6 +47,7 @@ final class DumpCommandTest extends TestCase
 
     /**
      * @see filenamePatterns
+     * @return \Iterator<array<int, (array<mixed> | string)>>
      */
     public function provideFilenamePatternsAndOptions(): \Iterator
     {
@@ -64,6 +65,7 @@ final class DumpCommandTest extends TestCase
      *
      * @param string $regex
      * @return void
+     * @param array<string, string> $options
      */
     public function testFilenamePatterns($regex, array $options)
     {

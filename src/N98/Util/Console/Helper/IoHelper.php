@@ -107,9 +107,9 @@ class IoHelper implements HelperInterface, EventSubscriberInterface
     /*
      * EventSubscriberInterface
      */
-
     /**
      * @inheritdoc
+     * @return array<string, string>
      */
     public static function getSubscribedEvents(): array
     {

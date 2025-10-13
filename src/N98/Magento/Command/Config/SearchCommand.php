@@ -94,6 +94,9 @@ HELP;
         return $matches;
     }
 
+    /**
+     * @return \stdClass[]
+     */
     protected function _searchConfigurationNodes(string $searchString, array $nodes): array
     {
         $matches = [];

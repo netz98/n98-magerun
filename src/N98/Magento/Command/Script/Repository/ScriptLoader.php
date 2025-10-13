@@ -53,7 +53,7 @@ class ScriptLoader
         }
 
         $scriptFolders = array_filter($scriptFolders, function ($value): bool {
-            return strlen($value) > 0;
+            return (string) $value !== '';
         });
         $scriptFolders = array_filter($scriptFolders, 'is_dir');
 

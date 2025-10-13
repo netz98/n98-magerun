@@ -28,7 +28,7 @@ final class CleanCommandTest extends TestCase
             $against = '1.14.0.0';
         }
 
-        if (-1 != version_compare($version, $against)) {
+        if (-1 !== version_compare($version, $against)) {
             self::markTestSkipped(
                 sprintf(
                     'Test skipped because it fails after new install of a Magento 1.9+ version (Magento version is: ' .

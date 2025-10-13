@@ -129,6 +129,9 @@ abstract class AbstractShowCommand extends AbstractDatabaseCommand
         return wordwrap($desc);
     }
 
+    /**
+     * @param string[] $header
+     */
     protected function renderTable(array $header, array $rows): void
     {
         $tableHelper = $this->getTableHelper();

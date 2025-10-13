@@ -59,6 +59,9 @@ class DownloadMagento extends AbstractSubCommand
         $this->composerInstall();
     }
 
+    /**
+     * @param array<string, mixed> $package
+     */
     private function composerCreateProject(array $package): void
     {
         $processArguments = new ProcessArguments(array_merge($this->config['composer_bin'], ['create-project']));

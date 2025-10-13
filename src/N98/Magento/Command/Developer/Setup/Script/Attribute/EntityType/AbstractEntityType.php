@@ -76,6 +76,7 @@ abstract class AbstractEntityType implements EntityType
 
     /**
      * Gets attribute options from database
+     * @return array<string, list>
      */
     protected function getOptions(Mage_Eav_Model_Entity_Attribute $mageEavModelEntityAttribute): array
     {

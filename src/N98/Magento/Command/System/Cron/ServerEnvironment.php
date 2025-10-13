@@ -27,6 +27,9 @@ class ServerEnvironment
 {
     private ?array $backup = null;
 
+    /**
+     * @var string[]
+     */
     private array $keys = ['SCRIPT_NAME', 'SCRIPT_FILENAME'];
 
     public function initalize(): void

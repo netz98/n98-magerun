@@ -21,10 +21,16 @@ class InfoCommand extends AbstractMagentoCommand
 {
     public const THEMES_EXCEPTION = '_ua_regexp';
 
+    /**
+     * @var array<string, string>
+     */
     protected array $_configNodes = [
         'Theme translations' => 'design/theme/locale',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     protected array $_configNodesWithExceptions = [
         'Design Package Name' => 'design/package/name',
         'Theme template'      => 'design/theme/template',
@@ -79,6 +85,9 @@ class InfoCommand extends AbstractMagentoCommand
         return $this;
     }
 
+    /**
+     * @param array<string, string> $nodes
+     */
     protected function _parse(array $nodes, Mage_Core_Model_Store $mageCoreModelStore, bool $withExceptions = false): array
     {
         $result = [];

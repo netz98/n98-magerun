@@ -21,6 +21,7 @@ final class CookieDomainCheckAbstractTest extends TestCase
 {
     /**
      * @see validateCookieDomainAgainstUrl
+     * @return \Iterator<(array<int, bool> | array<int, string>)>
      */
     public function provideCookieDomainsAndBaseUrls(): \Iterator
     {

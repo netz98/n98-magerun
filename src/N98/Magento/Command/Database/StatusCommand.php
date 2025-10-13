@@ -19,6 +19,7 @@ class StatusCommand extends AbstractShowCommand
 
     /**
      * Add more important status variables
+     * @var array<string, array<string, string>>
      */
     protected array $_importantVars = ['Threads_connected'              => ['desc' => 'Total number of clients that have currently open connections to the server.'], 'Created_tmp_disk_tables'        => ['desc' => 'Number of temporary tables that have been created on disk instead of in-memory. Lower is
             better.'], 'Handler_read_first'             => ['desc' => 'Number of times a table handler made a request to read the first row of a table index.'], 'Handler_read_rnd_next'          => ['desc' => 'Number of requests to read the next row in the data file. This value is high if you
@@ -27,6 +28,9 @@ class StatusCommand extends AbstractShowCommand
                  but the changes are not yet written (flushed) to the InnoDB data files'], 'Key_reads'                      => ['desc' => 'Number of filesystem accesses MySQL performed to fetch database indexes.'], 'Max_used_connections'           => ['desc' => 'Max number of connections MySQL has had open at the same time since the server was
                  last restarted.'], 'Open_tables'                    => ['desc' => 'Number of tables that are currently open.'], 'Select_full_join'               => ['desc' => 'Number of full joins MySQL has performed to satisfy client queries.'], 'Slow_queries'                   => ['desc' => 'Number of queries that have taken longer than usual to execute.'], 'Uptime'                         => ['desc' => 'Time since the server was last restarted.'], 'Aborted_connects'               => ['desc' => 'Total number of failed attempts to connect to MySQL.']];
 
+    /**
+     * @var array<string, string>
+     */
     protected array $_specialFormat = ['Uptime' => 'timeElapsedString'];
 
     protected function configure(): void

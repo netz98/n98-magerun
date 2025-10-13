@@ -19,6 +19,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InfoCommand extends AbstractCustomerCommand
 {
+    /**
+     * @var string[]
+     */
     protected array $blacklist = ['password_hash', 'increment_id'];
 
     protected function configure(): void

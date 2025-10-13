@@ -25,6 +25,9 @@ use Symfony\Component\Console\Question\Question;
  */
 class DummyCommand extends AbstractMagentoCommand
 {
+    /**
+     * @var string[]
+     */
     private array $supportedLocales = ['en_US', 'en_GB'];
 
     protected function configure(): void

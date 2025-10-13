@@ -29,6 +29,7 @@ class ConfigurationLoader
 {
     /**
      * Config passed in the constructor
+     * @var mixed[]
      */
     protected array $_initialConfig;
 
@@ -152,6 +153,7 @@ class ConfigurationLoader
 
     /**
      * Load config from all installed bundles
+     * @param array<string, mixed> $config
      */
     public function loadPluginConfig(array $config, string $magentoRootFolder): array
     {
@@ -187,7 +189,7 @@ class ConfigurationLoader
     {
         $basename = $this->_customConfigFilename;
         $in = array_filter((array) $in, function ($value): bool {
-            return strlen($value) > 0;
+            return (string) $value !== '';
         });
         if (1 > count($in = array_filter($in, 'is_dir'))) {
             return;

@@ -64,6 +64,7 @@ class TableHelper extends AbstractHelper
      * Takes a two-dimensional tabular array with headers as keys in the first row and outputs an ascii table
      *
      * @deprecated since 1.98.0 use original Symfony table instead.
+     * @param array<int, mixed> $rows
      */
     public function write(OutputInterface $output, array $rows): void
     {

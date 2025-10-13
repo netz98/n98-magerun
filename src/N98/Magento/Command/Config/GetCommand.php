@@ -123,6 +123,9 @@ HELP;
         return Command::SUCCESS;
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $table
+     */
     protected function renderAsTable(OutputInterface $output, array $table, ?string $format): void
     {
         $formattedTable = [];
@@ -168,6 +171,9 @@ HELP;
         return $value;
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $table
+     */
     protected function renderAsUpdateScript(OutputInterface $output, array $table): void
     {
         $output->writeln('<?php');
@@ -197,6 +203,9 @@ HELP;
         }
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $table
+     */
     protected function renderAsMagerunScript(OutputInterface $output, array $table): void
     {
         foreach ($table as $row) {

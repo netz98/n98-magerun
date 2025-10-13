@@ -37,7 +37,7 @@ parameters:
 			path: src/N98/Magento/Command/System/Check/Settings/CheckAbstract.php
 
 		-
-			message: '#^Parameter \#2 \$callback of function array_filter expects \(callable\(array\{function\: string, line\?\: int, file\?\: string, class\?\: class\-string, type\?\: ''\-\>''\|''\:\:'', args\?\: array\<mixed\>, object\?\: object\}\)\: bool\)\|null, Closure\(mixed\)\: \(array\{function\: string, line\?\: int, file\: string, class\?\: class\-string, type\?\: ''\-\>''\|''\:\:'', args\?\: array\<mixed\>, object\?\: object\}\|false\) given\.$#'
+			message: '#^Parameter \#2 \$callback of function array_filter expects \(callable\(array\{function\: string, line\?\: int, file\?\: string, class\?\: class\-string, type\?\: ''\-\>''\|''\:\:'', args\?\: list\<mixed\>, object\?\: object\}\)\: bool\)\|null, Closure\(mixed\)\: \(array\{function\: string, line\?\: int, file\: string, class\?\: class\-string, type\?\: ''\-\>''\|''\:\:'', args\?\: list\<mixed\>, object\?\: object\}\|false\) given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/N98/Magento/Command/System/Setup/RunCommand.php

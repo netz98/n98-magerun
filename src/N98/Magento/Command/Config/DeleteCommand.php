@@ -131,6 +131,7 @@ HELP;
 
     /**
      * Delete concrete entry from config table specified by path, scope and scope-id
+     * @return array<string, string|int>
      */
     private function deleteConfigEntry(string $path, string $scope, int $scopeId): array
     {

@@ -128,6 +128,9 @@ class MagentoHelper extends AbstractHelper
         return $this->_magerunStopFileFolder;
     }
 
+    /**
+     * @return string[]
+     */
     protected function splitPathFolders(string $folder): array
     {
         $folders = [];
@@ -189,6 +192,7 @@ class MagentoHelper extends AbstractHelper
 
     /**
      * Check for magerun stop-file
+     * @param string[] $folders
      */
     protected function checkMagerunFile(array $folders): array
     {

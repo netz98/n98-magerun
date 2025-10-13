@@ -301,6 +301,7 @@ class InstallMagento extends AbstractSubCommand
      * Invoke Magento PHP install script
      *
      * @param string $installationFolder folder where magento is installed in, must exist setup script in
+     * @param array<string, mixed> $argv
      */
     private function runInstallScriptCommand(OutputInterface $output, string $installationFolder, array $argv): void
     {

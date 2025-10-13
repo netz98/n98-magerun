@@ -61,6 +61,7 @@ class Exec
 
     /**
      * string from array of strings representing one line per entry
+     * @param list<string> $commandOutput
      */
     private static function parseCommandOutput(array $commandOutput): string
     {
@@ -70,6 +71,6 @@ class Exec
     private static function isPipefailOptionAvailable(): bool
     {
         exec('set -o | grep pipefail 2>&1', $output, $returnCode);
-        return $returnCode == self::CODE_CLEAN_EXIT;
+        return $returnCode === self::CODE_CLEAN_EXIT;
     }
 }

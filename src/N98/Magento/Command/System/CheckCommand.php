@@ -174,7 +174,7 @@ HELP;
             '<error>No ' . $context . ' configured to run store check:</error> <comment>' . basename($checkGroupClass) .
             '</comment>',
         );
-        $result->setStatus($result::STATUS_WARNING);
+        $result->setStatus(\N98\Magento\Command\System\Check\Result::STATUS_WARNING);
 
         $resultCollection->addResult($result);
     }

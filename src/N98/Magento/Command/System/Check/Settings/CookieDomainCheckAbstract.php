@@ -104,7 +104,7 @@ abstract class CookieDomainCheckAbstract extends CheckAbstract
         }
 
         $prefix = substr($siteDomain, 0, -$cookieLen);
-        if ($prefix === false || $prefix === '' || $prefix === '0') {
+        if (in_array($prefix, [false, '', '0'], true)) {
             return false;
         }
 

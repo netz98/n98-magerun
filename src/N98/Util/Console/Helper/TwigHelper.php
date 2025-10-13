@@ -57,6 +57,9 @@ class TwigHelper extends Helper
         return 'twig';
     }
 
+    /**
+     * @return string[]
+     */
     private function getBaseDirsFromConfig(Config $config): array
     {
         $baseDir = __DIR__ . '/../../../../..'; # root of project source tree

@@ -25,18 +25,26 @@ use Varien_Simplexml_Element;
  */
 class MetaCommand extends AbstractMagentoCommand
 {
+    /**
+     * @var string[]
+     */
     protected array $groups = ['blocks', 'helpers', 'models', 'resource models', 'resource helpers'];
 
     /**
      * List of supported static factory methods
+     * @var array<string, string[]>
      */
     protected array $groupFactories = ['blocks' => ['\Mage::getBlockSingleton'], 'helpers' => ['\Mage::helper'], 'models' => ['\Mage::getModel', '\Mage::getSingleton'], 'resource helpers' => ['\Mage::getResourceHelper'], 'resource models' => ['\Mage::getResourceModel', '\Mage::getResourceSingleton']];
 
     /**
      * List of supported helper methods
+     * @var array<string, string[]>
      */
     protected array $methodFactories = ['blocks' => ['\Mage_Core_Model_Layout::createBlock'], 'helpers' => ['\Mage_Admin_Model_User::_getHelper', '\Mage_Adminhtml_Controller_Rss_Abstract::_getHelper', '\Mage_Adminhtml_Tax_RuleController::_getHelperModel', '\Mage_Api_Model_User::_getHelper', '\Mage_Bundle_Model_Product_Price::_getHelperData', '\Mage_Core_Block_Abstract::helper', '\Mage_Core_Model_App::getHelper', '\Mage_Core_Model_Factory::getHelper', '\Mage_Core_Model_Layout::helper', '\Mage_Customer_AccountController::_getHelper', '\Mage_Customer_Model_Customer::_getHelper', '\Mage_ImportExport_Model_Import_Entity_Product::getHelper', '\Mage_Rss_Controller_Abstract::_getHelper', '\Mage_SalesRule_Model_Validator::_getHelper', '\Mage_Weee_Helper_Data::_getHelper', '\Mage_Weee_Model_Config_Source_Fpt_Tax::_getHelper'], 'models' => ['\Mage_Adminhtml_Tax_RuleController::_getSingletonModel', '\Mage_Catalog_Block_Product_Abstract::_getSingletonModel', '\Mage_Checkout_Helper_Cart::_getSingletonModel', '\Mage_Core_Model_Factory::getModel', '\Mage_Core_Model_Factory::getSingleton', '\Mage_Customer_AccountController::_getModel', '\Mage_SalesRule_Model_Validator::_getSingleton', '\Mage_Shipping_Model_Carrier_Tablerate::_getModel', '\Mage_Wishlist_Helper_Data::_getSingletonModel'], 'resource models' => ['\Mage_Core_Model_Factory::getResourceModel']];
 
+    /**
+     * @var string[]
+     */
     protected array $missingHelperDefinitionModules = ['Backup', 'Bundle', 'Captcha', 'Catalog', 'Centinel', 'Checkout', 'Cms', 'Core', 'Customer', 'Dataflow', Directory::class, 'Downloadable', 'Eav', 'Index', 'Install', 'Log', 'Media', 'Newsletter', 'Page', 'Payment', 'Paypal', 'Persistent', 'Poll', 'Rating', 'Reports', 'Review', 'Rss', 'Rule', 'Sales', 'Shipping', 'Sitemap', 'Tag', 'Tax', 'Usa', 'Weee', 'Widget', 'Wishlist'];
 
     public const VERSION_OLD = 'old';
@@ -273,6 +281,9 @@ class MetaCommand extends AbstractMagentoCommand
         return $classes;
     }
 
+    /**
+     * @param mixed[][] $classMaps
+     */
     protected function writeToOutputOld(InputInterface $input, OutputInterface $output, array $classMaps): void
     {
         $map = <<<PHP_WRAP
@@ -310,6 +321,9 @@ PHP;
         }
     }
 
+    /**
+     * @param mixed[][] $classMaps
+     */
     protected function writeToOutputV2017(InputInterface $input, OutputInterface $output, array $classMaps): void
     {
         $baseMap = <<<PHP_WRAP
@@ -397,6 +411,9 @@ PHP;
         }
     }
 
+    /**
+     * @param mixed[][] $classMaps
+     */
     protected function writeToOutputV2019(InputInterface $input, OutputInterface $output, array $classMaps): void
     {
         $baseMap = <<<PHP_WRAP

@@ -105,6 +105,9 @@ HELP;
         }
     }
 
+    /**
+     * @param list<array<string, (int | string)>> $conflicts
+     */
     protected function logJUnit(array $conflicts, string $filename, float $duration): void
     {
         $document = new JUnitXmlDocument();
@@ -158,6 +161,9 @@ HELP;
         return false;
     }
 
+    /**
+     * @param list<array<string, (int | string)>> $conflicts
+     */
     private function writeOutput(OutputInterface $output, array $conflicts): void
     {
         if ($conflicts === []) {

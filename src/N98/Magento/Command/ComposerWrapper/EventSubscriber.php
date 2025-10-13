@@ -24,7 +24,7 @@ class EventSubscriber implements EventSubscriberInterface
     /**
      * Returns an array of event names this subscriber wants to listen to.
      *
-     * @return array The event names to listen to
+     * @return array<string, string> The event names to listen to
      *
      * @api
      */

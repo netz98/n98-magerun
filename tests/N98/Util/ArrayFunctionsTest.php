@@ -15,6 +15,9 @@ final class ArrayFunctionsTest extends TestCase
 {
     /**
      * @dataProvider mergeArraysProvider
+     * @param array<int|string, array<int|string, int|string>|string> $a
+     * @param array<int|string, array<string, int>|string> $b
+     * @param array<int|string, array<int|string, int|string>|string> $expected
      */
     public function testMergeArrays(array $a, array $b, array $expected)
     {
@@ -86,6 +89,7 @@ final class ArrayFunctionsTest extends TestCase
 
     /**
      * @dataProvider provideMatrix
+     * @param array<int, array<string, string>> $matrix
      */
     public function testMatrixFilterByValue(array $matrix)
     {
@@ -96,6 +100,7 @@ final class ArrayFunctionsTest extends TestCase
 
     /**
      * @dataProvider provideMatrix
+     * @param array<int, array<string, string>> $matrix
      */
     public function testMatrixFilterStartsWith(array $matrix)
     {

@@ -14,6 +14,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class RendererFactory
 {
+    /**
+     * @var array<string, class-string>
+     */
     protected static array $formats = [
         'csv'  => CsvRenderer::class,
         'json' => JsonRenderer::class,

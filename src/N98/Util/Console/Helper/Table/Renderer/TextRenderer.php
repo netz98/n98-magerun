@@ -17,6 +17,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class TextRenderer implements RendererInterface
 {
+    /**
+     * @param array<int, mixed> $rows
+     */
     public function render(OutputInterface $output, array $rows): void
     {
         $table = new Table($output);

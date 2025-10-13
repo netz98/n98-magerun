@@ -72,6 +72,7 @@ final class VerifyOrDieTest extends TestCase
 
     /**
      * @see nonPortableFilenameThrowsException
+     * @return \Iterator<array<int, string>>
      */
     public function provideNonPortableFilenames(): \Iterator
     {

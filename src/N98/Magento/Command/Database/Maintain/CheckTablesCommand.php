@@ -33,6 +33,9 @@ class CheckTablesCommand extends AbstractMagentoCommand
 
     protected bool $showProgress = false;
 
+    /**
+     * @var string[]
+     */
     protected array $allowedTypes = ['QUICK', 'FAST', 'CHANGED', 'MEDIUM', 'EXTENDED'];
 
     protected function configure(): void
@@ -168,6 +171,9 @@ HELP;
         return Command::SUCCESS;
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
     protected function _queryAlterTable(string $tableName, string $engine): array
     {
         $pdo = $this->dbHelper->getConnection($this->output);

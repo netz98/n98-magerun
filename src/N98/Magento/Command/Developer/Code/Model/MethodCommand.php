@@ -110,6 +110,9 @@ class MethodCommand extends AbstractMagentoCommand
         return PHP_EOL . '/**' . PHP_EOL . implode(PHP_EOL, $this->getGetterSetter()) . PHP_EOL . ' */' . PHP_EOL;
     }
 
+    /**
+     * @return string[]
+     */
     protected function getGetterSetter(): array
     {
         $getterSetter = [];

@@ -35,6 +35,9 @@ class ReportCommand extends AbstractCacheCommand
         ;
     }
 
+    /**
+     * @param array<string, mixed> $metaData
+     */
     protected function isTagFiltered(array $metaData, InputInterface $input): bool
     {
         return (bool) count(array_intersect($metaData['tags'], explode(',', $input->getOption('filter-tag'))));
@@ -60,9 +63,9 @@ class ReportCommand extends AbstractCacheCommand
                 continue;
             }
 
-            $row = [$cacheId, date('Y-m-d H:i:s', $metaData['expire'])];
+            $row = [$cacheId, \Carbon\Carbon::createFromTimestamp($metaData['expire'])->format('Y-m-d H:i:s')];
             if ($input->getOption('mtime')) {
-                $row[] = date('Y-m-d H:i:s', $metaData['mtime']);
+                $row[] = \Carbon\Carbon::createFromTimestamp($metaData['mtime'])->format('Y-m-d H:i:s');
             }
 
             if ($input->getOption('tags')) {

@@ -243,7 +243,7 @@ abstract class AbstractMagentoCommand extends Command
                 escapeshellarg($package->getSourceReference()),
             );
             $existingTags = shell_exec($command);
-            if ($existingTags === '' || $existingTags === '0' || $existingTags === false || $existingTags === null) {
+            if (in_array($existingTags, ['', '0', false, null], true)) {
                 $command = sprintf('cd %s && git fetch', escapeshellarg($this->normalizePath($targetFolder)));
                 shell_exec($command);
             }

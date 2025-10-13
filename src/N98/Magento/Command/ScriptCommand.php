@@ -199,7 +199,7 @@ HELP;
             $script = @\file_get_contents($filename);
         }
 
-        if ($script === '' || $script === '0' || $script === false) {
+        if (in_array($script, ['', '0', false], true)) {
             throw new RuntimeException('Script file was not found');
         }
 
@@ -313,7 +313,7 @@ HELP;
     {
         $commandString = $this->_prepareShellCommand($commandString);
         $returnValue = shell_exec($commandString);
-        if (!($returnValue === '' || $returnValue === '0' || $returnValue === false || $returnValue === null)) {
+        if (!(in_array($returnValue, ['', '0', false, null], true))) {
             $output->writeln($returnValue);
         }
     }

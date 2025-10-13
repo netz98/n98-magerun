@@ -86,7 +86,7 @@ HELP;
         $typeKeys = array_keys($allTypes);
 
         foreach ($typeKeys as $typeKey) {
-            if ((is_countable($typesToClean) ? count($typesToClean) : 0) == 0 || in_array($typeKey, $typesToClean)) {
+            if (is_countable($typesToClean) ? count($typesToClean) : 0 === 0 || in_array($typeKey, $typesToClean)) {
                 Mage::app()->getCacheInstance()->cleanType($typeKey);
                 Mage::dispatchEvent('adminhtml_cache_refresh_type', ['type' => $typeKey]);
                 $output->writeln('<info>Cache <comment>' . $typeKey . '</comment> cleaned</info>');

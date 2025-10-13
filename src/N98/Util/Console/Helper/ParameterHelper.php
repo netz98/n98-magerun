@@ -161,7 +161,7 @@ class ParameterHelper extends AbstractHelper
 
     /**
      * @see askWebsite
-     * @return array websites (integers with website IDs, 0-indexed) and question array (strings)
+     * @return array<int, list> websites (integers with website IDs, 0-indexed) and question array (strings)
      */
     private function websitesQuestion(Mage_Core_Model_App $mageCoreModelApp): array
     {

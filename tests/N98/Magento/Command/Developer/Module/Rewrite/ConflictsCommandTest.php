@@ -77,6 +77,7 @@ final class ConflictsCommandTest extends TestCase
      * to the given argument
      *
      * @return ConflictsCommand
+     * @param array<string, array<string, string[]>> $return
      */
     private function getCommandWithMockLoadRewrites(array $return)
     {

@@ -73,6 +73,7 @@ abstract class CheckAbstract implements StoreCheck
     /**
      *
      * @return array
+     * @param array<array<string, mixed>, mixed> $typedParams
      */
     private function getParamValues(Mage_Core_Model_Store $mageCoreModelStore, array $typedParams)
     {

@@ -45,6 +45,9 @@ final class GetCommandTest extends TestCase
         );
     }
 
+    /**
+     * @return \Iterator<(array<int, null> | array<int, string>)>
+     */
     public function provideFormatsWithNull(): \Iterator
     {
         yield [null, '~\\Q| n98_magerun/foo/bar | default | 0        | NULL (NULL/"unknown" value) |\\E~'];

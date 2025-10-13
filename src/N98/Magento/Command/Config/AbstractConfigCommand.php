@@ -23,7 +23,7 @@ abstract class AbstractConfigCommand extends AbstractMagentoCommand
     public const DISPLAY_NULL_UNKNOWN_VALUE = 'NULL (NULL/"unknown" value)';
 
     /**
-     * @var array strings of configuration scopes
+     * @var string[] strings of configuration scopes
      */
     protected array $_scopes = ['default', 'websites', 'stores'];
 

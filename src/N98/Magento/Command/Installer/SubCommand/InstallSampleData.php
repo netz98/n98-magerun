@@ -69,6 +69,9 @@ class InstallSampleData extends AbstractSubCommand
         }
     }
 
+    /**
+     * @param array<string, mixed> $demoPackageData
+     */
     private function installSampleData(array $demoPackageData): void
     {
         $filesystem = new Filesystem();
