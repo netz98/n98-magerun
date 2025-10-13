@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout HEAD
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -77,7 +77,7 @@ jobs:
     needs: ["create-signed-phar-file"]
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: n98-magerun.phar
           path: .
@@ -128,8 +128,8 @@ jobs:
           key: ${{ secrets.SSH_DEPLOY_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_DEPLOY_PASSPHRASE }}
           script: |
-            build/build_phive.sh
-            curl -s https://files.magerun.net/list.php > public/index.html
+            ./site/build/build_phive.sh
+            curl -s https://files.magerun.net/list.php > ./site/public/index.html
 
       - name: Invalidate cloudflare
         run: |
@@ -143,12 +143,12 @@ jobs:
     needs: [ "create-signed-phar-file" ]
     steps:
       - name: Checkout HEAD
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ secrets.DIST_REPO_DEPLOY_KEY }}
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: n98-magerun.phar
       - name: Update dist repo
@@ -163,9 +163,9 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout HEAD
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: n98-magerun.phar
       - name: 'Build Changelog'
