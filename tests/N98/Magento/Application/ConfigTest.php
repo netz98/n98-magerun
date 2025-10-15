@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace N98\Magento\Application;
 
-use Symfony\Component\Console\Input\InputInterface;
 use N98\Magento\Command\Config\GetCommand;
 use N98\Magento\Application;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -18,8 +17,10 @@ use N98\Magento\Command\TestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class ConfigTest
@@ -113,7 +114,7 @@ final class ConfigTest extends TestCase
         ];
 
         $bufferedOutput = new BufferedOutput();
-        $bufferedOutput->setVerbosity(\Symfony\Component\Console\Output\BufferedOutput::VERBOSITY_DEBUG);
+        $bufferedOutput->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
         $config = new Config([], false, $bufferedOutput);
         $config->setConfig($configArray);
@@ -141,7 +142,7 @@ final class ConfigTest extends TestCase
         $classLoader = new ClassLoader();
         $config->registerCustomAutoloaders($classLoader);
 
-        $bufferedOutput->setVerbosity(\Symfony\Component\Console\Output\BufferedOutput::VERBOSITY_DEBUG);
+        $bufferedOutput->setVerbosity(BufferedOutput::VERBOSITY_DEBUG);
         $config->registerCustomAutoloaders($classLoader);
 
         $this->assertSame($expected, $bufferedOutput->fetch());

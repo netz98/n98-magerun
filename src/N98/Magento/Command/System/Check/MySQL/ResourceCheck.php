@@ -31,7 +31,7 @@ abstract class ResourceCheck implements SimpleCheck
         $result = $resultCollection->createResult();
 
         if (!$dbAdapter instanceof Varien_Db_Adapter_Interface) {
-            $result->setStatus(\N98\Magento\Command\System\Check\Result::STATUS_ERROR);
+            $result->setStatus(Result::STATUS_ERROR);
             $result->setMessage(
                 "<error>Mysql Version: Can not check. Unable to obtain resource connection 'core_write'.</error>",
             );

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\System\Setup;
 
+use Carbon\Carbon;
 use Error;
 use Mage;
 use Mage_Core_Model_Config_Element;
@@ -186,7 +187,7 @@ HELP;
         $document = new JUnitXmlDocument();
         $testSuiteElement = $document->addTestSuite();
         $testSuiteElement->setName('n98-magerun: ' . $this->getName());
-        $testSuiteElement->setTimestamp(\Carbon\Carbon::now());
+        $testSuiteElement->setTimestamp(Carbon::now());
         $testSuiteElement->setTime($duration);
 
         $testCaseElement = $testSuiteElement->addTestCase();

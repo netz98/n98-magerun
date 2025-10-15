@@ -84,8 +84,8 @@ class AbstractIndexerCommand extends AbstractMagentoCommand
      */
     protected function getRuntimeInSeconds(Mage_Index_Model_Process $mageIndexModelProcess): int
     {
-        $startTimestamp = \Carbon\Carbon::parse((string) $mageIndexModelProcess->getStartedAt())->getTimestamp();
-        $endTimestamp   = \Carbon\Carbon::parse((string) $mageIndexModelProcess->getEndedAt())->getTimestamp();
+        $startTimestamp = Carbon::parse((string) $mageIndexModelProcess->getStartedAt())->getTimestamp();
+        $endTimestamp   = Carbon::parse((string) $mageIndexModelProcess->getEndedAt())->getTimestamp();
         return $endTimestamp - $startTimestamp;
     }
 

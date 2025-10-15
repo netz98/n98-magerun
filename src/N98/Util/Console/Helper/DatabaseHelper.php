@@ -452,7 +452,7 @@ class DatabaseHelper extends AbstractHelper
 
     public function getDbSettings(?OutputInterface $output = null): ?DbSettings
     {
-        if ($this->dbSettings instanceof \N98\Magento\DbSettings) {
+        if ($this->dbSettings instanceof DbSettings) {
             return $this->dbSettings;
         }
 
@@ -460,7 +460,7 @@ class DatabaseHelper extends AbstractHelper
 
         $this->detectDbSettings($output);
 
-        if (!$this->dbSettings instanceof \N98\Magento\DbSettings) {
+        if (!$this->dbSettings instanceof DbSettings) {
             throw new RuntimeException('Database settings fatal error');
         }
 

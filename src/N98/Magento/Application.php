@@ -544,7 +544,7 @@ class Application extends BaseApplication
         $loadExternalConfig = !$input->hasParameterOption('--skip-config');
         $this->config = new Config($initConfig, $this->isPharMode(), $output);
         $config = $this->config;
-        if ($this->configurationLoader instanceof \N98\Magento\Application\ConfigurationLoader) {
+        if ($this->configurationLoader instanceof ConfigurationLoader) {
             $config->setLoader($this->configurationLoader);
         }
 
@@ -656,7 +656,7 @@ class Application extends BaseApplication
 
         $loader = $this->config instanceof Config ? $this->config->getLoader() : $this->configurationLoader;
 
-        if (!$loader instanceof \N98\Magento\Application\ConfigurationLoader) {
+        if (!$loader instanceof ConfigurationLoader) {
             throw new RuntimeException('ConfigurationLoader is not yet available, initialize it or Config first');
         }
 

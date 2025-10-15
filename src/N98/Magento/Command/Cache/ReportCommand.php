@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace N98\Magento\Command\Cache;
 
+use Carbon\Carbon;
 use Mage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -63,9 +64,9 @@ class ReportCommand extends AbstractCacheCommand
                 continue;
             }
 
-            $row = [$cacheId, \Carbon\Carbon::createFromTimestamp($metaData['expire'])->format('Y-m-d H:i:s')];
+            $row = [$cacheId, Carbon::createFromTimestamp($metaData['expire'])->format('Y-m-d H:i:s')];
             if ($input->getOption('mtime')) {
-                $row[] = \Carbon\Carbon::createFromTimestamp($metaData['mtime'])->format('Y-m-d H:i:s');
+                $row[] = Carbon::createFromTimestamp($metaData['mtime'])->format('Y-m-d H:i:s');
             }
 
             if ($input->getOption('tags')) {

@@ -10,8 +10,9 @@ declare(strict_types=1);
 
 namespace N98\Util\Console\Helper;
 
-use Symfony\Component\Console\Helper\HelperInterface;
 use N98\Magento\Command\TestCase;
+use Symfony\Component\Console\Helper\HelperInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class IoHelperTest
@@ -25,7 +26,7 @@ final class IoHelperTest extends TestCase
         $ioHelper = new IoHelper();
         $this->assertInstanceOf(IoHelper::class, $ioHelper);
         $this->assertInstanceOf(HelperInterface::class, $ioHelper);
-        $this->assertNotInstanceOf(\Symfony\Component\Console\Output\OutputInterface::class, $ioHelper->getOutput());
+        $this->assertNotInstanceOf(OutputInterface::class, $ioHelper->getOutput());
 
         $this->assertSame('io', $ioHelper->getName());
     }
