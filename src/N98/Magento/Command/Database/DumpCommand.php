@@ -261,7 +261,7 @@ HELP;
     }
 
     /**
-     * @return array<int, string|string[]>
+     * @return array{0:string, 1:array<string>} [filename, execs]
      */
     private function createExecsArray(InputInterface $input, OutputInterface $output): array
     {
@@ -338,7 +338,7 @@ HELP;
     }
 
     /**
-     * @param string|string[] $execs
+     * @param string[] $execs
      */
     private function runExecs(array $execs, string $fileName, InputInterface $input, OutputInterface $output): bool
     {

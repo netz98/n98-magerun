@@ -12,8 +12,6 @@ parameters:
     ignoreErrors:
         - identifier: missingType.generics
         - identifier: missingType.iterableValue
-        - identifier: parameterByRef.unusedType
         - identifier: offsetAccess.notFound
         - identifier: property.notFound
         - identifier: property.unusedType
-        - identifier: return.unusedType

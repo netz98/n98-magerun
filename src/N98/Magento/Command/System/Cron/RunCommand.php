@@ -111,7 +111,7 @@ HELP;
     }
 
     /**
-     * @return array<int, (\callable & string)|(array<int, mixed> & \callable)>
+     * @return array{0: (callable & string)|(array<int, mixed> & callable), 1: string} [callback, callableName] }
      */
     private function getCallbackFromRunConfigModel(string $runConfigModel, string $jobCode): array
     {
