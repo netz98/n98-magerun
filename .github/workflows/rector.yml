@@ -8,6 +8,8 @@ jobs:
   php-cs-fixer:
     name: Rector
     runs-on: [ubuntu-latest]
+    # run only on commits on main repository, not on forks
+    if: github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
       - name: Setup PHP
@@ -17,6 +19,11 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          # Solves the not "You are not currently on a branch" problem, see https://github.com/actions/checkout/issues/124#issuecomment-586664611
+          ref: ${{ github.event.pull_request.head.ref }}
+          # Must be used to trigger workflow after push
+          token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Get composer cache directory
         id: composer-cache
@@ -30,7 +37,39 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --ignore-platform-req=ext-*
+        run: composer install --prefer-dist --no-progress --ignore-platform-req=ext-* --ansi
+
+      - name: Rector
+        run: php vendor/bin/rector process --config .rector.php --ansi
 
       - name: PHP-CS-Fixer
-        run: php vendor/bin/rector process --config .rector.php --dry-run
+        if: steps.rector-git-check.outputs.modified == 'true'
+        run: php vendor/bin/php-cs-fixer fix --diff --ansi
+
+      - name: Check for Rector modified files
+        id: rector-git-check
+        run: echo ::set-output name=modified::$(if git diff --exit-code --no-patch; then echo "false"; else echo "true"; fi)
+
+      - name: Git config
+        if: steps.rector-git-check.outputs.modified == 'true'
+        run: |
+          git config --global user.name 'rector-bot'
+          git config --global user.email 'rector-bot@example.com'
+          echo ::set-env name=COMMIT_MESSAGE::$(git log -1 --pretty=format:"%s")
+
+      - name: Commit Rector changes
+        if: steps.rector-git-check.outputs.modified == 'true'
+        run: git commit -am "[rector] ${COMMIT_MESSAGE}"
+
+      - name: Check for CS modified files
+        if: steps.rector-git-check.outputs.modified == 'true'
+        id: cs-git-check
+        run: echo ::set-output name=modified::$(if git diff --exit-code --no-patch; then echo "false"; else echo "true"; fi)
+
+      - name: Commit CS changes
+        if: steps.cs-git-check.outputs.modified == 'true'
+        run: git commit -am "[cs] ${COMMIT_MESSAGE}"
+
+      - name: Push changes
+        if: steps.rector-git-check.outputs.modified == 'true'
+        run: git push
