@@ -169,7 +169,7 @@ jobs:
         with:
           name: n98-magerun.phar
       - name: 'Build Changelog'
-        uses: mikepenz/release-changelog-builder-action@v5
+        uses: mikepenz/release-changelog-builder-action@v6
         with:
           owner: "netz98"
           repo: "n98-magerun"
