@@ -48,7 +48,12 @@ jobs:
     needs: [composer, php-cs-fixer, phpstan, rector]
     uses: ./.github/workflows/test-openmage-20.10.yml
 
+  unit_tests_om_latest:
+    name: PHPUnit OpenMage 20.10
+    needs: [composer, php-cs-fixer, phpstan, rector]
+    uses: ./.github/workflows/test-openmage-latest.yml
+
   build_phar:
     name: Build Phar
-    needs: [composer, php-cs-fixer, phpstan, rector, unit_tests_magento_opensource, unit_tests_om_20_0, unit_tests_om_20_1, unit_tests_om_20_10]
+    needs: [composer, php-cs-fixer, phpstan, rector, unit_tests_magento_opensource, unit_tests_om_20_0, unit_tests_om_20_1, unit_tests_om_20_10, unit_tests_om_latest]
     uses: ./.github/workflows/phar_build_and_update.yml
