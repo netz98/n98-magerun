@@ -310,7 +310,7 @@ class DatabaseHelper extends AbstractHelper
             throw new RuntimeException('Invalid tables definition of table-groups code: @' . $code);
         }
 
-        return array_reduce($tables, [$this, 'resolveTablesArray'], null);
+        return array_reduce($tables, [$this, 'resolveTablesArray']);
     }
 
     /**

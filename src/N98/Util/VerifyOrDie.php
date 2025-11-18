@@ -28,17 +28,17 @@ class VerifyOrDie
 
         # a filename must at least contain a single character
         if ($basename === '') {
-            self::violation($message !== null && $message !== '' && $message !== '0' ? $message : 'Filename is zero-length string');
+            self::violation(in_array($message, [null, '', '0'], true) ? 'Filename is zero-length string' : $message);
         }
 
         # no control characters, no posix forbidden ones, no windows forbidden ones and no spaces - and not empty
         $pattern = '~^[^\x00-\x1F\x7F/<>:"\\|?* ]+$~';
         if (in_array(preg_match($pattern, $basename), [0, false], true)) {
-            self::violation($message !== null && $message !== '' && $message !== '0' ? $message : sprintf('Filename %s is not portable', var_export($basename, true)));
+            self::violation(in_array($message, [null, '', '0'], true) ? sprintf('Filename %s is not portable', var_export($basename, true)) : $message);
         }
 
         if ('-' === $basename[0]) {
-            self::violation($message !== null && $message !== '' && $message !== '0' ? $message : sprintf('Filename %s starts with a dash', var_export($basename, true)));
+            self::violation(in_array($message, [null, '', '0'], true) ? sprintf('Filename %s starts with a dash', var_export($basename, true)) : $message);
         }
 
         return $basename;

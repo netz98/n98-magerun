@@ -17,6 +17,11 @@ use RuntimeException;
 class Initializer
 {
     /**
+     * Bootstrap filename
+     */
+    public const PATH_APP_BOOTSTRAP_PHP = 'app/bootstrap.php';
+
+    /**
      * Mage filename
      */
     public const PATH_APP_MAGE_PHP = 'app/Mage.php';
@@ -73,6 +78,9 @@ class Initializer
     {
         // Create a new AutoloadRestorer to capture current auto-loaders
         $autoloadRestorer = new AutoloadRestorer();
+
+        $path = $this->magentoPath . '/' . self::PATH_APP_BOOTSTRAP_PHP;
+        initialiser_require_once($path);
 
         $path = $this->magentoPath . '/' . self::PATH_APP_MAGE_PHP;
         initialiser_require_once($path);

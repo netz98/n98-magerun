@@ -23,7 +23,7 @@ class DumpCommand extends AbstractConfigCommand
     {
         $this
             ->setName('config:dump')
-            ->addArgument('xpath', InputArgument::OPTIONAL, 'XPath to filter XML output', null)
+            ->addArgument('xpath', InputArgument::OPTIONAL, 'XPath to filter XML output')
             ->setDescription('Dump merged xml config')
         ;
     }

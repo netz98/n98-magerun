@@ -494,7 +494,7 @@ class UpdateCommand extends AbstractMagentoCommand
         $question = new Question('<question>Event Observer Method:</question> ');
         $observerMethod = trim($questionHelper->ask($input, $output, $question));
 
-        if ($area !== 'global' && $area !== 'frontend' && $area !== 'adminhtml') {
+        if (!in_array($area, ['global', 'frontend', 'adminhtml'], true)) {
             throw new RuntimeException('Event area must be either "global", "frontend" or "adminhtml"');
         }
 
