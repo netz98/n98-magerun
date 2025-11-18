@@ -41,7 +41,7 @@ return RectorConfig::configure()
         true,
         true,
         true,
-        true,
+        false,
         true,
         true,
         false,
