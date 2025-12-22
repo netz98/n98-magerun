@@ -34,7 +34,7 @@ class MagerunBootstrap
      */
     public static function getLoader(): ClassLoader
     {
-        $projectBasedir = getcwd();
+        $projectBasedir = __DIR__ . '/../..';
         if (!($loader = self::includeIfExists($projectBasedir . '/vendor/autoload.php')) instanceof ClassLoader
             && !($loader = self::includeIfExists($projectBasedir . '/../../autoload.php')) instanceof ClassLoader
         ) {
