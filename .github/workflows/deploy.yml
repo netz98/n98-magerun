@@ -37,6 +37,7 @@ jobs:
         with:
           head: '${{ env.pushed_version }}'
           base: '${{ env.latest_released_version }}'
+          operator: '='
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
