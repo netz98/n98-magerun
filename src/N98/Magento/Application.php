@@ -318,11 +318,6 @@ class Application extends BaseApplication
      */
     public function checkVarDir(OutputInterface $output): ?bool
     {
-        $tempVarDir = sys_get_temp_dir() . '/magento/var';
-        if (OutputInterface::VERBOSITY_NORMAL > $output->getVerbosity() && !is_dir($tempVarDir)) {
-            return null;
-        }
-
         $this->detectMagento(null, $output);
         /* If magento is not installed yet, don't check */
         if (!file_exists($this->_magentoRootFolder . '/app/etc/local.xml')) {
@@ -345,22 +340,29 @@ class Application extends BaseApplication
             return null;
         }
 
-        $mageCoreModelConfigOptions = new Mage_Core_Model_Config_Options();
-        $currentVarDir = $mageCoreModelConfigOptions->getVarDir();
+        $tempVarDir = sys_get_temp_dir() . '/magento/var';
+        if (!is_dir($tempVarDir)) {
+            return null;
+        }
 
+        $currentVarDir = (new Mage_Core_Model_Config_Options())->getVarDir();
         if ($currentVarDir == $tempVarDir) {
-            $output->writeln([sprintf('<warning>Fallback folder %s is used in n98-magerun</warning>', $tempVarDir), '', 'n98-magerun is using the fallback folder. If there is another folder configured for Magento, this ' .
-            'can cause serious problems.', 'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
-            'for more information.', '']);
+            if (OutputInterface::VERBOSITY_NORMAL > $output->getVerbosity()) {
+                $output->writeln([sprintf('<warning>Fallback folder %s is used in n98-magerun</warning>', $tempVarDir), '', 'n98-magerun is using the fallback folder. If there is another folder configured for Magento, this ' .
+                'can cause serious problems.', 'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
+                'for more information.', '']);
+            }
+
+            return null;
         } else {
-            $output->writeln([sprintf('<warning>Folder %s found, but not used in n98-magerun</warning>', $tempVarDir), '', 'This might cause serious problems. n98-magerun is using the configured var-folder ' .
-            sprintf('<comment>%s</comment>', $currentVarDir), 'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
-            'for more information.', '']);
+            if (OutputInterface::VERBOSITY_NORMAL > $output->getVerbosity()) {
+                $output->writeln([sprintf('<warning>Folder %s found, but not used in n98-magerun</warning>', $tempVarDir), '', 'This might cause serious problems. n98-magerun is using the configured var-folder ' .
+                sprintf('<comment>%s</comment>', $currentVarDir), 'Please refer to https://github.com/netz98/n98-magerun/wiki/File-system-permissions ' .
+                'for more information.', '']);
+            }
 
             return false;
         }
-
-        return null;
     }
 
     /**
