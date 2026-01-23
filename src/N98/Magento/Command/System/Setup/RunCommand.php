@@ -144,7 +144,8 @@ HELP;
         $eventsBeforeCacheFlush = $appEventReflectionProperty->getValue(Mage::app());
 
         $application = $this->getApplication();
-        $saved = $application->setAutoExit(false);
+        $saved = $application->isAutoExitEnabled();
+        $application->setAutoExit(false);
         $application->run(new StringInput('cache:flush'), new NullOutput());
         $application->setAutoExit($saved);
 

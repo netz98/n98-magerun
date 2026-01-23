@@ -131,5 +131,5 @@ class ComposerHelper extends AbstractHelper implements InputAwareInterface
      *
      * @return void
      */
-    public function setInput(InputInterface $input) {}
+    public function setInput(InputInterface $input): void {}
 }

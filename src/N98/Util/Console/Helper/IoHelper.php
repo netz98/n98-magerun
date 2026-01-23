@@ -27,7 +27,7 @@ class IoHelper implements HelperInterface, EventSubscriberInterface
 {
     public const HELPER_NAME = 'io';
 
-    private HelperSet $helperSet;
+    private ?HelperSet $helperSet = null;
 
     private ?OutputInterface $output = null;
 
@@ -71,8 +71,6 @@ class IoHelper implements HelperInterface, EventSubscriberInterface
     /**
      * Sets the helper set associated with this helper.
      *
-     * @param HelperSet|null $helperSet A HelperSet instance
-     *
      * @api
      */
     public function setHelperSet(?HelperSet $helperSet = null): void
@@ -83,11 +81,9 @@ class IoHelper implements HelperInterface, EventSubscriberInterface
     /**
      * Gets the helper set associated with this helper.
      *
-     * @return HelperSet A HelperSet instance
-     *
      * @api
      */
-    public function getHelperSet(): HelperSet
+    public function getHelperSet(): ?HelperSet
     {
         return $this->helperSet;
     }
