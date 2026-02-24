@@ -319,7 +319,7 @@ class Application extends BaseApplication
     public function checkVarDir(OutputInterface $output): ?bool
     {
         $tempVarDir = sys_get_temp_dir() . '/magento/var';
-        if (OutputInterface::VERBOSITY_NORMAL > $output->getVerbosity() && !is_dir($tempVarDir)) {
+        if (!is_dir($tempVarDir)) {
             return null;
         }
 
