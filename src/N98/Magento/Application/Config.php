@@ -185,6 +185,12 @@ class Config
     {
         $mask = '<debug>Registered %s autoloader </debug> <info>%s</info> -> <comment>%s</comment>';
 
+        if (($this->getArray('autoloaders') || $this->getArray('autoloaders_psr4'))
+            && $classLoader->isClassMapAuthoritative()
+        ) {
+            $classLoader->setClassMapAuthoritative(false);
+        }
+
         foreach ($this->getArray('autoloaders') as $prefix => $paths) {
             $this->debugWriteln(sprintf($mask, self::PSR_0, OutputFormatter::escape($prefix), implode(',', (array) $paths)));
             $classLoader->add($prefix, $paths);
