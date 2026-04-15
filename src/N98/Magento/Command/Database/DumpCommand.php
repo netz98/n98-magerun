@@ -24,10 +24,6 @@ use Symfony\Component\Console\Question\Question;
  */
 class DumpCommand extends AbstractDatabaseCommand
 {
-    protected ?array $tableDefinitions;
-
-    protected array $commandConfig;
-
     protected function configure(): void
     {
         $this
@@ -167,27 +163,11 @@ HELP;
     }
 
     /**
-     * @deprecated Use database helper
-     */
-    private function getTableDefinitions(): array
-    {
-        $this->commandConfig = $this->getCommandConfig();
-
-        if (is_null($this->tableDefinitions)) {
-            $dbHelper = $this->getDatabaseHelper();
-            $this->tableDefinitions = $dbHelper->getTableDefinitions($this->commandConfig);
-        }
-
-        return $this->tableDefinitions;
-    }
-
-    /**
      * Generate help for table definitions
      */
     public function getTableDefinitionHelp(): string
     {
         $messages = PHP_EOL;
-        $this->commandConfig = $this->getCommandConfig();
         $messages .= <<<HELP
 <comment>Strip option</comment>
  If you like to skip data of some tables you can use the --strip option.
@@ -196,7 +176,7 @@ HELP;
 
  Separate each table to strip by a space.
  You can use wildcards like * and ? in the table names to strip multiple
- tables. In addition you can specify pre-defined table groups, that start
+ tables. In addition, you can specify pre-defined table groups, that start
  with an
 
  Example: "dataflow_batch_export unimportant_module_* @log
@@ -207,7 +187,7 @@ HELP;
 
 HELP;
 
-        $definitions = $this->getTableDefinitions();
+        $definitions = $this->getDatabaseHelper()->getTableDefinitions($this->getCommandConfig());
         $list = [];
         $maxNameLen = 0;
         foreach ($definitions as $id => $definition) {
