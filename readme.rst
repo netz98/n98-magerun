@@ -2,6 +2,15 @@
 netz98 magerun CLI tools for Magento 1
 ======================================
 
+Repository sunset
+-----------------
+
+As of 2026-07-02, this repository is sunset. Magento 1 has been end-of-life for
+years, so this project is no longer maintained by valantic. The project may be
+forked and continued by the OpenMage team in the future.
+
+----
+
 .. image:: .github/doc/magerun-logo.png
 
 The n98 magerun cli tools provides some handy tools to work with Magento from command line.
