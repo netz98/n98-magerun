@@ -63,6 +63,45 @@ abstract class AbstractMagentoCommand extends Command
     protected array $config;
 
     /**
+     * Backward compatibility for commands using the deprecated $defaultName property.
+     * Symfony 7.x only reads the #[AsCommand] attribute; this restores $defaultName support.
+     */
+    public static function getDefaultName(): ?string
+    {
+        $name = parent::getDefaultName();
+        if (null !== $name) {
+            return $name;
+        }
+
+        $class = static::class;
+        $ref = new \ReflectionClass($class);
+        if ($ref->hasProperty('defaultName') && ($prop = $ref->getProperty('defaultName'))->isStatic()) {
+            return $prop->getValue();
+        }
+
+        return null;
+    }
+
+    /**
+     * Backward compatibility for commands using the deprecated $defaultDescription property.
+     */
+    public static function getDefaultDescription(): ?string
+    {
+        $description = parent::getDefaultDescription();
+        if (null !== $description) {
+            return $description;
+        }
+
+        $class = static::class;
+        $ref = new \ReflectionClass($class);
+        if ($ref->hasProperty('defaultDescription') && ($prop = $ref->getProperty('defaultDescription'))->isStatic()) {
+            return $prop->getValue();
+        }
+
+        return null;
+    }
+
+    /**
      * Initializes the command just after the input has been validated.
      *
      * This is mainly useful when a lot of commands extends one main command
@@ -357,7 +396,16 @@ abstract class AbstractMagentoCommand extends Command
 
     public function run(InputInterface $input, OutputInterface $output): int
     {
-        $this->getHelperSet()->setCommand($this);
+        $helperSet = $this->getHelperSet();
+        if ($helperSet) {
+            if (method_exists($helperSet, 'setCommand')) {
+                // Symfony <7.x
+                $helperSet->setCommand($this);
+            } elseif ($helperSet->has('database') && $this->getApplication()) {
+                // Symfony 7.x: pass application directly to DatabaseHelper
+                $helperSet->get('database')->setApplication($this->getApplication());
+            }
+        }
 
         return parent::run($input, $output);
     }

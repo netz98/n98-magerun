@@ -115,15 +115,17 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return bool previous auto-exit state
+     * Get current auto-exit state
      */
-    public function setAutoExit(bool $boolean): bool
+    public function isAutoExitEnabled(): bool
     {
-        $previous = $this->autoExitShadow;
+        return $this->autoExitShadow;
+    }
+
+    public function setAutoExit(bool $boolean): void
+    {
         $this->autoExitShadow = $boolean;
         parent::setAutoExit($boolean);
-
-        return $previous;
     }
 
     protected function getDefaultInputDefinition(): InputDefinition

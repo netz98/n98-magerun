@@ -33,6 +33,17 @@ class DatabaseHelper extends AbstractHelper
 
     protected ?array $_tables = null;
 
+    private ?BaseApplication $application = null;
+
+    /**
+     * Set the application instance directly (needed for Symfony 7.x where
+     * HelperSet::getCommand() was removed).
+     */
+    public function setApplication(BaseApplication $application): void
+    {
+        $this->application = $application;
+    }
+
     public function detectDbSettings(OutputInterface $output, ?string $connectionNode = null): void
     {
         if (!is_null($this->dbSettings)) {
@@ -576,10 +587,17 @@ class DatabaseHelper extends AbstractHelper
      */
     private function getApplication()
     {
-        $command = $this->getHelperSet()->getCommand();
+        if ($this->application) {
+            return $this->application;
+        }
 
-        if ($command) {
-            return $command->getApplication();
+        // Fallback for Symfony <7.x where getCommand() still exists
+        $helperSet = $this->getHelperSet();
+        if ($helperSet && method_exists($helperSet, 'getCommand')) {
+            $command = $helperSet->getCommand();
+            if ($command) {
+                return $command->getApplication();
+            }
         }
 
         return new Application();
