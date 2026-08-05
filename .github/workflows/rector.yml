@@ -18,7 +18,7 @@ jobs:
           php-version: 7.4
 
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # Solves the not "You are not currently on a branch" problem, see https://github.com/actions/checkout/issues/124#issuecomment-586664611
           ref: ${{ github.event.pull_request.head.ref }}
